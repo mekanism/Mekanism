@@ -30,6 +30,7 @@ item.ElectrolyticCore.name=Electrolytic Core
 item.CompressedRedstone.name=Compressed Redstone
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
+item.BrineBucket.name=Brine Bucket
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank

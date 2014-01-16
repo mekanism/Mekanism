@@ -116,6 +116,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -125,6 +126,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -248,6 +250,7 @@ public class Mekanism
 	public static Item CompressedRedstone;
 	public static Item Sawdust;
 	public static Item Salt;
+	public static Item BrineBucket;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -741,8 +744,12 @@ public class Mekanism
 		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", 11229).getInt()).setUnlocalizedName("CompressedRedstone");
 		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", 11230).getInt()).setUnlocalizedName("Sawdust");
 		Salt = new ItemMekanism(configuration.getItem("Salt", 11231).getInt()).setUnlocalizedName("Salt");
+		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", 11232).getInt()).setUnlocalizedName("BrineBucket");
 
 		configuration.save();
+		
+		//Fluid Container stuff
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		
 		//Registrations
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
@@ -776,6 +783,7 @@ public class Mekanism
 		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
 		GameRegistry.registerItem(Sawdust, "Sawdust");
 		GameRegistry.registerItem(Salt, "Salt");
+		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 	}
 	
 	/**
