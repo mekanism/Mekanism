@@ -12,6 +12,7 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
+import mekanism.client.gui.GuiSalinationController;
 import mekanism.common.Mekanism;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
@@ -60,6 +61,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new PrecisionSawmillRecipeHandler());
 		API.registerUsageHandler(new PrecisionSawmillRecipeHandler());
 		
+		API.registerRecipeHandler(new SalinationControllerRecipeHandler());
+		API.registerUsageHandler(new SalinationControllerRecipeHandler());
+		
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
 		API.setGuiOffset(GuiCrusher.class, 16, 6);
@@ -72,6 +76,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
+		API.setGuiOffset(GuiSalinationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
 		
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.ItemProxy.itemID);
@@ -86,6 +91,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 	@Override
 	public String getVersion()
 	{
-		return "1.1";
+		return "1.2";
 	}
 }
