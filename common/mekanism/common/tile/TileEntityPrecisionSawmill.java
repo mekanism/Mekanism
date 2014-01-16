@@ -19,4 +19,10 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 	{
 		return Recipe.PRECISION_SAWMILL.get();
 	}
+	
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 0.7F;
+	}
 }
