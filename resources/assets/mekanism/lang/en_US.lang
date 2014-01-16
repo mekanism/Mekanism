@@ -173,6 +173,7 @@ fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
+fluid.brine=Brine
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade

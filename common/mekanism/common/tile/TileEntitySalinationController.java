@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -79,13 +80,14 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			}
 			
 			updateTemperature();
+			manageBuckets();
 	
 			if(canOperate())
 			{
 				int brineNeeded = brineTank.getCapacity()-brineTank.getFluidAmount();
 				int waterStored = waterTank.getFluidAmount();
 				
-				double waterUse = Math.min(brineTank.getFluidAmount(), getTemperature()*100);
+				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*100);
 				
 				if(partialWater >= 1)
 				{
@@ -167,7 +169,103 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		return true;
 	}
 	
-	public void updateTemperature()
+	private void manageBuckets()
+	{
+		if(inventory[2] != null)
+		{
+			if(brineTank.getFluid() != null && brineTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+			{
+				if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
+				{
+					ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(brineTank.getFluid(), inventory[2]);
+					
+					if(tempStack != null)
+					{
+						if(inventory[3] == null)
+						{
+							brineTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+							
+							inventory[3] = tempStack;
+							inventory[2].stackSize--;
+							
+							if(inventory[2].stackSize <= 0)
+							{
+								inventory[2] = null;
+							}
+							
+							onInventoryChanged();
+						}
+						else if(tempStack.isItemEqual(inventory[3]) && tempStack.getMaxStackSize() > inventory[3].stackSize)
+						{
+							brineTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+							
+							inventory[3].stackSize++;
+							inventory[2].stackSize--;
+							
+							if(inventory[2].stackSize <= 0)
+							{
+								inventory[2] = null;
+							}
+							
+							onInventoryChanged();
+						}
+					}
+				}
+			}
+		}
+		
+		if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+		{
+			FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+			
+			if((waterTank.getFluid() == null && itemFluid.amount <= 10000) || waterTank.getFluid().amount+itemFluid.amount <= 10000)
+			{
+				if(itemFluid.getFluid() != FluidRegistry.WATER || (waterTank.getFluid() != null && !waterTank.getFluid().isFluidEqual(itemFluid)))
+				{
+					return;
+				}
+				
+				ItemStack containerItem = inventory[0].getItem().getContainerItemStack(inventory[0]);
+				
+				boolean filled = false;
+				
+				if(containerItem != null)
+				{
+					if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+					{
+						inventory[0] = null;
+						
+						if(inventory[1] == null)
+						{
+							inventory[1] = containerItem;
+						}
+						else {
+							inventory[1].stackSize++;
+						}
+						
+						filled = true;
+					}
+				}
+				else {						
+					inventory[0].stackSize--;
+					
+					if(inventory[0].stackSize == 0)
+					{
+						inventory[0] = null;
+					}
+					
+					filled = true;
+				}
+				
+				if(filled)
+				{
+					waterTank.fill(itemFluid, true);
+				}
+			}
+		}
+	}
+	
+	private void updateTemperature()
 	{
 		float max = getMaxTemperature();
 		float incr = (max/WARMUP)*getTempMultiplier();
