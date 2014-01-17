@@ -77,7 +77,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
         if(tileEntity.getScaledGasLevel(12) > 0)
         {
 	        displayInt = tileEntity.getScaledGasLevel(12);
-	        displayGauge(61, 37 + 12 - displayInt, 5, displayInt, tileEntity.gasTank.getGas());
+	        displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getGas());
         }
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

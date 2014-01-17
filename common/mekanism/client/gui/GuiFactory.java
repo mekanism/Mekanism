@@ -118,21 +118,6 @@ public class GuiFactory extends GuiMekanism
         	}
         }
         
-        int recipeFuelY = ySize;
-        
-        if(tileEntity.recipeType == RecipeType.PURIFYING.ordinal())
-        {
-        	recipeFuelY += 5;
-        }
-        else if(tileEntity.recipeType == RecipeType.COMBINING.ordinal())
-        {
-        	recipeFuelY += 10;
-        }
-        else if(tileEntity.recipeType == RecipeType.INJECTING.ordinal())
-        {
-        	recipeFuelY += 15;
-        }
-        
         if(tileEntity.getScaledGasLevel(160) > 0)
         {
         	displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas());
