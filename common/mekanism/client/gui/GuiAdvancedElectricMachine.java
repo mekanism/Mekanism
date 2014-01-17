@@ -3,7 +3,9 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.ListUtils;
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
@@ -46,6 +48,11 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		
         fontRenderer.drawString(tileEntity.getInvName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getInvName())/2), 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
+        
+    	if(xAxis >= 61 && xAxis <= 66 && yAxis >= 37 && yAxis <= 49)
+		{
+			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
+		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -64,12 +71,29 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		
         int displayInt;
 
-        displayInt = tileEntity.getScaledGasLevel(12);
-        drawTexturedModalRect(guiWidth + 61, guiHeight + 37 + 12 - displayInt, 176, 7 + 12 - displayInt, 5, displayInt);
-
         displayInt = tileEntity.getScaledProgress(24);
         drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
+        
+        if(tileEntity.getScaledGasLevel(12) > 0)
+        {
+	        displayInt = tileEntity.getScaledGasLevel(12);
+	        displayGauge(61, 37 + 12 - displayInt, 5, displayInt, tileEntity.gasTank.getGas());
+        }
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	}
+    
+	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
+	{
+	    if(gas == null)
+	    {
+	        return;
+	    }
+	    
+	    int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+	    
+		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
 	}
 }

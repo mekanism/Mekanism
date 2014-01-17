@@ -165,6 +165,8 @@ gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
 gas.hydrogenChloride=Hydrogen Chloride
+gas.liquidOsmium=Liquid Osmium
+gas.liquidStone=Liquid Stone
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
@@ -175,8 +177,6 @@ fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
 fluid.brine=Brine
-fluid.liquidOsmium=Liquid Osmium
-fluid.liquidStone=Liquid Stone
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade

@@ -3,7 +3,9 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.ListUtils;
+import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerFactory;
@@ -60,7 +62,7 @@ public class GuiFactory extends GuiMekanism
 		
 		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.factory.secondaryEnergy") + ": " + tileEntity.gasTank.getStored(), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
 		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -131,7 +133,23 @@ public class GuiFactory extends GuiMekanism
         	recipeFuelY += 15;
         }
         
-        displayInt = tileEntity.getScaledGasLevel(160);
-        drawTexturedModalRect(guiWidth + 8, guiHeight + 78, 0, recipeFuelY, displayInt, 5);
+        if(tileEntity.getScaledGasLevel(160) > 0)
+        {
+        	displayGauge(8, 78, tileEntity.getScaledGasLevel(160), 5, tileEntity.gasTank.getGas());
+        }
     }
+    
+	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
+	{
+	    if(gas == null)
+	    {
+	        return;
+	    }
+	    
+	    int guiWidth = (width - xSize) / 2;
+        int guiHeight = (height - ySize) / 2;
+	    
+		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
+		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
+	}
 }
