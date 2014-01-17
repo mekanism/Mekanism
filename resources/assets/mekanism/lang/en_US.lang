@@ -56,6 +56,9 @@ tile.BasicBlock.TinBlock.name=Tin Block
 tile.BasicBlock.SalinationController.name=Salination Controller
 tile.BasicBlock.SalinationValve.name=Salination Valve
 
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.SalinationBlock.name=Salination Block
+
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
 tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor

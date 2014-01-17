@@ -473,6 +473,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getFlow()
 	{
-		return MekanismUtils.getPowerDisplay(20*joulesTransmitted);
+		return MekanismUtils.getEnergyDisplay(20*joulesTransmitted) + " per second";
 	}
 }

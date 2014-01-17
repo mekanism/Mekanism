@@ -134,7 +134,7 @@ public class BlockBasic extends Block
 		}
 		else if(blockID == Mekanism.basicBlock2ID)
 		{
-			
+			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
 		}
 	}
 	
@@ -184,8 +184,10 @@ public class BlockBasic extends Block
     	}
     	else if(blockID == Mekanism.basicBlock2ID)
     	{
-    		
+    		return getIcon(side, metadata);
     	}
+    	
+    	return null;
     }
 	
 	@Override
@@ -225,7 +227,7 @@ public class BlockBasic extends Block
 		}
 		else if(blockID == Mekanism.basicBlock2ID)
 		{
-			
+			return icons[meta][0];
 		}
 		
 		return null;
@@ -260,6 +262,10 @@ public class BlockBasic extends Block
 			list.add(new ItemStack(i, 1, 14));
 			list.add(new ItemStack(i, 1, 15));
 		}
+		else if(blockID == Mekanism.basicBlock2ID)
+		{
+			list.add(new ItemStack(i, 1, 0));
+		}
 	}
 	
 	@Override
@@ -291,6 +297,10 @@ public class BlockBasic extends Block
 	        	}
 	        }
         }
+        else if(blockID == Mekanism.basicBlock2ID)
+        {
+        	
+        }
         
         return super.canCreatureSpawn(type, world, x, y, z);
     }
@@ -300,21 +310,24 @@ public class BlockBasic extends Block
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		
-		if(!world.isRemote && meta == 6)
-		{			
-			TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
-			MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
-			
-			if(pos != null && pos.sideHit == bin.facing)
-			{
-				if(bin.bottomStack != null)
+		if(blockID == Mekanism.basicBlockID)
+		{
+			if(!world.isRemote && meta == 6)
+			{			
+				TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
+				
+				if(pos != null && pos.sideHit == bin.facing)
 				{
-					if(!player.isSneaking())
+					if(bin.bottomStack != null)
 					{
-						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
-					}
-					else {
-						world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
+						if(!player.isSneaking())
+						{
+							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
+						}
+						else {
+							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
+						}
 					}
 				}
 			}
