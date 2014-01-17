@@ -607,6 +607,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 		
+		startPoint = startPoint.getFromSide(right.getOpposite()).getFromSide(MekanismUtils.getBack(facing));
+		startPoint.translate(0, -(height-2), 0);
+		
 		return startPoint;
 	}
 

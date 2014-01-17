@@ -36,11 +36,12 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	
 	public void renderAModelAt(TileEntitySalinationController tileEntity, double x, double y, double z, float partialTick)
 	{		
-		/*if(tileEntity.structured && tileEntity.waterTank.getFluid() != null)
+		if(tileEntity.structured && tileEntity.waterTank.getFluid() != null)
 		{
 			SalinationRenderData data = new SalinationRenderData();
 			
 			data.height = tileEntity.height-2;
+			data.side = ForgeDirection.getOrientation(tileEntity.facing);
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			
@@ -54,7 +55,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 				
 				MekanismRenderer.glowOn(tileEntity.waterTank.getFluid().getFluid().getLuminosity());
 				
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.waterTank.getFluid().getFluid(), tileEntity.worldObj);
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.waterTank.getFluid().getFluid());
 				
 				GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.waterTank.getFluidAmount() / (float)tileEntity.getMaxWater())+0.3F));
 				displayList[getStages(data.height)-1].render();
@@ -63,7 +64,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 				
 				pop();
 			}
-		}*/
+		}
 	}
 	
 	private void pop()
@@ -82,7 +83,8 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	private DisplayInteger[] getListAndRender(SalinationRenderData data, Fluid fluid, World world)
+	@SuppressWarnings("incomplete-switch")
+	private DisplayInteger[] getListAndRender(SalinationRenderData data, Fluid fluid)
 	{
 		if(cachedCenterFluids.containsKey(data) && cachedCenterFluids.get(data).containsKey(fluid))
 		{
@@ -114,18 +116,29 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			
 			if(fluid.getIcon() != null)
 			{
-				/*toReturn.minX = 0 + .01;
-				toReturn.minY = 0 + .01;
-				toReturn.minZ = 0 + .01;
-				
-				toReturn.maxX = data.length - .01;
-				toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
-				toReturn.maxZ = data.width - .01;
-				
-				MekanismRenderer.renderObject(toReturn);*/
+				switch(data.side)
+				{
+					case NORTH:
+						/*toReturn.minX = 0 + .01;
+						toReturn.minY = 0 + .01;
+						toReturn.minZ = 0 + .01;
+						
+						toReturn.maxX = 2 - .01;
+						toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
+						toReturn.maxZ = 2 - .01;
+						
+						MekanismRenderer.renderObject(toReturn);*/
+						break;
+					case SOUTH:
+						break;
+					case WEST:
+						break;
+					case EAST:
+						break;
+				}
 			}
 			
-			GL11.glEndList();
+			displays[i].endList();
 		}
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -156,6 +169,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	public static class SalinationRenderData
 	{
 		public int height;
+		public ForgeDirection side;
 		
 		@Override
 		public int hashCode() 
@@ -168,7 +182,8 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 		@Override
 		public boolean equals(Object data)
 		{
-			return data instanceof SalinationRenderData && ((SalinationRenderData)data).height == height;
+			return data instanceof SalinationRenderData && ((SalinationRenderData)data).height == height &&
+					((SalinationRenderData)data).side == side;
 		}
 	}
 }
