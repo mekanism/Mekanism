@@ -31,7 +31,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	/** How much secondary energy (fuel) this machine uses per tick. */
 	public int SECONDARY_ENERGY_PER_TICK;
 	
-	public int MAX_SECONDARY_ENERGY = 200;
+	public static int MAX_GAS = 200;
 	
 	public GasTank gasTank;
 	
@@ -62,7 +62,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
 		
-		gasTank = new GasTank(MAX_SECONDARY_ENERGY);
+		gasTank = new GasTank(MAX_GAS);
 		
 		inventory = new ItemStack[5];
 		

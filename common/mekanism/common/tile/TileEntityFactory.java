@@ -117,7 +117,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		progress = new int[type.processes];
 		isActive = false;
 		
-		gasTank = new GasTank(getMaxSecondaryEnergy());
+		gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS*tier.processes);
 	}
 	
 	@Override
@@ -339,14 +339,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		return RecipeType.values()[recipeType].getSecondaryEnergyPerTick();
 	}
 	
-	public int getMaxSecondaryEnergy()
-	{
-		return RecipeType.values()[recipeType].getMaxSecondaryEnergy()*tier.processes;
-	}
-	
 	public void handleSecondaryFuel()
     {
-		if(inventory[4] != null && RecipeType.values()[recipeType].usesFuel() && gasTank.getStored() < getMaxSecondaryEnergy())
+		if(inventory[4] != null && RecipeType.values()[recipeType].usesFuel() && gasTank.getNeeded() > 0)
 		{
 			if(recipeType == RecipeType.PURIFYING.ordinal())
 			{

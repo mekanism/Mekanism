@@ -583,7 +583,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	
 	public int getScaledWaterLevel(int i)
 	{
-		return waterTank.getFluid() != null ? waterTank.getFluid().amount*i / getMaxWater() : 0;
+		return getMaxWater() > 0 ? (waterTank.getFluid() != null ? waterTank.getFluid().amount*i / getMaxWater() : 0) : 0;
 	}
 	
 	public int getScaledBrineLevel(int i)
