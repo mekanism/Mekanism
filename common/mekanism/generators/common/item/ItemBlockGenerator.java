@@ -67,6 +67,11 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
+		if(GeneratorType.getFromMetadata(itemstack.getItemDamage()) == null)
+		{
+			return "KillMe!";
+		}
+		
 		return getUnlocalizedName() + "." + GeneratorType.getFromMetadata(itemstack.getItemDamage()).name;
 	}
 	
