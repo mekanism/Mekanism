@@ -3,6 +3,8 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
@@ -31,6 +33,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	/** How much secondary energy (fuel) is stored in this machine. */
 	public int secondaryEnergyStored = 0;
 	
+	public GasTank gasTank;
+	
 	/**
 	 * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), 
 	 * energy slot (3), and the upgrade slot (4). The machine will not run if it does not have enough electricity, or if it doesn't have enough
@@ -57,6 +61,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {4}));
 		
 		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
+		
+		gasTank = new GasTank(maxSecondaryEnergy);
 		
 		inventory = new ItemStack[5];
 		
@@ -94,7 +100,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
 				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				
-				if((operatingTicks) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				if(operatingTicks >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
 					
@@ -228,13 +234,33 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	{
 		super.handlePacketData(dataStream);
 		secondaryEnergyStored = dataStream.readInt();
+		
+		if(dataStream.readBoolean())
+		{
+			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+		}
+		else {
+			gasTank.setGas(null);
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(secondaryEnergyStored);
+		
+		if(gasTank.getGas() != null)
+		{
+			data.add(true);
+			data.add(gasTank.getGas().getGas().getID());
+			data.add(gasTank.getStored());
+		}
+		else {
+			data.add(false);
+		}
+		
 		return data;
 	}
 	
@@ -244,6 +270,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     	super.readFromNBT(nbtTags);
     	
         secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
     }
 
     @Override
@@ -252,6 +279,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         super.writeToNBT(nbtTags);
         
         nbtTags.setInteger("secondaryEnergyStored", secondaryEnergyStored);
+        nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
     }
 	
 	/**

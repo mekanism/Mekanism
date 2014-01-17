@@ -121,14 +121,6 @@ public interface IFactory
 		
 		public int getMaxSecondaryEnergy()
 		{
-			if(usesFuel)
-			{
-				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
-				TileEntityAdvancedElectricMachine machine = (TileEntityAdvancedElectricMachine)type.create();
-				
-				return machine.MAX_SECONDARY_ENERGY;
-			}
-			
 			return 200;
 		}
 		

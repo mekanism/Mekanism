@@ -116,7 +116,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -1067,6 +1066,8 @@ public class Mekanism
 		GasRegistry.register(new Gas("sulfurTrioxideGas")).registerFluid();
 		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
 		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
+		GasRegistry.register(new Gas("liquidOsmium").setVisible(false));
+		GasRegistry.register(new Gas("liquidStone").setVisible(false));
 
 		FluidRegistry.registerFluid(new Fluid("brine"));
 		

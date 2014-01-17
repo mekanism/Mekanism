@@ -3,11 +3,12 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
@@ -83,6 +84,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
 	
+	public GasTank gasTank;
+	
 	public boolean sorting;
 	
 	public int secondaryEnergyStored;
@@ -115,6 +118,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		inventory = new ItemStack[5+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
+		
+		gasTank = new GasTank(getMaxSecondaryEnergy());
 	}
 	
 	@Override
@@ -591,6 +596,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			sideConfig[i] = dataStream.readByte();
 		}
 		
+		if(dataStream.readBoolean())
+		{
+			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+		}
+		else {
+			gasTank.setGas(null);
+		}
+		
 		if(updateDelay == 0 && clientActive != isActive)
 		{
 			updateDelay = Mekanism.UPDATE_DELAY;
@@ -623,6 +636,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         		sideConfig[i] = nbtTags.getByte("config"+i);
         	}
         }
+        
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
     }
 
 	@Override
@@ -648,6 +663,8 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         {
         	nbtTags.setByte("config"+i, sideConfig[i]);
         }
+        
+        nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
     }
 	
 	@Override
@@ -663,6 +680,16 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		data.add(sorting);
 		data.add(progress);
 		data.add(sideConfig);
+		
+		if(gasTank.getGas() != null)
+		{
+			data.add(true);
+			data.add(gasTank.getGas().getGas().getID());
+			data.add(gasTank.getStored());
+		}
+		else {
+			data.add(false);
+		}
 		
 		return data;
 	}

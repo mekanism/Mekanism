@@ -21,6 +21,8 @@ public class Gas
 	
 	private Icon icon;
 	
+	private boolean visible = true;
+	
 	/**
 	 * Creates a new Gas object with a defined name or key value.
 	 * @param s - name or key to associate this Gas with
@@ -37,6 +39,27 @@ public class Gas
 	public String getName()
 	{
 		return name;
+	}
+	
+	/**
+	 * Whether or not this is a visible gas.
+	 * @return if this gas is visible
+	 */
+	public boolean isVisible()
+	{
+		return visible;
+	}
+	
+	/**
+	 * Sets this gas's "visible" state to a new value. Setting it to 'false' will treat this gas as an internal gas, and it will not be displayed or accessed by other mods.
+	 * @param v - new visible state
+	 * @return this Gas object
+	 */
+	public Gas setVisible(boolean v)
+	{
+		visible = v;
+		
+		return this;
 	}
 	
 	/**
