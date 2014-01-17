@@ -595,6 +595,20 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		return (int)(getMaxTemperature() == 0 ? 0 : getTemperature()*i/getMaxTemperature());
 	}
+	
+	public Coord4D getRenderLocation()
+	{
+		if(!structured)
+		{
+			return null;
+		}
+		
+		ForgeDirection right = MekanismUtils.getRight(facing);
+		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
+		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
+		
+		return startPoint;
+	}
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
@@ -649,6 +663,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		height = dataStream.readInt();
 		temperature = dataStream.readFloat();
 		biomeTemp = dataStream.readFloat();
+		isLeftOnFace = dataStream.readBoolean();
 		
 		if(structured != prev)
 		{
@@ -689,6 +704,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		data.add(height);
 		data.add(temperature);
 		data.add(biomeTemp);
+		data.add(isLeftOnFace);
 		
 		return data;
 	}

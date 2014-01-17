@@ -61,6 +61,7 @@ import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
+import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
@@ -293,7 +294,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
-		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
+		ClientRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController", new RenderSalinationController());
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
