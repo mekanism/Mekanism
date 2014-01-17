@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -23,6 +24,9 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
 {
@@ -56,6 +60,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public int clientSolarAmount;
 	
 	public boolean cacheStructure = false;
+	
+	public float prevScale;
 	
 	public TileEntitySalinationController()
 	{
@@ -102,6 +108,15 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 					int brineInt = (int)Math.floor(partialBrine);
 					brineTank.fill(FluidRegistry.getFluidStack("brine", brineInt), true);
 					partialBrine %= 1;
+				}
+			}
+			
+			if(structured)
+			{
+				if(Math.abs((float)waterTank.getFluidAmount()/waterTank.getCapacity()-prevScale) > 0.01)
+				{
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+					prevScale = (float)waterTank.getFluidAmount()/waterTank.getCapacity();
 				}
 			}
 		}
@@ -156,7 +171,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean canOperate()
 	{
-		if(!structured || height < 3 || height > 18 || waterTank.getFluid() == null)
+		if(!structured || height < 3 || height > 18 || waterTank.getFluid() == null || getTempMultiplier() == 0)
 		{
 			return false;
 		}
@@ -214,52 +229,55 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			}
 		}
 		
-		if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+		if(structured)
 		{
-			FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-			
-			if((waterTank.getFluid() == null && itemFluid.amount <= 10000) || waterTank.getFluid().amount+itemFluid.amount <= 10000)
+			if(FluidContainerRegistry.isFilledContainer(inventory[0]))
 			{
-				if(itemFluid.getFluid() != FluidRegistry.WATER || (waterTank.getFluid() != null && !waterTank.getFluid().isFluidEqual(itemFluid)))
+				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+				
+				if((waterTank.getFluid() == null && itemFluid.amount <= getMaxWater()) || waterTank.getFluid().amount+itemFluid.amount <= getMaxWater())
 				{
-					return;
-				}
-				
-				ItemStack containerItem = inventory[0].getItem().getContainerItemStack(inventory[0]);
-				
-				boolean filled = false;
-				
-				if(containerItem != null)
-				{
-					if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+					if(itemFluid.getFluid() != FluidRegistry.WATER || (waterTank.getFluid() != null && !waterTank.getFluid().isFluidEqual(itemFluid)))
 					{
-						inventory[0] = null;
-						
-						if(inventory[1] == null)
+						return;
+					}
+					
+					ItemStack containerItem = inventory[0].getItem().getContainerItemStack(inventory[0]);
+					
+					boolean filled = false;
+					
+					if(containerItem != null)
+					{
+						if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 						{
-							inventory[1] = containerItem;
+							inventory[0] = null;
+							
+							if(inventory[1] == null)
+							{
+								inventory[1] = containerItem;
+							}
+							else {
+								inventory[1].stackSize++;
+							}
+							
+							filled = true;
 						}
-						else {
-							inventory[1].stackSize++;
+					}
+					else {						
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize == 0)
+						{
+							inventory[0] = null;
 						}
 						
 						filled = true;
 					}
-				}
-				else {						
-					inventory[0].stackSize--;
 					
-					if(inventory[0].stackSize == 0)
+					if(filled)
 					{
-						inventory[0] = null;
+						waterTank.fill(itemFluid, true);
 					}
-					
-					filled = true;
-				}
-				
-				if(filled)
-				{
-					waterTank.fill(itemFluid, true);
 				}
 			}
 		}
@@ -272,7 +290,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		if(getTempMultiplier() == 0)
 		{
-			temperature = Math.max(0, getTemperature()-(incr*2));
+			temperature = Math.max(0, getTemperature()-(max/WARMUP));
 		}
 		else {
 			temperature = Math.min(max, getTemperature()+incr);
@@ -670,6 +688,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		if(structured != prev)
 		{
+			waterTank.setCapacity(getMaxWater());
 			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
 		}
 		
@@ -743,6 +762,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
         
         nbtTags.setBoolean("cacheStructure", structured);
     }
+	
+	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
+	}
 
 	public void clearStructure()
 	{
@@ -753,5 +778,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		tankParts.clear();
 		solars = new TileEntityAdvancedSolarGenerator[] {null, null, null, null};
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public AxisAlignedBB getRenderBoundingBox()
+	{
+		return INFINITE_EXTENT_AABB;
 	}
 }

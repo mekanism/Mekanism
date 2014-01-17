@@ -211,6 +211,7 @@ public class Mekanism
     
 	//Block IDs
     public static int basicBlockID;
+    public static int basicBlock2ID;
     public static int machineBlockID;
     public static int machineBlock2ID;
     public static int oreBlockID;
@@ -253,6 +254,7 @@ public class Mekanism
 
 	//Blocks
 	public static Block BasicBlock;
+	public static Block BasicBlock2;
 	public static Block MachineBlock;
 	public static Block MachineBlock2;
 	public static Block OreBlock;
@@ -792,6 +794,7 @@ public class Mekanism
 	{
 		//Declarations
 		BasicBlock = new BlockBasic(basicBlockID).setUnlocalizedName("BasicBlock");
+		BasicBlock2 = new BlockBasic(basicBlock2ID).setUnlocalizedName("BasicBlock2");
 		MachineBlock = new BlockMachine(machineBlockID).setUnlocalizedName("MachineBlock");
 		MachineBlock2 = new BlockMachine(machineBlock2ID).setUnlocalizedName("MachineBlock2");
 		OreBlock = new BlockOre(oreBlockID).setUnlocalizedName("OreBlock");
@@ -803,6 +806,7 @@ public class Mekanism
 		
 		//Registrations
 		GameRegistry.registerBlock(BasicBlock, ItemBlockBasic.class, "BasicBlock");
+		GameRegistry.registerBlock(BasicBlock2, ItemBlockBasic.class, "BasicBlock2");
 		GameRegistry.registerBlock(MachineBlock, ItemBlockMachine.class, "MachineBlock");
 		GameRegistry.registerBlock(MachineBlock2, ItemBlockMachine.class, "MachineBlock2");
 		GameRegistry.registerBlock(OreBlock, ItemBlockOre.class, "OreBlock");

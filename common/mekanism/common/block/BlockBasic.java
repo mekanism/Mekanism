@@ -317,12 +317,11 @@ public class BlockBasic extends Block
 
 		if(metadata == 14)
 		{
-			entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
-			TileEntitySalinationController controller = (TileEntitySalinationController)new Coord4D(x, y, z).getTileEntity(world);
-			//entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Water Level: " + controller.waterTank.getFluidAmount()));
-			//entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Brine Level: " + controller.brineTank.getFluidAmount()));
-			//entityplayer.sendChatToPlayer(ChatMessageComponent.createFromText("Can operate: " + controller.canOperate()));
-			return true;
+			if(!entityplayer.isSneaking())
+			{
+				entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+				return true;
+			}
 		}
 
     	if(world.isRemote)

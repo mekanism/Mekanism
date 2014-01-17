@@ -45,7 +45,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			
-			if(data.height >= 2)
+			if(data.height >= 2 && tileEntity.waterTank.getCapacity() > 0)
 			{
 				Coord4D renderLoc = tileEntity.getRenderLocation();
 				
@@ -56,9 +56,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 				MekanismRenderer.glowOn(tileEntity.waterTank.getFluid().getFluid().getLuminosity());
 				
 				DisplayInteger[] displayList = getListAndRender(data, tileEntity.waterTank.getFluid().getFluid());
-				
-				GL11.glColor4f(1F, 1F, 1F, Math.min(1, ((float)tileEntity.waterTank.getFluidAmount() / (float)tileEntity.getMaxWater())+0.3F));
-				displayList[getStages(data.height)-1].render();
+				displayList[(int)(((float)tileEntity.waterTank.getFluidAmount()/tileEntity.waterTank.getCapacity())*((float)getStages(data.height)-1))].render();
 					
 				MekanismRenderer.glowOff();
 				
@@ -119,23 +117,44 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 				switch(data.side)
 				{
 					case NORTH:
-						/*toReturn.minX = 0 + .01;
+						toReturn.minX = 0 + .01;
 						toReturn.minY = 0 + .01;
 						toReturn.minZ = 0 + .01;
 						
 						toReturn.maxX = 2 - .01;
-						toReturn.maxY = ((float)i/(float)stages)*(data.height-2) - .01;
+						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
 						toReturn.maxZ = 2 - .01;
-						
-						MekanismRenderer.renderObject(toReturn);*/
 						break;
 					case SOUTH:
+						toReturn.minX = -1 + .01;
+						toReturn.minY = 0 + .01;
+						toReturn.minZ = -1 + .01;
+						
+						toReturn.maxX = 1 - .01;
+						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
+						toReturn.maxZ = 1 - .01;
 						break;
 					case WEST:
+						toReturn.minX = 0 + .01;
+						toReturn.minY = 0 + .01;
+						toReturn.minZ = -1 + .01;
+						
+						toReturn.maxX = 2 - .01;
+						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
+						toReturn.maxZ = 1 - .01;
 						break;
 					case EAST:
+						toReturn.minX = -1 + .01;
+						toReturn.minY = 0 + .01;
+						toReturn.minZ = 0 + .01;
+						
+						toReturn.maxX = 1 - .01;
+						toReturn.maxY = ((float)i/(float)stages)*data.height - .01;
+						toReturn.maxZ = 2 - .01;
 						break;
 				}
+				
+				MekanismRenderer.renderObject(toReturn);
 			}
 			
 			displays[i].endList();
@@ -148,7 +167,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	
 	private int getStages(int height)
 	{
-		return (height-2)*(TankUpdateProtocol.FLUID_PER_TANK/10);
+		return height*(TankUpdateProtocol.FLUID_PER_TANK/10);
 	}
 	
 	private double getX(int x)
