@@ -49,7 +49,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
         fontRenderer.drawString(tileEntity.getInvName(), (xSize/2)-(fontRenderer.getStringWidth(tileEntity.getInvName())/2), 6, 0x404040);
         fontRenderer.drawString("Inventory", 8, (ySize - 96) + 2, 0x404040);
         
-    	if(xAxis >= 61 && xAxis <= 66 && yAxis >= 37 && yAxis <= 49)
+    	if(xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49)
 		{
 			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
 		}
