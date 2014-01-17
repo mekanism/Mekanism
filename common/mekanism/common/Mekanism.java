@@ -523,7 +523,7 @@ public class Mekanism
 			"EPE", "IEG", "EPE", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "dustOsmium", Character.valueOf('I'), "dustIron", Character.valueOf('G'), "dustGold"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(CardboardBox), new Object[] {
-			"SS", "SS", Character.valueOf('S'), Sawdust
+			"SS", "SS", Character.valueOf('S'), "dustPulp"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Item.paper, 6), new Object[] {
 			"SSS", Character.valueOf('S'), Sawdust
@@ -825,12 +825,9 @@ public class Mekanism
 		//Add specific items to ore dictionary for recipe usage in other mods. @Calclavia
 		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
+		OreDictionary.registerOre("pulpWood", Sawdust);
 		
-		//GregoriousT, should I use "itemDust" or "dustSaw"? I'll use both.
-		OreDictionary.registerOre("itemSawdust", Sawdust);
-		OreDictionary.registerOre("dustSaw", Sawdust);
-		
-		//Same question Greg...
+		//GregoriousT?
 		OreDictionary.registerOre("itemSalt", Salt);
 		OreDictionary.registerOre("dustSalt", Salt);
 		
