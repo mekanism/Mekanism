@@ -330,8 +330,8 @@ tooltip.Chargepad=A universal chargepad that can charge any energized item !nfro
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
 tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
-tooltip.ElectrolyticSeparator=A machine that uses the process of electrolysis !nto split apart a certain gas into two !ndifferent gasses.
-tooltip.PrecisionSawmill=A machine used to process logs and other wood-based !nitems more efficiently, as well as to !nobtain sawdust.
+tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
+tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
