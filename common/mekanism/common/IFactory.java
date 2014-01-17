@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.gas.GasStack;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -43,6 +44,7 @@ public interface IFactory
 		private String sound;
 		private ItemStack stack;
 		private boolean usesFuel;
+		private TileEntityAdvancedElectricMachine cacheTile;
 		
 		public ItemStack getCopiedOutput(ItemStack input, boolean stackDecrease)
 		{
@@ -93,30 +95,35 @@ public interface IFactory
 			return null;
 		}
 		
-		public int getFuelTicks(ItemStack itemstack)
+		public GasStack getItemGas(ItemStack itemstack)
 		{
 			if(usesFuel)
 			{
-				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
-				TileEntityAdvancedElectricMachine machine = (TileEntityAdvancedElectricMachine)type.create();
-				
-				return machine.getFuelTicks(itemstack);
+				return getTile().getItemGas(itemstack);
 			}
 			
-			return 0;
+			return null;
 		}
 		
 		public int getSecondaryEnergyPerTick()
 		{
 			if(usesFuel)
 			{
-				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
-				TileEntityAdvancedElectricMachine machine = (TileEntityAdvancedElectricMachine)type.create();
-				
-				return machine.SECONDARY_ENERGY_PER_TICK;
+				return getTile().SECONDARY_ENERGY_PER_TICK;
 			}
 			
 			return 0;
+		}
+		
+		public TileEntityAdvancedElectricMachine getTile()
+		{
+			if(cacheTile == null)
+			{
+				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
+				cacheTile = (TileEntityAdvancedElectricMachine)type.create();
+			}
+			
+			return cacheTile;
 		}
 		
 		public int getMaxSecondaryEnergy()

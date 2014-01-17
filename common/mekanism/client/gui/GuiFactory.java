@@ -60,7 +60,7 @@ public class GuiFactory extends GuiMekanism
 		
 		if(xAxis >= 8 && xAxis <= 168 && yAxis >= 78 && yAxis <= 83)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.factory.secondaryEnergy") + ": " + tileEntity.secondaryEnergyStored, xAxis, yAxis);
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.factory.secondaryEnergy") + ": " + tileEntity.gasTank.getStored(), xAxis, yAxis);
 		}
 		
     	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -131,7 +131,7 @@ public class GuiFactory extends GuiMekanism
         	recipeFuelY += 15;
         }
         
-        displayInt = tileEntity.getScaledSecondaryEnergy(160);
+        displayInt = tileEntity.getScaledGasLevel(160);
         drawTexturedModalRect(guiWidth + 8, guiHeight + 78, 0, recipeFuelY, displayInt, 5);
     }
 }

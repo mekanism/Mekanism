@@ -64,7 +64,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		
         int displayInt;
 
-        displayInt = tileEntity.getScaledSecondaryEnergyLevel(12);
+        displayInt = tileEntity.getScaledGasLevel(12);
         drawTexturedModalRect(guiWidth + 61, guiHeight + 37 + 12 - displayInt, 176, 7 + 12 - displayInt, 5, displayInt);
 
         displayInt = tileEntity.getScaledProgress(24);

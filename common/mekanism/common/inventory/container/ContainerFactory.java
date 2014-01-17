@@ -163,7 +163,7 @@ public class ContainerFactory extends Container
 	            	}
 	            }
             }
-            else if(RecipeType.values()[tileEntity.recipeType].getFuelTicks(slotStack) > 0)
+            else if(RecipeType.values()[tileEntity.recipeType].getItemGas(slotStack) != null)
             {
             	if(slotID > tileEntity.inventory.length-1)
             	{

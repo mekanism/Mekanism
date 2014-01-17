@@ -88,8 +88,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	
 	public boolean sorting;
 	
-	public int secondaryEnergyStored;
-	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -191,8 +189,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						inventory[2] = null;
 						inventory[3] = getMachineStack();
 						
-						recipeType = toSet.ordinal();
-						setSecondaryEnergy(0);
+						gasTank.setGas(null);
 						
 						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
 						
@@ -209,12 +206,12 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= getSecondaryEnergyPerTick())
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
 				{
 					if((progress[process]+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 					{
 						progress[process]++;
-						secondaryEnergyStored -= getSecondaryEnergyPerTick();
+						gasTank.draw(getSecondaryEnergyPerTick(), true);
 						electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 					}
 					else if((progress[process]+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
@@ -222,7 +219,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						operate(getInputSlot(process), getOutputSlot(process));
 						
 						progress[process] = 0;
-						secondaryEnergyStored -= getSecondaryEnergyPerTick();
+						gasTank.draw(getSecondaryEnergyPerTick(), true);
 						electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 					}
 				}
@@ -244,7 +241,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 				}
 			}
 			
-			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= getSecondaryEnergyPerTick())
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
 			{
 				setActive(true);
 			}
@@ -349,14 +346,14 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	
 	public void handleSecondaryFuel()
     {
-		if(inventory[4] != null && RecipeType.values()[recipeType].usesFuel() && secondaryEnergyStored < getMaxSecondaryEnergy())
+		if(inventory[4] != null && RecipeType.values()[recipeType].usesFuel() && gasTank.getStored() < getMaxSecondaryEnergy())
 		{
 			if(recipeType == RecipeType.PURIFYING.ordinal())
 			{
 				if(inventory[4].getItem() instanceof IGasItem)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("oxygen"), getMaxSecondaryEnergy()-secondaryEnergyStored);
-					setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("oxygen"), gasTank.getNeeded());
+					gasTank.receive(removed, true);
 					
 					return;
 				}
@@ -365,26 +362,19 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			{
 				if(inventory[4].getItem() instanceof IGasItem)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("sulfuricAcid"), getMaxSecondaryEnergy()-secondaryEnergyStored);
-					setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("sulfuricAcid"), gasTank.getNeeded());
+					gasTank.receive(removed, true);
 					
 					return;
 				}
 			}
 			
-			int fuelTicks = RecipeType.values()[recipeType].getFuelTicks(inventory[4]);
-			int energyNeeded = getMaxSecondaryEnergy() - secondaryEnergyStored;
+			GasStack stack = RecipeType.values()[recipeType].getItemGas(inventory[4]);
+			int gasNeeded = gasTank.getNeeded();
 			
-			if(fuelTicks > 0 && fuelTicks <= energyNeeded)
+			if(stack != null && stack.amount <= gasNeeded)
 			{
-				if(fuelTicks <= energyNeeded)
-				{
-					setSecondaryEnergy(secondaryEnergyStored + fuelTicks);
-				}
-				else if(fuelTicks > energyNeeded)
-				{
-					setSecondaryEnergy(secondaryEnergyStored + energyNeeded);
-				}
+				gasTank.receive(stack, true);
 				
 				inventory[4].stackSize--;
 				
@@ -471,7 +461,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		}
 		else if(slotID == 4)
 		{
-			return RecipeType.values()[recipeType].getFuelTicks(itemstack) > 0;
+			return RecipeType.values()[recipeType].getItemGas(itemstack) != null;
 		}
 		
 		return false;
@@ -493,9 +483,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		return progress[process]*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
 	
-	public int getScaledSecondaryEnergy(int i)
+	public int getScaledGasLevel(int i)
 	{
-		return secondaryEnergyStored*i / getMaxSecondaryEnergy();
+		return gasTank.getStored()*i / gasTank.getMaxGas();
 	}
 	
 	public int getScaledRecipeProgress(int i)
@@ -557,11 +547,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         ejectorComponent.onOutput();
 	}
 	
-	public void setSecondaryEnergy(int energy)
-	{
-		secondaryEnergyStored = Math.max(Math.min(energy, getMaxSecondaryEnergy()), 0);
-	}
-	
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
@@ -583,7 +568,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		recipeType = dataStream.readInt();
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-		secondaryEnergyStored = dataStream.readInt();
 		sorting = dataStream.readBoolean();
 		
 		for(int i = 0; i < tier.processes; i++)
@@ -621,7 +605,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         recipeType = nbtTags.getInteger("recipeType");
         recipeTicks = nbtTags.getInteger("recipeTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
         sorting = nbtTags.getBoolean("sorting");
         
         for(int i = 0; i < tier.processes; i++)
@@ -649,7 +632,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
         nbtTags.setInteger("recipeType", recipeType);
         nbtTags.setInteger("recipeTicks", recipeTicks);
         nbtTags.setInteger("controlType", controlType.ordinal());
-        nbtTags.setInteger("secondaryEnergyStored", secondaryEnergyStored);
         nbtTags.setBoolean("sorting", sorting);
         
         for(int i = 0; i < tier.processes; i++)
@@ -676,7 +658,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		data.add(recipeType);
 		data.add(recipeTicks);
 		data.add(controlType.ordinal());
-		data.add(secondaryEnergyStored);
 		data.add(sorting);
 		data.add(progress);
 		data.add(sideConfig);
@@ -924,9 +905,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		if(recipeType == RecipeType.PURIFYING.ordinal() && stack.getGas() == GasRegistry.getGas("oxygen") ||
 				recipeType == RecipeType.INJECTING.ordinal() && stack.getGas() == GasRegistry.getGas("sulfuricAcid"))
 		{
-			int toUse = Math.min(getMaxSecondaryEnergy()-secondaryEnergyStored, stack.amount);
-			secondaryEnergyStored += toUse;
-	    	return toUse;
+			return gasTank.receive(stack, true);
 		}
 		
 		return 0;

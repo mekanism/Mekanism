@@ -97,7 +97,7 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
 	            }
             }
-            else if(tileEntity.getFuelTicks(slotStack) > 0)
+            else if(tileEntity.getItemGas(slotStack) != null)
             {
             	if(slotID != 1)
             	{
