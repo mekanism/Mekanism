@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.ArrayList;
 
+import mekanism.api.AdvancedInput;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -146,7 +147,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 2)
+		if(slotID == 2 || gasTank.getGas() == null)
 		{
 			return false;
 		}
@@ -156,7 +157,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 0)
 		{
-			return RecipeHandler.getOutput(itemstack, false, getRecipes()) != null;
+			return RecipeHandler.getOutput(new AdvancedInput(itemstack, gasTank.getGas().getGas()), false, getRecipes()) != null;
 		}
 		else if(slotID == 3)
 		{
@@ -173,7 +174,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public void operate()
     {
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
+        ItemStack itemstack = RecipeHandler.getOutput(new AdvancedInput(inventory[0], gasTank.getGas().getGas()), true, getRecipes());
 
         if(inventory[0].stackSize <= 0)
         {
@@ -195,12 +196,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public boolean canOperate()
     {
-        if(inventory[0] == null)
+        if(inventory[0] == null || gasTank.getGas() == null)
         {
             return false;
         }
 
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
+        ItemStack itemstack = RecipeHandler.getOutput(new AdvancedInput(inventory[0], gasTank.getGas().getGas()), false, getRecipes());
 
         if(itemstack == null)
         {

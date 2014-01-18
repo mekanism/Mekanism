@@ -3,8 +3,10 @@ package mekanism.common.recipe;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.AdvancedInput;
 import mekanism.api.ChanceOutput;
 import mekanism.api.ChemicalPair;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionInput;
@@ -44,7 +46,7 @@ public final class RecipeHandler
 	 */
 	public static void addOsmiumCompressorRecipe(ItemStack input, ItemStack output)
 	{
-		Recipe.OSMIUM_COMPRESSOR.put(input, output);
+		Recipe.OSMIUM_COMPRESSOR.put(new AdvancedInput(input, GasRegistry.getGas("liquidOsmium")), output);
 	}
 	
 	/**
@@ -54,7 +56,7 @@ public final class RecipeHandler
 	 */
 	public static void addCombinerRecipe(ItemStack input, ItemStack output)
 	{
-		Recipe.COMBINER.put(input, output);
+		Recipe.COMBINER.put(new AdvancedInput(input, GasRegistry.getGas("liquidStone")), output);
 	}
 	
 	/**
@@ -74,7 +76,7 @@ public final class RecipeHandler
 	 */
 	public static void addPurificationChamberRecipe(ItemStack input, ItemStack output)
 	{
-		Recipe.PURIFICATION_CHAMBER.put(input, output);
+		Recipe.PURIFICATION_CHAMBER.put(new AdvancedInput(input, GasRegistry.getGas("oxygen")), output);
 	}
 	
 	/**
@@ -114,7 +116,7 @@ public final class RecipeHandler
 	 */
 	public static void addChemicalInjectionChamberRecipe(ItemStack input, ItemStack output)
 	{
-		Recipe.CHEMICAL_INJECTION_CHAMBER.put(input, output);
+		Recipe.CHEMICAL_INJECTION_CHAMBER.put(new AdvancedInput(input, GasRegistry.getGas("sulfuricAcid")), output);
 	}
 
 	/**
@@ -295,6 +297,33 @@ public final class RecipeHandler
 		
 		return null;
 	}
+	/**
+	 * Gets the output ItemStack of the AdvancedInput in the parameters.
+	 * @param itemstack - input AdvancedInput
+	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * @param recipes - Map of recipes
+	 * @return output ItemStack
+	 */
+	public static ItemStack getOutput(AdvancedInput input, boolean stackDecrease, Map<AdvancedInput, ItemStack> recipes)
+	{
+		if(input != null && input.isValid())
+		{
+			for(Map.Entry<AdvancedInput, ItemStack> entry : recipes.entrySet())
+			{
+				if(entry.getKey().matches(input))
+				{
+					if(stackDecrease)
+					{
+						input.itemStack.stackSize -= entry.getKey().itemStack.stackSize;
+					}
+					
+					return entry.getValue().copy();
+				}
+			}
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * Gets the output ItemStack of the ItemStack in the parameters.
@@ -351,14 +380,14 @@ public final class RecipeHandler
 	public static enum Recipe
 	{
 		ENRICHMENT_CHAMBER(new HashMap<ItemStack, ItemStack>()),
-		OSMIUM_COMPRESSOR(new HashMap<ItemStack, ItemStack>()),
-		COMBINER(new HashMap<ItemStack, ItemStack>()),
+		OSMIUM_COMPRESSOR(new HashMap<AdvancedInput, ItemStack>()),
+		COMBINER(new HashMap<AdvancedInput, ItemStack>()),
 		CRUSHER(new HashMap<ItemStack, ItemStack>()),
-		PURIFICATION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
+		PURIFICATION_CHAMBER(new HashMap<AdvancedInput, ItemStack>()),
 		METALLURGIC_INFUSER(new HashMap<InfusionInput, InfusionOutput>()),
 		CHEMICAL_INFUSER(new HashMap<ChemicalPair, GasStack>()),
 		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
-		CHEMICAL_INJECTION_CHAMBER(new HashMap<ItemStack, ItemStack>()),
+		CHEMICAL_INJECTION_CHAMBER(new HashMap<AdvancedInput, ItemStack>()),
 		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalPair>()),
 		PRECISION_SAWMILL(new HashMap<ItemStack, ChanceOutput>());
 		

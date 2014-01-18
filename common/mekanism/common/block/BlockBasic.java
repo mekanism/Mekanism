@@ -430,6 +430,24 @@ public class BlockBasic extends Block
 				}
 	    	}
     	}
+    	else if(blockID == Mekanism.basicBlock2ID)
+    	{
+    		if(world.isRemote)
+    		{
+    			return true;
+    		}
+    		
+    		if(metadata == 0)
+			{
+    			TileEntitySalinationTank tank = (TileEntitySalinationTank)world.getBlockTileEntity(x, y, z);
+    			
+				if(!entityplayer.isSneaking())
+				{
+					entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
+					return true;
+				}
+			}
+    	}
     	
         return false;
     }
