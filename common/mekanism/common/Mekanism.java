@@ -623,7 +623,7 @@ public class Mekanism
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreRedstone), new ItemStack(Item.redstone, 12));
-        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 1, 6));
+        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(DirtyDust, 2, 6));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 1, 0), new ItemStack(CompressedCarbon));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.coal, 1, 1), new ItemStack(CompressedCarbon));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Item.redstone), new ItemStack(CompressedRedstone));
@@ -660,11 +660,11 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.flint, 4), new ItemStack(Item.gunpowder));
 
         //Purification Chamber Recipes
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 3, 6));
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
         
         //Chemical Injection Chamber Recipes
-        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Block.obsidian), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Shard, 3, 6));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Block.obsidian), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Shard, 4, 6));
         RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Block.dirt), GasRegistry.getGas("water")), new ItemStack(Block.blockClay));
         RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Item.gunpowder), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Dust, 1, 10));
 		

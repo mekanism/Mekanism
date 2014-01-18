@@ -60,7 +60,9 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 		}
 		else if(gasType == GasRegistry.getGas("hydrogenChloride"))
 		{
-			return ListUtils.asList(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+			List<ItemStack> fuels = OreDictionary.getOres("dustSalt");
+			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+			return fuels;
 		}
 		
 		return new ArrayList<ItemStack>();

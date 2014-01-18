@@ -219,49 +219,49 @@ public final class OreDictManager
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 6));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 3));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 3));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 3));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreTin"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 7));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 4));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 4));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 4));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreOsmium"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 2));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 2));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 2));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 2));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreIron"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 0));
 	        RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 0));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 0));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 0));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreGold"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 1));
 	        RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 1));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 1));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 1));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreSilver"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 8));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 5));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 5));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 5));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreLead"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 9));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 7));
-			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Mekanism.Shard, 4, 7));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 7));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreNickel"))
