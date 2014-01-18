@@ -128,6 +128,7 @@ public class BlockBasic extends Block
 			icons[13][0] = register.registerIcon("mekanism:TinBlock");
 			icons[14][0] = register.registerIcon("mekanism:SalinationController");
 			icons[14][1] = register.registerIcon("mekanism:SalinationControllerOn");
+			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
 			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
 			
 			glassRenderer.registerIcons(register);
@@ -175,7 +176,7 @@ public class BlockBasic extends Block
 					return tileEntity.structured ? icons[14][1] : icons[14][0];
 				}
 				else {
-					return icons[12][0];
+					return icons[14][2];
 				}
 			}
 	    	else {
@@ -221,7 +222,7 @@ public class BlockBasic extends Block
 					return icons[14][0];
 				}
 				else {
-					return icons[12][0];
+					return icons[14][2];
 				}
 			}
 		}
@@ -429,24 +430,6 @@ public class BlockBasic extends Block
 					return true;
 				}
 	    	}
-    	}
-    	else if(blockID == Mekanism.basicBlock2ID)
-    	{
-    		if(world.isRemote)
-    		{
-    			return true;
-    		}
-    		
-    		if(metadata == 0)
-			{
-    			TileEntitySalinationTank tank = (TileEntitySalinationTank)world.getBlockTileEntity(x, y, z);
-    			
-				if(!entityplayer.isSneaking())
-				{
-					entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
-					return true;
-				}
-			}
     	}
     	
         return false;
