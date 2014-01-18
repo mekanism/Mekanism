@@ -12,7 +12,6 @@ import java.util.Set;
 
 import mekanism.api.AdvancedInput;
 import mekanism.api.gas.GasStack;
-import mekanism.client.nei.ChemicalInfuserRecipeHandler.CachedIORecipe;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -120,9 +119,9 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getKey().itemStack, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
 			}
