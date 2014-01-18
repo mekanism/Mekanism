@@ -192,7 +192,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 		
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 22+7)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
 		}
@@ -254,7 +254,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 		
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 22+7)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
 		}

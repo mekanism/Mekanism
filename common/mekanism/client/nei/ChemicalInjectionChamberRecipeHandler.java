@@ -58,6 +58,10 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 		{
 			return ListUtils.asList(MekanismUtils.getFullGasTank(GasRegistry.getGas("water")));
 		}
+		else if(gasType == GasRegistry.getGas("hydrogenChloride"))
+		{
+			return ListUtils.asList(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+		}
 		
 		return new ArrayList<ItemStack>();
 	}

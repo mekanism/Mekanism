@@ -662,11 +662,11 @@ public class Mekanism
         //Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 2, 6));
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
-		RecipeHandler.addPurificationChamberRecipe(new ItemStack(Item.gunpowder), new ItemStack(Dust, 1, 10));
         
         //Chemical Injection Chamber Recipes
         RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Block.obsidian), GasRegistry.getGas("sulfuricAcid")), new ItemStack(Shard, 3, 6));
         RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Block.dirt), GasRegistry.getGas("water")), new ItemStack(Block.blockClay));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Item.gunpowder), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Dust, 1, 10));
 		
 		//Precision Sawmill Recipes
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Block.ladder, 3), new ChanceOutput(new ItemStack(Item.stick, 7)));
