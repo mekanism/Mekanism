@@ -420,7 +420,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			}
 			else if(slotID >= 5 && slotID <= 7)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
+				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false) != null;
 			}
 		}
 		else if(tier == FactoryTier.ADVANCED)
@@ -431,7 +431,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			}
 			else if(slotID >= 5 && slotID <= 9)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
+				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false) != null;
 			}
 		}
 		else if(tier == FactoryTier.ELITE)
@@ -442,7 +442,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			}
 			else if(slotID >= 5 && slotID <= 11)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, false) != null;
+				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false) != null;
 			}
 		}
 		
@@ -495,7 +495,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
             return false;
         }
 
-        ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], false);
+        ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false);
 
         if(itemstack == null)
         {
@@ -523,7 +523,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
             return;
         }
 
-        ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], true);
+        ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, true);
 
         if(inventory[inputSlot].stackSize <= 0)
         {

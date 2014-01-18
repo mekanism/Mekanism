@@ -85,6 +85,17 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 		return false;
 	}
 	
+	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
+	{
+	    if(gas == null)
+	    {
+	        return;
+	    }
+	    
+		changeTexture(MekanismRenderer.getBlocksTexture());
+		gui.drawTexturedModelRectFromIcon(xPos, yPos, gas.getGas().getIcon(), sizeX, sizeY);
+	}
+	
 	/*
 	 * true = usage, false = recipe
 	 */

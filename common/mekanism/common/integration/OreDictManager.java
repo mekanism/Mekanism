@@ -237,15 +237,15 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("oreIron"))
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Mekanism.Dust, 2, 0));
-	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Mekanism.Clump, 3, 0));
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 0));
+	        RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 0));
 			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 0));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreGold"))
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Mekanism.Dust, 2, 1));
-	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Mekanism.Clump, 3, 1));
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 1));
+	        RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 1));
 			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 1));
 		}
 		

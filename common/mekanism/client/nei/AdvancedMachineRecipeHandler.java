@@ -47,15 +47,11 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void drawExtras(int i)
 	{
-		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
+		/*float f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
 		
-		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
-		if(ticksPassed < 20) f = 0.0F;
-		drawProgressBar(45, 32, 176, 7, 5, 12, f, 3);
-		
-		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(149, 12, 176, 19, 4, 52, f, 3);
+		int displayInt = ticksPassed < 20 ? ();
+		displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getGas());*/
 	}
 
 	@Override

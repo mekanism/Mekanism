@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import mekanism.api.AdvancedInput;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
@@ -32,21 +34,22 @@ public interface IFactory
 	
 	public static enum RecipeType
 	{
-		SMELTING("smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false),
-		ENRICHING("enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false),
-		CRUSHING("crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false),
-		COMPRESSING("compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true),
-		COMBINING("combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true),
-		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true),
-		INJECTING("injecting", "ChemicalInjectionChamber.ogg", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true);
+		SMELTING("smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false, null),
+		ENRICHING("enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false, Recipe.CRUSHER),
+		COMPRESSING("compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true, Recipe.COMBINER),
+		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("injecting", "ChemicalInjectionChamber.ogg", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, Recipe.CHEMICAL_INJECTION_CHAMBER);
 		
 		private String name;
 		private String sound;
 		private ItemStack stack;
 		private boolean usesFuel;
+		private Recipe recipe;
 		private TileEntityAdvancedElectricMachine cacheTile;
 		
-		public ItemStack getCopiedOutput(ItemStack input, boolean stackDecrease)
+		public ItemStack getCopiedOutput(ItemStack input, Gas gas, boolean stackDecrease)
 		{
 			if(input == null)
 			{
@@ -66,33 +69,17 @@ public interface IFactory
 					
 					return toReturn;
 				}
-			}
-			else if(this == ENRICHING)
-			{
-				return RecipeHandler.getOutput(input, stackDecrease, Recipe.ENRICHMENT_CHAMBER.get());
-			}
-			else if(this == CRUSHING)
-			{
-				return RecipeHandler.getOutput(input, stackDecrease, Recipe.CRUSHER.get());
-			}
-			else if(this == COMPRESSING)
-			{
-				return RecipeHandler.getOutput(input, stackDecrease, Recipe.OSMIUM_COMPRESSOR.get());
-			}
-			else if(this == COMBINING)
-			{
-				return RecipeHandler.getOutput(input, stackDecrease, Recipe.COMBINER.get());
-			}
-			else if(this == PURIFYING)
-			{
-				return RecipeHandler.getOutput(input, stackDecrease, Recipe.PURIFICATION_CHAMBER.get());
-			}
-			else if(this == INJECTING)
-			{
-				return RecipeHandler.getOutput(input, stackDecrease, Recipe.CHEMICAL_INJECTION_CHAMBER.get());
+				
+				return null;
 			}
 			
-			return null;
+			if(usesFuel())
+			{
+				return RecipeHandler.getOutput(new AdvancedInput(input, gas), stackDecrease, recipe.get());
+			}
+			else {
+				return RecipeHandler.getOutput(input, stackDecrease, recipe.get());
+			}
 		}
 		
 		public GasStack getItemGas(ItemStack itemstack)
@@ -151,12 +138,13 @@ public interface IFactory
 			return usesFuel;
 		}
 		
-		private RecipeType(String s, String s1, ItemStack is, boolean b)
+		private RecipeType(String s, String s1, ItemStack is, boolean b, Recipe r)
 		{
 			name = s;
 			sound = s1;
 			stack = is;
 			usesFuel = b;
+			recipe = r;
 		}
 	}
 }

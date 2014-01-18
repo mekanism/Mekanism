@@ -1,14 +1,14 @@
 package mekanism.common.inventory.container;
 
-import mekanism.api.gas.IGasItem;
-import mekanism.common.Mekanism;
+import java.util.Map;
+
+import mekanism.api.AdvancedInput;
+import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
-import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -113,7 +113,7 @@ public class ContainerAdvancedElectricMachine extends Container
 	            	}
             	}
             }
-            else if(RecipeHandler.getOutput(slotStack, false, tileEntity.getRecipes()) != null)
+            else if(isInputItem(slotStack))
     		{
             	if(slotID != 0)
             	{
@@ -185,5 +185,18 @@ public class ContainerAdvancedElectricMachine extends Container
         }
 
         return stack;
+    }
+    
+    private boolean isInputItem(ItemStack itemstack)
+    {
+    	for(Map.Entry<AdvancedInput, ItemStack> entry : ((Map<AdvancedInput, ItemStack>)tileEntity.getRecipes()).entrySet())
+    	{
+    		if(entry.getKey().itemStack.isItemEqual(itemstack))
+    		{
+    			return true;
+    		}
+    	}
+    	
+    	return false;
     }
 }

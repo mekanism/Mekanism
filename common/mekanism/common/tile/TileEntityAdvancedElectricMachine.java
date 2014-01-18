@@ -97,15 +97,15 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			    
 				operatingTicks++;
 				
-				gasTank.draw(SECONDARY_ENERGY_PER_TICK, true);
-				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
-				
 				if(operatingTicks >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
 				}
+				
+				gasTank.draw(SECONDARY_ENERGY_PER_TICK, true);
+				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
