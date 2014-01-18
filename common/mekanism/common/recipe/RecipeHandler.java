@@ -114,9 +114,9 @@ public final class RecipeHandler
 	 * @param input - input ItemStack
 	 * @param output - output ItemStack
 	 */
-	public static void addChemicalInjectionChamberRecipe(ItemStack input, ItemStack output)
+	public static void addChemicalInjectionChamberRecipe(AdvancedInput input, ItemStack output)
 	{
-		Recipe.CHEMICAL_INJECTION_CHAMBER.put(new AdvancedInput(input, GasRegistry.getGas("sulfuricAcid")), output);
+		Recipe.CHEMICAL_INJECTION_CHAMBER.put(input, output);
 	}
 
 	/**

@@ -35,7 +35,8 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("sulfuricAcid")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
+				(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("sulfuricAcid") ||
+						((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("water"))) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 		
 		return null;
 	}
@@ -43,7 +44,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		if(stack.getGas() == GasRegistry.getGas("sulfuricAcid"))
+		if(stack.getGas() == GasRegistry.getGas("sulfuricAcid") || stack.getGas() == GasRegistry.getGas("water"))
 		{
 			return gasTank.receive(stack, true);
 		}
@@ -54,7 +55,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return type == GasRegistry.getGas("sulfuricAcid");
+		return type == GasRegistry.getGas("sulfuricAcid") || type == GasRegistry.getGas("water");
 	}
 	
 	@Override
@@ -62,8 +63,14 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
 		{
-			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("sulfuricAcid"), gasTank.getNeeded());
-			gasTank.receive(removed, true);
+			Gas gas = ((IGasItem)inventory[1].getItem()).getGas(inventory[1]).getGas();
+			
+			if(gas == GasRegistry.getGas("sulfuricAcid") || gas == GasRegistry.getGas("water"))
+			{
+				GasStack removed = GasTransmission.removeGas(inventory[1], gas, gasTank.getNeeded());
+				gasTank.receive(removed, true);
+			}
+			
 			return;
 		}
 		

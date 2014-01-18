@@ -44,7 +44,7 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public List<ItemStack> getFuelStacks()
 	{
-		return ListUtils.asList(new ItemStack(Mekanism.Ingot, 1, 1), new ItemStack(Mekanism.BasicBlock, 1, 0));
+		return ListUtils.asList(new ItemStack(Mekanism.Ingot, 1, 1));
 	}
 	
 	@Override

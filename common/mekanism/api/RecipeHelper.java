@@ -144,14 +144,14 @@ public final class RecipeHelper
 	
 	/**
 	 * Add a Chemical Injection Chamber recipe.
-	 * @param input - input ItemStack
+	 * @param input - input AdvancedInput
 	 * @param output - output ItemStack
 	 */
-	public static void addChemicalInjectionChamberRecipe(ItemStack input, ItemStack output)
+	public static void addChemicalInjectionChamberRecipe(AdvancedInput input, ItemStack output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
-			Method m = recipeClass.getMethod("addChemicalInjectionChamberRecipe", ItemStack.class, ItemStack.class);
+			Method m = recipeClass.getMethod("addChemicalInjectionChamberRecipe", AdvancedInput.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
