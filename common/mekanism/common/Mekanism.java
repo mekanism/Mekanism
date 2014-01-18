@@ -1131,7 +1131,6 @@ public class Mekanism
 		MekanismAPI.addBoxBlacklist(Block.bed.blockID, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Block.doorWood.blockID, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Block.doorIron.blockID, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(MultipartProxy.block().blockID, OreDictionary.WILDCARD_VALUE);
 		
 		registerOreDict();
 
@@ -1186,6 +1185,8 @@ public class Mekanism
 	{		
 		proxy.loadSoundHandler();
 		hooks.hook();
+		
+		MekanismAPI.addBoxBlacklist(MultipartProxy.block().blockID, OreDictionary.WILDCARD_VALUE);
 		
 		addIntegratedItems();
 		
