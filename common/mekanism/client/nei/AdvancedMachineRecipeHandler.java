@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.AdvancedInput;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -34,7 +35,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract Set<Entry<AdvancedInput, ItemStack>> getRecipes();
 	
-	public abstract List<ItemStack> getFuelStacks();
+	public abstract List<ItemStack> getFuelStacks(Gas gasType);
 
 	@Override
 	public void drawBackground(int i)
@@ -77,9 +78,9 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
 		}
 		else {
@@ -90,11 +91,11 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getValue(), result))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
 		}
 	}
@@ -108,7 +109,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 			{
 				if(irecipe.getKey().gasType == ((GasStack)ingredients[0]).getGas())
 				{
-					arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+					arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 				}
 			}
 		}
@@ -124,7 +125,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getKey().itemStack, ingredient))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
 		}
 	}

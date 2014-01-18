@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.ListUtils;
+import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.block.Block;
@@ -42,7 +43,7 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 	
 	@Override
-	public List<ItemStack> getFuelStacks()
+	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
 		return ListUtils.asList(new ItemStack(Block.cobblestone));
 	}
