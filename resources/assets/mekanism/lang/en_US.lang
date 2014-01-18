@@ -91,6 +91,7 @@ infuse.carbon=Carbon
 infuse.tin=Tin
 infuse.diamond=Diamond
 infuse.redstone=Redstone
+infuse.fungi=Fungi
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
