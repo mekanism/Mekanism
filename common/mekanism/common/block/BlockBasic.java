@@ -627,6 +627,10 @@ public class BlockBasic extends Block
 		{
 			return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 12 || metadata == 14 || metadata == 15;
 		}
+		else if(blockID == Mekanism.basicBlock2ID)
+		{
+			return metadata == 0;
+		}
 		
 		return false;
 	}
@@ -646,12 +650,18 @@ public class BlockBasic extends Block
 					return new TileEntityDynamicTank();
 				case 11:
 					return new TileEntityDynamicValve();
-				case 12:
-					return new TileEntitySalinationTank();
 				case 14:
 					return new TileEntitySalinationController();
 				case 15:
 					return new TileEntitySalinationValve();
+			}
+		}
+		else if(blockID == Mekanism.basicBlock2ID)
+		{
+			switch(metadata)
+			{
+				case 0:
+					return new TileEntitySalinationTank();
 			}
 		}
 		

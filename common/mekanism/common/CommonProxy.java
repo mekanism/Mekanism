@@ -173,6 +173,7 @@ public class CommonProxy
 	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
 	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", 3005).getInt();
 	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
+		Mekanism.basicBlock2ID = Mekanism.configuration.getBlock("BasicBlock2", 3007).getInt();
 		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", 3008).getInt();
 		Mekanism.cardboardBoxID = Mekanism.configuration.getBlock("CardboardBox", 3009).getInt();
 	  	

@@ -57,6 +57,11 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
 		
+		if(xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(tileEntity.type != null ? tileEntity.type.getLocalizedName() + ": " + tileEntity.infuseStored : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+		}
+		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

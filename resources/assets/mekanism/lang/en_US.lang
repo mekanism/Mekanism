@@ -86,6 +86,12 @@ tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
 tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
 
+//Infuse types
+infuse.carbon=Carbon
+infuse.tin=Tin
+infuse.diamond=Diamond
+infuse.redstone=Redstone
+
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
 tile.OreBlock.CopperOre.name=Copper Ore
@@ -374,6 +380,9 @@ itemGroup.tabMekanism=Mekanism
 item.BioFuel.name=Bio Fuel
 item.SolarPanel.name=Solar Panel
 
+//Infuse types
+infuse.bio=Biomass
+
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
 tile.Generator.SolarGenerator.name=Solar Generator
@@ -470,17 +479,3 @@ item.SteelAxe.name=Steel Axe
 item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=Tesla Coil
-tile.Multimeter.name=Multimeter
-tile.ElectromagneticContractor.name=Electromagnetic Contractor
-tile.Battery.name=Modular Battery
-
-//General text
-text.contractor.success=Linked contractor successfully
-text.tesla.success=Linked tesla successfully

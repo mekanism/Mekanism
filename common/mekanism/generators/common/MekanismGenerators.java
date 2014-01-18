@@ -70,7 +70,7 @@ public class MekanismGenerators implements IModule
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		//Register infuses
-        InfuseRegistry.registerInfuseType(new InfuseType("BIO", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 12, 0));
+        InfuseRegistry.registerInfuseType(new InfuseType("BIO", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 12, 0).setUnlocalizedName("infuse.bio"));
 	}
 	
 	@EventHandler
