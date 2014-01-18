@@ -4,6 +4,8 @@ import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import mekanism.api.ChanceOutput;
 import mekanism.api.gas.GasRegistry;
@@ -263,6 +265,23 @@ public final class OreDictManager
 			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 7));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("oreNickel"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustNickel").get(0), 2));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 6));
+		}
+	
+		for(ItemStack ore : OreDictionary.getOres("ingotTin"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 7));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("ingotLead"))
 		{
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 9));
@@ -293,6 +312,13 @@ public final class OreDictManager
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Item.glowstone));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("ingotNickel"))
+		{
+			try {
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustNickel").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Mekanism.Ingot, 1, 2), MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			
@@ -317,16 +343,6 @@ public final class OreDictManager
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Item.coal, 1, 1), MekanismUtils.size(OreDictionary.getOres("dustCharcoal").get(0), 1));
 		} catch(Exception e) {}
-		
-		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
-		{
-			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 6));
-		}
-	
-		for(ItemStack ore : OreDictionary.getOres("ingotTin"))
-		{
-			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 7));
-		}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))

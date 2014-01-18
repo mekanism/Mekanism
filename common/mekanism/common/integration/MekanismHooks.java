@@ -57,6 +57,30 @@ public final class MekanismHooks
 		
 		if(IC2Loaded)
 		{
+			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
+			{
+				if(!entry.getKey().getInputs().isEmpty())
+				{
+					List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
+					
+					for(String name : names)
+					{
+						boolean did = false;
+						
+						if(name.startsWith("ingot"))
+						{
+							RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+							did = true;
+						}
+						
+						if(did)
+						{
+							break;
+						}
+					}
+				}
+			}
+			
 			try {
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
 			} catch(Exception e) {}
@@ -76,33 +100,6 @@ public final class MekanismHooks
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
 			} catch(Exception e) {}
-			
-			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
-			{
-				if(!entry.getKey().getInputs().isEmpty())
-				{
-					List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
-					
-					for(String name : names)
-					{
-						boolean did = false;
-						
-						if(name.startsWith("ingot"))
-						{
-							if(!Recipe.CRUSHER.containsRecipe(entry.getKey().getInputs().get(0)))
-							{
-								RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
-								did = true;
-							}
-						}
-						
-						if(did)
-						{
-							break;
-						}
-					}
-				}
-			}
 			
 			NBTTagCompound tag = new NBTTagCompound();
 			

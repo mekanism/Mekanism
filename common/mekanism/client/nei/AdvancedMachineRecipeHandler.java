@@ -47,11 +47,16 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void drawExtras(int i)
 	{
-		/*float f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
+		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
+		
+		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0;
 		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
 		
-		int displayInt = ticksPassed < 20 ? ();
-		displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getGas());*/
+		if(recipe.input.gasType != null)
+		{
+			int displayInt = ticksPassed < 20 ? ticksPassed*12 / 20 : 12;
+			displayGauge(45, 32 + 12 - displayInt, 6, displayInt, new GasStack(recipe.input.gasType, 1));
+		}
 	}
 
 	@Override
@@ -128,11 +133,12 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
 		
-		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 		
-		if(xAxis >= 61 && xAxis <= 67 && yAxis >= 37+13 && yAxis <= 49+13)
+		if(xAxis >= 45 && xAxis <= 51 && yAxis >= 33 && yAxis <= 45)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).input.gasType.getLocalizedName());
 		}
@@ -144,13 +150,14 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
 		
-		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 		
 		GasStack stack = null;
 		
-		if(xAxis >= 61 && xAxis <= 67 && yAxis >= 37+13 && yAxis <= 49+13)
+		if(xAxis >= 45 && xAxis <= 51 && yAxis >= 33 && yAxis <= 45)
 		{
 			stack = new GasStack(((CachedIORecipe)arecipes.get(recipe)).input.gasType, 1);
 		}
@@ -180,13 +187,14 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
 		
-		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 		
 		GasStack stack = null;
 		
-		if(xAxis >= 61 && xAxis <= 67 && yAxis >= 37+13 && yAxis <= 49+13)
+		if(xAxis >= 45 && xAxis <= 51 && yAxis >= 33 && yAxis <= 45)
 		{
 			stack = new GasStack(((CachedIORecipe)arecipes.get(recipe)).input.gasType, 1);
 		}

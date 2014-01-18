@@ -420,7 +420,7 @@ public final class RecipeHandler
 							return true;
 						}
 					}
-					if(entry.getKey() instanceof FluidStack)
+					else if(entry.getKey() instanceof FluidStack)
 					{
 						if(((FluidStack)entry.getKey()).isFluidEqual(input))
 						{
