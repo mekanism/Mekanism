@@ -10,12 +10,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import codechicken.multipart.handler.MultipartProxy;
 import mekanism.api.ChanceOutput;
 import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPI.BlockInfo;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -1123,8 +1123,15 @@ public class Mekanism
 		addRecipes();
 		addEntities();
 		
-		MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(BoundingBlock.blockID, 0));
-		MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(BoundingBlock.blockID, 1));
+		MekanismAPI.addBoxBlacklist(BoundingBlock.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.bedrock.blockID, 0);
+		MekanismAPI.addBoxBlacklist(Block.portal.blockID, 0);
+		MekanismAPI.addBoxBlacklist(Block.endPortal.blockID, 0);
+		MekanismAPI.addBoxBlacklist(Block.endPortalFrame.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.bed.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.doorWood.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.doorIron.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(MultipartProxy.block().blockID, OreDictionary.WILDCARD_VALUE);
 		
 		registerOreDict();
 

@@ -3,7 +3,6 @@ package mekanism.common;
 import java.io.File;
 
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPI.BlockInfo;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -209,10 +208,10 @@ public class CommonProxy
 	  	
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.cardboardBoxIgnore.remove(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
 		}
 		else {
-			MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
 		}
 	  	
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
@@ -408,10 +407,10 @@ public class CommonProxy
 	{
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.cardboardBoxIgnore.remove(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
 		}
 		else {
-			MekanismAPI.cardboardBoxIgnore.add(new BlockInfo(Block.mobSpawner.blockID, 0));
+			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
 		}
 		
 		System.out.println("[Mekanism] Received config from server.");

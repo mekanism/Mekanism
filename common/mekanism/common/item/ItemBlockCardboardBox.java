@@ -4,7 +4,6 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPI.BlockInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -76,7 +75,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 			int id = world.getBlockId(x, y, z);
 			int meta = world.getBlockMetadata(x, y, z);
 			
-	    	if(!world.isRemote && !MekanismAPI.cardboardBoxIgnore.contains(new BlockInfo(id, meta)))
+	    	if(!world.isRemote && !MekanismAPI.isBlockCompatible(id, meta))
 	    	{
     			BlockData data = new BlockData();
     			data.id = id;
