@@ -10,6 +10,7 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.common.ForgeDirection;
 
 /**
  * Internal interface for managing various Factory types.
@@ -100,6 +101,36 @@ public interface IFactory
 			}
 			
 			return 0;
+		}
+		
+		public boolean canReceiveGas(ForgeDirection side, Gas type)
+		{
+			if(usesFuel)
+			{
+				return getTile().canReceiveGas(side, type);
+			}
+			
+			return false;
+		}
+		
+		public boolean canTubeConnect(ForgeDirection side)
+		{
+			if(usesFuel)
+			{
+				return getTile().canTubeConnect(side);
+			}
+			
+			return false;
+		}
+		
+		public boolean isValidGas(Gas gas)
+		{
+			if(usesFuel)
+			{
+				return getTile().isValidGas(gas);
+			}
+			
+			return false;
 		}
 		
 		public TileEntityAdvancedElectricMachine getTile()

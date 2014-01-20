@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
@@ -46,5 +47,11 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public boolean isValidGas(Gas gas)
+	{
+		return false;
 	}
 }

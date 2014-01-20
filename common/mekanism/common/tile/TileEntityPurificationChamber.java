@@ -75,4 +75,10 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		return true;
 	}
+	
+	@Override
+	public boolean isValidGas(Gas gas)
+	{
+		return gas == GasRegistry.getGas("oxygen");
+	}
 }
