@@ -79,6 +79,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
      * @return fuel ticks
      */
     public abstract GasStack getItemGas(ItemStack itemstack);
+    
+    public abstract boolean isValidGas(Gas gas);
 	
     @Override
 	public void onUpdate()

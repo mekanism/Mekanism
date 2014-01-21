@@ -343,25 +343,17 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
     {
 		if(inventory[4] != null && RecipeType.values()[recipeType].usesFuel() && gasTank.getNeeded() > 0)
 		{
-			if(recipeType == RecipeType.PURIFYING.ordinal())
+			if(inventory[4].getItem() instanceof IGasItem)
 			{
-				if(inventory[4].getItem() instanceof IGasItem)
+				Gas gas = ((IGasItem)inventory[4].getItem()).getGas(inventory[4]).getGas();
+				
+				if(RecipeType.values()[recipeType].isValidGas(gas))
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("oxygen"), gasTank.getNeeded());
+					GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
 					gasTank.receive(removed, true);
-					
-					return;
 				}
-			}
-			else if(recipeType == RecipeType.INJECTING.ordinal())
-			{
-				if(inventory[4].getItem() instanceof IGasItem)
-				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], GasRegistry.getGas("sulfuricAcid"), gasTank.getNeeded());
-					gasTank.receive(removed, true);
-					
-					return;
-				}
+				
+				return;
 			}
 			
 			GasStack stack = RecipeType.values()[recipeType].getItemGas(inventory[4]);
@@ -897,8 +889,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		if(recipeType == RecipeType.PURIFYING.ordinal() && stack.getGas() == GasRegistry.getGas("oxygen") ||
-				recipeType == RecipeType.INJECTING.ordinal() && stack.getGas() == GasRegistry.getGas("sulfuricAcid"))
+		if(canReceiveGas(side, stack.getGas()))
 		{
 			return gasTank.receive(stack, true);
 		}
@@ -909,14 +900,13 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return recipeType == RecipeType.PURIFYING.ordinal() && type == GasRegistry.getGas("oxygen") ||
-				recipeType == RecipeType.INJECTING.ordinal() && type == GasRegistry.getGas("sulfuricAcid");
+		return RecipeType.values()[recipeType].canReceiveGas(side, type);
 	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return recipeType == RecipeType.PURIFYING.ordinal() || recipeType == RecipeType.INJECTING.ordinal();
+		return RecipeType.values()[recipeType].canTubeConnect(side);
 	}
 
 	@Override

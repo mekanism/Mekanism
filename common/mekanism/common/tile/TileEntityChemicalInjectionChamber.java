@@ -66,7 +66,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 			
 			if(isValidGas(gas))
 			{
-				GasStack removed = GasTransmission.removeGas(inventory[1], gas, gasTank.getNeeded());
+				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
 				gasTank.receive(removed, true);
 			}
 			
@@ -82,6 +82,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 		return true;
 	}
 	
+	@Override
 	public boolean isValidGas(Gas gas)
 	{
 		return gas == GasRegistry.getGas("sulfuricAcid") || gas == GasRegistry.getGas("water") || gas == GasRegistry.getGas("hydrogenChloride");
