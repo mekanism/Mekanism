@@ -58,6 +58,7 @@ import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemCrystal;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
@@ -246,7 +247,6 @@ public class Mekanism
 	public static ItemGasMask GasMask;
 	public static Item Dictionary;
 	public static Item Balloon;
-	public static Item Shard;
 	public static Item ElectrolyticCore;
 	public static Item CompressedRedstone;
 	public static Item Sawdust;
@@ -270,6 +270,8 @@ public class Mekanism
 	public static Item Ingot;
 	public static Item Clump;
 	public static Item DirtyDust;
+	public static Item Shard;
+	public static Item Crystal;
 
 	//General Configuration
 	public static boolean osmiumGenerationEnabled = true;
@@ -754,6 +756,7 @@ public class Mekanism
 		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", 11230).getInt()).setUnlocalizedName("Sawdust");
 		Salt = new ItemMekanism(configuration.getItem("Salt", 11231).getInt()).setUnlocalizedName("Salt");
 		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", 11232).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
+		Crystal = new ItemCrystal(configuration.getItem("Crystal", 11233).getInt());
 
 		configuration.save();
 		
@@ -793,6 +796,7 @@ public class Mekanism
 		GameRegistry.registerItem(Sawdust, "Sawdust");
 		GameRegistry.registerItem(Salt, "Salt");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
+		GameRegistry.registerItem(Crystal, "Crystal");
 	}
 	
 	/**
@@ -897,6 +901,15 @@ public class Mekanism
 		OreDictionary.registerOre("shardSilver", new ItemStack(Shard, 1, 5));
 		OreDictionary.registerOre("shardObsidian", new ItemStack(Shard, 1, 6));
 		OreDictionary.registerOre("shardLead", new ItemStack(Shard, 1, 7));
+		
+		OreDictionary.registerOre("crystalIron", new ItemStack(Crystal, 1, 0));
+		OreDictionary.registerOre("crystalGold", new ItemStack(Crystal, 1, 1));
+		OreDictionary.registerOre("crystalOsmium", new ItemStack(Crystal, 1, 2));
+		OreDictionary.registerOre("crystalCopper", new ItemStack(Crystal, 1, 3));
+		OreDictionary.registerOre("crystalTin", new ItemStack(Crystal, 1, 4));
+		OreDictionary.registerOre("crystalSilver", new ItemStack(Crystal, 1, 5));
+		OreDictionary.registerOre("crystalObsidian", new ItemStack(Crystal, 1, 6));
+		OreDictionary.registerOre("crystalLead", new ItemStack(Crystal, 1, 7));
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));

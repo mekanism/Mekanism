@@ -147,6 +147,16 @@ item.silverShard.name=Silver Shard
 item.obsidianShard.name=Obsidian Shard
 item.leadShard.name=Lead Shard
 
+//Crystals
+item.ironCrystal.name=Iron Crystal
+item.goldCrystal.name=Gold Crystal
+item.osmiumCrystal.name=Osmium Crystal
+item.copperCrystal.name=Copper Crystal
+item.tinCrystal.name=Tin Crystal
+item.silverCrystal.name=Silver Crystal
+item.obsidianCrystal.name=Obsidian Crystal
+item.leadCrystal.name=Lead Crystal
+
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
 item.dirtyGoldDust.name=Dirty Gold Dust
