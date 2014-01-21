@@ -1,20 +1,20 @@
 package mekanism.api.gas;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 public class OreGas extends Gas
 {
-	public ItemStack oreStack;
+	private String oreName;
 	
-	public OreGas(String s, ItemStack stack)
+	public OreGas(String s, String name)
 	{
 		super(s);
 		
-		oreStack = stack;
+		oreName = name;
 	}
 	
 	public String getOreName()
 	{
-		return oreStack.getDisplayName();
+		return StatCollector.translateToLocal(oreName);
 	}
 }

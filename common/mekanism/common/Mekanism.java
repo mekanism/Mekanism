@@ -20,6 +20,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -839,6 +840,9 @@ public class Mekanism
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		OreDictionary.registerOre("pulpWood", Sawdust);
 		
+		//for RailCraft/IC2.
+		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
+		
 		//GregoriousT?
 		OreDictionary.registerOre("itemSalt", Salt);
 		OreDictionary.registerOre("dustSalt", Salt);
@@ -872,44 +876,13 @@ public class Mekanism
 		OreDictionary.registerOre("blockCopper", new ItemStack(BasicBlock, 1, 12));
 		OreDictionary.registerOre("blockTin", new ItemStack(BasicBlock, 1, 13));
 		
-		OreDictionary.registerOre("dustDirtyIron", new ItemStack(DirtyDust, 1, 0));
-		OreDictionary.registerOre("dustDirtyGold", new ItemStack(DirtyDust, 1, 1));
-		OreDictionary.registerOre("dustDirtyOsmium", new ItemStack(DirtyDust, 1, 2));
-		OreDictionary.registerOre("dustDirtyCopper", new ItemStack(DirtyDust, 1, 3));
-		OreDictionary.registerOre("dustDirtyTin", new ItemStack(DirtyDust, 1, 4));
-		OreDictionary.registerOre("dustDirtySilver", new ItemStack(DirtyDust, 1, 5));
-		OreDictionary.registerOre("dustDirtyObsidian", new ItemStack(DirtyDust, 1, 6));
-		OreDictionary.registerOre("dustDirtyLead", new ItemStack(DirtyDust, 1, 7));
-		
-		//for RailCraft/IC2.
-		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
-		
-		OreDictionary.registerOre("clumpIron", new ItemStack(Clump, 1, 0));
-		OreDictionary.registerOre("clumpGold", new ItemStack(Clump, 1, 1));
-		OreDictionary.registerOre("clumpOsmium", new ItemStack(Clump, 1, 2));
-		OreDictionary.registerOre("clumpCopper", new ItemStack(Clump, 1, 3));
-		OreDictionary.registerOre("clumpTin", new ItemStack(Clump, 1, 4));
-		OreDictionary.registerOre("clumpSilver", new ItemStack(Clump, 1, 5));
-		OreDictionary.registerOre("clumpObsidian", new ItemStack(Clump, 1, 6));
-		OreDictionary.registerOre("clumpLead", new ItemStack(Clump, 1, 7));
-		
-		OreDictionary.registerOre("shardIron", new ItemStack(Shard, 1, 0));
-		OreDictionary.registerOre("shardGold", new ItemStack(Shard, 1, 1));
-		OreDictionary.registerOre("shardOsmium", new ItemStack(Shard, 1, 2));
-		OreDictionary.registerOre("shardCopper", new ItemStack(Shard, 1, 3));
-		OreDictionary.registerOre("shardTin", new ItemStack(Shard, 1, 4));
-		OreDictionary.registerOre("shardSilver", new ItemStack(Shard, 1, 5));
-		OreDictionary.registerOre("shardObsidian", new ItemStack(Shard, 1, 6));
-		OreDictionary.registerOre("shardLead", new ItemStack(Shard, 1, 7));
-		
-		OreDictionary.registerOre("crystalIron", new ItemStack(Crystal, 1, 0));
-		OreDictionary.registerOre("crystalGold", new ItemStack(Crystal, 1, 1));
-		OreDictionary.registerOre("crystalOsmium", new ItemStack(Crystal, 1, 2));
-		OreDictionary.registerOre("crystalCopper", new ItemStack(Crystal, 1, 3));
-		OreDictionary.registerOre("crystalTin", new ItemStack(Crystal, 1, 4));
-		OreDictionary.registerOre("crystalSilver", new ItemStack(Crystal, 1, 5));
-		OreDictionary.registerOre("crystalObsidian", new ItemStack(Crystal, 1, 6));
-		OreDictionary.registerOre("crystalLead", new ItemStack(Crystal, 1, 7));
+		for(Resource resource : Resource.values())
+		{
+			OreDictionary.registerOre("dustDirty" + resource.getName(), new ItemStack(DirtyDust, 1, resource.ordinal()));
+			OreDictionary.registerOre("clump" + resource.getName(), new ItemStack(Clump, 1, resource.ordinal()));
+			OreDictionary.registerOre("shard" + resource.getName(), new ItemStack(Shard, 1, resource.ordinal()));
+			OreDictionary.registerOre("crystal" + resource.getName(), new ItemStack(Crystal, 1, resource.ordinal()));
+		}
 		
 		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));
@@ -1090,6 +1063,14 @@ public class Mekanism
 		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
 		GasRegistry.register(new Gas("liquidOsmium").setVisible(false));
 		GasRegistry.register(new Gas("liquidStone").setVisible(false));
+		
+		for(Resource resource : Resource.values())
+		{
+			String name = resource.getName();
+			
+			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setVisible(false));
+			GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
+		}
 
 		FluidRegistry.registerFluid(new Fluid("brine"));
 		
