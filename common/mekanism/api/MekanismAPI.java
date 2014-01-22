@@ -12,23 +12,15 @@ public class MekanismAPI
 	
 	public static boolean isBlockCompatible(int id, int meta)
 	{
-		boolean has = false;
-		
 		for(BlockInfo i : cardboardBoxIgnore)
 		{
 			if(i.id == id && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta))
 			{
-				has = true;
-				break;
+				return false;
 			}
 		}
 		
-		if(!has)
-		{
-			return true;
-		}
-		
-		return false;
+		return true;
 	}
 	
 	public static void addBoxBlacklist(int id, int meta)
