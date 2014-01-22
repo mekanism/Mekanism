@@ -82,7 +82,13 @@ public class MekanismRenderer
 			{
 				if(gas instanceof OreGas)
 				{
-					gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+					if(gas.getUnlocalizedName().contains("clean"))
+					{
+						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+					}
+					else {
+						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+					}
 				}
 			}
 
