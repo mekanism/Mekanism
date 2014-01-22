@@ -461,13 +461,16 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			}
 		}
 		
-		onRefresh();
-		
 		if(!world().isRemote)
 		{
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
-			
+		}
+		
+		onRefresh();
+		
+		if(!world().isRemote)
+		{			
 			sendDesc = true;
 		}
 	}
@@ -611,7 +614,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	
 	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive)
 	{
-		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side))
+		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side) || !connectionMapContainsSide(currentAcceptorConnections, side))
 		{
 			return false;
 		}
