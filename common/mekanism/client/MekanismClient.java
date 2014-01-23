@@ -39,4 +39,26 @@ public class MekanismClient extends Mekanism
 			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
 		}
 	}
+	
+	public static void reset()
+	{
+		if(Mekanism.voiceServerEnabled)
+		{
+			if(MekanismClient.voiceClient != null)
+			{
+				MekanismClient.voiceClient.disconnect();
+				MekanismClient.voiceClient = null;
+			}
+		}
+		
+		ClientTickHandler.tickingSet.clear();
+		Mekanism.proxy.unloadSoundHandler();
+		
+		Mekanism.jetpackOn.clear();
+		Mekanism.gasmaskOn.clear();
+		
+		Mekanism.proxy.loadConfiguration();
+		
+		System.out.println("[Mekanism] Reloaded config.");
+	}
 }

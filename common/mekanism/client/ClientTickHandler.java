@@ -63,6 +63,8 @@ public class ClientTickHandler implements ITickHandler
 	
 	public boolean lastTickUpdate;
 	
+	public boolean shouldReset = false;
+	
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 	
 	public static final String MIKE_CAPE = "https://dl.dropboxusercontent.com/s/ji06yflixnszcby/cape.png";
@@ -112,6 +114,16 @@ public class ClientTickHandler implements ITickHandler
 					iter.remove();
 				}
 			}
+		}
+		
+		if(mc.theWorld != null)
+		{
+			shouldReset = true;
+		}
+		else if(shouldReset)
+		{
+			MekanismClient.reset();
+			shouldReset = false;
 		}
 		
 		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
