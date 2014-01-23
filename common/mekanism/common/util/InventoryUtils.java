@@ -176,7 +176,7 @@ public final class InventoryUtils
 		{
 			for(int i = inventory.getSizeInventory() - 1; i >= 0; i--)
 			{
-				if(inventory.getStackInSlot(i) != null)
+				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).stackSize > 0)
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
 					toSend.stackSize = 1;
@@ -195,7 +195,7 @@ public final class InventoryUtils
 				{
 					int slotID = slots[get];
 
-					if(sidedInventory.getStackInSlot(slotID) != null)
+					if(sidedInventory.getStackInSlot(slotID) != null && sidedInventory.getStackInSlot(slotID).stackSize > 0)
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 						toSend.stackSize = 1;
