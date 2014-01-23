@@ -99,6 +99,8 @@ public final class MekanismHooks
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
 			} catch(Exception e) {}
 			
 			NBTTagCompound tag = new NBTTagCompound();
