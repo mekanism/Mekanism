@@ -8,6 +8,7 @@ import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
@@ -15,7 +16,7 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Osmium Compressor";
+		return MekanismUtils.localize("tile.MachineBlock.OsmiumCompressor.name");
 	}
 
 	@Override

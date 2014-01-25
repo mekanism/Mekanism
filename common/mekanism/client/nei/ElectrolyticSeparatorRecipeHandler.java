@@ -37,7 +37,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Electrolytic Separator";
+		return MekanismUtils.localize("tile.MachineBlock2.ElectrolyticSeparator.name");
 	}
 	
 	@Override

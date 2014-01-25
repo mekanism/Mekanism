@@ -226,7 +226,6 @@ oregas.silver=Silver Ore
 oregas.obsidian=Obsidian Ore
 oregas.lead=Lead Ore
 
-
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
 gui.removeEnergyUpgrade=Remove energy upgrade
@@ -411,6 +410,10 @@ color.white=White
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=C. Injection Chamber
+nei.rotaryCondensentrator=R. Condensentrator
 
 //**********//
 //GENERATORS//

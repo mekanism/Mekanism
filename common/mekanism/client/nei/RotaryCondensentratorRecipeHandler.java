@@ -35,7 +35,7 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "R. Condensentrator";
+		return MekanismUtils.localize("nei.rotaryCondensentrator");
 	}
 	
 	@Override

@@ -18,7 +18,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	@Override
 	public String getRecipeName()
 	{
-		return "Purification Chamber";
+		return MekanismUtils.localize("tile.MachineBlock.PurificationChamber.name");
 	}
 
 	@Override

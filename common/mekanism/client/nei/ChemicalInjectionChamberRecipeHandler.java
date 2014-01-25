@@ -18,7 +18,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public String getRecipeName()
 	{
-		return "C. Injection Chamber";
+		return MekanismUtils.localize("nei.chemicalInjectionChamber");
 	}
 
 	@Override

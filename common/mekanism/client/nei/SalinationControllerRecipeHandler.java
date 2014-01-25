@@ -45,7 +45,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Salination Controller";
+		return MekanismUtils.localize("tile.BasicBlock.SalinationController.name");
 	}
 	
 	@Override

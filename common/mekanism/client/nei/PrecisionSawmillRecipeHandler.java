@@ -4,13 +4,14 @@ import java.util.Set;
 
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 
 public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return "Precision Sawmill";
+		return MekanismUtils.localize("tile.MachineBlock2.PrecisionSawmill.name");
 	}
 
 	@Override
