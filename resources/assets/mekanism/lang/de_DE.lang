@@ -30,6 +30,7 @@ item.ElectrolyticCore.name=Elektrolysekern
 item.CompressedRedstone.name=Komprimiertes Redstone
 item.Sawdust.name=Sägemehl
 item.Salt.name=Salz
+item.BrineBucket.name=Eimer mit Salzwasser
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -54,6 +55,9 @@ tile.BasicBlock.CopperBlock.name=Kupferblock
 tile.BasicBlock.TinBlock.name=Zinnblock
 tile.BasicBlock.SalinationController.name=Versalzungs-Controller
 tile.BasicBlock.SalinationValve.name=Versalzungsventil
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.SalinationBlock.name=Versalzungsblock
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Anreicherungskammer
@@ -81,6 +85,13 @@ tile.MachineBlock2.ChemicalCombiner.name=Chemischer Kombinierer
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemische Injektionskammer
 tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytischer Separator
 tile.MachineBlock2.PrecisionSawmill.name=Präzisionssägewerk
+
+//Infuse types
+infuse.carbon=Kohlenstoff
+infuse.tin=Zinn
+infuse.diamond=Diamant
+infuse.redstone=Redstone
+infuse.fungi=Fungi
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
@@ -136,6 +147,16 @@ item.silverShard.name=Silbersplitter
 item.obsidianShard.name=Obsidiansplitter
 item.leadShard.name=Bleisplitter
 
+/Crystals
+item.ironCrystal.name=Eisenkristall
+item.goldCrystal.name=Goldkristall
+item.osmiumCrystal.name=Osmiumkristall
+item.copperCrystal.name=Kupferkristall
+item.tinCrystal.name=Zinnkristall
+item.silverCrystal.name=Silberkristall
+item.obsidianCrystal.name=Obsidiankristall
+item.leadCrystal.name=Bleikristall
+
 //Dirty Dust
 item.dirtyIronDust.name=Dreckiger Eisenstaub
 item.dirtyGoldDust.name=Dreckiger Goldstaub
@@ -164,6 +185,26 @@ gas.sulfurDioxideGas=Schwefeldioxid
 gas.sulfurTrioxideGas=Schwefeltrioxid
 gas.sulfuricAcid=Schwefelsäure
 gas.hydrogenChloride=Chlorwasserstoff
+gas.liquidOsmium=Flüssiges Osmium
+gas.liquidStone=Flüssiges Gestein
+
+gas.iron=Eisenschlamm
+gas.gold=Goldschlamm
+gas.osmium=Osmiumschlamm
+gas.copper=Kupferschlamm
+gas.tin=Zinnschlamm
+gas.silver=Silberschlamm
+gas.obsidian=Obsidianschlamm
+gas.lead=Bleischlamm
+
+gas.cleanIron=Eisenschlamm
+gas.cleanGold=Goldschlamm
+gas.cleanOsmium=Osmiumschlamm
+gas.cleanCopper=Kupferschlamm
+gas.cleanTin=Zinnschlamm
+gas.cleanSilver=Silberschlamm
+gas.cleanObsidian=Obsidianschlamm
+gas.cleanLead=Bleischlamm
 
 //Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
@@ -172,7 +213,19 @@ fluid.chlorine=Flüssiges Chlor
 fluid.sulfurDioxideGas=Flüssiges Schwefeldioxid
 fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
 fluid.sulfuricAcid=Flüssige Schwefelsäure
-gas.hydrogenChloride=Flüssiger Chlorwasserstoff
+fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
+fluid.brine=Salzwasser
+
+//OreGas names
+oregas.iron=Eisenerz
+oregas.gold=Golderz
+oregas.osmium=Osmiumerz
+oregas.copper=Kupfererz
+oregas.tin=Zinnerz
+oregas.silver=Silbererz
+oregas.obsidian=Obsidianerz
+oregas.lead=Bleierz
+
 
 //Gui text
 gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
@@ -323,8 +376,8 @@ tooltip.Chargepad=Ein universelles Ladepad, dass jegliches energetisiertes !nIte
 tooltip.LogisticalSorter=Eine Filter-basierte, fortgeschrittene Sortiermaschine, die !nautomatisch spezifische Items aus einem Inventar oder !nLogistischen Transporter heraus und in eines hinein treiben kann.
 tooltip.RotaryCondensentrator=Eine Maschine, die fähig ist, Gase in ihre !nflüssige Form zu konvertieren und umgekehrt.
 tooltip.ChemicalInjectionChamber=Eine Elite-Maschine, fähig, Erze in !nvier Splitter zu verarbeiten, was als erste Stufe !neiner 400%igen Erzverarbeitung dient.
-tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nutzt, um ein bestimmtes Gas in zwei unterschiedliche Gase zu aufzuteilen.
-tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere hölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
+tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nutzt, !num ein bestimmtes Gas in zwei unterschiedliche Gase aufzuteilen.
+tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere !nhölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
 tooltip.CopperOre=Ein häufiges, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
@@ -364,8 +417,11 @@ itemGroup.tabMekanism=Mekanism
 //**********//
 
 //Items
-item.BioFuel.name=Biobrennstoff
+item.BioFuel.name=Biomasse
 item.SolarPanel.name=Solarmodul
+
+//Infuse types
+infuse.bio=Biomasse
 
 //Generators
 tile.Generator.HeatGenerator.name=Hitzegenerator
@@ -378,7 +434,7 @@ tile.Generator.WindTurbine.name=Windturbine
 //Gui text
 gui.heatGenerator.fuel=Brennstoff
 gui.solarGenerator.sun=Sonne
-gui.bioGenerator.bioFuel=Biobrennstoff
+gui.bioGenerator.bioFuel=Biomasse
 gui.electrolyticSeparator.dump=Entsorge
 
 //*****//
@@ -463,17 +519,3 @@ item.SteelAxe.name=Stahlaxt
 item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=Teslaspule
-tile.Multimeter.name=Multimeter
-tile.ElectromagneticContractor.name=Elektromagnetischer Kontraktor
-tile.Battery.name=Modulare Batterie
-
-//General text
-text.contractor.success=Kontraktor erfolgreich verbunden
-text.tesla.success=Teslaspule erfolgreich verbunden
