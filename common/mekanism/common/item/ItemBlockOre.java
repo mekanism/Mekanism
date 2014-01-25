@@ -52,7 +52,7 @@ public class ItemBlockOre extends ItemBlock
 			{
 				list.add("A common, conductive material that");
 				list.add("can be used in the production of.");
-				list.add("wires. It's ability to withstand");
+				list.add("wires. Its ability to withstand");
 				list.add("high heats also makes it essential");
 				list.add("to advanced machinery.");
 			}
