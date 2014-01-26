@@ -159,15 +159,63 @@ public final class RecipeHelper
 	}
 	
 	/**
-	 * Add a Electrolytic Separator recipe.
-	 * @param input - input ItemStack
-	 * @param output - output ItemStack
+	 * Add an Electrolytic Separator recipe.
+	 * @param input - input FluidStack
+	 * @param output - output ChemicalPair
 	 */
 	public static void addElectrolyticSeparatorRecipe(FluidStack input, ChemicalPair output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
 			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, ChemicalPair.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Chemical Dissolution Chamber recipe.
+	 * @param input - input ItemStack
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
+			Method m = recipeClass.getMethod("addChemicalDissolutionChamberRecipe", ItemStack.class, GasStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Chemical Washer recipe.
+	 * @param input - input GasStack
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalWasherRecipe(GasStack input, GasStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
+			Method m = recipeClass.getMethod("addChemicalWasherRecipe", GasStack.class, GasStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Electrolytic Separator recipe.
+	 * @param input - input GasStack
+	 * @param output - output ItemStack
+	 */
+	public static void addChemicalCrystalizerRecipe(GasStack input, ItemStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
+			Method m = recipeClass.getMethod("addChemicalCrystalizerRecipe", GasStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());

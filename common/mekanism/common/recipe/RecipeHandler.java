@@ -138,6 +138,36 @@ public final class RecipeHandler
 	{
 		Recipe.PRECISION_SAWMILL.put(input, output);
 	}
+	
+	/**
+	 * Add a Chemical Dissolution Chamber recipe.
+	 * @param input - input ItemStack
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalDissolutionChamberRecipe(ItemStack input, GasStack output)
+	{
+		Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(input, output);
+	}
+	
+	/**
+	 * Add a Chemical Washer recipe.
+	 * @param input - input GasStack
+	 * @param output - output GasStack
+	 */
+	public static void addChemicalWasherRecipe(GasStack input, GasStack output)
+	{
+		Recipe.CHEMICAL_WASHER.put(input, output);
+	}
+	
+	/**
+	 * Add a Chemical Crystalizer recipe.
+	 * @param input - input GasStack
+	 * @param output - output ItemStack
+	 */
+	public static void addChemicalCrystalizerRecipe(GasStack input, ItemStack output)
+	{
+		Recipe.CHEMICAL_CRYSTALIZER.put(input, output);
+	}
 
 	/**
 	 * Gets the InfusionOutput of the InfusionInput in the parameters.
@@ -389,7 +419,10 @@ public final class RecipeHandler
 		CHEMICAL_OXIDIZER(new HashMap<ItemStack, GasStack>()),
 		CHEMICAL_INJECTION_CHAMBER(new HashMap<AdvancedInput, ItemStack>()),
 		ELECTROLYTIC_SEPARATOR(new HashMap<FluidStack, ChemicalPair>()),
-		PRECISION_SAWMILL(new HashMap<ItemStack, ChanceOutput>());
+		PRECISION_SAWMILL(new HashMap<ItemStack, ChanceOutput>()),
+		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStack, FluidStack>()),
+		CHEMICAL_WASHER(new HashMap<GasStack, GasStack>()),
+		CHEMICAL_CRYSTALIZER(new HashMap<GasStack, ItemStack>());
 		
 		private HashMap recipes;
 		
