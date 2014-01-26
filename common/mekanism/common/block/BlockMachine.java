@@ -29,9 +29,12 @@ import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityCrusher;
@@ -104,6 +107,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:3: Chemical Injection Chamber
  * 1:4: Electrolytic Separator
  * 1:5: Precision Sawmill
+ * 1:6: Chemical Dissolution Chamber
+ * 1:7: Chemical Washer
+ * 1:8: Chemical Crystalizer
  * @author AidanBrady
  *
  */
@@ -1093,7 +1099,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHEMICAL_INFUSER(Mekanism.machineBlock2ID, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true),
 		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false),
-		PRECISION_SAWMILL(Mekanism.machineBlock2ID, 5, "PrecisionSawmill", 34, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, false, true);
+		PRECISION_SAWMILL(Mekanism.machineBlock2ID, 5, "PrecisionSawmill", 34, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, false, true),
+		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.machineBlock2ID, 6, "ChemicalDissolutionChamber", -1, 20000, TileEntityChemicalDissolutionChamber.class, true, false),
+		CHEMICAL_WASHER(Mekanism.machineBlock2ID, 7, "ChemicalWasher", -1, 20000, TileEntityChemicalWasher.class, true, false),
+		CHEMICAL_CRYSTALIZER(Mekanism.machineBlock2ID, 8, "ChemicalCrystalizer", -1, 20000, TileEntityChemicalCrystalizer.class, true, false);
 
 		public int typeId;
 		public int meta;

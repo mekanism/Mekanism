@@ -323,6 +323,9 @@ public class Mekanism
 	public static double chemicalInjectionChamberUsage;
 	public static double electrolyticSeparatorUsage;
 	public static double precisionSawmillUsage;
+	public static double chemicalDissolutionChamberUsage;
+	public static double chemicalWasherUsage;
+	public static double chemicalCrystalizerUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.
