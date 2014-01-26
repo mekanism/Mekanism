@@ -10,7 +10,9 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -411,6 +413,26 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     public boolean isInRangeToRenderVec3D(Vec3 par1Vec3)
     {
 		return true;
+    }
+	
+    @Override
+    public boolean attackEntityFrom(DamageSource dmgSource, float damage)
+    {
+        if(isEntityInvulnerable())
+        {
+            return false;
+        }
+        else {
+            setBeenAttacked();
+            
+            if(dmgSource != DamageSource.magic && dmgSource != DamageSource.drown && dmgSource != DamageSource.fall)
+            {
+            	pop();
+            	return true;
+            }
+            
+            return false;
+        }
     }
 	
 	public boolean isLatched()

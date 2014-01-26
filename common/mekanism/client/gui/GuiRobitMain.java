@@ -111,7 +111,7 @@ public class GuiRobitMain extends GuiMekanism
 	    	fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
 	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
 	    	fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
-	    	fontRenderer.drawString("Owner: " + robit.getOwnerName(), 29, 63-4, 0x00CD00);
+	    	fontRenderer.drawString("Owner: " + robit.getOwnerName().subSequence(0, 14), 29, 63-4, 0x00CD00);
     	}
     	
 		int xAxis = (mouseX - (width - xSize) / 2);
