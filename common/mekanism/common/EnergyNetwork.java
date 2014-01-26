@@ -15,13 +15,13 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
@@ -293,6 +293,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					if((handler.getPowerReceiver(side.getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
+						if(handler instanceof IPowerEmitter && ((IPowerEmitter)handler).canEmitPowerFrom(side.getOpposite()))
+						{
+							continue;
+						}
+						
 						toReturn.add(acceptor);
 					}
 				}
