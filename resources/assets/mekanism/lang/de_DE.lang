@@ -226,7 +226,6 @@ oregas.silver=Silbererz
 oregas.obsidian=Obsidianerz
 oregas.lead=Bleierz
 
-
 //Gui text
 gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
 gui.removeEnergyUpgrade=Entferne Energieupgrade
@@ -411,6 +410,10 @@ color.white=Weiß
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=C. Injektionskammer
+nei.rotaryCondensentrator=R.-Kondensentrator
 
 //**********//
 //GENERATORS//
