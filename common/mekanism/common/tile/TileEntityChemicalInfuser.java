@@ -153,7 +153,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		
 		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
 		
-		if(out == null)
+		if(out == null || centerTank.getGas() != null && centerTank.getGas().getGas() != out.getGas())
 		{
 			return false;
 		}
