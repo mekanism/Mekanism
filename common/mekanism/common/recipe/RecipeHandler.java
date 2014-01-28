@@ -6,6 +6,7 @@ import java.util.Map;
 import mekanism.api.AdvancedInput;
 import mekanism.api.ChanceOutput;
 import mekanism.api.ChemicalPair;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -236,19 +237,77 @@ public final class RecipeHandler
 		
 		return null;
 	}
+	
+	/**
+	 * Gets the Chemical Washer GasStack output of the defined GasTank input.
+	 * @param itemstack - input GasTank
+	 * @param removeGas - whether or not to use gas in the gas tank
+	 * @return output GasStack
+	 */
+	public static GasStack getChemicalDissolutionChamberOutput(GasTank gasTank, boolean removeGas)
+	{
+		GasStack gas = gasTank.getGas();
+
+		if(gas != null)
+		{
+			HashMap<GasStack, GasStack> recipes = Recipe.CHEMICAL_WASHER.get();
+
+			for(Map.Entry<GasStack, GasStack> entry : recipes.entrySet())
+			{
+				GasStack key = (GasStack)entry.getKey();
+
+				if(key != null && key.getGas() == gas.getGas() && key.amount >= gas.amount)
+				{
+					gasTank.draw(key.amount, removeGas);
+					
+					return entry.getValue().copy();
+				}
+			}
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Gets the Chemical Washer GasStack output of the defined GasTank input.
+	 * @param gasTank - input GasTank
+	 * @param removeGas - whether or not to use gas in the gas tank
+	 * @return output GasStack
+	 */
+	public static GasStack getChemicalWasherOutput(GasTank gasTank, boolean removeGas)
+	{
+		GasStack gas = gasTank.getGas();
+
+		if(gas != null)
+		{
+			HashMap<GasStack, GasStack> recipes = Recipe.CHEMICAL_WASHER.get();
+
+			for(Map.Entry<GasStack, GasStack> entry : recipes.entrySet())
+			{
+				GasStack key = (GasStack)entry.getKey();
+
+				if(key != null && key.getGas() == gas.getGas() && key.amount >= gas.amount)
+				{
+					gasTank.draw(key.amount, removeGas);
+					
+					return entry.getValue().copy();
+				}
+			}
+		}
+
+		return null;
+	}
 
 	/**
-	 * Gets the InfusionOutput of the ItemStack in the parameters.
+	 * Gets the GasStack of the ItemStack in the parameters using a defined map.
 	 * @param itemstack - input ItemStack
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size
 	 * @return output GasStack
 	 */
-	public static GasStack getChemicalOxidizerOutput(ItemStack itemstack, boolean stackDecrease)
+	public static GasStack getItemToGasOutput(ItemStack itemstack, boolean stackDecrease, HashMap<ItemStack, GasStack> recipes)
 	{
 		if(itemstack != null)
 		{
-			HashMap<ItemStack, GasStack> recipes = Recipe.CHEMICAL_OXIDIZER.get();
-			
 			for(Map.Entry<ItemStack, GasStack> entry : recipes.entrySet())
 			{
 				ItemStack stack = (ItemStack)entry.getKey();
@@ -356,30 +415,6 @@ public final class RecipeHandler
 	}
 	
 	/**
-	 * Gets the output ItemStack of the ItemStack in the parameters.
-	 * @param itemstack - input ItemStack
-	 * @param recipes - Map of recipes
-	 * @return whether the item can be used in a recipe
-	 */
-	public static boolean isInRecipe(ItemStack itemstack, Map<ItemStack, ItemStack> recipes)
-	{
-		if(itemstack != null)
-		{
-			for(Map.Entry entry : recipes.entrySet())
-			{
-				ItemStack stack = (ItemStack)entry.getKey();
-
-				if(StackUtils.equalsWildcard(stack, itemstack))
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get the result of electrolysing a given fluid
 	 * @param fluidTank - the FluidTank to electrolyse fluid from
 	 */
@@ -405,6 +440,30 @@ public final class RecipeHandler
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Gets the output ItemStack of the ItemStack in the parameters.
+	 * @param itemstack - input ItemStack
+	 * @param recipes - Map of recipes
+	 * @return whether the item can be used in a recipe
+	 */
+	public static boolean isInRecipe(ItemStack itemstack, Map<ItemStack, ItemStack> recipes)
+	{
+		if(itemstack != null)
+		{
+			for(Map.Entry entry : recipes.entrySet())
+			{
+				ItemStack stack = (ItemStack)entry.getKey();
+
+				if(StackUtils.equalsWildcard(stack, itemstack))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public static enum Recipe

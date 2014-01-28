@@ -709,6 +709,18 @@ public class Mekanism
 		//Electrolytic Separator Recipes
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
+		
+		//Chemical Washer Recipes
+		for(Gas gas : GasRegistry.getRegisteredGasses())
+		{
+			if(gas instanceof OreGas && !((OreGas)gas).isClean())
+			{
+				OreGas oreGas = (OreGas)gas;
+				
+				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
+				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas, 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+			}
+		}
 
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
@@ -1071,8 +1083,8 @@ public class Mekanism
 		{
 			String name = resource.getName();
 			
-			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setVisible(false));
-			GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
+			OreGas clean = (OreGas)GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
+			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
 
 		FluidRegistry.registerFluid(new Fluid("brine"));

@@ -19,6 +19,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -107,7 +108,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 					operatingTicks++;
 				}
 				else {
-					GasStack stack = RecipeHandler.getChemicalOxidizerOutput(inventory[0], true);
+					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], true, Recipe.CHEMICAL_OXIDIZER.get());
 					
 					gasTank.receive(stack, true);
 					operatingTicks = 0;
@@ -152,7 +153,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		if(slotID == 0)
 		{
-			return RecipeHandler.getChemicalOxidizerOutput(itemstack, false) != null;
+			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -204,7 +205,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		GasStack stack = RecipeHandler.getChemicalOxidizerOutput(inventory[0], false);
+		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], false, Recipe.CHEMICAL_OXIDIZER.get());
 		
 		if(stack == null || (gasTank.getGas() != null && (gasTank.getGas().getGas() != stack.getGas() || gasTank.getNeeded() < stack.amount)))
 		{

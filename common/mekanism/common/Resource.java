@@ -18,6 +18,19 @@ public enum Resource
 		name = s;
 	}
 	
+	public static Resource getFromName(String s)
+	{
+		for(Resource r : values())
+		{
+			if(r.name.toLowerCase().equals(s.toLowerCase()))
+			{
+				return r;
+			}
+		}
+		
+		return null;
+	}
+	
 	public String getName()
 	{
 		return name;
