@@ -2,9 +2,8 @@ package mekanism.common.tile;
 
 import java.util.ArrayList;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import mekanism.api.Coord4D;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -17,7 +16,6 @@ import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
@@ -31,7 +29,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound
+import com.google.common.io.ByteArrayDataInput;
+
+public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -99,7 +99,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 			
 			if(inventory[0] != null && (injectTank.getGas() == null || injectTank.getStored() < injectTank.getMaxGas()))
 			{
-				injectTank.receive(GasTransmission.removeGas(inventory[0], null, injectTank.getNeeded()), true);
+				injectTank.receive(GasTransmission.removeGas(inventory[0], GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
 			}
 			
 			if(inventory[2] != null && outputTank.getGas() != null)
@@ -120,6 +120,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], true, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
 					
 					outputTank.receive(stack, true);
+					injectTank.draw(INJECT_USAGE, true);
+					
 					operatingTicks = 0;
 					
 					if(inventory[1].stackSize <= 0)
@@ -160,11 +162,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 0)
+		if(slotID == 1)
 		{
 			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) != null;
 		}
-		else if(slotID == 1)
+		else if(slotID == 3)
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
@@ -188,11 +190,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	{
 		if(side == MekanismUtils.getLeft(facing).ordinal())
 		{
-			return new int[] {0};
+			return new int[] {1};
 		}
 		else if(side == 0 || side == 1)
 		{
-			return new int[] {1};
+			return new int[] {0};
 		}
 		else if(side == MekanismUtils.getRight(facing).ordinal())
 		{
@@ -385,5 +387,34 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	public float getVolumeMultiplier()
 	{
 		return 1;
+	}
+
+	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		if(canReceiveGas(side, stack.getGas()))
+		{
+			return injectTank.receive(stack, true);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	{
+		return side == MekanismUtils.getLeft(facing) && type == GasRegistry.getGas("sulfuricAcid");
+	}
+
+	@Override
+	public boolean canDrawGas(ForgeDirection side, Gas type)
+	{
+		return false;
 	}
 }
