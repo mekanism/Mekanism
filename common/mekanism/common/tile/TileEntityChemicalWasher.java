@@ -23,6 +23,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -526,7 +527,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return from == MekanismUtils.getLeft(facing) && fluid == FluidRegistry.WATER;
+		return from == ForgeDirection.UP && fluid == FluidRegistry.WATER;
 	}
 
 	@Override
@@ -538,6 +539,11 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return new FluidTankInfo[] {fluidTank.getInfo()};
+		if(from == ForgeDirection.UP)
+		{
+			return new FluidTankInfo[] {fluidTank.getInfo()};
+		}
+		
+		return PipeUtils.EMPTY;
 	}
 }

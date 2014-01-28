@@ -232,7 +232,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 			gasTank.setGas(null);
 		}
 		
-		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 	
