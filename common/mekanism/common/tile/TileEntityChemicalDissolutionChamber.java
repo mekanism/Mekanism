@@ -54,13 +54,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	
 	public int TICKS_REQUIRED = 100;
 	
-	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
+	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("ChemicalDissolutionChamber", MachineType.CHEMICAL_CRYSTALIZER.baseEnergy);
+		super("ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 	

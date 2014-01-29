@@ -60,7 +60,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	
 	public double prevEnergy;
 	
-	public final double ENERGY_USAGE = Mekanism.chemicalInfuserUsage;
+	public final double ENERGY_USAGE = Mekanism.chemicalWasherUsage;
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -394,7 +394,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == ForgeDirection.UP;
+		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
 	}
 
 	@Override
@@ -465,6 +465,10 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 		if(slotID == 1)
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+		}
+		else if(slotID == 2)
+		{
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		
 		return false;

@@ -239,20 +239,20 @@ public final class RecipeHandler
 	}
 	
 	/**
-	 * Gets the Chemical Washer GasStack output of the defined GasTank input.
+	 * Gets the Chemical Crystalizer ItemStack output of the defined GasTank input.
 	 * @param itemstack - input GasTank
 	 * @param removeGas - whether or not to use gas in the gas tank
-	 * @return output GasStack
+	 * @return output ItemStack
 	 */
-	public static GasStack getChemicalDissolutionChamberOutput(GasTank gasTank, boolean removeGas)
+	public static ItemStack getChemicalCrystalizerOutput(GasTank gasTank, boolean removeGas)
 	{
 		GasStack gas = gasTank.getGas();
 
 		if(gas != null)
 		{
-			HashMap<GasStack, GasStack> recipes = Recipe.CHEMICAL_WASHER.get();
+			HashMap<GasStack, ItemStack> recipes = Recipe.CHEMICAL_CRYSTALIZER.get();
 
-			for(Map.Entry<GasStack, GasStack> entry : recipes.entrySet())
+			for(Map.Entry<GasStack, ItemStack> entry : recipes.entrySet())
 			{
 				GasStack key = (GasStack)entry.getKey();
 

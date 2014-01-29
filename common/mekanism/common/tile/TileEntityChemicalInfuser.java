@@ -432,9 +432,13 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, null);
 		}
-		if(slotID == 1)
+		else if(slotID == 1)
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+		}
+		else if(slotID == 3)
+		{
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		
 		return false;
