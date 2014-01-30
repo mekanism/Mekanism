@@ -17,8 +17,11 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
+import dan200.computer.api.IPeripheral;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral
 {
 	@Override
 	public int getSizeInventory() 
@@ -378,5 +381,93 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 		
 		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+	}
+	
+	@Override
+	public void onPower()
+	{
+		super.onPower();
+		
+		if(getInv() != null)
+		{
+			getInv().onPower();
+		}
+	}
+	
+	@Override
+	public void onNoPower()
+	{
+		super.onNoPower();
+		
+		if(getInv() != null)
+		{
+			getInv().onNoPower();
+		}
+	}
+
+	@Override
+	public String getType()
+	{
+		if(getInv() == null)
+		{
+			return null;
+		}
+		
+		return getInv().getType();
+	}
+
+	@Override
+	public String[] getMethodNames()
+	{
+		if(getInv() == null)
+		{
+			return null;
+		}
+		
+		return getInv().getMethodNames();
+	}
+
+	@Override
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
+	{
+		if(getInv() == null)
+		{
+			return null;
+		}
+		
+		return getInv().callMethod(computer, context, method, arguments);
+	}
+
+	@Override
+	public boolean canAttachToSide(int side)
+	{
+		if(getInv() == null)
+		{
+			return false;
+		}
+		
+		return getInv().canAttachToSide(side);
+	}
+
+	@Override
+	public void attach(IComputerAccess computer)
+	{
+		if(getInv() == null)
+		{
+			return;
+		}
+		
+		getInv().attach(computer);
+	}
+
+	@Override
+	public void detach(IComputerAccess computer)
+	{
+		if(getInv() == null)
+		{
+			return;
+		}
+		
+		getInv().detach(computer);
 	}
 }
