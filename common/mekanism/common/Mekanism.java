@@ -323,6 +323,9 @@ public class Mekanism
 	public static double chemicalInjectionChamberUsage;
 	public static double electrolyticSeparatorUsage;
 	public static double precisionSawmillUsage;
+	public static double chemicalDissolutionChamberUsage;
+	public static double chemicalWasherUsage;
+	public static double chemicalCrystalizerUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -568,10 +571,10 @@ public class Mekanism
             "ETE", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 0)
         }));
         CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 1, 2), new Object[] {
-            "CTC", Character.valueOf('C'), "circuitBasic", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 1)
+            "CTC", Character.valueOf('C'), "circuitBasic", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 0)
         }));
         CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 1, 3), new Object[] {
-            "CTC", Character.valueOf('C'), AtomicCore, Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 2)
+            "CTC", Character.valueOf('C'), AtomicCore, Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 0)
         }));
         CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 4), new Object[] {
             "SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Item.bucketEmpty
@@ -706,6 +709,18 @@ public class Mekanism
 		//Electrolytic Separator Recipes
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
+		
+		//Chemical Washer Recipes
+		for(Gas gas : GasRegistry.getRegisteredGasses())
+		{
+			if(gas instanceof OreGas && !((OreGas)gas).isClean())
+			{
+				OreGas oreGas = (OreGas)gas;
+				
+				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
+				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas, 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+			}
+		}
 
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
@@ -1068,8 +1083,8 @@ public class Mekanism
 		{
 			String name = resource.getName();
 			
-			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setVisible(false));
-			GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
+			OreGas clean = (OreGas)GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
+			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
 
 		FluidRegistry.registerFluid(new Fluid("brine"));

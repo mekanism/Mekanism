@@ -33,9 +33,12 @@ import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityCrusher;
@@ -118,6 +121,9 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
+		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
+		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
+		GameRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer");
 	}
 	
 	/**
@@ -229,6 +235,9 @@ public class CommonProxy
 		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 400D).getDouble(400D);
 		Mekanism.electrolyticSeparatorUsage = Mekanism.configuration.get("usage", "ElectrolyticSeparatorUsage", 50D).getDouble(50D);
 		Mekanism.precisionSawmillUsage = Mekanism.configuration.get("usage", "PrecisionSawmillUsage", 50D).getDouble(50D);
+		Mekanism.chemicalDissolutionChamberUsage = Mekanism.configuration.get("usage", "ChemicalDissolutionChamberUsage", 400D).getDouble(400D);
+		Mekanism.chemicalWasherUsage = Mekanism.configuration.get("usage", "ChemicalWasherUsage", 200D).getDouble(200D);
+		Mekanism.chemicalCrystalizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystalizerUsage", 400D).getDouble(400D);
 	  	Mekanism.configuration.save();
 	}
 	

@@ -70,6 +70,9 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
 		Mekanism.electrolyticSeparatorUsage = dataStream.readDouble();
 		Mekanism.precisionSawmillUsage = dataStream.readDouble();
+		Mekanism.chemicalDissolutionChamberUsage = dataStream.readDouble();
+		Mekanism.chemicalWasherUsage = dataStream.readDouble();
+		Mekanism.chemicalCrystalizerUsage = dataStream.readDouble();
 		
 		for(IModule module : Mekanism.modulesLoaded)
 		{
@@ -123,6 +126,9 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
 		dataStream.writeDouble(Mekanism.electrolyticSeparatorUsage);
 		dataStream.writeDouble(Mekanism.precisionSawmillUsage);
+		dataStream.writeDouble(Mekanism.chemicalDissolutionChamberUsage);
+		dataStream.writeDouble(Mekanism.chemicalWasherUsage);
+		dataStream.writeDouble(Mekanism.chemicalCrystalizerUsage);
 		
 		for(IModule module : Mekanism.modulesLoaded)
 		{

@@ -23,25 +23,36 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalInfuser extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound
+public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound
 {
-	public GasTank leftTank = new GasTank(MAX_GAS);
-	public GasTank rightTank = new GasTank(MAX_GAS);
-	public GasTank centerTank = new GasTank(MAX_GAS);
+	public GasTank inputTank = new GasTank(MAX_GAS);
 	
 	public static final int MAX_GAS = 10000;
+	public static final int MAX_FLUID = 10000;
+	
+	public static int WATER_USAGE = 5;
 	
 	public int updateDelay;
 	
 	public int gasOutput = 16;
+	
+	public int operatingTicks;
+	
+	public int TICKS_REQUIRED = 200;
 	
 	public boolean isActive;
 	
@@ -49,15 +60,15 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	
 	public double prevEnergy;
 	
-	public final double ENERGY_USAGE = Mekanism.chemicalInfuserUsage;
+	public final double ENERGY_USAGE = Mekanism.chemicalCrystalizerUsage;
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
-	public TileEntityChemicalInfuser()
+	public TileEntityChemicalCrystalizer()
 	{
-		super("ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
-		inventory = new ItemStack[4];
+		super("ChemicalCrystalizer", MachineType.CHEMICAL_CRYSTALIZER.baseEnergy);
+		inventory = new ItemStack[3];
 	}
 	
 	@Override
@@ -91,31 +102,29 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				}
 			}
 			
-			ChargeUtils.discharge(3, this);
+			ChargeUtils.discharge(2, this);
 			
-			if(inventory[0] != null && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
+			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				leftTank.receive(GasTransmission.removeGas(inventory[0], null, leftTank.getNeeded()), true);
+				inputTank.receive(GasTransmission.removeGas(inventory[0], null, inputTank.getNeeded()), true);
 			}
 			
-			if(inventory[1] != null && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
-			{
-				rightTank.receive(GasTransmission.removeGas(inventory[1], null, rightTank.getNeeded()), true);
-			}
-			
-			if(inventory[2] != null && centerTank.getGas() != null)
-			{
-				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
-			}
-			
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= ENERGY_USAGE)
 			{
 				setActive(true);
-				GasStack stack = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, true);
 				
-				centerTank.receive(stack, true);
-				
-				setEnergy(getEnergy() - ENERGY_USAGE);
+				if((operatingTicks+1) < TICKS_REQUIRED)
+				{
+					operatingTicks++;
+					setEnergy(getEnergy() - ENERGY_USAGE);
+				}
+				else if((operatingTicks+1) >= TICKS_REQUIRED)
+				{
+					operate();
+					
+					operatingTicks = 0;
+					setEnergy(getEnergy() - ENERGY_USAGE);
+				}
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -124,20 +133,9 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				}
 			}
 			
-			if(centerTank.getGas() != null)
+			if(!canOperate())
 			{
-				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
-				centerTank.draw(GasTransmission.emitGasToNetwork(toSend, this, ForgeDirection.getOrientation(facing)), true);
-				
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
-				
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
-					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
-					}
-				}
+				operatingTicks = 0;
 			}
 			
 			prevEnergy = getEnergy();
@@ -146,25 +144,51 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	
 	public boolean canOperate()
 	{
-		if(leftTank.getGas() == null || rightTank.getGas() == null || centerTank.getNeeded() == 0)
+		if(inputTank.getGas() == null)
 		{
 			return false;
 		}
 		
-		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
+		ItemStack itemstack = RecipeHandler.getChemicalCrystalizerOutput(inputTank, false);
 		
-		if(out == null || centerTank.getGas() != null && centerTank.getGas().getGas() != out.getGas())
+		if(itemstack == null)
 		{
 			return false;
 		}
 		
-		if(centerTank.getNeeded() < out.amount)
+		if(inventory[1] == null)
+		{
+			return true;
+		}
+		
+		if(!inventory[1].isItemEqual(itemstack))
 		{
 			return false;
 		}
-		
-		return true;
+		else {
+			return inventory[1].stackSize + itemstack.stackSize <= inventory[1].getMaxStackSize();
+		}
 	}
+	
+    public void operate()
+    {
+        ItemStack itemstack = RecipeHandler.getChemicalCrystalizerOutput(inputTank, true);
+
+        if(inventory[0].stackSize <= 0)
+        {
+            inventory[0] = null;
+        }
+
+        if(inventory[2] == null)
+        {
+            inventory[2] = itemstack;
+        }
+        else {
+            inventory[2].stackSize += itemstack.stackSize;
+        }
+
+        onInventoryChanged();
+    }
 	
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
@@ -175,11 +199,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			
 			if(type == 0)
 			{
-				leftTank.setGas(null);
-			}
-			else if(type == 1)
-			{
-				rightTank.setGas(null);
+				inputTank.setGas(null);
 			}
 			
 			for(EntityPlayer player : playersUsing)
@@ -193,30 +213,15 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		super.handlePacketData(dataStream);
 		
 		isActive = dataStream.readBoolean();
+		operatingTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		if(dataStream.readBoolean())
 		{
-			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+			inputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
 		else {
-			leftTank.setGas(null);
-		}
-		
-		if(dataStream.readBoolean())
-		{
-			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			rightTank.setGas(null);
-		}
-		
-		if(dataStream.readBoolean())
-		{
-			centerTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-		}
-		else {
-			centerTank.setGas(null);
+			inputTank.setGas(null);
 		}
 		
 		
@@ -229,33 +234,14 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		super.getNetworkedData(data);
 		
 		data.add(isActive);
+		data.add(operatingTicks);
 		data.add(controlType.ordinal());
 		
-		if(leftTank.getGas() != null)
+		if(inputTank.getGas() != null)
 		{
 			data.add(true);
-			data.add(leftTank.getGas().getGas().getID());
-			data.add(leftTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-		
-		if(rightTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(rightTank.getGas().getGas().getID());
-			data.add(rightTank.getStored());
-		}
-		else {
-			data.add(false);
-		}
-		
-		if(centerTank.getGas() != null)
-		{
-			data.add(true);
-			data.add(centerTank.getGas().getGas().getID());
-			data.add(centerTank.getStored());
+			data.add(inputTank.getGas().getGas().getID());
+			data.add(inputTank.getStored());
 		}
 		else {
 			data.add(false);
@@ -270,11 +256,10 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
         super.readFromNBT(nbtTags);
 
         isActive = nbtTags.getBoolean("isActive");
+        operatingTicks = nbtTags.getInteger("operatingTicks");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
-        leftTank.read(nbtTags.getCompoundTag("leftTank"));
-        rightTank.read(nbtTags.getCompoundTag("rightTank"));
-        centerTank.read(nbtTags.getCompoundTag("centerTank"));
+        inputTank.read(nbtTags.getCompoundTag("rightTank"));
     }
 
 	@Override
@@ -283,11 +268,10 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
         super.writeToNBT(nbtTags);
         
         nbtTags.setBoolean("isActive", isActive);
+        nbtTags.setInteger("operatingTicks", operatingTicks);
         nbtTags.setInteger("controlType", controlType.ordinal());
         
-    	nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
-      	nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
-      	nbtTags.setCompoundTag("centerTank", centerTank.write(new NBTTagCompound()));
+      	nbtTags.setCompoundTag("rightTank", inputTank.write(new NBTTagCompound()));
     }
 	
 	@Override
@@ -296,37 +280,9 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		return i != 0 && i != 1;
 	}
 	
-	public GasTank getTank(ForgeDirection side)
+	public int getScaledInputGasLevel(int i)
 	{
-		if(side == MekanismUtils.getLeft(facing))
-		{
-			return leftTank;
-		}
-		else if(side == MekanismUtils.getRight(facing))
-		{
-			return rightTank;
-		}
-		else if(side == ForgeDirection.getOrientation(facing))
-		{
-			return centerTank;
-		}
-		
-		return null;
-	}
-	
-	public int getScaledLeftGasLevel(int i)
-	{
-		return leftTank != null ? leftTank.getStored()*i / MAX_GAS : 0;
-	}
-	
-	public int getScaledRightGasLevel(int i)
-	{
-		return rightTank != null ? rightTank.getStored()*i / MAX_GAS : 0;
-	}
-	
-	public int getScaledCenterGasLevel(int i)
-	{
-		return centerTank != null ? centerTank.getStored()*i / MAX_GAS : 0;
+		return inputTank != null ? inputTank.getStored()*i / MAX_GAS : 0;
 	}
 	
 	@Override
@@ -364,13 +320,13 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == ForgeDirection.getOrientation(facing);
+		return side == MekanismUtils.getLeft(facing);
 	}
 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return getTank(side) != null && getTank(side) != centerTank ? getTank(side).canReceive(type) : false;
+		return side == MekanismUtils.getLeft(facing) && inputTank.canReceive(type);
 	}
 	
 	@Override
@@ -389,9 +345,9 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
-		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
+		if(canReceiveGas(side, stack.getGas()))
 		{
-			return getTank(side).receive(stack, true);
+			return inputTank.receive(stack, true);
 		}
 		
 		return 0;
@@ -400,24 +356,23 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public GasStack drawGas(ForgeDirection side, int amount)
 	{
-		if(canDrawGas(side, null))
-		{
-			return getTank(side).draw(amount, true);
-		}
-		
 		return null;
 	}
 
 	@Override
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
-		return getTank(side) != null && getTank(side) == centerTank ? getTank(side).canDraw(type) : false;
+		return false;
 	}
 	
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 3)
+		if(slotID == 0)
+		{
+			return FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluid() == FluidRegistry.WATER;
+		}
+		else if(slotID == 2)
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
@@ -428,15 +383,11 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		if(slotID == 0 || slotID == 2)
-		{
-			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, null);
-		}
-		else if(slotID == 1)
+		if(slotID == 1)
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
 		}
-		else if(slotID == 3)
+		else if(slotID == 2)
 		{
 			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
@@ -451,17 +402,13 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		{
 			return new int[] {0};
 		}
-		else if(side == facing)
+		else if(side == MekanismUtils.getRight(facing).ordinal())
 		{
 			return new int[] {1};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
-		{
-			return new int[] {2};
-		}
 		else if(side == 0 || side == 1)
 		{
-			return new int[3];
+			return new int[2];
 		}
 		
 		return InventoryUtils.EMPTY;
@@ -470,7 +417,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	@Override
 	public String getSoundPath()
 	{
-		return "ChemicalInfuser.ogg";
+		return "ChemicalCrystalizer.ogg";
 	}
 
 	@Override
