@@ -285,6 +285,11 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 		return inputTank != null ? inputTank.getStored()*i / MAX_GAS : 0;
 	}
 	
+	public int getScaledProgress(int i)
+	{	
+		return operatingTicks*i / TICKS_REQUIRED;
+	}
+	
 	@Override
     public void setActive(boolean active)
     {

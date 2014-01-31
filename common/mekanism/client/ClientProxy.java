@@ -3,9 +3,12 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
+import mekanism.client.gui.GuiChemicalCrystalizer;
+import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
+import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -434,6 +437,12 @@ public class ClientProxy extends CommonProxy
 				return new GuiSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
 			case 34:
 				return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill)tileEntity);
+			case 35:
+				return new GuiChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber)tileEntity);
+			case 36:
+				return new GuiChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
+			case 37:
+				return new GuiChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
 		}
 		
 		return null;
