@@ -92,6 +92,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public boolean initCalc = false;
 	
+	public int numPowering;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -135,7 +137,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			ChargeUtils.discharge(27, this);
 			
-			if(running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0)
+			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
 				setActive(true);
 				
@@ -512,6 +514,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         running = nbtTags.getBoolean("running");
         delay = nbtTags.getInteger("delay");
         silkTouch = nbtTags.getBoolean("silkTouch");
+        numPowering = nbtTags.getInteger("numPowering");
         searcher.state = State.values()[nbtTags.getInteger("state")];
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         inverse = nbtTags.getBoolean("inverse");
@@ -551,6 +554,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
         nbtTags.setBoolean("running", running);
         nbtTags.setInteger("delay", delay);
         nbtTags.setBoolean("silkTouch", silkTouch);
+        nbtTags.setInteger("numPowering", numPowering);
         nbtTags.setInteger("state", searcher.state.ordinal());
         nbtTags.setInteger("controlType", controlType.ordinal());
         nbtTags.setBoolean("inverse", inverse);
@@ -655,6 +659,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
 			silkTouch = dataStream.readBoolean();
+			numPowering = dataStream.readInt();
 			searcher.state = State.values()[dataStream.readInt()];
 			
 			if(dataStream.readBoolean())
@@ -688,6 +693,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
 			silkTouch = dataStream.readBoolean();
+			numPowering = dataStream.readInt();
 			searcher.state = State.values()[dataStream.readInt()];
 			
 			if(dataStream.readBoolean())
@@ -736,6 +742,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(isActive);
 		data.add(running);
 		data.add(silkTouch);
+		data.add(numPowering);
 		data.add(searcher.state.ordinal());
 		
 		if(replaceStack != null)
@@ -789,6 +796,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		data.add(isActive);
 		data.add(running);
 		data.add(silkTouch);
+		data.add(numPowering);
 		data.add(searcher.state.ordinal());
 		
 		if(replaceStack != null)
@@ -828,6 +836,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public double getMaxEnergy() 
 	{
 		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+	}
+	
+	@Override
+	public boolean isPowered()
+	{
+		return redstone || numPowering > 0;
 	}
 	
 	@Override
@@ -1046,14 +1060,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		return false;
 	}
+	
+	@Override
+	public void onPower()
+	{
+		numPowering++;
+	}
+	
+	@Override
+	public void onNoPower()
+	{
+		numPowering--;
+	}
 
 	@Override
 	public String getType()
 	{
-		return "Digital Miner";
+		return getInvName();
 	}
 	
-	public String[] names = {"setRadius", "setMin", "setMax", "setReplace", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter"};
+	public String[] names = {"setRadius", "setMin", "setMax", "setReplace", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
 	
 	@Override
 	public String[] getMethodNames()
@@ -1169,6 +1195,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							}
 						}
 					}
+				}
+				else if(method == 8)
+				{
+					reset();
+				}
+				else if(method == 9)
+				{
+					start();
+				}
+				else if(method == 10)
+				{
+					stop();
 				}
 			}
 		}

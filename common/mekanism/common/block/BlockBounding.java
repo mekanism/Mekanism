@@ -60,6 +60,16 @@ public class BlockBounding extends Block
 			return false;
 		}
 	}
+	
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	{
+		try {
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
+			tileEntity.onNeighborChange(id);
+			Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, id);
+		} catch(Exception e) {}
+	}
 
 	@Override
 	public int quantityDropped(Random random)

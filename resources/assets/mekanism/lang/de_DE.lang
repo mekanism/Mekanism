@@ -85,6 +85,9 @@ tile.MachineBlock2.ChemicalCombiner.name=Chemischer Kombinierer
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemische Injektionskammer
 tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytischer Separator
 tile.MachineBlock2.PrecisionSawmill.name=Präzisionssägewerk
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemische Auflösungskammer
+tile.MachineBlock2.ChemicalWasher.name=Chemische Waschanlage
+tile.MachineBlock2.ChemicalCrystalizer.name=Chemischer Kristallisierer
 
 //Infuse types
 infuse.carbon=Kohlenstoff

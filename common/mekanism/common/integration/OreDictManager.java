@@ -49,6 +49,14 @@ public final class OreDictManager
 			}
 		}
 		
+		if(OreDictionary.getOres("itemRubber").size() > 0)
+		{
+			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
+			{
+				RecipeHandler.addPrecisionSawmillRecipe(MekanismUtils.size(ore, 1), new ChanceOutput(new ItemStack(Block.planks, 4), MekanismUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F));
+			}
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustSulfur"))
 		{
 			RecipeHandler.addChemicalOxidizerRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100));
