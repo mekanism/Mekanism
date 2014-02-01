@@ -1,12 +1,17 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerChemicalWasher;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -109,6 +114,27 @@ public class GuiChemicalWasher extends GuiMekanism
         {
         	displayGauge(134, 14, tileEntity.getScaledOutputGasLevel(58), null, tileEntity.outputTank.getGas());
         }
+    }
+    
+    @Override
+    protected void mouseClicked(int x, int y, int button)
+    {
+		super.mouseClicked(x, y, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (x - (width - xSize) / 2);
+			int yAxis = (y - (height - ySize) / 2);
+			
+			if(xAxis > 45 && xAxis < 63 && yAxis > 13 && yAxis < 21)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+		}
     }
     
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)

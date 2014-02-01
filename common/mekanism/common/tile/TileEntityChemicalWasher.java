@@ -224,6 +224,23 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				inputTank.setGas(null);
+			}
+			
+			for(EntityPlayer player : playersUsing)
+			{
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+			}
+			
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		isActive = dataStream.readBoolean();
