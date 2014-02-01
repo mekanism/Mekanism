@@ -36,9 +36,19 @@ public class RenderChemicalCrystalizer extends TileEntitySpecialRenderer
 			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 	    }
+
+		if(tileEntity.isActive)
+		{
+			tileEntity.spinSpeed = Math.min(1, tileEntity.spinSpeed+0.01F);
+		}
+		else {
+			tileEntity.spinSpeed = Math.max(0, tileEntity.spinSpeed-0.02F);
+		}
+		
+		tileEntity.spin = (tileEntity.spin + (tileEntity.spinSpeed*0.1F)) % 1;
 		
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-		model.render(0.0625F);
+		model.renderWithRotation(0.0625F, tileEntity.spin);
 		GL11.glPopMatrix();
 	}
 }

@@ -60,6 +60,10 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 	
 	public double prevEnergy;
 	
+	public float spinSpeed;
+	
+	public float spin;
+	
 	public final double ENERGY_USAGE = Mekanism.chemicalCrystalizerUsage;
 	
 	/** This machine's current RedstoneControl type. */

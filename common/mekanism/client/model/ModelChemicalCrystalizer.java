@@ -305,6 +305,19 @@ public class ModelChemicalCrystalizer extends ModelBase
 		MekanismRenderer.blendOff();
 	}
 	
+	public void renderWithRotation(float size, float rotate)
+	{
+		rotate *= Math.PI;
+		
+		Spin.rotateAngleY = rotate;
+		Vial1.rotateAngleY = rotate;
+		Vial2.rotateAngleY = rotate;
+		Vial3.rotateAngleY = rotate;
+		Vial4.rotateAngleY = rotate;
+		
+		render(size);
+	}
+	
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
