@@ -6,6 +6,7 @@ import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.model.ModelFrictionBoots;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
 import mekanism.client.model.ModelJetpack;
@@ -25,6 +26,7 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemFrictionBoots;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemRobit;
@@ -69,9 +71,10 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelJetpack jetpack = new ModelJetpack();
 	public ModelGasMask gasMask = new ModelGasMask();
 	public ModelScubaTank scubaTank = new ModelScubaTank();
+	public ModelFrictionBoots frictionBoots = new ModelFrictionBoots();
 	
-	public RenderBalloon balloonRenderer = new RenderBalloon();
-	public RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
+	private final RenderBalloon balloonRenderer = new RenderBalloon();
+	private final RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
     private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 	
 	@Override
@@ -343,6 +346,15 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			scubaTank.render(0.0625F);
 		}
+		else if(item.getItem() instanceof ItemFrictionBoots)
+		{
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
+			GL11.glScalef(2.0F, 2.0F, 2.0F);
+			GL11.glTranslatef(0.2F, -1.43F, 0.12F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FrictionBoots.png"));
+			frictionBoots.render(0.0625F);
+		}
 		else if(item.getItem() instanceof ItemBalloon)
 		{
 			if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
@@ -362,7 +374,6 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
 	    	GL11.glEnable(GL11.GL_CULL_FACE);
-
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

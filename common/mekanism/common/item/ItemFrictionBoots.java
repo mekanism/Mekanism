@@ -5,32 +5,71 @@ import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
 
+import cofh.api.energy.IEnergyContainerItem;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.render.ModelCustomArmor;
+import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import cofh.api.energy.IEnergyContainerItem;
+import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
+public class ItemFrictionBoots extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
-	public double MAX_ELECTRICITY;
+	public double MAX_ELECTRICITY = 12000;
 	
-	public ItemEnergized(int id, double maxElectricity, float voltage)
+	public ItemFrictionBoots(int id)
 	{
-		super(id);
-		MAX_ELECTRICITY = maxElectricity;
+		super(id, EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
+	
+	@Override
+    public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+    {
+    	return armorType == 3;
+    }
+	
+	@Override
+	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
+    {
+		return "mekanism:render/NullArmor.png";
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+    {
+		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
+		model.modelType = ArmorModel.FRICTIONBOOTS;
+        return model;
+    }
 	
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -140,7 +179,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return getEnergy(itemStack) > 0;
+		return false;
 	}
 
 	@Override
@@ -203,5 +242,21 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	public IElectricItemManager getManager(ItemStack itemStack) 
 	{
 		return IC2ItemManager.getManager(this);
+	}
+	
+	@ForgeSubscribe
+	public void onEntityAttacked(LivingAttackEvent event)
+	{
+		EntityLivingBase base = event.entityLiving;
+		
+		if(base.getCurrentItemOrArmor(1) != null && base.getCurrentItemOrArmor(1).getItem() instanceof ItemFrictionBoots)
+		{
+			ItemFrictionBoots boots = (ItemFrictionBoots)base.getCurrentItemOrArmor(1).getItem();
+			
+			if(event.source == DamageSource.fall)
+			{
+				event.setCanceled(true);
+			}
+		}
 	}
 }

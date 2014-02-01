@@ -65,6 +65,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemFrictionBoots;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
@@ -253,6 +254,7 @@ public class Mekanism
 	public static Item Sawdust;
 	public static Item Salt;
 	public static Item BrineBucket;
+	public static Item FrictionBoots;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -556,6 +558,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 8), new Object[] {
 			"CGC", "ASA", "CGC", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), AtomicCore, Character.valueOf('S'), new ItemStack(BasicBlock, 1, 8)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FrictionBoots), new Object[] {
+			"C C", "A A", "T T", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('T'), EnergyTablet.getUnchargedItem()
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
@@ -782,6 +787,7 @@ public class Mekanism
 		Salt = new ItemMekanism(configuration.getItem("Salt", 11231).getInt()).setUnlocalizedName("Salt");
 		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", 11232).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
 		Crystal = new ItemCrystal(configuration.getItem("Crystal", 11233).getInt());
+		FrictionBoots = new ItemFrictionBoots(configuration.getItem("FrictionBoots", 11234).getInt()).setUnlocalizedName("FrictionBoots");
 
 		configuration.save();
 		
@@ -822,6 +828,7 @@ public class Mekanism
 		GameRegistry.registerItem(Salt, "Salt");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(Crystal, "Crystal");
+		GameRegistry.registerItem(FrictionBoots, "FrictionBoots");
 	}
 	
 	/**

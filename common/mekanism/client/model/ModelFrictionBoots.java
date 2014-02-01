@@ -24,7 +24,6 @@ public class ModelFrictionBoots extends ModelBase
 		SpringL.setTextureSize(64, 32);
 		SpringL.mirror = true;
 		setRotation(SpringL, 0.1047198F, 0F, 0F);
-		SpringR.mirror = true;
 		SpringR = new ModelRenderer(this, 8, 0);
 		SpringR.addBox(-2.5F, 18F, 0F, 1, 6, 1);
 		SpringR.setRotationPoint(0F, 0F, 0F);
@@ -50,7 +49,6 @@ public class ModelFrictionBoots extends ModelBase
 		SupportL.setTextureSize(64, 32);
 		SupportL.mirror = true;
 		setRotation(SupportL, 0.296706F, 0F, 0F);
-		SupportR.mirror = true;
 		SupportR = new ModelRenderer(this, 0, 0);
 		SupportR.addBox(-3F, 16.5F, -4.2F, 2, 4, 2);
 		SupportR.setRotationPoint(0F, 0F, 0F);
@@ -67,6 +65,20 @@ public class ModelFrictionBoots extends ModelBase
 		BraceL.render(size);
 		BraceR.render(size);
 		SupportL.render(size);
+		SupportR.render(size);
+	}
+	
+	public void renderLeft(float size)
+	{
+		SpringL.render(size);
+		BraceL.render(size);
+		SupportL.render(size);
+	}
+	
+	public void renderRight(float size)
+	{
+		SpringR.render(size);
+		BraceR.render(size);
 		SupportR.render(size);
 	}
 

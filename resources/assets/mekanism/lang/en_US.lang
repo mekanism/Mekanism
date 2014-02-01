@@ -31,6 +31,7 @@ item.CompressedRedstone.name=Compressed Redstone
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
 item.BrineBucket.name=Brine Bucket
+item.FrictionBoots.name=Friction Boots
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -380,6 +381,9 @@ tooltip.RotaryCondensentrator=A machine capable of converting gasses into !nthei
 tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
 tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
 tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
+tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
+tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
+tooltip.ChemicalCrystalizer=An ultimate machine used to crystalize !npurified ore slurry into ore crystals.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
