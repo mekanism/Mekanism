@@ -72,9 +72,18 @@ public class ContainerChemicalDissolutionChamber extends Container
 
             if(RecipeHandler.getItemToGasOutput(slotStack, false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) != null)
             {
-            	if(!mergeItemStack(slotStack, 1, 2, true))
+            	if(slotID != 1)
             	{
-            		return null;
+	            	if(!mergeItemStack(slotStack, 1, 2, true))
+	            	{
+	            		return null;
+	            	}
+            	}
+            	else {
+            	 	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+	            	{
+	            		return null;
+	            	}
             	}
             }
         	else if(ChargeUtils.canBeDischarged(slotStack))

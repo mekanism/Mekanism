@@ -50,7 +50,7 @@ public class GuiChemicalWasher extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+        fontRenderer.drawString(tileEntity.getInvName(), 45, 4, 0x404040);
 		
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
