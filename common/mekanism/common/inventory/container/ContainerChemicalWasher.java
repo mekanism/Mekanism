@@ -2,9 +2,8 @@ package mekanism.common.inventory.container;
 
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +11,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class ContainerChemicalWasher extends Container
 {
@@ -20,9 +21,10 @@ public class ContainerChemicalWasher extends Container
     public ContainerChemicalWasher(InventoryPlayer inventory, TileEntityChemicalWasher tentity)
     {
         tileEntity = tentity;
-        addSlotToContainer(new Slot(tentity, 0, 6, 65));
-        addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 155, 56));
-        addSlotToContainer(new SlotDischarge(tentity, 2, 155, 5));
+        addSlotToContainer(new Slot(tentity, 0, -20, 9));
+        addSlotToContainer(new SlotOutput(tentity, 1, -20, 40));
+        addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 56));
+        addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
 		
         int slotY;
 
@@ -69,20 +71,40 @@ public class ContainerChemicalWasher extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IGasItem)
+            if(slotID == 1)
             {
-            	if(slotID != 0 && slotID != 1)
+            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+        		{
+        			return null;
+        		}
+            }
+            else if(FluidContainerRegistry.isFilledContainer(slotStack) && FluidContainerRegistry.getFluidForFilledItem(slotStack).getFluid() == FluidRegistry.WATER)
+            {
+            	if(slotID != 0)
             	{
             		if(!mergeItemStack(slotStack, 0, 1, false))
-            		{
-            			if(!mergeItemStack(slotStack, 1, 2, false))
-            			{
-            				return null;
-            			}
-            		}
+        			{
+        				return null;
+        			}
             	}
             	else {
-            		if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
+            }
+            else if(slotStack.getItem() instanceof IGasItem)
+            {
+            	if(slotID != 2)
+            	{
+        			if(!mergeItemStack(slotStack, 2, 3, false))
+        			{
+        				return null;
+        			}
+            	}
+            	else {
+            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
             		{
             			return null;
             		}
@@ -90,38 +112,38 @@ public class ContainerChemicalWasher extends Container
             }
         	else if(ChargeUtils.canBeDischarged(slotStack))
             {
-	            if(slotID != 2)
+	            if(slotID != 3)
 	            {
-	                if(!mergeItemStack(slotStack, 2, 3, false))
+	                if(!mergeItemStack(slotStack, 3, 4, false))
 	                {
 	                	return null;
 	                }
 	            }
-	            else if(slotID == 2)
+	            else if(slotID == 3)
 	            {
-	            	if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+	            	if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 	            	{
 	            		return null;
 	            	}
 	            }
             }
             else {
-            	if(slotID >= 3 && slotID <= 29)
+            	if(slotID >= 4 && slotID <= 30)
             	{
-            		if(!mergeItemStack(slotStack, 30, inventorySlots.size(), false))
+            		if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
             		{
             			return null;
             		}
             	}
-            	else if(slotID > 30)
+            	else if(slotID > 31)
             	{
-            		if(!mergeItemStack(slotStack, 3, 29, false))
+            		if(!mergeItemStack(slotStack, 4, 30, false))
             		{
             			return null;
             		}
             	}
             	else {
-            		if(!mergeItemStack(slotStack, 3, inventorySlots.size(), true))
+            		if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
             		{
             			return null;
             		}

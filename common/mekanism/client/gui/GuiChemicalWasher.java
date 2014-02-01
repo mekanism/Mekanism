@@ -34,6 +34,7 @@ public class GuiChemicalWasher extends GuiMekanism
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
+        guiElements.add(new GuiBucket(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
         guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
         	@Override
         	public List<String> getInfo()

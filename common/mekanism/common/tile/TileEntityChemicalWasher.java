@@ -68,7 +68,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	public TileEntityChemicalWasher()
 	{
 		super("ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
-		inventory = new ItemStack[3];
+		inventory = new ItemStack[4];
 	}
 	
 	@Override
@@ -102,11 +102,12 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 				}
 			}
 			
-			ChargeUtils.discharge(2, this);
+			ChargeUtils.discharge(3, this);
+			manageBuckets();
 			
-			if(inventory[1] != null && outputTank.getGas() != null)
+			if(inventory[2] != null && outputTank.getGas() != null)
 			{
-				outputTank.draw(GasTransmission.addGas(inventory[1], outputTank.getGas()), true);
+				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
 			}
 			
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
