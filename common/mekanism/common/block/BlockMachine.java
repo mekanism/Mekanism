@@ -1100,9 +1100,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.machineBlock2ID, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, false, true),
 		ELECTROLYTIC_SEPARATOR(Mekanism.machineBlock2ID, 4, "ElectrolyticSeparator", 32, 20000, TileEntityElectrolyticSeparator.class, true, false),
 		PRECISION_SAWMILL(Mekanism.machineBlock2ID, 5, "PrecisionSawmill", 34, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, false, true),
-		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.machineBlock2ID, 6, "ChemicalDissolutionChamber", -1, 20000, TileEntityChemicalDissolutionChamber.class, true, false),
-		CHEMICAL_WASHER(Mekanism.machineBlock2ID, 7, "ChemicalWasher", -1, 20000, TileEntityChemicalWasher.class, true, false),
-		CHEMICAL_CRYSTALIZER(Mekanism.machineBlock2ID, 8, "ChemicalCrystalizer", -1, 20000, TileEntityChemicalCrystalizer.class, true, false);
+		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.machineBlock2ID, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, false),
+		CHEMICAL_WASHER(Mekanism.machineBlock2ID, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, false),
+		CHEMICAL_CRYSTALIZER(Mekanism.machineBlock2ID, 8, "ChemicalCrystalizer", 37, 20000, TileEntityChemicalCrystalizer.class, true, false);
 
 		public int typeId;
 		public int meta;
