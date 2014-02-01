@@ -74,7 +74,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 69);
+		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 70);
 	}
 
 	@Override

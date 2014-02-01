@@ -1,5 +1,6 @@
 package mekanism.client.nei;
 
+import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
@@ -65,6 +66,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new SalinationControllerRecipeHandler());
 		API.registerUsageHandler(new SalinationControllerRecipeHandler());
 		
+		API.registerRecipeHandler(new ChemicalDissolutionChamberRecipeHandler());
+		API.registerUsageHandler(new ChemicalDissolutionChamberRecipeHandler());
+		
 		API.registerRecipeHandler(new ChemicalWasherRecipeHandler());
 		API.registerUsageHandler(new ChemicalWasherRecipeHandler());
 		
@@ -81,6 +85,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
 		API.setGuiOffset(GuiSalinationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		
 		API.hideItem(Mekanism.boundingBlockID);
