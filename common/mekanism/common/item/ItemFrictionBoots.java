@@ -34,7 +34,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemFrictionBoots extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
-	public double MAX_ELECTRICITY = 12000;
+	public double MAX_ELECTRICITY = 64000;
 	
 	public ItemFrictionBoots(int id)
 	{
@@ -251,10 +251,12 @@ public class ItemFrictionBoots extends ItemArmor implements IEnergizedItem, ISpe
 		
 		if(base.getCurrentItemOrArmor(1) != null && base.getCurrentItemOrArmor(1).getItem() instanceof ItemFrictionBoots)
 		{
-			ItemFrictionBoots boots = (ItemFrictionBoots)base.getCurrentItemOrArmor(1).getItem();
+			ItemStack stack = base.getCurrentItemOrArmor(1);
+			ItemFrictionBoots boots = (ItemFrictionBoots)stack.getItem();
 			
-			if(event.source == DamageSource.fall)
+			if(boots.getEnergy(stack) > 0 && event.source == DamageSource.fall)
 			{
+				boots.setEnergy(stack, boots.getEnergy(stack)-event.ammount*50);
 				event.setCanceled(true);
 			}
 		}
