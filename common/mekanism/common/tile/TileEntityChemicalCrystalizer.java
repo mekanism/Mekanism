@@ -174,17 +174,12 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
     {
         ItemStack itemstack = RecipeHandler.getChemicalCrystalizerOutput(inputTank, true);
 
-        if(inventory[0].stackSize <= 0)
+        if(inventory[1] == null)
         {
-            inventory[0] = null;
-        }
-
-        if(inventory[2] == null)
-        {
-            inventory[2] = itemstack;
+            inventory[1] = itemstack;
         }
         else {
-            inventory[2].stackSize += itemstack.stackSize;
+            inventory[1].stackSize += itemstack.stackSize;
         }
 
         onInventoryChanged();

@@ -256,7 +256,7 @@ public final class RecipeHandler
 			{
 				GasStack key = (GasStack)entry.getKey();
 
-				if(key != null && key.getGas() == gas.getGas() && key.amount >= gas.amount)
+				if(key != null && key.getGas() == gas.getGas() && gas.amount >= key.amount)
 				{
 					gasTank.draw(key.amount, removeGas);
 					
