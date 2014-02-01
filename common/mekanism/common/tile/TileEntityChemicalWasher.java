@@ -156,7 +156,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 		
 		GasStack out = RecipeHandler.getChemicalWasherOutput(inputTank, false);
 		
-		if(out == null || outputTank.getGas() != null && outputTank.getGas().getGas() != out.getGas())
+		if(out == null || (outputTank.getGas() != null && outputTank.getGas().getGas() != out.getGas()))
 		{
 			return false;
 		}

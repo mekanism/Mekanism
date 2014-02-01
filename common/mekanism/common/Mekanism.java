@@ -727,7 +727,7 @@ public class Mekanism
 				OreGas oreGas = (OreGas)gas;
 				
 				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
-				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas, 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
 			}
 		}
 

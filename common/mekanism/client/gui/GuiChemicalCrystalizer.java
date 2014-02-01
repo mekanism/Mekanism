@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
@@ -10,7 +11,10 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.OreGas;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerChemicalCrystalizer;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityChemicalCrystalizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -47,6 +51,7 @@ public class GuiChemicalCrystalizer extends GuiMekanism
         tileEntity = tentity;
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png")));
+        guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png"), 160, 23));
         guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
         	@Override
         	public List<String> getInfo()
@@ -67,8 +72,8 @@ public class GuiChemicalCrystalizer extends GuiMekanism
         
         if(tileEntity.inputTank.getGas() != null)
         {
-        	fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 12, 0x00CD00);
-        	fontRenderer.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 21, 0x00CD00);
+        	fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
+        	fontRenderer.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
         }
         
     	if(renderStack != null)
@@ -76,15 +81,10 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 12, 19);
+				itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 131, 14);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
-		}
-		
-		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5 && yAxis <= 63)
@@ -97,9 +97,7 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    	
+    {    	
     	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
@@ -110,17 +108,16 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 		int yAxis = mouseY - guiHeight;
 		
         int displayInt;
-        
-        displayInt = tileEntity.getScaledEnergyLevel(52);
-        drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
 
         displayInt = tileEntity.getScaledProgress(48);
-        drawTexturedModalRect(guiWidth + 64, guiHeight + 40, 176, 63, displayInt, 8);
+        drawTexturedModalRect(guiWidth + 53, guiHeight + 61, 176, 63, displayInt, 8);
         
         if(tileEntity.getScaledInputGasLevel(58) > 0)
         {
         	displayGauge(6, 5, tileEntity.getScaledInputGasLevel(58), null, tileEntity.inputTank.getGas());
         }
+        
+    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
     }
     
     private Gas getInputGas()
@@ -137,6 +134,27 @@ public class GuiChemicalCrystalizer extends GuiMekanism
     }
     
     @Override
+    protected void mouseClicked(int x, int y, int button)
+    {
+		super.mouseClicked(x, y, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (x - (width - xSize) / 2);
+			int yAxis = (y - (height - ySize) / 2);
+			
+			if(xAxis > 24 && xAxis < 42 && yAxis > 56 && yAxis < 64)
+			{
+				ArrayList data = new ArrayList();
+				data.add(0);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+		}
+    }
+    
+    @Override
     public void updateScreen()
     {
     	super.updateScreen();
@@ -145,16 +163,19 @@ public class GuiChemicalCrystalizer extends GuiMekanism
     	{
     		prevGas = getInputGas();
     		
-    		if(prevGas == null || !(prevGas instanceof OreGas))
+    		boolean reset = false;
+    		
+    		if(prevGas == null || !(prevGas instanceof OreGas) || !((OreGas)prevGas).isClean())
     		{
+    			reset = true;
     			resetStacks();
     		}
     		
-    		OreGas gas = (OreGas)prevGas;
-    		
-    		if(gas != null)
+    		if(!reset)
     		{
-    			String oreDictName = "ore" + WordUtils.capitalize(gas.getName());
+	    		OreGas gas = (OreGas)prevGas;
+    			String oreDictName = "ore" + gas.getName().substring(5);
+    			
     			updateStackList(oreDictName);
     		}
     	}

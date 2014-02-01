@@ -200,14 +200,14 @@ gas.silver=Silver Slurry
 gas.obsidian=Obsidian Slurry
 gas.lead=Lead Slurry
 
-gas.cleanIron=Iron Slurry
-gas.cleanGold=Gold Slurry
-gas.cleanOsmium=Osmium Slurry
-gas.cleanCopper=Copper Slurry
-gas.cleanTin=Tin Slurry
-gas.cleanSilver=Silver Slurry
-gas.cleanObsidian=Obsidian Slurry
-gas.cleanLead=Lead Slurry
+gas.cleanIron=Clean Iron Slurry
+gas.cleanGold=Clean Gold Slurry
+gas.cleanOsmium=Clean Osmium Slurry
+gas.cleanCopper=Clean Copper Slurry
+gas.cleanTin=Clean Tin Slurry
+gas.cleanSilver=Clean Silver Slurry
+gas.cleanObsidian=Clean Obsidian Slurry
+gas.cleanLead=Clean Lead Slurry
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
