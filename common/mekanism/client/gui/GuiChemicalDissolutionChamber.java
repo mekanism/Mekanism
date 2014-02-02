@@ -45,7 +45,7 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-        fontRenderer.drawString(tileEntity.getInvName(), 35, 4, 0x404040);
+        fontRenderer.drawString(MekanismUtils.localize("gui.chemicalDissolutionChamber.short"), 35, 4, 0x404040);
 		
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{

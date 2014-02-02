@@ -40,7 +40,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalDissolutionChamber.name");
+		return MekanismUtils.localize("gui.chemicalDissolutionChamber.short");
 	}
 	
 	@Override

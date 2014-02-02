@@ -267,7 +267,7 @@ gui.filters=Filters
 gui.idle=Idle
 
 gui.chemicalInfuser.short=C. Infuser
-gui.chemicalCombiner.short=C. Combiner
+gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
 
 gui.dictionary.noKey=No key.
 gui.dictionary.key=Key
