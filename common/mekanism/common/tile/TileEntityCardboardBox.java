@@ -11,6 +11,8 @@ public class TileEntityCardboardBox extends TileEntity
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
+		super.readFromNBT(nbtTags);
+		
 		if(nbtTags.hasKey("storedData"))
 		{
 			storedData = BlockData.read(nbtTags.getCompoundTag("storedData"));
@@ -20,6 +22,8 @@ public class TileEntityCardboardBox extends TileEntity
 	@Override
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
+		super.writeToNBT(nbtTags);
+		
 		if(storedData != null)
 		{
 			nbtTags.setCompoundTag("storedData", storedData.write(new NBTTagCompound()));

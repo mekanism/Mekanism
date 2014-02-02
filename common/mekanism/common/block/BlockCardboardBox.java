@@ -130,13 +130,17 @@ public class BlockCardboardBox extends BlockContainer
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+		
     	ItemStack itemStack = new ItemStack(Mekanism.CardboardBox, 1, world.getBlockMetadata(x, y, z));
-    	
-    	if(tileEntity.storedData != null)
-    	{
-    		((ItemBlockCardboardBox)itemStack.getItem()).setBlockData(itemStack, tileEntity.storedData);
-    	}
-        
+		
+		if(itemStack.getItemDamage() == 1)
+		{
+	    	if(tileEntity.storedData != null)
+	    	{
+	    		((ItemBlockCardboardBox)itemStack.getItem()).setBlockData(itemStack, tileEntity.storedData);
+	    	}
+		}
+		
 		return itemStack;
 	}
 	

@@ -1271,6 +1271,7 @@ public class Mekanism
 	@ForgeSubscribe
 	public void onBlacklistUpdate(BoxBlacklistEvent event)
 	{
+		MekanismAPI.addBoxBlacklist(CardboardBox.blockID, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(BoundingBlock.blockID, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Block.bedrock.blockID, 0);
 		MekanismAPI.addBoxBlacklist(Block.portal.blockID, OreDictionary.WILDCARD_VALUE);
