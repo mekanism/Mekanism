@@ -264,6 +264,7 @@ gui.state=State
 gui.on=On
 gui.off=Off
 gui.filters=Filters
+gui.idle=Idle
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalCombiner.short=C. Combiner
@@ -338,7 +339,6 @@ gui.digitalMiner.pull=Pull
 gui.digitalMiner.silk=Silk
 gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
-gui.digitalMiner.idle=Idle
 gui.digitalMiner.inverse=Inverse mode
 
 //Item and block tooltip text

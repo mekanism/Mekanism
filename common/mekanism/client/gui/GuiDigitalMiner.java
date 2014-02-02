@@ -155,7 +155,7 @@ public class GuiDigitalMiner extends GuiMekanism
         fontRenderer.drawString(tileEntity.getInvName(), 69, 6, 0x404040);
         fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         
-        fontRenderer.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.digitalMiner.idle"), 9, 10, 0x00CD00);
+        fontRenderer.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.idle"), 9, 10, 0x00CD00);
         fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
         
         fontRenderer.drawString(MekanismUtils.localize("gui.eject") + ": " + MekanismUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
