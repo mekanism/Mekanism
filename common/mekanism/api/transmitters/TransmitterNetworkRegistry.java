@@ -155,7 +155,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	            {
 			    	Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
 			    	
-	                for(Iterator iter = c.chunkTileEntityMap.values().iterator(); iter.hasNext();)
+	                for(Iterator iter = copy.values().iterator(); iter.hasNext();)
 	                {
 	                	Object obj = iter.next();
 	                	
