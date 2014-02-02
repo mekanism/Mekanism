@@ -1,5 +1,6 @@
 package mekanism.common;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
@@ -16,6 +17,7 @@ public class CommonPlayerTracker implements IPlayerTracker
 		if(!player.worldObj.isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketConfigSync().setParams(), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketBoxBlacklist().setParams(), player);
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);
 			

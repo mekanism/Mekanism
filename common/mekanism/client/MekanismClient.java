@@ -1,5 +1,7 @@
 package mekanism.client;
 
+import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
@@ -7,6 +9,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketKey;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
 
@@ -53,6 +56,9 @@ public class MekanismClient extends Mekanism
 		
 		ClientTickHandler.tickingSet.clear();
 		Mekanism.proxy.unloadSoundHandler();
+		
+		MekanismAPI.getBoxIgnore().clear();
+		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 		
 		Mekanism.jetpackOn.clear();
 		Mekanism.gasmaskOn.clear();

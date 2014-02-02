@@ -16,6 +16,7 @@ import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -80,6 +81,7 @@ import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.MultipartMekanism;
+import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfiguratorState;
@@ -105,6 +107,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketWalkieTalkieState;
+import mekanism.common.recipe.BinRecipe;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tank.DynamicTankCache;
@@ -1154,15 +1157,6 @@ public class Mekanism
 		addRecipes();
 		addEntities();
 		
-		MekanismAPI.addBoxBlacklist(BoundingBlock.blockID, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Block.bedrock.blockID, 0);
-		MekanismAPI.addBoxBlacklist(Block.portal.blockID, 0);
-		MekanismAPI.addBoxBlacklist(Block.endPortal.blockID, 0);
-		MekanismAPI.addBoxBlacklist(Block.endPortalFrame.blockID, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Block.bed.blockID, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Block.doorWood.blockID, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Block.doorIron.blockID, OreDictionary.WILDCARD_VALUE);
-		
 		registerOreDict();
 
 		new MultipartMekanism();
@@ -1192,6 +1186,7 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketKey.class);
 		PacketHandler.registerPacket(PacketScubaTankData.class);
 		PacketHandler.registerPacket(PacketConfigSync.class);
+		PacketHandler.registerPacket(PacketBoxBlacklist.class);
 		
 		//Donators
 		donators.add("mrgreaper"); 
@@ -1218,7 +1213,7 @@ public class Mekanism
 		proxy.loadSoundHandler();
 		hooks.hook();
 		
-		MekanismAPI.addBoxBlacklist(MultipartProxy.block().blockID, OreDictionary.WILDCARD_VALUE);
+		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 		
 		addIntegratedItems();
 		
@@ -1271,6 +1266,22 @@ public class Mekanism
 				ClientTickHandler.tickingSet.add(event.network);
 			}
 		} catch(Exception e) {}
+	}
+	
+	@ForgeSubscribe
+	public void onBlacklistUpdate(BoxBlacklistEvent event)
+	{
+		MekanismAPI.addBoxBlacklist(BoundingBlock.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.bedrock.blockID, 0);
+		MekanismAPI.addBoxBlacklist(Block.portal.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.endPortal.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.endPortalFrame.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.bed.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.doorWood.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Block.doorIron.blockID, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(MultipartProxy.block().blockID, OreDictionary.WILDCARD_VALUE);
+		
+		BoxBlacklistParser.load();
 	}
 	
 	@ForgeSubscribe

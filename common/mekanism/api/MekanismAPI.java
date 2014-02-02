@@ -3,6 +3,7 @@ package mekanism.api;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraftforge.event.Event;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class MekanismAPI
@@ -33,7 +34,12 @@ public class MekanismAPI
 		cardboardBoxIgnore.remove(new BlockInfo(id, meta));
 	}
 	
-	private static class BlockInfo
+	public static Set<BlockInfo> getBoxIgnore()
+	{
+		return cardboardBoxIgnore;
+	}
+	
+	public static class BlockInfo
 	{	
 		public int id;
 		public int meta;
@@ -61,4 +67,6 @@ public class MekanismAPI
 			return code;
 		}
 	}
+	
+	public static class BoxBlacklistEvent extends Event {}
 }
