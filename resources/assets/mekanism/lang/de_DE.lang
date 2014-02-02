@@ -200,14 +200,14 @@ gas.silver=Silberschlamm
 gas.obsidian=Obsidianschlamm
 gas.lead=Bleischlamm
 
-gas.cleanIron=Eisenschlamm
-gas.cleanGold=Goldschlamm
-gas.cleanOsmium=Osmiumschlamm
-gas.cleanCopper=Kupferschlamm
-gas.cleanTin=Zinnschlamm
-gas.cleanSilver=Silberschlamm
-gas.cleanObsidian=Obsidianschlamm
-gas.cleanLead=Bleischlamm
+gas.cleanIron=Sauberer Eisenschlamm
+gas.cleanGold=Sauberer Goldschlamm
+gas.cleanOsmium=Sauberer Osmiumschlamm
+gas.cleanCopper=Sauberer Kupferschlamm
+gas.cleanTin=Sauberer Zinnschlamm
+gas.cleanSilver=Sauberer Silberschlamm
+gas.cleanObsidian=Sauberer Obsidianschlamm
+gas.cleanLead=Sauberer Bleischlamm
 
 //Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
