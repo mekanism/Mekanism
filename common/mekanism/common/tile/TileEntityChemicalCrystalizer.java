@@ -387,9 +387,13 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
-		if(slotID == 1)
+		if(slotID == 0)
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+		}
+		else if(slotID == 1)
+		{
+			return true;
 		}
 		else if(slotID == 2)
 		{
