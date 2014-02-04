@@ -116,6 +116,21 @@ public class GasTank
 	}
 	
 	/**
+	 * If this GasTank can receive the specified type of gas. Will return TRUE if this tank does not need anymore gas.
+	 * @param gas - gas to check
+	 * @return if this GasTank can accept the defined gas
+	 */
+	public boolean canReceiveType(Gas gas)
+	{
+		if(stored != null && (gas != null && gas != stored.getGas()))
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * If this GasTank can be drawn of the specified type of gas. Will return false if this tank does not contain any gas.
 	 * @param gas - gas to check
 	 * @return if this GasTank can be drawn of the defined gas
