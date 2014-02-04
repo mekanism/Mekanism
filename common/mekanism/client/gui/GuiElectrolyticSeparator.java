@@ -86,6 +86,9 @@ public class GuiElectrolyticSeparator extends GuiMekanism
         
 		name = tileEntity.dumpRight ? "Dumping..." : tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
         fontRenderer.drawString(name, 156-fontRenderer.getStringWidth(name), 73, 0x404040);
+		
+		name = tileEntity.dumpExcess ? "Dumping Excess" : "Stop when full";
+		fontRenderer.drawString(name, 97, 6, 0x404040);
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11 && yAxis <= 69)
 		{
@@ -123,6 +126,9 @@ public class GuiElectrolyticSeparator extends GuiMekanism
         
         int rightDisplay = tileEntity.dumpRight ? 60 : 52;
         drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, rightDisplay, 8, 8);
+		
+		int dumpDisplay = tileEntity.dumpExcess ? 60 : 52;
+		drawTexturedModalRect(guiWidth + 84, guiHeight + 6, 176, dumpDisplay, 8, 8);
         
         int displayInt;
         
