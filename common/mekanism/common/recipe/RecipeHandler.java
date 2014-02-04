@@ -519,6 +519,15 @@ public final class RecipeHandler
 							return true;
 						}
 					}
+					else if(entry.getKey() instanceof AdvancedInput)
+					{
+						ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
+						
+						if(StackUtils.equalsWildcard(stack, input))
+						{
+							return true;
+						}
+					}
 				}
 			}
 			
