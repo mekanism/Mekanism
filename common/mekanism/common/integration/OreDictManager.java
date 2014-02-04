@@ -49,6 +49,11 @@ public final class OreDictManager
 			}
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("oreNetherSteel"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 4, 5));
+		}
+		
 		if(OreDictionary.getOres("itemRubber").size() > 0)
 		{
 			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
