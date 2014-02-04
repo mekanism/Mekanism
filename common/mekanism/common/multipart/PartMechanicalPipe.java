@@ -73,7 +73,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
     				
 					if(container != null)
 					{
-						FluidStack received = container.drain(side, 100, false);
+						FluidStack received = container.drain(side.getOpposite(), 100, false);
 						
 						if(received != null && received.amount != 0)
 						{

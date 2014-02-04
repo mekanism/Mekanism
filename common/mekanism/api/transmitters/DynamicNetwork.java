@@ -130,6 +130,12 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			ticksSinceCreate++;
 			
+			if(transmitters.size() == 0)
+			{
+				deregister();
+				return;
+			}
+			
 			if(ticksSinceCreate > 1200)
 			{
 				ticksSinceCreate = 0;
