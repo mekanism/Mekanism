@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import mekanism.api.AdvancedInput;
 import mekanism.api.EnumColor;
@@ -17,6 +18,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -93,6 +95,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			
 			handleSecondaryFuel();
 			
+			boolean changed = false;
+			
 			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= SECONDARY_ENERGY_PER_TICK)
 			{
 			    setActive(true);
@@ -112,11 +116,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			else {
 				if(prevEnergy >= getEnergy())
 				{
+					changed = true;
 					setActive(false);
 				}
 			}
 			
-			if(!canOperate())
+			if(changed && !canOperate() && !hasRecipe(inventory[0]))
 			{
 				operatingTicks = 0;
 			}
@@ -124,6 +129,31 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			prevEnergy = getEnergy();
 		}
 	}
+    
+    private boolean hasRecipe(ItemStack itemStack)
+    {
+    	if(itemStack == null)
+    	{
+    		return false;
+    	}
+    	
+    	for(Object obj : getRecipes().entrySet())
+    	{
+    		if(((Map.Entry)obj).getKey() instanceof AdvancedInput)
+			{
+    			Map.Entry entry = (Map.Entry)obj;
+    			
+				ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
+				
+				if(StackUtils.equalsWildcard(stack, itemStack))
+				{
+					return true;
+				}
+			}
+    	}
+    	
+    	return false;
+    }
     
     public void handleSecondaryFuel()
     {
