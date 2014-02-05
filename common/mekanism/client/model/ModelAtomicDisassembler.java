@@ -1,5 +1,8 @@
 package mekanism.client.model;
 
+import org.lwjgl.opengl.GL11;
+
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -128,20 +131,27 @@ public class ModelAtomicDisassembler extends ModelBase
 
 	public void render(float size)
 	{
-		Shape1.render(size);
-		Shape2.render(size);
+		GL11.glPushMatrix();
+		MekanismRenderer.glowOn();
+		
+		Shape3.render(size);
 		Shape5.render(size);
-		Shape6.render(size);
-		Shape7.render(size);
 		Shape9.render(size);
 		Shape16.render(size);
+		Shape14.render(size);
+		
+		MekanismRenderer.glowOff();
+		GL11.glPopMatrix();
+		
+		Shape1.render(size);
+		Shape2.render(size);
+		Shape6.render(size);
+		Shape7.render(size);
+		Shape13.render(size);
 		Shape10.render(size);
-		Shape3.render(size);
 		Shape11.render(size);
 		Shape4.render(size);
 		Shape12.render(size);
-		Shape13.render(size);
-		Shape14.render(size);
 		Shape15.render(size);
 		Shape8.render(size);
 	}

@@ -373,7 +373,20 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemAtomicDisassembler)
 		{
+			if(type == ItemRenderType.EQUIPPED)
+			{
+				GL11.glRotatef(40, 0.0F, 1.0F, 0.0F);
+			}
+			
+			if(type == ItemRenderType.INVENTORY)
+			{
+				
+			}
+			
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(40, 0.0F, 1.0F, 0.0F);
+			GL11.glScalef(1.4F, 1.4F, 1.4F);
+			GL11.glTranslatef(0.0F, -0.7F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
 			atomicDisassembler.render(0.0625F);
 		}
