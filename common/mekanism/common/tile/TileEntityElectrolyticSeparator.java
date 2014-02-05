@@ -204,7 +204,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(dumpExcess)
 		{
-			return (leftTank.canReceiveType(gases.leftGas.getGas()) && rightTank.canReceiveType(gases.rightGas.getGas())) 
+			return leftTank.canReceiveType(gases.leftGas.getGas()) && rightTank.canReceiveType(gases.rightGas.getGas());
 		}
 					
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
