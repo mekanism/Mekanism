@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
+import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.model.ModelFrictionBoots;
@@ -23,6 +24,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
@@ -72,6 +74,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelGasMask gasMask = new ModelGasMask();
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFrictionBoots frictionBoots = new ModelFrictionBoots();
+	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
 	
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
@@ -367,6 +370,25 @@ public class ItemRenderingHandler implements IItemRenderer
 			else {
 				balloonRenderer.render(((ItemBalloon)item.getItem()).getColor(item), 0, 1, 0);
 			}
+		}
+		else if(item.getItem() instanceof ItemAtomicDisassembler)
+		{
+			if(type == ItemRenderType.EQUIPPED)
+			{
+				GL11.glRotatef(40, 0.0F, 1.0F, 0.0F);
+			}
+			
+			if(type == ItemRenderType.INVENTORY)
+			{
+				
+			}
+			
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(40, 0.0F, 1.0F, 0.0F);
+			GL11.glScalef(1.4F, 1.4F, 1.4F);
+			GL11.glTranslatef(0.0F, -0.7F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
+			atomicDisassembler.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemPartTransmitter)
 		{
