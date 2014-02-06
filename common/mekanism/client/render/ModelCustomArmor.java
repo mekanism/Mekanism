@@ -1,6 +1,6 @@
 package mekanism.client.render;
 
-import mekanism.client.model.ModelFrictionBoots;
+import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
@@ -145,19 +145,19 @@ public class ModelCustomArmor extends ModelBiped
 						GL11.glTranslatef(0, 0, -0.05F);
 						ArmorModel.gasMaskModel.render(0.0625F);
 					}
-					else if(biped.modelType == ArmorModel.FRICTIONBOOTS)
+					else if(biped.modelType == ArmorModel.FREERUNNERS)
 					{
 						GL11.glScalef(0.99F, 0.99F, 0.99F);
 						
 						if(partRender == biped.bipedLeftLeg)
 						{
 							GL11.glTranslatef(-0.1375F, -0.75F, 0);
-							ArmorModel.frictionBootsModel.renderLeft(0.0625F);
+							ArmorModel.freeRunnersModel.renderLeft(0.0625F);
 						}
 						else if(partRender == biped.bipedRightLeg)
 						{
 							GL11.glTranslatef(0.1375F, -0.75F, 0);
-							ArmorModel.frictionBootsModel.renderRight(0.0625F);
+							ArmorModel.freeRunnersModel.renderRight(0.0625F);
 						}
 					}
 				}
@@ -197,7 +197,7 @@ public class ModelCustomArmor extends ModelBiped
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
 		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
 		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
-		FRICTIONBOOTS(3, MekanismUtils.getResource(ResourceType.RENDER, "FrictionBoots.png"));
+		FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
 
 		public int armorSlot;
 		public ResourceLocation resource;
@@ -205,7 +205,7 @@ public class ModelCustomArmor extends ModelBiped
 		public static ModelJetpack jetpackModel = new ModelJetpack();
 		public static ModelGasMask gasMaskModel = new ModelGasMask();
 		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
-		public static ModelFrictionBoots frictionBootsModel = new ModelFrictionBoots();
+		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();
 
 		private ArmorModel(int i, ResourceLocation r)
 		{

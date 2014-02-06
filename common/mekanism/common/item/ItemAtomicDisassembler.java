@@ -18,6 +18,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event.Result;
+import net.minecraftforge.event.entity.player.UseHoeEvent;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -147,6 +150,91 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		
         return itemstack;
     }
+    
+	@Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		if(!player.isSneaking())
+		{
+			if(!useHoe(stack, player, world, x, y, z, side))
+			{
+				if(world.getBlockId(x, y, z) != Block.tilledField.blockID)
+				{
+					return false;
+				}
+			}
+			
+			switch(getEfficiency(stack))
+			{
+				case 20:
+					for(int x1 = x-1; x1 <= x+1; x1++)
+					{
+						for(int z1 = z-1; z1 <= z+1; z1++)
+						{
+							useHoe(stack, player, world, x1, y, z1, side);
+						}
+					}
+					
+					break;
+				case 128:
+					for(int x1 = x-2; x1 <= x+2; x1++)
+					{
+						for(int z1 = z-2; z1 <= z+2; z1++)
+						{System.out.println("lol");
+							useHoe(stack, player, world, x1, y, z1, side);
+						}
+					}
+					
+					break;
+			}
+			
+			return true;
+		}
+		
+    	return false;
+    }
+	
+	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side)
+	{
+		if(!player.canPlayerEdit(x, y, z, side, stack))
+        {
+            return false;
+        }
+        else {
+            UseHoeEvent event = new UseHoeEvent(player, stack, world, x, y, z);
+            
+            if(MinecraftForge.EVENT_BUS.post(event))
+            {
+                return false;
+            }
+
+            if(event.getResult() == Result.ALLOW)
+            {
+                return true;
+            }
+
+            int id = world.getBlockId(x, y, z);
+            boolean air = world.isAirBlock(x, y + 1, z);
+
+            if(side != 0 && air && (id == Block.grass.blockID || id == Block.dirt.blockID))
+            {
+                Block block = Block.tilledField;
+                world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, block.stepSound.getStepSound(), (block.stepSound.getVolume() + 1.0F) / 2.0F, block.stepSound.getPitch() * 0.8F);
+
+                if(world.isRemote)
+                {
+                    return true;
+                }
+                else {
+                    world.setBlock(x, y, z, block.blockID);
+                    return true;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+	}
     
     public int getEfficiency(ItemStack itemStack)
     {

@@ -3,7 +3,7 @@ package mekanism.common;
 import java.util.EnumSet;
 
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.item.ItemFrictionBoots;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
@@ -87,7 +87,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 	    		}
 			}
 			
-			if(player.getCurrentItemOrArmor(1) != null && player.getCurrentItemOrArmor(1).getItem() instanceof ItemFrictionBoots)
+			if(player.getCurrentItemOrArmor(1) != null && player.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
 			{
 				player.stepHeight = 1.002F;
 			}

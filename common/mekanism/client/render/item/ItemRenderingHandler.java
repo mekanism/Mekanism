@@ -7,7 +7,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.model.ModelFrictionBoots;
+import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
 import mekanism.client.model.ModelJetpack;
@@ -28,7 +28,7 @@ import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemFrictionBoots;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemRobit;
@@ -73,7 +73,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelJetpack jetpack = new ModelJetpack();
 	public ModelGasMask gasMask = new ModelGasMask();
 	public ModelScubaTank scubaTank = new ModelScubaTank();
-	public ModelFrictionBoots frictionBoots = new ModelFrictionBoots();
+	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
 	
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
@@ -349,14 +349,14 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			scubaTank.render(0.0625F);
 		}
-		else if(item.getItem() instanceof ItemFrictionBoots)
+		else if(item.getItem() instanceof ItemFreeRunners)
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glScalef(2.0F, 2.0F, 2.0F);
 			GL11.glTranslatef(0.2F, -1.43F, 0.12F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FrictionBoots.png"));
-			frictionBoots.render(0.0625F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
+			freeRunners.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemBalloon)
 		{
