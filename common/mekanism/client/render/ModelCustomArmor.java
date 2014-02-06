@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
@@ -134,7 +135,11 @@ public class ModelCustomArmor extends ModelBiped
 				{
 					if(biped.modelType == ArmorModel.JETPACK)
 					{
-						ArmorModel.jetpackModel.render(0.0625F);
+						ArmorModel.armoredJetpackModel.render(0.0625F);
+					}
+					else if(biped.modelType == ArmorModel.ARMOREDJETPACK)
+					{
+						ArmorModel.armoredJetpackModel.render(0.0625F);
 					}
 					else if(biped.modelType == ArmorModel.SCUBATANK)
 					{
@@ -195,6 +200,7 @@ public class ModelCustomArmor extends ModelBiped
 	public static enum ArmorModel 
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
+		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
 		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
 		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
 		FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
@@ -203,6 +209,7 @@ public class ModelCustomArmor extends ModelBiped
 		public ResourceLocation resource;
 		
 		public static ModelJetpack jetpackModel = new ModelJetpack();
+		public static ModelArmoredJetpack armoredJetpackModel = new ModelArmoredJetpack();
 		public static ModelGasMask gasMaskModel = new ModelGasMask();
 		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
 		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();

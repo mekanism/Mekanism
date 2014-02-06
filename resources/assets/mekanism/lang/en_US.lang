@@ -32,6 +32,7 @@ item.Sawdust.name=Sawdust
 item.Salt.name=Salt
 item.BrineBucket.name=Brine Bucket
 item.FreeRunners.name=Free Runners
+item.ArmoredJetpack.name=Armored Jetpack
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank

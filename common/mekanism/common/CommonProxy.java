@@ -174,16 +174,16 @@ public class CommonProxy
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-		Mekanism.basicBlockID = Mekanism.configuration.getBlock("BasicBlock", 3000).getInt();
-		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", 3001).getInt();
-		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", 3002).getInt();
-	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", 3003).getInt();
-	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
-	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", 3005).getInt();
-	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
-		Mekanism.basicBlock2ID = Mekanism.configuration.getBlock("BasicBlock2", 3007).getInt();
-		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", 3008).getInt();
-		Mekanism.cardboardBoxID = Mekanism.configuration.getBlock("CardboardBox", 3009).getInt();
+		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.basicBlockID = Mekanism.configuration.getBlock("BasicBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.basicBlock2ID = Mekanism.configuration.getBlock("BasicBlock2", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.cardboardBoxID = Mekanism.configuration.getBlock("CardboardBox", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
 	  	
 	  	Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);

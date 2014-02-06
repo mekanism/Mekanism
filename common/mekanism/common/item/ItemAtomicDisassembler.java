@@ -25,6 +25,7 @@ import net.minecraftforge.event.entity.player.UseHoeEvent;
 public class ItemAtomicDisassembler extends ItemEnergized
 {
 	public double ENERGY_USAGE = 10;
+	public double HOE_USAGE = 100;
 	
 	public ItemAtomicDisassembler(int id)
 	{
@@ -180,7 +181,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 					for(int x1 = x-2; x1 <= x+2; x1++)
 					{
 						for(int z1 = z-2; z1 <= z+2; z1++)
-						{System.out.println("lol");
+						{
 							useHoe(stack, player, world, x1, y, z1, side);
 						}
 					}
@@ -210,6 +211,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
             if(event.getResult() == Result.ALLOW)
             {
+            	setEnergy(stack, getEnergy(stack)-HOE_USAGE);
                 return true;
             }
 
@@ -227,6 +229,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
                 }
                 else {
                     world.setBlock(x, y, z, block.blockID);
+                 	setEnergy(stack, getEnergy(stack)-HOE_USAGE);
                     return true;
                 }
             }
