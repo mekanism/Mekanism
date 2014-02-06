@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
+import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
@@ -30,7 +31,6 @@ import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
@@ -71,6 +71,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelGasTank gasTank = new ModelGasTank();
 	public ModelObsidianTNT obsidianTNT = new ModelObsidianTNT();
 	public ModelJetpack jetpack = new ModelJetpack();
+	public ModelArmoredJetpack armoredJetpack = new ModelArmoredJetpack();
 	public ModelGasMask gasMask = new ModelGasMask();
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
@@ -324,13 +325,21 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
 		}
-		else if(item.getItem() instanceof ItemJetpack)
+		else if(item.getItem() == Mekanism.Jetpack)
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
 			jetpack.render(0.0625F);
+		}
+		else if(item.getItem() == Mekanism.ArmoredJetpack)
+		{
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ArmoredJetpack.png"));
+			armoredJetpack.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemGasMask)
 		{

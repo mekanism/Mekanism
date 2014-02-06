@@ -258,6 +258,7 @@ public class Mekanism
 	public static Item Salt;
 	public static Item BrineBucket;
 	public static Item FreeRunners;
+	public static Item ArmoredJetpack;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -567,6 +568,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FreeRunners), new Object[] {
 			"C C", "A A", "T T", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('T'), EnergyTablet.getUnchargedItem()
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ArmoredJetpack), new Object[] {
+			"D D", "BSB", " J ", Character.valueOf('D'), "dustDiamond", Character.valueOf('B'), "ingotBronze", Character.valueOf('S'), "blockSteel", Character.valueOf('J'), Jetpack.getEmptyItem()
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
@@ -781,6 +785,7 @@ public class Mekanism
 		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", ITEM_ID++).getInt()).setUnlocalizedName("GasMask");
 		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", ITEM_ID++).getInt()).setUnlocalizedName("ScubaTank");
 		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", ITEM_ID++).getInt()).setUnlocalizedName("Jetpack");
+		ArmoredJetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("ArmoredJetpack", ITEM_ID++).getInt()).setUnlocalizedName("ArmoredJetpack");
 		FreeRunners = new ItemFreeRunners(configuration.getItem("FreeRunners", ITEM_ID++).getInt()).setUnlocalizedName("FreeRunners");
 		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", ITEM_ID++).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
 		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", ITEM_ID++).getInt()).setUnlocalizedName("Sawdust");
@@ -836,6 +841,7 @@ public class Mekanism
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(Crystal, "Crystal");
 		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
+		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 	}
 	
 	/**

@@ -74,7 +74,16 @@ public class ItemJetpack extends ItemArmor implements IGasItem
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
     {
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-		model.modelType = ArmorModel.JETPACK;
+		
+		if(this == Mekanism.Jetpack)
+		{
+			model.modelType = ArmorModel.JETPACK;
+		}
+		else if(this == Mekanism.ArmoredJetpack)
+		{
+			model.modelType = ArmorModel.ARMOREDJETPACK;
+		}
+		
         return model;
     }
 	
