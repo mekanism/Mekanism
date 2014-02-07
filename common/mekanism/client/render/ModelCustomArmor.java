@@ -147,16 +147,16 @@ public class ModelCustomArmor extends ModelBiped
 					}
 					else if(biped.modelType == ArmorModel.FRICTIONBOOTS)
 					{
-						GL11.glScalef(0.99F, 0.99F, 0.99F);
+						GL11.glScalef(1.02F, 1.02F, 1.02F);
 						
 						if(partRender == biped.bipedLeftLeg)
 						{
-							GL11.glTranslatef(-0.1375F, -0.75F, 0);
+							GL11.glTranslatef(-0.1375F, -0.75F, -0.0625F);
 							ArmorModel.frictionBootsModel.renderLeft(0.0625F);
 						}
 						else if(partRender == biped.bipedRightLeg)
 						{
-							GL11.glTranslatef(0.1375F, -0.75F, 0);
+							GL11.glTranslatef(0.1375F, -0.75F, -0.0625F);
 							ArmorModel.frictionBootsModel.renderRight(0.0625F);
 						}
 					}
