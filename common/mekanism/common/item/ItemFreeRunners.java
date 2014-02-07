@@ -31,12 +31,12 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemFrictionBoots extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
+public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY = 64000;
 	
-	public ItemFrictionBoots(int id)
+	public ItemFreeRunners(int id)
 	{
 		super(id, EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
 		setMaxStackSize(1);
@@ -67,7 +67,7 @@ public class ItemFrictionBoots extends ItemArmor implements IEnergizedItem, ISpe
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
     {
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-		model.modelType = ArmorModel.FRICTIONBOOTS;
+		model.modelType = ArmorModel.FREERUNNERS;
         return model;
     }
 	
@@ -249,10 +249,10 @@ public class ItemFrictionBoots extends ItemArmor implements IEnergizedItem, ISpe
 	{
 		EntityLivingBase base = event.entityLiving;
 		
-		if(base.getCurrentItemOrArmor(1) != null && base.getCurrentItemOrArmor(1).getItem() instanceof ItemFrictionBoots)
+		if(base.getCurrentItemOrArmor(1) != null && base.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
 		{
 			ItemStack stack = base.getCurrentItemOrArmor(1);
-			ItemFrictionBoots boots = (ItemFrictionBoots)stack.getItem();
+			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 			
 			if(boots.getEnergy(stack) > 0 && event.source == DamageSource.fall)
 			{

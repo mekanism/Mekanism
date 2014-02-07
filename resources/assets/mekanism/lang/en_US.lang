@@ -31,7 +31,8 @@ item.CompressedRedstone.name=Compressed Redstone
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
 item.BrineBucket.name=Brine Bucket
-item.FrictionBoots.name=Friction Boots
+item.FreeRunners.name=Free Runners
+item.ArmoredJetpack.name=Armored Jetpack
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank

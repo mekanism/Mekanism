@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
-import mekanism.client.model.ModelFrictionBoots;
+import mekanism.client.model.ModelArmoredJetpack;
+import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
@@ -136,6 +137,10 @@ public class ModelCustomArmor extends ModelBiped
 					{
 						ArmorModel.jetpackModel.render(0.0625F);
 					}
+					else if(biped.modelType == ArmorModel.ARMOREDJETPACK)
+					{
+						ArmorModel.armoredJetpackModel.render(0.0625F);
+					}
 					else if(biped.modelType == ArmorModel.SCUBATANK)
 					{
 						ArmorModel.scubaTankModel.render(0.0625F);
@@ -145,19 +150,19 @@ public class ModelCustomArmor extends ModelBiped
 						GL11.glTranslatef(0, 0, -0.05F);
 						ArmorModel.gasMaskModel.render(0.0625F);
 					}
-					else if(biped.modelType == ArmorModel.FRICTIONBOOTS)
+					else if(biped.modelType == ArmorModel.FREERUNNERS)
 					{
 						GL11.glScalef(1.02F, 1.02F, 1.02F);
 						
 						if(partRender == biped.bipedLeftLeg)
 						{
 							GL11.glTranslatef(-0.1375F, -0.75F, -0.0625F);
-							ArmorModel.frictionBootsModel.renderLeft(0.0625F);
+							ArmorModel.freeRunnersModel.renderLeft(0.0625F);
 						}
 						else if(partRender == biped.bipedRightLeg)
 						{
 							GL11.glTranslatef(0.1375F, -0.75F, -0.0625F);
-							ArmorModel.frictionBootsModel.renderRight(0.0625F);
+							ArmorModel.freeRunnersModel.renderRight(0.0625F);
 						}
 					}
 				}
@@ -195,17 +200,19 @@ public class ModelCustomArmor extends ModelBiped
 	public static enum ArmorModel 
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
+		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "ArmoredJetpack.png")),
 		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
 		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
-		FRICTIONBOOTS(3, MekanismUtils.getResource(ResourceType.RENDER, "FrictionBoots.png"));
+		FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
 
 		public int armorSlot;
 		public ResourceLocation resource;
 		
 		public static ModelJetpack jetpackModel = new ModelJetpack();
+		public static ModelArmoredJetpack armoredJetpackModel = new ModelArmoredJetpack();
 		public static ModelGasMask gasMaskModel = new ModelGasMask();
 		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
-		public static ModelFrictionBoots frictionBootsModel = new ModelFrictionBoots();
+		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();
 
 		private ArmorModel(int i, ResourceLocation r)
 		{

@@ -4,10 +4,11 @@ import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.client.MekanismClient;
+import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.model.ModelFrictionBoots;
+import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
 import mekanism.client.model.ModelJetpack;
@@ -28,9 +29,8 @@ import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemFrictionBoots;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
-import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
@@ -71,9 +71,10 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelGasTank gasTank = new ModelGasTank();
 	public ModelObsidianTNT obsidianTNT = new ModelObsidianTNT();
 	public ModelJetpack jetpack = new ModelJetpack();
+	public ModelArmoredJetpack armoredJetpack = new ModelArmoredJetpack();
 	public ModelGasMask gasMask = new ModelGasMask();
 	public ModelScubaTank scubaTank = new ModelScubaTank();
-	public ModelFrictionBoots frictionBoots = new ModelFrictionBoots();
+	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
 	
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
@@ -324,13 +325,21 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
 		}
-		else if(item.getItem() instanceof ItemJetpack)
+		else if(item.getItem() == Mekanism.Jetpack)
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
 			jetpack.render(0.0625F);
+		}
+		else if(item.getItem() == Mekanism.ArmoredJetpack)
+		{
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ArmoredJetpack.png"));
+			armoredJetpack.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemGasMask)
 		{
@@ -349,14 +358,14 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			scubaTank.render(0.0625F);
 		}
-		else if(item.getItem() instanceof ItemFrictionBoots)
+		else if(item.getItem() instanceof ItemFreeRunners)
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glScalef(2.0F, 2.0F, 2.0F);
 			GL11.glTranslatef(0.2F, -1.43F, 0.12F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FrictionBoots.png"));
-			frictionBoots.render(0.0625F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
+			freeRunners.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemBalloon)
 		{
@@ -373,20 +382,28 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemAtomicDisassembler)
 		{
+			GL11.glScalef(1.4F, 1.4F, 1.4F);
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			
 			if(type == ItemRenderType.EQUIPPED)
 			{
-				GL11.glRotatef(40, 0.0F, 1.0F, 0.0F);
+				GL11.glRotatef(-45, 0.0F, 1.0F, 0.0F);
+				GL11.glRotatef(50, 1.0F, 0.0F, 0.0F);
+				GL11.glScalef(2.0F, 2.0F, 2.0F);
+				GL11.glTranslatef(0.0F, -0.4F, 0.4F);
 			}
-			
-			if(type == ItemRenderType.INVENTORY)
+			else if(type == ItemRenderType.INVENTORY)
 			{
-				
+				GL11.glRotatef(225, 0.0F, 1.0F, 0.0F);
+				GL11.glRotatef(45, -1.0F, 0.0F, -1.0F);
+				GL11.glScalef(0.6F, 0.6F, 0.6F); 
+				GL11.glTranslatef(0.0F, -0.2F, 0.0F);
+			}
+			else {
+				GL11.glRotatef(45, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, -0.7F, 0.0F);
 			}
 			
-			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
-			GL11.glRotatef(40, 0.0F, 1.0F, 0.0F);
-			GL11.glScalef(1.4F, 1.4F, 1.4F);
-			GL11.glTranslatef(0.0F, -0.7F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
 			atomicDisassembler.render(0.0625F);
 		}

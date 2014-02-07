@@ -66,7 +66,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
-import mekanism.common.item.ItemFrictionBoots;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
@@ -257,7 +257,8 @@ public class Mekanism
 	public static Item Sawdust;
 	public static Item Salt;
 	public static Item BrineBucket;
-	public static Item FrictionBoots;
+	public static Item FreeRunners;
+	public static Item ArmoredJetpack;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -278,6 +279,9 @@ public class Mekanism
 	public static Item DirtyDust;
 	public static Item Shard;
 	public static Item Crystal;
+	
+	public static int ITEM_ID = 11200;
+	public static int BLOCK_ID = 3000;
 
 	//General Configuration
 	public static boolean osmiumGenerationEnabled = true;
@@ -561,8 +565,11 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 8), new Object[] {
 			"CGC", "ASA", "CGC", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), AtomicCore, Character.valueOf('S'), new ItemStack(BasicBlock, 1, 8)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FrictionBoots), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FreeRunners), new Object[] {
 			"C C", "A A", "T T", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('T'), EnergyTablet.getUnchargedItem()
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ArmoredJetpack), new Object[] {
+			"D D", "BSB", " J ", Character.valueOf('D'), "dustDiamond", Character.valueOf('B'), "ingotBronze", Character.valueOf('S'), "blockSteel", Character.valueOf('J'), Jetpack.getEmptyItem()
 		}));
 
 		for(RecipeType type : RecipeType.values())
@@ -756,41 +763,43 @@ public class Mekanism
 	{	
 		//Declarations
 		configuration.load();
-		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", 11200).getInt()).setUnlocalizedName("ElectricBow");
-		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", 11201).getInt()).setUnlocalizedName("Dictionary");
-		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", 11202).getInt()).setUnlocalizedName("GasMask");
-		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", 11203).getInt()).setUnlocalizedName("ScubaTank");
-		Dust = new ItemDust(configuration.getItem("Dust", 11204).getInt());
-		Ingot = new ItemIngot(configuration.getItem("Ingot", 11205).getInt());
-		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", 11206).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
-		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", 11207).getInt()).setUnlocalizedName("SpeedUpgrade");
-		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", 11208).getInt()).setUnlocalizedName("EnergyUpgrade");
-		Robit = (ItemRobit)new ItemRobit(configuration.getItem("Robit", 11209).getInt()).setUnlocalizedName("Robit");
-		AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", 11210).getInt()).setUnlocalizedName("AtomicDisassembler");
-		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", 11211).getInt()).setUnlocalizedName("AtomicCore");
-		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", 11212).getInt()).setUnlocalizedName("EnrichedAlloy");
-		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", 11213).getInt()).setUnlocalizedName("ItemProxy");
-		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", 11214).getInt()).setUnlocalizedName("ControlCircuit");
-		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", 11215).getInt()).setUnlocalizedName("EnrichedIron");
-		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", 11216).getInt()).setUnlocalizedName("CompressedCarbon");
-		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", 11217).getInt()).setUnlocalizedName("PortableTeleporter");
-		TeleportationCore = new ItemMekanism(configuration.getItem("TeleportationCore", 11218).getInt()).setUnlocalizedName("TeleportationCore");
-		Clump = new ItemClump(configuration.getItem("Clump", 11219).getInt());
-		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", 11220).getInt());
-		Configurator = new ItemConfigurator(configuration.getItem("Configurator", 11221).getInt()).setUnlocalizedName("Configurator");
-		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", 11222).getInt()).setUnlocalizedName("NetworkReader");
-		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", 11223).getInt()).setUnlocalizedName("Jetpack");
-		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", 11224).getInt()).setUnlocalizedName("WalkieTalkie");
-		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", 11225).getInt()).setUnlocalizedName("MultipartTransmitter");
-		Balloon = new ItemBalloon(configuration.getItem("Balloon", 11226).getInt()).setUnlocalizedName("Balloon");
-		Shard = new ItemShard(configuration.getItem("Shard", 11227).getInt());
-		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", 11228).getInt()).setUnlocalizedName("ElectrolyticCore");
-		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", 11229).getInt()).setUnlocalizedName("CompressedRedstone");
-		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", 11230).getInt()).setUnlocalizedName("Sawdust");
-		Salt = new ItemMekanism(configuration.getItem("Salt", 11231).getInt()).setUnlocalizedName("Salt");
-		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", 11232).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
-		Crystal = new ItemCrystal(configuration.getItem("Crystal", 11233).getInt());
-		FrictionBoots = new ItemFrictionBoots(configuration.getItem("FrictionBoots", 11234).getInt()).setUnlocalizedName("FrictionBoots");
+		PartTransmitter = new ItemPartTransmitter(configuration.getItem("MultipartTransmitter", ITEM_ID++).getInt()).setUnlocalizedName("MultipartTransmitter");
+		EnrichedAlloy = new ItemMekanism(configuration.getItem("EnrichedAlloy", ITEM_ID++).getInt()).setUnlocalizedName("EnrichedAlloy");
+		EnrichedIron = new ItemMekanism(configuration.getItem("EnrichedIron", ITEM_ID++).getInt()).setUnlocalizedName("EnrichedIron");
+		ControlCircuit = new ItemMekanism(configuration.getItem("ControlCircuit", ITEM_ID++).getInt()).setUnlocalizedName("ControlCircuit");
+		AtomicCore = new ItemMekanism(configuration.getItem("AtomicCore", ITEM_ID++).getInt()).setUnlocalizedName("AtomicCore");
+		TeleportationCore = new ItemMekanism(configuration.getItem("TeleportationCore", ITEM_ID++).getInt()).setUnlocalizedName("TeleportationCore");
+		ElectrolyticCore = new ItemMekanism(configuration.getItem("ElectrolyticCore", ITEM_ID++).getInt()).setUnlocalizedName("ElectrolyticCore");
+		CompressedCarbon = new ItemMekanism(configuration.getItem("CompressedCarbon", ITEM_ID++).getInt()).setUnlocalizedName("CompressedCarbon");
+		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", ITEM_ID++).getInt()).setUnlocalizedName("CompressedRedstone");
+		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("SpeedUpgrade");
+		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("EnergyUpgrade");
+		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", ITEM_ID++).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
+		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", ITEM_ID++).getInt()).setUnlocalizedName("Dictionary");
+		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", ITEM_ID++).getInt()).setUnlocalizedName("ElectricBow");
+		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", ITEM_ID++).getInt()).setUnlocalizedName("PortableTeleporter");
+		Configurator = new ItemConfigurator(configuration.getItem("Configurator", ITEM_ID++).getInt()).setUnlocalizedName("Configurator");
+		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", ITEM_ID++).getInt()).setUnlocalizedName("NetworkReader");
+		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", ITEM_ID++).getInt()).setUnlocalizedName("WalkieTalkie");
+		AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", ITEM_ID++).getInt()).setUnlocalizedName("AtomicDisassembler");
+		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", ITEM_ID++).getInt()).setUnlocalizedName("GasMask");
+		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", ITEM_ID++).getInt()).setUnlocalizedName("ScubaTank");
+		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", ITEM_ID++).getInt()).setUnlocalizedName("Jetpack");
+		ArmoredJetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("ArmoredJetpack", ITEM_ID++).getInt()).setUnlocalizedName("ArmoredJetpack");
+		FreeRunners = new ItemFreeRunners(configuration.getItem("FreeRunners", ITEM_ID++).getInt()).setUnlocalizedName("FreeRunners");
+		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", ITEM_ID++).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
+		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", ITEM_ID++).getInt()).setUnlocalizedName("Sawdust");
+		Salt = new ItemMekanism(configuration.getItem("Salt", ITEM_ID++).getInt()).setUnlocalizedName("Salt");
+		Ingot = new ItemIngot(configuration.getItem("Ingot", ITEM_ID++).getInt());
+		DirtyDust = new ItemDirtyDust(configuration.getItem("DirtyDust", ITEM_ID++).getInt());
+		Clump = new ItemClump(configuration.getItem("Clump", ITEM_ID++).getInt());
+		Shard = new ItemShard(configuration.getItem("Shard", ITEM_ID++).getInt());
+		Crystal = new ItemCrystal(configuration.getItem("Crystal", ITEM_ID++).getInt());
+		Dust = new ItemDust(configuration.getItem("Dust", ITEM_ID++).getInt());
+		Robit = (ItemRobit)new ItemRobit(configuration.getItem("Robit", ITEM_ID++).getInt()).setUnlocalizedName("Robit");
+		Balloon = new ItemBalloon(configuration.getItem("Balloon", ITEM_ID++).getInt()).setUnlocalizedName("Balloon");
+		
+		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", ITEM_ID++).getInt()).setUnlocalizedName("ItemProxy");
 
 		configuration.save();
 		
@@ -831,7 +840,8 @@ public class Mekanism
 		GameRegistry.registerItem(Salt, "Salt");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(Crystal, "Crystal");
-		GameRegistry.registerItem(FrictionBoots, "FrictionBoots");
+		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
+		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 	}
 	
 	/**

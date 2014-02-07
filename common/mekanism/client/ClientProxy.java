@@ -334,11 +334,12 @@ public class ClientProxy extends CommonProxy
         MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.ArmoredJetpack.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon.itemID, handler);
-        MinecraftForgeClient.registerItemRenderer(Mekanism.FrictionBoots.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler.itemID, handler);
 		
 		//Register block handlers

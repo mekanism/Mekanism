@@ -19,7 +19,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
-import mekanism.common.item.ItemFrictionBoots;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
@@ -310,7 +310,7 @@ public class ClientTickHandler implements ITickHandler
 				}
 			}
 			
-			if(mc.thePlayer.getCurrentItemOrArmor(1) != null && mc.thePlayer.getCurrentItemOrArmor(1).getItem() instanceof ItemFrictionBoots)
+			if(mc.thePlayer.getCurrentItemOrArmor(1) != null && mc.thePlayer.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
 			{
 				mc.thePlayer.stepHeight = 1.002F;
 			}

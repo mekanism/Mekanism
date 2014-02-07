@@ -4,7 +4,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelFrictionBoots extends ModelBase
+public class ModelFreeRunners extends ModelBase
 {
 	ModelRenderer SpringL;
 	ModelRenderer SpringR;
@@ -13,7 +13,7 @@ public class ModelFrictionBoots extends ModelBase
 	ModelRenderer SupportL;
 	ModelRenderer SupportR;
 
-	public ModelFrictionBoots()
+	public ModelFreeRunners()
 	{
 		textureWidth = 64;
 		textureHeight = 32;

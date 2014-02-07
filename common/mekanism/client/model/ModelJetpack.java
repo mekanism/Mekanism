@@ -210,6 +210,7 @@ public class ModelJetpack extends ModelBase
 		light1.render(size);
 		light2.render(size);
 		light3.render(size);
+		Packcore.render(size);
 		MekanismRenderer.glowOff();
 	}
 
