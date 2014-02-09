@@ -48,7 +48,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	    		cacheGas = null;
     		}
     		
-    		if(getTransmitterNetwork(false) != null)
+    		if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0)
     		{
 	    		int last = lastWrite != null ? lastWrite.amount : 0;
 	    		
