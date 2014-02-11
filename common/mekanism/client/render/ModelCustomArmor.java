@@ -200,7 +200,7 @@ public class ModelCustomArmor extends ModelBiped
 	public static enum ArmorModel 
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
-		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "ArmoredJetpack.png")),
+		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
 		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
 		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
 		FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));

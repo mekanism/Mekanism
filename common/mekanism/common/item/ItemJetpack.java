@@ -20,11 +20,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.ISpecialArmor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemJetpack extends ItemArmor implements IGasItem
+public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 {
 	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
@@ -270,4 +272,37 @@ public class ItemJetpack extends ItemArmor implements IGasItem
 			return color + MekanismUtils.localize(unlocalized);
 		}
 	}
+
+	@Override
+	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
+	{
+		if(this == Mekanism.Jetpack)
+		{
+			return new ArmorProperties(0, 0, 0);
+		}
+		else if(this == Mekanism.ArmoredJetpack)
+		{
+			return new ArmorProperties(1, 0.8, 5);
+		}
+		
+		return new ArmorProperties(0, 0, 0);
+	}
+
+	@Override
+	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
+	{
+		if(armor.getItem() == Mekanism.Jetpack)
+		{
+			return 0;
+		}
+		else if(armor.getItem() == Mekanism.ArmoredJetpack)
+		{
+			return 12;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
 }

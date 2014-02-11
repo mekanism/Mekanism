@@ -139,6 +139,7 @@ import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
 import cpw.mods.fml.common.FMLLog;
+import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -754,6 +755,20 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedRedstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 100));
         InfuseRegistry.registerInfuseObject(new ItemStack(Block.mushroomRed), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Block.mushroomBrown), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
+        
+        //Fuels
+        GameRegistry.registerFuelHandler(new IFuelHandler() {
+			@Override
+			public int getBurnTime(ItemStack fuel)
+			{
+				if(fuel.isItemEqual(new ItemStack(BasicBlock, 1, 3)))
+				{
+					return 1800;
+				}
+				
+				return 0;
+			}
+        });
 	}
 	
 	/**
