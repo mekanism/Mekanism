@@ -20,7 +20,7 @@
 		<delete dir="${dir.development}/forge"/>
 
 		<copy todir="${dir.development}">
-			<fileset dir="../Minecraft Forge Latest/"/>
+			<fileset dir="../../Minecraft Forge Latest/"/>
 		</copy>
 
 		<get src="https://www.dropbox.com/s/0txj0orswr2ru5z/CodeChickenCore-dev-latest.jar?dl=1"
