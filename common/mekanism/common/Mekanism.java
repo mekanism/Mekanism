@@ -813,7 +813,6 @@ public class Mekanism
 		Dust = new ItemDust(configuration.getItem("Dust", ITEM_ID++).getInt());
 		Robit = (ItemRobit)new ItemRobit(configuration.getItem("Robit", ITEM_ID++).getInt()).setUnlocalizedName("Robit");
 		Balloon = new ItemBalloon(configuration.getItem("Balloon", ITEM_ID++).getInt()).setUnlocalizedName("Balloon");
-		
 		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", ITEM_ID++).getInt()).setUnlocalizedName("ItemProxy");
 
 		configuration.save();
