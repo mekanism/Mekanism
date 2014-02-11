@@ -18,6 +18,8 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	public int mainX;
 	public int mainY;
 	public int mainZ;
+	
+	public boolean prevPower;
 
 	public void setMainLocation(int x, int y, int z)
 	{
@@ -47,6 +49,36 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		return false;
 	}
+	
+	public void onNeighborChange(int id)
+	{
+		TileEntity tile = worldObj.getBlockTileEntity(mainX, mainY, mainZ);
+		
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
+			
+			boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+			
+			if(prevPower != power)
+			{
+				if(power)
+				{
+					onPower();
+				}
+				else {
+					onNoPower();
+				}
+				
+				prevPower = power;
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.worldObj.provider.dimensionId);
+			}
+		}
+	}
+	
+	public void onPower() {}
+	
+	public void onNoPower() {}
 
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
@@ -54,6 +86,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		mainX = dataStream.readInt();
 		mainY = dataStream.readInt();
 		mainZ = dataStream.readInt();
+		prevPower = dataStream.readBoolean();
 	}
 	
 	@Override
@@ -64,6 +97,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
         mainX = nbtTags.getInteger("mainX");
         mainY = nbtTags.getInteger("mainY");
         mainZ = nbtTags.getInteger("mainZ");
+        prevPower = nbtTags.getBoolean("prevPower");
     }
 
 	@Override
@@ -74,6 +108,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
         nbtTags.setInteger("mainX", mainX);
         nbtTags.setInteger("mainY", mainY);
         nbtTags.setInteger("mainZ", mainZ);
+        nbtTags.setBoolean("prevPower", prevPower);
     }
 	
 	@Override
@@ -82,6 +117,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		data.add(mainX);
 		data.add(mainY);
 		data.add(mainZ);
+		data.add(prevPower);
 		
 		return data;
 	}

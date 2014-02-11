@@ -50,6 +50,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
     public int furnaceBurnTime = 0;
     public int currentItemBurnTime = 0;
     public int furnaceCookTime = 0;
+    
+    public boolean texTick;
 	
 	public EntityRobit(World world) 
 	{
@@ -58,9 +60,9 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		setSize(0.5F, 0.5F);
 		
 		getNavigator().setAvoidsWater(true);
-
+		
 		tasks.addTask(1, new RobitAIPickup(this, 1.0F));
-		tasks.addTask(2, new RobitAIFollow(this, 1.0F, 10.0F, 2.0F));
+		tasks.addTask(2, new RobitAIFollow(this, 1.0F, 4.0F, 2.0F));
 		tasks.addTask(3, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 		tasks.addTask(3, new EntityAILookIdle(this));
 		tasks.addTask(4, new EntityAISwimming(this));

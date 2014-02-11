@@ -28,9 +28,17 @@ item.GasMask.name=Gas Mask
 item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
 item.CompressedRedstone.name=Compressed Redstone
+item.Sawdust.name=Sawdust
+item.Salt.name=Salt
+item.BrineBucket.name=Brine Bucket
+item.FreeRunners.name=Free Runners
+item.ArmoredJetpack.name=Armored Jetpack
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
+
+//Cardboard Box
+tile.CardboardBox.name=Cardboard Box
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Block
@@ -47,6 +55,11 @@ tile.BasicBlock.DynamicGlass.name=Dynamic Glass
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
 tile.BasicBlock.CopperBlock.name=Copper Block
 tile.BasicBlock.TinBlock.name=Tin Block
+tile.BasicBlock.SalinationController.name=Salination Controller
+tile.BasicBlock.SalinationValve.name=Salination Valve
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.SalinationBlock.name=Salination Block
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
@@ -73,6 +86,17 @@ tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
 tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
 tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
 tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
+tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
+tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
+tile.MachineBlock2.ChemicalCrystalizer.name=Chemical Crystalizer
+
+//Infuse types
+infuse.carbon=Carbon
+infuse.tin=Tin
+infuse.diamond=Diamond
+infuse.redstone=Redstone
+infuse.fungi=Fungi
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -128,6 +152,16 @@ item.silverShard.name=Silver Shard
 item.obsidianShard.name=Obsidian Shard
 item.leadShard.name=Lead Shard
 
+//Crystals
+item.ironCrystal.name=Iron Crystal
+item.goldCrystal.name=Gold Crystal
+item.osmiumCrystal.name=Osmium Crystal
+item.copperCrystal.name=Copper Crystal
+item.tinCrystal.name=Tin Crystal
+item.silverCrystal.name=Silver Crystal
+item.obsidianCrystal.name=Obsidian Crystal
+item.leadCrystal.name=Lead Crystal
+
 //Dirty Dust
 item.dirtyIronDust.name=Dirty Iron Dust
 item.dirtyGoldDust.name=Dirty Gold Dust
@@ -156,6 +190,26 @@ gas.sulfurDioxideGas=Sulfur Dioxide
 gas.sulfurTrioxideGas=Sulfur Trioxide
 gas.sulfuricAcid=Sulfuric Acid
 gas.hydrogenChloride=Hydrogen Chloride
+gas.liquidOsmium=Liquid Osmium
+gas.liquidStone=Liquid Stone
+
+gas.iron=Iron Slurry
+gas.gold=Gold Slurry
+gas.osmium=Osmium Slurry
+gas.copper=Copper Slurry
+gas.tin=Tin Slurry
+gas.silver=Silver Slurry
+gas.obsidian=Obsidian Slurry
+gas.lead=Lead Slurry
+
+gas.cleanIron=Clean Iron Slurry
+gas.cleanGold=Clean Gold Slurry
+gas.cleanOsmium=Clean Osmium Slurry
+gas.cleanCopper=Clean Copper Slurry
+gas.cleanTin=Clean Tin Slurry
+gas.cleanSilver=Clean Silver Slurry
+gas.cleanObsidian=Clean Obsidian Slurry
+gas.cleanLead=Clean Lead Slurry
 
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
@@ -165,6 +219,17 @@ fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
 fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
+fluid.brine=Brine
+
+//OreGas names
+oregas.iron=Iron Ore
+oregas.gold=Gold Ore
+oregas.osmium=Osmium Ore
+oregas.copper=Copper Ore
+oregas.tin=Tin Ore
+oregas.silver=Silver Ore
+oregas.obsidian=Obsidian Ore
+oregas.lead=Lead Ore
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
@@ -200,9 +265,10 @@ gui.state=State
 gui.on=On
 gui.off=Off
 gui.filters=Filters
+gui.idle=Idle
 
 gui.chemicalInfuser.short=C. Infuser
-gui.chemicalCombiner.short=C. Combiner
+gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
 
 gui.dictionary.noKey=No key.
 gui.dictionary.key=Key
@@ -274,7 +340,6 @@ gui.digitalMiner.pull=Pull
 gui.digitalMiner.silk=Silk
 gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
-gui.digitalMiner.idle=Idle
 gui.digitalMiner.inverse=Inverse mode
 
 //Item and block tooltip text
@@ -315,6 +380,11 @@ tooltip.Chargepad=A universal chargepad that can charge any energized item !nfro
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
 tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
+tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
+tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
+tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
+tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
+tooltip.ChemicalCrystalizer=An ultimate machine used to crystalize !npurified ore slurry into ore crystals.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
@@ -349,6 +419,10 @@ color.white=White
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
+//NEI stuff
+nei.chemicalInjectionChamber=C. Injection Chamber
+nei.rotaryCondensentrator=R. Condensentrator
+
 //**********//
 //GENERATORS//
 //**********//
@@ -356,6 +430,9 @@ itemGroup.tabMekanism=Mekanism
 //Items
 item.BioFuel.name=Bio Fuel
 item.SolarPanel.name=Solar Panel
+
+//Infuse types
+infuse.bio=Biomass
 
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
@@ -453,17 +530,3 @@ item.SteelAxe.name=Steel Axe
 item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=Tesla Coil
-tile.Multimeter.name=Multimeter
-tile.ElectromagneticContractor.name=Electromagnetic Contractor
-tile.Battery.name=Modular Battery
-
-//General text
-text.contractor.success=Linked contractor successfully
-text.tesla.success=Linked tesla successfully

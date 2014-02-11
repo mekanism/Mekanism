@@ -13,8 +13,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ModelJetpack extends ModelBase
 {
 	ModelRenderer Packtop;
-	ModelRenderer Strapleft;
-	ModelRenderer Strapright;
 	ModelRenderer Packbottom;
 	ModelRenderer Thrusterleft;
 	ModelRenderer Thrusterright;
@@ -47,18 +45,6 @@ public class ModelJetpack extends ModelBase
 		Packtop.setTextureSize(128, 64);
 		Packtop.mirror = true;
 		setRotation(Packtop, 0.2094395F, 0F, 0F);
-		Strapleft = new ModelRenderer(this, 122, 35);
-		Strapleft.addBox(2.5F, 3.4F, 3.9F, 1, 2, 2);
-		Strapleft.setRotationPoint(0F, 0F, 0F);
-		Strapleft.setTextureSize(128, 64);
-		Strapleft.mirror = true;
-		setRotation(Strapleft, -0.0698132F, 0F, 0F);
-		Strapright = new ModelRenderer(this, 122, 35);
-		Strapright.addBox(-3.5F, 3.4F, 3.9F, 1, 2, 2);
-		Strapright.setRotationPoint(0F, 0F, 0F);
-		Strapright.setTextureSize(128, 64);
-		Strapright.mirror = true;
-		setRotation(Strapright, -0.0698132F, 0F, 0F);
 		Packbottom = new ModelRenderer(this, 92, 42);
 		Packbottom.addBox(-4F, 4.1F, 1.5F, 8, 4, 4);
 		Packbottom.setRotationPoint(0F, 0F, 0F);
@@ -184,8 +170,6 @@ public class ModelJetpack extends ModelBase
 	public void render(float size)
 	{
 		Packtop.render(size);
-		Strapleft.render(size);
-		Strapright.render(size);
 		Packbottom.render(size);
 		Thrusterleft.render(size);
 		Thrusterright.render(size);
@@ -226,6 +210,7 @@ public class ModelJetpack extends ModelBase
 		light1.render(size);
 		light2.render(size);
 		light3.render(size);
+		Packcore.render(size);
 		MekanismRenderer.glowOff();
 	}
 

@@ -1,5 +1,7 @@
 package mekanism.client.render;
 
+import mekanism.client.model.ModelArmoredJetpack;
+import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
@@ -35,8 +37,8 @@ public class ModelCustomArmor extends ModelBiped
 		resetPart(bipedBody, 0, 0, 0);
 		resetPart(bipedRightArm, 5, 2, 0);
 		resetPart(bipedLeftArm, -5, 2, 0);
-		resetPart(bipedRightLeg, 2, 12, 0);
-		resetPart(bipedLeftLeg, -2, 12, 0);
+		resetPart(bipedRightLeg, 0, 0, 0);
+		resetPart(bipedLeftLeg, 0, 0, 0);
 
 		bipedHeadwear.cubeList.clear();
 		bipedEars.cubeList.clear();
@@ -63,6 +65,13 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			bipedBody.isHidden = false;
 			bipedBody.showModel = true;
+		}
+		else if(modelType.armorSlot == 3)
+		{
+			bipedLeftLeg.isHidden = false;
+			bipedLeftLeg.showModel = true;
+			bipedRightLeg.isHidden = false;
+			bipedRightLeg.showModel = true;
 		}
 
 		setRotationAngles(f, f1, f2, f3, f4, size, entity);
@@ -128,13 +137,33 @@ public class ModelCustomArmor extends ModelBiped
 					{
 						ArmorModel.jetpackModel.render(0.0625F);
 					}
+					else if(biped.modelType == ArmorModel.ARMOREDJETPACK)
+					{
+						ArmorModel.armoredJetpackModel.render(0.0625F);
+					}
 					else if(biped.modelType == ArmorModel.SCUBATANK)
 					{
 						ArmorModel.scubaTankModel.render(0.0625F);
 					}
 					else if(biped.modelType == ArmorModel.GASMASK)
 					{
+						GL11.glTranslatef(0, 0, -0.05F);
 						ArmorModel.gasMaskModel.render(0.0625F);
+					}
+					else if(biped.modelType == ArmorModel.FREERUNNERS)
+					{
+						GL11.glScalef(1.02F, 1.02F, 1.02F);
+						
+						if(partRender == biped.bipedLeftLeg)
+						{
+							GL11.glTranslatef(-0.1375F, -0.75F, -0.0625F);
+							ArmorModel.freeRunnersModel.renderLeft(0.0625F);
+						}
+						else if(partRender == biped.bipedRightLeg)
+						{
+							GL11.glTranslatef(0.1375F, -0.75F, -0.0625F);
+							ArmorModel.freeRunnersModel.renderRight(0.0625F);
+						}
 					}
 				}
 				
@@ -160,6 +189,10 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			return partRender == biped.bipedBody;
 		}
+		else if(type.armorSlot == 3)
+		{
+			return partRender == biped.bipedLeftLeg || partRender == biped.bipedRightLeg;
+		}
 		
 		return false;
 	}
@@ -167,15 +200,19 @@ public class ModelCustomArmor extends ModelBiped
 	public static enum ArmorModel 
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
+		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
 		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
-		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
+		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
+		FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
 
 		public int armorSlot;
 		public ResourceLocation resource;
 		
 		public static ModelJetpack jetpackModel = new ModelJetpack();
+		public static ModelArmoredJetpack armoredJetpackModel = new ModelArmoredJetpack();
 		public static ModelGasMask gasMaskModel = new ModelGasMask();
 		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
+		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();
 
 		private ArmorModel(int i, ResourceLocation r)
 		{

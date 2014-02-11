@@ -21,7 +21,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "PurificationChamber", new ResourceLocation("mekanism", "gui/GuiPurificationChamber.png"), Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy, 1200);
+		super("PurificationChamber.ogg", "PurificationChamber", new ResourceLocation("mekanism", "gui/GuiPurificationChamber.png"), Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
 	}
 	
 	@Override
@@ -31,13 +31,13 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	}
 	
 	@Override
-	public int getFuelTicks(ItemStack itemstack)
+	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(itemstack.isItemEqual(new ItemStack(Item.flint))) return 300;
+		if(itemstack.isItemEqual(new ItemStack(Item.flint))) return new GasStack(GasRegistry.getGas("oxygen"), 10);
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen")) return 1;
+				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen")) return new GasStack(GasRegistry.getGas("oxygen"), 1);
 		
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -45,9 +45,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		if(stack.getGas() == GasRegistry.getGas("oxygen"))
 		{
-			int toUse = Math.min(MAX_SECONDARY_ENERGY-secondaryEnergyStored, stack.amount);
-			secondaryEnergyStored += toUse;
-	    	return toUse;
+	    	return gasTank.receive(stack, true);
 		}
 		
 		return 0;
@@ -62,10 +60,10 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	@Override
 	public void handleSecondaryFuel()
 	{
-		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY && inventory[1].getItem() instanceof IGasItem)
+		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
 		{
-			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("oxygen"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
-			setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("oxygen"), gasTank.getNeeded());
+			gasTank.receive(removed, true);
 			return;
 		}
 		
@@ -77,16 +75,10 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		return true;
 	}
-
+	
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public boolean isValidGas(Gas gas)
 	{
-		return null;
-	}
-
-	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
-	{
-		return false;
+		return gas == GasRegistry.getGas("oxygen");
 	}
 }

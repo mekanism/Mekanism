@@ -75,22 +75,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			else {
 				seesSun = false;
 			}
-			
-			for(int y = yCoord+1; y < 256; y++)
-			{
-				Coord4D obj = new Coord4D(xCoord, y, zCoord, worldObj.provider.dimensionId);
-				Block block = Block.blocksList[obj.getBlockId(worldObj)];
-				
-				if(block != null)
-				{
-					if(block.isOpaqueCube() || block.blockID == MekanismGenerators.generatorID && obj.getMetadata(worldObj) == GeneratorType.SOLAR_GENERATOR.meta)
-					{
-						seesSun = false;
-						break;
-					}
-				}
-			}
-			
+
 			if(canOperate())
 			{
 				setActive(true);

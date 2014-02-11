@@ -158,7 +158,12 @@ public class Coord4D
 	 */
 	public Coord4D getFromSide(ForgeDirection side)
 	{
-		return new Coord4D(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ, dimensionId);
+		return getFromSide(side, 1);
+	}
+	
+	public Coord4D getFromSide(ForgeDirection side, int amount)
+	{
+		return new Coord4D(xCoord+(side.offsetX*amount), yCoord+(side.offsetY*amount), zCoord+(side.offsetZ*amount), dimensionId);
 	}
 	
 	/**

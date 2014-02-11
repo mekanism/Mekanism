@@ -2,15 +2,28 @@ package mekanism.common.integration;
 
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.Recipes;
+
+import java.util.ArrayList;
+
+import mekanism.api.AdvancedInput;
+import mekanism.api.ChanceOutput;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -18,6 +31,42 @@ public final class OreDictManager
 {
 	public static void init()
 	{
+		addLogRecipes();
+		
+		for(ItemStack ore : OreDictionary.getOres("plankWood"))
+		{
+			if(ore.getHasSubtypes())
+			{
+				ItemStack wildStack = new ItemStack(ore.itemID, 1, OreDictionary.WILDCARD_VALUE);
+				
+				if(!Recipe.PRECISION_SAWMILL.containsRecipe(wildStack))
+				{
+					RecipeHandler.addPrecisionSawmillRecipe(wildStack, new ChanceOutput(new ItemStack(Item.stick, 6), new ItemStack(Mekanism.Sawdust), 0.25));
+				}
+			}
+			else {
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ChanceOutput(new ItemStack(Item.stick, 6), new ItemStack(Mekanism.Sawdust), 0.25));
+			}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("oreNetherSteel"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 4, 5));
+		}
+		
+		if(OreDictionary.getOres("itemRubber").size() > 0)
+		{
+			for(ItemStack ore : OreDictionary.getOres("woodRubber"))
+			{
+				RecipeHandler.addPrecisionSawmillRecipe(MekanismUtils.size(ore, 1), new ChanceOutput(new ItemStack(Block.planks, 4), MekanismUtils.size(OreDictionary.getOres("itemRubber").get(0), 1), 1F));
+			}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustSulfur"))
+		{
+			RecipeHandler.addChemicalOxidizerRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 100));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("dustRefinedObsidian"))
 		{
 			RecipeHandler.addOsmiumCompressorRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Ingot, 1, 0));
@@ -104,44 +153,44 @@ public final class OreDictManager
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 7));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardIron"))
+		for(ItemStack ore : OreDictionary.getOres("crystalIron"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 0));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 0));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardGold"))
+		for(ItemStack ore : OreDictionary.getOres("crystalGold"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 1));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 1));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardOsmium"))
+		for(ItemStack ore : OreDictionary.getOres("crystalOsmium"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 2));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 2));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardCopper"))
+		for(ItemStack ore : OreDictionary.getOres("crystalCopper"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 3));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 3));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardTin"))
+		for(ItemStack ore : OreDictionary.getOres("crystalTin"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 4));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 4));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardSilver"))
+		for(ItemStack ore : OreDictionary.getOres("crystalSilver"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 5));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 5));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardObsidian"))
+		for(ItemStack ore : OreDictionary.getOres("crystalObsidian"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 6));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 6));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("shardLead"))
+		for(ItemStack ore : OreDictionary.getOres("crystalLead"))
 		{
-			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 1, 7));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 1, 7));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDirtyIron"))
@@ -183,49 +232,73 @@ public final class OreDictManager
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 6));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 3));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 3));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 3));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("copper"), 1000));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreTin"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 7));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 4));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 4));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 4));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("tin"), 1000));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreOsmium"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 2));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 2));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 2));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 2));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("osmium"), 1000));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreIron"))
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Mekanism.Dust, 2, 0));
-	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreIron), new ItemStack(Mekanism.Clump, 3, 0));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 0));
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 0));
+	        RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 0));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 0));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("iron"), 1000));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreGold"))
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Mekanism.Dust, 2, 1));
-	        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.oreGold), new ItemStack(Mekanism.Clump, 3, 1));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 1));
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 1));
+	        RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 1));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 1));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("gold"), 1000));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreSilver"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 8));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 5));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 5));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 5));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("silver"), 1000));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("oreLead"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 2, 9));
 			RecipeHandler.addPurificationChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Clump, 3, 7));
-			RecipeHandler.addChemicalInjectionChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Shard, 4, 7));
+			RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(MekanismUtils.size(ore, 1), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Shard, 4, 7));
+			RecipeHandler.addChemicalDissolutionChamberRecipe(MekanismUtils.size(ore, 1), new GasStack(GasRegistry.getGas("lead"), 1000));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("oreNickel"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustNickel").get(0), 2));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 6));
+		}
+	
+		for(ItemStack ore : OreDictionary.getOres("ingotTin"))
+		{
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 7));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotLead"))
@@ -258,6 +331,13 @@ public final class OreDictManager
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Item.glowstone));
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("ingotNickel"))
+		{
+			try {
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustNickel").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Mekanism.Ingot, 1, 2), MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			
@@ -282,16 +362,6 @@ public final class OreDictManager
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Item.coal, 1, 1), MekanismUtils.size(OreDictionary.getOres("dustCharcoal").get(0), 1));
 		} catch(Exception e) {}
-		
-		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
-		{
-			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 6));
-		}
-	
-		for(ItemStack ore : OreDictionary.getOres("ingotTin"))
-		{
-			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 7));
-		}
 		
 		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
@@ -366,5 +436,58 @@ public final class OreDictManager
 				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
+	}
+	
+	/**
+	 * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Taken from CofhCore.
+	 */
+	public static void addLogRecipes()
+	{
+		Container tempContainer = new Container() {
+			public boolean canInteractWith(EntityPlayer player)
+			{
+				return false;
+			}
+		};
+		
+		InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
+		ArrayList recipeList = (ArrayList)CraftingManager.getInstance().getRecipeList();
+
+		for(int i = 1; i < 9; i++)
+		{
+			tempCrafting.setInventorySlotContents(i, null);
+		}
+
+		ArrayList registeredOres = OreDictionary.getOres("logWood");
+		
+		for(int i = 0; i < registeredOres.size(); i++)
+		{
+			ItemStack logEntry = (ItemStack)registeredOres.get(i);
+
+			if(logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+			{
+				for(int j = 0; j < 16; j++)
+				{
+					ItemStack log = new ItemStack(logEntry.itemID, 1, j);
+					tempCrafting.setInventorySlotContents(0, log);
+					ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
+
+					if(resultEntry != null)
+					{
+						RecipeHandler.addPrecisionSawmillRecipe(log, new ChanceOutput(StackUtils.size(resultEntry, 6), new ItemStack(Mekanism.Sawdust), 1));
+					}
+				}
+			}
+			else {
+				ItemStack log = StackUtils.size(logEntry, 1);
+				tempCrafting.setInventorySlotContents(0, log);
+				ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
+
+				if(resultEntry != null)
+				{
+					RecipeHandler.addPrecisionSawmillRecipe(log, new ChanceOutput(StackUtils.size(resultEntry, 6), new ItemStack(Mekanism.Sawdust), 1));
+				}
+			}
+		}
 	}
 }

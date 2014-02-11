@@ -10,7 +10,9 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -19,6 +21,8 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
@@ -68,7 +72,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     	this(entity.worldObj);
     	
     	latchedEntity = entity;
-    	setPosition(latchedEntity.posX, latchedEntity.posY + 3F, latchedEntity.posZ);
+    	setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
     	
         prevPosX = posX;
         prevPosY = posY;
@@ -198,7 +202,20 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
         else if(latchedEntity != null && latchedEntity.getHealth() > 0)
         {
         	int floor = getFloor(latchedEntity);
-        	setPosition(posX = latchedEntity.posX, posY = latchedEntity.posY + 3F, posZ = latchedEntity.posZ);
+        	
+        	if(latchedEntity.posY-(floor+1) < -0.1)
+        	{
+        		latchedEntity.motionY = Math.max(0.04, latchedEntity.motionY*1.015);
+        	}
+        	else if(latchedEntity.posY-(floor+1) > 0.1)
+        	{
+          		latchedEntity.motionY = Math.min(-0.04, latchedEntity.motionY*1.015);
+        	}
+        	else {
+        		latchedEntity.motionY = 0;
+        	}
+        	
+        	setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
         }
     }
     
@@ -210,9 +227,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     	
     	for(int i = yPos; i > 0; i--)
     	{
-    		if(!worldObj.isAirBlock(xPos, i, zPos))
+    		if(i < 256 && !worldObj.isAirBlock(xPos, i, zPos))
     		{
-    			return i;
+    			return i+1;
     		}
     	}
     	
@@ -244,17 +261,23 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			for(int i = 0; i < 10; i++)
 			{
 				try {
-					Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
-					
-					EntityFX fx = new EntityReddustFX(worldObj, pos.xPos, pos.yPos, pos.zPos, 1, 0, 0, 0);
-					fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
-					
-					Minecraft.getMinecraft().effectRenderer.addEffect(fx);
-				} catch(Exception e) {}
+					doParticle();
+				} catch(Throwable t) {}
 			}
 		}
 		
 		setDead();
+    }
+    
+    @SideOnly(Side.CLIENT)
+    private void doParticle()
+    {
+		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
+		
+		EntityFX fx = new EntityReddustFX(worldObj, pos.xPos, pos.yPos, pos.zPos, 1, 0, 0, 0);
+		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
+		
+		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
     }
 	
     @Override
@@ -390,6 +413,26 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
     public boolean isInRangeToRenderVec3D(Vec3 par1Vec3)
     {
 		return true;
+    }
+	
+    @Override
+    public boolean attackEntityFrom(DamageSource dmgSource, float damage)
+    {
+        if(isEntityInvulnerable())
+        {
+            return false;
+        }
+        else {
+            setBeenAttacked();
+            
+            if(dmgSource != DamageSource.magic && dmgSource != DamageSource.drown && dmgSource != DamageSource.fall)
+            {
+            	pop();
+            	return true;
+            }
+            
+            return false;
+        }
     }
 	
 	public boolean isLatched()

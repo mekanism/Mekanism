@@ -11,4 +11,6 @@ public final class ObfuscatedNames
 	public static String[] GuiContainer_xSize = new String[] {"xSize", "field_74194_b", "c"};
 	public static String[] GuiContainer_ySize = new String[] {"ySize", "field_74195_c", "d"};
 	public static String[] GuiScreen_fontRenderer = new String[] {"fontRenderer", "field_73886_k", "o"};
+	public static String[] GuiContainer_guiLeft = new String[] {"guiLeft", "field_74198_m"};
+	public static String[] GuiContainer_guiTop = new String[] {"guiTop", "field_74197_n"};
 }

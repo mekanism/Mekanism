@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import java.util.ArrayList;
 
-import mekanism.api.ChemicalInput;
+import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -62,6 +62,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	
 	/** Type type of gas this block is dumping. */
 	public boolean dumpRight = false;
+	
+	/** Whether to dump excess gas when a tank is full */
+	public boolean dumpExcess = true; // default to true until gui elements added
 
 	public TileEntityElectrolyticSeparator()
 	{
@@ -136,9 +139,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(tileEntity instanceof IGasHandler)
 					{
-						if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), leftTank.getGas().getGas()))
+						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), leftTank.getGas().getGas()))
 						{
-							leftTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
+							leftTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
 						}
 					}
 				}
@@ -163,9 +166,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(tileEntity instanceof IGasHandler)
 					{
-						if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), rightTank.getGas().getGas()))
+						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), rightTank.getGas().getGas()))
 						{
-							rightTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
+							rightTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
 						}
 					}
 				}
@@ -187,7 +190,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.electrolyticSeparatorUsage;
 	}
 
-	public boolean canFillWithSwap(ChemicalInput gases)
+	public boolean canFillWithSwap(ChemicalPair gases)
 	{
 		if(gases == null)
 		{
@@ -197,13 +200,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return canFill(gases) || canFill(gases.swap());
 	}
 	
-	public boolean canFill(ChemicalInput gases)
+	public boolean canFill(ChemicalPair gases)
 	{
+		if(dumpExcess)
+		{
+			return leftTank.canReceiveType(gases.leftGas.getGas()) && rightTank.canReceiveType(gases.rightGas.getGas());
+		}
+					
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
 	}
 	
-	public void fillTanks(ChemicalInput gases)
+	public void fillTanks(ChemicalPair gases)
 	{
 		if(gases == null) return;
 

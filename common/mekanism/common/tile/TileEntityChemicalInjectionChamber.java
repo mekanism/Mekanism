@@ -21,7 +21,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 {
 	public TileEntityChemicalInjectionChamber()
 	{
-		super("ChemicalInjectionChamber.ogg", "ChemicalInjectionChamber", new ResourceLocation("mekanism", "gui/GuiChemicalInjectionChamber.png"), Mekanism.chemicalInjectionChamberUsage, 1, 200, MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy, 1200);
+		super("ChemicalInjectionChamber.ogg", "ChemicalInjectionChamber", new ResourceLocation("mekanism", "gui/GuiChemicalInjectionChamber.png"), Mekanism.chemicalInjectionChamberUsage, 1, 200, MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
 	}
 	
 	@Override
@@ -31,23 +31,21 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 	
 	@Override
-	public int getFuelTicks(ItemStack itemstack)
+	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return 5;
+		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogenChloride")) return 1;
+				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 		
-		return 0;
+		return null;
 	}
 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		if(stack.getGas() == GasRegistry.getGas("hydrogenChloride"))
+		if(isValidGas(stack.getGas()))
 		{
-			int toUse = Math.min(MAX_SECONDARY_ENERGY-secondaryEnergyStored, stack.amount);
-			secondaryEnergyStored += toUse;
-	    	return toUse;
+			return gasTank.receive(stack, true);
 		}
 		
 		return 0;
@@ -56,16 +54,22 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return type == GasRegistry.getGas("hydrogenChloride");
+		return isValidGas(type);
 	}
 	
 	@Override
 	public void handleSecondaryFuel()
 	{
-		if(inventory[1] != null && secondaryEnergyStored < MAX_SECONDARY_ENERGY && inventory[1].getItem() instanceof IGasItem)
+		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
 		{
-			GasStack removed = GasTransmission.removeGas(inventory[1], GasRegistry.getGas("hydrogenChloride"), MAX_SECONDARY_ENERGY-secondaryEnergyStored);
-			setSecondaryEnergy(secondaryEnergyStored + (removed != null ? removed.amount : 0));
+			GasStack gas = ((IGasItem)inventory[1].getItem()).getGas(inventory[1]);
+			
+			if(gas != null && isValidGas(gas.getGas()))
+			{
+				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
+				gasTank.receive(removed, true);
+			}
+			
 			return;
 		}
 		
@@ -77,16 +81,10 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		return true;
 	}
-
+	
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public boolean isValidGas(Gas gas)
 	{
-		return null;
-	}
-
-	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
-	{
-		return false;
+		return gas == GasRegistry.getGas("sulfuricAcid") || gas == GasRegistry.getGas("water") || gas == GasRegistry.getGas("hydrogenChloride");
 	}
 }

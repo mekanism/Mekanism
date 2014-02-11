@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -65,7 +66,10 @@ public class ItemGasMask extends ItemArmor
 				
 				if(tank.getFlowing(base.getCurrentItemOrArmor(3)) && tank.getGas(base.getCurrentItemOrArmor(3)) != null)
 				{
-					event.setCanceled(true);
+					if(event.source == DamageSource.magic)
+					{
+						event.setCanceled(true);
+					}
 				}
 			}
 		}

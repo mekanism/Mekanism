@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 {
-    public static TransmitterIcons tubeIcons;
+    public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 1);
     
     public float currentScale;
     
@@ -48,7 +48,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	    		cacheGas = null;
     		}
     		
-    		if(getTransmitterNetwork(false) != null)
+    		if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0)
     		{
 	    		int last = lastWrite != null ? lastWrite.amount : 0;
 	    		
@@ -177,7 +177,6 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 
     public static void registerIcons(IconRegister register)
     {
-        tubeIcons = new TransmitterIcons(1, 1);
         tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
         tubeIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
     }

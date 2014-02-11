@@ -10,6 +10,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
@@ -18,6 +19,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +30,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl
+public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 	
@@ -63,6 +65,8 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		if(worldObj.isRemote)
 		{
+			Mekanism.proxy.registerSound(this);
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -104,7 +108,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 					operatingTicks++;
 				}
 				else {
-					GasStack stack = RecipeHandler.getChemicalOxidizerOutput(inventory[0], true);
+					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], true, Recipe.CHEMICAL_OXIDIZER.get());
 					
 					gasTank.receive(stack, true);
 					operatingTicks = 0;
@@ -149,7 +153,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		if(slotID == 0)
 		{
-			return RecipeHandler.getChemicalOxidizerOutput(itemstack, false) != null;
+			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -201,7 +205,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		GasStack stack = RecipeHandler.getChemicalOxidizerOutput(inventory[0], false);
+		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], false, Recipe.CHEMICAL_OXIDIZER.get());
 		
 		if(stack == null || (gasTank.getGas() != null && (gasTank.getGas().getGas() != stack.getGas() || gasTank.getNeeded() < stack.amount)))
 		{
@@ -227,7 +231,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 		else {
 			gasTank.setGas(null);
 		}
-		
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
@@ -336,5 +339,17 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+	
+	@Override
+	public String getSoundPath()
+	{
+		return "ChemicalInfuser.ogg";
+	}
+
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
 	}
 }

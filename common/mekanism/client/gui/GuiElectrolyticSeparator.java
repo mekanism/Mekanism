@@ -1,10 +1,14 @@
 package mekanism.client.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
+
 import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
@@ -12,13 +16,13 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiElectrolyticSeparator extends GuiMekanism
@@ -28,6 +32,16 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 	public GuiElectrolyticSeparator(InventoryPlayer inventory, TileEntityElectrolyticSeparator tentity)
     {
         super(new ContainerElectrolyticSeparator(inventory, tentity));
+        
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(Mekanism.electrolyticSeparatorUsage);
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png")));
+        
         tileEntity = tentity;
     }
 	
@@ -89,24 +103,26 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
 	@Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
     {
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+		
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"));
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
         
-        int leftDisplay = tileEntity.dumpLeft ? 60 : 52;
-        drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, leftDisplay, 8, 8);
+        int displayInt = tileEntity.dumpLeft ? 60 : 52;
+        drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, displayInt, 8, 8);
         
-        int rightDisplay = tileEntity.dumpRight ? 60 : 52;
-        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, rightDisplay, 8, 8);
-        
-        int displayInt;
+        displayInt = tileEntity.dumpRight ? 60 : 52;
+        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
         
         if(tileEntity.fluidTank.getFluid() != null)
         {

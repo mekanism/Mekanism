@@ -17,6 +17,7 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -25,14 +26,14 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
+public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 	
 	@Override
 	public String getRecipeName()
 	{
-		return "Metallurgic Infuser";
+		return MekanismUtils.localize("tile.MachineBlock.MetallurgicInfuser.name");
 	}
 	
 	@Override

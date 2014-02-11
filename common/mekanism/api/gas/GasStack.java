@@ -101,6 +101,16 @@ public class GasStack
 		return new GasStack(type, amount);
 	}
 	
+	/**
+	 * Whether or not this GasStack's gas type is equal to the other defined GasStack.
+	 * @param stack - GasStack to check
+	 * @return if the GasStacks contain the same gas type
+	 */
+	public boolean isGasEqual(GasStack stack)
+	{
+		return stack != null && getGas() == stack.getGas();
+	}
+	
 	@Override
 	public String toString()
 	{

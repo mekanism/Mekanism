@@ -1,8 +1,11 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
@@ -30,6 +33,14 @@ public class GuiMetallurgicInfuser extends GuiMekanism
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
         guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
         guiElements.add(new GuiConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
+        guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+        	@Override
+        	public List<String> getInfo()
+        	{
+        		String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_PER_TICK));
+        		return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+        	}
+        }, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
     }
 
 	@Override
@@ -44,6 +55,11 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69)
+		{
+			drawCreativeTabHoveringText(tileEntity.type != null ? tileEntity.type.getLocalizedName() + ": " + tileEntity.infuseStored : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

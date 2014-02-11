@@ -97,7 +97,7 @@ public class ContainerElectricMachine extends Container
     		{
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             	{
-                    if (!mergeItemStack(slotStack, 0, 1, false))
+                    if(!mergeItemStack(slotStack, 0, 1, false))
 	                {
 	                    return null;
 	                }

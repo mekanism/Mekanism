@@ -18,6 +18,8 @@ public abstract class Sound
 	/** Whether or not this sound is playing */
 	public boolean isPlaying = false;
 	
+	public int ticksSincePlay = 0;
+	
 	private Object objRef;
 	
 	protected Minecraft mc = Minecraft.getMinecraft();
@@ -70,6 +72,8 @@ public abstract class Sound
 			{
 				return;
 			}
+			
+			ticksSincePlay = 0;
 			
 			if(SoundHandler.getSoundSystem() != null)
 			{
@@ -129,7 +133,10 @@ public abstract class Sound
 	
 	public abstract Pos3D getLocation();
 	
-	public abstract float getMultiplier();
+	public float getMultiplier()
+	{
+		return Math.min(1, ((float)ticksSincePlay/30F));
+	}
 	
 	/**
 	 * Updates the volume based on how far away the player is from the machine.

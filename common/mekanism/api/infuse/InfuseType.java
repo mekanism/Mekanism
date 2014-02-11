@@ -1,6 +1,7 @@
 package mekanism.api.infuse;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 /**
  * The types of infuse currently available in Mekanism.
@@ -21,11 +22,26 @@ public final class InfuseType
 	/** The infuse's GUI texture Y offset. */
 	public int texY;
 	
+	/** The unlocalized name of this type. */
+	public String unlocalizedName;
+	
 	public InfuseType(String s, ResourceLocation location, int x, int y)
 	{
 		name = s;
 		texture = location;
 		texX = x;
 		texY = y;
+	}
+	
+	public InfuseType setUnlocalizedName(String name)
+	{
+		unlocalizedName = name;
+		
+		return this;
+	}
+	
+	public String getLocalizedName()
+	{
+		return StatCollector.translateToLocal(unlocalizedName);
 	}
 }

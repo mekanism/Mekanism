@@ -7,8 +7,13 @@ public class EnergyDisplay
 {
 	public static enum ElectricUnit
 	{
-		AMPERE("Amp", "I"), AMP_HOUR("Amp Hour", "Ah"), VOLTAGE("Volt", "V"), WATT("Watt", "W"),
-		WATT_HOUR("Watt Hour", "Wh"), RESISTANCE("Ohm", "R"), CONDUCTANCE("Siemen", "S"),
+		AMPERE("Amp", "I"), 
+		AMP_HOUR("Amp Hour", "Ah"), 
+		VOLTAGE("Volt", "V"), 
+		WATT("Watt", "W"),
+		WATT_HOUR("Watt Hour", "Wh"), 
+		RESISTANCE("Ohm", "R"), 
+		CONDUCTANCE("Siemen", "S"),
 		JOULES("Joule", "J");
 
 		public String name;
@@ -29,10 +34,16 @@ public class EnergyDisplay
 	/** Metric system of measurement. */
 	public static enum MeasurementUnit
 	{
-		MICRO("Micro", "u", 0.000001D), MILLI("Milli", "m", 0.001D), BASE("", "", 1),
-		KILO("Kilo", "k", 1000D), MEGA("Mega", "M", 1000000D), GIGA("Giga", "G", 1000000000D),
-		TERA("Tera", "T", 1000000000000D), PETA("Peta", "P", 1000000000000000D),
-		EXA("Exa", "E", 1000000000000000000D), ZETTA("Zetta", "Z", 1000000000000000000000D),
+		MICRO("Micro", "u", 0.000001D), 
+		MILLI("Milli", "m", 0.001D), 
+		BASE("", "", 1),
+		KILO("Kilo", "k", 1000D), 
+		MEGA("Mega", "M", 1000000D), 
+		GIGA("Giga", "G", 1000000000D),
+		TERA("Tera", "T", 1000000000000D), 
+		PETA("Peta", "P", 1000000000000000D),
+		EXA("Exa", "E", 1000000000000000000D), 
+		ZETTA("Zetta", "Z", 1000000000000000000000D),
 		YOTTA("Yotta", "Y", 1000000000000000000000000D);
 
 		/** long name for the unit */
@@ -178,5 +189,13 @@ public class EnergyDisplay
 	public static double roundDecimals(double d)
 	{
 		return roundDecimals(d, 2);
+	}
+	
+	public static enum EnergyType
+	{
+		J,
+		RF,
+		EU,
+		MJ
 	}
 }

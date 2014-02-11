@@ -38,12 +38,6 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 	}
 	
-	@Override
-	public void onCreated(ItemStack itemstack, World world, EntityPlayer entityplayer)
-	{
-		itemstack = getUnchargedItem();
-	}
-	
 	public ItemStack getUnchargedItem()
 	{
 		ItemStack charged = new ItemStack(this);

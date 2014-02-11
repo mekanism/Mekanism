@@ -581,22 +581,20 @@ public class MekanismTools implements IModule
 	@ForgeSubscribe
 	public void onLivingSpecialSpawn(LivingSpawnEvent event)
 	{
-		Random random = new Random();
-		
-		int chance = random.nextInt(100);
-		int secondChance = random.nextInt(4);
+		int chance = event.world.rand.nextInt(100);
+		int armorType = event.world.rand.nextInt(4);
 		
 		if(chance < 3)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
 			{
-				int sword = random.nextInt(100);
-				int helmet = random.nextInt(100);
-				int chestplate = random.nextInt(100);
-				int leggings = random.nextInt(100);
-				int boots = random.nextInt(100);
+				int sword = event.world.rand.nextInt(100);
+				int helmet = event.world.rand.nextInt(100);
+				int chestplate = event.world.rand.nextInt(100);
+				int leggings = event.world.rand.nextInt(100);
+				int boots = event.world.rand.nextInt(100);
 				
-				if(secondChance == 0)
+				if(armorType == 0)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(GlowstoneSword));
 					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(GlowstoneHelmet));
@@ -604,7 +602,7 @@ public class MekanismTools implements IModule
 					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(GlowstoneLeggings));
 					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(GlowstoneBoots));
 				}
-				else if(secondChance == 1)
+				else if(armorType == 1)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(LazuliSword));
 					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(LazuliHelmet));
@@ -612,7 +610,7 @@ public class MekanismTools implements IModule
 					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(LazuliLeggings));
 					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(LazuliBoots));
 				}
-				else if(secondChance == 2)
+				else if(armorType == 2)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(OsmiumSword));
 					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(OsmiumHelmet));
@@ -620,7 +618,7 @@ public class MekanismTools implements IModule
 					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(OsmiumLeggings));
 					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(OsmiumBoots));
 				}
-				else if(secondChance == 3)
+				else if(armorType == 3)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(SteelSword));
 					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(SteelHelmet));
@@ -628,7 +626,7 @@ public class MekanismTools implements IModule
 					if(leggings < 50) event.entityLiving.setCurrentItemOrArmor(3, new ItemStack(SteelLeggings));
 					if(boots < 50) event.entityLiving.setCurrentItemOrArmor(4, new ItemStack(SteelBoots));
 				}
-				else if(secondChance == 4)
+				else if(armorType == 4)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(BronzeSword));
 					if(helmet < 50) event.entityLiving.setCurrentItemOrArmor(1, new ItemStack(BronzeHelmet));

@@ -1,5 +1,8 @@
 package mekanism.client.nei;
 
+import static codechicken.core.gui.GuiDraw.changeTexture;
+import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
+
 import java.awt.Rectangle;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,9 +16,7 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-import static codechicken.core.gui.GuiDraw.*;
-
-public abstract class MachineRecipeHandler extends TemplateRecipeHandler
+public abstract class MachineRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 

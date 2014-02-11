@@ -3,9 +3,12 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
+import mekanism.client.gui.GuiChemicalCrystalizer;
+import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
+import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiConfiguration;
 import mekanism.client.gui.GuiCredits;
@@ -26,6 +29,7 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
 import mekanism.client.gui.GuiPortableTeleporter;
+import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRobitCrafting;
 import mekanism.client.gui.GuiRobitInventory;
@@ -33,6 +37,7 @@ import mekanism.client.gui.GuiRobitMain;
 import mekanism.client.gui.GuiRobitRepair;
 import mekanism.client.gui.GuiRobitSmelting;
 import mekanism.client.gui.GuiRotaryCondensentrator;
+import mekanism.client.gui.GuiSalinationController;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPartTransmitter;
@@ -45,8 +50,11 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
+import mekanism.client.render.tileentity.RenderChemicalCrystalizer;
+import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderChemicalInfuser;
 import mekanism.client.render.tileentity.RenderChemicalOxidizer;
+import mekanism.client.render.tileentity.RenderChemicalWasher;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
@@ -59,10 +67,12 @@ import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
+import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
+import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
@@ -76,9 +86,12 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -98,8 +111,12 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySalinationTank;
+import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -140,7 +157,30 @@ public class ClientProxy extends CommonProxy
 		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
-		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1).getDouble(1);
+		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
+		
+		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J").getString();
+		
+		if(s != null)
+		{
+			if(s.trim().equalsIgnoreCase("j") || s.trim().equalsIgnoreCase("joules"))
+			{
+				Mekanism.activeType = EnergyType.J;
+			}
+			else if(s.trim().equalsIgnoreCase("rf") || s.trim().equalsIgnoreCase("te") || s.trim().equalsIgnoreCase("thermal expansion"))
+			{
+				Mekanism.activeType = EnergyType.RF;
+			}
+			else if(s.trim().equalsIgnoreCase("eu") || s.trim().equalsIgnoreCase("ic2"))
+			{
+				Mekanism.activeType = EnergyType.EU;
+			}
+			else if(s.trim().equalsIgnoreCase("mj") || s.trim().equalsIgnoreCase("bc") || s.trim().equalsIgnoreCase("buildcraft"))
+			{
+				Mekanism.activeType = EnergyType.MJ;
+			}
+		}
+		
 		Mekanism.configuration.save();
 	}
 	
@@ -263,6 +303,13 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
+		ClientRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController", new RenderSalinationController());
+		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
+		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
+		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
+		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
+		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
+		ClientRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer", new RenderChemicalCrystalizer());
 	}
 	
 	@Override
@@ -287,10 +334,13 @@ public class ClientProxy extends CommonProxy
         MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.ArmoredJetpack.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank.itemID, handler);
         MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners.itemID, handler);
+        MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler.itemID, handler);
 		
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
@@ -386,7 +436,16 @@ public class ClientProxy extends CommonProxy
 				return new GuiChemicalInjectionChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 32:
 				return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
-
+			case 33:
+				return new GuiSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
+			case 34:
+				return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill)tileEntity);
+			case 35:
+				return new GuiChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber)tileEntity);
+			case 36:
+				return new GuiChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
+			case 37:
+				return new GuiChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
 		}
 		
 		return null;
@@ -481,11 +540,14 @@ public class ClientProxy extends CommonProxy
 		return Minecraft.getMinecraft().mcDataDir;
 	}
 	
-	 @Override
-     public void onConfigSync()
-     {
-         super.onConfigSync();
-         
-         MekanismClient.voiceClient.start();
-     }
+	@Override
+	public void onConfigSync()
+	{
+		super.onConfigSync();
+
+		if(Mekanism.voiceServerEnabled)
+		{
+			MekanismClient.voiceClient.start();
+		}
+	}
 }

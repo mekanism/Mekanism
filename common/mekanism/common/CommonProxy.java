@@ -2,10 +2,15 @@ package mekanism.common;
 
 import java.io.File;
 
+import mekanism.api.MekanismAPI;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
+import mekanism.common.inventory.container.ContainerChanceMachine;
+import mekanism.common.inventory.container.ContainerChemicalCrystalizer;
+import mekanism.common.inventory.container.ContainerChemicalDissolutionChamber;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
+import mekanism.common.inventory.container.ContainerChemicalWasher;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerDynamicTank;
@@ -24,14 +29,19 @@ import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
+import mekanism.common.inventory.container.ContainerSalinationController;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityCrusher;
@@ -52,9 +62,14 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySalinationTank;
+import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntityTeleporter;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -63,6 +78,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -104,6 +120,13 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
+		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
+		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
+		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
+		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
+		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
+		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
+		GameRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer");
 	}
 	
 	/**
@@ -151,26 +174,29 @@ public class CommonProxy
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-		Mekanism.basicBlockID = Mekanism.configuration.getBlock("BasicBlock", 3000).getInt();
-		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", 3001).getInt();
-		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", 3002).getInt();
-	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", 3003).getInt();
-	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", 3004).getInt();
-	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", 3005).getInt();
-	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", 3006).getInt();
-		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", 3008).getInt();
+		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.basicBlockID = Mekanism.configuration.getBlock("BasicBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.basicBlock2ID = Mekanism.configuration.getBlock("BasicBlock2", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.cardboardBoxID = Mekanism.configuration.getBlock("CardboardBox", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
+	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
 	  	
 	  	Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);
 	  	Mekanism.tinGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationEnabled", true).getBoolean(true);
-	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(true);
-	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(true);
+	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(false);
+	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(false);
 	  	Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);
 	  	Mekanism.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean(true);
-	  	Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(true);
+	  	Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(false);
 	  	Mekanism.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean(true);
 	  	Mekanism.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", true).getBoolean(true);
 	  	Mekanism.forceBuildcraft = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ForceBuildcraftPower", false).getBoolean(false);
+	  	Mekanism.cardboardSpawners = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true).getBoolean(true);
 	  	Mekanism.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();
 	  	Mekanism.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
 	  	Mekanism.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();
@@ -189,20 +215,32 @@ public class CommonProxy
 	  	Mekanism.TO_TE = Mekanism.TO_BC*10;
 	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;
 	  	
+		if(Mekanism.cardboardSpawners)
+		{
+			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
+		}
+		else {
+			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
+		}
+	  	
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
-		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 50D).getDouble(50D);
+		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble(100D);
 		Mekanism.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50D).getDouble(50D);
 		Mekanism.crusherUsage = Mekanism.configuration.get("usage", "CrusherUsage", 50D).getDouble(50D);
 		Mekanism.factoryUsage = Mekanism.configuration.get("usage", "FactoryUsage", 50D).getDouble(50D);
 		Mekanism.metallurgicInfuserUsage = Mekanism.configuration.get("usage", "MetallurgicInfuserUsage", 50D).getDouble(50D);
-		Mekanism.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 100D).getDouble(100D);
+		Mekanism.purificationChamberUsage = Mekanism.configuration.get("usage", "PurificationChamberUsage", 200D).getDouble(200D);
 		Mekanism.energizedSmelterUsage = Mekanism.configuration.get("usage", "EnergizedSmelterUsage", 50D).getDouble(50D);
 		Mekanism.digitalMinerUsage = Mekanism.configuration.get("usage", "DigitalMinerUsage", 100D).getDouble(100D);
 		Mekanism.rotaryCondensentratorUsage = Mekanism.configuration.get("usage", "RotaryCondensentratorUsage", 50D).getDouble(50D);
-		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 100D).getDouble(100D);
-		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 100D).getDouble(100D);
-		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 200D).getDouble(200D);
+		Mekanism.oxidationChamberUsage = Mekanism.configuration.get("usage", "OxidationChamberUsage", 200D).getDouble(200D);
+		Mekanism.chemicalInfuserUsage = Mekanism.configuration.get("usage", "ChemicalInfuserUsage", 200D).getDouble(200D);
+		Mekanism.chemicalInjectionChamberUsage = Mekanism.configuration.get("usage", "ChemicalInjectionChamberUsage", 400D).getDouble(400D);
 		Mekanism.electrolyticSeparatorUsage = Mekanism.configuration.get("usage", "ElectrolyticSeparatorUsage", 50D).getDouble(50D);
+		Mekanism.precisionSawmillUsage = Mekanism.configuration.get("usage", "PrecisionSawmillUsage", 50D).getDouble(50D);
+		Mekanism.chemicalDissolutionChamberUsage = Mekanism.configuration.get("usage", "ChemicalDissolutionChamberUsage", 400D).getDouble(400D);
+		Mekanism.chemicalWasherUsage = Mekanism.configuration.get("usage", "ChemicalWasherUsage", 200D).getDouble(200D);
+		Mekanism.chemicalCrystalizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystalizerUsage", 400D).getDouble(400D);
 	  	Mekanism.configuration.save();
 	}
 	
@@ -342,6 +380,16 @@ public class CommonProxy
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 32:
 				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
+			case 33:
+				return new ContainerSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
+			case 34:
+				return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine)tileEntity);
+			case 35:
+				return new ContainerChemicalDissolutionChamber(player.inventory, (TileEntityChemicalDissolutionChamber)tileEntity);
+			case 36:
+				return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
+			case 37:
+				return new ContainerChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
 		}
 		
 		return null;
@@ -365,11 +413,19 @@ public class CommonProxy
 	 */
 	public File getMinecraftDir()
 	{
-		return null;
+		return (File)FMLInjectionData.data()[6];
 	}
 	
 	public void onConfigSync() 
 	{
+		if(Mekanism.cardboardSpawners)
+		{
+			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
+		}
+		else {
+			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
+		}
+		
 		System.out.println("[Mekanism] Received config from server.");
 	}
 }

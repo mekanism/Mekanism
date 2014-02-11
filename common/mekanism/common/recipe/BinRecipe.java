@@ -1,5 +1,6 @@
-package mekanism.common;
+package mekanism.common.recipe;
 
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemProxy;

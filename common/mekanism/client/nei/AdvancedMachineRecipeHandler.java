@@ -3,29 +3,39 @@ package mekanism.client.nei;
 import static codechicken.core.gui.GuiDraw.changeTexture;
 import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import mekanism.api.AdvancedInput;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
+import codechicken.core.gui.GuiDraw;
+import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
+public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
 	public abstract String getRecipeId();
 
-	public abstract Set<Entry<ItemStack, ItemStack>> getRecipes();
+	public abstract Set<Entry<AdvancedInput, ItemStack>> getRecipes();
 	
-	public abstract List<ItemStack> getFuelStacks();
+	public abstract List<ItemStack> getFuelStacks(Gas gasType);
 
 	@Override
 	public void drawBackground(int i)
@@ -38,15 +48,16 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void drawExtras(int i)
 	{
-		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
+		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
+		
+		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0;
 		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
 		
-		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
-		if(ticksPassed < 20) f = 0.0F;
-		drawProgressBar(45, 32, 176, 7, 5, 12, f, 3);
-		
-		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(149, 12, 176, 19, 4, 52, f, 3);
+		if(recipe.input.gasType != null)
+		{
+			int displayInt = ticksPassed < 20 ? ticksPassed*12 / 20 : 12;
+			displayGauge(45, 32 + 12 - displayInt, 6, displayInt, new GasStack(recipe.input.gasType, 1));
+		}
 	}
 
 	@Override
@@ -67,9 +78,9 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
 		}
 		else {
@@ -80,38 +91,148 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getValue(), result))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
+		}
+	}
+	
+	@Override
+	public void loadUsageRecipes(String inputId, Object... ingredients)
+	{
+		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
+		{
+			for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
+			{
+				if(irecipe.getKey().gasType == ((GasStack)ingredients[0]).getGas())
+				{
+					arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
+				}
+			}
+		}
+		else {
+			super.loadUsageRecipes(inputId, ingredients);
 		}
 	}
 
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getKey().itemStack, ingredient))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks()));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
 		}
+	}
+	
+	@Override
+	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
+	{
+		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
+		
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
+		
+		if(xAxis >= 45 && xAxis <= 51 && yAxis >= 33 && yAxis <= 45)
+		{
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).input.gasType.getLocalizedName());
+		}
+		
+		return super.handleTooltip(gui, currenttip, recipe);
+	}
+
+	@Override
+	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
+	{
+		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
+		
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
+		
+		GasStack stack = null;
+		
+		if(xAxis >= 45 && xAxis <= 51 && yAxis >= 33 && yAxis <= 45)
+		{
+			stack = new GasStack(((CachedIORecipe)arecipes.get(recipe)).input.gasType, 1);
+		}
+		
+		if(stack != null)
+		{
+			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
+			{
+				if(doGasLookup(stack, false))
+				{
+					return true;
+				}
+			}
+			else if(keyCode == NEIClientConfig.getKeyBinding("gui.usage"))
+			{
+				if(doGasLookup(stack, true))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return super.keyTyped(gui, keyChar, keyCode, recipe);
+	}
+	
+	@Override
+	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
+	{
+		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
+		
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
+		
+		GasStack stack = null;
+		
+		if(xAxis >= 45 && xAxis <= 51 && yAxis >= 33 && yAxis <= 45)
+		{
+			stack = new GasStack(((CachedIORecipe)arecipes.get(recipe)).input.gasType, 1);
+		}
+		
+		if(stack != null)
+		{
+			if(button == 0)
+			{
+				if(doGasLookup(stack, false))
+				{
+					return true;
+				}
+			}
+			else if(button == 1)
+			{
+				if(doGasLookup(stack, true))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return super.mouseClicked(gui, button, recipe);
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public List<ItemStack> fuelStacks;
 		
-		public PositionedStack inputStack;
+		public AdvancedInput input;
+		
 		public PositionedStack outputStack;
 
 		@Override
 		public PositionedStack getIngredient()
 		{
-			return inputStack;
+			return new PositionedStack(input.itemStack, 40, 12);
 		}
 
 		@Override
@@ -126,17 +247,16 @@ public abstract class AdvancedMachineRecipeHandler extends TemplateRecipeHandler
 			return new PositionedStack(fuelStacks.get(cycleticks/40 % fuelStacks.size()), 40, 48);
 		}
 
-		public CachedIORecipe(ItemStack input, ItemStack output, List<ItemStack> fuels)
+		public CachedIORecipe(AdvancedInput adv, ItemStack output, List<ItemStack> fuels)
 		{
-			super();
-			inputStack = new PositionedStack(input, 40, 12);
+			input = adv;
 			outputStack = new PositionedStack(output, 100, 30);
 			fuelStacks = fuels;
 		}
 
 		public CachedIORecipe(Map.Entry recipe, List<ItemStack> fuels)
 		{
-			this((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue(), fuels);
+			this((AdvancedInput)recipe.getKey(), (ItemStack)recipe.getValue(), fuels);
 		}
 	}
 }

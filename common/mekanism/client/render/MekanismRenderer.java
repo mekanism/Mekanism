@@ -4,12 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.OreGas;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFluid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -28,6 +29,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -73,6 +75,24 @@ public class MekanismRenderer
 			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
 			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
 			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
+			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
+			
+			for(Gas gas : GasRegistry.getRegisteredGasses())
+			{
+				if(gas instanceof OreGas)
+				{
+					if(gas.getUnlocalizedName().contains("clean"))
+					{
+						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+					}
+					else {
+						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+					}
+				}
+			}
+
+			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
 		}
 	}
     

@@ -2,6 +2,9 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -13,7 +16,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 {
 	public TileEntityOsmiumCompressor()
 	{
-		super("Compressor.ogg", "OsmiumCompressor", new ResourceLocation("mekanism", "gui/GuiCompressor.png"), Mekanism.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy, 200);
+		super("Compressor.ogg", "OsmiumCompressor", new ResourceLocation("mekanism", "gui/GuiCompressor.png"), Mekanism.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy);
 	}
 	
 	@Override
@@ -23,7 +26,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	}
 
 	@Override
-	public int getFuelTicks(ItemStack itemstack)
+	public GasStack getItemGas(ItemStack itemstack)
 	{
 		int amount = 0;
 		
@@ -31,8 +34,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				amount = 200;
-				break;
+				return new GasStack(GasRegistry.getGas("liquidOsmium"), 200);
 			}
 		}
 		
@@ -40,11 +42,16 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 		{
 			if(ore.isItemEqual(itemstack))
 			{
-				amount = 1800;
-				break;
+				return new GasStack(GasRegistry.getGas("liquidOsmium"), 1800);
 			}
 		}
 		
-		return amount;
+		return null;
+	}
+	
+	@Override
+	public boolean isValidGas(Gas gas)
+	{
+		return false;
 	}
 }

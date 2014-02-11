@@ -166,9 +166,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		
 		for(Gas type : GasRegistry.getRegisteredGasses())
 		{
-			ItemStack filled = new ItemStack(this);
-			setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
-			list.add(filled);
+			if(type.isVisible())
+			{
+				ItemStack filled = new ItemStack(this);
+				setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
+				list.add(filled);
+			}
 		}
 	}
 	

@@ -1,8 +1,15 @@
 package mekanism.common.tile;
 
 import java.util.ArrayList;
+import java.util.Map;
 
+import mekanism.api.AdvancedInput;
 import mekanism.api.EnumColor;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
@@ -11,25 +18,25 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
-public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine
+public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine implements IGasHandler, ITubeConnection
 {
 	/** How much secondary energy (fuel) this machine uses per tick. */
 	public int SECONDARY_ENERGY_PER_TICK;
 	
-	/** Maximum amount of secondary energy (fuel) this machine can hold. */
-	public int MAX_SECONDARY_ENERGY;
+	public static int MAX_GAS = 200;
 	
-	/** How much secondary energy (fuel) is stored in this machine. */
-	public int secondaryEnergyStored = 0;
+	public GasTank gasTank;
 	
 	/**
 	 * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2), 
@@ -45,7 +52,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	 * @param maxEnergy - maximum amount of energy this machine can hold.
 	 * @param maxSecondaryEnergy - maximum amount of secondary energy (fuel) this machine can hold.
 	 */
-	public TileEntityAdvancedElectricMachine(String soundPath, String name, ResourceLocation location, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy, int maxSecondaryEnergy)
+	public TileEntityAdvancedElectricMachine(String soundPath, String name, ResourceLocation location, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy)
 	{
 		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
 		
@@ -58,10 +65,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		
 		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
 		
+		gasTank = new GasTank(MAX_GAS);
+		
 		inventory = new ItemStack[5];
 		
 		SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
-		MAX_SECONDARY_ENERGY = maxSecondaryEnergy;
 		
 		upgradeComponent = new TileComponentUpgrade(this, 4);
 		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
@@ -72,7 +80,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
      * @param itemstack - itemstack to check with
      * @return fuel ticks
      */
-    public abstract int getFuelTicks(ItemStack itemstack);
+    public abstract GasStack getItemGas(ItemStack itemstack);
+    
+    public abstract boolean isValidGas(Gas gas);
 	
     @Override
 	public void onUpdate()
@@ -85,30 +95,33 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			
 			handleSecondaryFuel();
 			
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && secondaryEnergyStored >= SECONDARY_ENERGY_PER_TICK)
+			boolean changed = false;
+			
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= SECONDARY_ENERGY_PER_TICK)
 			{
 			    setActive(true);
 			    
 				operatingTicks++;
 				
-				secondaryEnergyStored -= SECONDARY_ENERGY_PER_TICK;
-				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
-				
-				if((operatingTicks) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				if(operatingTicks >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
 					
 					operatingTicks = 0;
 				}
+				
+				gasTank.draw(SECONDARY_ENERGY_PER_TICK, true);
+				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
 				{
+					changed = true;
 					setActive(false);
 				}
 			}
 			
-			if(!canOperate())
+			if(changed && !canOperate() && !hasRecipe(inventory[0]))
 			{
 				operatingTicks = 0;
 			}
@@ -117,23 +130,41 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 	}
     
+    private boolean hasRecipe(ItemStack itemStack)
+    {
+    	if(itemStack == null)
+    	{
+    		return false;
+    	}
+    	
+    	for(Object obj : getRecipes().entrySet())
+    	{
+    		if(((Map.Entry)obj).getKey() instanceof AdvancedInput)
+			{
+    			Map.Entry entry = (Map.Entry)obj;
+    			
+				ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
+				
+				if(StackUtils.equalsWildcard(stack, itemStack))
+				{
+					return true;
+				}
+			}
+    	}
+    	
+    	return false;
+    }
+    
     public void handleSecondaryFuel()
     {
 		if(inventory[1] != null)
 		{
-			int fuelTicks = getFuelTicks(inventory[1]);
-			int energyNeeded = MAX_SECONDARY_ENERGY - secondaryEnergyStored;
+			GasStack stack = getItemGas(inventory[1]);
+			int gasNeeded = gasTank.getNeeded();
 			
-			if(fuelTicks > 0 && fuelTicks <= energyNeeded)
+			if(stack != null && stack.amount <= gasNeeded)
 			{
-				if(fuelTicks <= energyNeeded)
-				{
-					setSecondaryEnergy(secondaryEnergyStored + fuelTicks);
-				}
-				else if(fuelTicks > energyNeeded)
-				{
-					setSecondaryEnergy(secondaryEnergyStored + energyNeeded);
-				}
+				gasTank.receive(stack, true);
 				
 				inventory[1].stackSize--;
 				
@@ -148,7 +179,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 2)
+		if(slotID == 2 || gasTank.getGas() == null)
 		{
 			return false;
 		}
@@ -158,7 +189,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 0)
 		{
-			return RecipeHandler.getOutput(itemstack, false, getRecipes()) != null;
+			return RecipeHandler.getOutput(new AdvancedInput(itemstack, gasTank.getGas().getGas()), false, getRecipes()) != null;
 		}
 		else if(slotID == 3)
 		{
@@ -166,7 +197,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 1)
 		{
-			return getFuelTicks(itemstack) > 0;
+			return getItemGas(itemstack) != null;
 		}
 		
 		return false;
@@ -175,7 +206,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public void operate()
     {
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
+        ItemStack itemstack = RecipeHandler.getOutput(new AdvancedInput(inventory[0], gasTank.getGas().getGas()), true, getRecipes());
 
         if(inventory[0].stackSize <= 0)
         {
@@ -197,12 +228,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public boolean canOperate()
     {
-        if(inventory[0] == null)
+        if(inventory[0] == null || gasTank.getGas() == null)
         {
             return false;
         }
 
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
+        ItemStack itemstack = RecipeHandler.getOutput(new AdvancedInput(inventory[0], gasTank.getGas().getGas()), false, getRecipes());
 
         if(itemstack == null)
         {
@@ -227,14 +258,31 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		secondaryEnergyStored = dataStream.readInt();
+		
+		if(dataStream.readBoolean())
+		{
+			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+		}
+		else {
+			gasTank.setGas(null);
+		}
 	}
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		data.add(secondaryEnergyStored);
+		
+		if(gasTank.getGas() != null)
+		{
+			data.add(true);
+			data.add(gasTank.getGas().getGas().getID());
+			data.add(gasTank.getStored());
+		}
+		else {
+			data.add(false);
+		}
+		
 		return data;
 	}
 	
@@ -243,7 +291,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     {
     	super.readFromNBT(nbtTags);
     	
-        secondaryEnergyStored = nbtTags.getInteger("secondaryEnergyStored");
+        gasTank.read(nbtTags.getCompoundTag("gasTank"));
     }
 
     @Override
@@ -251,26 +299,17 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setInteger("secondaryEnergyStored", secondaryEnergyStored);
+        nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
     }
-	
-	/**
-	 * Sets the secondary energy to a new amount
-	 * @param energy - amount to store
-	 */
-	public void setSecondaryEnergy(int energy)
-	{
-		secondaryEnergyStored = Math.max(Math.min(energy, MAX_SECONDARY_ENERGY), 0);
-	}
 	
 	/**
 	 * Gets the scaled secondary energy level for the GUI.
 	 * @param i - multiplier
 	 * @return scaled secondary energy
 	 */
-	public int getScaledSecondaryEnergyLevel(int i)
+	public int getScaledGasLevel(int i)
 	{
-		return secondaryEnergyStored*i / MAX_SECONDARY_ENERGY;
+		return gasTank.getStored()*i / gasTank.getMaxGas();
 	}
 	
 	@Override
@@ -285,6 +324,36 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			return true;
 		}
 		
+		return false;
+	}
+	
+	@Override
+	public boolean canTubeConnect(ForgeDirection side)
+	{
+		return false;
+	}
+
+	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		return 0;
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canDrawGas(ForgeDirection side, Gas type)
+	{
 		return false;
 	}
 
@@ -302,7 +371,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			case 0:
 				return new Object[] {getEnergy()};
 			case 1:
-				return new Object[] {secondaryEnergyStored};
+				return new Object[] {gasTank.getStored()};
 			case 2:
 				return new Object[] {operatingTicks};
 			case 3:

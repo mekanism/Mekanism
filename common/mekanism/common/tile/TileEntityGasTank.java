@@ -12,7 +12,11 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,6 +33,8 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	
 	/** How fast this tank can output gas. */
 	public int output = 16;
+	
+	public boolean dumping;
 	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
@@ -50,7 +56,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		
 		if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getGas().amount < gasTank.getMaxGas()))
 		{
-			gasTank.receive(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
+			gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded()), true);
 		}
 		
 		if(!worldObj.isRemote && gasTank.getGas() != null && MekanismUtils.canFunction(this))
@@ -67,6 +73,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 					gasTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
 				}
 			}
+		}
+		
+		if(!worldObj.isRemote && dumping)
+		{
+			gasTank.draw(8, true);
 		}
 	}
 	
@@ -139,6 +150,23 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+			
+			if(type == 0)
+			{
+				dumping = !dumping;
+			}
+			
+			for(EntityPlayer player : playersUsing)
+			{
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+			}
+			
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		if(dataStream.readBoolean())
@@ -149,6 +177,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			gasTank.setGas(null);
 		}
 		
+		dumping = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
@@ -160,6 +189,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         super.readFromNBT(nbtTags);
 
     	gasTank.read(nbtTags.getCompoundTag("gasTank"));
+    	dumping = nbtTags.getBoolean("dumping");
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
     }
 
@@ -169,6 +199,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
         super.writeToNBT(nbtTags);
         
         nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+        nbtTags.setBoolean("dumping", dumping);
         nbtTags.setInteger("controlType", controlType.ordinal());
     }
 	
@@ -187,6 +218,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			data.add(false);
 		}
 		
+		data.add(dumping);
 		data.add(controlType.ordinal());
 		
 		return data;

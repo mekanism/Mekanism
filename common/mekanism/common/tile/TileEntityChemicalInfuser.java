@@ -11,7 +11,11 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.*;
+import mekanism.client.sound.IHasSound;
+import mekanism.common.IActiveState;
+import mekanism.common.IRedstoneControl;
+import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
@@ -27,7 +31,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalInfuser extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl
+public class TileEntityChemicalInfuser extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -61,6 +65,8 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	{
 		if(worldObj.isRemote)
 		{
+			Mekanism.proxy.registerSound(this);
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -147,7 +153,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		
 		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
 		
-		if(out == null)
+		if(out == null || centerTank.getGas() != null && centerTank.getGas().getGas() != out.getGas())
 		{
 			return false;
 		}
@@ -426,9 +432,13 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canReceiveGas(itemstack, null);
 		}
-		if(slotID == 1)
+		else if(slotID == 1)
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
+		}
+		else if(slotID == 3)
+		{
+			return ChargeUtils.canBeOutputted(itemstack, false);
 		}
 		
 		return false;
@@ -455,5 +465,17 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		}
 		
 		return InventoryUtils.EMPTY;
+	}
+
+	@Override
+	public String getSoundPath()
+	{
+		return "ChemicalInfuser.ogg";
+	}
+
+	@Override
+	public float getVolumeMultiplier()
+	{
+		return 1;
 	}
 }

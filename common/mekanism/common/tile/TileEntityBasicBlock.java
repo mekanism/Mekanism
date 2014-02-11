@@ -217,11 +217,11 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		return redstone;
 	}
 	
-	public void onNeighborChange(int x, int y, int z, int id)
+	public void onNeighborChange(int id)
 	{
 		if(!worldObj.isRemote)
 		{
-			boolean power = worldObj.isBlockIndirectlyGettingPowered(x, y, z);
+			boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
 			
 			if(redstone != power)
 			{

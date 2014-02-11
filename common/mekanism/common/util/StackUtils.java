@@ -132,6 +132,16 @@ public final class StackUtils
 		return ret;
 	}
 	
+	public static ItemStack copy(ItemStack stack)
+	{
+		if(stack == null)
+		{
+			return null;
+		}
+		
+		return stack.copy();
+	}
+	
 	public static int getSize(ItemStack stack)
 	{
 		return stack != null ? stack.stackSize : 0;

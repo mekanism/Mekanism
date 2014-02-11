@@ -9,8 +9,6 @@ public abstract class PlayerSound extends Sound
 	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
 	
-	public int ticksSincePlay = 0;
-	
 	public PlayerSound(String id, String sound, EntityPlayer entity)
 	{
 		super(id, sound, entity, new Pos3D(entity));
@@ -21,7 +19,7 @@ public abstract class PlayerSound extends Sound
 	@Override
 	public float getMultiplier()
 	{
-		return Math.min(1, ((float)ticksSincePlay/20F))*0.3F;
+		return super.getMultiplier()*0.3F;
 	}
 	
 	@Override
@@ -47,13 +45,5 @@ public abstract class PlayerSound extends Sound
 	public Pos3D getLocation()
 	{
 		return new Pos3D(player);
-	}
-	
-	@Override
-	public void play()
-	{
-		super.play();
-		
-		ticksSincePlay = 0;
 	}
 }

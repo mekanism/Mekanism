@@ -11,6 +11,7 @@ import mekanism.api.Pos3D;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
@@ -73,8 +74,9 @@ public class RenderTickHandler implements ITickHandler
 				
 					font.drawStringWithShadow("Block ID: " + obj.getBlockId(world), 1, 1, 0x404040);
 					font.drawStringWithShadow("Metadata: " + obj.getMetadata(world), 1, 10, 0x404040);
-					font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 19, 0x404040);
-					font.drawStringWithShadow("Side: " + pos.sideHit, 1, 28, 0x404040);
+					font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
+					font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
+					font.drawStringWithShadow("Side: " + pos.sideHit, 1, 37, 0x404040);
 				}
 			}
 			

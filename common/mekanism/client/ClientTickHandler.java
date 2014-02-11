@@ -19,6 +19,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
@@ -62,6 +63,8 @@ public class ClientTickHandler implements ITickHandler
 	public boolean preloadedSounds = false;
 	
 	public boolean lastTickUpdate;
+	
+	public boolean shouldReset = false;
 	
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 	
@@ -112,6 +115,16 @@ public class ClientTickHandler implements ITickHandler
 					iter.remove();
 				}
 			}
+		}
+		
+		if(mc.theWorld != null)
+		{
+			shouldReset = true;
+		}
+		else if(shouldReset)
+		{
+			MekanismClient.reset();
+			shouldReset = false;
 		}
 		
 		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
@@ -294,6 +307,17 @@ public class ClientTickHandler implements ITickHandler
 				}
 				else {
 					lastTickUpdate = false;
+				}
+			}
+			
+			if(mc.thePlayer.getCurrentItemOrArmor(1) != null && mc.thePlayer.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
+			{
+				mc.thePlayer.stepHeight = 1.002F;
+			}
+			else {
+				if(mc.thePlayer.stepHeight == 1.002F)
+				{
+					mc.thePlayer.stepHeight = 0.5F;
 				}
 			}
 			

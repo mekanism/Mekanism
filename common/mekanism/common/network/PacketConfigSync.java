@@ -37,6 +37,7 @@ public class PacketConfigSync implements IMekanismPacket
 	  	Mekanism.dynamicTankEasterEgg = dataStream.readBoolean();
 	  	Mekanism.voiceServerEnabled = dataStream.readBoolean();
 	  	Mekanism.forceBuildcraft = dataStream.readBoolean();
+	  	Mekanism.cardboardSpawners = dataStream.readBoolean();
 	  	Mekanism.obsidianTNTDelay = dataStream.readInt();
 	  	Mekanism.obsidianTNTBlastRadius = dataStream.readInt();
 	  	Mekanism.UPDATE_DELAY = dataStream.readInt();
@@ -68,6 +69,10 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();
 		Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
 		Mekanism.electrolyticSeparatorUsage = dataStream.readDouble();
+		Mekanism.precisionSawmillUsage = dataStream.readDouble();
+		Mekanism.chemicalDissolutionChamberUsage = dataStream.readDouble();
+		Mekanism.chemicalWasherUsage = dataStream.readDouble();
+		Mekanism.chemicalCrystalizerUsage = dataStream.readDouble();
 		
 		for(IModule module : Mekanism.modulesLoaded)
 		{
@@ -91,6 +96,7 @@ public class PacketConfigSync implements IMekanismPacket
 	  	dataStream.writeBoolean(Mekanism.dynamicTankEasterEgg);
 	  	dataStream.writeBoolean(Mekanism.voiceServerEnabled);
 	  	dataStream.writeBoolean(Mekanism.forceBuildcraft);
+	  	dataStream.writeBoolean(Mekanism.cardboardSpawners);
 	  	dataStream.writeInt(Mekanism.obsidianTNTDelay);
 	  	dataStream.writeInt(Mekanism.obsidianTNTBlastRadius);
 	  	dataStream.writeInt(Mekanism.UPDATE_DELAY);
@@ -119,6 +125,10 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
 		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
 		dataStream.writeDouble(Mekanism.electrolyticSeparatorUsage);
+		dataStream.writeDouble(Mekanism.precisionSawmillUsage);
+		dataStream.writeDouble(Mekanism.chemicalDissolutionChamberUsage);
+		dataStream.writeDouble(Mekanism.chemicalWasherUsage);
+		dataStream.writeDouble(Mekanism.chemicalCrystalizerUsage);
 		
 		for(IModule module : Mekanism.modulesLoaded)
 		{

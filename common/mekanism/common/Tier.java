@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.api.EnumColor;
+import mekanism.common.multipart.TransmitterType;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -84,6 +85,28 @@ public final class Tier
 			name = s;
 			processes = process;
 			guiLocation = gui;
+		}
+	}
+
+	/**
+	 * The tiers used by Universal Cables and their corresponding values.
+	 * @author aidancbrady
+	 *
+	 */
+	public static enum CableTier
+	{
+		BASIC(500, TransmitterType.UNIVERSAL_CABLE_BASIC),
+		ADVANCED(2000, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
+		ELITE(8000, TransmitterType.UNIVERSAL_CABLE_ELITE),
+		ULTIMATE(32000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
+	
+		public int cableCapacity;
+		public TransmitterType type;
+	
+		private CableTier(int capacity, TransmitterType transmitterType)
+		{
+			cableCapacity = capacity;
+			type = transmitterType;
 		}
 	}
 }

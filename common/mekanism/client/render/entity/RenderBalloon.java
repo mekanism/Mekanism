@@ -44,7 +44,7 @@ public class RenderBalloon extends Render
 			y -= RenderManager.renderPosY;
 			z -= RenderManager.renderPosZ;
 			
-			y += 3;
+			y += balloon.latchedEntity.height + 1.7F;
 		}
 		
 		render(((EntityBalloon)entity).color, x, y, z);

@@ -9,6 +9,8 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -84,17 +86,20 @@ public class ItemPartTransmitter extends JItemMultiPart
 	{
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
+			if(itemstack.getItemDamage() < Tier.CableTier.values().length)
+			{
+				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
+			}
+			
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
 		}
 		else {
 			switch(itemstack.getItemDamage())
 			{
-				case 0:
-				case 1:
-				case 2:
-				case 3:
+				case 0: case 1: case 2: case 3:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 					list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");

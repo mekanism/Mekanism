@@ -1,13 +1,13 @@
 package mekanism.client.model;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelElectricPump extends ModelBase 
+public class ModelElectricPump extends ModelBase
 {
 	ModelRenderer PumpHead;
 	ModelRenderer Connector;
@@ -20,12 +20,13 @@ public class ModelElectricPump extends ModelBase
 	ModelRenderer Ring1;
 	ModelRenderer Ring2;
 	ModelRenderer Plug;
-
-	public ModelElectricPump() 
+	ModelRenderer Ring3;
+	
+	public ModelElectricPump()
 	{
 		textureWidth = 64;
 		textureHeight = 64;
-
+		
 		PumpHead = new ModelRenderer(this, 33, 0);
 		PumpHead.addBox(0F, 0F, 0F, 6, 3, 6);
 		PumpHead.setRotationPoint(-3F, 19F, -3F);
@@ -57,8 +58,8 @@ public class ModelElectricPump extends ModelBase
 		Panel3.mirror = true;
 		setRotation(Panel3, 0F, 0F, 0.5585054F);
 		Body = new ModelRenderer(this, 30, 17);
-		Body.addBox(0F, 0F, 0F, 6, 11, 6);
-		Body.setRotationPoint(-3F, 8F, -3F);
+		Body.addBox(0F, 0F, 0F, 6, 10, 6);
+		Body.setRotationPoint(-3F, 9F, -3F);
 		Body.setTextureSize(64, 64);
 		Body.mirror = true;
 		setRotation(Body, 0F, 0F, 0F);
@@ -92,8 +93,14 @@ public class ModelElectricPump extends ModelBase
 		Plug.setTextureSize(64, 64);
 		Plug.mirror = true;
 		setRotation(Plug, 0F, 0F, 0F);
+		Ring3 = new ModelRenderer(this, 0, 35);
+		Ring3.addBox(0F, 0F, 0F, 8, 1, 8);
+		Ring3.setRotationPoint(-4F, 8F, -4F);
+		Ring3.setTextureSize(64, 64);
+		Ring3.mirror = true;
+		setRotation(Ring3, 0F, 0F, 0F);
 	}
-
+	
 	public void render(float size)
 	{
 		PumpHead.render(size);
@@ -107,9 +114,10 @@ public class ModelElectricPump extends ModelBase
 		Ring1.render(size);
 		Ring2.render(size);
 		Plug.render(size);
+		Ring3.render(size);
 	}
-
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

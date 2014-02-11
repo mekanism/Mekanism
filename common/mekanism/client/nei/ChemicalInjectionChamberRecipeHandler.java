@@ -1,12 +1,13 @@
 package mekanism.client.nei;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import mekanism.api.ListUtils;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	@Override
 	public String getRecipeName()
 	{
-		return "C. Injection Chamber";
+		return MekanismUtils.localize("nei.chemicalInjectionChamber");
 	}
 
 	@Override
@@ -45,11 +46,26 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	}
 	
 	@Override
-	public List<ItemStack> getFuelStacks()
+	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		List<ItemStack> fuels = OreDictionary.getOres("dustSalt");
-		fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
-		return fuels;
+		if(gasType == GasRegistry.getGas("sulfuricAcid"))
+		{
+			List<ItemStack> fuels = OreDictionary.getOres("dustSulfur");
+			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
+			return fuels;
+		}
+		else if(gasType == GasRegistry.getGas("water"))
+		{
+			return ListUtils.asList(MekanismUtils.getFullGasTank(GasRegistry.getGas("water")));
+		}
+		else if(gasType == GasRegistry.getGas("hydrogenChloride"))
+		{
+			List<ItemStack> fuels = OreDictionary.getOres("dustSalt");
+			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
+			return fuels;
+		}
+		
+		return new ArrayList<ItemStack>();
 	}
 	
 	@Override

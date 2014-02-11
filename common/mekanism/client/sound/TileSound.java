@@ -38,7 +38,7 @@ public class TileSound extends Sound
 	@Override
 	public float getMultiplier()
 	{
-		return ((IHasSound)tileEntity).getVolumeMultiplier();
+		return super.getMultiplier()*((IHasSound)tileEntity).getVolumeMultiplier();
 	}
 	
 	@Override
@@ -74,6 +74,11 @@ public class TileSound extends Sound
 					stopLoop();
 				}
 			}
+		}
+		
+		if(isPlaying)
+		{
+			ticksSincePlay++;
 		}
 		
 		return true;

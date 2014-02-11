@@ -15,13 +15,13 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
+import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import buildcraft.api.power.PowerHandler.Type;
@@ -30,8 +30,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {
-	public static final int CABLE_ENERGY = 10000;
-	
 	private double lastPowerScale = 0;
 	private double joulesTransmitted = 0;
 	private double jouleBufferLastTick = 0;
@@ -199,7 +197,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					
 					if(acceptor instanceof IStrictEnergyAcceptor)
 					{
-						sent += (currentSending - ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending));
+						sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
 					}
 					else if(acceptor instanceof IEnergyHandler)
 					{
@@ -295,6 +293,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					if((handler.getPowerReceiver(side.getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
 					{
+						if(handler instanceof IPowerEmitter && ((IPowerEmitter)handler).canEmitPowerFrom(side.getOpposite()))
+						{
+							continue;
+						}
+						
 						toReturn.add(acceptor);
 					}
 				}
@@ -475,6 +478,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public String getFlow()
 	{
-		return MekanismUtils.getPowerDisplay(20*joulesTransmitted);
+		return MekanismUtils.getEnergyDisplay(20*joulesTransmitted) + " per second";
 	}
 }
