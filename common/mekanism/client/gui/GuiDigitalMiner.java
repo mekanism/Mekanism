@@ -9,7 +9,6 @@ import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
-import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity;
@@ -67,21 +66,21 @@ public class GuiDigitalMiner extends GuiMekanism
 		buttonList.clear();
 		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, MekanismUtils.localize("gui.start"));
 		
-		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
+		if(tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
 		
 		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, MekanismUtils.localize("gui.stop"));
 		
-		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
+		if(!tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
 		
 		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, MekanismUtils.localize("gui.config"));
 		
-		if(tileEntity.searcher.state != State.IDLE)
+		if(tileEntity.running || tileEntity.searched > 0)
 		{
 			configButton.enabled = false;
 		}
@@ -121,7 +120,7 @@ public class GuiDigitalMiner extends GuiMekanism
 	{
 		super.updateScreen();
 		
-		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
+		if(tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
@@ -129,7 +128,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			startButton.enabled = true;
 		}
 		
-		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
+		if(!tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
@@ -137,7 +136,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			stopButton.enabled = true;
 		}
 		
-		if(tileEntity.searcher.state != State.IDLE)
+		if(tileEntity.running || tileEntity.searched > 0)
 		{
 			configButton.enabled = false;
 		}
@@ -156,14 +155,13 @@ public class GuiDigitalMiner extends GuiMekanism
         fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         
         fontRenderer.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.idle"), 9, 10, 0x00CD00);
-        fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
         
         fontRenderer.drawString(MekanismUtils.localize("gui.eject") + ": " + MekanismUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
         fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.pull") + ": " + MekanismUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
         fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.silk") + ": " + MekanismUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
         
         fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
-        fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
+        fontRenderer.drawString("" + tileEntity.searched, 9, 68, 0x00CD00);
         
     	if(tileEntity.replaceStack != null)
 		{
