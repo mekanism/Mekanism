@@ -45,22 +45,26 @@ public class PacketPortableTeleport implements IMekanismPacket
 			{
 				Coord4D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
 				
-				item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
-				
-				if(world.provider.dimensionId != coords.dimensionId)
-				{
-					((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
-				}
-				
 				World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
 				TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
 				
-				teleporter.didTeleport.add(player);
-				teleporter.teleDelay = 5;
-				((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
-				
-				world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+				if(teleporter != null)
+				{
+					teleporter.didTeleport.add(player);
+					teleporter.teleDelay = 5;
+					
+					item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
+					
+					if(world.provider.dimensionId != coords.dimensionId)
+					{
+						((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
+					}
+					
+					((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+					
+					world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+				}
 			}
 		}
 	}
