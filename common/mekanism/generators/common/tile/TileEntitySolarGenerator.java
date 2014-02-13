@@ -68,7 +68,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		
 		if(!worldObj.isRemote)
 		{
-			if(worldObj.isDaytime() && !worldObj.isRaining() && !worldObj.isThundering() && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord))
+			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord))
 			{
 				seesSun = true;
 			}
@@ -85,6 +85,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				setActive(false);
 			}
 		}
+	}
+	
+	public boolean isDesert()
+	{
+		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
 	}
 	
 	@Override
@@ -128,7 +133,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
 			}
 			
-			if(worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert)
+			if(isDesert())
 			{
 				ret *= 1.5;
 			}

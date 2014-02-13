@@ -33,7 +33,7 @@ public class TItemStackFilter extends TransporterFilter
 			return false;
 		}
 	
-		return itemType.isItemEqual(itemStack) && (!sizeMode || itemStack.stackSize >= min);
+		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.itemID == itemStack.itemID) && (!sizeMode || itemStack.stackSize >= min);
 	}
 	
 	@Override
