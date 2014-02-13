@@ -487,6 +487,7 @@ public final class MekanismUtils
     {
     	List<Integer> idsFound = new ArrayList<Integer>();
         HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
+        oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)oreStacks.clone();
         
         for(Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
         {
