@@ -752,6 +752,7 @@ public class Mekanism
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.redstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 10));
+        InfuseRegistry.registerInfuseObject(new ItemStack(Block.blockRedstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 90));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedRedstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 100));
         InfuseRegistry.registerInfuseObject(new ItemStack(Block.mushroomRed), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Block.mushroomBrown), new InfuseObject(InfuseRegistry.get("FUNGI"), 10));
