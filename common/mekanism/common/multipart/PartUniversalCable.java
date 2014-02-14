@@ -67,6 +67,16 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
             }
         }
         else {
+      		if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0)
+    		{
+	    		double last = lastWrite;
+	    		
+	    		if(last != getSaveShare())
+	    		{
+	    			MekanismUtils.saveChunk(tile());
+	    		}
+    		}
+      		
         	if(cacheEnergy > 0)
         	{
         		getTransmitterNetwork().electricityStored += cacheEnergy;
@@ -76,6 +86,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
         
         super.update();
     }
+    
+	private double getSaveShare()
+	{
+		return EnergyNetwork.round(getTransmitterNetwork().electricityStored*(1F/getTransmitterNetwork().transmitters.size()));
+	}
     
 	@Override
 	public void refreshTransmitterNetwork()
@@ -105,7 +120,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
     {
     	super.save(nbtTags);
     	
-    	double toSave = EnergyNetwork.round(getTransmitterNetwork().electricityStored*(1F/getTransmitterNetwork().transmitters.size()));
+    	double toSave = getSaveShare();
     	
     	lastWrite = toSave;
     	nbtTags.setDouble("cacheEnergy", toSave);
