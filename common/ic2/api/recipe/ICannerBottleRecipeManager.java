@@ -36,13 +36,13 @@ public interface ICannerBottleRecipeManager {
 
 
 	public static class Input {
-		public Input(IRecipeInput container, IRecipeInput fill) {
-			this.container = container;
-			this.fill = fill;
+		public Input(IRecipeInput container1, IRecipeInput fill1) {
+			this.container = container1;
+			this.fill = fill1;
 		}
 
-		public boolean matches(ItemStack container, ItemStack fill) {
-			return this.container.matches(container) && this.fill.matches(fill);
+		public boolean matches(ItemStack container1, ItemStack fill1) {
+			return this.container.matches(container1) && this.fill.matches(fill1);
 		}
 
 		public final IRecipeInput container;

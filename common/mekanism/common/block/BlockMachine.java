@@ -258,7 +258,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
     {
     	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
     	
-        if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate())
+        if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && Mekanism.machineEffects)
         {
             float xRandom = (float)x + 0.5F;
             float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -301,7 +301,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		if(tileEntity instanceof IActiveState)
+		if(Mekanism.machineEffects && tileEntity instanceof IActiveState)
 		{
 			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 			{

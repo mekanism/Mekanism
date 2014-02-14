@@ -30,9 +30,8 @@ public final class Items {
 
 			if (ret instanceof ItemStack) {
 				return (ItemStack) ret;
-			} else {
-				return null;
 			}
+			return null;
 		} catch (Exception e) {
 			System.out.println("IC2 API: Call getItem failed for "+name);
 

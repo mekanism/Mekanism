@@ -35,8 +35,8 @@ public enum Direction {
 	 */
 	ZP(5);
 
-	Direction(int dir) {
-		this.dir = dir;
+	Direction(int dir1) {
+		this.dir = dir1;
 	}
 
 	/*public CoordinateTuple ApplyToCoordinates(CoordinateTuple coordinates) {
@@ -64,9 +64,8 @@ public enum Direction {
 			} catch (Exception e) {
 				throw new RuntimeException("error getting TileEntity at dim "+tileEntity.worldObj.provider.dimensionId+" "+coords[0]+"/"+coords[1]+"/"+coords[2]);
 			}
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	/**

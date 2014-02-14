@@ -8,19 +8,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeInputItemStack implements IRecipeInput {
-	public RecipeInputItemStack(ItemStack input) {
-		this(input, input.stackSize);
+	public RecipeInputItemStack(ItemStack aInput) {
+		this(aInput, aInput.stackSize);
 	}
 
-	public RecipeInputItemStack(ItemStack input, int amount) {
-		this.input = input;
-		this.amount = amount;
+	public RecipeInputItemStack(ItemStack aInput, int aAmount) {
+		input = aInput.copy(); // Never forget to copy.
+		amount = aAmount;
 	}
 
 	@Override
 	public boolean matches(ItemStack subject) {
-		return subject.itemID == input.itemID &&
-				(subject.getItemDamage() == input.getItemDamage() || input.getItemDamage() == OreDictionary.WILDCARD_VALUE);
+		return subject.getItem() == input.getItem() && (subject.getItemDamage() == input.getItemDamage() || input.getItemDamage() == OreDictionary.WILDCARD_VALUE);
 	}
 
 	@Override

@@ -154,6 +154,7 @@ public final class NetworkHelper {
 	 */
 	@Deprecated
 	public static void requestInitialData(INetworkDataProvider dataProvider) {
+		//
 	}
 
 	/**

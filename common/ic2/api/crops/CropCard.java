@@ -52,13 +52,10 @@ public abstract class CropCard
 			}
 			return s;
 		}
-		else
-		{
-			if (att.length < 3) return "";
-			String s = att[2];
-			if (att.length >= 4) s+=", "+att[3];
-			return s;
-		}
+		if (att.length < 3) return "";
+		String s = att[2];
+		if (att.length >= 4) s+=", "+att[3];
+		return s;
 	}
 
 	/**
@@ -195,6 +192,8 @@ public abstract class CropCard
 	 * Called when the plant is rightclicked by a player.
 	 * Default action is harvesting.
 	 * 
+	 * Only called Serverside.
+	 * 
 	 * @param crop reference to ICropTile
 	 * @param player player rightclicking the crop
 	 * @return Whether the plant has changed
@@ -247,6 +246,8 @@ public abstract class CropCard
 	 * Called when the plant is leftclicked by a player.
 	 * Default action is picking the plant.
 	 * 
+	 * Only called Serverside.
+	 * 
 	 * @param crop reference to ICropTile
 	 * @param player player leftclicked the crop
 	 * @return Whether the plant has changed
@@ -290,7 +291,9 @@ public abstract class CropCard
 	 * 
 	 * @param crop reference to ICropTile
 	 */
-	public void onNeighbourChange(ICropTile crop){}
+	public void onNeighbourChange(ICropTile crop){
+		//
+	}
 
 	/**
 	 * Check if the crop should emit redstone.
@@ -304,7 +307,9 @@ public abstract class CropCard
 	 * 
 	 * @param crop reference to ICropTile
 	 */
-	public void onBlockDestroyed(ICropTile crop){}
+	public void onBlockDestroyed(ICropTile crop){
+		//
+	}
 
 	/**
 	 * Get the light value emitted by the plant.
@@ -337,7 +342,9 @@ public abstract class CropCard
 	 * 
 	 * @param crop reference to ICropTile
 	 */
-	public void tick(ICropTile crop) {}
+	public void tick(ICropTile crop) {
+		//
+	}
 
 	/**
 	 * Check whether this plant spreads weed to surrounding tiles.

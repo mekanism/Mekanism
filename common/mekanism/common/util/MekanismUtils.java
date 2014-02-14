@@ -703,7 +703,7 @@ public final class MekanismUtils
     		world.markBlockForRenderUpdate(x, y, z);
     	}
     	
-    	if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).lightUpdate())
+    	if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
     	{
     		world.updateAllLightTypes(x, y, z);
     	}

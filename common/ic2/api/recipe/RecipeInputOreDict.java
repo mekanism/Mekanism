@@ -7,22 +7,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeInputOreDict implements IRecipeInput {
-	public RecipeInputOreDict(String input) {
-		this(input, 1);
+	public RecipeInputOreDict(String input1) {
+		this(input1, 1);
 	}
 
-	public RecipeInputOreDict(String input, int amount) {
-		this.input = input;
-		this.amount = amount;
+	public RecipeInputOreDict(String input1, int amount1) {
+		this.input = input1;
+		this.amount = amount1;
 	}
 
 	@Override
 	public boolean matches(ItemStack subject) {
 		List<ItemStack> inputs = OreDictionary.getOres(input);
 
-		for (ItemStack input : inputs) {
-			if (subject.itemID == input.itemID &&
-					(subject.getItemDamage() == input.getItemDamage() || input.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
+		for (ItemStack input1 : inputs) {
+			if (subject.itemID == input1.itemID &&
+					(subject.getItemDamage() == input1.getItemDamage() || input1.getItemDamage() == OreDictionary.WILDCARD_VALUE)) {
 				return true;
 			}
 		}

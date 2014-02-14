@@ -48,6 +48,11 @@ public class Recipes {
 	 */
 	public static IScrapboxManager scrapboxDrops;
 	public static IListRecipeManager recyclerBlacklist;
+	/**
+	 * Do not add anything to this Whitelist. This is for Configuration only.
+	 * You may need this if you have an own Recycler in your Mod, just to check if something can be recycled. but don't add anything to this List
+	 */
+	public static IListRecipeManager recyclerWhitelist;
 	public static ICraftingRecipeManager advRecipes;
 
 	public static ISemiFluidFuelManager semiFluidGenerator;
