@@ -189,6 +189,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						inventory[2] = null;
 						inventory[3] = getMachineStack();
 						
+						recipeType = toSet.ordinal();
 						gasTank.setGas(null);
 						
 						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
