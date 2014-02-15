@@ -33,7 +33,7 @@ public abstract class Finder
 		{
 			List<String> oreKeys = MekanismUtils.getOreDictName(stack);
 			
-			if(!oreDictName.equals("*") && oreKeys.isEmpty())
+			if(oreKeys.isEmpty())
 			{
 				return false;
 			}
