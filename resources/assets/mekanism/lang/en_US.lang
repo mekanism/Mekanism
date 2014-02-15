@@ -387,7 +387,7 @@ tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and 
 tooltip.ChemicalCrystalizer=An ultimate machine used to crystalize !npurified ore slurry into ore crystals.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
-tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
+tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
 
 //Redstone control
