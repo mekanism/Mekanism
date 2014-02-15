@@ -338,7 +338,7 @@ gui.digitalMiner.reset=Reset
 gui.digitalMiner.silkTouch=Silk touch
 gui.digitalMiner.pull=Pull
 gui.digitalMiner.silk=Silk
-gui.digitalMiner.toMine=To mine
+gui.digitalMiner.searched=Searched
 gui.digitalMiner.running=Running
 gui.digitalMiner.inverse=Inverse mode
 

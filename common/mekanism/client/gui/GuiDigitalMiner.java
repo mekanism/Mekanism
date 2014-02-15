@@ -160,7 +160,7 @@ public class GuiDigitalMiner extends GuiMekanism
         fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.pull") + ": " + MekanismUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
         fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.silk") + ": " + MekanismUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
         
-        fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
+        fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.searched") + ":", 9, 59, 0x00CD00);
         fontRenderer.drawString("" + tileEntity.searched, 9, 68, 0x00CD00);
         
     	if(tileEntity.replaceStack != null)
