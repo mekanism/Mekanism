@@ -137,6 +137,18 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		
 		super.onChunkUnload();
 	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		if(!worldObj.isRemote)
+		{
+			Mekanism.ic2Registered.remove(Coord4D.get(this));
+			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+		}
+	}
     
 	@Override
     public void readFromNBT(NBTTagCompound nbtTags)

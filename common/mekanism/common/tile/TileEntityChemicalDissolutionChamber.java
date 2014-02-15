@@ -188,11 +188,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(facing).ordinal() || side == 1)
 		{
 			return new int[] {1};
 		}
-		else if(side == 0 || side == 1)
+		else if(side == 0)
 		{
 			return new int[] {0};
 		}
