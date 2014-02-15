@@ -36,7 +36,7 @@ public class ThreadMinerSearch extends Thread
 			{
 				for(int z = tileEntity.zCoord-tileEntity.radius; z <= tileEntity.zCoord+tileEntity.radius; z++)
 				{
-					if(!tileEntity.worldObj.getChunkProvider().chunkExists(x >> 4, z >> 4) || tileEntity.isInvalid())
+					if(tileEntity.isInvalid())
 					{
 						return;
 					}
