@@ -690,6 +690,7 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.flint, 4), new ItemStack(Item.gunpowder));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Block.sandStone), new ItemStack(Block.sand, 2));
 
         //Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 3, 6));
