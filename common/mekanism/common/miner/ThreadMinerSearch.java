@@ -1,5 +1,6 @@
 package mekanism.common.miner;
 
+import java.util.BitSet;
 import java.util.Collections;
 
 import mekanism.api.Coord4D;
@@ -25,65 +26,67 @@ public class ThreadMinerSearch extends Thread
 	{
 		state = State.SEARCHING;
 		
-		if(tileEntity.filters.isEmpty())
+		if(!tileEntity.inverse && tileEntity.filters.isEmpty())
 		{
 			state = State.FINISHED;
 			return;
 		}
 		
-		for(int y = tileEntity.maxY; y >= tileEntity.minY; y--)
+		Coord4D coord = tileEntity.getStartingCoord();
+		int diameter = tileEntity.getDiameter();
+		int size = tileEntity.getTotalSize();
+		
+		System.out.println(diameter + " " + size);
+		
+		for(int i = 0; i < size; i++)
 		{
-			for(int x = tileEntity.xCoord-tileEntity.radius; x <= tileEntity.xCoord+tileEntity.radius; x++)
+			int x = coord.xCoord+i%diameter;
+			int z = coord.zCoord+(i/diameter)%diameter;
+			int y = coord.yCoord+(i/diameter/diameter);
+			
+			if(tileEntity.isInvalid())
 			{
-				for(int z = tileEntity.zCoord-tileEntity.radius; z <= tileEntity.zCoord+tileEntity.radius; z++)
+				return;
+			}
+			
+			if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
+			{
+				continue;
+			}
+			
+			if(tileEntity.worldObj.getBlockTileEntity(x, y, z) instanceof IBoundingBlock)
+			{
+				continue;
+			}
+			
+			int blockID = tileEntity.worldObj.getBlockId(x, y, z);
+			int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
+			
+			if(blockID != 0 && blockID != Block.bedrock.blockID)
+			{
+				ItemStack stack = new ItemStack(blockID, 1, meta);
+				
+				if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
 				{
-					if(tileEntity.isInvalid())
+					continue;
+				}
+				
+				boolean hasFilter = false;
+				
+				for(MinerFilter filter : tileEntity.filters)
+				{
+					if(filter.canFilter(stack))
 					{
-						return;
+						hasFilter = true;
 					}
-					
-					if(Coord4D.get(tileEntity).equals(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId)))
-					{
-						continue;
-					}
-					
-					if(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
-					{
-						continue;
-					}
-					
-					int blockID = tileEntity.worldObj.getBlockId(x, y, z);
-					int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
-					
-					if(blockID != 0 && blockID != Block.bedrock.blockID)
-					{
-						ItemStack stack = new ItemStack(blockID, 1, meta);
-						
-						if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
-						{
-							continue;
-						}
-						
-						boolean hasFilter = false;
-						
-						for(MinerFilter filter : tileEntity.filters)
-						{
-							if(filter.canFilter(stack))
-							{
-								hasFilter = true;
-							}
-						}
-						
-						if(tileEntity.inverse ? !hasFilter : hasFilter)
-						{
-							tileEntity.oresToMine.add(new Coord4D(x, y, z, tileEntity.worldObj.provider.dimensionId));
-						}
-					}
+				}
+				
+				if(tileEntity.inverse ? !hasFilter : hasFilter)
+				{
+					tileEntity.oresToMine.set(i);
 				}
 			}
 		}
-		
-		Collections.shuffle(tileEntity.oresToMine);
 		
 		state = State.FINISHED;
 		MekanismUtils.saveChunk(tileEntity);

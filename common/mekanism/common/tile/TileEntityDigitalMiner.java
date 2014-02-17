@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +56,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 {
 	public static int[] EJECT_INV;
 	
-	public List<Coord4D> oresToMine = new ArrayList<Coord4D>();
+	public BitSet oresToMine = new BitSet();
 	
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
 	
@@ -137,7 +138,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			ChargeUtils.discharge(27, this);
 			
-			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0)
+			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.cardinality() > 0)
 			{
 				setActive(true);
 				
@@ -150,21 +151,28 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				
 				if(delay == 0)
 				{
-					Set<Coord4D> toRemove = new HashSet<Coord4D>();
+					Set<Integer> toRemove = new HashSet<Integer>();
 					
-					for(Coord4D obj : oresToMine)
+					int next = 0;
+					
+					while(true)
 					{
-						if(!obj.exists(worldObj))
+						int index = oresToMine.nextSetBit(next);
+						Coord4D coord = getCoordFromIndex(index);
+						
+						if(!coord.exists(worldObj))
 						{
+							next = index;
 							continue;
 						}
 						
-						int id = obj.getBlockId(worldObj);
-						int meta = obj.getMetadata(worldObj);
+						int id = coord.getBlockId(worldObj);
+						int meta = coord.getMetadata(worldObj);
 						
 						if(id == 0)
 						{
-							toRemove.add(obj);
+							toRemove.add(index);
+							next = index;
 							continue;
 						}
 						
@@ -181,20 +189,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						
 						if(inverse ? hasFilter : !hasFilter)
 						{
-							toRemove.add(obj);
+							toRemove.add(index);
+							next = index;
 							continue;
 						}
 						
-						List<ItemStack> drops = MinerUtils.getDrops(worldObj, obj, silkTouch);
+						List<ItemStack> drops = MinerUtils.getDrops(worldObj, coord, silkTouch);
 						
 						if(canInsert(drops))
 						{
 							add(drops);
 							
-							setReplace(obj);
-							toRemove.add(obj);
+							setReplace(coord);
+							toRemove.add(index);
 							
-							worldObj.playAuxSFXAtEntity(null, 2001, obj.xCoord, obj.yCoord, obj.zCoord, id + (meta << 12));
+							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, id + (meta << 12));
 							
 							delay = getDelay();
 							
@@ -202,9 +211,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						}
 					}
 					
-					for(Coord4D obj : toRemove)
+					for(Integer i : toRemove)
 					{
-						oresToMine.remove(obj);
+						oresToMine.clear(i);
 					}
 				}
 			}
@@ -755,7 +764,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(false);
 		}
 		
-		data.add(oresToMine.size());
+		data.add(oresToMine.cardinality());
 		data.add(controlType.ordinal());
 		data.add(inverse);
 		
@@ -777,7 +786,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		data.add(isActive);
 		data.add(running);
-		data.add(oresToMine.size());
+		data.add(oresToMine.cardinality());
 		
 		return data;
 	}
@@ -809,7 +818,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(false);
 		}
 		
-		data.add(oresToMine.size());
+		data.add(oresToMine.cardinality());
 		data.add(controlType.ordinal());
 		data.add(inverse);
 		
@@ -830,6 +839,33 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		
 		return data;
+	}
+	
+	public int getTotalSize()
+	{
+		return getDiameter()*getDiameter()*(maxY-minY+1);
+	}
+	
+	public int getDiameter()
+	{
+		return (radius*2)+1;
+	}
+	
+	public Coord4D getStartingCoord()
+	{
+		return new Coord4D(xCoord-radius, minY, zCoord-radius, worldObj.provider.dimensionId);
+	}
+	
+	public Coord4D getCoordFromIndex(int index)
+	{
+		int diameter = getDiameter();
+		Coord4D start = getStartingCoord();
+		
+		int x = start.xCoord+index%diameter;
+		int z = start.zCoord+(index/diameter)%diameter;
+		int y = start.yCoord+(index/diameter/diameter);
+		
+		return new Coord4D(x, y, z, worldObj.provider.dimensionId);
 	}
 	
 	@Override
