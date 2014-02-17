@@ -2,8 +2,14 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
+import mekanism.client.model.ModelChemicalCrystalizer;
+import mekanism.client.model.ModelChemicalDissolutionChamber;
+import mekanism.client.model.ModelChemicalInfuser;
+import mekanism.client.model.ModelChemicalOxidizer;
+import mekanism.client.model.ModelChemicalWasher;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.model.ModelElectricPump;
+import mekanism.client.model.ModelElectrolyticSeparator;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.model.ModelRotaryCondensentrator;
@@ -31,7 +37,13 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelLogisticalSorter logisticalSorter = new ModelLogisticalSorter();
 	public ModelDigitalMiner digitalMiner = new ModelDigitalMiner();
 	public ModelRotaryCondensentrator rotaryCondensentrator = new ModelRotaryCondensentrator();
-	
+	public ModelChemicalOxidizer chemicalOxidizer = new ModelChemicalOxidizer();
+	public ModelChemicalInfuser chemicalInfuser = new ModelChemicalInfuser();
+	public ModelElectrolyticSeparator electrolyticSeparator = new ModelElectrolyticSeparator();
+	public ModelChemicalDissolutionChamber chemicalDissolutionChamber = new ModelChemicalDissolutionChamber();
+	public ModelChemicalWasher chemicalWasher = new ModelChemicalWasher();
+	public ModelChemicalCrystalizer chemicalCrystalizer = new ModelChemicalCrystalizer();
+
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
@@ -43,7 +55,9 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    GL11.glPushMatrix();
 	    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 	    
-		if(MachineType.get(block.blockID, metadata) == MachineType.ELECTRIC_PUMP)
+	    MachineType type = MachineType.get(block.blockID, metadata);
+	    
+		if(type == MachineType.ELECTRIC_PUMP)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
@@ -51,7 +65,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
 	    	electricPump.render(0.0560F);
 		}
-		else if(MachineType.get(block.blockID, metadata) == MachineType.METALLURGIC_INFUSER)
+		else if(type == MachineType.METALLURGIC_INFUSER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
@@ -59,14 +73,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "MetallurgicInfuser.png"));
 	    	metallurgicInfuser.render(0.0625F);
 		}
-		else if(MachineType.get(block.blockID, metadata) == MachineType.CHARGEPAD)
+		else if(type == MachineType.CHARGEPAD)
 		{
 			GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.1F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Chargepad.png"));
 			chargepad.render(0.0625F);
 		}
-		else if(MachineType.get(block.blockID, metadata) == MachineType.LOGISTICAL_SORTER)
+		else if(type == MachineType.LOGISTICAL_SORTER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
@@ -74,7 +88,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LogisticalSorter.png"));
 	    	logisticalSorter.render(0.0625F, false);
 		}
-		else if(MachineType.get(block.blockID, metadata) == MachineType.DIGITAL_MINER)
+		else if(type == MachineType.DIGITAL_MINER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
@@ -82,13 +96,62 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		  	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
 		  	digitalMiner.render(0.03125F, false);
 		}
-		else if(MachineType.get(block.blockID, metadata) == MachineType.ROTARY_CONDENSENTRATOR)
+		else if(type == MachineType.ROTARY_CONDENSENTRATOR)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "RotaryCondensentrator.png"));
 			rotaryCondensentrator.render(0.0625F);
+		}
+		else if(type == MachineType.CHEMICAL_OXIDIZER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalOxidizer.png"));
+			chemicalOxidizer.render(0.0625F);
+			chemicalOxidizer.renderGlass(0.0625F);
+		}
+		else if(type == MachineType.CHEMICAL_INFUSER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalInfuser.png"));
+			chemicalInfuser.render(0.0625F);
+			chemicalInfuser.renderGlass(0.0625F);
+		}
+		else if(type == MachineType.ELECTROLYTIC_SEPARATOR)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glTranslated(0.0F, -1.0F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectrolyticSeparator.png"));
+			electrolyticSeparator.render(0.0625F);
+		}
+		else if(type == MachineType.CHEMICAL_DISSOLUTION_CHAMBER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalDissolutionChamber.png"));
+			chemicalDissolutionChamber.render(0.0625F);
+		}
+		else if(type == MachineType.CHEMICAL_WASHER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalWasher.png"));
+			chemicalWasher.render(0.0625F);
+		}
+		else if(type == MachineType.CHEMICAL_CRYSTALIZER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+	    	GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystalizer.png"));
+			chemicalCrystalizer.render(0.0625F);
 		}
 		else {
 	        MekanismRenderer.renderItem(renderer, metadata, block);

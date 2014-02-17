@@ -1,19 +1,17 @@
 package mekanism.client.sound;
 
+import mekanism.api.Pos3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 
 public abstract class PlayerSound extends Sound
 {
 	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
 	
-	public int ticksSincePlay = 0;
-	
 	public PlayerSound(String id, String sound, EntityPlayer entity)
 	{
-		super(id, sound, entity, new Vector3(entity));
+		super(id, sound, entity, new Pos3D(entity));
 		
 		player = entity;
 	}
@@ -21,7 +19,7 @@ public abstract class PlayerSound extends Sound
 	@Override
 	public float getMultiplier()
 	{
-		return Math.min(1, ((float)ticksSincePlay/20F))*0.3F;
+		return super.getMultiplier()*0.3F;
 	}
 	
 	@Override
@@ -44,16 +42,8 @@ public abstract class PlayerSound extends Sound
 	}
 	
 	@Override
-	public Vector3 getLocation()
+	public Pos3D getLocation()
 	{
-		return new Vector3(player);
-	}
-	
-	@Override
-	public void play()
-	{
-		super.play();
-		
-		ticksSincePlay = 0;
+		return new Pos3D(player);
 	}
 }

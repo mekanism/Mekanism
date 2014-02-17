@@ -1,18 +1,22 @@
 package mekanism.client.nei;
 
+import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
+import mekanism.api.gas.Gas;
+import mekanism.client.gui.GuiCombiner;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import mekanism.client.gui.GuiCombiner;
-import mekanism.common.RecipeHandler.Recipe;
 
 public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return "Combiner";
+		return MekanismUtils.localize("tile.MachineBlock.Combiner.name");
 	}
 
 	@Override
@@ -40,9 +44,9 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 	
 	@Override
-	public ItemStack getFuelStack()
+	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		return new ItemStack(Block.cobblestone);
+		return ListUtils.asList(new ItemStack(Block.cobblestone));
 	}
 	
 	@Override

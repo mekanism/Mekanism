@@ -2,9 +2,13 @@ package mekanism.common.item;
 
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 
 public class ItemProxy extends Item
 {
@@ -73,7 +77,22 @@ public class ItemProxy extends Item
 		
 		return stack;
 	}
-	
+
 	@Override
 	public void registerIcons(IconRegister register) {}
+
+	@Override
+	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)
+	{
+		if (par3Entity instanceof EntityPlayer)
+		{
+			EntityPlayer player = (EntityPlayer) par3Entity;
+			for (Object o : player.inventoryContainer.inventorySlots)
+			{
+				Slot s = (Slot) o;
+				if (s.getStack() != null && s.getStack().getItem() == this)
+					player.inventory.decrStackSize(s.slotNumber, 64);
+			}
+		}
+	}
 }

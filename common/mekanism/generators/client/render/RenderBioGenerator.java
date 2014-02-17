@@ -9,7 +9,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelBioGenerator;
-import mekanism.generators.common.tileentity.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -27,8 +27,6 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 	private ModelBioGenerator model = new ModelBioGenerator();
 	
 	private Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
-	
-	private static Icon renderIcon = MekanismRenderer.getTextureMap(1).registerIcon("mekanism:LiquidEnergy");
 	
 	private static final int stages = 40;
 	
@@ -62,7 +60,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 			
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			bindTexture(MekanismUtils.getResource(ResourceType.TEXTURE_ITEMS, "LiquidEnergy.png"));
+			bindTexture(MekanismRenderer.getBlocksTexture());
 			getDisplayList(ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 			
@@ -82,7 +80,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		
 		Model3D model3D = new Model3D();
 		model3D.baseBlock = Block.waterStill;
-		model3D.setTexture(renderIcon);
+		model3D.setTexture(MekanismRenderer.energyIcon);
 		
 		for(int i = 0; i < stages; i++)
 		{

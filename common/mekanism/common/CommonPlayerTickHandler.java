@@ -2,17 +2,17 @@ package mekanism.common;
 
 import java.util.EnumSet;
 
-import org.lwjgl.input.Keyboard;
-
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketStatusUpdate;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -87,6 +87,17 @@ public class CommonPlayerTickHandler implements ITickHandler
 	    		}
 			}
 			
+			if(player.getCurrentItemOrArmor(1) != null && player.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
+			{
+				player.stepHeight = 1.002F;
+			}
+			else {
+				if(player.stepHeight == 1.002F)
+				{
+					player.stepHeight = 0.5F;
+				}
+			}
+			
 			if(isJetpackOn(player))
 			{
 				ItemJetpack jetpack = (ItemJetpack)player.getCurrentItemOrArmor(3).getItem();
@@ -94,11 +105,10 @@ public class CommonPlayerTickHandler implements ITickHandler
 				if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
 				{
 					player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
-					player.fallDistance = 0.0F;
 				}
 				else if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
-					if((!Mekanism.keyMap.has(player, KeySync.SPACE) && !Mekanism.keyMap.has(player, KeySync.LSHIFT)) || (Mekanism.keyMap.has(player, KeySync.SPACE) && Mekanism.keyMap.has(player, KeySync.LSHIFT)))
+					if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
 					{
 						if(player.motionY > 0)
 						{
@@ -110,17 +120,22 @@ public class CommonPlayerTickHandler implements ITickHandler
 						}
 					}
 					else {
-						if(Mekanism.keyMap.has(player, KeySync.SPACE))
+						if(Mekanism.keyMap.has(player, KeySync.ASCEND))
 						{
 							player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
 						}
-						else if(Mekanism.keyMap.has(player, KeySync.LSHIFT))
+						else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
 						{
 							player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
 						}
 					}
-					
-					player.fallDistance = 0.0F;
+				}
+				
+				player.fallDistance = 0.0F;
+				
+				if(player instanceof EntityPlayerMP)
+				{
+					((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
 				}
 				
 				jetpack.useGas(player.getCurrentItemOrArmor(3));
@@ -149,7 +164,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 				
 				if(jetpack.getGas(stack) != null)
 				{
-					if((Mekanism.keyMap.has(player, KeySync.SPACE) && jetpack.getMode(stack) == JetpackMode.NORMAL))
+					if((Mekanism.keyMap.has(player, KeySync.ASCEND) && jetpack.getMode(stack) == JetpackMode.NORMAL))
 					{
 						return true;
 					}

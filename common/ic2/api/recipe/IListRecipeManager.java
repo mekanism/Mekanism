@@ -16,7 +16,7 @@ public interface IListRecipeManager extends Iterable<ItemStack> {
 	 * @param stack Stack to add
 	 */
 	public void add(ItemStack stack);
-	
+
 	/**
 	 * Checks whether the specified stack is in the list.
 	 * 
@@ -24,7 +24,12 @@ public interface IListRecipeManager extends Iterable<ItemStack> {
 	 * @return Whether the stack is in the list
 	 */
 	public boolean contains(ItemStack stack);
-	
+
+	/**
+	 * @return if the List is Empty
+	 */
+	public boolean isEmpty();
+
 	/**
 	 * Gets the list of stacks.
 	 * 

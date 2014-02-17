@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
  * @author AidanBrady
  *
  */
-public interface IGasItem extends IGasStorage
+public interface IGasItem
 {
 	/**
 	 * Gets the rate of transfer this item can handle.
@@ -48,4 +48,28 @@ public interface IGasItem extends IGasStorage
 	 * @return if the item can provide gas
 	 */
 	public boolean canProvideGas(ItemStack itemstack, Gas type);
+	
+	/**
+	 * Get the gas of a declared type.
+	 * @param type - type of gas
+	 * @param data - ItemStack parameter if necessary
+	 * @return gas stored
+	 */
+	public GasStack getGas(ItemStack itemstack);
+	
+	/**
+	 * Set the gas of a declared type to a new amount;
+	 * @param type - type of gas
+	 * @param data - ItemStack parameter if necessary
+	 * @param amount - amount to store
+	 */
+	public void setGas(ItemStack itemstack, GasStack stack);
+	
+	/**
+	 * Gets the maximum amount of gas this tile entity can store.
+	 * @param type - type of gas
+	 * @param data - ItemStack parameter if necessary
+	 * @return maximum gas
+	 */
+	public int getMaxGas(ItemStack itemstack);
 }

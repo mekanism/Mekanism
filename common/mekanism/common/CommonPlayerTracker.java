@@ -1,5 +1,7 @@
 package mekanism.common;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.network.PacketBoxBlacklist;
+import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData;
@@ -14,8 +16,12 @@ public class CommonPlayerTracker implements IPlayerTracker
 	{
 		if(!player.worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketJetpackData().setParams(JetpackPacket.FULL), player.worldObj.provider.dimensionId);
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player.worldObj.provider.dimensionId);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketConfigSync().setParams(), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketBoxBlacklist().setParams(), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);
+			
+			System.out.println("[Mekanism] Sent config to '" + player.username + ".'");
 		}
 	}
 
@@ -23,12 +29,7 @@ public class CommonPlayerTracker implements IPlayerTracker
 	public void onPlayerLogout(EntityPlayer player)
 	{
 		Mekanism.jetpackOn.remove(player);
-		
-		if(!player.worldObj.isRemote)
-		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketJetpackData().setParams(JetpackPacket.FULL), player.worldObj.provider.dimensionId);
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player.worldObj.provider.dimensionId);
-		}
+		Mekanism.gasmaskOn.remove(player);
 	}
 
 	@Override
@@ -38,8 +39,8 @@ public class CommonPlayerTracker implements IPlayerTracker
 		
 		if(!player.worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketJetpackData().setParams(JetpackPacket.FULL), player.worldObj.provider.dimensionId);
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player.worldObj.provider.dimensionId);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);
 		}
 	}
 

@@ -4,7 +4,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tileentity.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -36,7 +36,7 @@ public class ContainerHydrogenGenerator extends Container
         }
         
         tileEntity.openChest();
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class ContainerHydrogenGenerator extends Container
     {
 		super.onContainerClosed(entityplayer);
 		tileEntity.closeChest();
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
     }
 
 	@Override

@@ -107,6 +107,20 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		return "Network Registry:\n" + networks;
 	}
 
+	public String[] toStrings()
+	{
+		String[] strings = new String[networks.size()];
+		int i = 0;
+		
+		for(ITransmitterNetwork<?, ?> network : networks)
+		{
+			strings[i] = network.toString();
+			++i;
+		}
+		
+		return strings;
+	}
+
 	public static class NetworkLoader
 	{
 		@ForgeSubscribe
@@ -141,14 +155,14 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	            {
 			    	Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
 			    	
-	                for(Iterator iter = c.chunkTileEntityMap.values().iterator(); iter.hasNext();)
+	                for(Iterator iter = copy.values().iterator(); iter.hasNext();)
 	                {
 	                	Object obj = iter.next();
 	                	
-	                    if(obj instanceof ITransmitter)
+	                    if(obj instanceof IGridTransmitter)
 	                    {
-                            ((ITransmitter)obj).refreshTransmitterNetwork();
-                            ((ITransmitter)obj).chunkLoad();
+                            ((IGridTransmitter)obj).refreshTransmitterNetwork();
+                            ((IGridTransmitter)obj).chunkLoad();
 	                    }
 	                }
 	            }

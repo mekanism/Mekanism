@@ -3,7 +3,7 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.Random;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -11,7 +11,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketPortalFX implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	@Override
 	public String getName() 
@@ -22,7 +22,7 @@ public class PacketPortalFX implements IMekanismPacket
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
-		object3D = (Object3D)data[0];
+		object3D = (Coord4D)data[0];
 		
 		return this;
 	}

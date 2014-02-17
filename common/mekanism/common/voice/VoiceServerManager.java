@@ -34,19 +34,18 @@ public class VoiceServerManager
 	public void stop()
 	{
 		try {
-			listenThread.interrupt();
+			System.out.println("[Mekanism] VoiceServer: Shutting down server...");
+			
+			try {
+				listenThread.interrupt();
+			} catch(Exception e) {}
 			
 			foundLocal = false;
 			
-			serverSocket.close();
-			serverSocket = null;
-			
-			System.out.println("[Mekanism] VoiceServer: Shutting down server...");
-		} catch(SocketException e) {
-			if(!e.getLocalizedMessage().toLowerCase().equals("socket closed"))
-			{
-				e.printStackTrace();
-			}
+			try {
+				serverSocket.close();
+				serverSocket = null;
+			} catch(Exception e) {}
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while shutting down server.");
 			e.printStackTrace();

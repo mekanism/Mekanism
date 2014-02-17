@@ -3,13 +3,13 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityTeleporter;
+import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -39,7 +39,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
-			Object3D obj = Object3D.get(tileEntity).getFromSide(ForgeDirection.WEST);
+			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
 			int type = 0;
 			
 			if(obj.getBlockId(tileEntity.worldObj) == Mekanism.basicBlockID && obj.getMetadata(tileEntity.worldObj) == 7)

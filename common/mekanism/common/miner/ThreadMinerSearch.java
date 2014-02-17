@@ -1,11 +1,13 @@
 package mekanism.common.miner;
 
+import java.util.BitSet;
 import java.util.Collections;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 public class ThreadMinerSearch extends Thread
@@ -24,58 +26,67 @@ public class ThreadMinerSearch extends Thread
 	{
 		state = State.SEARCHING;
 		
-		if(tileEntity.filters.isEmpty())
+		if(!tileEntity.inverse && tileEntity.filters.isEmpty())
 		{
 			state = State.FINISHED;
 			return;
 		}
 		
-		for(int y = tileEntity.maxY; y >= tileEntity.minY; y--)
+		Coord4D coord = tileEntity.getStartingCoord();
+		int diameter = tileEntity.getDiameter();
+		int size = tileEntity.getTotalSize();
+		
+		System.out.println(diameter + " " + size);
+		
+		for(int i = 0; i < size; i++)
 		{
-			for(int x = tileEntity.xCoord-tileEntity.radius; x <= tileEntity.xCoord+tileEntity.radius; x++)
+			int x = coord.xCoord+i%diameter;
+			int z = coord.zCoord+(i/diameter)%diameter;
+			int y = coord.yCoord+(i/diameter/diameter);
+			
+			if(tileEntity.isInvalid())
 			{
-				for(int z = tileEntity.zCoord-tileEntity.radius; z <= tileEntity.zCoord+tileEntity.radius; z++)
+				return;
+			}
+			
+			if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
+			{
+				continue;
+			}
+			
+			if(tileEntity.worldObj.getBlockTileEntity(x, y, z) instanceof IBoundingBlock)
+			{
+				continue;
+			}
+			
+			int blockID = tileEntity.worldObj.getBlockId(x, y, z);
+			int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
+			
+			if(blockID != 0 && blockID != Block.bedrock.blockID)
+			{
+				ItemStack stack = new ItemStack(blockID, 1, meta);
+				
+				if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
 				{
-					if(tileEntity.isInvalid())
+					continue;
+				}
+				
+				boolean hasFilter = false;
+				
+				for(MinerFilter filter : tileEntity.filters)
+				{
+					if(filter.canFilter(stack))
 					{
-						return;
+						hasFilter = true;
 					}
-					
-					if(Object3D.get(tileEntity).equals(new Object3D(x, y, z, tileEntity.worldObj.provider.dimensionId)))
-					{
-						continue;
-					}
-					
-					if(new Object3D(x, y, z).getTileEntity(tileEntity.worldObj) instanceof IBoundingBlock)
-					{
-						continue;
-					}
-					
-					int blockID = tileEntity.worldObj.getBlockId(x, y, z);
-					int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
-					
-					if(blockID != 0)
-					{
-						ItemStack stack = new ItemStack(blockID, 1, meta);
-						
-						if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
-						{
-							continue;
-						}
-						
-						for(MinerFilter filter : tileEntity.filters)
-						{
-							if(filter.canFilter(stack))
-							{
-								tileEntity.oresToMine.add(new Object3D(x, y, z));
-							}
-						}
-					}
+				}
+				
+				if(tileEntity.inverse ? !hasFilter : hasFilter)
+				{
+					tileEntity.oresToMine.set(i);
 				}
 			}
 		}
-		
-		Collections.shuffle(tileEntity.oresToMine);
 		
 		state = State.FINISHED;
 		MekanismUtils.saveChunk(tileEntity);

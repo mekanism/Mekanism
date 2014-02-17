@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IInvConfiguration;
-import mekanism.common.tileentity.TileEntityBin;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -33,7 +33,7 @@ public class TransporterManager
 		flowingStacks.remove(stack);
 	}
 	
-	public static List<TransporterStack> getStacksToDest(Object3D dest)
+	public static List<TransporterStack> getStacksToDest(Coord4D dest)
 	{
 		List<TransporterStack> ret = new ArrayList<TransporterStack>();
 		
@@ -254,7 +254,7 @@ public class TransporterManager
     		return itemStack;
     	}
     	
-    	List<TransporterStack> insertQueue = getStacksToDest(Object3D.get(tileEntity));
+    	List<TransporterStack> insertQueue = getStacksToDest(Coord4D.get(tileEntity));
     	
     	for(TransporterStack tStack : insertQueue)
     	{

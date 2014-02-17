@@ -9,6 +9,7 @@ import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
 
+import mekanism.common.Mekanism;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,7 +19,6 @@ public class VoiceClient extends Thread
 	public Socket socket;
 	
 	public String ip;
-	public int port;
 	
 	public AudioFormat format = new AudioFormat(11025.0F, 8, 1, true, true);
 	
@@ -30,10 +30,9 @@ public class VoiceClient extends Thread
 	
 	public boolean running;
 	
-	public VoiceClient(String s, int i)
+	public VoiceClient(String s)
 	{
 		ip = s;
-		port = i;
 	}
 	
 	@Override
@@ -42,7 +41,7 @@ public class VoiceClient extends Thread
 		System.out.println("[Mekanism] VoiceServer: Starting client connection...");
 		
 		try {
-			socket = new Socket(ip, port);
+			socket = new Socket(ip, Mekanism.VOICE_PORT);
 			running = true;
 			
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));

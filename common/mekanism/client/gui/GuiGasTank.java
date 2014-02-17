@@ -1,7 +1,13 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+
+import mekanism.api.Coord4D;
+import mekanism.common.PacketHandler;
+import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerGasTank;
-import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.network.PacketTileEntity;
+import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -30,12 +36,15 @@ public class GuiGasTank extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 			
-		String capacityInfo = (tileEntity.getGas() != null ? tileEntity.getGas().amount : 0) + "/" + tileEntity.MAX_GAS;
+		String capacityInfo = tileEntity.gasTank.getStored() + "/" + tileEntity.MAX_GAS;
 		
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
-		fontRenderer.drawString("Gas: " + (tileEntity.getGas() != null ? tileEntity.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
+		fontRenderer.drawString("Gas: " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		
+		String name = tileEntity.dumping ? "Dumping..." : MekanismUtils.localize("gui.idle");
+        fontRenderer.drawString(name, 156-fontRenderer.getStringWidth(name), 73, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -50,11 +59,33 @@ public class GuiGasTank extends GuiMekanism
         int guiWidth = (width - xSize) / 2;
         int guiHeight = (height - ySize) / 2;
         drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		
+        int displayInt = tileEntity.dumping ? 18 : 10;
+        drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
         
-		if(tileEntity.getGas() != null)
+		if(tileEntity.gasTank.getGas() != null)
 		{
-	        int scale = (int)(((double)tileEntity.getGas().amount / tileEntity.MAX_GAS) * 72);
-	        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 20);
+	        int scale = (int)(((double)tileEntity.gasTank.getStored() / tileEntity.MAX_GAS) * 72);
+	        drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, scale, 10);
+		}
+    }
+	
+	@Override
+    protected void mouseClicked(int x, int y, int button)
+    {
+		super.mouseClicked(x, y, button);
+		
+		int xAxis = (x - (width - xSize) / 2);
+		int yAxis = (y - (height - ySize) / 2);
+		
+		if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
+		{
+			ArrayList data = new ArrayList();
+			data.add(0);
+			
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+
 		}
     }
 }

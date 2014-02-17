@@ -15,8 +15,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiCredits extends GuiScreen 
 {
 	private static String updateProgress = "";
-	private boolean updatedRecently;
-	private boolean notified = false;
 	
 	@Override
 	public void initGui()
@@ -27,51 +25,28 @@ public class GuiCredits extends GuiScreen
         ((GuiButton)buttonList.get(0)).enabled = !MekanismUtils.noUpdates() && !ThreadClientUpdate.hasUpdated;
 	}
 	
-	public static void onFinishedDownloading()
+	public static void updateInfo(String info)
 	{
-		updateProgress = "Successfully updated. Restart Minecraft to load.";
-		System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
-		ThreadClientUpdate.hasUpdated = true;
-	}
-	
-	public static void onErrorDownloading()
-	{
-		updateProgress = EnumColor.DARK_RED + "Error updating.";
+		updateProgress = info;
 	}
 	
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		if(!guibutton.enabled)
-		{
-			return;
-		}
 		if(guibutton.id == 0)
 		{
 			if(!MekanismUtils.noUpdates())
 			{
-				updatedRecently = true;
-				updateProgress = "Downloading latest version...";
+				updateProgress = "Preparing to update...";
 				guibutton.enabled = false;
 				
-				if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-				{
-					new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/Mekanism-v" + Mekanism.latestVersionNumber + ".jar", "");
-				}
-				
-				for(IModule module : Mekanism.modulesLoaded)
-				{
-					if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-					{
-						new ThreadClientUpdate("http://dl.dropbox.com/u/90411166/Mekanism" + module.getName() + "-v" + Mekanism.latestVersionNumber + ".jar", module.getName());
-					}
-				}
+				new ThreadClientUpdate();
 			}
 			else {
 				updateProgress = "You already have the latest version.";
 			}
 		}
-		if(guibutton.id == 1)
+		else if(guibutton.id == 1)
 		{
 			mc.displayGuiScreen(null);
 		}
@@ -91,19 +66,6 @@ public class GuiCredits extends GuiScreen
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
-		if(updatedRecently && ThreadClientUpdate.modulesBeingDownloaded == 0 && !updateProgress.contains("Error"))
-		{
-			if(!notified)
-			{
-				onFinishedDownloading();
-				notified = true;
-			}
-		}
-		else if(ThreadClientUpdate.hasUpdated && !notified)
-		{
-			updateProgress = "You have already downloaded the update. Restart MC!";
-		}
-		
 		drawDefaultBackground();
         drawCenteredString(fontRenderer, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
         

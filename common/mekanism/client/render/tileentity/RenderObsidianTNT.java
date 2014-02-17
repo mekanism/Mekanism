@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelObsidianTNT;
-import mekanism.common.tileentity.TileEntityObsidianTNT;
+import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

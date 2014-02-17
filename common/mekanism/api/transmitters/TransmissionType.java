@@ -7,7 +7,8 @@ public enum TransmissionType
 {
 	ENERGY,
 	FLUID,
-	GAS;
+	GAS,
+    ITEM;
 
     public static boolean checkTransmissionType(TileEntity sideTile, TransmissionType type)
     {
@@ -23,7 +24,7 @@ public enum TransmissionType
     {
     	if(sideTile instanceof ITransmitter)
     	{
-    		if(((ITransmitter<?>)sideTile).getTransmissionType() == this)
+    		if(((ITransmitter)sideTile).getTransmissionType() == this)
     		{
     			return true;
     		}

@@ -10,14 +10,12 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
@@ -30,12 +28,7 @@ import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
-import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityElectricChest;
-import mekanism.common.tileentity.TileEntityFactory;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.*;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -55,34 +48,41 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Keyboard;
 
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple machine block IDs.
- * 0: Enrichment Chamber
- * 1: Osmium Compressor
- * 2: Combiner
- * 3: Crusher
- * 4: Digital Miner
- * 5: Basic Factory
- * 6: Advanced Factory
- * 7: Elite Factory
- * 8: Metallurgic Infuser
- * 9: Purification Chamber
- * 10: Energized Smelter
- * 11: Teleporter
- * 12: Electric Pump
- * 13: Electric Chest
- * 14: Chargepad
- * 15: Logistical Sorter
+ * 0:0: Enrichment Chamber
+ * 0:1: Osmium Compressor
+ * 0:2: Combiner
+ * 0:3: Crusher
+ * 0:4: Digital Miner
+ * 0:5: Basic Factory
+ * 0:6: Advanced Factory
+ * 0:7: Elite Factory
+ * 0:8: Metallurgic Infuser
+ * 0:9: Purification Chamber
+ * 0:10: Energized Smelter
+ * 0:11: Teleporter
+ * 0:12: Electric Pump
+ * 0:13: Electric Chest
+ * 0:14: Chargepad
+ * 0:15: Logistical Sorter
+ * 1:0: Rotary Condensentrator
+ * 1:1: Chemical Oxidizer
+ * 1:2: Chemical Infuser
+ * 1:3: Chemical Injection Chamber
+ * 1:4: Electrolytic Separator
+ * 1:5: Precision Sawmill
+ * 1:6: Chemical Dissolution Chamber
+ * 1:7: Chemical Washer
+ * 1:8: Chemical Crystalizer
  * @author AidanBrady
  *
  */
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IGasItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -139,7 +139,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			if(type != MachineType.LOGISTICAL_SORTER)
 			{
 				list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
-				list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 			}
 			
 			if(hasTank(itemstack))
@@ -148,13 +147,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 				{
 					list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
 				}
-			}
-			
-			GasStack gasStack = getGas(itemstack);
-			
-			if(gasStack != null)
-			{
-				list.add(EnumColor.YELLOW + "Stored " + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + gasStack.amount);
 			}
 			
 			if(supportsUpgrades(itemstack))
@@ -169,14 +161,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 			}
 		}
 		else {
-			list.addAll(MekanismUtils.getSplitText(type.getDescription()));
+			list.addAll(MekanismUtils.splitLines(type.getDescription()));
 		}
-	}
-
-	@Override
-	public float getVoltage(ItemStack itemStack) 
-	{
-		return 120;
 	}
 	
 	@Override
@@ -296,6 +282,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     		if(tileEntity instanceof TileEntityFactory)
     		{
     			((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
+				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType().blockID);
     		}
     		
     		if(tileEntity instanceof ISustainedTank)
@@ -315,7 +302,29 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
     		
     		if(tileEntity instanceof TileEntityRotaryCondensentrator)
     		{
-    			((TileEntityRotaryCondensentrator)tileEntity).setGas(getGas(stack));
+    			if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("gasStack"))
+    			{
+    				GasStack gasStack = GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasStack"));
+    				((TileEntityRotaryCondensentrator)tileEntity).gasTank.setGas(gasStack);
+    			}
+    		}
+    		
+    		if(tileEntity instanceof TileEntityChemicalOxidizer)
+    		{
+    			if(stack.stackTagCompound != null)
+    			{
+    				((TileEntityChemicalOxidizer)tileEntity).gasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("gasTank")));
+    			}
+    		}
+    		
+    		if(tileEntity instanceof TileEntityChemicalInfuser)
+    		{
+    			if(stack.stackTagCompound != null)
+    			{
+    				((TileEntityChemicalInfuser)tileEntity).leftTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("leftTank")));
+    				((TileEntityChemicalInfuser)tileEntity).rightTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("rightTank")));
+    				((TileEntityChemicalInfuser)tileEntity).centerTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("centerTank")));
+    			}
     		}
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -378,10 +387,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 					if(inv.getStackInSlot(54).getItem() instanceof IEnergizedItem)
 					{
 						setEnergy(itemstack, getEnergy(itemstack) + EnergizedItemManager.discharge(inv.getStackInSlot(54), getMaxEnergy(itemstack) - getEnergy(itemstack)));
-					}
-					else if(inv.getStackInSlot(54).getItem() instanceof IItemElectric)
-					{
-						setEnergy(itemstack, getEnergy(itemstack) + ElectricItemHelper.dischargeItem(inv.getStackInSlot(54), (float)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_UE)));
 					}
 					else if(Mekanism.hooks.IC2Loaded && inv.getStackInSlot(54).getItem() instanceof IElectricItem)
 					{
@@ -503,11 +508,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 		{
 			MachineType type = MachineType.get((ItemStack)data[0]);
 			
-			if(type != MachineType.TELEPORTER && type != MachineType.ELECTRIC_PUMP && type != MachineType.ELECTRIC_CHEST && type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER &&
-					type != MachineType.ROTARY_CONDENSENTRATOR)
-			{
-				return true;
-			}
+			return type.supportsUpgrades;
 		}
 		
 		return false;
@@ -801,7 +802,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	@Override
 	public double getMaxEnergy(ItemStack itemStack) 
 	{
-		return MekanismUtils.getEnergy(getEnergyMultiplier(itemStack), MachineType.get(itemStack.itemID, itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(itemStack), MachineType.get(itemStack.itemID, itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override
@@ -879,187 +880,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, IItem
 	}
 	
 	@Override
-	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
-			
-			if(doRecharge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
-	{
-		if(canSend(itemStack))
-		{
-			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
-			
-			if(doDischarge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - toSend);
-			}
-			
-			return (float)(toSend*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public void setElectricity(ItemStack itemStack, float joules) 
-	{
-		setEnergy(itemStack, joules*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getTransfer(ItemStack itemStack)
-	{
-		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
-	}
-	
-	@Override
 	public IElectricItemManager getManager(ItemStack itemStack) 
 	{
 		return IC2ItemManager.getManager(this);
-	}
-	
-	@Override
-	public int getMaxGas(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			if(MachineType.get((ItemStack)data[0]) == MachineType.ROTARY_CONDENSENTRATOR)
-			{
-				return TileEntityRotaryCondensentrator.MAX_GAS;
-			}
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public int getRate(ItemStack itemstack) 
-	{
-		return ItemBlockGasTank.TRANSFER_RATE;
-	}
-
-	@Override
-	public int addGas(ItemStack itemstack, GasStack stack) 
-	{
-		if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR || (getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas()))
-		{
-			return 0;
-		}
-		
-		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-		setGas(new GasStack(stack.getGas(), getStored(itemstack)+toUse), itemstack);
-		
-		return toUse;
-	}
-
-	@Override
-	public GasStack removeGas(ItemStack itemstack, int amount)
-	{
-		if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR || getGas(itemstack) == null)
-		{
-			return null;
-		}
-		
-		Gas type = getGas(itemstack).getGas();
-		
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(new GasStack(type, getStored(itemstack)-gasToUse), itemstack);
-		
-		return new GasStack(type, gasToUse);
-	}
-	
-	private int getStored(ItemStack itemstack)
-	{
-		return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
-	}
-	
-	@Override
-	public boolean canReceiveGas(ItemStack itemstack, Gas type)
-	{
-		return MachineType.get(itemstack) == MachineType.ROTARY_CONDENSENTRATOR && (getGas(itemstack) == null || getGas(itemstack).getGas() == type);
-	}
-	
-	@Override
-	public boolean canProvideGas(ItemStack itemstack, Gas type)
-	{
-		return false;
-	}
-	
-	@Override
-	public GasStack getGas(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR || itemstack.stackTagCompound == null)
-			{
-				return null;
-			}
-			
-			GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-			
-			return stored;
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public void setGas(GasStack stack, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			if(MachineType.get(itemstack) != MachineType.ROTARY_CONDENSENTRATOR)
-			{
-				return;
-			}
-			
-			if(itemstack.stackTagCompound == null)
-			{
-				itemstack.setTagCompound(new NBTTagCompound());
-			}
-			
-			if(stack == null || stack.amount == 0)
-			{
-				itemstack.stackTagCompound.removeTag("stored");
-			}
-			else {
-				int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
-				GasStack gasStack = new GasStack(stack.getGas(), amount);
-				
-				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
-			}
-		}
 	}
 }

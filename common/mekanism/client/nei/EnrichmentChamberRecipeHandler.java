@@ -3,14 +3,15 @@ package mekanism.client.nei;
 import java.util.Set;
 
 import mekanism.client.gui.GuiEnrichmentChamber;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 
 public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return "Enrichment Chamber";
+		return MekanismUtils.localize("tile.MachineBlock.EnrichmentChamber.name");
 	}
 
 	@Override

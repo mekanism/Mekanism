@@ -6,9 +6,9 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityBasicBlock;
-import mekanism.common.tileentity.TileEntityElectricBlock;
-import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -59,7 +59,22 @@ public class BlockGasTank extends BlockContainer
         }
         
         tileEntity.setFacing((short)change);
+        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
     }
+	
+	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	{
+		if(!world.isRemote)
+		{
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
+			}
+		}
+	}
     
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
@@ -211,7 +226,7 @@ public class BlockGasTank extends BlockContainer
     	ItemStack itemStack = new ItemStack(Mekanism.GasTank);
         
         IGasItem storageTank = (IGasItem)itemStack.getItem();
-        storageTank.setGas(tileEntity.gasStored, itemStack);
+        storageTank.setGas(itemStack, tileEntity.gasTank.getGas());
         
         ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
         inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);

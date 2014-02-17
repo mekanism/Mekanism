@@ -3,7 +3,7 @@ package mekanism.common.inventory.container;
 import ic2.api.item.IElectricItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.tileentity.TileEntityEnergyCube;
+import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,7 +11,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
 
 public class ContainerEnergyCube extends Container
 {
@@ -38,7 +37,7 @@ public class ContainerEnergyCube extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -47,7 +46,7 @@ public class ContainerEnergyCube extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 	
@@ -68,7 +67,7 @@ public class ContainerEnergyCube extends Container
             ItemStack slotStack = currentSlot.getStack();
             stack = slotStack.copy();
 
-            if(slotStack.getItem() instanceof IElectricItem || slotStack.getItem() instanceof IItemElectric || slotStack.itemID == Item.redstone.itemID)
+            if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
             {
             	if(slotStack.itemID == Item.redstone.itemID)
             	{
@@ -182,9 +181,6 @@ public class ContainerEnergyCube extends Container
 	
 	private boolean canTransfer(ItemStack slotStack)
 	{
-		return (slotStack.getItem() instanceof IItemElectric && 
-				((IItemElectric)slotStack.getItem()).recharge(slotStack, 1, false) != 0) || 
-				(slotStack.getItem() instanceof IElectricItem && (!(slotStack.getItem() instanceof IItemElectric) || 
-						((IItemElectric)slotStack.getItem()).discharge(slotStack, 1, false) == 0));
+		return slotStack.getItem() instanceof IElectricItem;
 	}
 }

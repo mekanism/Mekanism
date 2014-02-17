@@ -1,15 +1,13 @@
 package mekanism.common.item;
 
+import java.util.List;
+
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism
@@ -32,11 +30,16 @@ public class ItemDictionary extends ItemMekanism
 				if(world.isRemote)
 				{
 					ItemStack testStack = new ItemStack(block, 1, world.getBlockMetadata(x, y, z));
-					String name = MekanismUtils.getOreDictName(testStack);
+					List<String> names = MekanismUtils.getOreDictName(testStack);
 					
-					if(name != null && !name.isEmpty())
+					if(!names.isEmpty())
 					{
-						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Key found: " + EnumColor.DARK_GREEN + name);
+						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Key(s) found:");
+						
+						for(String name : names)
+						{
+							player.addChatMessage(EnumColor.DARK_GREEN + " - " + name);
+						}
 					}
 					else {
 						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " No key.");

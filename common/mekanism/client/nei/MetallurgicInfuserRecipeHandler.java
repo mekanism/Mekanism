@@ -1,6 +1,11 @@
 package mekanism.client.nei;
 
+import static codechicken.core.gui.GuiDraw.changeTexture;
+import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
+
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -11,7 +16,8 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.client.gui.GuiMetallurgicInfuser;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -19,16 +25,15 @@ import org.lwjgl.opengl.GL11;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import static codechicken.core.gui.GuiDraw.*;
 
-public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
+public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 	
 	@Override
 	public String getRecipeName()
 	{
-		return "Metallurgic Infuser";
+		return MekanismUtils.localize("tile.MachineBlock.MetallurgicInfuser.name");
 	}
 	
 	@Override
@@ -54,17 +59,19 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		return "mekanism.infuser";
 	}
 	
-	public ItemStack getInfuseStack(InfuseType type)
+	public List<ItemStack> getInfuseStacks(InfuseType type)
 	{
+		List<ItemStack> ret = new ArrayList<ItemStack>();
+		
 		for(Map.Entry<ItemStack, InfuseObject> obj : InfuseRegistry.getObjectMap().entrySet())
 		{
 			if(obj.getValue().type == type)
 			{
-				return obj.getKey();
+				ret.add(obj.getKey());
 			}
 		}
 		
-		return null;
+		return ret;
 	}
 
 	public Set<Entry<InfusionInput, InfusionOutput>> getRecipes()
@@ -119,7 +126,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		{
 			for(Map.Entry irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getInfuseStack(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
+				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
 			}
 		}
 		else {
@@ -140,7 +147,7 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(((InfusionOutput)irecipe.getValue()).resource, result))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getInfuseStack(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
+				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
 			}
 		}
 	}
@@ -152,16 +159,17 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(((InfusionInput)irecipe.getKey()).inputStack, ingredient))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getInfuseStack(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
+				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
 			}
 		}
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
+		public List<ItemStack> infuseStacks;
+		
 		public PositionedStack inputStack;
 		public PositionedStack outputStack;
-		public PositionedStack infuseStack;
 		
 		public InfuseType infusionType;
 
@@ -180,27 +188,24 @@ public class MetallurgicInfuserRecipeHandler extends TemplateRecipeHandler
 		@Override
 		public PositionedStack getOtherStack()
 		{
-			return infuseStack;
+			return new PositionedStack(infuseStacks.get(cycleticks/40 % infuseStacks.size()), 12, 20);
 		}
 
-		public CachedIORecipe(ItemStack input, ItemStack output, ItemStack infuse, InfuseType type)
+		public CachedIORecipe(ItemStack input, ItemStack output, List<ItemStack> infuses, InfuseType type)
 		{
 			super();
 			
 			inputStack = new PositionedStack(input, 46, 28);
 			outputStack = new PositionedStack(output, 104, 28);
 			
-			if(infuse != null)
-			{
-				infuseStack = new PositionedStack(infuse, 12, 20);
-			}
+			infuseStacks = infuses;
 			
 			infusionType = type;
 		}
 
-		public CachedIORecipe(Map.Entry recipe, ItemStack infuse, InfuseType type)
+		public CachedIORecipe(Map.Entry recipe, List<ItemStack> infuses, InfuseType type)
 		{
-			this(((InfusionInput)recipe.getKey()).inputStack, ((InfusionOutput)recipe.getValue()).resource, infuse, type);
+			this(((InfusionInput)recipe.getKey()).inputStack, ((InfusionOutput)recipe.getValue()).resource, infuses, type);
 		}
 	}
 }

@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class KeySync
 {
-	public static int SPACE = 57;
-	public static int LSHIFT = 42;
+	public static int ASCEND = 0;
+	public static int DESCEND = 1;
 	
 	public Map<EntityPlayer, KeySet> keys = new HashMap<EntityPlayer, KeySet>();
 	

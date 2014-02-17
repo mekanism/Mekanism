@@ -1,24 +1,13 @@
 package mekanism.generators.common;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mekanism.common.Mekanism;
-import mekanism.generators.common.inventory.container.ContainerBioGenerator;
-import mekanism.generators.common.inventory.container.ContainerElectrolyticSeparator;
-import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
-import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
-import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
-import mekanism.generators.common.inventory.container.ContainerWindTurbine;
-import mekanism.generators.common.tileentity.TileEntityAdvancedSolarGenerator;
-import mekanism.generators.common.tileentity.TileEntityBioGenerator;
-import mekanism.generators.common.tileentity.TileEntityElectrolyticSeparator;
-import mekanism.generators.common.tileentity.TileEntityHeatGenerator;
-import mekanism.generators.common.tileentity.TileEntityHydrogenGenerator;
-import mekanism.generators.common.tileentity.TileEntitySolarGenerator;
-import mekanism.generators.common.tileentity.TileEntityWindTurbine;
+import mekanism.generators.common.inventory.container.*;
+import mekanism.generators.common.tile.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Common proxy for the Mekanism Generators module.
@@ -37,7 +26,6 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
-		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
 		GameRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine");
 	}
 	
@@ -53,13 +41,12 @@ public class GeneratorsCommonProxy
 	{
 		Mekanism.configuration.load();
 	  	MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3010).getInt();
-	  	MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300).getDouble(300);
-	  	MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 200).getDouble(200);
-	  	MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 180).getDouble(180);
-	  	MekanismGenerators.hydrogenGeneration = Mekanism.configuration.get("generation", "HydrogenGeneration", 400).getDouble(400);
-	  	MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50).getDouble(50);
-	  	MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 50).getDouble(50);
-	  	MekanismGenerators.electrolyticSeparatorUsage = Mekanism.configuration.get("usage", "ElectrolyticSeparatorUsage", 50).getDouble(50);
+	  	MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 400D).getDouble(400D);
+	  	MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 250D).getDouble(250D);
+	  	MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
+	  	MekanismGenerators.hydrogenGeneration = Mekanism.configuration.get("generation", "HydrogenGeneration", 400D).getDouble(400D);
+	  	MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
+	  	MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 100D).getDouble(100D);
 		Mekanism.configuration.save();
 	}
 	
@@ -98,8 +85,6 @@ public class GeneratorsCommonProxy
 				return new ContainerHeatGenerator(player.inventory, (TileEntityHeatGenerator)tileEntity);
 			case 1:
 				return new ContainerSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
-			case 2:
-				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 3:
 				return new ContainerHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
 			case 4:

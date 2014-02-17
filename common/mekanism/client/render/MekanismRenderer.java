@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.OreGas;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -27,6 +29,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -66,6 +69,30 @@ public class MekanismRenderer
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
+			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:WaterVapor"));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:Chlorine"));
+			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
+			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
+			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
+			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
+			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
+			
+			for(Gas gas : GasRegistry.getRegisteredGasses())
+			{
+				if(gas instanceof OreGas)
+				{
+					if(gas.getUnlocalizedName().contains("clean"))
+					{
+						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+					}
+					else {
+						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+					}
+				}
+			}
+
+			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
 		}
 	}
     
@@ -234,6 +261,21 @@ public class MekanismRenderer
     {
     	GL11.glPopAttrib();
     }
+
+	/**
+	 * Blender .objs have a different handedness of coordinate system to MC, so faces are wound backwards.
+	 */
+	public static void cullFrontFace()
+	{
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_FRONT);
+	}
+
+	public static void disableCullFace()
+	{
+		GL11.glCullFace(GL11.GL_BACK);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+	}
     
     /**
      * Cleaned-up snip of ItemRenderer.renderItem() -- meant to render 2D items as equipped.

@@ -1,18 +1,22 @@
 package mekanism.client.nei;
 
+import java.util.List;
 import java.util.Set;
 
-import net.minecraft.item.ItemStack;
+import mekanism.api.ListUtils;
+import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.common.Mekanism;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return "Osmium Compressor";
+		return MekanismUtils.localize("tile.MachineBlock.OsmiumCompressor.name");
 	}
 
 	@Override
@@ -40,9 +44,9 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 	
 	@Override
-	public ItemStack getFuelStack()
+	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		return new ItemStack(Mekanism.Ingot, 1, 1);
+		return ListUtils.asList(new ItemStack(Mekanism.Ingot, 1, 1));
 	}
 	
 	@Override

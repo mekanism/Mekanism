@@ -3,14 +3,15 @@ package mekanism.client.nei;
 import java.util.Set;
 
 import mekanism.client.gui.GuiCrusher;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 
 public class CrusherRecipeHandler extends MachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return "Crusher";
+		return MekanismUtils.localize("tile.MachineBlock.Crusher.name");
 	}
 
 	@Override

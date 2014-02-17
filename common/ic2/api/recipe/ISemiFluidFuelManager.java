@@ -21,9 +21,9 @@ public interface ISemiFluidFuelManager extends ILiquidAcceptManager {
 
 
 	public static class BurnProperty {
-		public BurnProperty(int amount, double power) {
-			this.amount = amount;
-			this.power = power;
+		public BurnProperty(int amount1, double power1) {
+			this.amount = amount1;
+			this.power = power1;
 		}
 
 		public final int amount;

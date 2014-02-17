@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
@@ -17,7 +17,7 @@ import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -169,12 +169,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(filter instanceof MItemStackFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 1, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Object3D.get(tileEntity), 2, getFilterIndex()+i));
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
 					}
 				}
@@ -183,7 +183,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 3));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 3));
 			}
 			
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
@@ -202,6 +202,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				setMaxY();
+			}
+			
+			if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
+			{
+				ArrayList data = new ArrayList();
+				data.add(10);
+				
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}
 	}
@@ -241,8 +250,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, "ItemStack"));
-		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, "OreDict"));
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, MekanismUtils.localize("gui.itemstack")));
+		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, MekanismUtils.localize("gui.oredict")));
 		
 		String prevRad = radiusField != null ? radiusField.getText() : "";
 		String prevMin = minField != null ? minField.getText() : "";
@@ -268,11 +277,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		
 		if(guibutton.id == 0)
 		{ 
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 1));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 1));
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 2));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 2));
 		}
 	}
 	
@@ -284,10 +293,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		
 		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 		
-		fontRenderer.drawString("Filters:", 11, 19, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
 		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		fontRenderer.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
 		
 		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 		
@@ -315,7 +325,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 					
-					fontRenderer.drawString("Item Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MOreDictFilter)
 				{
@@ -337,9 +347,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						} catch(Exception e) {}
 					}
 					
-					fontRenderer.drawString("OreDict Filter", 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
 			}
+		}
+		
+		if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -413,6 +428,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 39, guiHeight + 117, 176 + 11, 11, 11, 11);
 		}
 		
+		if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
+		{
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 176 + 22, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 11, guiHeight + 141, 176 + 22, 14, 14, 14);
+		}
+		
 		radiusField.drawTextBox();
 		minField.drawTextBox();
 		maxField.drawTextBox();
@@ -460,7 +483,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(6);
 			data.add(toUse);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			
 			radiusField.setText("");
 		}
@@ -470,13 +493,13 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		if(!minField.getText().isEmpty())
 		{
-			int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), 255));
+			int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
 			
 			ArrayList data = new ArrayList();
 			data.add(7);
 			data.add(toUse);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			
 			minField.setText("");
 		}
@@ -486,13 +509,13 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		if(!maxField.getText().isEmpty())
 		{
-			int toUse = Math.max(0, Math.min(Integer.parseInt(maxField.getText()), 255));
+			int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
 			
 			ArrayList data = new ArrayList();
 			data.add(8);
 			data.add(toUse);
 			
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 			
 			maxField.setText("");
 		}

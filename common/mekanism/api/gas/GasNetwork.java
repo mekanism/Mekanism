@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
@@ -17,7 +19,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
+/**
+ * A DynamicNetwork extension created specifically for the transfer of Gasses. By default this is server-only, but if ticked on
+ * the client side and if it's posted events are handled properly, it has the capability to visually display gasses network-wide.
+ * @author aidancbrady
+ *
+ */
+public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 {
 	public int transferDelay = 0;
 	
@@ -25,15 +33,21 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	public boolean prevTransfer;
 	
 	public float gasScale;
-	public Gas refGas = null;
 	
-	public GasNetwork(ITransmitter<GasNetwork>... varPipes)
+	public Gas refGas;
+	
+	public GasStack gasStored;
+	public int prevStored;
+
+	public int prevTransferAmount = 0;
+	
+	public GasNetwork(IGridTransmitter<GasNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
 		register();
 	}
 	
-	public GasNetwork(Collection<ITransmitter<GasNetwork>> collection)
+	public GasNetwork(Collection<IGridTransmitter<GasNetwork>> collection)
 	{
 		transmitters.addAll(collection);
 		register();
@@ -45,10 +59,32 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		{
 			if(net != null)
 			{
-				if(net.refGas != null && net.gasScale > gasScale)
+				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 				{
-					refGas = net.refGas;
-					gasScale = net.gasScale;
+					if(net.refGas != null && net.gasScale > gasScale)
+					{
+						gasScale = net.gasScale;
+						refGas = net.refGas;
+						gasStored = net.gasStored;
+						
+						net.gasScale = 0;
+						net.refGas = null;
+						net.gasStored = null;
+					}
+				}
+				else {
+					if(net.gasStored != null)
+					{
+						if(gasStored == null)
+						{
+							gasStored = net.gasStored;
+						}
+						else {
+							gasStored.amount += net.gasStored.amount;
+						}
+						
+						net.gasStored = null;
+					}
 				}
 				
 				addAllTransmitters(net.transmitters);
@@ -56,17 +92,54 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			}
 		}
 		
+		gasScale = getScale();
+		
 		refresh();
 		register();
 	}
 	
-	public synchronized int emit(GasStack stack, TileEntity emitter)
-	{
-		if(refGas != null && refGas != stack.getGas())
+    @Override
+    public void onNetworksCreated(List<GasNetwork> networks)
+    {
+		if(gasStored != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			return 0;
+	    	int[] caps = new int[networks.size()];
+	    	int cap = 0;
+	    	
+	    	for(GasNetwork network : networks)
+	    	{
+	    		caps[networks.indexOf(network)] = network.getCapacity();
+	    		cap += network.getCapacity();
+	    	}
+	    	
+	    	gasStored.amount = Math.min(cap, gasStored.amount);
+	    	
+	    	int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), gasStored.amount);
+	    	
+	    	for(GasNetwork network : networks)
+	    	{
+	    		int index = networks.indexOf(network);
+	    		
+	    		if(values[index] > 0)
+	    		{
+	    			network.gasStored = new GasStack(gasStored.getGas(), values[index]);
+	    			network.refGas = gasStored.getGas();
+	    		}
+	    	}
 		}
 		
+		gasScale = 0;
+		refGas = null;
+		gasStored = null;
+    }
+	
+	public synchronized int getGasNeeded()
+	{
+		return getCapacity()-(gasStored != null ? gasStored.amount : 0);
+	}
+	
+	public synchronized int tickEmit(GasStack stack)
+	{
 		List availableAcceptors = Arrays.asList(getAcceptors(stack.getGas()).toArray());
 		
 		Collections.shuffle(availableAcceptors);
@@ -82,9 +155,9 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			
 			for(Object obj : availableAcceptors)
 			{
-				if(obj instanceof IGasAcceptor && obj != emitter)
+				if(obj instanceof IGasHandler)
 				{
-					IGasAcceptor acceptor = (IGasAcceptor)obj;
+					IGasHandler acceptor = (IGasHandler)obj;
 					
 					int currentSending = sending;
 					
@@ -94,7 +167,7 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 						remaining--;
 					}
 					
-					toSend -= acceptor.receiveGas(new GasStack(stack.getGas(), currentSending));
+					toSend -= acceptor.receiveGas(acceptorDirections.get(acceptor).getOpposite(), new GasStack(stack.getGas(), currentSending));
 				}
 			}
 		}
@@ -103,7 +176,6 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		
 		if(sent > 0 && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			refGas = stack.getGas();
 			didTransfer = true;
 			transferDelay = 2;
 		}
@@ -111,13 +183,36 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 		return sent;
 	}
 	
-	@Override
-	public void tick()
+	public synchronized int emit(GasStack stack)
 	{
-		super.tick();
+		if(gasStored != null && gasStored.getGas() != stack.getGas())
+		{
+			return 0;
+		}
+		
+		int toUse = Math.min(getGasNeeded(), stack.amount);
+		
+		if(gasStored == null)
+		{
+			gasStored = stack.copy();
+			gasStored.amount = toUse;
+		}
+		else {
+			gasStored.amount += toUse;
+		}
+		
+		return toUse;
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		super.onUpdate();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
+			prevTransferAmount = 0;
+
 			if(transferDelay == 0)
 			{
 				didTransfer = false;
@@ -126,13 +221,33 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 				transferDelay--;
 			}
 			
+			int stored = gasStored != null ? gasStored.amount : 0;
+			
+			if(stored != prevStored)
+			{
+				needsUpdate = true;
+			}
+			
+			prevStored = stored;
+			
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, refGas != null ? refGas.getID() : -1, didTransfer));
+				MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, gasStored, didTransfer));
 				needsUpdate = false;
 			}
 			
 			prevTransfer = didTransfer;
+			
+			if(gasStored != null)
+			{
+				prevTransferAmount = tickEmit(gasStored);
+				gasStored.amount -= prevTransferAmount;
+				
+				if(gasStored.amount <= 0)
+				{
+					gasStored = null;
+				}
+			}
 		}
 	}
 	
@@ -141,37 +256,39 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	{
 		super.clientTick();
 		
+		gasScale = Math.max(gasScale, getScale());
+		
 		if(didTransfer && gasScale < 1)
 		{
-			gasScale = Math.min(1, gasScale+0.02F);
+			gasScale = Math.max(getScale(), Math.min(1, gasScale+0.02F));
 		}
 		else if(!didTransfer && gasScale > 0)
 		{
-			gasScale = Math.max(0, gasScale-0.02F);
+			gasScale = Math.max(getScale(), Math.max(0, gasScale-0.02F));
 			
 			if(gasScale == 0)
 			{
-				refGas = null;
+				gasStored = null;
 			}
 		}
 	}
 	
 	@Override
-	public synchronized Set<IGasAcceptor> getAcceptors(Object... data)
+	public synchronized Set<IGasHandler> getAcceptors(Object... data)
 	{
 		Gas type = (Gas)data[0];
-		Set<IGasAcceptor> toReturn = new HashSet<IGasAcceptor>();
+		Set<IGasHandler> toReturn = new HashSet<IGasHandler>();
 		
-		for(IGasAcceptor acceptor : possibleAcceptors)
+		for(IGasHandler acceptor : possibleAcceptors)
 		{
+			if(acceptorDirections.get(acceptor) == null)
+			{
+				continue;
+			}
+			
 			if(acceptor.canReceiveGas(acceptorDirections.get(acceptor).getOpposite(), type))
 			{
-				int stored = ((IGasStorage)acceptor).getGas() != null ? ((IGasStorage)acceptor).getGas().amount : 0;
-				
-				if(!(acceptor instanceof IGasStorage) || (acceptor instanceof IGasStorage && (((IGasStorage)acceptor).getMaxGas() - stored) > 0))
-				{
-					toReturn.add(acceptor);
-				}
+				toReturn.add(acceptor);
 			}
 		}
 		
@@ -181,15 +298,15 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	@Override
 	public synchronized void refresh()
 	{
-		Set<ITransmitter<GasNetwork>> iterTubes = (Set<ITransmitter<GasNetwork>>)transmitters.clone();
-		Iterator<ITransmitter<GasNetwork>> it = iterTubes.iterator();
+		Set<IGridTransmitter<GasNetwork>> iterTubes = (Set<IGridTransmitter<GasNetwork>>)transmitters.clone();
+		Iterator<IGridTransmitter<GasNetwork>> it = iterTubes.iterator();
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
-			ITransmitter<GasNetwork> conductor = (ITransmitter<GasNetwork>)it.next();
+			IGridTransmitter<GasNetwork> conductor = (IGridTransmitter<GasNetwork>)it.next();
 
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
@@ -201,13 +318,15 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 			}
 		}
 		
-		for(ITransmitter<GasNetwork> pipe : transmitters)
+		for(IGridTransmitter<GasNetwork> transmitter : transmitters)
 		{
-			IGasAcceptor[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)pipe);
+			IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)transmitter);
 		
-			for(IGasAcceptor acceptor : acceptors)
+			for(IGasHandler acceptor : acceptors)
 			{
-				if(acceptor != null && !(acceptor instanceof ITransmitter))
+				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+				
+				if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 				{
 					possibleAcceptors.add(acceptor);
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
@@ -233,15 +352,20 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	{
 		public final GasNetwork gasNetwork;
 		
-		public final int transferType;
+		public final GasStack transferType;
 		public final boolean didTransfer;
 		
-		public GasTransferEvent(GasNetwork network, int type, boolean did)
+		public GasTransferEvent(GasNetwork network, GasStack type, boolean did)
 		{
 			gasNetwork = network;
 			transferType = type;
 			didTransfer = did;
 		}
+	}
+	
+	public float getScale()
+	{
+		return Math.min(1, (gasStored == null || getCapacity() == 0 ? 0 : (float)gasStored.amount/getCapacity()));
 	}
 	
 	@Override
@@ -251,35 +375,82 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	}
 	
 	@Override
-	protected GasNetwork create(ITransmitter<GasNetwork>... varTransmitters) 
+	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks)
+	{
+		Gas found = null;
+		
+		for(ITransmitterNetwork<?, ?> network : networks)
+		{
+			if(network instanceof GasNetwork)
+			{
+				GasNetwork net = (GasNetwork)network;
+				
+				if(net.gasStored != null)
+				{
+					if(found != null && found != net.gasStored.getGas())
+					{
+						return false;
+					}
+					
+					found = net.gasStored.getGas();
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	@Override
+	protected GasNetwork create(IGridTransmitter<GasNetwork>... varTransmitters) 
 	{
 		GasNetwork network = new GasNetwork(varTransmitters);
 		network.refGas = refGas;
-		network.gasScale = gasScale;
+		
+		if(gasStored != null)
+		{
+			if(network.gasStored == null)
+			{
+				network.gasStored = gasStored;
+			}
+			else {
+				network.gasStored.amount += gasStored.amount;
+			}
+		}
+		
+		network.gasScale = network.getScale();
+		gasScale = 0;
+		refGas = null;
+		gasStored = null;
+		
 		return network;
 	}
 
 	@Override
-	protected GasNetwork create(Collection<ITransmitter<GasNetwork>> collection) 
+	protected GasNetwork create(Collection<IGridTransmitter<GasNetwork>> collection) 
 	{
 		GasNetwork network = new GasNetwork(collection);
 		network.refGas = refGas;
-		network.gasScale = gasScale;
+		
+		if(gasStored != null)
+		{
+			if(network.gasStored == null)
+			{
+				network.gasStored = gasStored;
+			}
+			else {
+				network.gasStored.amount += gasStored.amount;
+			}
+		}
+		
+		network.gasScale = network.getScale();
+		
 		return network;
 	}
 
 	@Override
 	protected GasNetwork create(Set<GasNetwork> networks) 
 	{
-		GasNetwork network = new GasNetwork(networks);
-		
-		if(refGas != null && gasScale > network.gasScale)
-		{
-			network.refGas = refGas;
-			network.gasScale = gasScale;
-		}
-		
-		return network;
+		return new GasNetwork(networks);
 	}
 	
 	@Override
@@ -291,12 +462,18 @@ public class GasNetwork extends DynamicNetwork<IGasAcceptor, GasNetwork>
 	@Override
 	public String getNeeded()
 	{
-		return "Undefined for Gas networks.";
+		return Integer.toString(getGasNeeded());
+	}
+
+	@Override
+	public String getStored()
+	{
+		return gasStored != null ? gasStored.getGas().getLocalizedName() + " (" + gasStored.amount + ")" : "None";
 	}
 	
 	@Override
 	public String getFlow()
 	{
-		return "Not defined yet for Gas networks";
+		return Integer.toString(prevTransferAmount) + "/t";
 	}
 }

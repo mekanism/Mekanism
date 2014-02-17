@@ -35,11 +35,18 @@ public class EnergyStorage implements IEnergyStorage {
 	public EnergyStorage readFromNBT(NBTTagCompound nbt) {
 
 		this.energy = nbt.getInteger("Energy");
+
+		if (energy > capacity) {
+			energy = capacity;
+		}
 		return this;
 	}
 
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 
+		if (energy < 0) {
+			energy = 0;
+		}
 		nbt.setInteger("Energy", energy);
 		return nbt;
 	}

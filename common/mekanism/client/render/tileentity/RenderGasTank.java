@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelGasTank;
-import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

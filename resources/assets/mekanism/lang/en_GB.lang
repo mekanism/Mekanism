@@ -1,0 +1,13 @@
+tile.MachineBlock.EnergizedSmelter.name=Energised Smelter
+tile.Transmitter.PressurizedTube.name=Pressurised Tube
+tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidiser
+item.MultipartTransmitter.PressurizedTube.name=Pressurised Tube
+item.sulfurDust.name=Sulphur Dust
+gas.water=Water Vapour
+gas.sulfurDioxideGas=Sulphur Dioxide
+gas.sulfurTrioxideGas=Sulphur Trioxide
+gas.sulfuricAcid=Sulphuric Acid
+fluid.sulfurDioxideGas=Liquid Sulphur Dioxide
+fluid.sulfurTrioxideGas=Liquid Sulphur Trioxide
+fluid.sulfuricAcid=Liquid Sulphuric Acid
+tooltip.Chargepad=A universal chargepad that can charge any energised item !nfrom any mod.

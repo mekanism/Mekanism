@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.api.EnumColor;
+import mekanism.common.multipart.TransmitterType;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -17,13 +18,12 @@ public final class Tier
 	 */
 	public static enum EnergyCubeTier
 	{
-		BASIC("Basic", EnumColor.BRIGHT_GREEN, 2000000, 120, 800),
-		ADVANCED("Advanced", EnumColor.DARK_RED, 8000000, 240, 3200),
-		ELITE("Elite", EnumColor.DARK_BLUE, 32000000, 240, 12800),
-		ULTIMATE("Ultimate", EnumColor.PURPLE, 128000000, 480, 51200);
+		BASIC("Basic", EnumColor.BRIGHT_GREEN, 2000000, 800),
+		ADVANCED("Advanced", EnumColor.DARK_RED, 8000000, 3200),
+		ELITE("Elite", EnumColor.DARK_BLUE, 32000000, 12800),
+		ULTIMATE("Ultimate", EnumColor.PURPLE, 128000000, 51200);
 		
 		public double MAX_ELECTRICITY;
-		public float VOLTAGE;
 		public double OUTPUT;
 		public String name;
 		public EnumColor color;
@@ -42,12 +42,11 @@ public final class Tier
 			return BASIC;
 		}
 		
-		private EnergyCubeTier(String s, EnumColor c, double maxEnergy, float voltage, int out)
+		private EnergyCubeTier(String s, EnumColor c, double maxEnergy, double out)
 		{
 			name = s;
 			color = c;
 			MAX_ELECTRICITY = maxEnergy;
-			VOLTAGE = voltage;
 			OUTPUT = out;
 		}
 	}
@@ -86,6 +85,28 @@ public final class Tier
 			name = s;
 			processes = process;
 			guiLocation = gui;
+		}
+	}
+
+	/**
+	 * The tiers used by Universal Cables and their corresponding values.
+	 * @author aidancbrady
+	 *
+	 */
+	public static enum CableTier
+	{
+		BASIC(500, TransmitterType.UNIVERSAL_CABLE_BASIC),
+		ADVANCED(2000, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
+		ELITE(8000, TransmitterType.UNIVERSAL_CABLE_ELITE),
+		ULTIMATE(32000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
+	
+		public int cableCapacity;
+		public TransmitterType type;
+	
+		private CableTier(int capacity, TransmitterType transmitterType)
+		{
+			cableCapacity = capacity;
+			type = transmitterType;
 		}
 	}
 }

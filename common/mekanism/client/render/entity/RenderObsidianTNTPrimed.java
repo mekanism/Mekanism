@@ -1,8 +1,8 @@
 package mekanism.client.render.entity;
 
 import mekanism.client.model.ModelObsidianTNT;
-import mekanism.common.EntityObsidianTNT;
 import mekanism.common.Mekanism;
+import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.RenderBlocks;

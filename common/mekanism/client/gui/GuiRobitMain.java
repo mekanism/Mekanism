@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
-import mekanism.common.EntityRobit;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
@@ -107,11 +107,12 @@ public class GuiRobitMain extends GuiMekanism
     	
     	if(!displayNameChange)
     	{
+    		CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
 	    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
 	    	fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
 	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
 	    	fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
-	    	fontRenderer.drawString("Owner: " + robit.getOwnerName(), 29, 63-4, 0x00CD00);
+	    	fontRenderer.drawString("Owner: " + owner, 29, 63-4, 0x00CD00);
     	}
     	
 		int xAxis = (mouseX - (width - xSize) / 2);

@@ -103,8 +103,8 @@ public interface IReactor {
 	/**
 	 * Get the item at the specified grid coordinates.
 	 * 
-	 * @param x X position of the item
-	 * @param y Y position of the item
+	 * @param x X position of the item, out of bounds returns null
+	 * @param y Y position of the item, out of bounds returns null
 	 * @return The item or null if there is no item
 	 */
 	public ItemStack getItemAt(int x, int y);
@@ -112,8 +112,8 @@ public interface IReactor {
 	/**
 	 * Set the item at the specified grid coordinates.
 	 * 
-	 * @param x X position of the item
-	 * @param y Y position of the item
+	 * @param x X position of the item, out of bounds is a no-op
+	 * @param y Y position of the item, out of bounds is a no-op
 	 * @param item The item to set.
 	 */
 	public void setItemAt(int x, int y, ItemStack item);

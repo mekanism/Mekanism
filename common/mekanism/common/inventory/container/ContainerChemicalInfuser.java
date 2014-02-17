@@ -4,7 +4,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.tileentity.TileEntityChemicalInfuser;
+import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -39,7 +39,7 @@ public class ContainerChemicalInfuser extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -48,7 +48,7 @@ public class ContainerChemicalInfuser extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 

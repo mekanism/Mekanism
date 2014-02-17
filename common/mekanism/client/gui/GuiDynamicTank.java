@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
-import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.tank.TankUpdateProtocol;
+import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

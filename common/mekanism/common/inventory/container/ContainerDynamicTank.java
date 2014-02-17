@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -33,7 +33,7 @@ public class ContainerDynamicTank extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -42,7 +42,7 @@ public class ContainerDynamicTank extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 

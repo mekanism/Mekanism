@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelMetallurgicInfuser;
-import mekanism.common.tileentity.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

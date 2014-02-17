@@ -2,15 +2,15 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
-import mekanism.common.util.ListUtils;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -45,7 +45,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
         
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.gasTank != null ? tileEntity.gasTank.getGas().getLocalizedName() + ": " + tileEntity.gasTank.amount : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
@@ -86,7 +86,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
         
         if(tileEntity.getScaledGasLevel(58) > 0) 
         {
-        	displayGauge(26, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank);
+        	displayGauge(26, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank.getGas());
 		}
         
         if(tileEntity.getScaledFluidLevel(58) > 0)
@@ -127,7 +127,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Object3D.get(tileEntity), data));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

@@ -6,8 +6,8 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
@@ -17,7 +17,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tileentity.TileEntityEnergyCube;
+import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,12 +29,11 @@ import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
 
-import universalelectricity.core.item.IItemElectric;
 import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IItemElectric, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
+public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -58,7 +57,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 		}
 		else {
 			list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
-			list.add(EnumColor.BRIGHT_GREEN + "Voltage: " + EnumColor.GREY + getVoltage(itemstack) + "v");
 			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
 	}
@@ -69,12 +67,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 		setEnergyCubeTier(charged, tier);
 		charged.setItemDamage(100);
 		return charged;
-	}
-
-	@Override
-	public float getVoltage(ItemStack itemStack) 
-	{
-		return getEnergyCubeTier(itemStack).VOLTAGE;
 	}
 	
 	@Override
@@ -98,7 +90,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
     		
     		if(!world.isRemote)
     		{
-    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
     		}
     	}
     	
@@ -307,68 +299,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, II
 	public boolean isMetadataSpecific()
 	{
 		return false;
-	}
-	
-	@Override
-	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
-			
-			if(doRecharge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
-	{
-		if(canSend(itemStack))
-		{
-			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
-			
-			if(doDischarge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - toSend);
-			}
-			
-			return (float)(toSend*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public void setElectricity(ItemStack itemStack, float joules) 
-	{
-		setEnergy(itemStack, joules*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getTransfer(ItemStack itemStack)
-	{
-		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
 	}
 	
 	@Override

@@ -1,11 +1,11 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.RecipeHandler;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.tileentity.TileEntityElectricMachine;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -39,7 +39,7 @@ public class ContainerElectricMachine extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -48,7 +48,7 @@ public class ContainerElectricMachine extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 
@@ -97,7 +97,7 @@ public class ContainerElectricMachine extends Container
     		{
             	if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
             	{
-                    if (!mergeItemStack(slotStack, 0, 1, false))
+                    if(!mergeItemStack(slotStack, 0, 1, false))
 	                {
 	                    return null;
 	                }

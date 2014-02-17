@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -9,9 +9,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiRecipeType extends GuiElement
 {
-	public GuiRecipeType(GuiContainer gui, TileEntity tile, ResourceLocation def)
+	public GuiRecipeType(GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI, "GuiRecipeType.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRecipeType.png"), gui, tile, def);
 	}
 
 	@Override

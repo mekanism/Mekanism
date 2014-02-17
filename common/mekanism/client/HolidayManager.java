@@ -152,7 +152,7 @@ public final class HolidayManager
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.username + EnumColor.RED + "!"));
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.AQUA + "Best wishes to you as we enter this"));
-			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.AQUA + "new and exciting year of 2014! :)"));
+			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_GREY + "-aidancbrady"));
 			player.sendChatToPlayer(ChatMessageComponent.createFromText(themedLines + EnumColor.DARK_BLUE + "[=======]" + themedLines));
 		}

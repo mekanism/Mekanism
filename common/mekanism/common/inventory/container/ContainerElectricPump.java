@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.tileentity.TileEntityElectricPump;
+import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -36,7 +36,7 @@ public class ContainerElectricPump extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -45,7 +45,7 @@ public class ContainerElectricPump extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 

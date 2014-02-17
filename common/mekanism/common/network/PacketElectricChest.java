@@ -2,13 +2,13 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
-import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,7 +32,7 @@ public class PacketElectricChest implements IMekanismPacket
 	
 	public boolean useEnergy;
 	
-	public Object3D obj;
+	public Coord4D obj;
 	
 	@Override
 	public String getName() 
@@ -53,7 +53,7 @@ public class PacketElectricChest implements IMekanismPacket
 				
 				if(isBlock)
 				{
-					obj = (Object3D)data[3];
+					obj = (Coord4D)data[3];
 				}
 				
 				break;
@@ -63,7 +63,7 @@ public class PacketElectricChest implements IMekanismPacket
 				
 				if(isBlock)
 				{
-					obj = (Object3D)data[3];
+					obj = (Coord4D)data[3];
 				}
 				
 				break;
@@ -74,7 +74,7 @@ public class PacketElectricChest implements IMekanismPacket
 				
 				if(isBlock)
 				{
-					obj = (Object3D)data[4];
+					obj = (Coord4D)data[4];
 				}
 				
 				break;
@@ -84,7 +84,7 @@ public class PacketElectricChest implements IMekanismPacket
 				
 				if(isBlock)
 				{
-					obj = (Object3D)data[3];
+					obj = (Coord4D)data[3];
 				}
 				
 				break;

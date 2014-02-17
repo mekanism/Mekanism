@@ -3,12 +3,12 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.tileentity.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,7 +20,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketConfigurationUpdate implements IMekanismPacket
 {
-	public Object3D object3D;
+	public Coord4D object3D;
 	
 	public int configIndex;
 	
@@ -41,7 +41,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 	{
 		packetType = (ConfigurationPacket)data[0];
 		
-		object3D = (Object3D)data[1];
+		object3D = (Coord4D)data[1];
 		
 		if(packetType == ConfigurationPacket.EJECT_COLOR)
 		{
@@ -68,7 +68,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 	{
 		packetType = ConfigurationPacket.values()[dataStream.readInt()];
 		
-		object3D = new Object3D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
 		TileEntity tile = object3D.getTileEntity(world);
 		

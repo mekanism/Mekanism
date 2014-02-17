@@ -20,8 +20,8 @@ import ic2.api.energy.tile.IEnergyTile;
  * See ic2/api/energy/usage.txt for an overall description of the energy net api.
  */
 public class EnergyTileUnloadEvent extends EnergyTileEvent {
-	public EnergyTileUnloadEvent(IEnergyTile energyTile) {
-		super(energyTile);
+	public EnergyTileUnloadEvent(IEnergyTile energyTile1) {
+		super(energyTile1);
 	}
 }
 

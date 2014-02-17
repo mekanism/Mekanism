@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -13,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiUpgradeManagement extends GuiElement
 {
-	public GuiUpgradeManagement(GuiContainer gui, TileEntity tile, ResourceLocation def)
+	public GuiUpgradeManagement(GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI, "GuiUpgradeManagement.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeManagement.png"), gui, tile, def);
 	}
 	
 	@Override
@@ -48,12 +48,12 @@ public class GuiUpgradeManagement extends GuiElement
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 		{
-			displayTooltip(MekanismUtils.localize("gui.removeEnergyUpgrade"), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.removeSpeedUpgrade"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
 		{
-			displayTooltip(MekanismUtils.localize("gui.removeSpeedUpgrade"), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.removeEnergyUpgrade"), xAxis, yAxis);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -79,13 +79,13 @@ public class GuiUpgradeManagement extends GuiElement
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Coord4D.get(tileEntity), (byte)0));
 			}
 			
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Object3D.get(tileEntity), (byte)1));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Coord4D.get(tileEntity), (byte)1));
 			}
 			
 			if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)

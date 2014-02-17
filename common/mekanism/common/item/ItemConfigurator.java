@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
 import mekanism.common.IConfigurable;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tileentity.TileEntityBasicBlock;
-import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +47,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 		{
 			if(hasLink(itemstack))
 			{
-				Object3D obj = getLink(itemstack);
+				Coord4D obj = getLink(itemstack);
 
 				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.linkMsg") + " " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", " + MekanismUtils.localize("tooltip.configurator.dim") + " " + EnumColor.INDIGO + obj.dimensionId);
 			}
@@ -98,7 +98,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 		    				if(config instanceof TileEntityBasicBlock)
 		    				{
 		    					TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Object3D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Object3D.get(tileEntity), 50D);
+		    					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Coord4D.get(tileEntity), 50D);
 		    				}
 		    				
 		    				return true;
@@ -195,7 +195,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
     		{
     			if(!world.isRemote && player.isSneaking())
     			{
-    				Object3D obj = new Object3D(x, y, z, world.provider.dimensionId);
+    				Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
     				player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Set link to block " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", dimension " + EnumColor.INDIGO + obj.dimensionId);
     				setLink(stack, obj);
     				
@@ -273,17 +273,17 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 		return getLink(itemStack) != null;
 	}
 
-	public Object3D getLink(ItemStack itemStack)
+	public Coord4D getLink(ItemStack itemStack)
 	{
 		if(itemStack.stackTagCompound == null || !itemStack.getTagCompound().hasKey("position"))
 		{
 			return null;
 		}
 		
-		return Object3D.read(itemStack.getTagCompound().getCompoundTag("position"));
+		return Coord4D.read(itemStack.getTagCompound().getCompoundTag("position"));
 	}
 
-	public void setLink(ItemStack itemStack, Object3D obj)
+	public void setLink(ItemStack itemStack, Coord4D obj)
 	{
 		if(itemStack.getTagCompound() == null)
 		{
@@ -307,7 +307,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	@Override
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
-		return true;
+		return !(player.worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityBasicBlock);
 	}
 
 	@Override

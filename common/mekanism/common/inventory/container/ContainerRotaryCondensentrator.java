@@ -4,7 +4,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -41,7 +41,7 @@ public class ContainerRotaryCondensentrator extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -50,7 +50,7 @@ public class ContainerRotaryCondensentrator extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 
@@ -107,14 +107,14 @@ public class ContainerRotaryCondensentrator extends Container
             {
             	if(slotID != 0 && slotID != 1)
             	{
-	            	if(((IGasItem)slotStack.getItem()).canProvideGas(slotStack, tileEntity.gasTank != null ? tileEntity.gasTank.getGas() : null))
+	            	if(((IGasItem)slotStack.getItem()).canProvideGas(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null))
 	            	{
 	            		if(!mergeItemStack(slotStack, 0, 1, false))
 	            		{
 	            			return null;
 	            		}
 	            	}
-	            	else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.gasTank != null ? tileEntity.gasTank.getGas() : null))
+	            	else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null))
 	    			{
 	            		if(!mergeItemStack(slotStack, 1, 2, false))
 	            		{

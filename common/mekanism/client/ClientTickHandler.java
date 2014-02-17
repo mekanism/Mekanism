@@ -12,23 +12,26 @@ import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
+import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData;
+import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
+import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
@@ -60,6 +63,8 @@ public class ClientTickHandler implements ITickHandler
 	public boolean preloadedSounds = false;
 	
 	public boolean lastTickUpdate;
+	
+	public boolean shouldReset = false;
 	
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 	
@@ -102,16 +107,27 @@ public class ClientTickHandler implements ITickHandler
 			{
 				IClientTicker ticker = iter.next();
 				
-				ticker.clientTick();
-				
-				if(!ticker.needsTicks())
+				if(ticker.needsTicks())
 				{
+					ticker.clientTick();
+				}
+				else {
 					iter.remove();
 				}
 			}
 		}
 		
 		if(mc.theWorld != null)
+		{
+			shouldReset = true;
+		}
+		else if(shouldReset)
+		{
+			MekanismClient.reset();
+			shouldReset = false;
+		}
+		
+		if(mc.theWorld != null && !Mekanism.proxy.isPaused())
 		{
 			if((!initHoliday || MekanismClient.ticksPassed % 1200 == 0) && mc.thePlayer != null)
 			{
@@ -271,8 +287,37 @@ public class ClientTickHandler implements ITickHandler
 						lastTickUpdate = false;
 					}
 				}
+				else if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemScubaTank)
+				{
+					ItemStack scubaTank = mc.thePlayer.getCurrentItemOrArmor(3);
+					
+					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					{
+						if(!lastTickUpdate)
+						{
+							((ItemScubaTank)scubaTank.getItem()).toggleFlowing(scubaTank);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(ScubaTankPacket.MODE));
+							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
+							lastTickUpdate = true;
+						}
+					}
+					else {
+						lastTickUpdate = false;
+					}
+				}
 				else {
 					lastTickUpdate = false;
+				}
+			}
+			
+			if(mc.thePlayer.getCurrentItemOrArmor(1) != null && mc.thePlayer.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
+			{
+				mc.thePlayer.stepHeight = 1.002F;
+			}
+			else {
+				if(mc.thePlayer.stepHeight == 1.002F)
+				{
+					mc.thePlayer.stepHeight = 0.5F;
 				}
 			}
 			
@@ -299,7 +344,7 @@ public class ClientTickHandler implements ITickHandler
 					Mekanism.gasmaskOn.remove(mc.thePlayer.username);
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(JetpackPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
 			}
 			
 			if(MekanismClient.audioHandler != null)
@@ -329,8 +374,8 @@ public class ClientTickHandler implements ITickHandler
 			
 			if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
 			{
-				MekanismClient.updateKey(Keyboard.KEY_SPACE);
-				MekanismClient.updateKey(Keyboard.KEY_LSHIFT);
+				MekanismClient.updateKey(mc.gameSettings.keyBindJump.keyCode, KeySync.ASCEND);
+				MekanismClient.updateKey(mc.gameSettings.keyBindSneak.keyCode, KeySync.DESCEND);
 			}
 			
 			if(isJetpackOn(mc.thePlayer))
@@ -379,6 +424,17 @@ public class ClientTickHandler implements ITickHandler
 				tank.useGas(mc.thePlayer.getCurrentItemOrArmor(3));
 				mc.thePlayer.setAir(300);
 				mc.thePlayer.clearActivePotions();
+			}
+		}
+	}
+	
+	public static void killDeadNetworks()
+	{
+		for(Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext();)
+		{
+			if(!iter.next().needsTicks())
+			{
+				iter.remove();
 			}
 		}
 	}

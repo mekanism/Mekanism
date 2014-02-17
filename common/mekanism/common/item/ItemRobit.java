@@ -3,10 +3,10 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
-import mekanism.common.EntityRobit;
+import mekanism.api.Coord4D;
 import mekanism.common.ISustainedInventory;
-import mekanism.common.tileentity.TileEntityChargepad;
+import mekanism.common.entity.EntityRobit;
+import mekanism.common.tile.TileEntityChargepad;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,7 +52,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 				{
 					EntityRobit robit = new EntityRobit(world, x+0.5, y+0.1, z+0.5);
 					
-					robit.setHome(Object3D.get(chargepad));
+					robit.setHome(Coord4D.get(chargepad));
 					robit.setEnergy(getEnergy(itemstack));
 					robit.setOwner(entityplayer.username);
 					robit.setInventory(getInventory(itemstack));

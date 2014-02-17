@@ -1,17 +1,17 @@
 package mekanism.generators.common.item;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
-
-import java.util.List;
-
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.tileentity.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
@@ -27,16 +27,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.input.Keyboard;
 
-import universalelectricity.core.item.IItemElectric;
-import cofh.api.energy.IEnergyContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 
 /**
  * Item class for handling multiple generator block IDs.
  * 0: Heat Generator
  * 1: Solar Generator
- * 2: Electrolytic Separator
  * 3: Hydrogen Generator
  * 4: Bio-Generator
  * 5: Advanced Solar Generator
@@ -44,7 +40,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IItemElectric, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem
+public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem
 {
 	public Block metaBlock;
 	
@@ -71,6 +67,11 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
+		if(GeneratorType.getFromMetadata(itemstack.getItemDamage()) == null)
+		{
+			return "KillMe!";
+		}
+		
 		return getUnlocalizedName() + "." + GeneratorType.getFromMetadata(itemstack.getItemDamage()).name;
 	}
 	
@@ -95,12 +96,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 			
 			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
-	}
-
-	@Override
-	public float getVoltage(ItemStack itemStack) 
-	{
-		return (float)((itemStack.getItemDamage() == 3 ? 240 : 120)*Mekanism.TO_UE);
 	}
 	
 	@Override
@@ -312,13 +307,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	@Override
 	public boolean canReceive(ItemStack itemStack) 
 	{
-		return itemStack.getItemDamage() == GeneratorType.ELECTROLYTIC_SEPARATOR.meta;
+		return false;
 	}
 
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
-		return itemStack.getItemDamage() != GeneratorType.ELECTROLYTIC_SEPARATOR.meta;
+		return true;
 	}
 	
 	@Override
@@ -375,68 +370,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, IIt
 	public boolean isMetadataSpecific()
 	{
 		return true;
-	}
-	
-	@Override
-	public float recharge(ItemStack itemStack, float energy, boolean doRecharge) 
-	{
-		if(canReceive(itemStack))
-		{
-			double energyNeeded = getMaxEnergy(itemStack)-getEnergy(itemStack);
-			double toReceive = Math.min(energy*Mekanism.FROM_UE, energyNeeded);
-			
-			if(doRecharge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) + toReceive);
-			}
-			
-			return (float)(toReceive*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float discharge(ItemStack itemStack, float energy, boolean doDischarge) 
-	{
-		if(canSend(itemStack))
-		{
-			double energyRemaining = getEnergy(itemStack);
-			double toSend = Math.min((energy*Mekanism.FROM_UE), energyRemaining);
-			
-			if(doDischarge)
-			{
-				setEnergy(itemStack, getEnergy(itemStack) - toSend);
-			}
-			
-			return (float)(toSend*Mekanism.TO_UE);
-		}
-		
-		return 0;
-	}
-
-	@Override
-	public float getElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getMaxElectricityStored(ItemStack theItem) 
-	{
-		return (float)(getMaxEnergy(theItem)*Mekanism.TO_UE);
-	}
-
-	@Override
-	public void setElectricity(ItemStack itemStack, float joules) 
-	{
-		setEnergy(itemStack, joules*Mekanism.TO_UE);
-	}
-
-	@Override
-	public float getTransfer(ItemStack itemStack)
-	{
-		return (float)(getMaxTransfer(itemStack)*Mekanism.TO_UE);
 	}
 	
 	@Override

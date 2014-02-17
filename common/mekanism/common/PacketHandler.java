@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -184,7 +184,7 @@ public class PacketHandler implements IPacketHandler
         		PacketDispatcher.sendPacketToAllPlayers(packet);
         		break;
         	case CLIENTS_RANGE:
-        		Object3D obj = (Object3D)transParams[0];
+        		Coord4D obj = (Coord4D)transParams[0];
         		PacketDispatcher.sendPacketToAllAround(obj.xCoord, obj.yCoord, obj.zCoord, (Double)transParams[1], obj.dimensionId, packet);
         		break;
         	case CLIENTS_DIM:

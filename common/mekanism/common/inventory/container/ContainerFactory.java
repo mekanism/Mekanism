@@ -9,7 +9,7 @@ import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.tileentity.TileEntityFactory;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -95,7 +95,7 @@ public class ContainerFactory extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 153));
         }
         
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
         tileEntity.openChest();
     }
     
@@ -104,7 +104,7 @@ public class ContainerFactory extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 
@@ -163,7 +163,7 @@ public class ContainerFactory extends Container
 	            	}
 	            }
             }
-            else if(RecipeType.values()[tileEntity.recipeType].getFuelTicks(slotStack) > 0)
+            else if(RecipeType.values()[tileEntity.recipeType].getItemGas(slotStack) != null)
             {
             	if(slotID > tileEntity.inventory.length-1)
             	{
@@ -179,7 +179,7 @@ public class ContainerFactory extends Container
 	            	}
             	}
             }
-            else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, false) != null)
+            else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null, false) != null)
     		{
             	if(!isInputSlot(slotID))
             	{

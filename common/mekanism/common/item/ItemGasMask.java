@@ -4,10 +4,12 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -23,6 +25,10 @@ public class ItemGasMask extends ItemArmor
 		setCreativeTab(Mekanism.tabMekanism);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister register) {}
 	
 	@Override
     public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
@@ -60,7 +66,10 @@ public class ItemGasMask extends ItemArmor
 				
 				if(tank.getFlowing(base.getCurrentItemOrArmor(3)) && tank.getGas(base.getCurrentItemOrArmor(3)) != null)
 				{
-					event.setCanceled(true);
+					if(event.source == DamageSource.magic)
+					{
+						event.setCanceled(true);
+					}
 				}
 			}
 		}

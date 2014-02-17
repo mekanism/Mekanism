@@ -14,9 +14,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
-import mekanism.common.DynamicTankCache;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.common.EnergyDisplay;
+import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
@@ -36,14 +39,17 @@ import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.tileentity.TileEntityAdvancedBoundingBlock;
-import mekanism.common.tileentity.TileEntityBoundingBlock;
-import mekanism.common.tileentity.TileEntityDynamicTank;
-import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tank.DynamicTankCache;
+import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityElectricChest;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -63,8 +69,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
@@ -208,7 +212,7 @@ public final class MekanismUtils
 	/**
 	 * Returns the closest teleporter between a selection of one or two.
 	 */
-	public static Object3D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
+	public static Coord4D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
 	{
 		if(Mekanism.teleporters.get(teleCode).size() == 1)
 		{
@@ -217,8 +221,8 @@ public final class MekanismUtils
 		else {
 			int dimensionId = player.worldObj.provider.dimensionId;
 			
-			Object3D coords0 = Mekanism.teleporters.get(teleCode).get(0);
-			Object3D coords1 = Mekanism.teleporters.get(teleCode).get(1);
+			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
+			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
 			
 			int distance0 = (int)player.getDistance(coords0.xCoord, coords0.yCoord, coords0.zCoord);
 			int distance1 = (int)player.getDistance(coords1.xCoord, coords1.yCoord, coords1.zCoord);
@@ -442,6 +446,16 @@ public final class MekanismUtils
     {
     	return getLeft(orientation).getOpposite();
     }
+
+	/**
+	 * Gets the opposite side of a certain orientation.
+	 * @param orientation
+	 * @return opposite side
+	 */
+	public static ForgeDirection getBack(int orientation)
+	{
+		return ForgeDirection.getOrientation(orientation).getOpposite();
+	}
     
     /**
      * Checks to see if a specified ItemStack is stored in the Ore Dictionary with the specified name.
@@ -469,35 +483,32 @@ public final class MekanismUtils
      * @param check - ItemStack to check OreDict name of
      * @return OreDict name
      */
-    public static String getOreDictName(ItemStack check)
+    public static List<String> getOreDictName(ItemStack check)
     {
+    	List<Integer> idsFound = new ArrayList<Integer>();
         HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
-        
-        int idFound = -1;
+        oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)oreStacks.clone();
         
         for(Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
         {
         	for(ItemStack stack : entry.getValue())
         	{
-        		if(stack.isItemEqual(check))
+        		if(StackUtils.equalsWildcard(stack, check))
         		{
-        			idFound = entry.getKey();
+        			idsFound.add(entry.getKey());
         			break;
         		}
         	}
-        	
-        	if(idFound != -1)
-        	{
-        		break;
-        	}
         }
         
-        if(idFound == -1)
+        List<String> ret = new ArrayList<String>();
+        
+        for(Integer id : idsFound)
         {
-        	return null;
+        	ret.add(OreDictionary.getOreName(id));
         }
         
-        return OreDictionary.getOreName(idFound);
+        return ret;
     }
     
     /**
@@ -576,6 +587,11 @@ public final class MekanismUtils
     	{
     		config.getConfiguration()[side] = 0;
     	}
+    	
+    	TileEntity tile = (TileEntity)config;
+    	Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+    	
+    	tile.worldObj.notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
     }
     
     /**
@@ -596,6 +612,11 @@ public final class MekanismUtils
     	{
     		config.getConfiguration()[side] = (byte)max;
     	}
+    	
+    	TileEntity tile = (TileEntity)config;
+    	Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+    	
+    	tile.worldObj.notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
     }
     
     /**
@@ -606,7 +627,7 @@ public final class MekanismUtils
      */
     public static int getTicks(int speedUpgrade, int def)
     {
-        return (int)(def * Math.pow(10, (-speedUpgrade/9.0)));
+        return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -speedUpgrade/8.0));
     }
     
     /**
@@ -618,7 +639,7 @@ public final class MekanismUtils
      */
     public static double getEnergyPerTick(int speedUpgrade, int energyUpgrade, double def)
     {
-        return (def * Math.pow(10, ((speedUpgrade-energyUpgrade)/9.0)));
+        return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*speedUpgrade-energyUpgrade)/8.0);
     }
     
     /**
@@ -627,9 +648,9 @@ public final class MekanismUtils
      * @param def - original, default max energy
      * @return max energy
      */
-    public static double getEnergy(int energyUpgrade, double def)
+    public static double getMaxEnergy(int energyUpgrade, double def)
     {
-        return (int)(def * Math.pow(10, (energyUpgrade/9.0)));
+        return def * Math.pow(Mekanism.maxUpgradeMultiplier, energyUpgrade/8.0);
     }
     
     /**
@@ -640,7 +661,7 @@ public final class MekanismUtils
      * @param z - z coordinate
      * @param orig - original block
      */
-    public static void makeBoundingBlock(World world, int x, int y, int z, Object3D orig)
+    public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
     {
 		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID);
 		
@@ -658,9 +679,9 @@ public final class MekanismUtils
      * @param z - z coordinate
      * @param orig - original block
      */
-    public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Object3D orig)
+    public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
     {
-		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 3);
+		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 0);
 		
 		if(!world.isRemote)
 		{
@@ -682,7 +703,7 @@ public final class MekanismUtils
     		world.markBlockForRenderUpdate(x, y, z);
     	}
     	
-    	if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).lightUpdate())
+    	if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
     	{
     		world.updateAllLightTypes(x, y, z);
     	}
@@ -733,7 +754,7 @@ public final class MekanismUtils
     	
     		if(meta == 0)
     		{
-    			return new FluidStack(fluid.getFluid(), FluidContainerRegistry.BUCKET_VOLUME);
+    			return fluid.drain(world, x, y, z, false);
     		}
     	}
     	
@@ -833,7 +854,7 @@ public final class MekanismUtils
 		
 		if(isBlock)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Object3D.get(tileEntity)), player);
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Coord4D.get(tileEntity)), player);
 		}
 		else {
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 0, id, false), player);
@@ -854,7 +875,7 @@ public final class MekanismUtils
     {
     	DynamicTankCache toReturn = Mekanism.dynamicInventories.get(id);
     	
-    	for(Object3D obj : Mekanism.dynamicInventories.get(id).locations)
+    	for(Coord4D obj : Mekanism.dynamicInventories.get(id).locations)
     	{
     		TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
     		
@@ -885,7 +906,7 @@ public final class MekanismUtils
     		DynamicTankCache cache = new DynamicTankCache();
     		cache.inventory = inventory;
     		cache.fluid = fluid;
-    		cache.locations.add(Object3D.get(tileEntity));
+    		cache.locations.add(Coord4D.get(tileEntity));
     		
     		Mekanism.dynamicInventories.put(inventoryID, cache);
     		
@@ -895,7 +916,7 @@ public final class MekanismUtils
     	Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
     	Mekanism.dynamicInventories.get(inventoryID).fluid = fluid;
     	
-		Mekanism.dynamicInventories.get(inventoryID).locations.add(Object3D.get(tileEntity));
+		Mekanism.dynamicInventories.get(inventoryID).locations.add(Coord4D.get(tileEntity));
     }
     
     /**
@@ -919,16 +940,6 @@ public final class MekanismUtils
     		
     		return id;
     	}
-    }
-    
-    /**
-     * Gets the OreDictionary-registered name of an ItemStack.
-     * @param itemStack - ItemStack to check
-     * @return name of the ItemStack
-     */
-    public static String getName(ItemStack itemStack)
-    {
-    	return OreDictionary.getOreName(OreDictionary.getOreID(itemStack));
     }
     
     /**
@@ -1075,34 +1086,45 @@ public final class MekanismUtils
     	}
     	else if(control.getControlType() == RedstoneControl.HIGH)
     	{
-    		return world.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+    		return control.isPowered();
     	}
     	else if(control.getControlType() == RedstoneControl.LOW)
     	{
-    		return !world.isBlockIndirectlyGettingPowered(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+    		return !control.isPowered();
     	}
     	
     	return false;
     }
     
+    /**
+     * Ray-traces what block a player is looking at.
+     * @param world - world the player is in
+     * @param player - player to raytrace
+     * @return raytraced value
+     */
     public static MovingObjectPosition rayTrace(World world, EntityPlayer player)
     {
     	double reach = Mekanism.proxy.getReach(player);
     	
         Vec3 headVec = getHeadVec(player);
         Vec3 lookVec = player.getLook(1);
-        Vec3 endVec = headVec.addVector(lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach);
+        Vec3 endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
         
         return world.rayTraceBlocks_do_do(headVec, endVec, true, false);
     }
     
+    /**
+     * Gets the head vector of a player for a ray trace.
+     * @param player - player to check
+     * @return head location
+     */
     private static Vec3 getHeadVec(EntityPlayer player)
     {
         Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
         
         if(!player.worldObj.isRemote)
         {
-            vec.yCoord+=player.getEyeHeight();
+            vec.yCoord += player.getEyeHeight();
             
             if(player instanceof EntityPlayerMP && player.isSneaking())
             {
@@ -1113,22 +1135,64 @@ public final class MekanismUtils
         return vec;
     }
     
+    /**
+     * Gets a rounded energy display of a defined amount of energy.
+     * @param energy - energy to display
+     * @return rounded energy display
+     */
     public static String getEnergyDisplay(double energy)
     {
-    	return ElectricityDisplay.getDisplayShort((float)(energy*Mekanism.TO_UE), ElectricUnit.JOULES);
+    	switch(Mekanism.activeType)
+    	{
+    		case J:
+    			return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
+    		case RF:
+    			return Math.round(energy*Mekanism.TO_TE) + " RF";
+    		case EU:
+    			return Math.round(energy*Mekanism.TO_IC2) + " EU";
+    		case MJ:
+    			return (Math.round((energy*Mekanism.TO_BC)*100)/100) + " MJ";
+    	}
+    	
+    	return "error";
     }
     
-    public static boolean useBuildcraft()
+    /**
+     * Gets a rounded power display of a defined amount of energy.
+     * @param energy - energy to display
+     * @return rounded power display
+     */
+    public static String getPowerDisplay(double energy)
+    {
+    	return EnergyDisplay.getDisplayShort(energy, ElectricUnit.WATT);
+    }
+    
+    /**
+     * Whether or not BuildCraft power should be used, taking into account both whether or not it is installed or if
+     * the player has configured the mod to do so.
+     * @return if BuildCraft power should be used
+     */
+    public static boolean useBuildCraft()
     {
     	return Mekanism.hooks.BuildCraftLoaded || Mekanism.forceBuildcraft;
     }
     
-    public static String getCoordDisplay(Object3D obj)
+    /**
+     * Gets a clean view of a coordinate value without the dimension ID.
+     * @param obj - coordinate to check
+     * @return coordinate display
+     */
+    public static String getCoordDisplay(Coord4D obj)
     {
     	return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
     }
     
-    public static List<String> getSplitText(String s)
+    /**
+     * Splits a string of text into a list of new segments, using the splitter "!n."
+     * @param s - string to split
+     * @return split string
+     */
+    public static List<String> splitLines(String s)
     {
     	ArrayList ret = new ArrayList();
     	
@@ -1138,9 +1202,75 @@ public final class MekanismUtils
     	return ret;
     }
     
+    /**
+     * Creates and returns a full gas tank with the specified gas type.
+     * @param gas - gas to fill the tank with
+     * @return filled gas tank
+     */
+    public static ItemStack getFullGasTank(Gas gas)
+    {
+    	ItemStack tank = getEmptyGasTank();
+    	ItemBlockGasTank item = (ItemBlockGasTank)tank.getItem();
+    	item.setGas(tank, new GasStack(gas, item.MAX_GAS));
+    	
+    	return tank;
+    }
+    
+    /**
+     * Finds the output of a defined InventoryCrafting grid. Taken from CofhCore.
+     * @param inv - InventoryCrafting to check
+     * @param world - world reference
+     * @return output ItemStack
+     */
+	public static ItemStack findMatchingRecipe(InventoryCrafting inv, World world)
+	{
+		ItemStack[] dmgItems = new ItemStack[2];
+		
+		for(int i = 0; i < inv.getSizeInventory(); i++)
+		{
+			if(inv.getStackInSlot(i) != null)
+			{
+				if(dmgItems[0] == null)
+				{
+					dmgItems[0] = inv.getStackInSlot(i);
+				}
+				else {
+					dmgItems[1] = inv.getStackInSlot(i);
+					break;
+				}
+			}
+		}
+
+		if((dmgItems[0] == null) || (Item.itemsList[dmgItems[0].itemID] == null))
+		{
+			return null;
+		}
+		
+		if((dmgItems[1] != null) && (dmgItems[0].itemID == dmgItems[1].itemID) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && (Item.itemsList[dmgItems[0].itemID].isRepairable()))
+		{
+			Item theItem = Item.itemsList[dmgItems[0].itemID];
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamageForDisplay();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
+			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
+			int solve = Math.max(0, theItem.getMaxDamage() - value);
+			return new ItemStack(dmgItems[0].itemID, 1, solve);
+		}
+
+		for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList())
+		{
+			if(recipe.matches(inv, world))
+			{
+				return recipe.getCraftingResult(inv);
+			}
+		}
+		
+		return null;
+	}
+    
     public static enum ResourceType
     {
     	GUI("gui"),
+		GUI_ELEMENT("gui/elements"),
     	SOUND("sound"),
     	RENDER("render"),
     	TEXTURE_BLOCKS("textures/blocks"),

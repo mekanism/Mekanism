@@ -1,0 +1,9 @@
+{
+	"repo": "http://files.minecraftforge.net/ForgeMultipart/",
+	"file": "ForgeMultipart-universal-@MCVERSION@-@VERSION@.jar",
+	"dev": "ForgeMultipart-dev-@MCVERSION@-@VERSION@.jar",
+	"class": "codechicken.lib.asm.ASMHelper",
+	"version": "1.0.0.219",
+	"mcversion": "1.6.4",
+	"coreLib": false
+}

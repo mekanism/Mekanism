@@ -6,11 +6,13 @@ import net.minecraft.client.model.ModelRenderer;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelJetpack extends ModelBase
 {
 	ModelRenderer Packtop;
-	ModelRenderer Strapleft;
-	ModelRenderer Strapright;
 	ModelRenderer Packbottom;
 	ModelRenderer Thrusterleft;
 	ModelRenderer Thrusterright;
@@ -28,6 +30,9 @@ public class ModelJetpack extends ModelBase
 	ModelRenderer Packdoodad2;
 	ModelRenderer Packdoodad3;
 	ModelRenderer Bottomthruster;
+    ModelRenderer light1;
+    ModelRenderer light2;
+    ModelRenderer light3;
 
 	public ModelJetpack()
 	{
@@ -40,18 +45,6 @@ public class ModelJetpack extends ModelBase
 		Packtop.setTextureSize(128, 64);
 		Packtop.mirror = true;
 		setRotation(Packtop, 0.2094395F, 0F, 0F);
-		Strapleft = new ModelRenderer(this, 122, 35);
-		Strapleft.addBox(2.5F, 3.4F, 3.9F, 1, 2, 2);
-		Strapleft.setRotationPoint(0F, 0F, 0F);
-		Strapleft.setTextureSize(128, 64);
-		Strapleft.mirror = true;
-		setRotation(Strapleft, -0.0698132F, 0F, 0F);
-		Strapright = new ModelRenderer(this, 122, 35);
-		Strapright.addBox(-3.5F, 3.4F, 3.9F, 1, 2, 2);
-		Strapright.setRotationPoint(0F, 0F, 0F);
-		Strapright.setTextureSize(128, 64);
-		Strapright.mirror = true;
-		setRotation(Strapright, -0.0698132F, 0F, 0F);
 		Packbottom = new ModelRenderer(this, 92, 42);
 		Packbottom.addBox(-4F, 4.1F, 1.5F, 8, 4, 4);
 		Packbottom.setRotationPoint(0F, 0F, 0F);
@@ -154,13 +147,29 @@ public class ModelJetpack extends ModelBase
 		Bottomthruster.setTextureSize(128, 64);
 		Bottomthruster.mirror = true;
 		setRotation(Bottomthruster, 0F, 0F, 0F);
+		light1 = new ModelRenderer(this, 55, 2);
+		light1.addBox(2F, 6.55F, 4F, 1, 1, 1);
+		light1.setRotationPoint(0F, 0F, 0F);
+		light1.setTextureSize(128, 64);
+		light1.mirror = true;
+		setRotation(light1, 0F, 0F, 0F);
+		light2 = new ModelRenderer(this, 55, 2);
+		light2.addBox(0F, 6.55F, 4F, 1, 1, 1);
+		light2.setRotationPoint(0F, 0F, 0F);
+		light2.setTextureSize(128, 64);
+		light2.mirror = true;
+		setRotation(light2, 0F, 0F, 0F);
+		light3 = new ModelRenderer(this, 55, 2);
+		light3.addBox(-3F, 6.55F, 4F, 1, 1, 1);
+		light3.setRotationPoint(0F, 0F, 0F);
+		light3.setTextureSize(128, 64);
+		light3.mirror = true;
+		setRotation(light3, 0F, 0F, 0F);
 	}
 
 	public void render(float size)
 	{
 		Packtop.render(size);
-		Strapleft.render(size);
-		Strapright.render(size);
 		Packbottom.render(size);
 		Thrusterleft.render(size);
 		Thrusterright.render(size);
@@ -196,6 +205,13 @@ public class ModelJetpack extends ModelBase
 		Packdoodad2.render(size);
 		Packdoodad3.render(size);
 		Bottomthruster.render(size);
+		
+		MekanismRenderer.glowOn();
+		light1.render(size);
+		light2.render(size);
+		light3.render(size);
+		Packcore.render(size);
+		MekanismRenderer.glowOff();
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

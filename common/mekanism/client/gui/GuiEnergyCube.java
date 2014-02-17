@@ -1,7 +1,9 @@
 package mekanism.client.gui;
 
+import mekanism.common.EnergyDisplay;
+import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.inventory.container.ContainerEnergyCube;
-import mekanism.common.tileentity.TileEntityEnergyCube;
+import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,8 +11,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import universalelectricity.core.electricity.ElectricityDisplay.ElectricUnit;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -32,7 +32,7 @@ public class GuiEnergyCube extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		String capacityInfo = MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy());
+		String capacityInfo = MekanismUtils.getEnergyDisplay(tileEntity.getEnergy());
 		String outputInfo = MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t";
 		
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);

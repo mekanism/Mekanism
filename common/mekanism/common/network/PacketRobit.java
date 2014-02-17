@@ -2,8 +2,8 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
-import mekanism.common.EntityRobit;
 import mekanism.common.Mekanism;
+import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 

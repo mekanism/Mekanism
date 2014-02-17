@@ -6,14 +6,13 @@
 tile.ObsidianTNT.name=Обсидиановый динамит
 item.EnrichedAlloy.name=Обогащённый сплав
 item.EnergyTablet.name=Энергетический планшет
-item.SpeedUpgrade.name=Улучшение "скорость"
-item.EnergyUpgrade.name=Улучшение "энергия"
-item.Robit.name=Robit
+item.SpeedUpgrade.name=Улучшение «Скорость»
+item.EnergyUpgrade.name=Улучшение «Энергия»
+item.Robit.name=Робит
 item.AtomicDisassembler.name=Атомный дизассемблер
 item.AtomicCore.name=Атомное ядро
 item.ElectricBow.name=Электролук
 item.BoundingBlock.name=Bounding Block
-tile.GasTank.name=Газовый баллон
 item.StorageTank.name=Storage Tank
 item.ControlCircuit.name=Схема управления
 item.EnrichedIron.name=Обогащённое железо
@@ -22,22 +21,32 @@ item.PortableTeleporter.name=Переносной телепортер
 item.TeleportationCore.name=Ядро телепортации
 item.Configurator.name=Конфигуратор
 item.NetworkReader.name=Считыватель сети
-item.ManganeseAlloy.name=Марганцевый сплав
 item.WalkieTalkie.name=Переносная рация
+item.Jetpack.name=Реактивный ранец
+item.ScubaTank.name=Акваланг
+item.GasMask.name=Противогаз
+item.Dictionary.name=Словарь
+item.ElectrolyticCore.name=Электролитическое ядро
+item.CompressedRedstone.name=Сжатый красный камень
+
+//Gas Tank
+tile.GasTank.GasTank.name=Газовый баллон
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Осмиевый блок
 tile.BasicBlock.BronzeBlock.name=Бронзовый блок
 tile.BasicBlock.RefinedObsidian.name=Очищенный обсидиан
-tile.BasicBlock.CoalBlock.name=Угольный блок
+tile.BasicBlock.CharcoalBlock.name=Древесноугольный блок
 tile.BasicBlock.RefinedGlowstone.name=Очищенный светящийся камень
 tile.BasicBlock.SteelBlock.name=Стальной блок
-tile.BasicBlock.Bin.name=Bin
+tile.BasicBlock.Bin.name=Ящик
 tile.BasicBlock.TeleporterFrame.name=Каркас телепортера
 tile.BasicBlock.SteelCasing.name=Стальной корпус
 tile.BasicBlock.DynamicTank.name=Dynamic Tank
-tile.BasicBlock.DynamicGlass.name=Dynamic Glass
+tile.BasicBlock.DynamicGlass.name=Динамическое стекло
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
+tile.BasicBlock.CopperBlock.name=Медный блок
+tile.BasicBlock.TinBlock.name=Оловянный блок
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Камера обогащения
@@ -47,7 +56,7 @@ tile.MachineBlock.Crusher.name=Дробилка
 tile.MachineBlock.BasicFactory.name=Базовая фабрика
 tile.MachineBlock.AdvancedFactory.name=Продвинутая фабрика
 tile.MachineBlock.EliteFactory.name=Элитная фабрика
-tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.MetallurgicInfuser.name=Металлургический вливатель
 tile.MachineBlock.PurificationChamber.name=Камера очистки
 tile.MachineBlock.EnergizedSmelter.name=Энергетический плавильный завод
 tile.MachineBlock.Teleporter.name=Телепортер
@@ -55,19 +64,33 @@ tile.MachineBlock.ElectricPump.name=Электропомпа
 tile.MachineBlock.ElectricChest.name=Электросундук
 tile.MachineBlock.Chargepad.name=Зарядная панель
 tile.MachineBlock.LogisticalSorter.name=Логистический сортировщик
+tile.MachineBlock.DigitalMiner.name=Цифровой шахтёр
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Ротационный конденсентратор
+tile.MachineBlock2.ChemicalOxidizer.name=Химический окислитель
+tile.MachineBlock2.ChemicalInfuser.name=Химический вливатель
+tile.MachineBlock2.ChemicalCombiner.name=Химический объединитель
+tile.MachineBlock2.ChemicalInjectionChamber.name=Инъекционная химическая камера
+tile.MachineBlock2.ElectrolyticSeparator.name=Электролитический сепаратор
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Осмиевая руда
+tile.OreBlock.CopperOre.name=Медная руда
+tile.OreBlock.TinOre.name=Оловянная руда
 
-//Transmitters
-tile.Transmitter.PressurizedTube.name=Pressurized Tube
-tile.Transmitter.UniversalCable.name=Универсальный провод
-tile.Transmitter.MechanicalPipe.name=Механическая труба
-tile.Transmitter.LogisticalTransporter.name=Логистический транспортер
-tile.Transmitter.RestrictiveTransporter.name=Ограничительный транспортер
+item.MultipartTransmitter.PressurizedTube.name=Герметичная труба
+item.MultipartTransmitter.BasicUniversalCable.name=Основной универсальный провод
+item.MultipartTransmitter.AdvancedUniversalCable.name=Продвинутый универсальный провод
+item.MultipartTransmitter.EliteUniversalCable.name=Элитный универсальный провод
+item.MultipartTransmitter.UltimateUniversalCable.name=Максимальный универсальный провод
+item.MultipartTransmitter.MechanicalPipe.name=Механическая труба
+item.MultipartTransmitter.LogisticalTransporter.name=Логистический транспортер
+item.MultipartTransmitter.RestrictiveTransporter.name=Ограничительный транспортер
+item.MultipartTransmitter.DiversionTransporter.name=Отклоняющий транспортер
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Базовый энергетический куб
+tile.EnergyCube.Basic.name=Основной энергетический куб
 tile.EnergyCube.Advanced.name=Продвинутый энергетический куб
 tile.EnergyCube.Elite.name=Элитный энергетический куб
 tile.EnergyCube.Ultimate.name=Максимальный энергетический куб
@@ -82,6 +105,8 @@ item.steelDust.name=Стальная пыль
 item.copperDust.name=Медная пыль
 item.tinDust.name=Оловянная пыль
 item.silverDust.name=Серебряная пыль
+item.leadDust.name=Свинцовая пыль
+item.sulfurDust.name=Серная пыль
 
 //Clumps
 item.ironClump.name=Железная глыба
@@ -91,6 +116,17 @@ item.copperClump.name=Медная глыба
 item.tinClump.name=Оловянная глыба
 item.silverClump.name=Серебряная глыба
 item.obsidianClump.name=Обсидиановая глыба
+item.leadClump.name=Свинцовая глыба
+
+//Shards
+item.ironShard.name=Железный осколок
+item.goldShard.name=Золотой осколок
+item.osmiumShard.name=Осмиевый осколок
+item.copperShard.name=Медный осколок
+item.tinShard.name=Оловянный осколок
+item.silverShard.name=Серебряный осколок
+item.obsidianShard.name=Обсидиановый осколок
+item.leadShard.name=Свинцовый осколок
 
 //Dirty Dust
 item.dirtyIronDust.name=Грязная железная пыль
@@ -100,6 +136,7 @@ item.dirtyCopperDust.name=Грязная медная пыль
 item.dirtyTinDust.name=Грязная оловянная пыль
 item.dirtySilverDust.name=Грязная серебряная пыль
 item.dirtyObsidianDust.name=Грязная обсидиановая пыль
+item.dirtyLeadDust.name=Грязная свинцовая пыль
 
 //Ingots
 item.obsidianIngot.name=Обсидиановый слиток
@@ -107,6 +144,207 @@ item.osmiumIngot.name=Осмиевый слиток
 item.bronzeIngot.name=Бронзовый слиток
 item.glowstoneIngot.name=Слиток светящегося камня
 item.steelIngot.name=Стальной слиток
+item.copperIngot.name=Медный слиток
+item.tinIngot.name=Оловянный слиток
+
+//Gasses
+gas.hydrogen=Водород
+gas.oxygen=Кислород
+gas.water=Водяной пар
+gas.chlorine=Хлор
+gas.sulfurDioxideGas=Диоксид серы
+gas.sulfurTrioxideGas=Триоксид серы
+gas.sulfuricAcid=Серная кислота
+gas.hydrogenChloride=Хлороводород
+
+//Fluids
+fluid.hydrogen=Жидкий водород
+fluid.oxygen=Жидкий кислород
+fluid.chlorine=Жидкий хлор
+fluid.sulfurDioxideGas=Жидкий диоксид серы
+fluid.sulfurTrioxideGas=Жидкий триоксид серы
+fluid.sulfuricAcid=Жидкая серная кислота
+fluid.hydrogenChloride=Жидкий хлороводород
+
+//Gui text
+gui.removeSpeedUpgrade=Удалить улучшение скорости
+gui.removeEnergyUpgrade=Удалить улучшение энергии
+gui.condensentrating=Condensentrating
+gui.decondensentrating=Decondensentrating
+gui.power=Энергия
+gui.confirm=Подтвердить
+gui.open=Открыть
+gui.allOK=Всё ОК
+gui.none=Нету
+gui.new=Новый
+gui.edit=Редактировать
+gui.save=Сохранить
+gui.output=Выход
+gui.delete=Удалить
+gui.status=Статус
+gui.autoEject=Авто-извлечение
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.out=Выход
+gui.noFluid=Нет жидкости
+gui.empty=Пусто
+gui.volume=Звук
+gui.start=Запуск
+gui.stop=Стоп
+gui.config=Конфиг
+gui.teleport=Телепорт
+gui.eject=Извлечение
+gui.input=Вход
+gui.slots=Слоты
+gui.state=Состояние
+gui.on=Вкл.
+gui.off=Выкл.
+gui.filters=Фильтры
+
+gui.chemicalInfuser.short=Хим. зарядник
+gui.chemicalCombiner.short=Хим. объединитель
+
+gui.dictionary.noKey=No key.
+gui.dictionary.key=Key
+
+gui.configuration=Конфигурация
+gui.configuration.strictInput=Строгий вход
+
+gui.rotaryCondensentrator.toggleOperation=Переключить операцию
+
+gui.factory.secondaryEnergy=Вторичная энергия
+gui.factory.smelting=Плавление
+gui.factory.enriching=Обогащение
+gui.factory.crushing=Дробление
+gui.factory.compressing=Сжатие
+gui.factory.combining=Объединение
+gui.factory.purifying=Очищение
+gui.factory.injecting=Впрыскивание
+gui.factory.autoSort=Авто-сорт.
+
+gui.oredictFilter=OreDict фильтр
+gui.oredictFilter.noKey=No key entered
+gui.oredictFilter.sameKey=Same key
+
+gui.itemFilter=Предметный фильтр
+gui.itemFilter.noItem=Нет предмета
+gui.itemFilter.details=Детали ItemStack
+gui.itemFilter.min=Мин.
+gui.itemFilter.max=Макс.
+
+gui.portableTeleporter=Переносной телепортер
+
+gui.teleporter.notReady=Не готов
+gui.teleporter.ready=Готов
+gui.teleporter.needsEnergy=Нужна энергия
+gui.teleporter.linksCapacity=Соединения > 2
+gui.teleporter.noLink=Соединение не найдено
+
+gui.robit=Робит
+gui.robit.smelting=Robit Smelting
+gui.robit.inventory=Robit Inventory
+gui.robit.crafting=Robit Crafting
+gui.robit.greeting=Привет, Я
+gui.robit.toggleFollow=Переключить на режим 'слежения'
+gui.robit.rename=Переименовать этого Робита
+gui.robit.teleport=Teleport back home
+gui.robit.togglePickup=Переключить на режим 'сбор добычи'
+
+gui.password.setPassword=Установить пароль
+gui.password.enterPassword=Ввести пароль
+gui.password.fieldsEmpty=Поле(я) пусты
+gui.password.notMatching=Не совпадает
+gui.password.identical=Идентичный
+gui.password.invalid=Неправильный
+gui.password=Пароль
+
+gui.logisticalSorter.default=Default
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round robin
+
+gui.electricChest.editPassword=Редактировать пароль
+
+gui.digitalMinerConfig=Настройки цифрового шахтёра
+
+gui.digitalMiner.autoPull=Авто-тяга
+gui.digitalMiner.replaceBlock=Замень блок
+gui.digitalMiner.reset=Сброс
+gui.digitalMiner.silkTouch=Шёлковое касание
+gui.digitalMiner.pull=Тянуть
+gui.digitalMiner.silk=Шёлк
+gui.digitalMiner.toMine=To mine
+gui.digitalMiner.running=Работа
+gui.digitalMiner.idle=Простой
+gui.digitalMiner.inverse="Обратный" режим
+
+//Item and block tooltip text
+tooltip.configurator.modify=Модифицируемый
+tooltip.configurator.empty=Пусто
+tooltip.configurator.wrench=Wrench
+tooltip.configurator.link=Link
+tooltip.configurator.pumpReset=Сбросить расчёт электропомпы
+tooltip.configurator.toggleDiverter=Режим "отклонение" изменён на
+tooltip.configurator.toggleColor=Цвет установлен на
+tooltip.configurator.viewColor=Текущий цвет
+tooltip.configurator.unauth=Этот сундук закрыт
+tooltip.configurator.noLink=Нет соединения
+tooltip.configurator.linkMsg=Связан с
+tooltip.configurator.dim=измерение
+
+tooltip.balloon=воздушный шар
+
+tooltip.jetpack.regular=Обычный
+tooltip.jetpack.hover=Зависание
+tooltip.jetpack.disabled=Отключен
+
+tooltip.EnrichmentChamber=Простая машина, используется для обогащения руд в !nдва их пыльных аналога, а также выполнять !nмножество других операций.
+tooltip.OsmiumCompressor=Довольно продвинутая машина, используется для сжатия !nосмия в различные пыли для создания их слитковых аналогов.
+tooltip.Combiner=Машина, используемая для объединения пыли и булыжника, чтобы !nформировать свои рудные аналоги.
+tooltip.Crusher=Машина, используемая для дробления слитков !nв их пыльные аналоги, !nа также выполнять множество других операций.
+tooltip.DigitalMiner=Высоко продвинутый, основанный на фильтре, авто-шатёр, !nкоторый может добывать любой блок, !nкоторый вы скажите в пределах 32 блоков (макс).
+tooltip.BasicFactory=Самый низкий уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных операций !nодновременно.
+tooltip.AdvancedFactory=Средний уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных !nопераций одновременно.
+tooltip.EliteFactory=Самый высокий уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных !nопераций одновременно.
+tooltip.MetallurgicInfuser=Машина, используемая для "вливания" различных материалов !nв металлы (как правило), чтобы создать металлические сплавы !nи другие соединения.
+tooltip.PurificationChamber=Продвинутая машина, способная перерабатывать !nруды в три глыбы, выступающие в качестве начальной !nстадии 300% переработки руды.
+tooltip.EnergizedSmelter=Простая машина, которая служит в качестве основной !nMekanism-печи, которая работает от энергии.
+tooltip.Teleporter=Машина, способная телепортировать игроков в различные !nместа, определённые другим телепортером.
+tooltip.ElectricPump=Продвинутая помпа, способная выкачать целое !nозеро лавы.
+tooltip.ElectricChest=Переносной 54-слотовый сундук, !nкоторый использует энергию, чтобы закрывать !nсебя от других с помощью защиты паролем.
+tooltip.Chargepad=Универсальная зарядная панель, !nкоторая может заряжать любой заряжаемый предмет !nиз любой модификации.
+tooltip.LogisticalSorter=Основанная на фильтре продвинутая сортировочная машина, !nкоторая может автоматически извлекать !nуказанные предметы наружу и в соседние инвентари, !nа также в логистические транспортеры.
+tooltip.RotaryCondensentrator=Машина, способная конвертировать газы в !nжидкость и наоборот.
+tooltip.ChemicalInjectionChamber=Элитная машина, способная перерабатывать руды в !nчетыре осколка, выступающие в качестве начальной !nстадии 400% переработки руды.
+
+tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. Он как известно !nимеет множество применений в !nпроизводстве машин.
+tooltip.CopperOre=Общий проводящий материал, который может быть использован !nв производстве проводов. Имеет способность выдерживать!nвысокие теплоты это делает его необходимым для !nсовременного оборудования.
+tooltip.TinOre=Лёгкий, но крепкий проводящий материал, !nкоторый находится немного реже, чем медь.
+
+//Redstone control
+control.disabled=Отключён
+control.high=Высокий
+control.low=Низкий
+control.disabled.desc=Всегда активен
+control.high.desc=Активен по сигналу
+control.low.desc=Активен без сигнала
+
+//Colors
+color.black=Чёрный
+color.darkBlue=Тёмно-синий
+color.darkGreen=Тёмно-зелёный
+color.darkAqua=Тёмно-голбуй
+color.darkRed=Тёмно-красный
+color.purple=Фиолетовый
+color.orange=Оранжевый
+color.grey=Серый
+color.darkGrey=Тёмно-серый
+color.indigo=Индиго
+color.brightGreen=Светло-зелёный
+color.aqua=Голубой
+color.red=Красный
+color.pink=Розовый
+color.yellow=Жёлтый
+color.white=Белый
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
@@ -116,18 +354,22 @@ itemGroup.tabMekanism=Mekanism
 //**********//
 
 //Items
-item.BioFuel.name=Биотопливо
-item.ElectrolyticCore.name=Электролитическое ядро
+item.BioFuel.name=Био-топливо
 item.SolarPanel.name=Солнечная панель
 
 //Generators
 tile.Generator.HeatGenerator.name=Тепловой генератор
 tile.Generator.SolarGenerator.name=Солнечный генератор
-tile.Generator.ElectrolyticSeparator.name=Электролитический сепаратор
 tile.Generator.HydrogenGenerator.name=Водородный генератор
 tile.Generator.BioGenerator.name=Био-генератор
 tile.Generator.AdvancedSolarGenerator.name=Продвинутый солнечный генератор
 tile.Generator.WindTurbine.name=Ветровая турбина
+
+//Gui text
+gui.heatGenerator.fuel=Топливо
+gui.solarGenerator.sun=Солнце
+gui.bioGenerator.bioFuel=Био-топливо
+gui.electrolyticSeparator.dump=Дамп
 
 //*****//
 //TOOLS//
@@ -222,5 +464,6 @@ tile.Multimeter.name=Мультиметр
 tile.ElectromagneticContractor.name=Электромагнитный контрагент
 tile.Battery.name=Модульный аккумулятор
 
-//Items
-item.Linker.name=Electrostatic Linker
+//General text
+text.contractor.success=Контрагент успешно соединён
+text.tesla.success=Катушка Теслы успешно соединена

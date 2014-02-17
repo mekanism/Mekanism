@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import org.lwjgl.opengl.GL11;
 
 import mekanism.client.model.ModelRotaryCondensentrator;
-import mekanism.common.tileentity.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

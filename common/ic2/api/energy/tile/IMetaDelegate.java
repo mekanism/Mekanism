@@ -26,6 +26,8 @@ public interface IMetaDelegate extends IEnergyTile {
 	/**
 	 * Get the sub-TileEntities belonging to this Meta TileEntity.
 	 * 
+	 * @note the list has to be consistent between the EnergyNet Load and Unload events.
+	 * 
 	 * @return sub-TileEntity array
 	 */
 	List<TileEntity> getSubTiles();

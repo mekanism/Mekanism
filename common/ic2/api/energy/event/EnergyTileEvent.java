@@ -14,10 +14,10 @@ import ic2.api.energy.tile.IEnergyTile;
 public class EnergyTileEvent extends WorldEvent {
 	public final IEnergyTile energyTile;
 
-	public EnergyTileEvent(IEnergyTile energyTile) {
-		super(((TileEntity) energyTile).worldObj);
+	public EnergyTileEvent(IEnergyTile energyTile1) {
+		super(((TileEntity) energyTile1).worldObj);
 
-		this.energyTile = energyTile;
+		this.energyTile = energyTile1;
 	}
 }
 

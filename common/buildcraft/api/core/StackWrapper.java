@@ -11,22 +11,19 @@ package buildcraft.api.core;
 import net.minecraft.item.ItemStack;
 
 /**
- * 
+ *
  * @author CovertJaguar <http://www.railcraft.info/>
  */
-public class StackWrapper
-{
+public class StackWrapper {
 
 	public final ItemStack stack;
 
-	public StackWrapper(ItemStack stack)
-	{
+	public StackWrapper(ItemStack stack) {
 		this.stack = stack;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hash = 5;
 		hash = 67 * hash + stack.itemID;
 		hash = 67 * hash + stack.getItemDamage();
@@ -36,8 +33,7 @@ public class StackWrapper
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())

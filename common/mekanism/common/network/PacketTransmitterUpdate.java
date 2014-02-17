@@ -3,16 +3,18 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
-import mekanism.api.transmitters.ITransmitter;
-import mekanism.common.tileentity.TileEntityMechanicalPipe;
-import mekanism.common.tileentity.TileEntityPressurizedTube;
-import mekanism.common.tileentity.TileEntityUniversalCable;
+import mekanism.api.gas.GasStack;
+import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.EnergyNetwork;
+import mekanism.common.FluidNetwork;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -24,10 +26,10 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	
 	public double power;
 	
-	public int gasType;
+	public GasStack gasStack;
 	public boolean didGasTransfer;
 	
-	public int fluidType;
+	public FluidStack fluidStack;
 	public boolean didFluidTransfer;
 	
 	@Override
@@ -48,11 +50,11 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				power = (Double)data[2];
 				break;
 			case GAS:
-				gasType = (Integer)data[2];
+				gasStack = (GasStack)data[2];
 				didGasTransfer = (Boolean)data[3];
 				break;
 			case FLUID:
-				fluidType = (Integer)data[2];
+				fluidStack = (FluidStack)data[2];
 				didFluidTransfer = (Boolean)data[3];
 				break;
 		}
@@ -71,7 +73,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		
 		if(transmitterType == 0)
 		{
-			ITransmitter transmitter = (ITransmitter)world.getBlockTileEntity(x, y, z);
+			IGridTransmitter transmitter = (IGridTransmitter)world.getBlockTileEntity(x, y, z);
 			
 			if(transmitter != null)
 			{
@@ -86,7 +88,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 			
 			if(tileEntity != null)
 			{
-				((TileEntityUniversalCable)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
+				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
 			}
 		}
 		else if(transmitterType == 2)
@@ -94,12 +96,26 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
     		Gas gasType = GasRegistry.getGas(dataStream.readInt());
+    		int amount = dataStream.readInt();
+    		GasStack stack = null;
     		didGasTransfer = dataStream.readBoolean();
+    		
+    		if(gasType != null)
+    		{
+    			stack = new GasStack(gasType, amount);
+    		}
     		
     		if(tileEntity != null)
     		{
-    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().refGas = gasType;
-    			((TileEntityPressurizedTube)tileEntity).getTransmitterNetwork().didTransfer = didGasTransfer;
+    			GasNetwork net = ((IGridTransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
+    			
+    			if(gasType != null)
+    			{
+    				net.refGas = gasType;
+    			}
+    			
+    			net.gasStored = stack;
+    			net.didTransfer = didGasTransfer;
     		}
 	    }
 	    else if(transmitterType == 3)
@@ -108,12 +124,27 @@ public class PacketTransmitterUpdate implements IMekanismPacket
     		
     		int type = dataStream.readInt();
     		Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
+    		int amount = dataStream.readInt();
+    		FluidStack stack = null;
     		didFluidTransfer = dataStream.readBoolean();
+    		
+    		if(fluidType != null)
+    		{
+    			stack = new FluidStack(fluidType, amount);
+    		}
     		
     		if(tileEntity != null)
     		{
-    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().refFluid = fluidType;
-    			((TileEntityMechanicalPipe)tileEntity).getTransmitterNetwork().didTransfer = didFluidTransfer;
+    			FluidNetwork net = ((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
+    			
+    			if(fluidType != null)
+    			{
+    				net.refFluid = fluidType;
+    			}
+    			
+    			net.fluidStored = stack;
+    			net.didTransfer = didFluidTransfer;
+    			net.fluidScale = net.getScale();
     		}
 	    }
 	}
@@ -133,11 +164,13 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				dataStream.writeDouble(power);
 				break;
 			case GAS:
-				dataStream.writeInt(gasType);
+				dataStream.writeInt(gasStack != null ? gasStack.getGas().getID() : -1);
+				dataStream.writeInt(gasStack != null ? gasStack.amount : 0);
 				dataStream.writeBoolean(didGasTransfer);
 				break;
 			case FLUID:
-				dataStream.writeInt(fluidType);
+				dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
+				dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
 				dataStream.writeBoolean(didFluidTransfer);
 				break;
 		}

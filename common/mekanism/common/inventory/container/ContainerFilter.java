@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.tileentity.TileEntityContainerBlock;
+import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -30,7 +30,7 @@ public class ContainerFilter extends Container
             addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
         }
         
-		tileEntity.playersUsing.add(inventory.player);
+		tileEntity.open(inventory.player);
 		tileEntity.openChest();
     }
     
@@ -39,7 +39,7 @@ public class ContainerFilter extends Container
     {
 		super.onContainerClosed(entityplayer);
 		
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
     }
 

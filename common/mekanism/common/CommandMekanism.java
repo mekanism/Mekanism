@@ -94,4 +94,10 @@ public class CommandMekanism extends CommandBase
 	        }
         }
     }
+	
+	@Override
+	public int compareTo(Object obj)
+	{
+		return 0;
+	}
 }

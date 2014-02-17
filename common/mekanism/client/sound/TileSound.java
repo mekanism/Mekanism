@@ -1,10 +1,10 @@
 package mekanism.client.sound;
 
+import mekanism.api.Pos3D;
 import mekanism.client.HolidayManager;
 import mekanism.common.IActiveState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import universalelectricity.core.vector.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,7 +30,7 @@ public class TileSound extends Sound
 	 */
 	public TileSound(String id, String sound, TileEntity tileentity)
 	{
-		super(id, sound, tileentity, new Vector3(tileentity));
+		super(id, sound, tileentity, new Pos3D(tileentity));
 		
 		tileEntity = tileentity;
 	}
@@ -38,13 +38,13 @@ public class TileSound extends Sound
 	@Override
 	public float getMultiplier()
 	{
-		return ((IHasSound)tileEntity).getVolumeMultiplier();
+		return super.getMultiplier()*((IHasSound)tileEntity).getVolumeMultiplier();
 	}
 	
 	@Override
-	public Vector3 getLocation()
+	public Pos3D getLocation()
 	{
-		return new Vector3(tileEntity);
+		return new Pos3D(tileEntity);
 	}
     
 	@Override
@@ -74,6 +74,11 @@ public class TileSound extends Sound
 					stopLoop();
 				}
 			}
+		}
+		
+		if(isPlaying)
+		{
+			ticksSincePlay++;
 		}
 		
 		return true;

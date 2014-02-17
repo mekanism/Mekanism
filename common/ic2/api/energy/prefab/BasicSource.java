@@ -96,16 +96,16 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	/**
 	 * Constructor for a new BasicSource delegate.
 	 * 
-	 * @param parent Base TileEntity represented by this energy source.
-	 * @param capacity Maximum amount of eu to store.
-	 * @param tier IC2 tier, 1=LV, 2=MV, ...
+	 * @param parent1 Base TileEntity represented by this energy source.
+	 * @param capacity1 Maximum amount of eu to store.
+	 * @param tier1 IC2 tier, 1=LV, 2=MV, ...
 	 */
-	public BasicSource(TileEntity parent, int capacity, int tier) {
-		int power = EnergyNet.instance.getPowerFromTier(tier);
+	public BasicSource(TileEntity parent1, int capacity1, int tier1) {
+		int power = EnergyNet.instance.getPowerFromTier(tier1);
 
-		this.parent = parent;
-		this.capacity = capacity < power ? power : capacity;
-		this.tier = tier;
+		this.parent = parent1;
+		this.capacity = capacity1 < power ? power : capacity1;
+		this.tier = tier1;
 	}
 
 	// in-world te forwards	>>
@@ -212,14 +212,14 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	/**
 	 * Set the maximum amount of energy this source can hold in its buffer.
 	 * 
-	 * @param capacity Capacity in EU.
+	 * @param capacity1 Capacity in EU.
 	 */
-	public void setCapacity(int capacity) {
+	public void setCapacity(int capacity1) {
 		int power = EnergyNet.instance.getPowerFromTier(tier);
 
-		if (capacity < power) capacity = power;
+		if (capacity1 < power) capacity1 = power;
 
-		this.capacity = capacity;
+		this.capacity = capacity1;
 	}
 
 	/**
@@ -234,14 +234,14 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	/**
 	 * Set the IC2 energy tier for this source.
 	 * 
-	 * @param tier IC2 Tier.
+	 * @param tier1 IC2 Tier.
 	 */
-	public void setTier(int tier) {
-		int power = EnergyNet.instance.getPowerFromTier(tier);
+	public void setTier(int tier1) {
+		int power = EnergyNet.instance.getPowerFromTier(tier1);
 
 		if (capacity < power) capacity = power;
 
-		this.tier = tier;
+		this.tier = tier1;
 	}
 
 
@@ -354,9 +354,8 @@ public class BasicSource extends TileEntity implements IEnergySource {
 
 		if (energyStored >= power) {
 			return power;
-		} else {
-			return 0;
 		}
+		return 0;
 	}
 
 	@Override

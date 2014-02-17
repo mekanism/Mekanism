@@ -1,9 +1,15 @@
 package mekanism.client.nei;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import mekanism.api.ListUtils;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiPurificationChamber;
-import mekanism.common.RecipeHandler.Recipe;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -12,7 +18,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	@Override
 	public String getRecipeName()
 	{
-		return "Purification Chamber";
+		return MekanismUtils.localize("tile.MachineBlock.PurificationChamber.name");
 	}
 
 	@Override
@@ -40,9 +46,14 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	}
 	
 	@Override
-	public ItemStack getFuelStack()
+	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		return new ItemStack(Item.flint);
+		if(gasType == GasRegistry.getGas("oxygen"))
+		{
+			return ListUtils.asList(new ItemStack(Item.flint), MekanismUtils.getFullGasTank(GasRegistry.getGas("oxygen")));
+		}
+		
+		return new ArrayList<ItemStack>();
 	}
 	
 	@Override

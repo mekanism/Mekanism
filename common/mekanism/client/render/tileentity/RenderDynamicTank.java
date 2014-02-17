@@ -3,13 +3,13 @@ package mekanism.client.render.tileentity;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.SynchronizedTankData.ValveData;
-import mekanism.common.TankUpdateProtocol;
-import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.common.tank.TankUpdateProtocol;
+import mekanism.common.tank.SynchronizedTankData.ValveData;
+import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -65,7 +65,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 					displayList[getStages(data.height)-1].render();
 				}
 				else {
-					displayList[(int)(((float)tileEntity.structure.fluidStored.amount/(float)tileEntity.clientCapacity)*((float)getStages(data.height)-1))].render();
+					displayList[(int)(tileEntity.prevScale*((float)getStages(data.height)-1))].render();
 				}
 				
 				MekanismRenderer.glowOff();
@@ -294,7 +294,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	
 	public static class RenderData
 	{
-		public Object3D location;
+		public Coord4D location;
 		
 		public int height;
 		public int length;
@@ -322,7 +322,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	public static class ValveRenderData extends RenderData
 	{
 		public ForgeDirection side;
-		public Object3D valveLocation;
+		public Coord4D valveLocation;
 		
 		public static ValveRenderData get(RenderData renderData, ValveData valveData)
 		{

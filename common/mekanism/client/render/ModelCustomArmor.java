@@ -1,19 +1,32 @@
 package mekanism.client.render;
 
+import mekanism.client.model.ModelArmoredJetpack;
+import mekanism.client.model.ModelFreeRunners;
+import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
+import mekanism.client.model.ModelScubaTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelCustomArmor extends ModelBiped
 {
 	public static ModelCustomArmor INSTANCE = new ModelCustomArmor();
+	
+	public static GlowArmor GLOW_BIG = new GlowArmor(1.0F);
+	public static GlowArmor GLOW_SMALL = new GlowArmor(0.5F);
+	
 	public static Minecraft mc = Minecraft.getMinecraft();
 
 	public ArmorModel modelType;
@@ -24,8 +37,8 @@ public class ModelCustomArmor extends ModelBiped
 		resetPart(bipedBody, 0, 0, 0);
 		resetPart(bipedRightArm, 5, 2, 0);
 		resetPart(bipedLeftArm, -5, 2, 0);
-		resetPart(bipedRightLeg, 2, 12, 0);
-		resetPart(bipedLeftLeg, -2, 12, 0);
+		resetPart(bipedRightLeg, 0, 0, 0);
+		resetPart(bipedLeftLeg, 0, 0, 0);
 
 		bipedHeadwear.cubeList.clear();
 		bipedEars.cubeList.clear();
@@ -35,9 +48,16 @@ public class ModelCustomArmor extends ModelBiped
 	public void init(Entity entity, float f, float f1, float f2, float f3, float f4, float size)
 	{
 		reset();
+		
+		if(entity instanceof EntityLivingBase)
+		{
+			isSneak = ((EntityLivingBase)entity).isSneaking();
+			isRiding = ((EntityLivingBase)entity).isRiding();
+			isChild = ((EntityLivingBase)entity).isChild();
+		}
 
 		if(modelType.armorSlot == 0)
-		{
+		{			
 			bipedHead.isHidden = false;
 			bipedHead.showModel = true;
 		}
@@ -45,6 +65,13 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			bipedBody.isHidden = false;
 			bipedBody.showModel = true;
+		}
+		else if(modelType.armorSlot == 3)
+		{
+			bipedLeftLeg.isHidden = false;
+			bipedLeftLeg.showModel = true;
+			bipedRightLeg.isHidden = false;
+			bipedRightLeg.showModel = true;
 		}
 
 		setRotationAngles(f, f1, f2, f3, f4, size, entity);
@@ -110,13 +137,33 @@ public class ModelCustomArmor extends ModelBiped
 					{
 						ArmorModel.jetpackModel.render(0.0625F);
 					}
+					else if(biped.modelType == ArmorModel.ARMOREDJETPACK)
+					{
+						ArmorModel.armoredJetpackModel.render(0.0625F);
+					}
 					else if(biped.modelType == ArmorModel.SCUBATANK)
 					{
-						
+						ArmorModel.scubaTankModel.render(0.0625F);
 					}
 					else if(biped.modelType == ArmorModel.GASMASK)
 					{
+						GL11.glTranslatef(0, 0, -0.05F);
+						ArmorModel.gasMaskModel.render(0.0625F);
+					}
+					else if(biped.modelType == ArmorModel.FREERUNNERS)
+					{
+						GL11.glScalef(1.02F, 1.02F, 1.02F);
 						
+						if(partRender == biped.bipedLeftLeg)
+						{
+							GL11.glTranslatef(-0.1375F, -0.75F, -0.0625F);
+							ArmorModel.freeRunnersModel.renderLeft(0.0625F);
+						}
+						else if(partRender == biped.bipedRightLeg)
+						{
+							GL11.glTranslatef(0.1375F, -0.75F, -0.0625F);
+							ArmorModel.freeRunnersModel.renderRight(0.0625F);
+						}
 					}
 				}
 				
@@ -142,6 +189,10 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			return partRender == biped.bipedBody;
 		}
+		else if(type.armorSlot == 3)
+		{
+			return partRender == biped.bipedLeftLeg || partRender == biped.bipedRightLeg;
+		}
 		
 		return false;
 	}
@@ -149,18 +200,64 @@ public class ModelCustomArmor extends ModelBiped
 	public static enum ArmorModel 
 	{
 		JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
-		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaTank.png")),
-		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "GasMask.png"));
+		ARMOREDJETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png")),
+		SCUBATANK(1, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
+		GASMASK(0, MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png")),
+		FREERUNNERS(3, MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
 
 		public int armorSlot;
 		public ResourceLocation resource;
 		
 		public static ModelJetpack jetpackModel = new ModelJetpack();
+		public static ModelArmoredJetpack armoredJetpackModel = new ModelArmoredJetpack();
+		public static ModelGasMask gasMaskModel = new ModelGasMask();
+		public static ModelScubaTank scubaTankModel = new ModelScubaTank();
+		public static ModelFreeRunners freeRunnersModel = new ModelFreeRunners();
 
 		private ArmorModel(int i, ResourceLocation r)
 		{
 			armorSlot = i;
 			resource = r;
+		}
+	}
+	
+	public static ModelBiped getGlow(int index)
+	{
+		ModelBiped biped = index != 2 ? GLOW_BIG : GLOW_SMALL;
+		
+        biped.bipedHead.showModel = index == 0;
+        biped.bipedHeadwear.showModel = index == 0;
+        biped.bipedBody.showModel = index == 1 || index == 2;
+        biped.bipedRightArm.showModel = index == 1;
+        biped.bipedLeftArm.showModel = index == 1;
+        biped.bipedRightLeg.showModel = index == 2 || index == 3;
+        biped.bipedLeftLeg.showModel = index == 2 || index == 3;
+		
+		return biped;
+	}
+	
+	public static class GlowArmor extends ModelBiped
+	{
+		public GlowArmor(float size)
+		{
+			super(size);
+		}
+		
+		@Override
+		public void render(Entity entity, float par2, float par3, float par4, float par5, float par6, float par7)
+		{
+			if(entity instanceof EntityLivingBase)
+			{
+				isSneak = ((EntityLivingBase)entity).isSneaking();
+				isRiding = ((EntityLivingBase)entity).isRiding();
+				isChild = ((EntityLivingBase)entity).isChild();
+			}
+			
+			setRotationAngles(par2, par3, par4, par5, par6, par7, entity);
+			
+			MekanismRenderer.glowOn();
+			super.render(entity, par2, par3, par4, par5, par6, par7);
+			MekanismRenderer.glowOff();
 		}
 	}
 }

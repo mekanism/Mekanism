@@ -9,7 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.tileentity.TileEntityGasTank;
+import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +69,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
     	if(place)
     	{
     		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
-    		tileEntity.gasStored = getGas(stack);
+    		tileEntity.gasTank.setGas(getGas(stack));
     		
     		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
     	}
@@ -106,64 +106,52 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 	
 	@Override
-	public GasStack getGas(Object... data)
+	public GasStack getGas(ItemStack itemstack)
 	{
-		if(data[0] instanceof ItemStack)
+		if(itemstack.stackTagCompound == null)
 		{
-			ItemStack itemstack = (ItemStack)data[0];
-			
-			if(itemstack.stackTagCompound == null)
-			{
-				return null;
-			}
-			
-			GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-			
-			if(stored == null)
-			{
-				itemstack.setItemDamage(100);
-			}
-			else {
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
-			}
-			
-			return stored;
+			return null;
 		}
 		
-		return null;
+		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		
+		if(stored == null)
+		{
+			itemstack.setItemDamage(100);
+		}
+		else {
+			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
+		}
+		
+		return stored;
 	}
 	
 	@Override
-	public void setGas(GasStack stack, Object... data)
+	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(data[0] instanceof ItemStack)
+		if(itemstack.stackTagCompound == null)
 		{
-			ItemStack itemstack = (ItemStack)data[0];
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+		
+		if(stack == null || stack.amount == 0)
+		{
+			itemstack.setItemDamage(100);
+			itemstack.stackTagCompound.removeTag("stored");
+		}
+		else {
+			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
+			GasStack gasStack = new GasStack(stack.getGas(), amount);
 			
-			if(itemstack.stackTagCompound == null)
-			{
-				itemstack.setTagCompound(new NBTTagCompound());
-			}
-			
-			if(stack == null || stack.amount == 0)
-			{
-				itemstack.setItemDamage(100);
-				itemstack.stackTagCompound.removeTag("stored");
-			}
-			else {
-				int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
-				GasStack gasStack = new GasStack(stack.getGas(), amount);
-				
-				itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-				itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
-			}
+			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
+			itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 	
 	public ItemStack getEmptyItem()
 	{
 		ItemStack empty = new ItemStack(this);
-		setGas(null, empty);
+		setGas(empty, null);
 		empty.setItemDamage(100);
 		return empty;
 	}
@@ -172,27 +160,25 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
 		ItemStack empty = new ItemStack(this);
-		setGas(null, empty);
+		setGas(empty, null);
 		empty.setItemDamage(100);
 		list.add(empty);
 		
 		for(Gas type : GasRegistry.getRegisteredGasses())
 		{
-			ItemStack filled = new ItemStack(this);
-			setGas(new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)), filled);
-			list.add(filled);
+			if(type.isVisible())
+			{
+				ItemStack filled = new ItemStack(this);
+				setGas(filled, new GasStack(type, ((IGasItem)filled.getItem()).getMaxGas(filled)));
+				list.add(filled);
+			}
 		}
 	}
 	
 	@Override
-	public int getMaxGas(Object... data)
+	public int getMaxGas(ItemStack itemstack)
 	{
-		if(data[0] instanceof ItemStack)
-		{
-			return MAX_GAS;
-		}
-		
-		return 0;
+		return MAX_GAS;
 	}
 
 	@Override
@@ -210,7 +196,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		}
 		
 		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
-		setGas(new GasStack(stack.getGas(), getStored(itemstack)+toUse), itemstack);
+		setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack)+toUse));
 		
 		return toUse;
 	}
@@ -226,7 +212,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		Gas type = getGas(itemstack).getGas();
 		
 		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(new GasStack(type, getStored(itemstack)-gasToUse), itemstack);
+		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
 		
 		return new GasStack(type, gasToUse);
 	}

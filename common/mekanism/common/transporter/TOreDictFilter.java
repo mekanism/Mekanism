@@ -1,7 +1,9 @@
 package mekanism.common.transporter;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import mekanism.common.transporter.Finder.OreDictFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.IInventory;
@@ -18,46 +20,18 @@ public class TOreDictFilter extends TransporterFilter
 	@Override
 	public boolean canFilter(ItemStack itemStack)
 	{
-		String oreKey = MekanismUtils.getOreDictName(itemStack);
-		
-		if(oreKey == null)
+		if(itemStack == null)
 		{
 			return false;
 		}
 		
-		if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
-		{
-			return true;
-		}
-		else if(oreDictName.endsWith("*") && !oreDictName.startsWith("*"))
-		{
-			if(oreKey.startsWith(oreDictName.substring(0, oreDictName.length()-1)))
-			{
-				return true;
-			}
-		}
-		else if(oreDictName.startsWith("*") && !oreDictName.endsWith("*"))
-		{
-			if(oreKey.endsWith(oreDictName.substring(1)))
-			{
-				return true;
-			}
-		}
-		else if(oreDictName.startsWith("*") && oreDictName.endsWith("*"))
-		{
-			if(oreKey.contains(oreDictName.substring(1, oreDictName.length()-1)))
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		return new OreDictFinder(oreDictName).modifies(itemStack);
 	}
 	
 	@Override
 	public InvStack getStackFromInventory(IInventory inv, ForgeDirection side)
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal());
+		return InventoryUtils.takeTopStack(inv, side.ordinal(), new OreDictFinder(oreDictName));
 	}
 	
 	@Override

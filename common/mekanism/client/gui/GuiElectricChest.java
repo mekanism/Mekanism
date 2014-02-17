@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
@@ -10,7 +10,7 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.tileentity.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiElectricChest extends GuiContainer
+public class GuiElectricChest extends GuiMekanism
 {
 	public TileEntityElectricChest tileEntity;
 	public IInventory itemInventory;
@@ -124,7 +124,7 @@ public class GuiElectricChest extends GuiContainer
 				
 				if(isBlock)
 				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), true, Object3D.get(tileEntity)));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), true, Coord4D.get(tileEntity)));
 				}
 				else {
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), false));

@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityDynamicTank;
+import mekanism.api.Coord4D;
+import mekanism.common.tank.DynamicTankCache;
+import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -24,7 +26,7 @@ public class CommonWorldTickHandler implements ITickHandler
 		if(tickData[0] instanceof World)
 		{
 			ArrayList<Integer> idsToKill = new ArrayList<Integer>();
-			HashMap<Integer, HashSet<Object3D>> tilesToKill = new HashMap<Integer, HashSet<Object3D>>();
+			HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
 			
 			World world = (World)tickData[0];
 			
@@ -34,17 +36,17 @@ public class CommonWorldTickHandler implements ITickHandler
 				{
 					int inventoryID = entry.getKey();
 					
-					for(Object3D obj : entry.getValue().locations)
+					for(Coord4D obj : entry.getValue().locations)
 					{
 						if(obj.dimensionId == world.provider.dimensionId)
 						{
-							TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
+							TileEntity tileEntity = obj.getTileEntity(world);
 							
-							if(tileEntity == null || tileEntity.inventoryID != inventoryID)
+							if(!(tileEntity instanceof TileEntityDynamicTank) || ((TileEntityDynamicTank)tileEntity).inventoryID != inventoryID)
 							{
 								if(!tilesToKill.containsKey(inventoryID))
 								{
-									tilesToKill.put(inventoryID, new HashSet<Object3D>());
+									tilesToKill.put(inventoryID, new HashSet<Coord4D>());
 								}
 								
 								tilesToKill.get(inventoryID).add(obj);
@@ -58,9 +60,9 @@ public class CommonWorldTickHandler implements ITickHandler
 					}
 				}
 				
-				for(Map.Entry<Integer, HashSet<Object3D>> entry : tilesToKill.entrySet())
+				for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
 				{
-					for(Object3D obj : entry.getValue())
+					for(Coord4D obj : entry.getValue())
 					{
 						Mekanism.dynamicInventories.get(entry.getKey()).locations.remove(obj);
 					}
@@ -68,7 +70,7 @@ public class CommonWorldTickHandler implements ITickHandler
 				
 				for(int inventoryID : idsToKill)
 				{	
-					for(Object3D obj : Mekanism.dynamicInventories.get(inventoryID).locations)
+					for(Coord4D obj : Mekanism.dynamicInventories.get(inventoryID).locations)
 					{
 						TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)obj.getTileEntity(world);
 						

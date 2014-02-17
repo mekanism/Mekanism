@@ -51,8 +51,10 @@ public interface IWrenchable {
 	/**
 	 * Determine the item the block will drop when the wrenching is successful.
 	 * 
+	 * The ItemStack will be copied before creating the EntityItem.
+	 * 
 	 * @param entityPlayer player using the wrench, may be null
-	 * @return Item to drop, may be null
+	 * @return ItemStack to drop, may be null
 	 */
 	ItemStack getWrenchDrop(EntityPlayer entityPlayer);
 }

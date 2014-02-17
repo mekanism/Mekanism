@@ -2,7 +2,7 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tileentity.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -36,15 +36,16 @@ public class ContainerBioGenerator extends Container
         }
         
         tileEntity.openChest();
-        tileEntity.playersUsing.add(inventory.player);
+        tileEntity.open(inventory.player);
     }
     
     @Override
     public void onContainerClosed(EntityPlayer entityplayer)
     {
 		super.onContainerClosed(entityplayer);
+		
 		tileEntity.closeChest();
-		tileEntity.playersUsing.remove(entityplayer);
+		tileEntity.close(entityplayer);
     }
 
 	@Override

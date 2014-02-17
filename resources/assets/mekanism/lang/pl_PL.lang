@@ -24,6 +24,7 @@ item.Configurator.name=Konfigurator
 item.NetworkReader.name=Czytnik Sieci
 item.ManganeseAlloy.name=Stop Manganu
 item.WalkieTalkie.name=Walkie-Talkie
+item.ElectrolyticCore.name=Jądro Elektrolityczne
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Blok Osmu
@@ -55,6 +56,8 @@ tile.MachineBlock.ElectricPump.name=Elektryczna Pompa
 tile.MachineBlock.ElectricChest.name=Elektryczna Skrzynia
 tile.MachineBlock.Chargepad.name=Chargepad
 tile.MachineBlock.LogisticalSorter.name=Logistyczny Magazynier
+
+tile.MachineBlock2.ElectrolyticSeparator.name=Separator Elektrolityczny
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Ruda Osmu
@@ -116,13 +119,11 @@ itemGroup.tabMekanism=Mekanism
 
 //Items
 item.BioFuel.name=Bio paliwo
-item.ElectrolyticCore.name=Jądro Elektrolityczne
 item.SolarPanel.name=Panel Słoneczny
 
 //Generators
 tile.Generator.HeatGenerator.name=Generator Cieplny
 tile.Generator.SolarGenerator.name=Generator Słoneczny
-tile.Generator.ElectrolyticSeparator.name=Separator Elektrolityczny
 tile.Generator.HydrogenGenerator.name=Wodorowy Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Zaawansowany Generator Słoneczny

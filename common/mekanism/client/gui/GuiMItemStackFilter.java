@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -10,7 +10,7 @@ import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.tileentity.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -32,7 +32,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 	
 	public MItemStackFilter filter = new MItemStackFilter();
 	
-	public String status = EnumColor.DARK_GREEN + "All OK";
+	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		
 	public int ticker;
 	
@@ -62,8 +62,8 @@ public class GuiMItemStackFilter extends GuiMekanism
         int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, "Save"));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, "Delete"));
+		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.delete")));
 		
 		if(isNew)
 		{
@@ -82,24 +82,24 @@ public class GuiMItemStackFilter extends GuiMekanism
 			{
 				if(isNew)
 				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Coord4D.get(tileEntity), filter));
 				}
 				else {
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, origFilter, filter));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 				
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
 			else if(filter.itemType == null)
 			{
-				status = EnumColor.DARK_RED + "No item";
+				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.itemFilter.noItem");
 				ticker = 20;
 			}
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, origFilter));
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), true, origFilter));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 		}
 	}
 	
@@ -109,13 +109,13 @@ public class GuiMItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
-		fontRenderer.drawString((isNew ? "New" : "Edit") + " Item Filter", 43, 6, 0x404040);
-		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString("ItemStack Details:", 35, 32, 0x00CD00);
+		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
 		
 		if(filter.itemType != null)
 		{
-			fontRenderer.drawString("Item: " + filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
+			fontRenderer.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
 		}
 		
 		if(filter.itemType != null)
@@ -140,7 +140,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 			ticker--;
 		}
 		else {
-			status = EnumColor.DARK_GREEN + "All OK";
+			status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		}
 	}
 
@@ -195,7 +195,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
 			
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)

@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,31 +26,45 @@ public class ItemNetworkReader extends ItemEnergized
     	{
     		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
     		
-    		if(tileEntity instanceof ITransmitter)
+    		if(tileEntity instanceof IGridTransmitter)
     		{
     			if(getEnergy(stack) >= ENERGY_PER_USE)
     			{
     				setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
     				
-	    			ITransmitter transmitter = (ITransmitter)tileEntity;
+	    			IGridTransmitter<?> transmitter = (IGridTransmitter<?>)tileEntity;
 	    			
 	    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkNeeded()));
-	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Power: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow() ));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getAcceptorSize()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getNeeded()));
+					player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getStored()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlow()));
+	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getCapacity() + "/tick"));
 	                player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     			}
     		}
     		
     		if(player.isSneaking() && Mekanism.debug)
     		{
+    			String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
     			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY + " ----------"));
-    			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + " *Networks: " + EnumColor.DARK_GREY + TransmitterNetworkRegistry.getInstance().toString()));
+    			
+    			for(String s : strings)
+    			{
+    				player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_GREY + s));
+    			}
+    			
     			player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
     		}
     	}
     	
+    	return false;
+    }
+    
+    @Override
+    public boolean canSend(ItemStack itemstack)
+    {
     	return false;
     }
 }

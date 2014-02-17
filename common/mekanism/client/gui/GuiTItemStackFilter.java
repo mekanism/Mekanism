@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -10,7 +10,7 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -34,7 +34,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 	
 	public TItemStackFilter filter = new TItemStackFilter();
 	
-	public String status = EnumColor.DARK_GREEN + "All OK";
+	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		
 	public int ticker;
 	
@@ -103,13 +103,13 @@ public class GuiTItemStackFilter extends GuiMekanism
 					
 					if(isNew)
 					{
-						PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Object3D.get(tileEntity), filter));
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketNewFilter().setParams(Coord4D.get(tileEntity), filter));
 					}
 					else {
-						PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), false, origFilter, filter));
+						PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), false, origFilter, filter));
 					}
 					
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+					PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 				}
 				else if(min > max)
 				{
@@ -135,8 +135,8 @@ public class GuiTItemStackFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Object3D.get(tileEntity), true, origFilter));
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), true, origFilter));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 		}
 	}
 	
@@ -167,7 +167,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		
 		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
-		fontRenderer.drawString(filter.sizeMode ? "On" : "Off", 141, 46, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
 		
 		if(filter.itemType != null)
 		{
@@ -293,7 +293,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Object3D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
 			
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)

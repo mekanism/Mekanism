@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.EnumColor;
-import mekanism.api.Object3D;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.Entity;
@@ -24,7 +24,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 		return itemstack;
 	}
 	
-	public int calculateEnergyCost(Entity entity, Object3D coords)
+	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
 		if(coords == null)
 		{

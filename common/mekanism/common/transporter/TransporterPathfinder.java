@@ -8,13 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.Object3D;
-import mekanism.common.tileentity.TileEntityLogisticalSorter;
-import mekanism.common.tileentity.TileEntityLogisticalTransporter;
+import mekanism.api.Coord4D;
+import mekanism.common.ILogisticalTransporter;
+import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -27,20 +26,20 @@ public final class TransporterPathfinder
 	{
 		public World worldObj;
 		
-		public Object3D start;
+		public Coord4D start;
 		
 		public Set<Destination> destinations = new HashSet<Destination>();
 		
 		public TransporterStack transportStack;
 		
-		public IdlePath(World world, Object3D obj, TransporterStack stack)
+		public IdlePath(World world, Coord4D obj, TransporterStack stack)
 		{
 			worldObj = world;
 			start = obj;
 			transportStack = stack;
 		}
 		
-		public void loop(Object3D pointer, ArrayList<Object3D> currentPath, int dist)
+		public void loop(Coord4D pointer, ArrayList<Coord4D> currentPath, int dist)
 		{
 			if(pointer == null)
 			{
@@ -49,13 +48,7 @@ public final class TransporterPathfinder
 			
 			currentPath.add(pointer);
 			
-			if(pointer.getMetadata(worldObj) == 4)
-			{
-				dist += 1000;
-			}
-			else {
-				dist++;
-			}
+			dist += ((ILogisticalTransporter)pointer.getTileEntity(worldObj)).getCost();
 			
 			boolean found = false;
 			
@@ -63,13 +56,10 @@ public final class TransporterPathfinder
 			{
 				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
 				
-				if(transportStack.canInsertToTransporter(tile) && !currentPath.contains(Object3D.get(tile)))
+				if(transportStack.canInsertToTransporter(tile, side) && !currentPath.contains(Coord4D.get(tile)))
 				{
-					if(TransporterUtils.checkDiversionLogic(pointer.getTileEntity(worldObj), tile, side.ordinal()))
-					{
-						loop(Object3D.get(tile), (ArrayList<Object3D>)currentPath.clone(), dist);
-						found = true;
-					}
+					loop(Coord4D.get(tile), (ArrayList<Coord4D>)currentPath.clone(), dist);
+					found = true;
 				}
 			}
 			
@@ -79,9 +69,9 @@ public final class TransporterPathfinder
 			}
 		}
 		
-		public List<Object3D> find()
+		public List<Coord4D> find()
 		{
-			loop(start, new ArrayList<Object3D>(), 0);
+			loop(start, new ArrayList<Coord4D>(), 0);
 			
 		    Destination farthest = null;
 			
@@ -107,13 +97,13 @@ public final class TransporterPathfinder
 	
 	public static class Destination implements Comparable<Destination>
 	{
-		public List<Object3D> path = new ArrayList<Object3D>();
+		public List<Coord4D> path = new ArrayList<Coord4D>();
 		public double score;
 		public ItemStack rejected;
 		
-		public Destination(ArrayList<Object3D> list, double d, boolean inv, ItemStack rejects)
+		public Destination(ArrayList<Coord4D> list, double d, boolean inv, ItemStack rejects)
 		{
-			path = (List<Object3D>)list.clone();
+			path = (List<Coord4D>)list.clone();
 			
 			if(inv)
 			{
@@ -160,24 +150,24 @@ public final class TransporterPathfinder
 	{
 		public World worldObj;
 		
-		public Set<Object3D> iterated = new HashSet<Object3D>();
+		public Set<Coord4D> iterated = new HashSet<Coord4D>();
 		
-		public Set<Object3D> destsFound = new HashSet<Object3D>();
+		public Set<Coord4D> destsFound = new HashSet<Coord4D>();
 		
-		public Map<Object3D, ItemStack> rejects = new HashMap<Object3D, ItemStack>();
+		public Map<Coord4D, ItemStack> rejects = new HashMap<Coord4D, ItemStack>();
 		
-		public Object3D start;
+		public Coord4D start;
 		
 		public TransporterStack transportStack;
 		
-		public InventoryFinder(World world, Object3D obj, TransporterStack stack)
+		public InventoryFinder(World world, Coord4D obj, TransporterStack stack)
 		{
 			worldObj = world;
 			start = obj;
 			transportStack = stack;
 		}
 		
-		public void loop(Object3D pointer)
+		public void loop(Coord4D pointer)
 		{
 			if(pointer == null)
 			{
@@ -192,30 +182,40 @@ public final class TransporterPathfinder
 				
 				if(tile != null)
 				{
-					if(Object3D.get(tile).equals(transportStack.originalLocation))
+					if(Coord4D.get(tile).equals(transportStack.originalLocation))
 					{
 						continue;
 					}
 					
 					if(tile instanceof IInventory)
 					{
+						if(pointer.getTileEntity(worldObj) instanceof ILogisticalTransporter)
+						{
+							ILogisticalTransporter trans = (ILogisticalTransporter)pointer.getTileEntity(worldObj);
+							
+							if(!trans.canEmitTo(tile, side))
+							{
+								continue;
+							}
+						}
+						
 						ItemStack stack = TransporterManager.getPredictedInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal());
 						
 						if(TransporterManager.didEmit(transportStack.itemStack, stack))
 						{
-							destsFound.add(Object3D.get(tile));
-							rejects.put(Object3D.get(tile), stack);
+							destsFound.add(Coord4D.get(tile));
+							rejects.put(Coord4D.get(tile), stack);
 						}
 					}
-					else if(transportStack.canInsertToTransporter(tile) && !iterated.contains(Object3D.get(tile)))
+					else if(transportStack.canInsertToTransporter(tile, side) && !iterated.contains(Coord4D.get(tile)))
 					{
-						loop(Object3D.get(tile));
+						loop(Coord4D.get(tile));
 					}
 				}
 			}
 		}
 		
-		public Set<Object3D> find()
+		public Set<Coord4D> find()
 		{
 			loop(start);
 			
@@ -223,7 +223,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Destination> getPaths(TileEntityLogisticalTransporter start, TransporterStack stack, int min)
+	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
 		DestChecker checker = new DestChecker()
 		{
@@ -234,13 +234,13 @@ public final class TransporterPathfinder
 			}
 		};
 		
-		InventoryFinder d = new InventoryFinder(start.worldObj, Object3D.get(start), stack);
-		Set<Object3D> destsFound = d.find();
+		InventoryFinder d = new InventoryFinder(start.getTile().worldObj, Coord4D.get(start.getTile()), stack);
+		Set<Coord4D> destsFound = d.find();
 		List<Destination> paths = new ArrayList<Destination>();
 		
-		for(Object3D obj : destsFound)
+		for(Coord4D obj : destsFound)
 		{
-			Pathfinder p = new Pathfinder(checker, start.worldObj, obj, Object3D.get(start), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().worldObj, obj, Coord4D.get(start.getTile()), stack);
 			
 			if(p.getPath().size() >= 2)
 			{
@@ -256,7 +256,7 @@ public final class TransporterPathfinder
 		return paths;
 	}
 	
-	public static Destination getNewBasePath(TileEntityLogisticalTransporter start, TransporterStack stack, int min)
+	public static Destination getNewBasePath(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
 		List<Destination> paths = getPaths(start, stack, min);
 		
@@ -268,11 +268,11 @@ public final class TransporterPathfinder
 		return paths.get(0);
 	}
 	
-	public static Destination getNewRRPath(TileEntityLogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter, int min)
+	public static Destination getNewRRPath(ILogisticalTransporter start, TransporterStack stack, TileEntityLogisticalSorter outputter, int min)
 	{
 		List<Destination> paths = getPaths(start, stack, min);
 		
-		Map<Object3D, Destination> destPaths = new HashMap<Object3D, Destination>();
+		Map<Coord4D, Destination> destPaths = new HashMap<Coord4D, Destination>();
 		
 		for(Destination d : paths)
 		{
@@ -320,15 +320,15 @@ public final class TransporterPathfinder
 	
 	public static class Pathfinder
 	{
-		public final Set<Object3D> openSet, closedSet;
+		public final Set<Coord4D> openSet, closedSet;
 
-		public final HashMap<Object3D, Object3D> navMap;
+		public final HashMap<Coord4D, Coord4D> navMap;
 
-		public final HashMap<Object3D, Double> gScore, fScore;
+		public final HashMap<Coord4D, Double> gScore, fScore;
 
-		public final Object3D start;
+		public final Coord4D start;
 
-		public final Object3D finalNode;
+		public final Coord4D finalNode;
 
 		public final TransporterStack transportStack;
 		
@@ -336,11 +336,11 @@ public final class TransporterPathfinder
 		
 		public double finalScore;
 
-		public ArrayList<Object3D> results;
+		public ArrayList<Coord4D> results;
 
 		private World worldObj;
 
-		public Pathfinder(DestChecker checker, World world, Object3D finishObj, Object3D startObj, TransporterStack stack) 
+		public Pathfinder(DestChecker checker, World world, Coord4D finishObj, Coord4D startObj, TransporterStack stack) 
 		{
 			destChecker = checker;
 			worldObj = world;
@@ -350,20 +350,20 @@ public final class TransporterPathfinder
 			
 			transportStack = stack;
 
-			openSet = new HashSet<Object3D>();
-			closedSet = new HashSet<Object3D>();
+			openSet = new HashSet<Coord4D>();
+			closedSet = new HashSet<Coord4D>();
 
-			navMap = new HashMap<Object3D, Object3D>();
+			navMap = new HashMap<Coord4D, Coord4D>();
 
-			gScore = new HashMap<Object3D, Double>();
-			fScore = new HashMap<Object3D, Double>();
+			gScore = new HashMap<Coord4D, Double>();
+			fScore = new HashMap<Coord4D, Double>();
 
-			results = new ArrayList<Object3D>();
+			results = new ArrayList<Coord4D>();
 			
 			find(start);
 		}
 
-		public boolean find(Object3D start) 
+		public boolean find(Coord4D start) 
 		{
 			openSet.add(start);
 			gScore.put(start, 0D);
@@ -374,9 +374,9 @@ public final class TransporterPathfinder
 			for(int i = 0; i < 6; i++) 
 			{
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
-				Object3D neighbor = start.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
+				Coord4D neighbor = start.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
 
-				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj)) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
+				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
 				{
 					blockCount++;
 				}
@@ -391,10 +391,10 @@ public final class TransporterPathfinder
 
 			while(!openSet.isEmpty()) 
 			{
-				Object3D currentNode = null;
+				Coord4D currentNode = null;
 				double lowestFScore = 0;
 
-				for(Object3D node : openSet)
+				for(Coord4D node : openSet)
 				{
 					if(currentNode == null || fScore.get(node) < lowestFScore) 
 					{
@@ -414,17 +414,14 @@ public final class TransporterPathfinder
 				for(int i = 0; i < 6; i++) 
 				{
 					ForgeDirection direction = ForgeDirection.getOrientation(i);
-					Object3D neighbor = currentNode.getFromSide(direction);
+					Coord4D neighbor = currentNode.getFromSide(direction);
 
-					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj)))
+					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction))
 					{
 						TileEntity tile = neighbor.getTileEntity(worldObj);
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 						
-						if(neighbor.getMetadata(worldObj) == 4)
-						{
-							tentativeG += 999;
-						}
+						tentativeG += ((ILogisticalTransporter)tile).getCost();
 
 						if(closedSet.contains(neighbor)) 
 						{
@@ -435,11 +432,6 @@ public final class TransporterPathfinder
 						}
 						
 						TileEntity currTile = currentNode.getTileEntity(worldObj);
-						
-						if(!TransporterUtils.checkDiversionLogic(currTile, tile, i))
-						{
-							continue;
-						}
 
 						if(!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor)) 
 						{
@@ -460,9 +452,9 @@ public final class TransporterPathfinder
 			return false;
 		}
 
-		private ArrayList<Object3D> reconstructPath(HashMap<Object3D, Object3D> naviMap, Object3D currentNode) 
+		private ArrayList<Coord4D> reconstructPath(HashMap<Coord4D, Coord4D> naviMap, Coord4D currentNode) 
 		{
-			ArrayList<Object3D> path = new ArrayList<Object3D>();
+			ArrayList<Coord4D> path = new ArrayList<Coord4D>();
 
 			path.add(currentNode);
 			
@@ -476,16 +468,16 @@ public final class TransporterPathfinder
 			return path;
 		}
 		
-		public ArrayList<Object3D> getPath()
+		public ArrayList<Coord4D> getPath()
 		{
-			ArrayList<Object3D> path = new ArrayList<Object3D>();
+			ArrayList<Coord4D> path = new ArrayList<Coord4D>();
 			path.add(finalNode);
-			path.addAll((ArrayList<Object3D>)results.clone());
+			path.addAll((ArrayList<Coord4D>)results.clone());
 			
 			return path;
 		}
 
-		private double getEstimate(Object3D start, Object3D target2) 
+		private double getEstimate(Coord4D start, Coord4D target2) 
 		{
 			return start.distanceTo(target2);
 		}
@@ -499,7 +491,7 @@ public final class TransporterPathfinder
 		}
 	}
 	
-	public static List<Object3D> getIdlePath(TileEntityLogisticalTransporter start, TransporterStack stack)
+	public static List<Coord4D> getIdlePath(ILogisticalTransporter start, TransporterStack stack)
 	{
 		if(stack.homeLocation != null)
 		{
@@ -512,8 +504,8 @@ public final class TransporterPathfinder
 				}
 			};
 			
-			Pathfinder p = new Pathfinder(checker, start.worldObj, stack.homeLocation, Object3D.get(start), stack);
-			List<Object3D> path = p.getPath();
+			Pathfinder p = new Pathfinder(checker, start.getTile().worldObj, stack.homeLocation, Coord4D.get(start.getTile()), stack);
+			List<Coord4D> path = p.getPath();
 			
 			if(path.size() >= 2)
 			{
@@ -521,15 +513,15 @@ public final class TransporterPathfinder
 				return path;
 			}
 			else {
-				if(stack.homeLocation.getTileEntity(start.worldObj) == null)
+				if(stack.homeLocation.getTileEntity(start.getTile().worldObj) == null)
 				{
 					stack.homeLocation = null;
 				}
 			}
 		}
 		
-		IdlePath d = new IdlePath(start.worldObj, Object3D.get(start), stack);
-		List<Object3D> path = d.find();
+		IdlePath d = new IdlePath(start.getTile().worldObj, Coord4D.get(start.getTile()), stack);
+		List<Coord4D> path = d.find();
 		stack.pathType = Path.NONE;
 		
 		if(path == null)

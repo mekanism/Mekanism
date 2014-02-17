@@ -98,14 +98,14 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	/**
 	 * Constructor for a new BasicSink delegate.
 	 * 
-	 * @param parent TileEntity represented by this energy sink.
-	 * @param capacity Maximum amount of eu to store.
-	 * @param tier IC2 tier, 1=LV, 2=MV, ...
+	 * @param parent1 TileEntity represented by this energy sink.
+	 * @param capacity1 Maximum amount of eu to store.
+	 * @param tier1 IC2 tier, 1=LV, 2=MV, ...
 	 */
-	public BasicSink(TileEntity parent, int capacity, int tier) {
-		this.parent = parent;
-		this.capacity = capacity;
-		this.tier = tier;
+	public BasicSink(TileEntity parent1, int capacity1, int tier1) {
+		this.parent = parent1;
+		this.capacity = capacity1;
+		this.tier = tier1;
 	}
 
 	// in-world te forwards	>>
@@ -212,10 +212,10 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	/**
 	 * Set the maximum amount of energy this sink can hold in its buffer.
 	 * 
-	 * @param capacity Capacity in EU.
+	 * @param capacity1 Capacity in EU.
 	 */
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
+	public void setCapacity(int capacity1) {
+		this.capacity = capacity1;
 	}
 
 	/**
@@ -230,10 +230,10 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	/**
 	 * Set the IC2 energy tier for this sink.
 	 * 
-	 * @param tier IC2 Tier.
+	 * @param tier1 IC2 Tier.
 	 */
-	public void setTier(int tier) {
-		this.tier = tier;
+	public void setTier(int tier1) {
+		this.tier = tier1;
 	}
 
 	/**
@@ -278,9 +278,8 @@ public class BasicSink extends TileEntity implements IEnergySink {
 			energyStored -= amount;
 
 			return true;
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	/**

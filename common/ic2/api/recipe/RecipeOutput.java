@@ -7,13 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public final class RecipeOutput {
-	public RecipeOutput(NBTTagCompound metadata, List<ItemStack> items) {
-		this.metadata = metadata;
-		this.items = items;
+	public RecipeOutput(NBTTagCompound metadata1, List<ItemStack> items1) {
+		this.metadata = metadata1;
+		this.items = items1;
 	}
 
-	public RecipeOutput(NBTTagCompound metadata, ItemStack... items) {
-		this(metadata, Arrays.asList(items));
+	public RecipeOutput(NBTTagCompound metadata1, ItemStack... items1) {
+		this(metadata1, Arrays.asList(items1));
 	}
 
 	public final List<ItemStack> items;

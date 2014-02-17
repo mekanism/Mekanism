@@ -1,0 +1,120 @@
+defaultTasks 'fullBuild'
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+repositories {
+        flatDir name: 'localLibs', dirs: 'libs'
+}
+
+dependencies {
+        compile ':codechickenlib:1.0.0.49'
+        compile ':codechickencore:0.9.0.7'
+        compile ':nei:1.6.1.8'
+        compile ':forgemultipart:1.0.0.228'
+}
+
+version = "6.0.0." + "$System.env.BUILD_NUMBER"
+archivesBaseName = "MekanismAll"
+libsDirName = "../output"
+distsDirName = "../output"
+
+minecraft {
+	version = "1.6.4-9.11.1.964"
+}
+
+processResources
+{
+    dependsOn 'moveRes'
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod/info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+task moveSrc(type: Sync) {
+    from 'common'
+    into 'src/main/java'
+}
+
+compileJava.dependsOn moveSrc
+
+task moveRes(type: Sync) {
+    from 'resources'
+    into 'src/main/resources'
+    exclude '**/*.blend*'
+}
+
+task coreJar(type: Jar) {
+    dependsOn 'reobf'
+    baseName = 'Mekanism'
+
+    manifest {
+        attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
+
+    from 'etc/core'
+    from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
+        exclude 'mekanism/tools/**', 'mekanism/generators/**'
+    }
+}
+
+task toolsJar(type: Jar) {
+    dependsOn 'reobf'
+    baseName = 'MekanismTools'
+    from 'etc/tools'
+    from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
+        include 'mekanism/tools/**'
+    }
+}
+
+task generatorsJar(type: Jar) {
+    dependsOn 'reobf'
+    baseName = 'MekanismGenerators'
+    from 'etc/generators'
+    from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
+        include 'mekanism/generators/**'
+    }
+}
+
+task MDKZip(type: Zip) {
+    baseName = 'MDK'
+    from 'common/'
+    include 'mekanism/api/**'
+}
+
+task releaseJars(type: Copy) {
+    from coreJar
+    from toolsJar
+    from generatorsJar
+    from MDKZip
+    rename '-(.*)jar', '.jar'
+    rename '-(.*)zip', '.zip'
+    into '.'
+}
+
+task fullBuild(type: Delete) {
+    dependsOn 'releaseJars'
+    delete reobf
+}
