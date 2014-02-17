@@ -25,7 +25,7 @@ dependencies {
         compile ':forgemultipart:1.0.0.228'
 }
 
-version = "6.0.0." + "$System.env.BUILD_NUMBER"
+version = "6.0.1." + "$System.env.BUILD_NUMBER"
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
