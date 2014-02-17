@@ -764,7 +764,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(false);
 		}
 		
-		data.add(oresToMine.cardinality());
+		if(searcher.state == State.SEARCHING)
+		{
+			data.add(searcher.found);
+		}
+		else {
+			data.add(oresToMine.cardinality());
+		}
+		
 		data.add(controlType.ordinal());
 		data.add(inverse);
 		
@@ -786,7 +793,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		data.add(isActive);
 		data.add(running);
-		data.add(oresToMine.cardinality());
+
+		if(searcher.state == State.SEARCHING)
+		{
+			data.add(searcher.found);
+		}
+		else {
+			data.add(oresToMine.cardinality());
+		}
 		
 		return data;
 	}
@@ -818,7 +832,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(false);
 		}
 		
-		data.add(oresToMine.cardinality());
+		if(searcher.state == State.SEARCHING)
+		{
+			data.add(searcher.found);
+		}
+		else {
+			data.add(oresToMine.cardinality());
+		}
+		
 		data.add(controlType.ordinal());
 		data.add(inverse);
 		

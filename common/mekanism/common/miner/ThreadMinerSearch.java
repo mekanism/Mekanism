@@ -1,7 +1,6 @@
 package mekanism.common.miner;
 
 import java.util.BitSet;
-import java.util.Collections;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
@@ -15,6 +14,10 @@ public class ThreadMinerSearch extends Thread
 	public TileEntityDigitalMiner tileEntity;
 	
 	public State state = State.IDLE;
+	
+	public BitSet oresToMine = new BitSet();
+	
+	public int found = 0;
 	
 	public ThreadMinerSearch(TileEntityDigitalMiner tile)
 	{
@@ -35,8 +38,6 @@ public class ThreadMinerSearch extends Thread
 		Coord4D coord = tileEntity.getStartingCoord();
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
-		
-		System.out.println(diameter + " " + size);
 		
 		for(int i = 0; i < size; i++)
 		{
@@ -83,12 +84,14 @@ public class ThreadMinerSearch extends Thread
 				
 				if(tileEntity.inverse ? !hasFilter : hasFilter)
 				{
-					tileEntity.oresToMine.set(i);
+					oresToMine.set(i);
+					found++;
 				}
 			}
 		}
 		
 		state = State.FINISHED;
+		tileEntity.oresToMine = oresToMine;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 	
