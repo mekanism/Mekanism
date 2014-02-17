@@ -26,6 +26,7 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.OreDictCache;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -485,30 +486,7 @@ public final class MekanismUtils
      */
     public static List<String> getOreDictName(ItemStack check)
     {
-    	List<Integer> idsFound = new ArrayList<Integer>();
-        HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
-        oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)oreStacks.clone();
-        
-        for(Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
-        {
-        	for(ItemStack stack : entry.getValue())
-        	{
-        		if(StackUtils.equalsWildcard(stack, check))
-        		{
-        			idsFound.add(entry.getKey());
-        			break;
-        		}
-        	}
-        }
-        
-        List<String> ret = new ArrayList<String>();
-        
-        for(Integer id : idsFound)
-        {
-        	ret.add(OreDictionary.getOreName(id));
-        }
-        
-        return ret;
+    	return OreDictCache.getOreDictName(check);
     }
     
     /**

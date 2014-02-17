@@ -2,10 +2,8 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
+import mekanism.api.ItemInfo;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPI.BlockInfo;
-import mekanism.common.IModule;
-import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -45,7 +43,7 @@ public class PacketBoxBlacklist implements IMekanismPacket
 	{
 		dataStream.writeInt(MekanismAPI.getBoxIgnore().size());
 		
-		for(BlockInfo info : MekanismAPI.getBoxIgnore())
+		for(ItemInfo info : MekanismAPI.getBoxIgnore())
 		{
 			dataStream.writeInt(info.id);
 			dataStream.writeInt(info.meta);
