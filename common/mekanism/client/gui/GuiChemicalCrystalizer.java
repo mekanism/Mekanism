@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -24,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
@@ -52,6 +50,7 @@ public class GuiChemicalCrystalizer extends GuiMekanism
         
         guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png")));
         guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png"), 160, 23));
+        guiElements.add(new GuiConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png")));
         guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
         	@Override
         	public List<String> getInfo()

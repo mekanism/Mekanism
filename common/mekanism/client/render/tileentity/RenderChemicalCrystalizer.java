@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelChemicalCrystalizer;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityChemicalCrystalizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -24,7 +25,7 @@ public class RenderChemicalCrystalizer extends TileEntitySpecialRenderer
 	}
 	
 	private void renderAModelAt(TileEntityChemicalCrystalizer tileEntity, double x, double y, double z, float partialTick)
-	{
+	{		
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystalizer.png"));
@@ -50,5 +51,7 @@ public class RenderChemicalCrystalizer extends TileEntitySpecialRenderer
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		model.renderWithRotation(0.0625F, tileEntity.spin);
 		GL11.glPopMatrix();
+		
+		MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
 	}
 }

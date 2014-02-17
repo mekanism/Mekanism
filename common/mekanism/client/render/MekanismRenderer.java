@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -49,6 +50,8 @@ public class MekanismRenderer
 	private static float lightmapLastX;
     private static float lightmapLastY;
 	private static boolean optifineBreak = false;
+	
+	public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
 	
 	public static void init()
 	{

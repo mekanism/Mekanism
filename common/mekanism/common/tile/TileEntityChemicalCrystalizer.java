@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -13,36 +14,39 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
+import mekanism.common.IEjector;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound
-{
-	public GasTank inputTank = new GasTank(MAX_GAS);
-	
+public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IInvConfiguration
+{	
 	public static final int MAX_GAS = 10000;
 	public static final int MAX_FLUID = 10000;
+	
+	public byte[] sideConfig = new byte[] {0, 3, 0, 0, 1, 2};
+	
+	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
+	
+	public GasTank inputTank = new GasTank(MAX_GAS);
 	
 	public static int WATER_USAGE = 5;
 	
@@ -69,10 +73,19 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
+	public TileComponentEjector ejectorComponent;
+	
 	public TileEntityChemicalCrystalizer()
 	{
 		super("ChemicalCrystalizer", MachineType.CHEMICAL_CRYSTALIZER.baseEnergy);
+		
+		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {0}));
+		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {1}));
+		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {2}));
+		
 		inventory = new ItemStack[3];
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(1));
 	}
 	
 	@Override
@@ -432,5 +445,29 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 	public float getVolumeMultiplier()
 	{
 		return 1;
+	}
+
+	@Override
+	public ArrayList<SideData> getSideData()
+	{
+		return sideOutputs;
+	}
+	
+	@Override
+	public byte[] getConfiguration()
+	{
+		return sideConfig;
+	}
+	
+	@Override
+	public int getOrientation()
+	{
+		return facing;
+	}
+
+	@Override
+	public IEjector getEjector()
+	{
+		return ejectorComponent;
 	}
 }

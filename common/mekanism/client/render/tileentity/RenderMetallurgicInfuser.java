@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelMetallurgicInfuser;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -24,7 +25,7 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer
 	}
 	
 	private void renderAModelAt(TileEntityMetallurgicInfuser tileEntity, double x, double y, double z, float partialTick)
-	{
+	{		
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		
@@ -41,5 +42,7 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		model.render(0.0625F);
 		GL11.glPopMatrix();
+		
+		MekanismRenderer.machineRenderer.renderAModelAt(tileEntity, x, y, z, partialTick);
 	}
 }

@@ -2,18 +2,17 @@ package mekanism.client.render.tileentity;
 
 import java.util.HashMap;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,6 +35,11 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	
 	private HashMap<ForgeDirection, HashMap<EnumColor, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<EnumColor, DisplayInteger>>();
 	
+	public RenderConfigurableMachine()
+	{
+		tileEntityRenderer = TileEntityRenderer.instance;
+	}
+	
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
@@ -44,6 +48,8 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 	public void renderAModelAt(IInvConfiguration configurable, double x, double y, double z, float partialTick)
 	{
+		GL11.glPushMatrix();
+		
 		TileEntity tileEntity = (TileEntity)configurable; 
 		EntityPlayer player = mc.thePlayer;
 		World world = mc.thePlayer.worldObj;
@@ -75,6 +81,8 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				pop();
 			}
 		}
+		
+		GL11.glPopMatrix();
 	}
 	
 	private void pop()
