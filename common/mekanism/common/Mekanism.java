@@ -1224,6 +1224,7 @@ public class Mekanism
 		donators.add("SoldierW518");
 		donators.add("JamesNorth");
 		donators.add("Ozurian");
+		donators.add("Not_Steve");
 		
 		//Load proxy
 		proxy.registerRenderInformation();
