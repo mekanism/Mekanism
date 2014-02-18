@@ -1,8 +1,11 @@
 package mekanism.common.miner;
 
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ItemInfo;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -16,6 +19,8 @@ public class ThreadMinerSearch extends Thread
 	public State state = State.IDLE;
 	
 	public BitSet oresToMine = new BitSet();
+	
+	public Map<ItemInfo, Boolean> acceptedItems = new HashMap<ItemInfo, Boolean>();
 	
 	public int found = 0;
 	
@@ -70,24 +75,36 @@ public class ThreadMinerSearch extends Thread
 			
 			if(blockID != 0 && blockID != Block.bedrock.blockID)
 			{
-				ItemStack stack = new ItemStack(blockID, 1, meta);
+				ItemInfo info = new ItemInfo(blockID, meta);
+				boolean canFilter = false;
 				
-				if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
+				if(acceptedItems.containsKey(info))
 				{
-					continue;
+					canFilter = acceptedItems.get(info);
 				}
-				
-				boolean hasFilter = false;
-				
-				for(MinerFilter filter : tileEntity.filters)
-				{
-					if(filter.canFilter(stack))
+				else {
+					ItemStack stack = new ItemStack(blockID, 1, meta);
+					
+					if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
 					{
-						hasFilter = true;
+						continue;
 					}
+					
+					boolean hasFilter = false;
+					
+					for(MinerFilter filter : tileEntity.filters)
+					{
+						if(filter.canFilter(stack))
+						{
+							hasFilter = true;
+						}
+					}
+					
+					canFilter = tileEntity.inverse ? !hasFilter : hasFilter;
+					acceptedItems.put(info, canFilter);
 				}
 				
-				if(tileEntity.inverse ? !hasFilter : hasFilter)
+				if(canFilter)
 				{
 					oresToMine.set(i);
 					found++;
