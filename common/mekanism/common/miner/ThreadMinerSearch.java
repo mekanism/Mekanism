@@ -55,6 +55,11 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 			
+			if(!tileEntity.worldObj.getChunkProvider().chunkExists(x >> 4, z >> 4))
+			{
+				continue;
+			}
+			
 			if(tileEntity.worldObj.getBlockTileEntity(x, y, z) instanceof IBoundingBlock)
 			{
 				continue;
