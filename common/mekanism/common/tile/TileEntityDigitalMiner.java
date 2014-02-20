@@ -138,7 +138,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			ChargeUtils.discharge(27, this);
 			
-			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.cardinality() > 0)
+			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.cardinality() > 0 && inventory[26] == null)
 			{
 				setActive(true);
 				
@@ -154,8 +154,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					Set<Integer> toRemove = new HashSet<Integer>();
 					
 					int next = 0;
+					int total = oresToMine.size();
 					
-					while(true)
+					while(next < total)
 					{
 						int index = oresToMine.nextSetBit(next);
 						Coord4D coord = getCoordFromIndex(index);
@@ -206,9 +207,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, id + (meta << 12));
 							
 							delay = getDelay();
-							
-							break;
 						}
+						break;
 					}
 					
 					for(Integer i : toRemove)
