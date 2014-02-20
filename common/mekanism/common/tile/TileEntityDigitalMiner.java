@@ -167,7 +167,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						
 						if(!coord.exists(worldObj))
 						{
-							next = index;
+							next = index + 1;
 							continue;
 						}
 						
@@ -177,7 +177,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						if(id == 0)
 						{
 							toRemove.add(index);
-							next = index;
+							next = index + 1;
 							continue;
 						}
 						
@@ -195,7 +195,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						if(inverse ? hasFilter : !hasFilter)
 						{
 							toRemove.add(index);
-							next = index;
+							next = index + 1;
 							continue;
 						}
 						
