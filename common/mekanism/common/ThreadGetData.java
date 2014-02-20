@@ -20,11 +20,7 @@ public class ThreadGetData extends Thread
 	{
 		Mekanism.latestVersionNumber = MekanismUtils.getLatestVersion();
 		Mekanism.recentNews = MekanismUtils.getRecentNews();
-		System.out.println("[Mekanism] Successfully retrieved data from server.");
-		try {
-			finalize();
-		} catch(Throwable t) {
-			System.out.println("[Mekanism] Unable to finalize server data.");
-		}
+		
+		MekanismUtils.updateDonators();
 	}
 }

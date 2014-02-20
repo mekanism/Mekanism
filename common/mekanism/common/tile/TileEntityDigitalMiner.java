@@ -160,6 +160,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						int index = oresToMine.nextSetBit(next);
 						Coord4D coord = getCoordFromIndex(index);
 						
+						if(index == -1)
+						{
+							break;
+						}
+						
 						if(!coord.exists(worldObj))
 						{
 							next = index;
@@ -206,9 +211,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, id + (meta << 12));
 							
 							delay = getDelay();
-							
-							break;
 						}
+						
+						break;
 					}
 					
 					for(Integer i : toRemove)

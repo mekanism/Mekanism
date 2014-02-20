@@ -62,9 +62,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	
 	/** Type type of gas this block is dumping. */
 	public boolean dumpRight = false;
-	
-	/** Whether to dump excess gas when a tank is full */
-	public boolean dumpExcess = true; // default to true until gui elements added
 
 	public TileEntityElectrolyticSeparator()
 	{
@@ -201,12 +198,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 	
 	public boolean canFill(ChemicalPair gases)
-	{
-		if(dumpExcess)
-		{
-			return leftTank.canReceiveType(gases.leftGas.getGas()) && rightTank.canReceiveType(gases.rightGas.getGas());
-		}
-					
+	{	
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
 	}

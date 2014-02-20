@@ -9,10 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -26,9 +24,9 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.OreDictCache;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Teleporter;
@@ -143,7 +141,7 @@ public final class MekanismUtils
 	 */
 	public static String getLatestVersion()
 	{
-		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt").split(":");
+		String[] text = merge(getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
 		if(!text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("http")) return text[0];
 		return "null";
 	}
@@ -154,9 +152,20 @@ public final class MekanismUtils
 	 */
 	public static String getRecentNews()
 	{
-		String[] text = getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt").split(":");
+		String[] text = merge(getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
 		if(text.length > 1 && !text[1].contains("UTF-8") && !text[1].contains("HTML") && !text[1].contains("http")) return text[1];
 		return "null";
+	}
+	
+	public static void updateDonators()
+	{
+		Mekanism.donators.clear();
+		List<String> text = getHTML("http://dl.dropbox.com/u/90411166/Donators/Mekanism.txt");
+		
+		for(String s : text)
+		{
+			Mekanism.donators.add(s);
+		}
 	}
 	
 	/**
@@ -164,34 +173,45 @@ public final class MekanismUtils
 	 * @param urlToRead - URL to read from.
 	 * @return HTML text from the url.
 	 */
-	public static String getHTML(String urlToRead) 
+	public static List<String> getHTML(String urlToRead) 
 	{
-		StringBuilder sb = new StringBuilder();
 		URL url;
 		HttpURLConnection conn;
 		BufferedReader rd;
 		String line;
-		String result = "";
+		List<String> result = new ArrayList<String>();
 		
 		try {
 			url = new URL(urlToRead);
-			conn = (HttpURLConnection) url.openConnection();
+			conn = (HttpURLConnection)url.openConnection();
 			conn.setRequestMethod("GET");
 			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			
 			while((line = rd.readLine()) != null) 
 			{
-				result += line;
-				sb.append(line);
+				result.add(line.trim());
 			}
 			
 			rd.close();
-		} catch (Exception e) {
-			result = "null";
+		} catch(Exception e) {
+			result.clear();
+			result.add("null");
 			System.err.println("[Mekanism] An error occured while connecting to URL '" + urlToRead + ".'");
 		}
 		
 		return result;
+	}
+	
+	public static String merge(List<String> text)
+	{
+		StringBuilder builder = new StringBuilder();
+		
+		for(String s : text)
+		{
+			builder.append(s);
+		}
+		
+		return builder.toString();
 	}
 	
 	/**

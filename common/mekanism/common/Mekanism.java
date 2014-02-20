@@ -1215,17 +1215,6 @@ public class Mekanism
 		PacketHandler.registerPacket(PacketConfigSync.class);
 		PacketHandler.registerPacket(PacketBoxBlacklist.class);
 		
-		//Donators
-		donators.add("mrgreaper"); 
-		donators.add("ejmiv89");
-		donators.add("Greylocke");
-		donators.add("darkphan");
-		donators.add("Nephatrine");
-		donators.add("SoldierW518");
-		donators.add("JamesNorth");
-		donators.add("Ozurian");
-		donators.add("Not_Steve");
-		
 		//Load proxy
 		proxy.registerRenderInformation();
 		proxy.loadUtilities();

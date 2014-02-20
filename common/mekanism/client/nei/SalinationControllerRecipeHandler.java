@@ -35,7 +35,8 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	public static int xOffset = 5;
 	public static int yOffset = 12;
 	
-	static {
+	static 
+	{
 		if(recipes.isEmpty())
 		{
 			recipes.put(new FluidStack(FluidRegistry.WATER, 1), new FluidStack(FluidRegistry.getFluid("brine"), 1));
