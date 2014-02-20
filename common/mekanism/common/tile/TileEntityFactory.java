@@ -227,7 +227,10 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 				
 				if(!canOperate(getInputSlot(process), getOutputSlot(process)))
 				{
-					progress[process] = 0;
+					if(!RecipeType.values()[recipeType].usesFuel() || !RecipeType.values()[recipeType].hasRecipe(inventory[getInputSlot(process)]))
+					{
+						progress[process] = 0;
+					}
 				}
 			}
 			

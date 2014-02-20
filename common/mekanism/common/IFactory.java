@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import java.util.Map;
+
 import mekanism.api.AdvancedInput;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -8,6 +10,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.ForgeDirection;
@@ -132,6 +135,31 @@ public interface IFactory
 			
 			return false;
 		}
+		
+	    public boolean hasRecipe(ItemStack itemStack)
+	    {
+	    	if(itemStack == null)
+	    	{
+	    		return false;
+	    	}
+	    	
+	    	for(Object obj : recipe.get().entrySet())
+	    	{
+	    		if(((Map.Entry)obj).getKey() instanceof AdvancedInput)
+				{
+	    			Map.Entry entry = (Map.Entry)obj;
+	    			
+					ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
+					
+					if(StackUtils.equalsWildcard(stack, itemStack))
+					{
+						return true;
+					}
+				}
+	    	}
+	    	
+	    	return false;
+	    }
 		
 		public TileEntityAdvancedElectricMachine getTile()
 		{
