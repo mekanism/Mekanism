@@ -167,6 +167,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						
 						if(!coord.exists(worldObj))
 						{
+							toRemove.add(index);
 							next = index + 1;
 							continue;
 						}
