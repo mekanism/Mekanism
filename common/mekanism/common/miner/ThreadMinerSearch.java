@@ -43,6 +43,7 @@ public class ThreadMinerSearch extends Thread
 		Coord4D coord = tileEntity.getStartingCoord();
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
+		ItemInfo info = new ItemInfo(0,0);
 		
 		for(int i = 0; i < size; i++)
 		{
@@ -70,12 +71,11 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 			
-			int blockID = tileEntity.worldObj.getBlockId(x, y, z);
-			int meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
+			info.id = tileEntity.worldObj.getBlockId(x, y, z);
+			info.meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
 			
-			if(blockID != 0 && blockID != Block.bedrock.blockID)
+			if(info.id != 0 && info.id != Block.bedrock.blockID)
 			{
-				ItemInfo info = new ItemInfo(blockID, meta);
 				boolean canFilter = false;
 				
 				if(acceptedItems.containsKey(info))
@@ -83,7 +83,7 @@ public class ThreadMinerSearch extends Thread
 					canFilter = acceptedItems.get(info);
 				}
 				else {
-					ItemStack stack = new ItemStack(blockID, 1, meta);
+					ItemStack stack = new ItemStack(info.id, 1, info.meta);
 					
 					if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
 					{
