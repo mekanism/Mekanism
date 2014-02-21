@@ -31,6 +31,8 @@ item.CompressedRedstone.name=Komprimiertes Redstone
 item.Sawdust.name=Sägemehl
 item.Salt.name=Salz
 item.BrineBucket.name=Eimer mit Salzwasser
+item.FreeRunners.name=Freiläufer
+item.ArmoredJetpack.name=Panzer-Jetpack
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -150,7 +152,7 @@ item.silverShard.name=Silbersplitter
 item.obsidianShard.name=Obsidiansplitter
 item.leadShard.name=Bleisplitter
 
-/Crystals
+//Crystals
 item.ironCrystal.name=Eisenkristall
 item.goldCrystal.name=Goldkristall
 item.osmiumCrystal.name=Osmiumkristall
@@ -263,9 +265,10 @@ gui.state=Status
 gui.on=An
 gui.off=Aus
 gui.filters=Filter
+gui.idle=Bereit
 
 gui.chemicalInfuser.short=C. Infundierer
-gui.chemicalCombiner.short=C. Kombinierer
+gui.chemicalDissolutionChamber.short=C. Auflösungsk.
 
 gui.dictionary.noKey=Kein Key.
 gui.dictionary.key=Key
@@ -337,7 +340,6 @@ gui.digitalMiner.pull=Anziehen
 gui.digitalMiner.silk=Behutsam
 gui.digitalMiner.toMine=Zum Abbauen
 gui.digitalMiner.running=Arbeitend
-gui.digitalMiner.idle=Bereit
 gui.digitalMiner.inverse=Inversionsmodus
 
 //Item and block tooltip text
@@ -380,6 +382,9 @@ tooltip.RotaryCondensentrator=Eine Maschine, die fähig ist, Gase in ihre !nflü
 tooltip.ChemicalInjectionChamber=Eine Elite-Maschine, fähig, Erze in !nvier Splitter zu verarbeiten, was als erste Stufe !neiner 400%igen Erzverarbeitung dient.
 tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nutzt, !num ein bestimmtes Gas in zwei unterschiedliche Gase aufzuteilen.
 tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere !nhölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
+tooltip.ChemicalDissolutionChamber=Eine ultimative Maschine, genutzt, !num jegliche Unreinheiten in einem Erz aufzulösen, !nwas unverarbeiteten Schlamm zurücklässt.
+tooltip.ChemicalWasher=Eine ultimative Maschine, die unverarbeiteten Schlamm !nsäubert und ihn für die Kristallisierung vorbereitet.
+tooltip.ChemicalCrystalizer=Eine ultimative Maschine, genutzt, um!n Purifizierten Erzschlamm zu Erzkristallen zu verarbeiten.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
 tooltip.CopperOre=Ein häufiges, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
