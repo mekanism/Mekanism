@@ -33,7 +33,7 @@ public class ThreadTankSparkle extends Thread
 		try {
 			if(Mekanism.dynamicTankEasterEgg)
 			{
-				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(3)+1) + ".ogg", pointer.worldObj, Coord4D.get(pointer));
+				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(8)+1) + ".ogg", pointer.worldObj, Coord4D.get(pointer));
 			}
 			
 			loop(pointer);
