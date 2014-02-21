@@ -11,6 +11,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.MekanismClient;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Mekanism;
@@ -187,7 +188,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 1)
+		if(pass == 1 && MekanismClient.fancyUniversalCableRender)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}
