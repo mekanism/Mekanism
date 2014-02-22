@@ -550,13 +550,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				teleport();
 				return new Object[] {"Attempted to teleport."};
 			case 5:
-				if(!(arguments[0] instanceof Integer) || !(arguments[1] instanceof Integer))
+				if(!(arguments[0] instanceof Double) || !(arguments[1] instanceof Double))
 				{
 					return new Object[] {"Invalid parameters."};
 				}
 				
-				int digit = (Integer)arguments[0];
-				int newDigit = (Integer)arguments[1];
+				int digit = ((Double)arguments[0]).intValue();
+				int newDigit = ((Double)arguments[1]).intValue();
 				
 				switch(digit)
 				{
