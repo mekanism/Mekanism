@@ -29,4 +29,10 @@ public class TileEntityCardboardBox extends TileEntity
 			nbtTags.setCompoundTag("storedData", storedData.write(new NBTTagCompound()));
 		}
 	}
+	
+	@Override
+	public boolean canUpdate()
+	{
+		return false;
+	}
 }

@@ -259,7 +259,7 @@ public class Mekanism
 	public static Item Salt;
 	public static Item BrineBucket;
 	public static Item FreeRunners;
-	public static Item ArmoredJetpack;
+	public static ItemJetpack ArmoredJetpack;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -570,7 +570,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FreeRunners), new Object[] {
 			"C C", "A A", "T T", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('T'), EnergyTablet.getUnchargedItem()
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ArmoredJetpack), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(ArmoredJetpack.getEmptyItem(), new Object[] {
 			"D D", "BSB", " J ", Character.valueOf('D'), "dustDiamond", Character.valueOf('B'), "ingotBronze", Character.valueOf('S'), "blockSteel", Character.valueOf('J'), Jetpack.getEmptyItem()
 		}));
 
