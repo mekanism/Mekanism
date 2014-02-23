@@ -107,6 +107,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
 			}
 			
+			boolean changed = false;
+			
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
@@ -135,8 +137,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 			else {
 				if(prevEnergy >= getEnergy())
 				{
+					changed = true;
 					setActive(false);
 				}
+			}
+			
+			if(changed && !canOperate())
+			{
+				operatingTicks = 0;
 			}
 			
 			prevEnergy = getEnergy();
