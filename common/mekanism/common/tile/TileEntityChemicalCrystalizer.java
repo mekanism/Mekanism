@@ -226,6 +226,12 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 		
 		isActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
+		
+		for(int i = 0; i < 6; i++)
+		{
+			sideConfig[i] = dataStream.readByte();
+		}
+		
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		
 		if(dataStream.readBoolean())
@@ -247,6 +253,7 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 		
 		data.add(isActive);
 		data.add(operatingTicks);
+		data.add(sideConfig);
 		data.add(controlType.ordinal());
 		
 		if(inputTank.getGas() != null)
@@ -272,6 +279,14 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
         controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
         
         inputTank.read(nbtTags.getCompoundTag("rightTank"));
+        
+        if(nbtTags.hasKey("sideDataStored"))
+        {
+        	for(int i = 0; i < 6; i++)
+        	{
+        		sideConfig[i] = nbtTags.getByte("config"+i);
+        	}
+        }
     }
 
 	@Override
@@ -284,6 +299,13 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
         nbtTags.setInteger("controlType", controlType.ordinal());
         
       	nbtTags.setCompoundTag("rightTank", inputTank.write(new NBTTagCompound()));
+      	
+        nbtTags.setBoolean("sideDataStored", true);
+      	
+        for(int i = 0; i < 6; i++)
+        {
+        	nbtTags.setByte("config"+i, sideConfig[i]);
+        }
     }
 	
 	@Override
