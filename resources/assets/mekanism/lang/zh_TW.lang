@@ -81,7 +81,7 @@ tile.MachineBlock.DigitalMiner.name=數位採礦機
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=旋轉式氣體液體轉換機
-tile.MachineBlock2.OxidationChamber.name=化學氧化機
+tile.MachineBlock2.ChemicalOxidizer.name=化學氧化機
 tile.MachineBlock2.ChemicalInfuser.name=化學灌注機
 tile.MachineBlock2.ChemicalCombiner.name=化學融合機
 tile.MachineBlock2.ChemicalInjectionChamber.name=化學注入機
