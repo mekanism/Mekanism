@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeHooks;
 
 public class ItemMekanismPaxel extends ItemMekanismTool
 {
@@ -16,6 +17,17 @@ public class ItemMekanismPaxel extends ItemMekanismTool
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
     	return block.blockID != Block.bedrock.blockID ? efficiencyOnProperMaterial : 1.0F;
+    }
+    
+    @Override
+    public float getStrVsBlock(ItemStack stack, Block block, int meta) 
+    {
+        if(ForgeHooks.isToolEffective(stack, block, meta))
+        {
+            return efficiencyOnProperMaterial;
+        }
+        
+        return getStrVsBlock(stack, block);
     }
 
     @Override

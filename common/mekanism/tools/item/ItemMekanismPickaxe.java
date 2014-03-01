@@ -58,7 +58,7 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
     @Override
     public float getStrVsBlock(ItemStack itemstack, Block block)
     {
-        if(block != null && (block.blockMaterial == Material.iron || block.blockMaterial == Material.rock))
+        if(block != null && (block.blockMaterial == Material.iron || block.blockMaterial == Material.anvil || block.blockMaterial == Material.rock))
         {
             return efficiencyOnProperMaterial;
         }
