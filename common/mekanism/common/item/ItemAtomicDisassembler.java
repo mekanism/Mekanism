@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		super(id, 1000000, 120);
 	}
+	
+	@Override
+	public void registerIcons(IconRegister register) {}
 	
     @Override
     public boolean canHarvestBlock(Block block)
