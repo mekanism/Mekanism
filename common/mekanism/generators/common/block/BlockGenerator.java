@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.*;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
@@ -25,6 +26,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 import java.util.List;
 import java.util.Random;
@@ -493,6 +495,19 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			}
 		}
 	}
+	
+    @Override
+    public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+    {
+    	int metadata = world.getBlockMetadata(x, y, z);
+    	
+    	if(metadata != GeneratorType.SOLAR_GENERATOR.meta && metadata != GeneratorType.ADVANCED_SOLAR_GENERATOR.meta && metadata != GeneratorType.WIND_TURBINE.meta)
+    	{
+    		return true;
+    	}
+    	
+    	return false;
+    }
 	
 	public static enum GeneratorType
 	{
