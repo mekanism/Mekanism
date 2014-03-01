@@ -109,7 +109,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 			
 			boolean changed = false;
 			
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate() && getEnergy() >= ENERGY_USAGE && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				setEnergy(getEnergy() - ENERGY_USAGE);
@@ -117,6 +117,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				if(operatingTicks < TICKS_REQUIRED)
 				{
 					operatingTicks++;
+					injectTank.draw(INJECT_USAGE, true);
 				}
 				else {
 					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], true, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
@@ -219,7 +220,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	
 	public boolean canOperate()
 	{
-		if(injectTank.getStored() < INJECT_USAGE || inventory[1] == null)
+		if(inventory[1] == null)
 		{
 			return false;
 		}

@@ -200,6 +200,7 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
         }
 
         onInventoryChanged();
+        ejectorComponent.onOutput();
     }
 	
 	@Override
