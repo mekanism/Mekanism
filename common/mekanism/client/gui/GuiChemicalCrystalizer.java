@@ -41,7 +41,7 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 	
 	public int stackIndex = 0;
 	
-	public List<ItemStack> iterStacks;
+	public List<ItemStack> iterStacks = new ArrayList<ItemStack>();
 
     public GuiChemicalCrystalizer(InventoryPlayer inventory, TileEntityChemicalCrystalizer tentity)
     {

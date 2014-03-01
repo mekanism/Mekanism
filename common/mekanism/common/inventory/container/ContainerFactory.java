@@ -146,6 +146,22 @@ public class ContainerFactory extends Container
             		return null;
             	}
             }
+            else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null, false) != null)
+    		{
+            	if(!isInputSlot(slotID))
+            	{
+            		if(!mergeItemStack(slotStack, 5, 5+tileEntity.tier.processes, false))
+            		{
+            			return null;
+            		}
+            	}
+            	else {
+            		if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+            		{
+            			return null;
+            		}
+            	}
+    		}
         	else if(ChargeUtils.canBeDischarged(slotStack))
             {
 	            if(slotID != 1)
@@ -179,22 +195,6 @@ public class ContainerFactory extends Container
 	            	}
             	}
             }
-            else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null, false) != null)
-    		{
-            	if(!isInputSlot(slotID))
-            	{
-            		if(!mergeItemStack(slotStack, 5, 5+tileEntity.tier.processes, false))
-            		{
-            			return null;
-            		}
-            	}
-            	else {
-            		if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
-            		{
-            			return null;
-            		}
-            	}
-    		}
             else if(slotStack.getItem() instanceof ItemMachineUpgrade)
             {
             	if(slotID != 0)
