@@ -117,6 +117,7 @@ public final class MekanismUtils
 						
 						entityplayer.addChatMessage(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber);
 						entityplayer.addChatMessage(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews);
+						entityplayer.addChatMessage(EnumColor.GREY + " Visit " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " to download.");
 						entityplayer.addChatMessage(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------");
 						return true;
 					}
