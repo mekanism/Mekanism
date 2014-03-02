@@ -72,7 +72,11 @@ public class GuiChemicalCrystalizer extends GuiMekanism
         if(tileEntity.inputTank.getGas() != null)
         {
         	fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
-        	fontRenderer.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
+        	
+        	if(tileEntity.inputTank.getGas().getGas() instanceof OreGas)
+        	{
+        		fontRenderer.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
+        	}
         }
         
     	if(renderStack != null)
