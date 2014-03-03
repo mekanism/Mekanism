@@ -44,29 +44,29 @@ public class MekanismTools implements IModule
 	
 	/** MekanismTools version number */
 	public static Version versionNumber = new Version(6, 0, 3);
-	
-    //Enums: Tools
-    public static EnumToolMaterial toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN", 3, 2500, 20F, 10, 100);
-    public static EnumToolMaterial toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2", 3, 3000, 25F, 10, 100);
-    public static EnumToolMaterial toolLAZULI = EnumHelper.addToolMaterial("LAZULI", 2, 200, 5F, 2, 22);
-    public static EnumToolMaterial toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2", 2, 250, 6F, 4, 50);
-    public static EnumToolMaterial toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM", 2, 500, 10F, 4, 30);
-    public static EnumToolMaterial toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2", 3, 700, 12F, 5, 40);
-    public static EnumToolMaterial toolBRONZE = EnumHelper.addToolMaterial("BRONZE", 2, 800, 14F, 6, 100);
-    public static EnumToolMaterial toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2", 3, 1100, 16F, 10, 100);
-    public static EnumToolMaterial toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE", 2, 300, 14F, 5, 80);
-    public static EnumToolMaterial toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2", 2, 450, 18F, 5, 100);
-    public static EnumToolMaterial toolSTEEL = EnumHelper.addToolMaterial("STEEL", 3, 850, 14F, 4, 100);
-    public static EnumToolMaterial toolSTEEL2 = EnumHelper.addToolMaterial("STEEL2", 3, 1250, 18F, 8, 100);
-    
-    //Enums: Armor
-    public static EnumArmorMaterial armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN", 50, new int[]{5, 12, 8, 5}, 50);
-    public static EnumArmorMaterial armorLAZULI = EnumHelper.addArmorMaterial("LAZULI", 13, new int[]{2, 5, 4, 2}, 50);
-    public static EnumArmorMaterial armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM", 30, new int[]{3, 5, 6, 3}, 50);
-    public static EnumArmorMaterial armorBRONZE = EnumHelper.addArmorMaterial("BRONZE", 35, new int[]{3, 6, 5, 2}, 50);
-    public static EnumArmorMaterial armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE", 18, new int[]{3, 7, 6, 3}, 50);
-    public static EnumArmorMaterial armorSTEEL = EnumHelper.addArmorMaterial("STEEL", 40, new int[] {3, 7, 6, 3}, 50);
-    
+
+	//Enums: Tools
+	public static EnumToolMaterial toolOBSIDIAN;
+	public static EnumToolMaterial toolOBSIDIAN2;
+	public static EnumToolMaterial toolLAZULI;
+	public static EnumToolMaterial toolLAZULI2;
+	public static EnumToolMaterial toolOSMIUM;
+	public static EnumToolMaterial toolOSMIUM2;
+	public static EnumToolMaterial toolBRONZE;
+	public static EnumToolMaterial toolBRONZE2;
+	public static EnumToolMaterial toolGLOWSTONE;
+	public static EnumToolMaterial toolGLOWSTONE2;
+	public static EnumToolMaterial toolSTEEL;
+	public static EnumToolMaterial toolSTEEL2;
+
+	//Enums: Armor
+	public static EnumArmorMaterial armorOBSIDIAN;
+	public static EnumArmorMaterial armorLAZULI;
+	public static EnumArmorMaterial armorOSMIUM;
+	public static EnumArmorMaterial armorBRONZE;
+	public static EnumArmorMaterial armorGLOWSTONE;
+	public static EnumArmorMaterial armorSTEEL;
+
 	//Base Items
 	public static Item WoodPaxel;
 	public static Item StonePaxel;
@@ -380,6 +380,161 @@ public class MekanismTools implements IModule
 	{
 		//Declarations
 		Mekanism.configuration.load();
+
+		//Tools
+		toolOBSIDIAN = EnumHelper.addToolMaterial("OBSIDIAN"
+			, Mekanism.configuration.get("tool-balance", "obsidian-harvestLevel", 3).getInt()
+			, Mekanism.configuration.get("tool-balance", "obsidian-maxUses", 2500).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "obsidian-efficiency", 20d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "obsidian-damage", 10).getInt()
+			, Mekanism.configuration.get("tool-balance", "obsidian-enchantability", 100).getInt()
+		);
+		toolOBSIDIAN2 = EnumHelper.addToolMaterial("OBSIDIAN2"
+			, Mekanism.configuration.get("tool-balance", "obsidian-paxel-harvestLevel", 3).getInt()
+			, Mekanism.configuration.get("tool-balance", "obsidian-paxel-maxUses", 3000).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "obsidian-paxel-efficiency", 25d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "obsidian-paxel-damage", 10).getInt()
+			, Mekanism.configuration.get("tool-balance", "obsidian-paxel-enchantability", 100).getInt()
+		);
+		toolLAZULI = EnumHelper.addToolMaterial("LAZULI"
+			, Mekanism.configuration.get("tool-balance", "lazuli-harvestLevel", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "lazuli-maxUses", 200).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "lazuli-efficiency", 5d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "lazuli-damage", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "lazuli-enchantability", 22).getInt()
+		);
+		toolLAZULI2 = EnumHelper.addToolMaterial("LAZULI2"
+			, Mekanism.configuration.get("tool-balance", "lazuli-paxel-harvestLevel", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "lazuli-paxel-maxUses", 250).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "lazuli-paxel-efficiency", 6d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "lazuli-paxel-damage", 4).getInt()
+			, Mekanism.configuration.get("tool-balance", "lazuli-paxel-enchantability", 50).getInt()
+		);
+		toolOSMIUM = EnumHelper.addToolMaterial("OSMIUM"
+			, Mekanism.configuration.get("tool-balance", "osmium-harvestLevel", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "osmium-maxUses", 500).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "osmium-efficiency", 10d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "osmium-damage", 4).getInt()
+			, Mekanism.configuration.get("tool-balance", "osmium-enchantability", 30).getInt()
+		);
+		toolOSMIUM2 = EnumHelper.addToolMaterial("OSMIUM2"
+			, Mekanism.configuration.get("tool-balance", "osmium-paxel-harvestLevel", 3).getInt()
+			, Mekanism.configuration.get("tool-balance", "osmium-paxel-maxUses", 700).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "osmium-paxel-efficiency", 12d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "osmium-paxel-damage", 5).getInt()
+			, Mekanism.configuration.get("tool-balance", "osmium-paxel-enchantability", 40).getInt()
+		);
+		toolBRONZE = EnumHelper.addToolMaterial("BRONZE"
+			, Mekanism.configuration.get("tool-balance", "bronze-harvestLevel", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "bronze-maxUses", 800).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "bronze-efficiency", 14d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "bronze-damage", 6).getInt()
+			, Mekanism.configuration.get("tool-balance", "bronze-enchantability", 100).getInt()
+		);
+		toolBRONZE2 = EnumHelper.addToolMaterial("BRONZE2"
+			, Mekanism.configuration.get("tool-balance", "bronze-paxel-harvestLevel", 3).getInt()
+			, Mekanism.configuration.get("tool-balance", "bronze-paxel-maxUses", 1100).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "bronze-paxel-efficiency", 16d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "bronze-paxel-damage", 10).getInt()
+			, Mekanism.configuration.get("tool-balance", "bronze-paxel-enchantability", 100).getInt()
+		);
+		toolGLOWSTONE = EnumHelper.addToolMaterial("GLOWSTONE"
+			, Mekanism.configuration.get("tool-balance", "glowstone-harvestLevel", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "glowstone-maxUses", 300).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "glowstone-efficiency", 14d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "glowstone-damage", 5).getInt()
+			, Mekanism.configuration.get("tool-balance", "glowstone-enchantability", 80).getInt()
+		);
+		toolGLOWSTONE2 = EnumHelper.addToolMaterial("GLOWSTONE2"
+			, Mekanism.configuration.get("tool-balance", "glowstone-paxel-harvestLevel", 2).getInt()
+			, Mekanism.configuration.get("tool-balance", "glowstone-paxel-maxUses", 450).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "glowstone-paxel-efficiency", 18d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "glowstone-paxel-damage", 5).getInt()
+			, Mekanism.configuration.get("tool-balance", "glowstone-paxel-enchantability", 100).getInt()
+		);
+		toolSTEEL = EnumHelper.addToolMaterial("STEEL"
+			, Mekanism.configuration.get("tool-balance", "steel-harvestLevel", 3).getInt()
+			, Mekanism.configuration.get("tool-balance", "steel-maxUses", 850).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "steel-efficiency", 14d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "steel-damage", 4).getInt()
+			, Mekanism.configuration.get("tool-balance", "steel-enchantability", 100).getInt()
+		);
+		toolSTEEL2 = EnumHelper.addToolMaterial("STEEL2"
+			, Mekanism.configuration.get("tool-balance", "steel-paxel-harvestLevel", 3).getInt()
+			, Mekanism.configuration.get("tool-balance", "steel-paxel-maxUses", 1250).getInt()
+			, (float)Mekanism.configuration.get("tool-balance", "steel-paxel-efficiency", 18d).getDouble(0)
+			, Mekanism.configuration.get("tool-balance", "steel-paxel-damage", 8).getInt()
+			, Mekanism.configuration.get("tool-balance", "steel-paxel-enchantability", 100).getInt()
+		);
+
+		//Armors
+		armorOBSIDIAN = EnumHelper.addArmorMaterial("OBSIDIAN"
+			, Mekanism.configuration.get("armor-balance", "obsidian-durability", 50).getInt()
+			, new int[]
+			{
+				  Mekanism.configuration.get("armor-balance", "obsidian-reduction-amount-head", 5).getInt()
+				, Mekanism.configuration.get("armor-balance", "obsidian-reduction-amount-chest", 12).getInt()
+				, Mekanism.configuration.get("armor-balance", "obsidian-reduction-amount-legs", 8).getInt()
+				, Mekanism.configuration.get("armor-balance", "obsidian-reduction-amount-feet", 5).getInt()
+			}
+			, Mekanism.configuration.get("armor-balance", "obsidian-enchantability", 50).getInt()
+		);
+		armorLAZULI = EnumHelper.addArmorMaterial("LAZULI"
+			, Mekanism.configuration.get("armor-balance", "lazuli-durability", 13).getInt()
+			, new int[]
+			{
+				  Mekanism.configuration.get("armor-balance", "lazuli-reduction-amount-head", 2).getInt()
+				, Mekanism.configuration.get("armor-balance", "lazuli-reduction-amount-chest", 5).getInt()
+				, Mekanism.configuration.get("armor-balance", "lazuli-reduction-amount-legs", 6).getInt()
+				, Mekanism.configuration.get("armor-balance", "lazuli-reduction-amount-feet", 2).getInt()
+			}
+			, Mekanism.configuration.get("armor-balance", "lazuli-enchantability", 50).getInt()
+		);
+		armorOSMIUM = EnumHelper.addArmorMaterial("OSMIUM"
+			, Mekanism.configuration.get("armor-balance", "osmium-durability", 30).getInt()
+			, new int[]
+			{
+				  Mekanism.configuration.get("armor-balance", "osmium-reduction-amount-head", 3).getInt()
+				, Mekanism.configuration.get("armor-balance", "osmium-reduction-amount-chest", 5).getInt()
+				, Mekanism.configuration.get("armor-balance", "osmium-reduction-amount-legs", 6).getInt()
+				, Mekanism.configuration.get("armor-balance", "osmium-reduction-amount-feet", 3).getInt()
+			}
+			, Mekanism.configuration.get("armor-balance", "osmium-enchantability", 50).getInt()
+		);
+		armorBRONZE = EnumHelper.addArmorMaterial("BRONZE"
+			, Mekanism.configuration.get("armor-balance", "bronze-durability", 35).getInt()
+			, new int[]
+			{
+				  Mekanism.configuration.get("armor-balance", "bronze-reduction-amount-head", 3).getInt()
+				, Mekanism.configuration.get("armor-balance", "bronze-reduction-amount-chest", 6).getInt()
+				, Mekanism.configuration.get("armor-balance", "bronze-reduction-amount-legs", 5).getInt()
+				, Mekanism.configuration.get("armor-balance", "bronze-reduction-amount-feet", 2).getInt()
+			}
+			, Mekanism.configuration.get("armor-balance", "bronze-enchantability", 50).getInt()
+		);
+		armorGLOWSTONE = EnumHelper.addArmorMaterial("GLOWSTONE"
+			, Mekanism.configuration.get("armor-balance", "glowstone-durability", 18).getInt()
+			, new int[]
+			{
+				  Mekanism.configuration.get("armor-balance", "glowstone-reduction-amount-head", 3).getInt()
+				, Mekanism.configuration.get("armor-balance", "glowstone-reduction-amount-chest", 7).getInt()
+				, Mekanism.configuration.get("armor-balance", "glowstone-reduction-amount-legs", 6).getInt()
+				, Mekanism.configuration.get("armor-balance", "glowstone-reduction-amount-feet", 3).getInt()
+			}
+			, Mekanism.configuration.get("armor-balance", "glowstone-enchantability", 50).getInt()
+		);
+		armorSTEEL = EnumHelper.addArmorMaterial("STEEL"
+			, Mekanism.configuration.get("armor-balance", "steel-durability", 40).getInt()
+			, new int[]
+			{
+				  Mekanism.configuration.get("armor-balance", "steel-reduction-amount-head", 3).getInt()
+				, Mekanism.configuration.get("armor-balance", "steel-reduction-amount-chest", 7).getInt()
+				, Mekanism.configuration.get("armor-balance", "steel-reduction-amount-legs", 6).getInt()
+				, Mekanism.configuration.get("armor-balance", "steel-reduction-amount-feet", 3).getInt()
+			}
+			, Mekanism.configuration.get("armor-balance", "steel-enchantability", 50).getInt()
+		);
+
 		//Bronze
 		BronzeHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("BronzeHelmet", 11400).getInt(), armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 0)).setUnlocalizedName("BronzeHelmet");
 		BronzeChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("BronzeChestplate", 11401).getInt(), armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 1)).setUnlocalizedName("BronzeChestplate");
