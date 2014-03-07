@@ -3,13 +3,13 @@ package mekanism.generators.common.tile;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ISalinationSolar;
 import mekanism.common.IBoundingBlock;
-import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraftforge.common.ForgeDirection;
 
-public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock
+public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, ISalinationSolar
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
@@ -52,5 +52,11 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 		
 		invalidate();
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public boolean seesSun()
+	{
+		return seesSun;
 	}
 }

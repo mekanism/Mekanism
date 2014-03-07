@@ -276,7 +276,7 @@ public class TransporterManager
 				
 				ItemStack inSlot = testInv[i];
 
-				if(inSlot == null)
+				if(inSlot == null || toInsert == null)
 				{
 					return null;
 				} 

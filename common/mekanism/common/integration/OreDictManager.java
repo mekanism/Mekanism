@@ -298,6 +298,13 @@ public final class OreDictManager
 			} catch(Exception e) {}
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("oreYellorium"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustYellorium").get(0), 2));
+			} catch(Exception e) {}
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 		{
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 6));
