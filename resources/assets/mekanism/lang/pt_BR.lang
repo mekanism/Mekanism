@@ -4,12 +4,12 @@
 
 //Items
 tile.ObsidianTNT.name=TNT de Obsidiana
-item.EnrichedAlloy.name=Liga de Ferro Enriquecida
+item.EnrichedAlloy.name=Liga Enriquecida
 item.EnergyTablet.name=Tablet de Energia
 item.SpeedUpgrade.name=Upgrade de Velocidade
 item.EnergyUpgrade.name=Upgrade de Energia
 item.Robit.name=Robit
-item.AtomicDisassembler.name=Desassemblador Atômico
+item.AtomicDisassembler.name=Desintegrador Atômico
 item.AtomicCore.name=Núcleo Atômico
 item.ElectricBow.name=Arco Elétrico
 item.BoundingBlock.name=Delimitadora de Bloco
@@ -38,58 +38,58 @@ item.ArmoredJetpack.name=Jetpack Blindado
 tile.GasTank.GasTank.name=Tanque de Gás
 
 //Cardboard Box
-tile.CardboardBox.name=Cardboard Box
+tile.CardboardBox.name=Caixa de Papelão
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Bloco de Ósmio
 tile.BasicBlock.BronzeBlock.name=Bloco de Bronze
 tile.BasicBlock.RefinedObsidian.name=Obsidiana Refinada
 tile.BasicBlock.CharcoalBlock.name=Bloco de Carvão Vegetal
-tile.BasicBlock.RefinedGlowstone.name=Pedra Luminosa Refinada
+tile.BasicBlock.RefinedGlowstone.name=Glowstone Refinada
 tile.BasicBlock.SteelBlock.name=Bloco de Aço
-tile.BasicBlock.Bin.name=Bin
-tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
-tile.BasicBlock.SteelCasing.name=Steel Casing
-tile.BasicBlock.DynamicTank.name=Dynamic Tank
-tile.BasicBlock.DynamicGlass.name=Dynamic Glass
-tile.BasicBlock.DynamicValve.name=Dynamic Valve
+tile.BasicBlock.Bin.name=Silo
+tile.BasicBlock.TeleporterFrame.name=Moldura do Teleportador
+tile.BasicBlock.SteelCasing.name=Carcaça de Aço
+tile.BasicBlock.DynamicTank.name=Tanque Dinâmico
+tile.BasicBlock.DynamicGlass.name=Vidro Dinâmico
+tile.BasicBlock.DynamicValve.name=Válvula Dinâmica
 tile.BasicBlock.CopperBlock.name=Bloco de Cobre
 tile.BasicBlock.TinBlock.name=Bloco de Estanho
-tile.BasicBlock.SalinationController.name=Salination Controller
-tile.BasicBlock.SalinationValve.name=Salination Valve
+tile.BasicBlock.SalinationController.name=Controlador de Salinização
+tile.BasicBlock.SalinationValve.name=Válvula de Salinização
 
 //Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SalinationBlock.name=Bloco de Salinização
 
 //Machine Block
-tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
-tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor
-tile.MachineBlock.Combiner.name=Combiner
-tile.MachineBlock.Crusher.name=Crusher
-tile.MachineBlock.BasicFactory.name=Basic Factory
-tile.MachineBlock.AdvancedFactory.name=Advanced Factory
-tile.MachineBlock.EliteFactory.name=Elite Factory
-tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
-tile.MachineBlock.PurificationChamber.name=Purification Chamber
-tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
-tile.MachineBlock.Teleporter.name=Teleporter
-tile.MachineBlock.ElectricPump.name=Electric Pump
-tile.MachineBlock.ElectricChest.name=Electric Chest
-tile.MachineBlock.Chargepad.name=Chargepad
-tile.MachineBlock.LogisticalSorter.name=Logistical Sorter
-tile.MachineBlock.DigitalMiner.name=Digital Miner
+tile.MachineBlock.EnrichmentChamber.name=Câmara de Enriquecimento
+tile.MachineBlock.OsmiumCompressor.name=Compressor de Ósmio
+tile.MachineBlock.Combiner.name=Combinador
+tile.MachineBlock.Crusher.name=Triturador
+tile.MachineBlock.BasicFactory.name=Fábrica Básica
+tile.MachineBlock.AdvancedFactory.name=Fábrica Avançada
+tile.MachineBlock.EliteFactory.name=Fábrica de Elite
+tile.MachineBlock.MetallurgicInfuser.name=Infusor Metalúrgico
+tile.MachineBlock.PurificationChamber.name=Câmara de Purificação
+tile.MachineBlock.EnergizedSmelter.name=Fundição Energizada
+tile.MachineBlock.Teleporter.name=Teleportador
+tile.MachineBlock.ElectricPump.name=Bomba Elétrica
+tile.MachineBlock.ElectricChest.name=Baú Elétrico
+tile.MachineBlock.Chargepad.name=Plataforma Recarregadora
+tile.MachineBlock.LogisticalSorter.name=Classificador Logístico
+tile.MachineBlock.DigitalMiner.name=Minerador Digital
 
 //Machine Block 2 (second ID iteration)
-tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
-tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
-tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
-tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
-tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
-tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
-tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
-tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
-tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
-tile.MachineBlock2.ChemicalCrystalizer.name=Chemical Crystalizer
+tile.MachineBlock2.RotaryCondensentrator.name=Condensentrator Rotatório
+tile.MachineBlock2.ChemicalOxidizer.name=Oxidador Químico
+tile.MachineBlock2.ChemicalInfuser.name=Infusor Químico
+tile.MachineBlock2.ChemicalCombiner.name=Combinador Químico
+tile.MachineBlock2.ChemicalInjectionChamber.name=Câmara de Injeção Química
+tile.MachineBlock2.ElectrolyticSeparator.name=Separador Eletrolítico
+tile.MachineBlock2.PrecisionSawmill.name=Serraria de Precisão
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Câmara de Dissolução Química
+tile.MachineBlock2.ChemicalWasher.name=Lavador Químico
+tile.MachineBlock2.ChemicalCrystalizer.name=Cristalizador Químico
 
 //Infuse types
 infuse.carbon=Carbono
@@ -103,21 +103,21 @@ tile.OreBlock.OsmiumOre.name=Minério de Ósmio
 tile.OreBlock.CopperOre.name=Minério de Cobre
 tile.OreBlock.TinOre.name=Minério de Estanho
 
-item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
-item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Cable
-item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Cable
-item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Cable
-item.MultipartTransmitter.UltimateUniversalCable.name=Ultimate Universal Cable
-item.MultipartTransmitter.MechanicalPipe.name=Mechanical Pipe
-item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
-item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
+item.MultipartTransmitter.PressurizedTube.name=Tubo Pressurizado
+item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Basico
+item.MultipartTransmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
+item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal de Elite
+item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Definitivo
+item.MultipartTransmitter.MechanicalPipe.name=Tubo Mecânico
+item.MultipartTransmitter.LogisticalTransporter.name=Transportador Logístico
+item.MultipartTransmitter.RestrictiveTransporter.name=Transportador Restritivo
+item.MultipartTransmitter.DiversionTransporter.name=Transportador Redirecionador
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Basic Energy Cube
-tile.EnergyCube.Advanced.name=Advanced Energy Cube
-tile.EnergyCube.Elite.name=Elite Energy Cube
-tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
+tile.EnergyCube.Basic.name=Cubo de Energia Básico
+tile.EnergyCube.Advanced.name=Cubo de Energia Avançado
+tile.EnergyCube.Elite.name=Cubo de Energia de Elite
+tile.EnergyCube.Ultimate.name=Cubo de Energia Definitivo
 
 //Dust
 item.ironDust.name=Pó de Ferro
@@ -132,93 +132,93 @@ item.leadDust.name=Pó de Chumbo
 item.sulfurDust.name=Pó de Enxofre
 
 //Clumps
-item.ironClump.name=Iron Clump
-item.goldClump.name=Gold Clump
-item.osmiumClump.name=Osmium Clump
-item.copperClump.name=Copper Clump
-item.tinClump.name=Tin Clump
-item.silverClump.name=Silver Clump
-item.obsidianClump.name=Obsidian Clump
-item.leadClump.name=Lead Clump
+item.ironClump.name=Aglomerado de Ferro
+item.goldClump.name=Aglomerado de Ouro
+item.osmiumClump.name=Aglomerado de Ósmio
+item.copperClump.name=Aglomerado de Cobre
+item.tinClump.name=Aglomerado de Estanho
+item.silverClump.name=Aglomerado de Prata
+item.obsidianClump.name=Aglomerado de Obsidiana
+item.leadClump.name=Aglomerado de Chumbo
 
 //Shards
-item.ironShard.name=Iron Shard
-item.goldShard.name=Gold Shard
-item.osmiumShard.name=Osmium Shard
-item.copperShard.name=Copper Shard
-item.tinShard.name=Tin Shard
-item.silverShard.name=Silver Shard
-item.obsidianShard.name=Obsidian Shard
-item.leadShard.name=Lead Shard
+item.ironShard.name=Fragmento de Ferro
+item.goldShard.name=Fragmento de Ouro
+item.osmiumShard.name=Fragmento de Ósmio
+item.copperShard.name=Fragmento de Cobre
+item.tinShard.name=Fragmento de Estanho
+item.silverShard.name=Fragmento de Prata
+item.obsidianShard.name=Fragmento de Obsidiana
+item.leadShard.name=Fragmento de Chumbo
 
 //Crystals
-item.ironCrystal.name=Iron Crystal
-item.goldCrystal.name=Gold Crystal
-item.osmiumCrystal.name=Osmium Crystal
-item.copperCrystal.name=Copper Crystal
-item.tinCrystal.name=Tin Crystal
-item.silverCrystal.name=Silver Crystal
-item.obsidianCrystal.name=Obsidian Crystal
-item.leadCrystal.name=Lead Crystal
+item.ironCrystal.name=Cristal de Ferro
+item.goldCrystal.name=Cristal de Ouro
+item.osmiumCrystal.name=Cristal de Ósmio
+item.copperCrystal.name=Cristal de Cobre
+item.tinCrystal.name=Cristal de Estanho
+item.silverCrystal.name=Cristal de Prata
+item.obsidianCrystal.name=Cristal de Obsidiana
+item.leadCrystal.name=Cristal de Chumbo
 
 //Dirty Dust
-item.dirtyIronDust.name=Dirty Iron Dust
-item.dirtyGoldDust.name=Dirty Gold Dust
-item.dirtyOsmiumDust.name=Dirty Osmium Dust
-item.dirtyCopperDust.name=Dirty Copper Dust
-item.dirtyTinDust.name=Dirty Tin Dust
-item.dirtySilverDust.name=Dirty Silver Dust
-item.dirtyObsidianDust.name=Dirty Obsidian Dust
-item.dirtyLeadDust.name=Dirty Lead Dust
+item.dirtyIronDust.name=Pó de Ferro Sujo
+item.dirtyGoldDust.name=Pó de Ouro Sujo
+item.dirtyOsmiumDust.name=Pó de Ósmio Sujo
+item.dirtyCopperDust.name=Pó de Cobre Sujo
+item.dirtyTinDust.name=Pó de Estanho Sujo
+item.dirtySilverDust.name=Pó de Prata Sujo
+item.dirtyObsidianDust.name=Pó de Obsidiana Sujo
+item.dirtyLeadDust.name=Pó de Chumbo Sujo
 
 //Ingots
-item.obsidianIngot.name=Barra de Obsidiana
-item.osmiumIngot.name=Barra de Ósmio
-item.bronzeIngot.name=Barra de Bronze
-item.glowstoneIngot.name=Barra de Pedra Luminosa
-item.steelIngot.name=Barra de Aço
-item.copperIngot.name=Barra de Cobre
-item.tinIngot.name=Barra de Estanho
+item.obsidianIngot.name=Lingote de Obsidiana
+item.osmiumIngot.name=Lingote de Ósmio
+item.bronzeIngot.name=Lingote de Bronze
+item.glowstoneIngot.name=Lingote de Glowstone
+item.steelIngot.name=Lingote de Aço
+item.copperIngot.name=Lingote de Cobre
+item.tinIngot.name=Lingote de Estanho
 
 //Gasses
-gas.hydrogen=Hidrogénio
-gas.oxygen=Oxigénio
+gas.hydrogen=Hidrogênio
+gas.oxygen=Oxigênio
 gas.water=Vapor de Água
 gas.chlorine=Cloro
 gas.sulfurDioxideGas=Dióxido de Enxofre
 gas.sulfurTrioxideGas=Trióxido de Enxofre
 gas.sulfuricAcid=Ácido Sulfúrico
-gas.hydrogenChloride=Cloro de Hidrogénio
+gas.hydrogenChloride=Cloreto de Hidrogênio
 gas.liquidOsmium=Ósmio Líquido
 gas.liquidStone=Pedra Líquida
 
-gas.iron=Iron Slurry
-gas.gold=Gold Slurry
-gas.osmium=Osmium Slurry
-gas.copper=Copper Slurry
-gas.tin=Tin Slurry
-gas.silver=Silver Slurry
-gas.obsidian=Obsidian Slurry
-gas.lead=Lead Slurry
+gas.iron=Lodo de Ferro
+gas.gold=Lodo de Ouro
+gas.osmium=Lodo de Ósmio
+gas.copper=Lodo de Cobre
+gas.tin=Lodo de Estanho
+gas.silver=Lodo de Prata
+gas.obsidian=Lodo de Obsidiana
+gas.lead=Lodo de Chumbo
 
-gas.cleanIron=Clean Iron Slurry
-gas.cleanGold=Clean Gold Slurry
-gas.cleanOsmium=Clean Osmium Slurry
-gas.cleanCopper=Clean Copper Slurry
-gas.cleanTin=Clean Tin Slurry
-gas.cleanSilver=Clean Silver Slurry
-gas.cleanObsidian=Clean Obsidian Slurry
-gas.cleanLead=Clean Lead Slurry
+gas.cleanIron=Lodo Puro de Ferro
+gas.cleanGold=Lodo Puro de Ouro
+gas.cleanOsmium=Lodo Puro de Ósmio
+gas.cleanCopper=Lodo Puro de Cobre
+gas.cleanTin=Lodo Puro de Estanho
+gas.cleanSilver=Lodo Puro de Prata
+gas.cleanObsidian=Lodo Puro de Obsidiana
+gas.cleanLead=Lodo Puro de Chumbo
 
 //Fluids
-fluid.hydrogen=Liquid Hydrogen
-fluid.oxygen=Liquid Oxygen
-fluid.chlorine=Liquid Chlorine
-fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
-fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
-fluid.sulfuricAcid=Liquid Sulfuric Acid
-fluid.hydrogenChloride=Liquid Hydrogen Chloride
-fluid.brine=Brine
+fluid.hydrogen=Hidrogênio Líquido
+fluid.oxygen=Oxigênio Líquido
+fluid.chlorine=Cloro Líquido
+fluid.sulfurDioxideGas=Dióxido de Enxofre Líquido
+fluid.sulfurTrioxideGas=Trióxido de Enxofre Líquido
+fluid.sulfuricAcid=Ácido Sulfúrico Líquido
+fluid.hydrogenChloride=Cloreto de Hidrogênio Líquido
+fluid.brine=Salmoura
 
 //OreGas names
 oregas.iron=Minério de Ferro
@@ -231,131 +231,131 @@ oregas.obsidian=Minério de Obsidiana
 oregas.lead=Minério de Chumbo
 
 //Gui text
-gui.removeSpeedUpgrade=Remove speed upgrade
-gui.removeEnergyUpgrade=Remove energy upgrade
-gui.condensentrating=Condensentrating
-gui.decondensentrating=Decondensentrating
-gui.power=Power
-gui.confirm=Confirm
-gui.open=Open
-gui.allOK=All OK
-gui.none=None
-gui.new=New
-gui.edit=Edit
-gui.save=Save
-gui.output=Output
-gui.delete=Delete
-gui.status=Status
-gui.autoEject=Auto-eject
-gui.itemstack=ItemStack
+gui.removeSpeedUpgrade=Remover upgrade de velocidade
+gui.removeEnergyUpgrade=Remover upgrade de energia
+gui.condensentrating=Condensentrando
+gui.decondensentrating=Decondensentrando
+gui.power=Energia
+gui.confirm=Confirmar
+gui.open=Abrir
+gui.allOK=Tudo OK
+gui.none=Nenhum
+gui.new=Novo
+gui.edit=Editar
+gui.save=Salvar
+gui.output=Saída
+gui.delete=Deletar
+gui.status=Estatus
+gui.autoEject=Auto-ejetar
+gui.itemstack=PilhaDeItems
 gui.oredict=OreDict
-gui.out=Out
-gui.noFluid=No fluid
-gui.empty=Empty
+gui.out=Saída
+gui.noFluid=Sem Fluidos
+gui.empty=Vazio
 gui.volume=Volume
-gui.start=Start
-gui.stop=Stop
-gui.config=Config
-gui.teleport=Teleport
-gui.eject=Eject
-gui.input=Input
-gui.slots=Slots
-gui.state=State
-gui.on=On
-gui.off=Off
-gui.filters=Filters
-gui.idle=Idle
+gui.start=Iniciar
+gui.stop=Parar
+gui.config=Configurar
+gui.teleport=Teleporte
+gui.eject=Ejetar
+gui.input=Entrada
+gui.slots=Aberturas
+gui.state=Estado
+gui.on=Ligado
+gui.off=Desligado
+gui.filters=Filtros
+gui.idle=Inativo
 
-gui.chemicalInfuser.short=C. Infuser
-gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
+gui.chemicalInfuser.short=Infusor Quím.
+gui.chemicalDissolutionChamber.short=Câm. Dissolução Quím.
 
-gui.dictionary.noKey=No key.
-gui.dictionary.key=Key
+gui.dictionary.noKey=Sem Entrada.
+gui.dictionary.key=Entrada
 
-gui.configuration=Configuration
-gui.configuration.strictInput=Strict Input
+gui.configuration=Configuração
+gui.configuration.strictInput=Entrada Restrita
 
-gui.rotaryCondensentrator.toggleOperation=Toggle operation
+gui.rotaryCondensentrator.toggleOperation=Alternar Operação
 
-gui.factory.secondaryEnergy=Secondary energy
-gui.factory.smelting=Smelting
-gui.factory.enriching=Enriching
-gui.factory.crushing=Crushing
-gui.factory.compressing=Compressing
-gui.factory.combining=Combining
-gui.factory.purifying=Purifying
-gui.factory.injecting=Injecting
-gui.factory.autoSort=Auto-sort
+gui.factory.secondaryEnergy=Energia Secundária
+gui.factory.smelting=Fundindo
+gui.factory.enriching=Enriquecendo
+gui.factory.crushing=Triturando
+gui.factory.compressing=Comprimido
+gui.factory.combining=Combinando
+gui.factory.purifying=Purificando
+gui.factory.injecting=Injetando
+gui.factory.autoSort=Classif. Auto
 
-gui.oredictFilter=OreDict Filter
-gui.oredictFilter.noKey=No key entered
-gui.oredictFilter.sameKey=Same key
+gui.oredictFilter=Filtro OreDict
+gui.oredictFilter.noKey=Nenhuma entrada digitada
+gui.oredictFilter.sameKey=Mesma entrada
 
-gui.itemFilter=Item Filter
-gui.itemFilter.noItem=No item
-gui.itemFilter.details=ItemStack Details
+gui.itemFilter=Filtro de Items
+gui.itemFilter.noItem=Sem Items
+gui.itemFilter.details=Detalhes da PilhaDeItems
 gui.itemFilter.min=Min
-gui.itemFilter.max=Max
+gui.itemFilter.max=Máx
 
-gui.portableTeleporter=Portable Teleporter
+gui.portableTeleporter=Teleportador Portátil
 
-gui.teleporter.notReady=Not Ready
-gui.teleporter.ready=Ready
-gui.teleporter.needsEnergy=Needs energy
-gui.teleporter.linksCapacity=Links > 2
-gui.teleporter.noLink=No link found
+gui.teleporter.notReady=Não Pronto
+gui.teleporter.ready=Pronto
+gui.teleporter.needsEnergy=Requer Energia
+gui.teleporter.linksCapacity=Conexões > 2
+gui.teleporter.noLink=Nenhuma conexão localizada
 
 gui.robit=Robit
-gui.robit.smelting=Robit Smelting
-gui.robit.inventory=Robit Inventory
-gui.robit.crafting=Robit Crafting
-gui.robit.greeting=Hi, I'm
-gui.robit.toggleFollow=Toggle 'follow' mode
-gui.robit.rename=Rename this Robit
-gui.robit.teleport=Teleport back home
-gui.robit.togglePickup=Toggle 'drop pickup' mode
+gui.robit.smelting=Fundição Robit
+gui.robit.inventory=Inventário Robit
+gui.robit.crafting=Criação Robit
+gui.robit.greeting=Olá eu sou
+gui.robit.toggleFollow=Alternar modo 'seguir'
+gui.robit.rename=Renomear este Robit
+gui.robit.teleport=Teleportar para casa
+gui.robit.togglePickup=Alternar modo 'coletar items'
 
-gui.password.setPassword=Set password
-gui.password.enterPassword=Enter password
-gui.password.fieldsEmpty=Field(s) empty
-gui.password.notMatching=Not matching
-gui.password.identical=Identical
-gui.password.invalid=Invalid
-gui.password=Password
+gui.password.setPassword=Definir senha
+gui.password.enterPassword=Digitar senha
+gui.password.fieldsEmpty=Campo(s) em branco
+gui.password.notMatching=Não Corresponde
+gui.password.identical=Idêntica
+gui.password.invalid=Inválida
+gui.password=Senha
 
 gui.logisticalSorter.default=Default
 gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round robin
+gui.logisticalSorter.roundRobin=Rodízio
 
-gui.electricChest.editPassword=Edit Password
+gui.electricChest.editPassword=Editar Senha
 
-gui.digitalMinerConfig=Digital Miner Config
+gui.digitalMinerConfig=Config Minerador Digital
 
-gui.digitalMiner.autoPull=Auto-pull
-gui.digitalMiner.replaceBlock=Replace block
-gui.digitalMiner.reset=Reset
-gui.digitalMiner.silkTouch=Silk touch
-gui.digitalMiner.pull=Pull
-gui.digitalMiner.silk=Silk
-gui.digitalMiner.toMine=To mine
-gui.digitalMiner.running=Running
-gui.digitalMiner.inverse=Inverse mode
+gui.digitalMiner.autoPull=Auto-puxar
+gui.digitalMiner.replaceBlock=Substituir bloco
+gui.digitalMiner.reset=Resetar
+gui.digitalMiner.silkTouch=Toque Suave
+gui.digitalMiner.pull=Puxar
+gui.digitalMiner.silk=Suave
+gui.digitalMiner.toMine=Para Minerar
+gui.digitalMiner.running=Rodando
+gui.digitalMiner.inverse=Modo Inverso
 
 //Item and block tooltip text
-tooltip.configurator.modify=Modify
-tooltip.configurator.empty=Empty
-tooltip.configurator.wrench=Wrench
-tooltip.configurator.link=Link
-tooltip.configurator.pumpReset=Reset Electric Pump calculation
-tooltip.configurator.toggleDiverter=Diverter mode changed to
-tooltip.configurator.toggleColor=Color bumped to
-tooltip.configurator.viewColor=Current color
-tooltip.configurator.unauth=This chest is locked
+tooltip.configurator.modify=Modificar
+tooltip.configurator.empty=Vazio
+tooltip.configurator.wrench=Chave
+tooltip.configurator.link=Conexão
+tooltip.configurator.pumpReset=Resetar cálculo da Bomba Elétrica
+tooltip.configurator.toggleDiverter=Modo do Diversor alterado para
+tooltip.configurator.toggleColor=Cor passada para
+tooltip.configurator.viewColor=Cor atual
+tooltip.configurator.unauth=Este baú está trancado
 tooltip.configurator.noLink=No link
-tooltip.configurator.linkMsg=Bound to
-tooltip.configurator.dim=dimension
+tooltip.configurator.linkMsg=Ligado a
+tooltip.configurator.dim=dimensão
 
-tooltip.balloon=Aeróstato
+tooltip.balloon=Balão
 
 tooltip.jetpack.regular=Normal
 tooltip.jetpack.hover=Pairar
@@ -399,17 +399,17 @@ control.low.desc=Ativo sem sinal
 
 //Colors
 color.black=Preto
-color.darkBlue=Dark Blue
-color.darkGreen=Dark Green
-color.darkAqua=Dark Aqua
-color.darkRed=Dark Red
+color.darkBlue=Azul Escuro
+color.darkGreen=Verde Escuro
+color.darkAqua=Ciano Escuro
+color.darkRed=Vermelho Escuro
 color.purple=Roxo
 color.orange=Laranja
 color.grey=Cinza
-color.darkGrey=Dark Grey
+color.darkGrey=Cinza Escuro
 color.indigo=Indigo
-color.brightGreen=Bright Green
-color.aqua=Aqua
+color.brightGreen=Verde Claro
+color.aqua=Cian
 color.red=Vermelho
 color.pink=Rosa
 color.yellow=Amarelo
@@ -419,8 +419,8 @@ color.white=Branco
 itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
-nei.chemicalInjectionChamber=C. Injection Chamber
-nei.rotaryCondensentrator=R. Condensentrator
+nei.chemicalInjectionChamber=Câm. Injeção Quím.
+nei.rotaryCondensentrator=Condensentrador Rot.
 
 //**********//
 //GENERATORS//
