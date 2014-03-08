@@ -160,7 +160,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public boolean canProvideGas(ItemStack itemstack, Gas type)
 	{
-		return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
+		return false;
 	}
 
 	@Override

@@ -164,7 +164,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public boolean canProvideGas(ItemStack itemstack, Gas type)
 	{
-		return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
+		return false;
 	}
 
 	@Override

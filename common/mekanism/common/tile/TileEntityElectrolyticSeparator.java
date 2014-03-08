@@ -21,6 +21,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -306,7 +307,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			return new int[] {1, 2};
 		}
 
-		return new int[] {0};
+		return InventoryUtils.EMPTY;
 	}
 
 	/**

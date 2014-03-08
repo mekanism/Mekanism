@@ -68,6 +68,18 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			}
 		}
 	}
+	
+	public void deregister()
+	{
+		if(!worldObj.isRemote)
+		{
+			if(Mekanism.ic2Registered.contains(Coord4D.get(this)))
+			{
+				Mekanism.ic2Registered.remove(Coord4D.get(this));
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			}
+		}
+	}
 
 	@Override
 	public void onUpdate()
@@ -129,11 +141,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void onChunkUnload()
 	{
-		if(!worldObj.isRemote)
-		{
-			Mekanism.ic2Registered.remove(Coord4D.get(this));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}
+		deregister();
 
 		super.onChunkUnload();
 	}
@@ -142,12 +150,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void invalidate()
 	{
 		super.invalidate();
-
-		if(!worldObj.isRemote)
-		{
-			Mekanism.ic2Registered.remove(Coord4D.get(this));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}
+		
+		deregister();
 	}
 
 	@Override
