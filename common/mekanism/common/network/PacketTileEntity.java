@@ -15,21 +15,21 @@ import com.google.common.io.ByteArrayDataInput;
 public class PacketTileEntity implements IMekanismPacket
 {
 	public Coord4D object3D;
-	
+
 	public ArrayList parameters;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "TileEntity";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		object3D = (Coord4D)data[0];
 		parameters = (ArrayList)data[1];
-		
+
 		return this;
 	}
 
@@ -39,9 +39,9 @@ public class PacketTileEntity implements IMekanismPacket
 		int x = dataStream.readInt();
 		int y = dataStream.readInt();
 		int z = dataStream.readInt();
-		
+
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
+
 		if(tileEntity instanceof ITileNetwork)
 		{
 			((ITileNetwork)tileEntity).handlePacketData(dataStream);
@@ -54,7 +54,7 @@ public class PacketTileEntity implements IMekanismPacket
 		dataStream.writeInt(object3D.xCoord);
 		dataStream.writeInt(object3D.yCoord);
 		dataStream.writeInt(object3D.zCoord);
-		
+
 		PacketHandler.encode(new Object[] {parameters}, dataStream);
 	}
 }

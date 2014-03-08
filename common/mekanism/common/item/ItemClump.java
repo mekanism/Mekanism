@@ -12,14 +12,14 @@ import net.minecraft.util.Icon;
 public class ItemClump extends ItemMekanism
 {
 	public Icon[] icons = new Icon[256];
-	
+
 	public ItemClump(int id)
 	{
 		super(id);
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

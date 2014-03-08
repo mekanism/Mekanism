@@ -11,7 +11,7 @@ public class GasMaskSound extends PlayerSound
 	{
 		super(id, "GasMask.ogg", entity);
 	}
-    
+
 	@Override
 	public boolean update(World world)
 	{
@@ -35,15 +35,15 @@ public class GasMaskSound extends PlayerSound
 				}
 			}
 		}
-		
+
 		if(isPlaying)
 		{
 			ticksSincePlay++;
 		}
-		
+
 		return true;
 	}
-	
+
 	private boolean hasGasMask(EntityPlayer player)
 	{
 		return player.inventory.armorInventory[3] != null && player.inventory.armorInventory[3].getItem() instanceof ItemGasMask;

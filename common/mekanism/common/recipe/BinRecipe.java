@@ -19,20 +19,20 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	{
 		GameRegistry.registerCraftingHandler(this);
 	}
-	
+
 	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
+	public boolean matches(InventoryCrafting inv, World world)
 	{
 		return getCraftingResult(inv) != null;
 	}
-	
+
 	private boolean isBin(ItemStack itemStack)
 	{
 		if(itemStack == null)
 		{
 			return false;
 		}
-		
+
 		return itemStack.getItem() instanceof ItemBlockBasic && itemStack.getItemDamage() == 6;
 	}
 
@@ -41,59 +41,59 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	{
 		return getResult(inv);
 	}
-	
+
 	public ItemStack getResult(IInventory inv)
 	{
 		ItemStack bin = null;
-		
+
 		for(int i = 0; i < inv.getSizeInventory(); i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
-			
+
 			if(isBin(stack))
 			{
 				if(bin != null)
 				{
 					return null;
 				}
-				
+
 				bin = stack.copy();
 			}
 		}
-		
+
 		if(bin == null)
 		{
 			return null;
 		}
-		
+
 		ItemStack addStack = null;
-		
+
 		for(int i = 0; i < 9; i++)
 		{
 			ItemStack stack = inv.getStackInSlot(i);
-			
+
 			if(stack != null && !isBin(stack))
 			{
 				if(addStack != null)
 				{
 					return null;
 				}
-				
+
 				addStack = stack.copy();
 			}
 		}
-		
+
 		InventoryBin binInv = new InventoryBin(bin);
-		
+
 		if(addStack != null)
 		{
 			if(binInv.getItemType() != null && !binInv.getItemType().isItemEqual(addStack))
 			{
 				return null;
 			}
-			
+
 			binInv.add(addStack);
-			
+
 			return bin;
 		}
 		else {
@@ -102,19 +102,19 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 	}
 
 	@Override
-	public int getRecipeSize() 
+	public int getRecipeSize()
 	{
 		return 0;
 	}
 
 	@Override
-	public ItemStack getRecipeOutput() 
+	public ItemStack getRecipeOutput()
 	{
 		return null;
 	}
 
 	@Override
-	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) 
+	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix)
 	{
 		if(getResult(craftMatrix) != null)
 		{
@@ -126,11 +126,11 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 					{
 						ItemStack bin = craftMatrix.getStackInSlot(i);
 						InventoryBin inv = new InventoryBin(bin.copy());
-						
+
 						int size = inv.getItemCount();
-						
+
 						ItemStack testRemove = inv.removeStack();
-						
+
 						bin.stackTagCompound.setInteger("newCount", size-(testRemove != null ? testRemove.stackSize : 0));
 					}
 				}
@@ -138,7 +138,7 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 			else {
 				int bin = -1;
 				int other = -1;
-				
+
 				for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
 				{
 					if(isBin(craftMatrix.getStackInSlot(i)))
@@ -150,12 +150,12 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 						other = i;
 					}
 				}
-				
+
 				ItemStack binStack = craftMatrix.getStackInSlot(bin);
 				ItemStack otherStack = craftMatrix.getStackInSlot(other);
-				
+
 				ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
-				
+
 				if(testRemain != null && testRemain.stackSize > 0)
 				{
 					ItemStack proxy = new ItemStack(Mekanism.ItemProxy);
@@ -165,7 +165,7 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 				else {
 					craftMatrix.setInventorySlotContents(other, null);
 				}
-				
+
 				craftMatrix.setInventorySlotContents(bin, null);
 			}
 		}

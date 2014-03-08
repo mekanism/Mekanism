@@ -27,32 +27,32 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
-	
+
 	public TileEntityHeatGenerator()
 	{
 		super("HeatGenerator", 160000, MekanismGenerators.heatGeneration*2);
 		inventory = new ItemStack[2];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.charge(1, this);
-			
+
 			if(inventory[0] != null)
 			{
 				FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-				
+
 				if(fluid != null && fluid.fluidID == FluidRegistry.LAVA.getID())
 				{
 					if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
 					{
 						lavaTank.fill(fluid, true);
-						
+
 						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 						{
 							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
@@ -60,7 +60,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						else {
 							inventory[0].stackSize--;
 						}
-						
+
 						if(inventory[0].stackSize == 0)
 						{
 							inventory[0] = null;
@@ -69,15 +69,15 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				}
 				else {
 					int fuel = getFuel(inventory[0]);
-					
+
 					if(fuel > 0)
 					{
 						int fuelNeeded = lavaTank.getCapacity() - (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0);
-						
+
 						if(fuel <= fuelNeeded)
 						{
 							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
-							
+
 							if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 							{
 								inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
@@ -85,7 +85,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 							else {
 								inventory[0].stackSize--;
 							}
-							
+
 							if(inventory[0].stackSize == 0)
 							{
 								inventory[0] = null;
@@ -94,13 +94,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 					}
 				}
 			}
-			
+
 			setEnergy(electricityStored + getBoost());
-			
+
 			if(canOperate())
-			{	
+			{
 				setActive(true);
-				
+
 				lavaTank.drain(10, true);
 				setEnergy(electricityStored + MekanismGenerators.heatGeneration);
 			}
@@ -109,7 +109,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -121,38 +121,38 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			return ChargeUtils.canBeCharged(itemstack);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean canOperate()
 	{
 		return electricityStored < MAX_ELECTRICITY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-        
-        if(nbtTags.hasKey("lavaTank"))
-        {
-        	lavaTank.readFromNBT(nbtTags.getCompoundTag("lavaTank"));
-        }
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        if(lavaTank.getFluid() != null)
-        {
-        	nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
-        }
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		if(nbtTags.hasKey("lavaTank"))
+		{
+			lavaTank.readFromNBT(nbtTags.getCompoundTag("lavaTank"));
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		if(lavaTank.getFluid() != null)
+		{
+			nbtTags.setTag("lavaTank", lavaTank.writeToNBT(new NBTTagCompound()));
+		}
+	}
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -164,14 +164,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			return FluidContainerRegistry.isEmptyContainer(itemstack);
 		}
-		
+
 		return false;
 	}
-	
+
 	public double getBoost()
 	{
 		int boost = 0;
-		
+
 		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
 			boost+=5;
 		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
@@ -184,7 +184,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			boost+=5;
 		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
 			boost+=5;
-		
+
 		return boost;
 	}
 
@@ -194,16 +194,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		{
 			return 1000;
 		}
-		
+
 		return TileEntityFurnace.getItemBurnTime(itemstack);
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
-	
+
 	/**
 	 * Gets the scaled fuel level for the GUI.
 	 * @param i - multiplier
@@ -213,14 +213,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		return (lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)*i / lavaTank.getCapacity();
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		
+
 		int amount = dataStream.readInt();
-		
+
 		if(amount != 0)
 		{
 			lavaTank.setFluid(new FluidStack(FluidRegistry.LAVA, amount));
@@ -229,12 +229,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			lavaTank.setFluid(null);
 		}
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		if(lavaTank.getFluid() != null)
 		{
 			data.add(lavaTank.getFluid().amount);
@@ -242,18 +242,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		else {
 			data.add(0);
 		}
-		
+
 		return data;
 	}
-	
+
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -276,42 +276,42 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		if(resource.fluidID == FluidRegistry.LAVA.getID() && from != ForgeDirection.getOrientation(facing))
 		{
 			return lavaTank.fill(resource, doFill);
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return fluid == FluidRegistry.LAVA;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return new FluidTankInfo[] {lavaTank.getInfo()};
 	}

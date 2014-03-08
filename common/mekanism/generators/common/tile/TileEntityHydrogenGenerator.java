@@ -25,35 +25,35 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 {
 	/** The maximum amount of hydrogen this block can store. */
 	public int MAX_HYDROGEN = 18000;
-	
+
 	/** The amount of hydrogen this block is storing. */
 	public int hydrogenStored;
-	
+
 	public TileEntityHydrogenGenerator()
 	{
 		super("HydrogenGenerator", 40000, MekanismGenerators.hydrogenGeneration*2);
 		inventory = new ItemStack[2];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.charge(1, this);
-			
+
 			if(inventory[0] != null && hydrogenStored < MAX_HYDROGEN)
 			{
 				GasStack removed = GasTransmission.removeGas(inventory[0], GasRegistry.getGas("hydrogen"), MAX_HYDROGEN-hydrogenStored);
 				hydrogenStored += removed != null ? removed.amount : 0;
 			}
-			
+
 			if(canOperate())
 			{
 				setActive(true);
-				
+
 				hydrogenStored-=2;
 				setEnergy(electricityStored + MekanismGenerators.hydrogenGeneration);
 			}
@@ -62,7 +62,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -74,10 +74,10 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		{
 			return (itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -90,22 +90,22 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		{
 			return ChargeUtils.canBeCharged(itemstack);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return ForgeDirection.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
-	
+
 	@Override
 	public boolean canOperate()
 	{
 		return electricityStored < MAX_ELECTRICITY && hydrogenStored-2 >= 0 && MekanismUtils.canFunction(this);
 	}
-	
+
 	/**
 	 * Gets the scaled hydrogen level for the GUI.
 	 * @param i - multiplier
@@ -117,13 +117,13 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getHydrogen", "getHydrogenNeeded"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -151,7 +151,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		super.handlePacketData(dataStream);
 		hydrogenStored = dataStream.readInt();
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -161,40 +161,40 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
 		if(stack.getGas() == GasRegistry.getGas("hydrogen"))
 		{
 			int toUse = Math.min(MAX_HYDROGEN-hydrogenStored, stack.amount);
 			hydrogenStored += toUse;
-	    	return toUse;
+			return toUse;
 		}
-		
+
 		return 0;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        hydrogenStored = nbtTags.getInteger("hydrogenStored");
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setInteger("hydrogenStored", hydrogenStored);
-    }
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		hydrogenStored = nbtTags.getInteger("hydrogenStored");
+	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type) 
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("hydrogenStored", hydrogenStored);
+	}
+
+	@Override
+	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
 		return type == GasRegistry.getGas("hydrogen") && side != ForgeDirection.getOrientation(facing);
 	}
-	
+
 	@Override
 	public GasStack drawGas(ForgeDirection side, int amount)
 	{
@@ -208,7 +208,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side) 
+	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return side != ForgeDirection.getOrientation(facing);
 	}

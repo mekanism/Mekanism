@@ -35,46 +35,46 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
-	
+
 	public static final int MAX_GAS = 10000;
-	
+
 	public static final int INJECT_USAGE = 1;
-	
+
 	public int updateDelay;
-	
+
 	public int gasOutput = 16;
-	
+
 	public boolean isActive;
-	
+
 	public boolean clientActive;
-	
+
 	public double prevEnergy;
-	
+
 	public int operatingTicks = 0;
-	
+
 	public int TICKS_REQUIRED = 100;
-	
+
 	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
-	
+
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
-	
+
 	public TileEntityChemicalDissolutionChamber()
 	{
 		super("ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.registerSound(this);
-			
+
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-				
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
@@ -82,38 +82,38 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				}
 			}
 		}
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-					
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
-			
+
 			ChargeUtils.discharge(3, this);
-			
+
 			if(inventory[0] != null && (injectTank.getGas() == null || injectTank.getStored() < injectTank.getMaxGas()))
 			{
 				injectTank.receive(GasTransmission.removeGas(inventory[0], GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
 			}
-			
+
 			if(inventory[2] != null && outputTank.getGas() != null)
 			{
 				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
 			}
-			
+
 			boolean changed = false;
-			
+
 			if(canOperate() && getEnergy() >= ENERGY_USAGE && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				setEnergy(getEnergy() - ENERGY_USAGE);
-				
+
 				if(operatingTicks < TICKS_REQUIRED)
 				{
 					operatingTicks++;
@@ -121,17 +121,17 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				}
 				else {
 					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], true, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
-					
+
 					outputTank.receive(stack, true);
 					injectTank.draw(INJECT_USAGE, true);
-					
+
 					operatingTicks = 0;
-					
+
 					if(inventory[1].stackSize <= 0)
 					{
 						inventory[1] = null;
 					}
-					
+
 					onInventoryChanged();
 				}
 			}
@@ -142,21 +142,21 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 					setActive(false);
 				}
 			}
-			
+
 			if(changed && !canOperate())
 			{
 				operatingTicks = 0;
 			}
-			
+
 			prevEnergy = getEnergy();
-			
+
 			if(outputTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 				outputTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getRight(facing)), true);
-				
+
 				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
-				
+
 				if(tileEntity instanceof IGasHandler)
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), outputTank.getGas().getGas()))
@@ -167,7 +167,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -179,10 +179,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -190,10 +190,10 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		{
 			return itemstack != null && itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, null);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
@@ -209,41 +209,41 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		{
 			return new int[] {2};
 		}
-		
+
 		return InventoryUtils.EMPTY;
 	}
-	
+
 	public int getScaledProgress(int i)
-	{	
+	{
 		return operatingTicks*i / TICKS_REQUIRED;
 	}
-	
+
 	public boolean canOperate()
 	{
 		if(inventory[1] == null)
 		{
 			return false;
 		}
-		
+
 		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
-		
+
 		if(stack == null || (outputTank.getGas() != null && (outputTank.getGas().getGas() != stack.getGas() || outputTank.getNeeded() < stack.amount)))
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		
+
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		operatingTicks = dataStream.readInt();
-		
+
 		if(dataStream.readBoolean())
 		{
 			injectTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
@@ -251,7 +251,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		else {
 			injectTank.setGas(null);
 		}
-		
+
 		if(dataStream.readBoolean())
 		{
 			outputTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
@@ -259,19 +259,19 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		else {
 			outputTank.setGas(null);
 		}
-		
+
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(isActive);
 		data.add(controlType.ordinal());
 		data.add(operatingTicks);
-		
+
 		if(injectTank.getGas() != null)
 		{
 			data.add(true);
@@ -281,7 +281,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		else {
 			data.add(false);
 		}
-		
+
 		if(outputTank.getGas() != null)
 		{
 			data.add(true);
@@ -291,101 +291,101 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		else {
 			data.add(false);
 		}
-		
+
 		return data;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        operatingTicks = nbtTags.getInteger("operatingTicks");
-        injectTank.read(nbtTags.getCompoundTag("injectTank"));
-        outputTank.read(nbtTags.getCompoundTag("gasTank"));
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("controlType", controlType.ordinal());
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setCompoundTag("injectTank", injectTank.write(new NBTTagCompound()));
-    	nbtTags.setCompoundTag("gasTank", outputTank.write(new NBTTagCompound()));
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		isActive = nbtTags.getBoolean("isActive");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+		operatingTicks = nbtTags.getInteger("operatingTicks");
+		injectTank.read(nbtTags.getCompoundTag("injectTank"));
+		outputTank.read(nbtTags.getCompoundTag("gasTank"));
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("isActive", isActive);
+		nbtTags.setInteger("controlType", controlType.ordinal());
+		nbtTags.setInteger("operatingTicks", operatingTicks);
+		nbtTags.setCompoundTag("injectTank", injectTank.write(new NBTTagCompound()));
+		nbtTags.setCompoundTag("gasTank", outputTank.write(new NBTTagCompound()));
+	}
+
 	@Override
 	public boolean canSetFacing(int i)
 	{
 		return i != 0 && i != 1;
 	}
-	
+
 	public int getScaledInjectGasLevel(int i)
 	{
 		return injectTank.getGas() != null ? injectTank.getStored()*i / MAX_GAS : 0;
 	}
-	
+
 	public int getScaledOutputGasLevel(int i)
 	{
 		return outputTank.getGas() != null ? outputTank.getStored()*i / MAX_GAS : 0;
 	}
-	
+
 	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(clientActive != active && updateDelay == 0)
-    	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
-    		
-    		updateDelay = 10;
-    		clientActive = active;
-    	}
-    }
-    
-    @Override
-    public boolean getActive()
-    {
-    	return isActive;
-    }
-    
-    @Override
-    public boolean renderUpdate()
-    {
-    	return false;
-    }
-    
-    @Override
-    public boolean lightUpdate()
-    {
-    	return true;
-    }
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(clientActive != active && updateDelay == 0)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+
+			updateDelay = 10;
+			clientActive = active;
+		}
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return isActive;
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
+	{
+		return true;
+	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
 	}
-	
+
 	@Override
-	public RedstoneControl getControlType() 
+	public RedstoneControl getControlType()
 	{
 		return controlType;
 	}
 
 	@Override
-	public void setControlType(RedstoneControl type) 
+	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
 	}
-	
+
 	@Override
 	public String getSoundPath()
 	{
@@ -405,7 +405,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		{
 			return injectTank.receive(stack, true);
 		}
-		
+
 		return 0;
 	}
 

@@ -4,14 +4,14 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelSolarGenerator extends ModelBase 
+public class ModelSolarGenerator extends ModelBase
 {
 	ModelRenderer Base;
 	ModelRenderer Base2;
 	ModelRenderer Stand;
 	ModelRenderer PhotovoltaicCells;
 
-	public ModelSolarGenerator() 
+	public ModelSolarGenerator()
 	{
 		textureWidth = 64;
 		textureHeight = 32;
@@ -41,7 +41,7 @@ public class ModelSolarGenerator extends ModelBase
 		PhotovoltaicCells.mirror = true;
 		setRotation(PhotovoltaicCells, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		Base.render(size);
@@ -50,7 +50,7 @@ public class ModelSolarGenerator extends ModelBase
 		PhotovoltaicCells.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

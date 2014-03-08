@@ -19,7 +19,7 @@ public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 	{
 		return "mekanism.precisionsawmill";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -37,7 +37,7 @@ public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 	{
 		return "mekanism:gui/GuiPrecisionSawmill.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{

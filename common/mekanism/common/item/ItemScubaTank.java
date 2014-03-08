@@ -27,7 +27,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 {
 	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
-	
+
 	public ItemScubaTank(int id)
 	{
 		super(id, EnumHelper.addArmorMaterial("SCUBATANK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
@@ -35,12 +35,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		setMaxDamage(100);
 		setNoRepair();
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		GasStack gasStack = getGas(itemstack);
-		
+
 		if(gasStack == null)
 		{
 			list.add("No gas stored.");
@@ -48,36 +48,36 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		else {
 			list.add("Stored " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
-		
+
 		list.add(EnumColor.GREY + "Flowing: " + (getFlowing(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowing(itemstack));
 	}
-	
+
 	@Override
-    public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
-    {
-    	return armorType == 1;
-    }
-	
+	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	{
+		return armorType == 1;
+	}
+
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-    {
+	{
 		return "mekanism:render/NullArmor.png";
-    }
-	
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
-    {
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 		model.modelType = ArmorModel.SCUBATANK;
-        return model;
-    }
-	
+		return model;
+	}
+
 	public void useGas(ItemStack stack)
 	{
 		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount-1));
 	}
-	
+
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
@@ -85,27 +85,27 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
-	public int getRate(ItemStack itemstack) 
+	public int getRate(ItemStack itemstack)
 	{
 		return TRANSFER_RATE;
 	}
 
 	@Override
-	public int addGas(ItemStack itemstack, GasStack stack) 
+	public int addGas(ItemStack itemstack, GasStack stack)
 	{
 		if(getGas(itemstack) != null && getGas(itemstack).getGas() != stack.getGas())
 		{
 			return 0;
 		}
-		
+
 		if(stack.getGas() != GasRegistry.getGas("oxygen"))
 		{
 			return 0;
 		}
-		
+
 		int toUse = Math.min(getMaxGas(itemstack)-getStored(itemstack), Math.min(getRate(itemstack), stack.amount));
 		setGas(itemstack, new GasStack(stack.getGas(), getStored(itemstack)+toUse));
-		
+
 		return toUse;
 	}
 
@@ -116,57 +116,57 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		{
 			return null;
 		}
-		
+
 		Gas type = getGas(itemstack).getGas();
-		
+
 		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
 		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
-		
+
 		return new GasStack(type, gasToUse);
 	}
-	
+
 	public int getStored(ItemStack itemstack)
 	{
 		return getGas(itemstack) != null ? getGas(itemstack).amount : 0;
 	}
-	
+
 	public void toggleFlowing(ItemStack stack)
 	{
 		setFlowing(stack, !getFlowing(stack));
 	}
-	
+
 	public boolean getFlowing(ItemStack stack)
 	{
 		if(stack.stackTagCompound == null)
 		{
 			return false;
 		}
-		
+
 		return stack.stackTagCompound.getBoolean("flowing");
 	}
-	
+
 	public void setFlowing(ItemStack stack, boolean flowing)
 	{
 		if(stack.stackTagCompound == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
-		
+
 		stack.stackTagCompound.setBoolean("flowing", flowing);
 	}
-	
+
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
 		return type == GasRegistry.getGas("oxygen");
 	}
-	
+
 	@Override
 	public boolean canProvideGas(ItemStack itemstack, Gas type)
 	{
 		return getGas(itemstack) != null && (type == null || getGas(itemstack).getGas() == type);
 	}
-	
+
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
@@ -174,9 +174,9 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		{
 			return null;
 		}
-		
+
 		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
-		
+
 		if(stored == null)
 		{
 			itemstack.setItemDamage(100);
@@ -184,10 +184,10 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		else {
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)stored.amount/getMaxGas(itemstack))*100)-100))));
 		}
-		
+
 		return stored;
 	}
-	
+
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
@@ -195,7 +195,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
-		
+
 		if(stack == null || stack.amount == 0)
 		{
 			itemstack.setItemDamage(100);
@@ -204,12 +204,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
-			
+
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
-	
+
 	public ItemStack getEmptyItem()
 	{
 		ItemStack empty = new ItemStack(this);
@@ -217,7 +217,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		empty.setItemDamage(100);
 		return empty;
 	}
-	
+
 	@Override
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
@@ -225,12 +225,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		setGas(empty, null);
 		empty.setItemDamage(100);
 		list.add(empty);
-		
+
 		ItemStack filled = new ItemStack(this);
 		setGas(filled, new GasStack(GasRegistry.getGas("oxygen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register) {}

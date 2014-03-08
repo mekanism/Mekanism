@@ -5,29 +5,29 @@ import net.minecraft.item.EnumToolMaterial;
 
 public class ItemMekanismShovel extends ItemMekanismTool
 {
-    private static Block blocksEffectiveAgainst[];
+	private static Block blocksEffectiveAgainst[];
 
-    public ItemMekanismShovel(int id, EnumToolMaterial enumtoolmaterial)
-    {
-        super(id, 1, enumtoolmaterial, blocksEffectiveAgainst);
-    }
+	public ItemMekanismShovel(int id, EnumToolMaterial enumtoolmaterial)
+	{
+		super(id, 1, enumtoolmaterial, blocksEffectiveAgainst);
+	}
 
-    @Override
-    public boolean canHarvestBlock(Block block)
-    {
-        if(block == Block.snow)
-        {
-            return true;
-        }
+	@Override
+	public boolean canHarvestBlock(Block block)
+	{
+		if(block == Block.snow)
+		{
+			return true;
+		}
 
-        return block == Block.blockSnow;
-    }
+		return block == Block.blockSnow;
+	}
 
-    static
-    {
-        blocksEffectiveAgainst = (new Block[]
-                {
-                    Block.grass, Block.dirt, Block.sand, Block.gravel, Block.snow, Block.blockSnow, Block.blockClay, Block.tilledField, Block.slowSand, Block.mycelium
-                });
-    }
+	static
+	{
+		blocksEffectiveAgainst = (new Block[]
+				{
+					Block.grass, Block.dirt, Block.sand, Block.gravel, Block.snow, Block.blockSnow, Block.blockClay, Block.tilledField, Block.slowSand, Block.mycelium
+				});
+	}
 }

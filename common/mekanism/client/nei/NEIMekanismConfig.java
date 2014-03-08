@@ -27,55 +27,55 @@ public class NEIMekanismConfig implements IConfigureNEI
 	{
 		API.registerRecipeHandler(new EnrichmentChamberRecipeHandler());
 		API.registerUsageHandler(new EnrichmentChamberRecipeHandler());
-		
+
 		API.registerRecipeHandler(new OsmiumCompressorRecipeHandler());
 		API.registerUsageHandler(new OsmiumCompressorRecipeHandler());
-		
+
 		API.registerRecipeHandler(new CrusherRecipeHandler());
 		API.registerUsageHandler(new CrusherRecipeHandler());
-		
+
 		API.registerRecipeHandler(new CombinerRecipeHandler());
 		API.registerUsageHandler(new CombinerRecipeHandler());
-		
+
 		API.registerRecipeHandler(new MetallurgicInfuserRecipeHandler());
 		API.registerUsageHandler(new MetallurgicInfuserRecipeHandler());
-		
+
 		API.registerRecipeHandler(new PurificationChamberRecipeHandler());
 		API.registerUsageHandler(new PurificationChamberRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ChemicalInjectionChamberRecipeHandler());
 		API.registerUsageHandler(new ChemicalInjectionChamberRecipeHandler());
-		
+
 		API.registerRecipeHandler(new MekanismRecipeHandler());
 		API.registerUsageHandler(new MekanismRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ChemicalOxidizerRecipeHandler());
 		API.registerUsageHandler(new ChemicalOxidizerRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ChemicalInfuserRecipeHandler());
 		API.registerUsageHandler(new ChemicalInfuserRecipeHandler());
-		
+
 		API.registerRecipeHandler(new RotaryCondensentratorRecipeHandler());
 		API.registerUsageHandler(new RotaryCondensentratorRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ElectrolyticSeparatorRecipeHandler());
 		API.registerUsageHandler(new ElectrolyticSeparatorRecipeHandler());
-		
+
 		API.registerRecipeHandler(new PrecisionSawmillRecipeHandler());
 		API.registerUsageHandler(new PrecisionSawmillRecipeHandler());
-		
+
 		API.registerRecipeHandler(new SalinationControllerRecipeHandler());
 		API.registerUsageHandler(new SalinationControllerRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ChemicalDissolutionChamberRecipeHandler());
 		API.registerUsageHandler(new ChemicalDissolutionChamberRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ChemicalWasherRecipeHandler());
 		API.registerUsageHandler(new ChemicalWasherRecipeHandler());
-		
+
 		API.registerRecipeHandler(new ChemicalCrystalizerRecipeHandler());
 		API.registerUsageHandler(new ChemicalCrystalizerRecipeHandler());
-		
+
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
 		API.setGuiOffset(GuiCrusher.class, 16, 6);
@@ -92,7 +92,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystalizer.class, ChemicalCrystalizerRecipeHandler.xOffset, ChemicalCrystalizerRecipeHandler.yOffset);
-		
+
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.ItemProxy.itemID);
 	}

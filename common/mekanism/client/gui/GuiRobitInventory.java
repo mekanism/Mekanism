@@ -20,37 +20,37 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiRobitInventory extends GuiMekanism
 {
 	public EntityRobit robit;
-	
+
 	public GuiRobitInventory(InventoryPlayer inventory, EntityRobit entity)
 	{
 		super(new ContainerRobitInventory(inventory, entity));
 		xSize += 25;
 		robit = entity;
 	}
-	
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.inventory"), 8, 6, 0x404040);
-        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 3, 0x404040);
-        
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    	
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitInventory.png"));
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+		fontRenderer.drawString(MekanismUtils.localize("gui.robit.inventory"), 8, 6, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 3, 0x404040);
+
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+	{
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitInventory.png"));
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-        
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 0, 18, 18);
@@ -58,7 +58,7 @@ public class GuiRobitInventory extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 18, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 176 + 25, 36, 18, 18);
@@ -66,7 +66,7 @@ public class GuiRobitInventory extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 176 + 25, 54, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 72, 18, 18);
@@ -74,7 +74,7 @@ public class GuiRobitInventory extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 90, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 108, 18, 18);
@@ -82,7 +82,7 @@ public class GuiRobitInventory extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 126, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 144, 18, 18);
@@ -90,18 +90,18 @@ public class GuiRobitInventory extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 162, 18, 18);
 		}
-    }
-    
+	}
+
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
 		super.mouseClicked(mouseX, mouseY, button);
-		
+
 		if(button == 0)
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
-			
+
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);

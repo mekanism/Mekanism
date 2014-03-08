@@ -13,7 +13,7 @@ public class Teleporter
 		public int digitTwo;
 		public int digitThree;
 		public int digitFour;
-		
+
 		public Code(int one, int two, int three, int four)
 		{
 			digitOne = one;
@@ -23,7 +23,7 @@ public class Teleporter
 		}
 
 		@Override
-		public int hashCode() 
+		public int hashCode()
 		{
 			int code = 1;
 			code = 31 * code + digitOne;
@@ -32,7 +32,7 @@ public class Teleporter
 			code = 31 * code + digitFour;
 			return code;
 		}
-		
+
 		@Override
 		public boolean equals(Object code)
 		{

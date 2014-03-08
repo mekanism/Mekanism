@@ -15,27 +15,27 @@ import com.google.common.io.ByteArrayDataInput;
 public class PacketJetpackData implements IMekanismPacket
 {
 	public JetpackPacket packetType;
-	
+
 	public String username;
 	public boolean value;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "JetpackData";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		packetType = (JetpackPacket)data[0];
-		
+
 		if(packetType == JetpackPacket.UPDATE)
 		{
 			username = (String)data[1];
 			value = (Boolean)data[2];
 		}
-	
+
 		return this;
 	}
 
@@ -43,9 +43,9 @@ public class PacketJetpackData implements IMekanismPacket
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = JetpackPacket.values()[dataStream.readInt()];
-		
-        if(packetType == JetpackPacket.FULL)
-        {
+
+		if(packetType == JetpackPacket.FULL)
+		{
 			Mekanism.jetpackOn.clear();
 
 			int amount = dataStream.readInt();
@@ -54,12 +54,12 @@ public class PacketJetpackData implements IMekanismPacket
 			{
 				Mekanism.jetpackOn.add(dataStream.readUTF());
 			}
-        }
-        else if(packetType == JetpackPacket.UPDATE)
+		}
+		else if(packetType == JetpackPacket.UPDATE)
 		{
 			String username = dataStream.readUTF();
 			boolean value = dataStream.readBoolean();
-			
+
 			if(value)
 			{
 				Mekanism.jetpackOn.add(username);
@@ -67,7 +67,7 @@ public class PacketJetpackData implements IMekanismPacket
 			else {
 				Mekanism.jetpackOn.remove(username);
 			}
-			
+
 			if(!world.isRemote)
 			{
 				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketJetpackData().setParams(JetpackPacket.UPDATE, username, value), world.provider.dimensionId);
@@ -76,7 +76,7 @@ public class PacketJetpackData implements IMekanismPacket
 		else if(packetType == JetpackPacket.MODE)
 		{
 			ItemStack stack = player.getCurrentItemOrArmor(3);
-			
+
 			if(stack != null && stack.getItem() instanceof ItemJetpack)
 			{
 				((ItemJetpack)stack.getItem()).incrementMode(stack);
@@ -88,7 +88,7 @@ public class PacketJetpackData implements IMekanismPacket
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
-		
+
 		if(packetType == JetpackPacket.UPDATE)
 		{
 			dataStream.writeUTF(username);
@@ -104,7 +104,7 @@ public class PacketJetpackData implements IMekanismPacket
 			}
 		}
 	}
-	
+
 	public static enum JetpackPacket
 	{
 		UPDATE,

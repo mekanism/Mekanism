@@ -13,13 +13,13 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 	{
 		super("PrecisionSawmill.ogg", "PrecisionSawmill", new ResourceLocation("mekanism", "gui/GuiPrecisionSawmill.png"), Mekanism.precisionSawmillUsage, 200, MachineType.PRECISION_SAWMILL.baseEnergy);
 	}
-	
+
 	@Override
 	public Map getRecipes()
 	{
 		return Recipe.PRECISION_SAWMILL.get();
 	}
-	
+
 	@Override
 	public float getVolumeMultiplier()
 	{

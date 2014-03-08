@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagList;
  * @author AidanBrady
  *
  */
-public interface ISustainedInventory 
+public interface ISustainedInventory
 {
 	/**
 	 * Sets the inventory tag list to a new value.
@@ -15,7 +15,7 @@ public interface ISustainedInventory
 	 * @param data - ItemStack parameter if using on item
 	 */
 	public void setInventory(NBTTagList nbtTags, Object... data);
-	
+
 	/**
 	 * Gets the inventory tag list from an item or block.
 	 * @param data - ItemStack parameter if using on item

@@ -286,7 +286,7 @@ public class ModelAdvancedSolarGenerator extends ModelBase
 		Panel10.render(size);
 		Panel11.render(size);
 		Panel12.render(size);
-		
+
 		MekanismRenderer.glowOn();
 		Inputlight.render(size);
 		light1.render(size);

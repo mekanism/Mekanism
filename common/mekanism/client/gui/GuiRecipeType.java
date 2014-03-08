@@ -15,17 +15,17 @@ public class GuiRecipeType extends GuiElement
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight) 
+	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
-		
+
 		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
-		
+
 		TileEntityFactory factory = (TileEntityFactory)tileEntity;
-        int displayInt = factory.getScaledRecipeProgress(15);
-        
-        guiObj.drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
-		
+		int displayInt = factory.getScaledRecipeProgress(15);
+
+		guiObj.drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
 
@@ -33,7 +33,7 @@ public class GuiRecipeType extends GuiElement
 	public void renderForeground(int xAxis, int yAxis) {}
 
 	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) 
+	public void preMouseClicked(int xAxis, int yAxis, int button)
 	{
 		if(button == 0)
 		{
@@ -49,7 +49,7 @@ public class GuiRecipeType extends GuiElement
 	}
 
 	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) 
+	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
 		if(button == 0)
 		{

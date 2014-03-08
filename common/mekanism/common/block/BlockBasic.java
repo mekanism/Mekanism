@@ -72,9 +72,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockBasic extends Block
 {
 	public Icon[][] icons = new Icon[256][6];
-	
+
 	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", blockID, 10);
-	
+
 	public BlockBasic(int id)
 	{
 		super(id, Material.iron);
@@ -82,26 +82,26 @@ public class BlockBasic extends Block
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
 	{
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-			
+
 			if(id == blockID && tileEntity instanceof TileEntityDynamicTank)
 			{
 				((TileEntityDynamicTank)tileEntity).update();
 			}
-			
+
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
 				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
 			}
 		}
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
@@ -130,7 +130,7 @@ public class BlockBasic extends Block
 			icons[14][1] = register.registerIcon("mekanism:SalinationControllerOn");
 			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
 			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
-			
+
 			glassRenderer.registerIcons(register);
 		}
 		else if(blockID == Mekanism.basicBlock2ID)
@@ -138,19 +138,19 @@ public class BlockBasic extends Block
 			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
 		}
 	}
-	
-	@Override
-    @SideOnly(Side.CLIENT)
-    public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-    {
-    	int metadata = world.getBlockMetadata(x, y, z);
 
-    	if(blockID == Mekanism.basicBlockID)
-    	{
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+
+		if(blockID == Mekanism.basicBlockID)
+		{
 			if(metadata == 6)
 			{
 				TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-	
+
 				if(side == 0 || side == 1)
 				{
 					return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
@@ -163,14 +163,14 @@ public class BlockBasic extends Block
 					return icons[6][0];
 				}
 			}
-	    	else if(metadata == 10)
-	    	{
-	    		return glassRenderer.getIcon(world, x, y, z, side);
-	    	}
+			else if(metadata == 10)
+			{
+				return glassRenderer.getIcon(world, x, y, z, side);
+			}
 			else if(metadata == 14)
 			{
 				TileEntitySalinationController tileEntity = (TileEntitySalinationController)world.getBlockTileEntity(x, y, z);
-	
+
 				if(side == tileEntity.facing)
 				{
 					return tileEntity.structured ? icons[14][1] : icons[14][0];
@@ -179,18 +179,18 @@ public class BlockBasic extends Block
 					return icons[14][2];
 				}
 			}
-	    	else {
-	     		return getIcon(side, metadata);
-	    	}
-    	}
-    	else if(blockID == Mekanism.basicBlock2ID)
-    	{
-    		return getIcon(side, metadata);
-    	}
-    	
-    	return null;
-    }
-	
+			else {
+				return getIcon(side, metadata);
+			}
+		}
+		else if(blockID == Mekanism.basicBlock2ID)
+		{
+			return getIcon(side, metadata);
+		}
+
+		return null;
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
@@ -230,16 +230,16 @@ public class BlockBasic extends Block
 		{
 			return icons[meta][0];
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public int damageDropped(int i)
 	{
 		return i;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
@@ -268,56 +268,56 @@ public class BlockBasic extends Block
 			list.add(new ItemStack(i, 1, 0));
 		}
 	}
-	
+
 	@Override
-    public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z)
-    {
-        int meta = world.getBlockMetadata(x, y, z);
-        
-        if(blockID == Mekanism.basicBlockID)
-        {
-	        if(meta == 9 || meta == 10 || meta == 11)
-	        {
-	        	TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
-	        	
-	        	if(tileEntity != null)
-	        	{
-	        		if(!world.isRemote)
-	        		{
-	        			if(tileEntity.structure != null)
-	        			{
-	        				return false;
-	        			}
-	        		}
-	        		else {
-	        			if(tileEntity.clientHasStructure)
-	        			{
-	        				return false;
-	        			}
-	        		}
-	        	}
-	        }
-        }
-        else if(blockID == Mekanism.basicBlock2ID)
-        {
-        	
-        }
-        
-        return super.canCreatureSpawn(type, world, x, y, z);
-    }
-	
+	public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+
+		if(blockID == Mekanism.basicBlockID)
+		{
+			if(meta == 9 || meta == 10 || meta == 11)
+			{
+				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
+
+				if(tileEntity != null)
+				{
+					if(!world.isRemote)
+					{
+						if(tileEntity.structure != null)
+						{
+							return false;
+						}
+					}
+					else {
+						if(tileEntity.clientHasStructure)
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
+		else if(blockID == Mekanism.basicBlock2ID)
+		{
+
+		}
+
+		return super.canCreatureSpawn(type, world, x, y, z);
+	}
+
 	@Override
 	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		
+
 		if(blockID == Mekanism.basicBlockID)
 		{
 			if(!world.isRemote && meta == 6)
-			{			
+			{
 				TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
 				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
-				
+
 				if(pos != null && pos.sideHit == bin.facing)
 				{
 					if(bin.bottomStack != null)
@@ -334,31 +334,31 @@ public class BlockBasic extends Block
 			}
 		}
 	}
-	
+
 	@Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
-    {
-    	int metadata = world.getBlockMetadata(x, y, z);
-    	
-    	if(blockID == Mekanism.basicBlockID)
-    	{
-	    	if(metadata != 6)
-	    	{
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+	{
+		int metadata = world.getBlockMetadata(x, y, z);
+
+		if(blockID == Mekanism.basicBlockID)
+		{
+			if(metadata != 6)
+			{
 				if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 				{
 					return false;
 				}
-	    	}
-	    	
-	    	if(metadata == 2)
-	    	{
-	    		if(entityplayer.isSneaking())
-	    		{
-	    			entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
-	    			return true;
-	    		}
-	    	}
-	
+			}
+
+			if(metadata == 2)
+			{
+				if(entityplayer.isSneaking())
+				{
+					entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
+					return true;
+				}
+			}
+
 			if(metadata == 14)
 			{
 				if(!entityplayer.isSneaking())
@@ -367,56 +367,56 @@ public class BlockBasic extends Block
 					return true;
 				}
 			}
-	
-	    	if(world.isRemote)
-	    	{
-	    		return true;
-	    	}
-	    	
-	    	if(metadata == 6)
-	    	{
-	    		TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
-	    		
-	    		if(bin.getItemCount() < bin.MAX_STORAGE)
-	    		{
-		    		if(bin.addTicks == 0)
-		    		{
-		    			if(entityplayer.getCurrentEquippedItem() != null)
-		    			{
-			    			ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-			    			entityplayer.setCurrentItemOrArmor(0, remain);
-			    			bin.addTicks = 5;
-		    			}
-		    		}
-		    		else {
-		    			ItemStack[] inv = entityplayer.inventory.mainInventory;
-		    			
-		    			for(int i = 0; i < inv.length; i++)
-		    			{
-		    				if(bin.getItemCount() == bin.MAX_STORAGE)
-		    				{
-		    					break;
-		    				}
-		    				
-		    				if(inv[i] != null)
-		    				{
-		    					ItemStack remain = bin.add(inv[i]);
-		    					inv[i] = remain;
-		    				}
-		    				
-			    			((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
-		    			}
-		    		}
-	    		}
-	    		
-	    		return true;
-	    	}
-	    	else if(metadata == 9 || metadata == 10 || metadata == 11)
-	    	{
+
+			if(world.isRemote)
+			{
+				return true;
+			}
+
+			if(metadata == 6)
+			{
+				TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+
+				if(bin.getItemCount() < bin.MAX_STORAGE)
+				{
+					if(bin.addTicks == 0)
+					{
+						if(entityplayer.getCurrentEquippedItem() != null)
+						{
+							ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
+							entityplayer.setCurrentItemOrArmor(0, remain);
+							bin.addTicks = 5;
+						}
+					}
+					else {
+						ItemStack[] inv = entityplayer.inventory.mainInventory;
+
+						for(int i = 0; i < inv.length; i++)
+						{
+							if(bin.getItemCount() == bin.MAX_STORAGE)
+							{
+								break;
+							}
+
+							if(inv[i] != null)
+							{
+								ItemStack remain = bin.add(inv[i]);
+								inv[i] = remain;
+							}
+
+							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
+						}
+					}
+				}
+
+				return true;
+			}
+			else if(metadata == 9 || metadata == 10 || metadata == 11)
+			{
 				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getBlockTileEntity(x, y, z)).structure != null)
 				{
 					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
-					
+
 					if(!manageInventory(entityplayer, tileEntity))
 					{
 						PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
@@ -426,25 +426,25 @@ public class BlockBasic extends Block
 						entityplayer.inventory.onInventoryChanged();
 						tileEntity.sendPacketToRenderer();
 					}
-					
+
 					return true;
 				}
-	    	}
-    	}
-    	
-        return false;
-    }
-	
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
 	{
 		return !(blockID == Mekanism.basicBlockID && world.getBlockMetadata(x, y, z) == 10);
 	}
-	
+
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
 	{
 		ItemStack itemStack = player.getCurrentEquippedItem();
-		
+
 		if(itemStack != null && tileEntity.structure != null)
 		{
 			if(FluidContainerRegistry.isEmptyContainer(itemStack))
@@ -452,21 +452,21 @@ public class BlockBasic extends Block
 				if(tileEntity.structure.fluidStored != null && tileEntity.structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
 					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.structure.fluidStored, itemStack);
-					
+
 					if(filled != null)
 					{
 						if(player.capabilities.isCreativeMode)
 						{
 							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-							
+
 							if(tileEntity.structure.fluidStored.amount == 0)
 							{
 								tileEntity.structure.fluidStored = null;
 							}
-							
+
 							return true;
 						}
-						
+
 						if(itemStack.stackSize > 1)
 						{
 							for(int i = 0; i < player.inventory.mainInventory.length; i++)
@@ -475,14 +475,14 @@ public class BlockBasic extends Block
 								{
 									player.inventory.mainInventory[i] = filled;
 									itemStack.stackSize--;
-									
+
 									tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-									
+
 									if(tileEntity.structure.fluidStored.amount == 0)
 									{
 										tileEntity.structure.fluidStored = null;
 									}
-									
+
 									return true;
 								}
 								else if(player.inventory.mainInventory[i].isItemEqual(filled))
@@ -491,14 +491,14 @@ public class BlockBasic extends Block
 									{
 										player.inventory.mainInventory[i].stackSize++;
 										itemStack.stackSize--;
-										
+
 										tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-										
+
 										if(tileEntity.structure.fluidStored.amount == 0)
 										{
 											tileEntity.structure.fluidStored = null;
 										}
-										
+
 										return true;
 									}
 								}
@@ -507,14 +507,14 @@ public class BlockBasic extends Block
 						else if(itemStack.stackSize == 1)
 						{
 							player.setCurrentItemOrArmor(0, filled);
-							
+
 							tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-							
+
 							if(tileEntity.structure.fluidStored.amount == 0)
 							{
 								tileEntity.structure.fluidStored = null;
 							}
-							
+
 							return true;
 						}
 					}
@@ -524,7 +524,7 @@ public class BlockBasic extends Block
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
 				int max = tileEntity.structure.volume*TankUpdateProtocol.FLUID_PER_TANK;
-				
+
 				if(tileEntity.structure.fluidStored == null || (tileEntity.structure.fluidStored.isFluidEqual(itemFluid) && (tileEntity.structure.fluidStored.amount+itemFluid.amount <= max)))
 				{
 					if(FluidContainerRegistry.isBucket(itemStack))
@@ -536,12 +536,12 @@ public class BlockBasic extends Block
 						else {
 							tileEntity.structure.fluidStored.amount += itemFluid.amount;
 						}
-						
+
 						if(!player.capabilities.isCreativeMode)
 						{
 							player.setCurrentItemOrArmor(0, new ItemStack(Item.bucketEmpty));
 						}
-						
+
 						return true;
 					}
 					else {
@@ -549,12 +549,12 @@ public class BlockBasic extends Block
 						{
 							itemStack.stackSize--;
 						}
-						
+
 						if(itemStack.stackSize == 0)
 						{
 							player.setCurrentItemOrArmor(0, null);
 						}
-						
+
 						if(tileEntity.structure.fluidStored == null)
 						{
 							tileEntity.structure.fluidStored = itemFluid;
@@ -562,41 +562,41 @@ public class BlockBasic extends Block
 						else {
 							tileEntity.structure.fluidStored.amount += itemFluid.amount;
 						}
-						
+
 						return true;
 					}
 				}
 			}
 		}
-			
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
 		return ClientProxy.BASIC_RENDER_ID;
 	}
-    
+
 	@Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z) 
-    {
-        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-        int metadata = world.getBlockMetadata(x, y, z);
-		
+	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		int metadata = world.getBlockMetadata(x, y, z);
+
 		if(tileEntity instanceof IActiveState)
 		{
 			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
@@ -604,23 +604,23 @@ public class BlockBasic extends Block
 				return 15;
 			}
 		}
-        
+
 		if(blockID == Mekanism.basicBlockID)
 		{
-	        switch(metadata)
-	        {
-	        	case 2:
-	        		return 8;
-	        	case 4:
-	        		return 15;
-	        	case 7:
-	        		return 12;
-	        }
+			switch(metadata)
+			{
+				case 2:
+					return 8;
+				case 4:
+					return 15;
+				case 7:
+					return 12;
+			}
 		}
-        
-        return 0;
-    }
-	
+
+		return 0;
+	}
+
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
@@ -632,10 +632,10 @@ public class BlockBasic extends Block
 		{
 			return metadata == 0;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
@@ -665,137 +665,137 @@ public class BlockBasic extends Block
 					return new TileEntitySalinationTank();
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
 		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityBasicBlock)
 		{
-		   	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-	        int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-	        int height = Math.round(entityliving.rotationPitch);
-	        int change = 3;
-	        
-	        if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
-	        {
-		        if(height >= 65)
-		        {
-		        	change = 1;
-		        }
-		        else if(height <= -65)
-		        {
-		        	change = 0;
-		        }
-	        }
-	        
-	        if(change != 0 && change != 1)
-	        {
-		        switch(side)
-		        {
-		        	case 0: change = 2; break;
-		        	case 1: change = 5; break;
-		        	case 2: change = 3; break;
-		        	case 3: change = 4; break;
-		        }
-	        }
-	        
-	        tileEntity.setFacing((short)change);
-	        tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
-	        
-	        if(tileEntity instanceof IBoundingBlock)
-	        {
-	        	((IBoundingBlock)tileEntity).onPlace();
-	        }
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+			int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+			int height = Math.round(entityliving.rotationPitch);
+			int change = 3;
+
+			if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
+			{
+				if(height >= 65)
+				{
+					change = 1;
+				}
+				else if(height <= -65)
+				{
+					change = 0;
+				}
+			}
+
+			if(change != 0 && change != 1)
+			{
+				switch(side)
+				{
+					case 0: change = 2; break;
+					case 1: change = 5; break;
+					case 2: change = 3; break;
+					case 3: change = 4; break;
+				}
+			}
+
+			tileEntity.setFacing((short)change);
+			tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+
+			if(tileEntity instanceof IBoundingBlock)
+			{
+				((IBoundingBlock)tileEntity).onPlace();
+			}
 		}
-        
+
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
-		
+
 		if(!world.isRemote && world.getBlockTileEntity(x, y, z) != null)
 		{
 			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-			
+
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
 				((TileEntityDynamicTank)tileEntity).update();
 			}
 		}
 	}
-	
+
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		ItemStack ret = new ItemStack(blockID, 1, world.getBlockMetadata(x, y, z));
-		
+
 		if(blockID == Mekanism.basicBlockID)
 		{
 			if(ret.getItemDamage() == 6)
 			{
 				TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
 				InventoryBin inv = new InventoryBin(ret);
-				
+
 				inv.setItemCount(tileEntity.getItemCount());
-				
+
 				if(tileEntity.getItemCount() > 0)
 				{
 					inv.setItemType(tileEntity.itemType);
 				}
 			}
 		}
-		
+
 		return ret;
 	}
-	
-    @Override
-    public int idDropped(int i, Random random, int j)
-    {
-    	return 0;
-    }
-	
-    @Override
-    public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
-    {
-    	if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
-    	{
-	    	TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
-	    	
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            
-            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
-	        
-	        world.spawnEntityInWorld(entityItem);
-    	}
-    	
-        return world.setBlockToAir(x, y, z);
-    }
-	
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock) 
+
+	@Override
+	public int idDropped(int i, Random random, int j)
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	{
+		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		{
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+
+			float motion = 0.7F;
+			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+
+			world.spawnEntityInWorld(entityItem);
+		}
+
+		return world.setBlockToAir(x, y, z);
+	}
+
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
 		ItemStack itemStack = getPickBlock(null, world, x, y, z);
-        
-        world.setBlockToAir(x, y, z);
-        
-        if(!returnBlock)
-        {
-            float motion = 0.7F;
-            double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-            
-            EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
-	        
-            world.spawnEntityInWorld(entityItem);
-        }
-        
-        return itemStack;
+
+		world.setBlockToAir(x, y, z);
+
+		if(!returnBlock)
+		{
+			float motion = 0.7F;
+			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+
+			world.spawnEntityInWorld(entityItem);
+		}
+
+		return itemStack;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)

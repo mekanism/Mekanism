@@ -11,14 +11,14 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public abstract class TransporterFilter 
-{	
+public abstract class TransporterFilter
+{
 	public EnumColor color;
-	
+
 	public abstract boolean canFilter(ItemStack itemStack);
-	
+
 	public abstract InvStack getStackFromInventory(IInventory inv, ForgeDirection side);
-	
+
 	public void write(NBTTagCompound nbtTags)
 	{
 		if(color != null)
@@ -26,7 +26,7 @@ public abstract class TransporterFilter
 			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
 		}
 	}
-	
+
 	protected void read(NBTTagCompound nbtTags)
 	{
 		if(nbtTags.hasKey("color"))
@@ -34,7 +34,7 @@ public abstract class TransporterFilter
 			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
 		}
 	}
-	
+
 	public void write(ArrayList data)
 	{
 		if(color != null)
@@ -45,11 +45,11 @@ public abstract class TransporterFilter
 			data.add(-1);
 		}
 	}
-	
+
 	protected void read(ByteArrayDataInput dataStream)
 	{
 		int c = dataStream.readInt();
-		
+
 		if(c != -1)
 		{
 			color = TransporterUtils.colors.get(c);
@@ -58,13 +58,13 @@ public abstract class TransporterFilter
 			color = null;
 		}
 	}
-	
+
 	public static TransporterFilter readFromNBT(NBTTagCompound nbtTags)
 	{
 		int type = nbtTags.getInteger("type");
-		
+
 		TransporterFilter filter = null;
-		
+
 		if(type == 0)
 		{
 			filter = new TItemStackFilter();
@@ -72,18 +72,18 @@ public abstract class TransporterFilter
 		else {
 			filter = new TOreDictFilter();
 		}
-		
+
 		filter.read(nbtTags);
-		
+
 		return filter;
 	}
-	
+
 	public static TransporterFilter readFromPacket(ByteArrayDataInput dataStream)
 	{
 		int type = dataStream.readInt();
-		
+
 		TransporterFilter filter = null;
-		
+
 		if(type == 0)
 		{
 			filter = new TItemStackFilter();
@@ -92,20 +92,20 @@ public abstract class TransporterFilter
 		{
 			filter = new TOreDictFilter();
 		}
-		
+
 		filter.read(dataStream);
-		
+
 		return filter;
 	}
-	
+
 	@Override
-	public int hashCode() 
+	public int hashCode()
 	{
 		int code = 1;
 		code = 31 * code + (color != null ? color.ordinal() : -1);
 		return code;
 	}
-	
+
 	@Override
 	public boolean equals(Object filter)
 	{

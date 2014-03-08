@@ -34,67 +34,67 @@ import com.google.common.io.ByteArrayDataInput;
 public class TileEntityChargepad extends TileEntityElectricBlock implements IActiveState, IHasSound
 {
 	public boolean isActive;
-	
+
 	public boolean prevActive;
-	
+
 	public Random random = new Random();
-	
+
 	public TileEntityChargepad()
 	{
 		super("Chargepad", MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(!worldObj.isRemote)
 		{
 			isActive = false;
-			
+
 			List<EntityLiving> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
-			
+
 			for(EntityLivingBase entity : entities)
 			{
 				if(entity instanceof EntityPlayer || entity instanceof EntityRobit)
 				{
 					isActive = true;
 				}
-				
+
 				if(getEnergy() > 0)
 				{
 					if(entity instanceof EntityRobit)
 					{
 						EntityRobit robit = (EntityRobit)entity;
-						
+
 						double canGive = Math.min(getEnergy(), 1000);
 						double toGive = Math.min(robit.MAX_ELECTRICITY-robit.getEnergy(), canGive);
-						
+
 						robit.setEnergy(robit.getEnergy() + toGive);
 						setEnergy(getEnergy() - toGive);
 					}
 					else if(entity instanceof EntityPlayer)
 					{
 						EntityPlayer player = (EntityPlayer)entity;
-						
+
 						double prevEnergy = getEnergy();
-						
+
 						for(ItemStack itemstack : player.inventory.armorInventory)
 						{
 							chargeItemStack(itemstack);
-							
+
 							if(prevEnergy != getEnergy())
 							{
 								break;
 							}
 						}
-						
+
 						for(ItemStack itemstack : player.inventory.mainInventory)
 						{
 							chargeItemStack(itemstack);
-							
+
 							if(prevEnergy != getEnergy())
 							{
 								break;
@@ -103,7 +103,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 					}
 				}
 			}
-			
+
 			if(prevActive != isActive)
 			{
 				worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.1, zCoord + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
@@ -112,14 +112,14 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 		}
 		else {
 			Mekanism.proxy.registerSound(this);
-			
+
 			if(isActive)
 			{
 				worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
 			}
 		}
 	}
-	
+
 	public void chargeItemStack(ItemStack itemstack)
 	{
 		if(itemstack != null)
@@ -136,67 +136,67 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			else if(itemstack.getItem() instanceof IEnergyContainerItem)
 			{
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
-				
+
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
 				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE)));
-				
+
 				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 		}
 	}
-	
+
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		
+
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.unregisterSound(this);
 		}
 	}
-	
+
 	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing).getOpposite());
 	}
-	
+
 	@Override
 	public boolean getActive()
 	{
 		return isActive;
 	}
-	
-	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(prevActive != active)
-    	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
-    	}
-    	
-    	prevActive = active;
-    }
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        isActive = nbtTags.getBoolean("isActive");
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setBoolean("isActive", isActive);
-    }
-	
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(prevActive != active)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+		}
+
+		prevActive = active;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		isActive = nbtTags.getBoolean("isActive");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("isActive", isActive);
+	}
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
@@ -204,7 +204,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 		isActive = dataStream.readBoolean();
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -212,7 +212,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 		data.add(isActive);
 		return data;
 	}
-	
+
 	@Override
 	public boolean canSetFacing(int side)
 	{
@@ -220,19 +220,19 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 
 	@Override
-	public String getSoundPath() 
+	public String getSoundPath()
 	{
 		return "Chargepad.ogg";
 	}
 
 	@Override
-	public float getVolumeMultiplier() 
+	public float getVolumeMultiplier()
 	{
 		return 0.4F;
 	}
-	
+
 	@Override
-	public boolean renderUpdate() 
+	public boolean renderUpdate()
 	{
 		return false;
 	}

@@ -13,10 +13,10 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 {
 	/** The inventory slot itemstacks used by this block. */
 	public ItemStack[] inventory;
-	
+
 	/** The full name of this machine. */
 	public String fullName;
-	
+
 	/**
 	 * A simple tile entity with a container and facing state.
 	 * @param name - full name of this tile entity
@@ -25,144 +25,144 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
 		fullName = name;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-        
-        if(handleInventory())
-        {
-	        NBTTagList tagList = nbtTags.getTagList("Items");
-	        inventory = new ItemStack[getSizeInventory()];
-	
-	        for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
-	        {
-	            NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
-	            byte slotID = tagCompound.getByte("Slot");
-	
-	            if(slotID >= 0 && slotID < getSizeInventory())
-	            {
-	                setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
-	            }
-	        }
-        }
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        if(handleInventory())
-        {
-	        NBTTagList tagList = new NBTTagList();
-	
-	        for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
-	        {
-	            if(getStackInSlot(slotCount) != null)
-	            {
-	                NBTTagCompound tagCompound = new NBTTagCompound();
-	                tagCompound.setByte("Slot", (byte)slotCount);
-	                getStackInSlot(slotCount).writeToNBT(tagCompound);
-	                tagList.appendTag(tagCompound);
-	            }
-	        }
-	
-	        nbtTags.setTag("Items", tagList);
-        }
-    }
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		if(handleInventory())
+		{
+			NBTTagList tagList = nbtTags.getTagList("Items");
+			inventory = new ItemStack[getSizeInventory()];
+
+			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
+			{
+				NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
+				byte slotID = tagCompound.getByte("Slot");
+
+				if(slotID >= 0 && slotID < getSizeInventory())
+				{
+					setInventorySlotContents(slotID, ItemStack.loadItemStackFromNBT(tagCompound));
+				}
+			}
+		}
+	}
 
 	@Override
-	public int getSizeInventory() 
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		if(handleInventory())
+		{
+			NBTTagList tagList = new NBTTagList();
+
+			for(int slotCount = 0; slotCount < getSizeInventory(); slotCount++)
+			{
+				if(getStackInSlot(slotCount) != null)
+				{
+					NBTTagCompound tagCompound = new NBTTagCompound();
+					tagCompound.setByte("Slot", (byte)slotCount);
+					getStackInSlot(slotCount).writeToNBT(tagCompound);
+					tagList.appendTag(tagCompound);
+				}
+			}
+
+			nbtTags.setTag("Items", tagList);
+		}
+	}
+
+	@Override
+	public int getSizeInventory()
 	{
 		return inventory.length;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slotID) 
+	public ItemStack getStackInSlot(int slotID)
 	{
 		return inventory[slotID];
 	}
 
 	@Override
-    public ItemStack decrStackSize(int slotID, int amount)
-    {
-        if(getStackInSlot(slotID) != null)
-        {
-            ItemStack tempStack;
+	public ItemStack decrStackSize(int slotID, int amount)
+	{
+		if(getStackInSlot(slotID) != null)
+		{
+			ItemStack tempStack;
 
-            if(getStackInSlot(slotID).stackSize <= amount)
-            {
-                tempStack = getStackInSlot(slotID);
-                setInventorySlotContents(slotID, null);
-                return tempStack;
-            }
-            else {
-                tempStack = getStackInSlot(slotID).splitStack(amount);
+			if(getStackInSlot(slotID).stackSize <= amount)
+			{
+				tempStack = getStackInSlot(slotID);
+				setInventorySlotContents(slotID, null);
+				return tempStack;
+			}
+			else {
+				tempStack = getStackInSlot(slotID).splitStack(amount);
 
-                if(getStackInSlot(slotID).stackSize == 0)
-                {
-                	setInventorySlotContents(slotID, null);
-                }
+				if(getStackInSlot(slotID).stackSize == 0)
+				{
+					setInventorySlotContents(slotID, null);
+				}
 
-                return tempStack;
-            }
-        }
-        else {
-            return null;
-        }
-    }
-
-	@Override
-    public ItemStack getStackInSlotOnClosing(int slotID)
-    {
-        if(getStackInSlot(slotID) != null)
-        {
-            ItemStack tempStack = getStackInSlot(slotID);
-            setInventorySlotContents(slotID, null);
-            return tempStack;
-        }
-        else {
-            return null;
-        }
-    }
+				return tempStack;
+			}
+		}
+		else {
+			return null;
+		}
+	}
 
 	@Override
-    public void setInventorySlotContents(int slotID, ItemStack itemstack)
-    {
-        inventory[slotID] = itemstack;
+	public ItemStack getStackInSlotOnClosing(int slotID)
+	{
+		if(getStackInSlot(slotID) != null)
+		{
+			ItemStack tempStack = getStackInSlot(slotID);
+			setInventorySlotContents(slotID, null);
+			return tempStack;
+		}
+		else {
+			return null;
+		}
+	}
 
-        if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-        {
-            itemstack.stackSize = getInventoryStackLimit();
-        }
-    }
-	
+	@Override
+	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	{
+		inventory[slotID] = itemstack;
+
+		if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+		{
+			itemstack.stackSize = getInventoryStackLimit();
+		}
+	}
+
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
 		return !isInvalid();
 	}
-	
+
 	@Override
 	public String getInvName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".name");
 	}
-	
+
 	@Override
-	public int getInventoryStackLimit() 
+	public int getInventoryStackLimit()
 	{
 		return 64;
 	}
-	
+
 	@Override
 	public void openChest() {}
 
 	@Override
 	public void closeChest() {}
-	
+
 	@Override
 	public boolean isInvNameLocalized()
 	{
@@ -174,15 +174,15 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean canInsertItem(int slotID, ItemStack itemstack, int side)
 	{
 		return isItemValidForSlot(slotID, itemstack);
 	}
-	
+
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return InventoryUtils.EMPTY;
 	}
@@ -194,49 +194,49 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void setInventory(NBTTagList nbtTags, Object... data) 
+	public void setInventory(NBTTagList nbtTags, Object... data)
 	{
 		if(nbtTags == null || nbtTags.tagCount() == 0 || !handleInventory())
 		{
 			return;
 		}
-		
-        inventory = new ItemStack[getSizeInventory()];
 
-        for(int slots = 0; slots < nbtTags.tagCount(); slots++)
-        {
-            NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.tagAt(slots);
-            byte slotID = tagCompound.getByte("Slot");
+		inventory = new ItemStack[getSizeInventory()];
 
-            if(slotID >= 0 && slotID < inventory.length)
-            {
-                inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
-            }
-        }
+		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
+		{
+			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.tagAt(slots);
+			byte slotID = tagCompound.getByte("Slot");
+
+			if(slotID >= 0 && slotID < inventory.length)
+			{
+				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
+			}
+		}
 	}
 
 	@Override
 	public NBTTagList getInventory(Object... data)
 	{
-        NBTTagList tagList = new NBTTagList();
+		NBTTagList tagList = new NBTTagList();
 
-        if(handleInventory())
-        {
-	        for(int slots = 0; slots < inventory.length; slots++)
-	        {
-	            if(inventory[slots] != null)
-	            {
-	                NBTTagCompound tagCompound = new NBTTagCompound();
-	                tagCompound.setByte("Slot", (byte)slots);
-	                inventory[slots].writeToNBT(tagCompound);
-	                tagList.appendTag(tagCompound);
-	            }
-	        }
-        }
+		if(handleInventory())
+		{
+			for(int slots = 0; slots < inventory.length; slots++)
+			{
+				if(inventory[slots] != null)
+				{
+					NBTTagCompound tagCompound = new NBTTagCompound();
+					tagCompound.setByte("Slot", (byte)slots);
+					inventory[slots].writeToNBT(tagCompound);
+					tagList.appendTag(tagCompound);
+				}
+			}
+		}
 
-        return tagList;
+		return tagList;
 	}
-	
+
 	public boolean handleInventory()
 	{
 		return true;

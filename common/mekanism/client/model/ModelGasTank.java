@@ -7,7 +7,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 @SideOnly(Side.CLIENT)
-public class ModelGasTank extends ModelBase 
+public class ModelGasTank extends ModelBase
 {
 	ModelRenderer Panel1;
 	ModelRenderer Panel2;
@@ -77,7 +77,7 @@ public class ModelGasTank extends ModelBase
 		Exit.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

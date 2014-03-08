@@ -7,7 +7,7 @@ import net.minecraftforge.fluids.FluidStack;
  * @author AidanBrady
  *
  */
-public interface ISustainedTank 
+public interface ISustainedTank
 {
 	/**
 	 * Sets the tank tag list to a new value.
@@ -15,14 +15,14 @@ public interface ISustainedTank
 	 * @param data - ItemStack parameter if using on item
 	 */
 	public void setFluidStack(FluidStack fluidStack, Object... data);
-	
+
 	/**
 	 * Gets the tank tag list from an item or block.
 	 * @param data - ItemStack parameter if using on item
 	 * @return inventory tag list
 	 */
 	public FluidStack getFluidStack(Object... data);
-	
+
 	/**
 	 * Whether or not this block or item has an internal tank.
 	 * @param data - ItemStack parameter if using on item

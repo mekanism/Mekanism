@@ -33,28 +33,28 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public static int xOffset = 5;
 	public static int yOffset = 3;
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("gui.chemicalDissolutionChamber.short");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "chemicaldissolutionchamber";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/nei/GuiChemicalDissolutionChamber.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -83,15 +83,15 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		GasStack gas = ((CachedIORecipe)arecipes.get(i)).outputStack;
-		
+
 		float f = ticksPassed % 20 / 20.0F;
 		drawProgressBar(64-xOffset, 40-yOffset, 176, 63, 48, 8, f, 0);
-		
+
 		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
-		
+
 		if(gas != null)
 		{
-        	displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, gas);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, gas);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -133,15 +133,15 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 			super.loadCraftingRecipes(outputId, results);
 		}
 	}
-	
+
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
 			currenttip.add(GasRegistry.getGas("sulfuricAcid").getLocalizedName());
@@ -150,20 +150,20 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
 		}
-		
+
 		return super.handleTooltip(gui, currenttip, recipe);
 	}
-	
+
 	@Override
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack stack = null;
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
 			stack = new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
@@ -172,7 +172,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
-		
+
 		if(stack != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
@@ -190,20 +190,20 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack stack = null;
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
 			stack = new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
@@ -212,7 +212,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
-		
+
 		if(stack != null)
 		{
 			if(button == 0)
@@ -230,7 +230,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.mouseClicked(gui, button, recipe);
 	}
 

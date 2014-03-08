@@ -30,26 +30,26 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PacketDigitalMinerGui implements IMekanismPacket
 {
 	public Coord4D object3D;
-	
+
 	public MinerGuiPacket packetType;
-	
+
 	public int type;
-	
+
 	public int windowId = -1;
-	
+
 	public int index = -1;
-	
+
 	@Override
 	public String getName()
 	{
 		return "DigitalMinerGui";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		packetType = (MinerGuiPacket)data[0];
-		
+
 		object3D = (Coord4D)data[1];
 		type = (Integer)data[2];
 
@@ -66,33 +66,33 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 			windowId = (Integer)data[3];
 			index = (Integer)data[4];
 		}
-		
+
 		return this;
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = MinerGuiPacket.values()[dataStream.readInt()];
-		
+
 		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-		
+
 		type = dataStream.readInt();
-		
+
 		if(packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
 			windowId = dataStream.readInt();
 		}
-		
+
 		if(packetType == MinerGuiPacket.SERVER_INDEX || packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
 			index = dataStream.readInt();
 		}
-		
+
 		if(!world.isRemote)
-		{	
+		{
 			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
-			
+
 			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
 			{
 				openServerGui(packetType, type, worldServer, (EntityPlayerMP)player, object3D, index);
@@ -110,7 +110,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 					{
 						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, type, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
 					}
-					
+
 					player.openContainer.windowId = windowId;
 				} catch(Exception e) {
 					e.printStackTrace();
@@ -118,13 +118,13 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 			}
 		}
 	}
-	
+
 	public static void openServerGui(MinerGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i)
 	{
 		Container container = null;
-		
+
 		playerMP.closeContainer();
-		
+
 		if(guiType == 0)
 		{
 			container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
@@ -137,34 +137,34 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		{
 			container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
-		
-        playerMP.incrementWindowID();
-        int window = playerMP.currentWindowId;
-        
-        if(t == MinerGuiPacket.SERVER)
-        {
-        	PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketDigitalMinerGui().setParams(MinerGuiPacket.CLIENT, obj, guiType, window), playerMP);
-        }
-        else if(t == MinerGuiPacket.SERVER_INDEX)
-        {
-        	PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketDigitalMinerGui().setParams(MinerGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
-        }
-        
-        playerMP.openContainer = container;
-        playerMP.openContainer.windowId = window;
-        playerMP.openContainer.addCraftingToCrafters(playerMP);
-        
-        if(guiType == 0)
-        {
-        	TileEntityDigitalMiner tile = (TileEntityDigitalMiner)obj.getTileEntity(world);
-        	
-        	for(EntityPlayer player : tile.playersUsing)
-        	{
-        		PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(obj, tile.getFilterPacket(new ArrayList())), player);
-        	}
-        }
+
+		playerMP.incrementWindowID();
+		int window = playerMP.currentWindowId;
+
+		if(t == MinerGuiPacket.SERVER)
+		{
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketDigitalMinerGui().setParams(MinerGuiPacket.CLIENT, obj, guiType, window), playerMP);
+		}
+		else if(t == MinerGuiPacket.SERVER_INDEX)
+		{
+			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketDigitalMinerGui().setParams(MinerGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
+		}
+
+		playerMP.openContainer = container;
+		playerMP.openContainer.windowId = window;
+		playerMP.openContainer.addCraftingToCrafters(playerMP);
+
+		if(guiType == 0)
+		{
+			TileEntityDigitalMiner tile = (TileEntityDigitalMiner)obj.getTileEntity(world);
+
+			for(EntityPlayer player : tile.playersUsing)
+			{
+				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(obj, tile.getFilterPacket(new ArrayList())), player);
+			}
+		}
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	public GuiScreen getGui(MinerGuiPacket packetType, int type, EntityPlayer player, World world, int x, int y, int z, int index)
 	{
@@ -200,7 +200,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -208,26 +208,26 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
-		
+
 		dataStream.writeInt(object3D.xCoord);
 		dataStream.writeInt(object3D.yCoord);
 		dataStream.writeInt(object3D.zCoord);
-		
+
 		dataStream.writeInt(object3D.dimensionId);
-		
+
 		dataStream.writeInt(type);
-		
+
 		if(packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
 			dataStream.writeInt(windowId);
 		}
-		
+
 		if(packetType == MinerGuiPacket.SERVER_INDEX || packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
 			dataStream.writeInt(index);
 		}
 	}
-	
+
 	public static enum MinerGuiPacket
 	{
 		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX

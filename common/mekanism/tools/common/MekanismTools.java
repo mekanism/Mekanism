@@ -41,7 +41,7 @@ public class MekanismTools implements IModule
 {
 	@Instance("MekanismTools")
 	public static MekanismTools instance;
-	
+
 	/** MekanismTools version number */
 	public static Version versionNumber = new Version(6, 0, 3);
 
@@ -73,7 +73,7 @@ public class MekanismTools implements IModule
 	public static Item IronPaxel;
 	public static Item DiamondPaxel;
 	public static Item GoldPaxel;
-	
+
 	//Glowstone Items
 	public static Item GlowstonePaxel;
 	public static Item GlowstonePickaxe;
@@ -85,7 +85,7 @@ public class MekanismTools implements IModule
 	public static Item GlowstoneChestplate;
 	public static Item GlowstoneLeggings;
 	public static Item GlowstoneBoots;
-	
+
 	//Redstone Items
 	public static Item BronzePaxel;
 	public static Item BronzePickaxe;
@@ -97,7 +97,7 @@ public class MekanismTools implements IModule
 	public static Item BronzeChestplate;
 	public static Item BronzeLeggings;
 	public static Item BronzeBoots;
-	
+
 	//Osmium Items
 	public static Item OsmiumPaxel;
 	public static Item OsmiumPickaxe;
@@ -109,7 +109,7 @@ public class MekanismTools implements IModule
 	public static Item OsmiumChestplate;
 	public static Item OsmiumLeggings;
 	public static Item OsmiumBoots;
-	
+
 	//Obsidian Items
 	public static Item ObsidianHelmet;
 	public static Item ObsidianChestplate;
@@ -121,7 +121,7 @@ public class MekanismTools implements IModule
 	public static Item ObsidianShovel;
 	public static Item ObsidianHoe;
 	public static Item ObsidianSword;
-	
+
 	//Lazuli Items
 	public static Item LazuliPaxel;
 	public static Item LazuliPickaxe;
@@ -133,7 +133,7 @@ public class MekanismTools implements IModule
 	public static Item LazuliChestplate;
 	public static Item LazuliLeggings;
 	public static Item LazuliBoots;
-	
+
 	//Steel Items
 	public static Item SteelPaxel;
 	public static Item SteelPickaxe;
@@ -145,24 +145,24 @@ public class MekanismTools implements IModule
 	public static Item SteelChestplate;
 	public static Item SteelLeggings;
 	public static Item SteelBoots;
-	
+
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
 		//Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
-		
+
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
-		
+
 		//Load this module
 		addItems();
 		addRecipes();
-		
+
 		//Finalization
 		Mekanism.logger.info("[MekanismTools] Loaded module.");
 	}
-	
+
 	public void addRecipes()
 	{
 		//Crafting Recipes
@@ -182,7 +182,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GoldPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), Item.axeGold, Character.valueOf('Y'), Item.pickaxeGold, Character.valueOf('Z'), Item.shovelGold, Character.valueOf('T'), Item.stick
 		}));
-		
+
 		//Obsidian
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ObsidianHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), "ingotRefinedObsidian"
@@ -214,7 +214,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(ObsidianSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), "ingotRefinedObsidian", Character.valueOf('T'), Item.stick
 		}));
-		
+
 		//Glowstone
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowstonePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), GlowstoneAxe, Character.valueOf('Y'), GlowstonePickaxe, Character.valueOf('Z'), GlowstoneShovel, Character.valueOf('T'), Item.stick
@@ -246,7 +246,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowstoneBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotRefinedGlowstone"
 		}));
-		
+
 		//Lazuli
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(LazuliHelmet, 1), new Object[] {
 			"***", "* *", Character.valueOf('*'), new ItemStack(Item.dyePowder, 1, 4)
@@ -278,7 +278,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(LazuliSword, 1), new Object[] {
 			"X", "X", "T", Character.valueOf('X'), new ItemStack(Item.dyePowder, 1, 4), Character.valueOf('T'), Item.stick
 		}));
-		
+
 		//Osmium
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(OsmiumPaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), OsmiumAxe, Character.valueOf('Y'), OsmiumPickaxe, Character.valueOf('Z'), OsmiumShovel, Character.valueOf('T'), Item.stick
@@ -310,7 +310,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(OsmiumBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotOsmium"
 		}));
-		
+
 		//Bronze
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BronzePaxel, 1), new Object[] {
 			"XYZ", " T ", " T ", Character.valueOf('X'), BronzeAxe, Character.valueOf('Y'), BronzePickaxe, Character.valueOf('Z'), BronzeShovel, Character.valueOf('T'), Item.stick
@@ -342,7 +342,7 @@ public class MekanismTools implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BronzeBoots, 1), new Object[] {
 			"* *", "* *", Character.valueOf('*'), "ingotBronze"
 		}));
-		
+
 		//Steel
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(SteelPaxel, 1), new Object[] {
 			"XYZ", " I ", " I ", Character.valueOf('X'), SteelAxe, Character.valueOf('Y'), SteelPickaxe, Character.valueOf('Z'), SteelShovel, Character.valueOf('I'), Item.ingotIron
@@ -375,7 +375,7 @@ public class MekanismTools implements IModule
 			"I *", "* I", Character.valueOf('*'), "ingotSteel", Character.valueOf('I'), Item.ingotIron
 		}));
 	}
-	
+
 	public void addItems()
 	{
 		//Declarations
@@ -546,12 +546,12 @@ public class MekanismTools implements IModule
 		BronzeShovel = new ItemMekanismShovel(Mekanism.configuration.getItem("BronzeShovel", 11407).getInt(), toolBRONZE).setUnlocalizedName("BronzeShovel");
 		BronzeHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("BronzeHoe", 11408).getInt(), toolBRONZE).setUnlocalizedName("BronzeHoe");
 		BronzeSword = new ItemMekanismSword(Mekanism.configuration.getItem("BronzeSword", 11409).getInt(), toolBRONZE).setUnlocalizedName("BronzeSword");
-		
+
 		MinecraftForge.setToolClass(BronzePaxel, "paxel", toolBRONZE2.getHarvestLevel());
 		MinecraftForge.setToolClass(BronzePickaxe, "pickaxe", toolBRONZE.getHarvestLevel());
 		MinecraftForge.setToolClass(BronzeAxe, "axe", toolBRONZE.getHarvestLevel());
 		MinecraftForge.setToolClass(BronzeShovel, "shovel", toolBRONZE.getHarvestLevel());
-		
+
 		//Osmium
 		OsmiumHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumHelmet", 11410).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
 		OsmiumChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("OsmiumChestplate", 11411).getInt(), armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 1)).setUnlocalizedName("OsmiumChestplate");
@@ -563,12 +563,12 @@ public class MekanismTools implements IModule
 		OsmiumShovel = new ItemMekanismShovel(Mekanism.configuration.getItem("OsmiumShovel", 11417).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumShovel");
 		OsmiumHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("OsmiumHoe", 11418).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumHoe");
 		OsmiumSword = new ItemMekanismSword(Mekanism.configuration.getItem("OsmiumSword", 11419).getInt(), toolOSMIUM).setUnlocalizedName("OsmiumSword");
-		
+
 		MinecraftForge.setToolClass(OsmiumPaxel, "paxel", toolOSMIUM2.getHarvestLevel());
 		MinecraftForge.setToolClass(OsmiumPickaxe, "pickaxe", toolOSMIUM.getHarvestLevel());
 		MinecraftForge.setToolClass(OsmiumAxe, "axe", toolOSMIUM.getHarvestLevel());
 		MinecraftForge.setToolClass(OsmiumShovel, "shovel", toolOSMIUM.getHarvestLevel());
-		
+
 		//Obsidian
 		ObsidianHelmet = (new ItemMekanismArmor(Mekanism.configuration.getItem("ObsidianHelmet", 11420).getInt(), armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setUnlocalizedName("ObsidianHelmet");
 		ObsidianChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("ObsidianChestplate", 11421).getInt(), armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 1)).setUnlocalizedName("ObsidianChestplate");
@@ -580,12 +580,12 @@ public class MekanismTools implements IModule
 		ObsidianShovel = new ItemMekanismShovel(Mekanism.configuration.getItem("ObsidianShovel", 11427).getInt(), toolOBSIDIAN).setUnlocalizedName("ObsidianShovel");
 		ObsidianHoe = new ItemMekanismHoe(Mekanism.configuration.getItem("ObsidianHoe", 11428).getInt(), toolOBSIDIAN).setUnlocalizedName("ObsidianHoe");
 		ObsidianSword = new ItemMekanismSword(Mekanism.configuration.getItem("ObsidianSword", 11429).getInt(), toolOBSIDIAN).setUnlocalizedName("ObsidianSword");
-		
+
 		MinecraftForge.setToolClass(ObsidianPaxel, "paxel", toolOBSIDIAN2.getHarvestLevel());
 		MinecraftForge.setToolClass(ObsidianPickaxe, "pickaxe", toolOBSIDIAN.getHarvestLevel());
 		MinecraftForge.setToolClass(ObsidianAxe, "axe", toolOBSIDIAN.getHarvestLevel());
 		MinecraftForge.setToolClass(ObsidianShovel, "shovel", toolOBSIDIAN.getHarvestLevel());
-		
+
 		//Lazuli
 		LazuliPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("LazuliPaxel", 11430).getInt(), toolLAZULI2).setUnlocalizedName("LazuliPaxel");
 		LazuliPickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("LazuliPickaxe", 11431).getInt(), toolLAZULI).setUnlocalizedName("LazuliPickaxe");
@@ -597,12 +597,12 @@ public class MekanismTools implements IModule
 		LazuliChestplate = (new ItemMekanismArmor(Mekanism.configuration.getItem("LazuliChestplate", 11437).getInt(), armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setUnlocalizedName("LazuliChestplate");
 		LazuliLeggings = (new ItemMekanismArmor(Mekanism.configuration.getItem("LazuliLeggings", 11438).getInt(), armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setUnlocalizedName("LazuliLeggings");
 		LazuliBoots = (new ItemMekanismArmor(Mekanism.configuration.getItem("LazuliBoots", 11439).getInt(), armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setUnlocalizedName("LazuliBoots");
-		
+
 		MinecraftForge.setToolClass(LazuliPaxel, "paxel", toolLAZULI2.getHarvestLevel());
 		MinecraftForge.setToolClass(LazuliPickaxe, "pickaxe", toolLAZULI.getHarvestLevel());
 		MinecraftForge.setToolClass(LazuliAxe, "axe", toolLAZULI.getHarvestLevel());
 		MinecraftForge.setToolClass(LazuliShovel, "shovel", toolLAZULI.getHarvestLevel());
-		
+
 		//Glowstone
 		GlowstonePaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("GlowstonePaxel", 11440).getInt(), toolGLOWSTONE2).setUnlocalizedName("GlowstonePaxel");
 		GlowstonePickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("GlowstonePickaxe", 11441).getInt(), toolGLOWSTONE).setUnlocalizedName("GlowstonePickaxe");
@@ -614,25 +614,25 @@ public class MekanismTools implements IModule
 		GlowstoneChestplate = new ItemMekanismArmor(Mekanism.configuration.getItem("GlowstoneChestplate", 11447).getInt(), armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 1).setUnlocalizedName("GlowstoneChestplate");
 		GlowstoneLeggings = new ItemMekanismArmor(Mekanism.configuration.getItem("GlowstoneLeggings", 11448).getInt(), armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setUnlocalizedName("GlowstoneLeggings");
 		GlowstoneBoots = new ItemMekanismArmor(Mekanism.configuration.getItem("GlowstoneBoots", 11449).getInt(), armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setUnlocalizedName("GlowstoneBoots");
-		
+
 		MinecraftForge.setToolClass(GlowstonePaxel, "paxel", toolGLOWSTONE2.getHarvestLevel());
 		MinecraftForge.setToolClass(GlowstonePickaxe, "pickaxe", toolGLOWSTONE.getHarvestLevel());
 		MinecraftForge.setToolClass(GlowstoneAxe, "axe", toolGLOWSTONE.getHarvestLevel());
 		MinecraftForge.setToolClass(GlowstoneShovel, "shovel", toolGLOWSTONE.getHarvestLevel());
-		
+
 		//Base Paxels
 		WoodPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("WoodPaxel", 11450).getInt(), EnumToolMaterial.WOOD).setUnlocalizedName("WoodPaxel");
 		StonePaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("StonePaxel", 11451).getInt(), EnumToolMaterial.STONE).setUnlocalizedName("StonePaxel");
 		IronPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("IronPaxel", 11452).getInt(), EnumToolMaterial.IRON).setUnlocalizedName("IronPaxel");
 		DiamondPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("DiamondPaxel", 11453).getInt(), EnumToolMaterial.EMERALD).setUnlocalizedName("DiamondPaxel");
 		GoldPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("GoldPaxel", 11454).getInt(), EnumToolMaterial.GOLD).setUnlocalizedName("GoldPaxel");
-		
+
 		MinecraftForge.setToolClass(WoodPaxel, "paxel", EnumToolMaterial.WOOD.getHarvestLevel());
 		MinecraftForge.setToolClass(StonePaxel, "paxel", EnumToolMaterial.STONE.getHarvestLevel());
 		MinecraftForge.setToolClass(IronPaxel, "paxel", EnumToolMaterial.IRON.getHarvestLevel());
 		MinecraftForge.setToolClass(DiamondPaxel, "paxel", EnumToolMaterial.EMERALD.getHarvestLevel());
 		MinecraftForge.setToolClass(GoldPaxel, "paxel", EnumToolMaterial.GOLD.getHarvestLevel());
-		
+
 		//Steel
 		SteelPaxel = new ItemMekanismPaxel(Mekanism.configuration.getItem("SteelPaxel", 11455).getInt(), toolSTEEL2).setUnlocalizedName("SteelPaxel");
 		SteelPickaxe = new ItemMekanismPickaxe(Mekanism.configuration.getItem("SteelPickaxe", 11456).getInt(), toolSTEEL).setUnlocalizedName("SteelPickaxe");
@@ -644,14 +644,14 @@ public class MekanismTools implements IModule
 		SteelChestplate = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelChestplate", 11462).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setUnlocalizedName("SteelChestplate");
 		SteelLeggings = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelLeggings", 11463).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setUnlocalizedName("SteelLeggings");
 		SteelBoots = new ItemMekanismArmor(Mekanism.configuration.getItem("SteelBoots", 11464).getInt(), armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setUnlocalizedName("SteelBoots");
-		
+
 		MinecraftForge.setToolClass(SteelPaxel, "paxel", toolSTEEL2.getHarvestLevel());
 		MinecraftForge.setToolClass(SteelPickaxe, "pickaxe", toolSTEEL.getHarvestLevel());
 		MinecraftForge.setToolClass(SteelAxe, "axe", toolSTEEL.getHarvestLevel());
 		MinecraftForge.setToolClass(SteelShovel, "shovel", toolSTEEL.getHarvestLevel());
-		
+
 		Mekanism.configuration.save();
-		
+
 		//Registrations
 		//Base
 		GameRegistry.registerItem(WoodPaxel, "WoodPaxel");
@@ -659,7 +659,7 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(IronPaxel, "IronPaxel");
 		GameRegistry.registerItem(DiamondPaxel, "DiamondPaxel");
 		GameRegistry.registerItem(GoldPaxel, "GoldPaxel");
-		
+
 		//Obsidian
 		GameRegistry.registerItem(ObsidianHelmet, "ObsidianHelmet");
 		GameRegistry.registerItem(ObsidianChestplate, "ObsidianChestplate");
@@ -671,7 +671,7 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(ObsidianShovel, "ObsidianShovel");
 		GameRegistry.registerItem(ObsidianHoe, "ObsidianHoe");
 		GameRegistry.registerItem(ObsidianSword, "ObsidianSword");
-		
+
 		//Lazuli
 		GameRegistry.registerItem(LazuliHelmet, "LapisLazuliHelmet");
 		GameRegistry.registerItem(LazuliChestplate, "LapisLazuliChestplate");
@@ -683,7 +683,7 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(LazuliShovel, "LapisLazuliShovel");
 		GameRegistry.registerItem(LazuliHoe, "LapisLazuliHoe");
 		GameRegistry.registerItem(LazuliSword, "LapisLazuliSword");
-		
+
 		//Osmium
 		GameRegistry.registerItem(OsmiumHelmet, "OsmiumHelmet");
 		GameRegistry.registerItem(OsmiumChestplate, "OsmiumChestplate");
@@ -695,7 +695,7 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(OsmiumShovel, "OsmiumShovel");
 		GameRegistry.registerItem(OsmiumHoe, "OsmiumHoe");
 		GameRegistry.registerItem(OsmiumSword, "OsmiumSword");
-		
+
 		//Redstone
 		GameRegistry.registerItem(BronzeHelmet, "BronzeHelmet");
 		GameRegistry.registerItem(BronzeChestplate, "BronzeChestplate");
@@ -707,7 +707,7 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(BronzeShovel, "BronzeShovel");
 		GameRegistry.registerItem(BronzeHoe, "BronzeHoe");
 		GameRegistry.registerItem(BronzeSword, "BronzeSword");
-		
+
 		//Glowstone
 		GameRegistry.registerItem(GlowstonePaxel, "GlowstonePaxel");
 		GameRegistry.registerItem(GlowstonePickaxe, "GlowstonePickaxe");
@@ -719,7 +719,7 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(GlowstoneChestplate, "GlowstoneChestplate");
 		GameRegistry.registerItem(GlowstoneLeggings, "GlowstoneLeggings");
 		GameRegistry.registerItem(GlowstoneBoots, "GlowstoneBoots");
-		
+
 		//Steel
 		GameRegistry.registerItem(SteelPaxel, "SteelPaxel");
 		GameRegistry.registerItem(SteelPickaxe, "SteelPickaxe");
@@ -732,13 +732,13 @@ public class MekanismTools implements IModule
 		GameRegistry.registerItem(SteelLeggings, "SteelLeggings");
 		GameRegistry.registerItem(SteelBoots, "SteelBoots");
 	}
-	
+
 	@ForgeSubscribe
 	public void onLivingSpecialSpawn(LivingSpawnEvent event)
 	{
 		int chance = event.world.rand.nextInt(100);
 		int armorType = event.world.rand.nextInt(4);
-		
+
 		if(chance < 3)
 		{
 			if(event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)
@@ -748,7 +748,7 @@ public class MekanismTools implements IModule
 				int chestplate = event.world.rand.nextInt(100);
 				int leggings = event.world.rand.nextInt(100);
 				int boots = event.world.rand.nextInt(100);
-				
+
 				if(armorType == 0)
 				{
 					if(event.entityLiving instanceof EntityZombie && sword < 50) event.entityLiving.setCurrentItemOrArmor(0, new ItemStack(GlowstoneSword));
@@ -800,7 +800,7 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "Tools";
 	}

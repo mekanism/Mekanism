@@ -62,13 +62,13 @@ public class RobitAIPickup extends EntityAIBase
 		Iterator iter = items.iterator();
 		//Cached for slight performance
 		double closestDistance=-1;
-		
+
 		while(iter.hasNext())
 		{
 			EntityItem entity = (EntityItem)iter.next();
-			
+
 			double distance = theRobit.getDistanceToEntity(entity);
-			
+
 			if(distance <= 10)
 			{
 				if(closestDistance == -1 || distance < closestDistance)
@@ -81,13 +81,13 @@ public class RobitAIPickup extends EntityAIBase
 				}
 			}
 		}
-		
+
 		if(closest == null)
 		{
 			//No valid items
 			return false;
 		}
-		
+
 		return true;
 
 	}
@@ -117,7 +117,7 @@ public class RobitAIPickup extends EntityAIBase
 	public void updateTask()
 	{
 		theRobit.getLookHelper().setLookPositionWithEntity(closest, 6.0F, theRobit.getVerticalFaceSpeed()/10);
-		
+
 		if(!theRobit.getDropPickup())
 		{
 			return;

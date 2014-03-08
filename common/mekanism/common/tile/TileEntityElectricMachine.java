@@ -17,9 +17,9 @@ import dan200.computer.api.ILuaContext;
 public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 {
 	/**
-	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1), 
+	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1),
 	 * output slot (2), and the upgrade slot (3). It will not run if it does not have enough energy.
-	 * 
+	 *
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
 	 * @param location - GUI texture path of this machine
@@ -30,34 +30,34 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	public TileEntityElectricMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
 	{
 		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
-		
+
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
 		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2}));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {3}));
-		
+
 		sideConfig = new byte[] {2, 1, 0, 0, 4, 3};
-		
+
 		inventory = new ItemStack[4];
-		
+
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.discharge(1, this);
-			
+
 			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
 			{
 				setActive(true);
-				
+
 				if((operatingTicks+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operatingTicks++;
@@ -66,7 +66,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				else if((operatingTicks+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
 				{
 					operate();
-					
+
 					operatingTicks = 0;
 					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
 				}
@@ -77,16 +77,16 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 					setActive(false);
 				}
 			}
-			
+
 			if(!canOperate())
 			{
 				operatingTicks = 0;
 			}
-			
+
 			prevEnergy = getEnergy();
 		}
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -106,61 +106,61 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return false;
 	}
 
 	@Override
-    public void operate()
-    {
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
+	public void operate()
+	{
+		ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
 
-        if(inventory[0].stackSize <= 0)
-        {
-            inventory[0] = null;
-        }
+		if(inventory[0].stackSize <= 0)
+		{
+			inventory[0] = null;
+		}
 
-        if(inventory[2] == null)
-        {
-            inventory[2] = itemstack;
-        }
-        else {
-            inventory[2].stackSize += itemstack.stackSize;
-        }
+		if(inventory[2] == null)
+		{
+			inventory[2] = itemstack;
+		}
+		else {
+			inventory[2].stackSize += itemstack.stackSize;
+		}
 
-        onInventoryChanged();
-        ejectorComponent.onOutput();
-    }
+		onInventoryChanged();
+		ejectorComponent.onOutput();
+	}
 
 	@Override
-    public boolean canOperate()
-    {
-        if(inventory[0] == null)
-        {
-            return false;
-        }
+	public boolean canOperate()
+	{
+		if(inventory[0] == null)
+		{
+			return false;
+		}
 
-        ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
+		ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
 
-        if(itemstack == null)
-        {
-            return false;
-        }
+		if(itemstack == null)
+		{
+			return false;
+		}
 
-        if(inventory[2] == null)
-        {
-            return true;
-        }
+		if(inventory[2] == null)
+		{
+			return true;
+		}
 
-        if(!inventory[2].isItemEqual(itemstack))
-        {
-            return false;
-        }
-        else {
-            return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
-        }
-    }
-	
+		if(!inventory[2].isItemEqual(itemstack))
+		{
+			return false;
+		}
+		else {
+			return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
+		}
+	}
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -172,18 +172,18 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{

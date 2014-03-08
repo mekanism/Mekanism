@@ -30,28 +30,28 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public static int xOffset = 5;
 	public static int yOffset = 12;
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("tile.MachineBlock2.ChemicalOxidizer.name");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "chemicaloxidizer";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/GuiChemicalOxidizer.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -80,13 +80,13 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		GasStack gas = ((CachedIORecipe)arecipes.get(i)).outputStack;
-		
+
 		float f = ticksPassed % 20 / 20.0F;
 		drawProgressBar(64-xOffset, 40-yOffset, 176, 63, 48, 8, f, 0);
-		
+
 		if(gas != null)
 		{
-        	displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, gas);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, gas);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -128,35 +128,35 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 			super.loadCraftingRecipes(outputId, results);
 		}
 	}
-	
+
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
 		}
-		
+
 		return super.handleTooltip(gui, currenttip, recipe);
 	}
-	
+
 	@Override
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
-			
+
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
 			{
 				if(doGasLookup(stack, false))
@@ -172,22 +172,22 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
-			
+
 			if(button == 0)
 			{
 				if(doGasLookup(stack, false))
@@ -203,7 +203,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.mouseClicked(gui, button, recipe);
 	}
 

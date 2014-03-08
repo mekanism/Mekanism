@@ -67,14 +67,14 @@ public class ModelFreeRunners extends ModelBase
 		SupportL.render(size);
 		SupportR.render(size);
 	}
-	
+
 	public void renderLeft(float size)
 	{
 		SpringL.render(size);
 		BraceL.render(size);
 		SupportL.render(size);
 	}
-	
+
 	public void renderRight(float size)
 	{
 		SpringR.render(size);

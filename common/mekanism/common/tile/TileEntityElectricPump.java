@@ -38,25 +38,25 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 {
 	/** This pump's tank */
 	public FluidTank fluidTank;
-	
+
 	/** The nodes that have full sources near them or in them */
 	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
-	
+
 	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
 	public Set<Coord4D> cleaningNodes = new HashSet<Coord4D>();
-	
+
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
 		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[3];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		ChargeUtils.discharge(2, this);
-		
+
 		if(inventory[0] != null)
 		{
 			if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
@@ -64,42 +64,42 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
 				{
 					ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
-					
+
 					if(tempStack != null)
 					{
 						if(inventory[1] == null)
 						{
 							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-							
+
 							inventory[1] = tempStack;
 							inventory[0].stackSize--;
-							
+
 							if(inventory[0].stackSize <= 0)
 							{
 								inventory[0] = null;
 							}
-							
+
 							onInventoryChanged();
 						}
 						else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
 						{
 							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-							
+
 							inventory[1].stackSize++;
 							inventory[0].stackSize--;
-							
+
 							if(inventory[0].stackSize <= 0)
 							{
 								inventory[0] = null;
 							}
-							
+
 							onInventoryChanged();
 						}
 					}
 				}
 			}
 		}
-		
+
 		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{
 			if(getEnergy() >= 100 && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= 10000))
@@ -108,25 +108,25 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 				}
-				
+
 				clean(true);
 			}
 		}
-		
+
 		super.onUpdate();
-		
-		if(fluidTank.getFluid() != null) 
+
+		if(fluidTank.getFluid() != null)
 		{
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS) 
+			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
 				TileEntity tileEntity = Coord4D.get(this).getFromSide(orientation).getTileEntity(worldObj);
 
-				if(tileEntity instanceof IFluidHandler) 
+				if(tileEntity instanceof IFluidHandler)
 				{
 					FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(100, fluidTank.getFluidAmount()));
 					fluidTank.drain(((IFluidHandler)tileEntity).fill(orientation.getOpposite(), toDrain, true), true);
-					
-					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount <= 0) 
+
+					if(fluidTank.getFluid() == null || fluidTank.getFluid().amount <= 0)
 					{
 						break;
 					}
@@ -134,16 +134,16 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 	}
-	
+
 	public boolean suck(boolean take)
 	{
 		List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[recurringNodes.size()]));
 		Collections.shuffle(tempPumpList);
-		
+
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
 			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
-			
+
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
 				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
@@ -155,12 +155,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
-					
+
 					return true;
 				}
 			}
 		}
-		
+
 		for(Coord4D wrapper : cleaningNodes)
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
@@ -173,12 +173,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
-					
+
 					return true;
 				}
 			}
 		}
-		
+
 		for(Coord4D wrapper : tempPumpList)
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
@@ -191,15 +191,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
-					
+
 					return true;
 				}
 			}
-			
+
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
 				Coord4D side = wrapper.getFromSide(orientation);
-				
+
 				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{
 					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
@@ -213,24 +213,24 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
 							}
-							
+
 							return true;
 						}
 					}
 				}
 			}
-			
+
 			cleaningNodes.add(wrapper);
 			recurringNodes.remove(wrapper);
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean clean(boolean take)
 	{
 		boolean took = false;
-		
+
 		if(!worldObj.isRemote)
 		{
 			for(Coord4D wrapper : cleaningNodes)
@@ -240,7 +240,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
-						
+
 						if(take)
 						{
 							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -248,7 +248,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					}
 				}
 			}
-			
+
 			for(Coord4D wrapper : recurringNodes)
 			{
 				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
@@ -256,7 +256,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
-						
+
 						if(take)
 						{
 							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -264,17 +264,17 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 					}
 				}
 			}
-			
+
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
 				Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
-				
+
 				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 				{
 					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
 					{
 						took = true;
-						
+
 						if(take)
 						{
 							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -283,15 +283,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				}
 			}
 		}
-		
+
 		return took;
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		
+
 		if(dataStream.readInt() == 1)
 		{
 			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
@@ -299,15 +299,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		else {
 			fluidTank.setFluid(null);
 		}
-		
+
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
@@ -317,83 +317,83 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		else {
 			data.add(0);
 		}
-		
+
 		return data;
 	}
-	
+
 	public int getScaledFluidLevel(int i)
 	{
 		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
 	}
-	
-    @Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        if(fluidTank.getFluid() != null)
-        {
-        	nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
-        }
-        
-        NBTTagList recurringList = new NBTTagList();
-        
-        for(Coord4D wrapper : recurringNodes)
-        {
-        	NBTTagCompound tagCompound = new NBTTagCompound();
-        	wrapper.write(tagCompound);
-        	recurringList.appendTag(tagCompound);
-        }
-        
-        if(recurringList.tagCount() != 0)
-        {
-        	nbtTags.setTag("recurringNodes", recurringList);
-        }
-        
-        NBTTagList cleaningList = new NBTTagList();
-        
-        for(Coord4D obj : cleaningNodes)
-        {
-        	cleaningList.appendTag(obj.write(new NBTTagCompound()));
-        }
-        
-        if(cleaningList.tagCount() != 0)
-        {
-        	nbtTags.setTag("cleaningNodes", cleaningList);
-        }
-    }
-    
-    @Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-    	super.readFromNBT(nbtTags);
-    	
-    	if(nbtTags.hasKey("fluidTank"))
-    	{
-    		fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
-    	}
-    	
-    	if(nbtTags.hasKey("recurringNodes"))
-    	{
-    		NBTTagList tagList = nbtTags.getTagList("recurringNodes");
-    		
-    		for(int i = 0; i < tagList.tagCount(); i++)
-    		{
-    			recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
-    		}
-    	}
-    	
-    	if(nbtTags.hasKey("cleaningNodes"))
-    	{
-    		NBTTagList tagList = nbtTags.getTagList("cleaningNodes");
-    		
-    		for(int i = 0; i < tagList.tagCount(); i++)
-    		{
-    			cleaningNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
-    		}
-    	}
-    }
-    
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		if(fluidTank.getFluid() != null)
+		{
+			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+		}
+
+		NBTTagList recurringList = new NBTTagList();
+
+		for(Coord4D wrapper : recurringNodes)
+		{
+			NBTTagCompound tagCompound = new NBTTagCompound();
+			wrapper.write(tagCompound);
+			recurringList.appendTag(tagCompound);
+		}
+
+		if(recurringList.tagCount() != 0)
+		{
+			nbtTags.setTag("recurringNodes", recurringList);
+		}
+
+		NBTTagList cleaningList = new NBTTagList();
+
+		for(Coord4D obj : cleaningNodes)
+		{
+			cleaningList.appendTag(obj.write(new NBTTagCompound()));
+		}
+
+		if(cleaningList.tagCount() != 0)
+		{
+			nbtTags.setTag("cleaningNodes", cleaningList);
+		}
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		if(nbtTags.hasKey("fluidTank"))
+		{
+			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+		}
+
+		if(nbtTags.hasKey("recurringNodes"))
+		{
+			NBTTagList tagList = nbtTags.getTagList("recurringNodes");
+
+			for(int i = 0; i < tagList.tagCount(); i++)
+			{
+				recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
+			}
+		}
+
+		if(nbtTags.hasKey("cleaningNodes"))
+		{
+			NBTTagList tagList = nbtTags.getTagList("cleaningNodes");
+
+			for(int i = 0; i < tagList.tagCount(); i++)
+			{
+				cleaningNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
+			}
+		}
+	}
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -409,10 +409,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return true;
 	}
-    
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -424,22 +424,22 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
-	
+
 	@Override
 	public boolean canSetFacing(int side)
 	{
 		return side != 0 && side != 1;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
@@ -457,70 +457,70 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection direction) 
+	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
 	{
 		if(direction == ForgeDirection.getOrientation(1))
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
-		
+
 		return PipeUtils.EMPTY;
 	}
 
 	@Override
-	public void setFluidStack(FluidStack fluidStack, Object... data) 
+	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
 		fluidTank.setFluid(fluidStack);
 	}
 
 	@Override
-	public FluidStack getFluidStack(Object... data) 
+	public FluidStack getFluidStack(Object... data)
 	{
 		return fluidTank.getFluid();
 	}
 
 	@Override
-	public boolean hasTank(Object... data) 
+	public boolean hasTank(Object... data)
 	{
 		return true;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
 		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.getOrientation(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		if(from == ForgeDirection.getOrientation(1))
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
 		return from == ForgeDirection.getOrientation(1);
 	}
@@ -530,9 +530,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		recurringNodes.clear();
 		cleaningNodes.clear();
-		
+
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
-		
+
 		return true;
 	}
 

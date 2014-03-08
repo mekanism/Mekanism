@@ -36,7 +36,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register) {}
@@ -45,23 +45,23 @@ public class ItemPartTransmitter extends JItemMultiPart
 	public TMultiPart newPart(ItemStack stack, EntityPlayer player, World world, BlockCoord coord, int face, Vector3 vecHit)
 	{
 		TransmitterType type = TransmitterType.values()[stack.getItemDamage()];
-		
+
 		if(type.getTransmission() != TransmissionType.ITEM)
 		{
 			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z, world.provider.dimensionId);
-			
+
 			List<ITransmitterNetwork<?, ?>> networks = new ArrayList<ITransmitterNetwork<?, ?>>();
-			
+
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				TileEntity tile = obj.getFromSide(side).getTileEntity(world);
-				
+
 				if(tile instanceof IGridTransmitter && TransmissionType.checkTransmissionType(tile, type.getTransmission()))
 				{
 					networks.add(((IGridTransmitter)tile).getTransmitterNetwork());
 				}
 			}
-			
+
 			if(networks.size() > 0)
 			{
 				if(!networks.iterator().next().canMerge(networks))
@@ -70,10 +70,10 @@ public class ItemPartTransmitter extends JItemMultiPart
 				}
 			}
 		}
-		
+
 		return PartTransmitter.getPartType(TransmitterType.values()[getDamage(stack)]);
 	}
-	
+
 	@Override
 	public int getMetadata(int damage)
 	{
@@ -90,7 +90,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 			{
 				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
 			}
-			
+
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
 		}
 		else {
@@ -144,26 +144,26 @@ public class ItemPartTransmitter extends JItemMultiPart
 			}
 		}
 	}
-	
-    @Override
-    public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
-    {
-        for(TransmitterType type : TransmitterType.values())
-        {
-            listToAddTo.add(new ItemStack(itemID, 1, type.ordinal()));
-        }
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getSpriteNumber()
-    {
-    	return 0;
-    }
-    
-    @Override
-    public String getUnlocalizedName(ItemStack stack)
-    {
-    	return getUnlocalizedName() + "." + TransmitterType.values()[stack.getItemDamage()].getName();
-    }
+
+	@Override
+	public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
+	{
+		for(TransmitterType type : TransmitterType.values())
+		{
+			listToAddTo.add(new ItemStack(itemID, 1, type.ordinal()));
+		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int getSpriteNumber()
+	{
+		return 0;
+	}
+
+	@Override
+	public String getUnlocalizedName(ItemStack stack)
+	{
+		return getUnlocalizedName() + "." + TransmitterType.values()[stack.getItemDamage()].getName();
+	}
 }

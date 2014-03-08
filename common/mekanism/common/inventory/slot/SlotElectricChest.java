@@ -13,17 +13,17 @@ public class SlotElectricChest extends Slot
 	{
 		super(inventory, index, x, y);
 	}
-	
+
 	@Override
-    public boolean canTakeStack(EntityPlayer par1EntityPlayer)
-    {
+	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	{
 		ItemStack itemstack = inventory.getStackInSlot(getSlotIndex());
-		
+
 		if(itemstack == null)
 		{
 			return true;
 		}
-		
+
 		if(itemstack.getItem() instanceof IElectricChest)
 		{
 			if(MachineType.get(itemstack) == MachineType.ELECTRIC_CHEST)
@@ -31,7 +31,7 @@ public class SlotElectricChest extends Slot
 				return false;
 			}
 		}
-		
+
 		return true;
-    }
+	}
 }

@@ -7,7 +7,7 @@ import net.minecraftforge.common.ForgeDirection;
  * @author AidanBrady
  *
  */
-public interface ICableOutputter 
+public interface ICableOutputter
 {
 	/**
 	 * Whether or not this block can output to a cable on a specific side.
