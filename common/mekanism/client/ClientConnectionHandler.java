@@ -21,14 +21,14 @@ public class ClientConnectionHandler implements IConnectionHandler
 	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) {}
 
 	@Override
-	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager) 
+	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager)
 	{
 		return null;
 	}
 
 	/* Remote */
 	@Override
-	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
+	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager)
 	{
 		if(Mekanism.voiceServerEnabled)
 		{
@@ -40,7 +40,7 @@ public class ClientConnectionHandler implements IConnectionHandler
 
 	/* Integrated */
 	@Override
-	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager) 
+	public void connectionOpened(NetHandler netClientHandler, MinecraftServer server, INetworkManager manager)
 	{
 		if(Mekanism.voiceServerEnabled)
 		{

@@ -12,40 +12,40 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelGasMask extends ModelBase
 {
-    ModelRenderer helmetfeed;
-    ModelRenderer tubeback;
-    ModelRenderer tubeL;
-    ModelRenderer tubeR;
-    ModelRenderer tubefront;
-    ModelRenderer mouthintake;
-    ModelRenderer finupperR;
-    ModelRenderer finupperL;
-    ModelRenderer finmidR;
-    ModelRenderer finmidL;
-    ModelRenderer finback;
-    ModelRenderer topplate;
-    ModelRenderer filterL;
-    ModelRenderer filterR;
-    ModelRenderer filterpipelower;
-    ModelRenderer filterpipeupper;
-    ModelRenderer glasstop;
-    ModelRenderer glassfront;
-    ModelRenderer glassR;
-    ModelRenderer glassL;
-    ModelRenderer glassbackR;
-    ModelRenderer glassbackL;
-    ModelRenderer pipecornerFL;
-    ModelRenderer pipecornerFR;
-    ModelRenderer pipecornerBR;
-    ModelRenderer pipecornerBL;
-    ModelRenderer lightL;
-    ModelRenderer lightR;
+	ModelRenderer helmetfeed;
+	ModelRenderer tubeback;
+	ModelRenderer tubeL;
+	ModelRenderer tubeR;
+	ModelRenderer tubefront;
+	ModelRenderer mouthintake;
+	ModelRenderer finupperR;
+	ModelRenderer finupperL;
+	ModelRenderer finmidR;
+	ModelRenderer finmidL;
+	ModelRenderer finback;
+	ModelRenderer topplate;
+	ModelRenderer filterL;
+	ModelRenderer filterR;
+	ModelRenderer filterpipelower;
+	ModelRenderer filterpipeupper;
+	ModelRenderer glasstop;
+	ModelRenderer glassfront;
+	ModelRenderer glassR;
+	ModelRenderer glassL;
+	ModelRenderer glassbackR;
+	ModelRenderer glassbackL;
+	ModelRenderer pipecornerFL;
+	ModelRenderer pipecornerFR;
+	ModelRenderer pipecornerBR;
+	ModelRenderer pipecornerBL;
+	ModelRenderer lightL;
+	ModelRenderer lightR;
 
 	public ModelGasMask()
 	{
-	    textureWidth = 128;
-	    textureHeight = 64;
-	    
+		textureWidth = 128;
+		textureHeight = 64;
+
 		helmetfeed = new ModelRenderer(this, 88, 43);
 		helmetfeed.addBox(-2F, -2F, 2F, 4, 3, 4);
 		helmetfeed.setRotationPoint(0F, 0F, 0F);
@@ -221,44 +221,44 @@ public class ModelGasMask extends ModelBase
 
 	public void render(float size)
 	{
-	    helmetfeed.render(size);
-	    tubeback.render(size);
-	    tubeL.render(size);
-	    tubeR.render(size);
-	    tubefront.render(size);
-	    mouthintake.render(size);
-	    finupperR.render(size);
-	    finupperL.render(size);
-	    finmidR.render(size);
-	    finmidL.render(size);
-	    finback.render(size);
-	    topplate.render(size);
-	    filterL.render(size);
-	    filterR.render(size);
-	    filterpipelower.render(size);
-	    filterpipeupper.render(size);
-	    
+		helmetfeed.render(size);
+		tubeback.render(size);
+		tubeL.render(size);
+		tubeR.render(size);
+		tubefront.render(size);
+		mouthintake.render(size);
+		finupperR.render(size);
+		finupperL.render(size);
+		finmidR.render(size);
+		finmidL.render(size);
+		finback.render(size);
+		topplate.render(size);
+		filterL.render(size);
+		filterR.render(size);
+		filterpipelower.render(size);
+		filterpipeupper.render(size);
+
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
 		GL11.glColor4f(1, 1, 1, 0.3F);
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		
-	    glasstop.render(size);
-	    glassfront.render(size);
-	    glassR.render(size);
-	    glassL.render(size);
-	    glassbackR.render(size);
-	    glassbackL.render(size);
-	    
-	    GL11.glDisable(GL11.GL_CULL_FACE);
+
+		glasstop.render(size);
+		glassfront.render(size);
+		glassR.render(size);
+		glassL.render(size);
+		glassbackR.render(size);
+		glassbackL.render(size);
+
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1, 1, 1, 1);
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
-		
-	    pipecornerFL.render(size);
-	    pipecornerFR.render(size);
-	    pipecornerBR.render(size);
-	    pipecornerBL.render(size);
+
+		pipecornerFL.render(size);
+		pipecornerFR.render(size);
+		pipecornerBR.render(size);
+		pipecornerBL.render(size);
 
 		MekanismRenderer.glowOn();
 		lightL.render(size);

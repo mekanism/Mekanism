@@ -8,7 +8,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 @SideOnly(Side.CLIENT)
-public class ModelLogisticalSorter extends ModelBase 
+public class ModelLogisticalSorter extends ModelBase
 {
 	ModelRenderer LeftThing;
 	ModelRenderer RightThing;
@@ -164,7 +164,7 @@ public class ModelLogisticalSorter extends ModelBase
 		DecorPlate.mirror = true;
 		setRotation(DecorPlate, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size, boolean active)
 	{
 		LeftThing.render(size);
@@ -173,12 +173,12 @@ public class ModelLogisticalSorter extends ModelBase
 		TopPlate.render(size);
 		LeftPlate.render(size);
 		RightPlate.render(size);
-		
+
 		if(active)
 		{
 			MekanismRenderer.glowOn();
 		}
-		
+
 		BR1Block1.render(size);
 		BL1Block1.render(size);
 		TL1Block1.render(size);
@@ -187,12 +187,12 @@ public class ModelLogisticalSorter extends ModelBase
 		BL1Block2.render(size);
 		TL1Block2.render(size);
 		TR1Block2.render(size);
-		
+
 		if(active)
 		{
 			MekanismRenderer.glowOff();
 		}
-		
+
 		PoleBR.render(size);
 		PoleTL.render(size);
 		PoleTR.render(size);
@@ -202,7 +202,7 @@ public class ModelLogisticalSorter extends ModelBase
 		DecorPlate.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

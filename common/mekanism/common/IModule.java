@@ -17,20 +17,20 @@ public interface IModule
 	 * @return the module's version
 	 */
 	public Version getVersion();
-	
+
 	/**
 	 * Gets the name of the module.  Note that this doesn't include "Mekanism" like the actual module's name does, just the
 	 * unique name.  For example, MekanismGenerators returns "Generators" here.
 	 * @return unique name of the module
 	 */
 	public String getName();
-	
+
 	/**
 	 * Writes this module's configuration to a ConfigSync packet.
 	 * @param dataStream - the DataOutputStream of the sync packet
 	 */
 	public void writeConfig(DataOutputStream dataStream) throws IOException;
-	
+
 	/**
 	 * Reads this module's configuration from the original ConfigSync packet.
 	 * @param dataStream - the incoming ByteArrayDataInput of the sync packet

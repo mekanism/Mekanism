@@ -12,18 +12,18 @@ import com.google.common.io.ByteArrayDataInput;
 public class PacketPortalFX implements IMekanismPacket
 {
 	public Coord4D object3D;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "PortalFX";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		object3D = (Coord4D)data[0];
-		
+
 		return this;
 	}
 
@@ -31,11 +31,11 @@ public class PacketPortalFX implements IMekanismPacket
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		Random random = new Random();
-		
+
 		int x = dataStream.readInt();
 		int y = dataStream.readInt();
 		int z = dataStream.readInt();
-		
+
 		for(int i = 0; i < 50; i++)
 		{
 			world.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);

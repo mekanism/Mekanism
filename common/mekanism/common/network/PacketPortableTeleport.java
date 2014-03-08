@@ -25,7 +25,7 @@ public class PacketPortableTeleport implements IMekanismPacket
 	{
 		return "PortableTeleport";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
@@ -33,35 +33,35 @@ public class PacketPortableTeleport implements IMekanismPacket
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		ItemStack itemstack = player.getCurrentEquippedItem();
-		
+
 		if(itemstack != null && itemstack.getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)itemstack.getItem();
-			
+
 			if(item.getStatus(itemstack) == 1)
 			{
 				Coord4D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
-				
+
 				World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
 				TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
-				
+
 				if(teleporter != null)
 				{
 					teleporter.didTeleport.add(player);
 					teleporter.teleDelay = 5;
-					
+
 					item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
-					
+
 					if(world.provider.dimensionId != coords.dimensionId)
 					{
 						((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
 					}
-					
+
 					((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
-					
+
 					world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
 				}

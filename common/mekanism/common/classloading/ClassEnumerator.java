@@ -22,24 +22,24 @@ public class ClassEnumerator
 	private static void processDir(File directory, String pkgname, ArrayList<Class<?>> classes)
 	{
 		String[] files = directory.list();
-		
+
 		for(int i = 0; i < files.length; i++)
 		{
 			String fileName = files[i];
 			String className = null;
-			
+
 			if(fileName.endsWith(".class"))
 			{
 				className = pkgname + '.' + fileName.substring(0, fileName.length() - 6);
 			}
-			
+
 			if(className != null)
 			{
 				classes.add(loadClass(className));
 			}
-			
+
 			File subdir = new File(directory, fileName);
-			
+
 			if(subdir.isDirectory())
 			{
 				processDir(subdir, pkgname + '.' + fileName, classes);
@@ -52,28 +52,28 @@ public class ClassEnumerator
 		String relPath = pkgname.replace('.', '/');
 		String resPath = resource.getPath();
 		String jarPath = resPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
-		
+
 		JarFile jarFile;
-		
+
 		try {
 			jarFile = new JarFile(jarPath);
 		} catch(IOException e) {
 			throw new RuntimeException("Unexpected IOException reading JAR File '" + jarPath + "'", e);
 		}
-		
+
 		Enumeration<JarEntry> entries = jarFile.entries();
-		
+
 		while(entries.hasMoreElements())
 		{
 			JarEntry entry = entries.nextElement();
 			String entryName = entry.getName();
 			String className = null;
-			
+
 			if(entryName.endsWith(".class") && entryName.startsWith(relPath) && entryName.length() > (relPath.length() + "/".length()))
 			{
 				className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
 			}
-			
+
 			if(className != null)
 			{
 				classes.add(loadClass(className));
@@ -88,16 +88,16 @@ public class ClassEnumerator
 		try {
 			String pkgname = pkg.getName();
 			String relPath = pkgname.replace('.', '/');
-	
+
 			URL resource = ClassLoader.getSystemClassLoader().getResource(relPath);
-			
+
 			if(resource == null)
 			{
 				throw new RuntimeException("Unexpected problem: No resource for " + relPath);
 			}
-	
+
 			resource.getPath();
-			
+
 			if(resource.toString().startsWith("jar:"))
 			{
 				processJar(resource, pkgname, classes);

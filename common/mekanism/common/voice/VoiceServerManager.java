@@ -11,37 +11,37 @@ import mekanism.common.Mekanism;
 public class VoiceServerManager
 {
 	public Set<VoiceConnection> connections = new HashSet<VoiceConnection>();
-	
+
 	public ServerSocket serverSocket;
-	
+
 	public boolean running;
-	
+
 	public boolean foundLocal = false;
-	
+
 	public Thread listenThread;
-	
+
 	public void start()
 	{
 		System.out.println("[Mekanism] VoiceServer: Starting up server...");
-		
+
 		try {
 			running = true;
 			serverSocket = new ServerSocket(Mekanism.VOICE_PORT);
 			(listenThread = new ListenThread()).start();
 		} catch(Exception e) {}
 	}
-	
+
 	public void stop()
 	{
 		try {
 			System.out.println("[Mekanism] VoiceServer: Shutting down server...");
-			
+
 			try {
 				listenThread.interrupt();
 			} catch(Exception e) {}
-			
+
 			foundLocal = false;
-			
+
 			try {
 				serverSocket.close();
 				serverSocket = null;
@@ -50,35 +50,35 @@ public class VoiceServerManager
 			System.err.println("[Mekanism] VoiceServer: Error while shutting down server.");
 			e.printStackTrace();
 		}
-		
+
 		running = false;
 	}
-	
+
 	public void sendToPlayers(short byteCount, byte[] audioData, VoiceConnection connection)
 	{
 		if(connection.getPlayer() == null)
 		{
 			return;
 		}
-		
+
 		int channel = connection.getCurrentChannel();
-		
+
 		if(channel == 0)
 		{
 			return;
 		}
-		
+
 		for(VoiceConnection iterConn : connections)
 		{
 			if(iterConn.getPlayer() == null || iterConn == connection || !iterConn.canListen(channel))
 			{
 				continue;
 			}
-			
+
 			iterConn.sendToPlayer(byteCount, audioData, connection);
 		}
 	}
-	
+
 	public class ListenThread extends Thread
 	{
 		public ListenThread()
@@ -86,7 +86,7 @@ public class VoiceServerManager
 			setDaemon(true);
 			setName("VoiceServer Listen Thread");
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -97,7 +97,7 @@ public class VoiceServerManager
 					VoiceConnection connection = new VoiceConnection(s);
 					connection.start();
 					connections.add(connection);
-					
+
 					System.out.println("[Mekanism] VoiceServer: Accepted new connection.");
 				} catch(SocketException e) {
 				} catch(NullPointerException e) {

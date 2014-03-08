@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 public abstract class Finder
 {
 	public abstract boolean modifies(ItemStack stack);
-	
+
 	public static class FirstFinder extends Finder
 	{
 		@Override
@@ -18,26 +18,26 @@ public abstract class Finder
 			return true;
 		}
 	}
-	
+
 	public static class OreDictFinder extends Finder
 	{
 		public String oreDictName;
-		
+
 		public OreDictFinder(String name)
 		{
 			oreDictName = name;
 		}
-		
+
 		@Override
 		public boolean modifies(ItemStack stack)
 		{
 			List<String> oreKeys = MekanismUtils.getOreDictName(stack);
-			
+
 			if(oreKeys.isEmpty())
 			{
 				return false;
 			}
-			
+
 			for(String oreKey : oreKeys)
 			{
 				if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
@@ -66,20 +66,20 @@ public abstract class Finder
 					}
 				}
 			}
-			
+
 			return false;
 		}
 	}
-	
+
 	public static class ItemStackFinder extends Finder
 	{
 		public ItemStack itemType;
-		
+
 		public ItemStackFinder(ItemStack type)
 		{
 			itemType = type;
 		}
-		
+
 		@Override
 		public boolean modifies(ItemStack stack)
 		{

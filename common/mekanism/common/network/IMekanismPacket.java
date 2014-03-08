@@ -14,13 +14,13 @@ public interface IMekanismPacket
 	 * @return this packet's identifier
 	 */
 	public String getName();
-	
+
 	/**
 	 * Sets the parameters of this packet for writing.
 	 * @param data - data to set
 	 */
 	public IMekanismPacket setParams(Object... data);
-	
+
 	/**
 	 * Reads this packet's data from a ByteArrayDataInput, and handles it as needed.
 	 * @param dataStream - data stream being sent
@@ -29,7 +29,7 @@ public interface IMekanismPacket
 	 * @throws Exception - the exception thrown in case anything goes wrong
 	 */
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception;
-	
+
 	/**
 	 * Writes this packet's data to a DataOutputStream.
 	 * @param dataStream - data stream being sent

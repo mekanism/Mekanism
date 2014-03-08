@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
  * @author aidancbrady
  *
  */
-public interface ISpecialBounds 
+public interface ISpecialBounds
 {
 	/**
 	 * Sets the render bounds for this particular block's subtype.
@@ -15,7 +15,7 @@ public interface ISpecialBounds
 	 * @param metadata - metadata of the block being rendered
 	 */
 	public void setRenderBounds(Block block, int metadata);
-	
+
 	/**
 	 * Whether or not to call the default setBlockBoundsForItemRender() before rendering this block as an item.
 	 * @param metadata - metadata of the block being rendered

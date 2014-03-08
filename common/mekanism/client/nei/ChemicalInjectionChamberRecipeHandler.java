@@ -26,7 +26,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	{
 		return "mekanism.chemicalinjectionchamber";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -44,7 +44,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	{
 		return "mekanism:gui/GuiChemicalInjectionChamber.png";
 	}
-	
+
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
@@ -64,10 +64,10 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
 			return fuels;
 		}
-		
+
 		return new ArrayList<ItemStack>();
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{

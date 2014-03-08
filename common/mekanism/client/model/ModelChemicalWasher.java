@@ -43,12 +43,12 @@ public class ModelChemicalWasher extends ModelBase
 	ModelRenderer Can2T;
 	ModelRenderer Can3T;
 	ModelRenderer Can3B;
-	
+
 	public ModelChemicalWasher()
 	{
 		textureWidth = 128;
 		textureHeight = 64;
-		
+
 		Base = new ModelRenderer(this, 16, 0);
 		Base.addBox(0F, 0F, 0F, 14, 1, 14);
 		Base.setRotationPoint(-7F, 23F, -7F);
@@ -249,11 +249,11 @@ public class ModelChemicalWasher extends ModelBase
 		Can3B.mirror = true;
 		setRotation(Can3B, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		MekanismRenderer.blendOn();
-		
+
 		Base.render(size);
 		Base2.render(size);
 		IO1.render(size);
@@ -287,10 +287,10 @@ public class ModelChemicalWasher extends ModelBase
 		Can2T.render(size);
 		Can3T.render(size);
 		Can3B.render(size);
-		
+
 		MekanismRenderer.blendOff();
 	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;

@@ -76,11 +76,11 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
-	
+
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRenderer.instance.specialRendererMap.get(TileEntityBin.class);
-    private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
-	
+	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
+
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
@@ -88,7 +88,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			return type != ItemRenderType.INVENTORY;
 		}
-		
+
 		return true;
 	}
 
@@ -99,182 +99,182 @@ public class ItemRenderingHandler implements IItemRenderer
 	}
 
 	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) 
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
 		RenderBlocks renderBlocks = (RenderBlocks)data[0];
-		
-        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
-        {
-        	GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-        }
-        
+
+		if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+		{
+			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		}
+
 		if(item.getItem() instanceof IEnergyCube)
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 			IEnergizedItem energized = (IEnergizedItem)item.getItem();
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.name + ".png"));
-			
+
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
-	    	
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+
 			energyCube.render(0.0625F);
-			
-	        GL11.glPushMatrix();
-	        GL11.glTranslated(0.0, 1.0, 0.0);
-	        Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-	        GL11.glShadeModel(GL11.GL_SMOOTH);
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+			GL11.glPushMatrix();
+			GL11.glTranslated(0.0, 1.0, 0.0);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCore.png"));
 
-	        MekanismRenderer.glowOn();
-	        
-	        EnumColor c = tier.color;
+			GL11.glShadeModel(GL11.GL_SMOOTH);
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-	        GL11.glPushMatrix();
-	        GL11.glScalef(0.4F, 0.4F, 0.4F);
-	        GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), (float)(energized.getEnergy(item)/energized.getMaxEnergy(item)));
-	        GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 3)) / 7, 0);
-	        GL11.glRotatef((MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 4, 0, 1, 0);
-	        GL11.glRotatef(36F + (MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 4, 0, 1, 1);
-	        energyCore.render(0.0625F);
-	        GL11.glPopMatrix();
+			MekanismRenderer.glowOn();
 
-	        MekanismRenderer.glowOff();
+			EnumColor c = tier.color;
 
-	        GL11.glShadeModel(GL11.GL_FLAT);
-	        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-	        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
-	        GL11.glDisable(GL11.GL_BLEND);
+			GL11.glPushMatrix();
+			GL11.glScalef(0.4F, 0.4F, 0.4F);
+			GL11.glColor4f(c.getColor(0), c.getColor(1), c.getColor(2), (float)(energized.getEnergy(item)/energized.getMaxEnergy(item)));
+			GL11.glTranslatef(0, (float)Math.sin(Math.toRadians((MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 3)) / 7, 0);
+			GL11.glRotatef((MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 4, 0, 1, 0);
+			GL11.glRotatef(36F + (MekanismClient.ticksPassed + MekanismRenderer.getPartialTick()) * 4, 0, 1, 1);
+			energyCore.render(0.0625F);
+			GL11.glPopMatrix();
 
-	        GL11.glPopMatrix();
+			MekanismRenderer.glowOff();
+
+			GL11.glShadeModel(GL11.GL_FLAT);
+			GL11.glDisable(GL11.GL_LINE_SMOOTH);
+			GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+			GL11.glDisable(GL11.GL_BLEND);
+
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemBlockBasic && item.getItemDamage() == 6)
 		{
 			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.basicBlockID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
-			
+
 			if(binRenderer == null || binRenderer.getFontRenderer() == null)
 			{
 				return;
 			}
-			
+
 			InventoryBin inv = new InventoryBin(item);
 			ForgeDirection side = ForgeDirection.getOrientation(2);
-			
-            String amount = "";
-            ItemStack itemStack = inv.getStack();
 
-            if(itemStack != null)
-            {
-                amount = Integer.toString(inv.getItemCount());
-            }
+			String amount = "";
+			ItemStack itemStack = inv.getStack();
 
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+			if(itemStack != null)
+			{
+				amount = Integer.toString(inv.getItemCount());
+			}
 
-            if(itemStack != null)
-            {
-                GL11.glPushMatrix();
-                
-                if(!(itemStack.getItem() instanceof ItemBlock) || Block.blocksList[itemStack.itemID].getRenderType() != 0)
-                {
-                	GL11.glRotatef(180, 0, 0, 1);
-                	GL11.glTranslatef(-1.02F, -0.2F, 0);
-                	
-                	if(type == ItemRenderType.INVENTORY)
-                	{
-                		GL11.glTranslatef(-0.45F, -0.4F, 0.0F);
-                	}
-                }
-                
-                if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
-                {
-                	GL11.glTranslatef(-0.22F, -0.2F, -0.22F);
-                }
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
 
-                GL11.glTranslated(0.73, 0.08, 0.44);
-                GL11.glRotatef(90, 0, 1, 0);
+			if(itemStack != null)
+			{
+				GL11.glPushMatrix();
 
-                float scale = 0.03125F;
-                float scaler = 0.9F;
-                
-                GL11.glScalef(scale*scaler, scale*scaler, 0);
+				if(!(itemStack.getItem() instanceof ItemBlock) || Block.blocksList[itemStack.itemID].getRenderType() != 0)
+				{
+					GL11.glRotatef(180, 0, 0, 1);
+					GL11.glTranslatef(-1.02F, -0.2F, 0);
 
-                TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
+					if(type == ItemRenderType.INVENTORY)
+					{
+						GL11.glTranslatef(-0.45F, -0.4F, 0.0F);
+					}
+				}
 
-                GL11.glDisable(GL11.GL_LIGHTING);
-                
-                renderItem.renderItemAndEffectIntoGUI(binRenderer.getFontRenderer(), renderEngine, itemStack, 0, 0);
-                
-                GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glPopMatrix();
-            }
-			
-            if(amount != "")
-            {
-            	float maxScale = 0.02F;
-            	
-		        GL11.glPushMatrix();
-	
-		        GL11.glPolygonOffset(-10, -10);
-		        GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
-	
-		        float displayWidth = 1 - (2 / 16);
-		        float displayHeight = 1 - (2 / 16);
-		        GL11.glTranslatef(0, -0.31F, 0);
-		        
-		        if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
-                {
-		        	GL11.glTranslated(-0.5, -0.4, -0.5);
-                }
-	
-                GL11.glTranslatef(0, 0.9F, 1);
-                GL11.glRotatef(90, 0, 1, 0);
-                GL11.glRotatef(90, 1, 0, 0);
-	
-		        GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
-		        GL11.glRotatef(-90, 1, 0, 0);
-	
-		        FontRenderer fontRenderer = binRenderer.getFontRenderer();
-	
-		        int requiredWidth = Math.max(fontRenderer.getStringWidth(amount), 1);
-		        int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-		        int requiredHeight = lineHeight * 1;
-		        float scaler = 0.4F;
-		        float scaleX = (displayWidth / requiredWidth);
-		        float scale = scaleX * scaler;
-	
-		        if(maxScale > 0)
-		        {
-		            scale = Math.min(scale, maxScale);
-		        }
-	
-		        GL11.glScalef(scale, -scale, scale);
-		        GL11.glDepthMask(false);
-	
-		        int offsetX;
-		        int offsetY;
-		        int realHeight = (int)Math.floor(displayHeight / scale);
-		        int realWidth = (int)Math.floor(displayWidth / scale);
-	
-		        offsetX = (realWidth - requiredWidth) / 2;
-		        offsetY = (realHeight - requiredHeight) / 2;
-	
-		        GL11.glDisable(GL11.GL_LIGHTING);
-		        fontRenderer.drawString("\u00a7f" + amount, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-		        GL11.glEnable(GL11.GL_LIGHTING);
-		        GL11.glDepthMask(true);
-		        GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
-	
-		        GL11.glPopMatrix();
-            }
+				if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
+				{
+					GL11.glTranslatef(-0.22F, -0.2F, -0.22F);
+				}
+
+				GL11.glTranslated(0.73, 0.08, 0.44);
+				GL11.glRotatef(90, 0, 1, 0);
+
+				float scale = 0.03125F;
+				float scaler = 0.9F;
+
+				GL11.glScalef(scale*scaler, scale*scaler, 0);
+
+				TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
+
+				GL11.glDisable(GL11.GL_LIGHTING);
+
+				renderItem.renderItemAndEffectIntoGUI(binRenderer.getFontRenderer(), renderEngine, itemStack, 0, 0);
+
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glPopMatrix();
+			}
+
+			if(amount != "")
+			{
+				float maxScale = 0.02F;
+
+				GL11.glPushMatrix();
+
+				GL11.glPolygonOffset(-10, -10);
+				GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
+
+				float displayWidth = 1 - (2 / 16);
+				float displayHeight = 1 - (2 / 16);
+				GL11.glTranslatef(0, -0.31F, 0);
+
+				if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON || type == ItemRenderType.ENTITY)
+				{
+					GL11.glTranslated(-0.5, -0.4, -0.5);
+				}
+
+				GL11.glTranslatef(0, 0.9F, 1);
+				GL11.glRotatef(90, 0, 1, 0);
+				GL11.glRotatef(90, 1, 0, 0);
+
+				GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
+				GL11.glRotatef(-90, 1, 0, 0);
+
+				FontRenderer fontRenderer = binRenderer.getFontRenderer();
+
+				int requiredWidth = Math.max(fontRenderer.getStringWidth(amount), 1);
+				int lineHeight = fontRenderer.FONT_HEIGHT + 2;
+				int requiredHeight = lineHeight * 1;
+				float scaler = 0.4F;
+				float scaleX = (displayWidth / requiredWidth);
+				float scale = scaleX * scaler;
+
+				if(maxScale > 0)
+				{
+					scale = Math.min(scale, maxScale);
+				}
+
+				GL11.glScalef(scale, -scale, scale);
+				GL11.glDepthMask(false);
+
+				int offsetX;
+				int offsetY;
+				int realHeight = (int)Math.floor(displayHeight / scale);
+				int realWidth = (int)Math.floor(displayWidth / scale);
+
+				offsetX = (realWidth - requiredWidth) / 2;
+				offsetY = (realHeight - requiredHeight) / 2;
+
+				GL11.glDisable(GL11.GL_LIGHTING);
+				fontRenderer.drawString("\u00a7f" + amount, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
+				GL11.glEnable(GL11.GL_LIGHTING);
+				GL11.glDepthMask(true);
+				GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
+
+				GL11.glPopMatrix();
+			}
 		}
 		else if(item.itemID == Mekanism.gasTankID)
 		{
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			gasTank.render(0.0625F);
 		}
 		else if(item.itemID == Mekanism.obsidianTNTID)
@@ -282,7 +282,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ObsidianTNT.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
-	    	GL11.glTranslatef(0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			obsidianTNT.render(0.0625F);
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
@@ -291,9 +291,9 @@ public class ItemRenderingHandler implements IItemRenderer
 			{
 				MekanismRenderer.glowOn();
 			}
-			
+
 			MekanismRenderer.renderItem(item);
-			
+
 			if(((ItemWalkieTalkie)item.getItem()).getOn(item))
 			{
 				MekanismRenderer.glowOff();
@@ -302,20 +302,20 @@ public class ItemRenderingHandler implements IItemRenderer
 		else if(MachineType.get(item) == MachineType.ELECTRIC_CHEST)
 		{
 			IElectricChest chest = (IElectricChest)item.getItem();
-			
+
 			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
-            GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-            GL11.glTranslatef(0, 1.0F, 1.0F);
-            GL11.glScalef(1.0F, -1F, -1F);
-            
-            Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
-	    	
+			GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+			GL11.glTranslatef(0, 1.0F, 1.0F);
+			GL11.glScalef(1.0F, -1F, -1F);
+
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
+
 			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * MekanismRenderer.getPartialTick();
-	        lidangle = 1.0F - lidangle;
-	        lidangle = 1.0F - lidangle * lidangle * lidangle;
-	        electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
-	    	
-	    	electricChest.renderAll();
+			lidangle = 1.0F - lidangle;
+			lidangle = 1.0F - lidangle * lidangle * lidangle;
+			electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
+
+			electricChest.renderAll();
 		}
 		else if(item.getItem() instanceof ItemRobit)
 		{
@@ -384,7 +384,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			GL11.glScalef(1.4F, 1.4F, 1.4F);
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
-			
+
 			if(type == ItemRenderType.EQUIPPED)
 			{
 				GL11.glRotatef(-45, 0.0F, 1.0F, 0.0F);
@@ -396,14 +396,14 @@ public class ItemRenderingHandler implements IItemRenderer
 			{
 				GL11.glRotatef(225, 0.0F, 1.0F, 0.0F);
 				GL11.glRotatef(45, -1.0F, 0.0F, -1.0F);
-				GL11.glScalef(0.6F, 0.6F, 0.6F); 
+				GL11.glScalef(0.6F, 0.6F, 0.6F);
 				GL11.glTranslatef(0.0F, -0.2F, 0.0F);
 			}
 			else {
 				GL11.glRotatef(45, 0.0F, 1.0F, 0.0F);
 				GL11.glTranslatef(0.0F, -0.7F, 0.0F);
 			}
-			
+
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
 			atomicDisassembler.render(0.0625F);
 		}
@@ -412,7 +412,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslated(-0.5, -0.5, -0.5);
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
-	    	GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glEnable(GL11.GL_CULL_FACE);
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

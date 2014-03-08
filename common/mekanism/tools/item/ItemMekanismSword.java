@@ -11,18 +11,18 @@ import net.minecraft.item.ItemSword;
 
 public class ItemMekanismSword extends ItemSword
 {
-    public ItemMekanismSword(int id, EnumToolMaterial enumtoolmaterial)
-    {
-        super(id, enumtoolmaterial);
-        setCreativeTab(Mekanism.tabMekanism);
-    }
-    
-    @Override
+	public ItemMekanismSword(int id, EnumToolMaterial enumtoolmaterial)
+	{
+		super(id, enumtoolmaterial);
+		setCreativeTab(Mekanism.tabMekanism);
+	}
+
+	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-    	list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+		list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
-    
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

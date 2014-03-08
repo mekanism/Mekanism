@@ -38,36 +38,36 @@ import com.google.common.io.ByteArrayDataInput;
 public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedTank, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
-	
+
 	public FluidTank fluidTank;
-	
+
 	public static final int MAX_GAS = 10000;
-	
+
 	public int updateDelay;
-	
+
 	/** 0: gas -> fluid; 1: fluid -> gas */
 	public int mode;
-	
+
 	public int gasOutput = 16;
-	
+
 	public boolean isActive;
-	
+
 	public boolean clientActive;
-	
+
 	public double prevEnergy;
-	
+
 	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
-	
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
-	
+
 	public TileEntityRotaryCondensentrator()
 	{
 		super("RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
 		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[5];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
@@ -76,7 +76,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-				
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
@@ -84,28 +84,28 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				}
 			}
 		}
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-					
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
-			
+
 			ChargeUtils.discharge(4, this);
-			
+
 			if(mode == 0)
 			{
 				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
 					gasTank.receive(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
 				}
-				
+
 				if(inventory[2] != null)
 				{
 					if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
@@ -113,18 +113,18 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 						if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
 							ItemStack filled = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[2]);
-							
+
 							if(filled != null)
 							{
 								if(inventory[3] == null || (inventory[3].isItemEqual(filled) && inventory[3].stackSize+1 <= filled.getMaxStackSize()))
 								{
 									inventory[2].stackSize--;
-									
+
 									if(inventory[2].stackSize <= 0)
 									{
 										inventory[2] = null;
 									}
-									
+
 									if(inventory[3] == null)
 									{
 										inventory[3] = filled;
@@ -132,14 +132,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 									else {
 										inventory[3].stackSize++;
 									}
-									
+
 									fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
 								}
 							}
 						}
 					}
 				}
-				
+
 				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < 10000 && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
@@ -160,14 +160,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				{
 					gasTank.draw(GasTransmission.addGas(inventory[0], gasTank.getGas()), true);
 				}
-				
+
 				if(gasTank.getGas() != null)
 				{
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getGas().amount, gasOutput));
 					gasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing)), true);
-					
+
 					TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
-					
+
 					if(tileEntity instanceof IGasHandler)
 					{
 						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), gasTank.getGas().getGas()))
@@ -176,28 +176,28 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				
+
 				if(FluidContainerRegistry.isFilledContainer(inventory[2]))
 				{
 					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[2]);
-					
+
 					if((fluidTank.getFluid() == null && itemFluid.amount <= 10000) || fluidTank.getFluid().amount+itemFluid.amount <= 10000)
 					{
 						if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
 						{
 							return;
 						}
-						
+
 						ItemStack containerItem = inventory[2].getItem().getContainerItemStack(inventory[2]);
-						
+
 						boolean filled = false;
-						
+
 						if(containerItem != null)
 						{
 							if(inventory[3] == null || (inventory[3].isItemEqual(containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
 							{
 								inventory[2] = null;
-								
+
 								if(inventory[3] == null)
 								{
 									inventory[3] = containerItem;
@@ -205,28 +205,28 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 								else {
 									inventory[3].stackSize++;
 								}
-								
+
 								filled = true;
 							}
 						}
-						else {						
+						else {
 							inventory[2].stackSize--;
-							
+
 							if(inventory[2].stackSize == 0)
 							{
 								inventory[2] = null;
 							}
-							
+
 							filled = true;
 						}
-						
+
 						if(filled)
 						{
 							fluidTank.fill(itemFluid, true);
 						}
 					}
 				}
-				
+
 				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_GAS && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
@@ -241,67 +241,67 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 			}
-			
+
 			prevEnergy = getEnergy();
 		}
 	}
-	
+
 	public boolean isValidGas(GasStack g)
 	{
 		if(g == null)
 		{
 			return false;
 		}
-		
+
 		return g.getGas().hasFluid();
 	}
-	
+
 	public boolean gasEquals(GasStack gas, FluidStack fluid)
 	{
 		if(fluid == null || gas == null || !gas.getGas().hasFluid())
 		{
 			return false;
 		}
-		
+
 		return gas.getGas().getFluid() == fluid.getFluid();
 	}
-	
+
 	public boolean isValidFluid(FluidStack f)
 	{
 		if(f == null)
 		{
 			return false;
 		}
-		
+
 		return GasRegistry.getGas(f.getFluid()) != null;
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
 			int type = dataStream.readInt();
-			
+
 			if(type == 0)
 			{
 				mode = mode == 0 ? 1 : 0;
 			}
-			
+
 			for(EntityPlayer player : playersUsing)
 			{
 				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 			}
-			
+
 			return;
 		}
-		
+
 		super.handlePacketData(dataStream);
-		
+
 		mode = dataStream.readInt();
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-		
+
 		if(dataStream.readBoolean())
 		{
 			fluidTank.setFluid(new FluidStack(dataStream.readInt(), dataStream.readInt()));
@@ -309,7 +309,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		else {
 			fluidTank.setFluid(null);
 		}
-		
+
 		if(dataStream.readBoolean())
 		{
 			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
@@ -317,20 +317,20 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		else {
 			gasTank.setGas(null);
 		}
-		
-		
+
+
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(mode);
 		data.add(isActive);
 		data.add(controlType.ordinal());
-		
+
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
@@ -340,7 +340,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		else {
 			data.add(false);
 		}
-		
+
 		if(gasTank.getGas() != null)
 		{
 			data.add(true);
@@ -350,90 +350,90 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		else {
 			data.add(false);
 		}
-		
+
 		return data;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        mode = nbtTags.getInteger("mode");
-        isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        
-        gasTank.read(nbtTags.getCompoundTag("gasTank"));
-        
-    	if(nbtTags.hasKey("fluidTank"))
-    	{
-    		fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
-    	}
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setInteger("mode", mode);
-        nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("controlType", controlType.ordinal());
-    	nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
-        
-        if(fluidTank.getFluid() != null)
-        {
-        	nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
-        }
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		mode = nbtTags.getInteger("mode");
+		isActive = nbtTags.getBoolean("isActive");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+
+		gasTank.read(nbtTags.getCompoundTag("gasTank"));
+
+		if(nbtTags.hasKey("fluidTank"))
+		{
+			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("mode", mode);
+		nbtTags.setBoolean("isActive", isActive);
+		nbtTags.setInteger("controlType", controlType.ordinal());
+		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+
+		if(fluidTank.getFluid() != null)
+		{
+			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+		}
+	}
+
 	@Override
 	public boolean canSetFacing(int i)
 	{
 		return i != 0 && i != 1;
 	}
-	
+
 	public int getScaledFluidLevel(int i)
 	{
 		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
 	}
-	
+
 	public int getScaledGasLevel(int i)
 	{
 		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_GAS : 0;
 	}
-	
+
 	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(clientActive != active && updateDelay == 0)
-    	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
-    		
-    		updateDelay = 10;
-    		clientActive = active;
-    	}
-    }
-    
-    @Override
-    public boolean getActive()
-    {
-    	return isActive;
-    }
-    
-    @Override
-    public boolean renderUpdate()
-    {
-    	return false;
-    }
-    
-    @Override
-    public boolean lightUpdate()
-    {
-    	return true;
-    }
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(clientActive != active && updateDelay == 0)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+
+			updateDelay = 10;
+			clientActive = active;
+		}
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return isActive;
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
+	{
+		return true;
+	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
@@ -446,7 +446,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		return gasTank.receive(stack, true);
 	}
-	
+
 	@Override
 	public GasStack drawGas(ForgeDirection side, int amount)
 	{
@@ -490,7 +490,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			return fluidTank.fill(resource, doFill);
 		}
-		
+
 		return 0;
 	}
 
@@ -501,7 +501,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			return drain(from, resource.amount, doDrain);
 		}
-		
+
 		return null;
 	}
 
@@ -524,7 +524,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
-		
+
 		return PipeUtils.EMPTY;
 	}
 
@@ -535,18 +535,18 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
-	public RedstoneControl getControlType() 
+	public RedstoneControl getControlType()
 	{
 		return controlType;
 	}
 
 	@Override
-	public void setControlType(RedstoneControl type) 
+	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);

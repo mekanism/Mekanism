@@ -30,28 +30,28 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public static int xOffset = 5;
 	public static int yOffset = 3;
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("tile.MachineBlock2.ChemicalInfuser.name");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "chemicalinfuser";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/nei/GuiChemicalInfuser.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -80,23 +80,23 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
-		
+
 		drawTexturedModalRect(47-xOffset, 39-yOffset, 176, 71, 28, 8);
 		drawTexturedModalRect(101-xOffset, 39-yOffset, 176, 63, 28, 8);
-		
+
 		if(recipe.chemicalInput.leftGas != null)
 		{
-        	displayGauge(58, 26-xOffset, 14-yOffset, 176, 4, 58, null, recipe.chemicalInput.leftGas);
+			displayGauge(58, 26-xOffset, 14-yOffset, 176, 4, 58, null, recipe.chemicalInput.leftGas);
 		}
-		
+
 		if(recipe.outputStack != null)
 		{
-        	displayGauge(58, 80-xOffset, 5-yOffset, 176, 4, 58, null, recipe.outputStack);
+			displayGauge(58, 80-xOffset, 5-yOffset, 176, 4, 58, null, recipe.outputStack);
 		}
-		
+
 		if(recipe.chemicalInput.rightGas != null)
 		{
-        	displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, recipe.chemicalInput.rightGas);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, recipe.chemicalInput.rightGas);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -139,7 +139,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 			super.loadCraftingRecipes(outputId, results);
 		}
 	}
-	
+
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
@@ -157,15 +157,15 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 			super.loadUsageRecipes(inputId, ingredients);
 		}
 	}
-	
+
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).chemicalInput.leftGas.getGas().getLocalizedName());
@@ -178,7 +178,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).chemicalInput.rightGas.getGas().getLocalizedName());
 		}
-		
+
 		return super.handleTooltip(gui, currenttip, recipe);
 	}
 
@@ -186,12 +186,12 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack stack = null;
-		
+
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.leftGas;
@@ -204,7 +204,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.rightGas;
 		}
-		
+
 		if(stack != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
@@ -222,20 +222,20 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack stack = null;
-		
+
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.leftGas;
@@ -248,7 +248,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.rightGas;
 		}
-		
+
 		if(stack != null)
 		{
 			if(button == 0)
@@ -266,10 +266,10 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.mouseClicked(gui, button, recipe);
 	}
-	
+
 	@Override
 	public int recipiesPerPage()
 	{

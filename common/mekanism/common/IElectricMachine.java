@@ -10,22 +10,22 @@ import java.util.Map;
  */
 public interface IElectricMachine
 {
-    /**
-     * Update call for machines. Use instead of updateEntity() - it's called every tick.
-     */
+	/**
+	 * Update call for machines. Use instead of updateEntity() - it's called every tick.
+	 */
 	public void onUpdate();
-	
-    /**
-     * Whether or not this machine can operate.
-     * @return can operate
-     */
+
+	/**
+	 * Whether or not this machine can operate.
+	 * @return can operate
+	 */
 	public boolean canOperate();
-	
+
 	/**
 	 * Runs this machine's operation -- or smelts the item.
 	 */
 	public void operate();
-	
+
 	/**
 	 * Gets this machine's recipes.
 	 */

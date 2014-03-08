@@ -11,13 +11,13 @@ import net.minecraftforge.fluids.IFluidHandler;
 public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandler
 {
 	public DynamicFluidTank fluidTank;
-	
+
 	public TileEntityDynamicValve()
 	{
 		super("Dynamic Valve");
 		fluidTank = new DynamicFluidTank(this);
 	}
-	
+
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
@@ -25,7 +25,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		return fluidTank.fill(resource, doFill);
 	}
@@ -40,23 +40,23 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 				return fluidTank.drain(resource.amount, doDrain);
 			}
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		if(fluidTank.dynamicTank.structure != null)
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
-		
+
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return true;
 	}

@@ -12,7 +12,7 @@ import net.minecraftforge.fluids.FluidStack;
  * @author AidanBrady
  *
  */
-public final class RecipeHelper 
+public final class RecipeHelper
 {
 	/**
 	 * Add an Enrichment Chamber recipe.
@@ -29,7 +29,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add an Osmium Compressor recipe.
 	 * @param input - input ItemStack
@@ -45,7 +45,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Combiner recipe.
 	 * @param input - input ItemStack
@@ -61,7 +61,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Crusher recipe.
 	 * @param input - input ItemStack
@@ -77,7 +77,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Purification Chamber recipe.
 	 * @param input - input ItemStack
@@ -93,7 +93,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Chemical Oxidizer recipe.
 	 * @param input - input ItemStack
@@ -109,7 +109,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Chemical Infuser recipe.
 	 * @param input - input ChemicalInput
@@ -125,7 +125,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Precision Sawmill recipe.
 	 * @param input - input ItemStack
@@ -141,7 +141,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Chemical Injection Chamber recipe.
 	 * @param input - input AdvancedInput
@@ -157,7 +157,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add an Electrolytic Separator recipe.
 	 * @param input - input FluidStack
@@ -173,7 +173,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Chemical Dissolution Chamber recipe.
 	 * @param input - input ItemStack
@@ -189,7 +189,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Chemical Washer recipe.
 	 * @param input - input GasStack
@@ -205,7 +205,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Electrolytic Separator recipe.
 	 * @param input - input GasStack
@@ -221,7 +221,7 @@ public final class RecipeHelper
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Add a Metallurgic Infuser recipe.
 	 * @param input - input Infusion

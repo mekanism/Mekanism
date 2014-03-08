@@ -13,16 +13,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderRobit extends RenderLiving
 {
-	public RenderRobit() 
+	public RenderRobit()
 	{
 		super(new ModelRobit(), 0.5F);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) 
+	protected ResourceLocation getEntityTexture(Entity entity)
 	{
 		EntityRobit robit = (EntityRobit)entity;
-		
+
 		if((Math.abs(entity.posX-entity.prevPosX) + Math.abs(entity.posX-entity.prevPosX)) > 0.001)
 		{
 			if(robit.ticksExisted % 3 == 0)
@@ -30,7 +30,7 @@ public class RenderRobit extends RenderLiving
 				robit.texTick = !robit.texTick;
 			}
 		}
-		
+
 		return MekanismUtils.getResource(ResourceType.RENDER, "Robit" + (robit.texTick ? "2" : "") + ".png");
 	}
 }

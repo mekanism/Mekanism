@@ -36,7 +36,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
 {
 	public Block metaBlock;
-	
+
 	public ItemBlockEnergyCube(int id, Block block)
 	{
 		super(id);
@@ -46,7 +46,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -60,7 +60,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
 	}
-	
+
 	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
 		ItemStack charged = new ItemStack(this);
@@ -68,53 +68,53 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		charged.setItemDamage(100);
 		return charged;
 	}
-	
+
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		return getUnlocalizedName() + "." + getEnergyCubeTier(itemstack).name;
 	}
-	
+
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
-    {
-    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-    	
-    	if(place)
-    	{
-    		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
-    		tileEntity.tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
-    		tileEntity.electricityStored = getEnergy(stack);
-    		
-    		((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
-    		
-    		if(!world.isRemote)
-    		{
-    			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
-    		}
-    	}
-    	
-    	return place;
-    }
+	{
+		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+
+		if(place)
+		{
+			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+			tileEntity.tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
+			tileEntity.electricityStored = getEnergy(stack);
+
+			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+
+			if(!world.isRemote)
+			{
+				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+			}
+		}
+
+		return place;
+	}
 
 	@Override
 	public EnergyCubeTier getEnergyCubeTier(ItemStack itemstack)
 	{
 		if(itemstack.stackTagCompound == null)
-		{ 
-			return EnergyCubeTier.BASIC; 
+		{
+			return EnergyCubeTier.BASIC;
 		}
-		
+
 		if(itemstack.stackTagCompound.getString("tier") == null)
 		{
 			return EnergyCubeTier.BASIC;
 		}
-		
+
 		return EnergyCubeTier.getFromName(itemstack.stackTagCompound.getString("tier"));
 	}
 
 	@Override
-	public void setEnergyCubeTier(ItemStack itemstack, EnergyCubeTier tier) 
+	public void setEnergyCubeTier(ItemStack itemstack, EnergyCubeTier tier)
 	{
 		if(itemstack.stackTagCompound == null)
 		{
@@ -123,7 +123,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 		itemstack.stackTagCompound.setString("tier", tier.name);
 	}
-	
+
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
@@ -159,57 +159,57 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	{
 		return 0;
 	}
-	
+
 	@Override
-	public void setInventory(NBTTagList nbtTags, Object... data) 
+	public void setInventory(NBTTagList nbtTags, Object... data)
 	{
 		if(data[0] instanceof ItemStack)
 		{
 			ItemStack itemStack = (ItemStack)data[0];
-			
+
 			if(itemStack.stackTagCompound == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
-	
+
 			itemStack.stackTagCompound.setTag("Items", nbtTags);
 		}
 	}
 
 	@Override
-	public NBTTagList getInventory(Object... data) 
+	public NBTTagList getInventory(Object... data)
 	{
 		if(data[0] instanceof ItemStack)
 		{
 			ItemStack itemStack = (ItemStack)data[0];
-			
-			if(itemStack.stackTagCompound == null) 
-			{ 
-				return null; 
+
+			if(itemStack.stackTagCompound == null)
+			{
+				return null;
 			}
-			
+
 			return itemStack.stackTagCompound.getTagList("Items");
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
-	public double getEnergy(ItemStack itemStack) 
+	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null) 
-		{ 
-			return 0; 
+		if(itemStack.stackTagCompound == null)
+		{
+			return 0;
 		}
-		
+
 		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-		
+
 		return electricityStored;
 	}
 
 	@Override
-	public void setEnergy(ItemStack itemStack, double amount) 
+	public void setEnergy(ItemStack itemStack, double amount)
 	{
 		if(itemStack.stackTagCompound == null)
 		{
@@ -222,19 +222,19 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	public double getMaxEnergy(ItemStack itemStack) 
+	public double getMaxEnergy(ItemStack itemStack)
 	{
 		return getEnergyCubeTier(itemStack).MAX_ELECTRICITY;
 	}
 
 	@Override
-	public double getMaxTransfer(ItemStack itemStack) 
+	public double getMaxTransfer(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)*0.005;
 	}
 
 	@Override
-	public boolean canReceive(ItemStack itemStack) 
+	public boolean canReceive(ItemStack itemStack)
 	{
 		return true;
 	}
@@ -244,7 +244,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	{
 		return true;
 	}
-	
+
 	@Override
 	public int receiveEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
@@ -252,34 +252,34 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
 			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
-			
+
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
-			
+
 			return (int)Math.round(toReceive*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public int extractEnergy(ItemStack theItem, int energy, boolean simulate) 
+	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
 			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
-			
+
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
-			
+
 			return (int)Math.round(toSend*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
@@ -294,15 +294,15 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	{
 		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
 	}
-	
+
 	@Override
 	public boolean isMetadataSpecific()
 	{
 		return false;
 	}
-	
+
 	@Override
-	public IElectricItemManager getManager(ItemStack itemStack) 
+	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
 	}

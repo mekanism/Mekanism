@@ -14,12 +14,12 @@ import dan200.computer.api.IPeripheral;
 public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral
 {
 	public int[] getBoundSlots(Coord4D location, int side);
-	
+
 	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack);
 
 	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j);
-	
+
 	public void onPower();
-	
+
 	public void onNoPower();
 }

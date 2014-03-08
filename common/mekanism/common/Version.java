@@ -9,13 +9,13 @@ public class Version
 {
 	/** Major number for version */
 	public int major;
-	
+
 	/** Minor number for version */
 	public int minor;
-	
+
 	/** Build number for version */
 	public int build;
-	
+
 	/**
 	 * Creates a version number with 3 digits.
 	 * @param majorNum - major version
@@ -28,9 +28,9 @@ public class Version
 		minor = minorNum;
 		build = buildNum;
 	}
-	
-	/** 
-	 * Resets the version number to "0.0.0." 
+
+	/**
+	 * Resets the version number to "0.0.0."
 	 */
 	public void reset()
 	{
@@ -38,7 +38,7 @@ public class Version
 		minor = 0;
 		build = 0;
 	}
-	
+
 	/**
 	 * 1: greater than
 	 * 0: equal to
@@ -80,7 +80,7 @@ public class Version
 			return 1;
 		}
 	}
-	
+
 	/**
 	 * Gets a version object from a string.
 	 * @param s - string object
@@ -89,12 +89,12 @@ public class Version
 	public static Version get(String s)
 	{
 		String[] split = s.replace('.', ':').split(":");
-		
+
 		if(split.length != 3)
 		{
 			return null;
 		}
-		
+
 		for(String i : split)
 		{
 			for(Character c : i.toCharArray())
@@ -105,17 +105,17 @@ public class Version
 				}
 			}
 		}
-		
+
 		int[] digits = new int[3];
-		
+
 		for(int i = 0; i < 3; i++)
 		{
 			digits[i] = Integer.parseInt(split[i]);
 		}
-		
+
 		return new Version(digits[0], digits[1], digits[2]);
 	}
-	
+
 	@Override
 	public String toString()
 	{

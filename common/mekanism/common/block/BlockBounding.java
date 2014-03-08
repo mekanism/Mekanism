@@ -23,7 +23,7 @@ public class BlockBounding extends Block
 		setHardness(3.5F);
 		setResistance(8F);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register) {}
@@ -38,7 +38,7 @@ public class BlockBounding extends Block
 			return false;
 		}
 	}
-	
+
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
@@ -49,7 +49,7 @@ public class BlockBounding extends Block
 			return null;
 		}
 	}
-	
+
 	@Override
 	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
@@ -60,9 +60,9 @@ public class BlockBounding extends Block
 			return false;
 		}
 	}
-	
+
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id) 
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
@@ -76,12 +76,12 @@ public class BlockBounding extends Block
 	{
 		return 0;
 	}
-	
-    @Override
-    public int idDropped(int i, Random random, int j)
-    {
-    	return 0;
-    }
+
+	@Override
+	public int idDropped(int i, Random random, int j)
+	{
+		return 0;
+	}
 
 	@Override
 	public int getRenderType()
@@ -100,7 +100,7 @@ public class BlockBounding extends Block
 	{
 		return false;
 	}
-	
+
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
@@ -118,7 +118,7 @@ public class BlockBounding extends Block
 		{
 			return new TileEntityAdvancedBoundingBlock();
 		}
-		
+
 		return null;
 	}
 }

@@ -4,14 +4,14 @@ import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 
-public class ItemMekanism extends Item 
+public class ItemMekanism extends Item
 {
 	public ItemMekanism(int i)
 	{
 		super(i);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

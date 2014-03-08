@@ -12,9 +12,9 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class OreHandler implements IWorldGenerator
-{	
+{
 	@Override
-	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) 
+	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
 		if(!(chunkGenerator instanceof ChunkProviderHell) && !(chunkGenerator instanceof ChunkProviderEnd))
 		{
@@ -28,7 +28,7 @@ public class OreHandler implements IWorldGenerator
 					new WorldGenMinable(Mekanism.oreBlockID, 0, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
 				}
 			}
-			
+
 			if(Mekanism.copperGenerationEnabled)
 			{
 				for(int i = 0; i < Mekanism.copperGenerationAmount; i++)
@@ -39,7 +39,7 @@ public class OreHandler implements IWorldGenerator
 					new WorldGenMinable(Mekanism.oreBlockID, 1, 8, Block.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
 				}
 			}
-			
+
 			if(Mekanism.tinGenerationEnabled)
 			{
 				for(int i = 0; i < Mekanism.tinGenerationAmount; i++)

@@ -10,7 +10,7 @@ public class SlotOutput extends Slot
 	{
 		super(inventory, index, x, y);
 	}
-    
+
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{

@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * Block class for handling multiple ore block IDs. 
+ * Block class for handling multiple ore block IDs.
  * 0: Osmium Ore
  * 1: Copper Ore
  * 2: Tin Ore
@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockOre extends Block
 {
 	public Icon[] icons = new Icon[256];
-	
+
 	public BlockOre(int id)
 	{
 		super(id, Material.rock);
@@ -31,7 +31,7 @@ public class BlockOre extends Block
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
@@ -40,20 +40,20 @@ public class BlockOre extends Block
 		icons[1] = register.registerIcon("mekanism:CopperOre");
 		icons[2] = register.registerIcon("mekanism:TinOre");
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta)
 	{
 		return icons[meta];
 	}
-	
+
 	@Override
 	public int damageDropped(int i)
 	{
 		return i;
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)

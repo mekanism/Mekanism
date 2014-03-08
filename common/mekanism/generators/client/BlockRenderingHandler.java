@@ -24,69 +24,69 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
 	public ModelHydrogenGenerator hydrogenGenerator = new ModelHydrogenGenerator();
 	public ModelWindTurbine windTurbine = new ModelWindTurbine();
-	
+
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-	    GL11.glPushMatrix();
-	    GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
-	    
-	    if(block.blockID == MekanismGenerators.generatorID)
-	    {
-    		if(metadata == GeneratorType.BIO_GENERATOR.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
-    	    	bioGenerator.render(0.0625F);
-    		}
-    		else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, 0.2F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
-    	        advancedSolarGenerator.render(0.022F);
-    		}
-    		else if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
-    	    	solarGenerator.render(0.0625F);
-    		}
-    		else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
-    	    	heatGenerator.render(0.0625F);
-    		}
-    		else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
-    			GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
-    	    	GL11.glTranslated(0.0F, -1.0F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
-    	    	hydrogenGenerator.render(0.0625F);
-    		}
-    		else if(metadata == GeneratorType.WIND_TURBINE.meta)
-    		{
-    			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-    			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-    	    	GL11.glTranslatef(0.0F, 0.35F, 0.0F);
-    	    	Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
-    	        windTurbine.render(0.018F, 0);
-    		}
-    		else if(metadata != 2) {
-    	        MekanismRenderer.renderItem(renderer, metadata, block);
-    		}
-	    }
-	    
-	    GL11.glPopMatrix();
+		GL11.glPushMatrix();
+		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
+
+		if(block.blockID == MekanismGenerators.generatorID)
+		{
+			if(metadata == GeneratorType.BIO_GENERATOR.meta)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
+				bioGenerator.render(0.0625F);
+			}
+			else if(metadata == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.2F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AdvancedSolarGenerator.png"));
+				advancedSolarGenerator.render(0.022F);
+			}
+			else if(metadata == GeneratorType.SOLAR_GENERATOR.meta)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
+				solarGenerator.render(0.0625F);
+			}
+			else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
+				heatGenerator.render(0.0625F);
+			}
+			else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
+			{
+				GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
+				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
+				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
+				hydrogenGenerator.render(0.0625F);
+			}
+			else if(metadata == GeneratorType.WIND_TURBINE.meta)
+			{
+				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+				GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, 0.35F, 0.0F);
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
+				windTurbine.render(0.018F, 0);
+			}
+			else if(metadata != 2) {
+				MekanismRenderer.renderItem(renderer, metadata, block);
+			}
+		}
+
+		GL11.glPopMatrix();
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 		if(block.blockID == MekanismGenerators.generatorID)
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
-			
+
 			if(GeneratorType.getFromMetadata(metadata) == null || !GeneratorType.getFromMetadata(metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
@@ -103,18 +103,18 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory() 
+	public boolean shouldRender3DInInventory()
 	{
 		return true;
 	}
 
 	@Override
-	public int getRenderId() 
+	public int getRenderId()
 	{
 		return GeneratorsClientProxy.GENERATOR_RENDER_ID;
 	}

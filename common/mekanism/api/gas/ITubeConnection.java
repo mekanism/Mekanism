@@ -7,7 +7,7 @@ import net.minecraftforge.common.ForgeDirection;
  * @author AidanBrady
  *
  */
-public interface ITubeConnection 
+public interface ITubeConnection
 {
 	/**
 	 * Whether or not a tube can connect to a certain orientation.
