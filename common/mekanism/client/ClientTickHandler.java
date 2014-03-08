@@ -389,7 +389,7 @@ public class ClientTickHandler implements ITickHandler
 				}
 				else if(jetpack.getMode(mc.thePlayer.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
-					if((!Keyboard.isKeyDown(Keyboard.KEY_SPACE) && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || mc.currentScreen != null)
+					if((!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || mc.currentScreen != null)
 					{
 						if(mc.thePlayer.motionY > 0)
 						{
@@ -401,11 +401,11 @@ public class ClientTickHandler implements ITickHandler
 						}
 					}
 					else {
-						if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) && mc.currentScreen == null)
+						if(Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
 						}
-						else if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && mc.currentScreen == null)
+						else if(Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode) && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
 						}
