@@ -3,6 +3,7 @@ package mekanism.common;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
+import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import net.minecraft.inventory.ISidedInventory;
@@ -11,7 +12,7 @@ import buildcraft.api.power.IPowerReceptor;
 import cofh.api.energy.IEnergyHandler;
 import dan200.computer.api.IPeripheral;
 
-public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral
+public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
 {
 	public int[] getBoundSlots(Coord4D location, int side);
 

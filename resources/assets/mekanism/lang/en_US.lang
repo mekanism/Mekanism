@@ -33,6 +33,7 @@ item.Salt.name=Salt
 item.BrineBucket.name=Brine Bucket
 item.FreeRunners.name=Free Runners
 item.ArmoredJetpack.name=Armored Jetpack
+item.FilterCard.name=Filter Card
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -266,6 +267,7 @@ gui.on=On
 gui.off=Off
 gui.filters=Filters
 gui.idle=Idle
+gui.data=Data
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
@@ -355,6 +357,12 @@ tooltip.configurator.unauth=This chest is locked
 tooltip.configurator.noLink=No link
 tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
+
+tooltip.filterCard.got=Retrieved filter data from
+tooltip.filterCard.set=Injected filter data of type
+tooltip.filterCard.unequal=Unequal filter data formats
+tooltip.filterCard.logisticalSorter=Logistical Sorter
+tooltip.filterCard.digitalMiner=Digital Miner
 
 tooltip.balloon=Balloon
 

@@ -5,6 +5,7 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IFilterAccess;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
@@ -31,7 +32,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 
@@ -539,5 +540,69 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public boolean canSetFacing(int facing)
 	{
 		return true;
+	}
+
+	@Override
+	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	{
+		nbtTags.setInteger("controlType", controlType.ordinal());
+
+		if(color != null)
+		{
+			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+		}
+
+		nbtTags.setBoolean("autoEject", autoEject);
+		nbtTags.setBoolean("roundRobin", roundRobin);
+
+		nbtTags.setInteger("rrIndex", rrIndex);
+
+		NBTTagList filterTags = new NBTTagList();
+
+		for(TransporterFilter filter : filters)
+		{
+			NBTTagCompound tagCompound = new NBTTagCompound();
+			filter.write(tagCompound);
+			filterTags.appendTag(tagCompound);
+		}
+
+		if(filterTags.tagCount() != 0)
+		{
+			nbtTags.setTag("filters", filterTags);
+		}
+		
+		return nbtTags;
+	}
+
+	@Override
+	public void setFilterData(NBTTagCompound nbtTags)
+	{
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+
+		if(nbtTags.hasKey("color"))
+		{
+			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+		}
+
+		autoEject = nbtTags.getBoolean("autoEject");
+		roundRobin = nbtTags.getBoolean("roundRobin");
+
+		rrIndex = nbtTags.getInteger("rrIndex");
+
+		if(nbtTags.hasKey("filters"))
+		{
+			NBTTagList tagList = nbtTags.getTagList("filters");
+
+			for(int i = 0; i < tagList.tagCount(); i++)
+			{
+				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+			}
+		}
+	}
+
+	@Override
+	public String getDataType()
+	{
+		return "tooltip.filterCard.logisticalSorter";
 	}
 }

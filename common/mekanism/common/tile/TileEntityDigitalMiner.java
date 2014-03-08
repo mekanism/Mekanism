@@ -1293,4 +1293,70 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+
+	@Override
+	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	{
+		nbtTags.setInteger("radius", radius);
+		nbtTags.setInteger("minY", minY);
+		nbtTags.setInteger("maxY", maxY);
+		nbtTags.setBoolean("doEject", doEject);
+		nbtTags.setBoolean("doPull", doPull);
+		nbtTags.setBoolean("silkTouch", silkTouch);
+		nbtTags.setInteger("controlType", controlType.ordinal());
+		nbtTags.setBoolean("inverse", inverse);
+
+		if(replaceStack != null)
+		{
+			nbtTags.setCompoundTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+		}
+
+		NBTTagList filterTags = new NBTTagList();
+
+		for(MinerFilter filter : filters)
+		{
+			filterTags.appendTag(filter.write(new NBTTagCompound()));
+		}
+
+		if(filterTags.tagCount() != 0)
+		{
+			nbtTags.setTag("filters", filterTags);
+		}
+		
+		return nbtTags;
+	}
+
+	@Override
+	public void setFilterData(NBTTagCompound nbtTags)
+	{
+		radius = nbtTags.getInteger("radius");
+		minY = nbtTags.getInteger("minY");
+		maxY = nbtTags.getInteger("maxY");
+		doEject = nbtTags.getBoolean("doEject");
+		doPull = nbtTags.getBoolean("doPull");
+		silkTouch = nbtTags.getBoolean("silkTouch");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+		inverse = nbtTags.getBoolean("inverse");
+
+		if(nbtTags.hasKey("replaceStack"))
+		{
+			replaceStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("replaceStack"));
+		}
+
+		if(nbtTags.hasKey("filters"))
+		{
+			NBTTagList tagList = nbtTags.getTagList("filters");
+
+			for(int i = 0; i < tagList.tagCount(); i++)
+			{
+				filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+			}
+		}
+	}
+
+	@Override
+	public String getDataType()
+	{
+		return "tooltip.filterCard.digitalMiner";
+	}
 }

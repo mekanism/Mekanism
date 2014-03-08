@@ -66,6 +66,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemFilterCard;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemIngot;
@@ -260,6 +261,7 @@ public class Mekanism
 	public static Item BrineBucket;
 	public static Item FreeRunners;
 	public static ItemJetpack ArmoredJetpack;
+	public static Item FilterCard;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -573,6 +575,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(ArmoredJetpack.getEmptyItem(), new Object[] {
 			"D D", "BSB", " J ", Character.valueOf('D'), "dustDiamond", Character.valueOf('B'), "ingotBronze", Character.valueOf('S'), "blockSteel", Character.valueOf('J'), Jetpack.getEmptyItem()
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FilterCard), new Object[] {
+			" A ", "ACA", " A ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('C'), "circuitBasic"
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
@@ -794,6 +799,7 @@ public class Mekanism
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("EnergyUpgrade");
 		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", ITEM_ID++).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
 		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", ITEM_ID++).getInt()).setUnlocalizedName("Dictionary");
+		FilterCard = new ItemFilterCard(configuration.getItem("FilterCard", ITEM_ID++).getInt()).setUnlocalizedName("FilterCard");
 		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", ITEM_ID++).getInt()).setUnlocalizedName("ElectricBow");
 		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", ITEM_ID++).getInt()).setUnlocalizedName("PortableTeleporter");
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", ITEM_ID++).getInt()).setUnlocalizedName("Configurator");
@@ -859,6 +865,7 @@ public class Mekanism
 		GameRegistry.registerItem(Crystal, "Crystal");
 		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
+		GameRegistry.registerItem(FilterCard, "FilterCard");
 	}
 	
 	/**

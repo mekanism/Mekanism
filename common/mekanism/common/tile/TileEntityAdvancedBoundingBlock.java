@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
+import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.IAdvancedBoundingBlock;
@@ -10,6 +11,7 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -21,7 +23,7 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 import dan200.computer.api.IPeripheral;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
 {
 	@Override
 	public int getSizeInventory()
@@ -469,5 +471,38 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 
 		getInv().detach(computer);
+	}
+
+	@Override
+	public NBTTagCompound getFilterData(NBTTagCompound nbtTags)
+	{
+		if(getInv() == null)
+		{
+			return null;
+		}
+		
+		return getInv().getFilterData(nbtTags);
+	}
+
+	@Override
+	public void setFilterData(NBTTagCompound nbtTags)
+	{
+		if(getInv() == null)
+		{
+			return;
+		}
+		
+		getInv().setFilterData(nbtTags);
+	}
+
+	@Override
+	public String getDataType()
+	{
+		if(getInv() == null)
+		{
+			return "null";
+		}
+		
+		return getInv().getDataType();
 	}
 }
