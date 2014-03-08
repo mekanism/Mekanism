@@ -23,31 +23,31 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		super("PurificationChamber.ogg", "PurificationChamber", new ResourceLocation("mekanism", "gui/GuiPurificationChamber.png"), Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
 	}
-	
+
 	@Override
 	public Map getRecipes()
 	{
 		return Recipe.PURIFICATION_CHAMBER.get();
 	}
-	
+
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		if(itemstack.isItemEqual(new ItemStack(Item.flint))) return new GasStack(GasRegistry.getGas("oxygen"), 10);
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen")) return new GasStack(GasRegistry.getGas("oxygen"), 1);
-		
+
 		return null;
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
 		if(stack.getGas() == GasRegistry.getGas("oxygen"))
 		{
-	    	return gasTank.receive(stack, true);
+			return gasTank.receive(stack, true);
 		}
-		
+
 		return 0;
 	}
 
@@ -56,7 +56,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		return type == GasRegistry.getGas("oxygen");
 	}
-	
+
 	@Override
 	public void handleSecondaryFuel()
 	{
@@ -66,7 +66,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 			gasTank.receive(removed, true);
 			return;
 		}
-		
+
 		super.handleSecondaryFuel();
 	}
 
@@ -75,7 +75,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean isValidGas(Gas gas)
 	{

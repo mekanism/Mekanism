@@ -14,19 +14,19 @@ public class Pos3D
 	public double xPos;
 	public double yPos;
 	public double zPos;
-	
+
 	public Pos3D()
 	{
 		this(0, 0, 0);
 	}
-	
+
 	public Pos3D(double x, double y, double z)
 	{
 		xPos = x;
 		yPos = y;
 		zPos = z;
 	}
-	
+
 	/**
 	 * Creates a Pos3D with an entity's posX, posY, and posZ values.
 	 * @param entity - entity to create the Pos3D from
@@ -35,7 +35,7 @@ public class Pos3D
 	{
 		this(entity.posX, entity.posY, entity.posZ);
 	}
-	
+
 	/**
 	 * Creates a Pos3D with a TileEntity's xCoord, yCoord and zCoord values.
 	 * @param tileEntity - TileEntity to create the Pos3D from
@@ -44,7 +44,7 @@ public class Pos3D
 	{
 		this(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
 	}
-	
+
 	/**
 	 * Creates and returns a Pos3D with values representing the difference between this and the Pos3D in the parameters.
 	 * @param pos - Pos3D to subtract
@@ -54,7 +54,7 @@ public class Pos3D
 	{
 		return new Pos3D(xPos-pos.xPos, yPos-pos.yPos, zPos-pos.zPos);
 	}
-	
+
 	/**
 	 * Creates a new Pos3D from the motion of an entity.
 	 * @param entity
@@ -64,7 +64,7 @@ public class Pos3D
 	{
 		return new Pos3D(entity.motionX, entity.motionY, entity.motionZ);
 	}
-	
+
 	/**
 	 * Translates this Pos3D by the defined values.
 	 * @param x - amount to translate on the x axis
@@ -77,10 +77,10 @@ public class Pos3D
 		xPos += x;
 		yPos += y;
 		zPos += z;
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Performs the same operation as translate(x, y, z), but with a Pos3D value instead.
 	 * @param pos - Pos3D value to translate by
@@ -90,7 +90,7 @@ public class Pos3D
 	{
 		return translate(pos.xPos, pos.yPos, pos.zPos);
 	}
-	
+
 	/**
 	 * Returns the distance between this and the defined Pos3D.
 	 * @param pos - the Pos3D to find the distance to
@@ -98,12 +98,12 @@ public class Pos3D
 	 */
 	public double distance(Pos3D pos)
 	{
-	    double subX = xPos - pos.xPos;
-	    double subY = yPos - pos.yPos;
-	    double subZ = zPos - pos.zPos;
-	    return MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
+		double subX = xPos - pos.xPos;
+		double subY = yPos - pos.yPos;
+		double subZ = zPos - pos.zPos;
+		return MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
 	}
-	
+
 	/**
 	 * Rotates this Pos3D by the defined yaw value.
 	 * @param yaw - yaw to rotate by
@@ -121,10 +121,10 @@ public class Pos3D
 			xPos = x * Math.cos(yawRadians) - z * Math.sin(yawRadians);
 			zPos = x * Math.sin(yawRadians) + z * Math.cos(yawRadians);
 		}
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Scales this Pos3D by the defined x, y, an z values.
 	 * @param x - x value to scale by
@@ -137,10 +137,10 @@ public class Pos3D
 		xPos *= x;
 		yPos *= y;
 		zPos *= z;
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Performs the same operation as scale(x, y, z), but with a value representing all three dimensions.
 	 * @param scale - value to scale by
@@ -150,30 +150,30 @@ public class Pos3D
 	{
 		return scale(scale, scale, scale);
 	}
-	
+
 	@Override
 	public Pos3D clone()
 	{
 		return new Pos3D(xPos, yPos, zPos);
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return "[Pos3D: " + xPos + ", " + yPos + ", " + zPos + "]";
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Pos3D && 
-				((Pos3D)obj).xPos == xPos && 
-				((Pos3D)obj).yPos == yPos && 
+		return obj instanceof Pos3D &&
+				((Pos3D)obj).xPos == xPos &&
+				((Pos3D)obj).yPos == yPos &&
 				((Pos3D)obj).zPos == zPos;
 	}
-	
+
 	@Override
-	public int hashCode() 
+	public int hashCode()
 	{
 		int code = 1;
 		code = 31 * code + new Double(xPos).hashCode();

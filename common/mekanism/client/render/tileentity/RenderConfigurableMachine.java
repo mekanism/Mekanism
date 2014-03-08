@@ -32,14 +32,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
-	
+
 	private HashMap<ForgeDirection, HashMap<EnumColor, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<EnumColor, DisplayInteger>>();
-	
+
 	public RenderConfigurableMachine()
 	{
 		tileEntityRenderer = TileEntityRenderer.instance;
 	}
-	
+
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
@@ -49,42 +49,42 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	public void renderAModelAt(IInvConfiguration configurable, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
-		
-		TileEntity tileEntity = (TileEntity)configurable; 
+
+		TileEntity tileEntity = (TileEntity)configurable;
 		EntityPlayer player = mc.thePlayer;
 		World world = mc.thePlayer.worldObj;
 		ItemStack itemStack = player.getCurrentEquippedItem();
 		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
-		
+
 		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack) == 0)
 		{
 			int xPos = MathHelper.floor_double(pos.blockX);
 			int yPos = MathHelper.floor_double(pos.blockY);
 			int zPos = MathHelper.floor_double(pos.blockZ);
-			
+
 			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.worldObj.provider.dimensionId);
-			
+
 			if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
 			{
 				EnumColor color = configurable.getSideData().get(configurable.getConfiguration()[MekanismUtils.getBaseOrientation(pos.sideHit, configurable.getOrientation())]).color;
-				
+
 				push();
-				
+
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
-				
+
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				GL11.glTranslatef((float)x, (float)y, (float)z);
-				
+
 				int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), color).display;
 				GL11.glCallList(display);
-				
+
 				pop();
 			}
 		}
-		
+
 		GL11.glPopMatrix();
 	}
-	
+
 	private void pop()
 	{
 		GL11.glPopAttrib();
@@ -92,7 +92,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
-	
+
 	private void push()
 	{
 		GL11.glPushMatrix();
@@ -102,20 +102,20 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		MekanismRenderer.glowOn();
 		MekanismRenderer.blendOn();
 	}
-	
+
 	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, EnumColor color)
 	{
 		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(color))
 		{
 			return cachedOverlays.get(side).get(color);
 		}
-		
+
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.stone;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(color));
-		
+
 		DisplayInteger display = DisplayInteger.createAndStart();
-		
+
 		if(cachedOverlays.containsKey(side))
 		{
 			cachedOverlays.get(side).put(color, display);
@@ -125,14 +125,14 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			map.put(color, display);
 			cachedOverlays.put(side, map);
 		}
-		
+
 		switch(side)
 		{
 			case DOWN:
 			{
 				toReturn.minY = -.01;
 				toReturn.maxY = 0;
-				
+
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
 				toReturn.maxX = 1;
@@ -143,7 +143,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			{
 				toReturn.minY = 1;
 				toReturn.maxY = 1.01;
-				
+
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
 				toReturn.maxX = 1;
@@ -154,7 +154,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			{
 				toReturn.minZ = -.01;
 				toReturn.maxZ = 0;
-				
+
 				toReturn.minX = 0;
 				toReturn.minY = 0;
 				toReturn.maxX = 1;
@@ -165,7 +165,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			{
 				toReturn.minZ = 1;
 				toReturn.maxZ = 1.01;
-				
+
 				toReturn.minX = 0;
 				toReturn.minY = 0;
 				toReturn.maxX = 1;
@@ -176,7 +176,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			{
 				toReturn.minX = -.01;
 				toReturn.maxX = 0;
-				
+
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
 				toReturn.maxY = 1;
@@ -187,7 +187,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			{
 				toReturn.minX = 1;
 				toReturn.maxX = 1.01;
-				
+
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
 				toReturn.maxY = 1;
@@ -199,10 +199,10 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				break;
 			}
 		}
-		
+
 		MekanismRenderer.renderObject(toReturn);
 		display.endList();
-		
+
 		return display;
 	}
 }

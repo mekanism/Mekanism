@@ -14,7 +14,7 @@ public interface IGasItem
 	 * @return
 	 */
 	public int getRate(ItemStack itemstack);
-	
+
 	/**
 	 * Adds a defined amount of a certain gas to an item.
 	 * @param itemstack - the itemstack to add gas to
@@ -23,7 +23,7 @@ public interface IGasItem
 	 * @return the gas that was accepted by the item
 	 */
 	public int addGas(ItemStack itemstack, GasStack stack);
-	
+
 	/**
 	 * Removes the defined amount of a certain gas from the item.
 	 * @param itemstack - the itemstack to remove gas from
@@ -32,7 +32,7 @@ public interface IGasItem
 	 * @return the gas that was removed by the item
 	 */
 	public GasStack removeGas(ItemStack itemstack, int amount);
-	
+
 	/**
 	 * Whether or not this storage tank be given a specific gas.
 	 * @param itemstack - the itemstack to check
@@ -40,7 +40,7 @@ public interface IGasItem
 	 * @return if the item be charged
 	 */
 	public boolean canReceiveGas(ItemStack itemstack, Gas type);
-	
+
 	/**
 	 * Whether or not this item can give a gas receiver a certain type of gas.
 	 * @param itemstack - the itemstack to check
@@ -48,7 +48,7 @@ public interface IGasItem
 	 * @return if the item can provide gas
 	 */
 	public boolean canProvideGas(ItemStack itemstack, Gas type);
-	
+
 	/**
 	 * Get the gas of a declared type.
 	 * @param type - type of gas
@@ -56,7 +56,7 @@ public interface IGasItem
 	 * @return gas stored
 	 */
 	public GasStack getGas(ItemStack itemstack);
-	
+
 	/**
 	 * Set the gas of a declared type to a new amount;
 	 * @param type - type of gas
@@ -64,7 +64,7 @@ public interface IGasItem
 	 * @param amount - amount to store
 	 */
 	public void setGas(ItemStack itemstack, GasStack stack);
-	
+
 	/**
 	 * Gets the maximum amount of gas this tile entity can store.
 	 * @param type - type of gas

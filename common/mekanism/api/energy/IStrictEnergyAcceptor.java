@@ -15,7 +15,7 @@ public interface IStrictEnergyAcceptor extends IStrictEnergyStorage
 	 * @return energy used
 	 */
 	public double transferEnergyToAcceptor(ForgeDirection side, double amount);
-	
+
 	/**
 	 * Whether or not this tile entity accepts energy from a certain side.
 	 * @param side - side to check

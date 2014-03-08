@@ -34,28 +34,28 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public static int xOffset = 5;
 	public static int yOffset = 3;
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("tile.MachineBlock2.ChemicalCrystalizer.name");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "chemicalcrystalizer";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/nei/GuiChemicalCrystalizer.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -84,13 +84,13 @@ public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		GasStack gas = ((CachedIORecipe)arecipes.get(i)).inputStack;
-		
+
 		float f = ticksPassed % 20 / 20.0F;
 		drawProgressBar(53-xOffset, 61-yOffset, 176, 63, 48, 8, f, 0);
-		
+
 		if(gas != null)
 		{
-        	displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, gas);
+			displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, gas);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -134,38 +134,38 @@ public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 			}
 		}
 	}
-	
+
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).inputStack.getGas().getLocalizedName());
 		}
-		
+
 		return super.handleTooltip(gui, currenttip, recipe);
 	}
-	
+
 	@Override
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack stack = null;
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
 		}
-		
+
 		if(stack != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
@@ -183,25 +183,25 @@ public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack stack = null;
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
 		}
-		
+
 		if(stack != null)
 		{
 			if(button == 0)
@@ -219,7 +219,7 @@ public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.mouseClicked(gui, button, recipe);
 	}
 

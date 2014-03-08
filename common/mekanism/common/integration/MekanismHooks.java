@@ -25,21 +25,21 @@ import cpw.mods.fml.common.event.FMLInterModComms;
  * @author AidanBrady
  *
  */
-public final class MekanismHooks 
+public final class MekanismHooks
 {
 	private Class BasicComponents;
-	
+
 	private Class BuildCraftEnergy;
-	
+
 	public boolean IC2Loaded = false;
 	public boolean RailcraftLoaded = false;
 	public boolean BasicComponentsLoaded = false;
 	public boolean BuildCraftLoaded = false;
 	public boolean TELoaded = false;
-	
+
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
-	
+
 	public void hook()
 	{
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
@@ -47,14 +47,14 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
 		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
-		
+
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{
 			MetallurgyCoreLoaded = true;
-			
+
 			if(Loader.isModLoaded("Metallurgy3Base")) MetallurgyBaseLoaded = true;
 		}
-		
+
 		if(IC2Loaded)
 		{
 			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
@@ -62,17 +62,17 @@ public final class MekanismHooks
 				if(!entry.getKey().getInputs().isEmpty())
 				{
 					List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
-					
+
 					for(String name : names)
 					{
 						boolean did = false;
-						
+
 						if(name.startsWith("ingot"))
 						{
 							RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
 							did = true;
 						}
-						
+
 						if(did)
 						{
 							break;
@@ -80,18 +80,18 @@ public final class MekanismHooks
 					}
 				}
 			}
-			
+
 			try {
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
 			} catch(Exception e) {}
-	
+
 			try {
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Item.glowstone));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
 			} catch(Exception e) {}
-				
+
 			try {
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
@@ -102,16 +102,16 @@ public final class MekanismHooks
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
 			} catch(Exception e) {}
-			
+
 			NBTTagCompound tag = new NBTTagCompound();
-			
+
 			tag.setInteger("amplification", 50000);
-			
+
 			Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
-			
+
 			System.out.println("[Mekanism] Hooked into IC2 successfully.");
 		}
-		
+
 		if(BasicComponentsLoaded)
 		{
 			if(Mekanism.disableBCSteelCrafting)
@@ -119,40 +119,40 @@ public final class MekanismHooks
 				MekanismUtils.removeRecipes(getBasicComponentsItem("itemSteelDust"));
 				MekanismUtils.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
 			}
-			
+
 			if(Mekanism.disableBCBronzeCrafting)
 			{
 				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
 				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
 			}
-			
+
 			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
 		}
-		
+
 		if(BuildCraftLoaded)
 		{
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
 	}
-	
+
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)
 	{
 		NBTTagCompound nbtTags = new NBTTagCompound();
-		
+
 		nbtTags.setInteger("energy", energy);
 		nbtTags.setCompoundTag("input", input.writeToNBT(new NBTTagCompound()));
 		nbtTags.setCompoundTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
-		
+
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
 	}
-	
+
 	public ItemStack getBuildCraftItem(String name)
 	{
 		try {
 			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("buildcraft.BuildCraftEnergy");
 			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("net.minecraft.src.buildcraft.BuildCraftEnergy");
 			Object ret = BuildCraftEnergy.getField(name).get(null);
-			
+
 			if(ret instanceof Item)
 			{
 				return new ItemStack((Item)ret);
@@ -169,14 +169,14 @@ public final class MekanismHooks
 			return null;
 		}
 	}
-	
+
 	public ItemStack getBasicComponentsItem(String name)
 	{
 		try {
 			if(BasicComponents == null) BasicComponents = Class.forName("basiccomponents.common.BasicComponents");
 			if(BasicComponents == null) BasicComponents = Class.forName("net.minecraft.src.basiccomponents.common.BasicComponents");
 			Object ret = BasicComponents.getField(name).get(null);
-			
+
 			if(ret instanceof Item)
 			{
 				return new ItemStack((Item)ret);

@@ -56,7 +56,7 @@ public class TileEntitySalinationValve extends TileEntitySalinationTank implemen
 		{
 			return new FluidTankInfo[0];
 		}
-		
+
 		return new FluidTankInfo[] {new FluidTankInfo(master.waterTank), new FluidTankInfo(master.brineTank)};
 	}
 }

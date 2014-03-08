@@ -51,7 +51,7 @@ public class ModelDigitalMiner extends ModelBase
 	{
 		textureWidth = 256;
 		textureHeight = 256;
-		
+
 		Base = new ModelRenderer(this, 0, 0);
 		Base.addBox(0F, 0F, 0F, 18, 22, 20);
 		Base.setRotationPoint(-8F, -8F, -10F);
@@ -280,19 +280,19 @@ public class ModelDigitalMiner extends ModelBase
 	{
 		Base.render(size);
 		Back.render(size);
-		
+
 		if(on)
 		{
 			MekanismRenderer.glowOn();
 		}
-		
+
 		Panel.render(size);
-		
+
 		if(on)
 		{
 			MekanismRenderer.glowOff();
 		}
-		
+
 		PanelStem.render(size);
 		KeyboardStem.render(size);
 		Keyboard.render(size);
@@ -329,7 +329,7 @@ public class ModelDigitalMiner extends ModelBase
 		Laser4.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

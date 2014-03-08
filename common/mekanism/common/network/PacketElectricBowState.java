@@ -12,28 +12,28 @@ import com.google.common.io.ByteArrayDataInput;
 public class PacketElectricBowState implements IMekanismPacket
 {
 	public boolean fireMode;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "ElectricBowState";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		fireMode = (Boolean)data[0];
-		
+
 		return this;
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
- 		boolean state = dataStream.readBoolean();
-		
+		boolean state = dataStream.readBoolean();
+
 		ItemStack itemstack = player.getCurrentEquippedItem();
-		
+
 		if(itemstack != null && itemstack.getItem() instanceof ItemElectricBow)
 		{
 			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, state);

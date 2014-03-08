@@ -25,49 +25,49 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderBioGenerator extends TileEntitySpecialRenderer
 {
 	private ModelBioGenerator model = new ModelBioGenerator();
-	
+
 	private Map<ForgeDirection, DisplayInteger[]> energyDisplays = new HashMap<ForgeDirection, DisplayInteger[]>();
-	
+
 	private static final int stages = 40;
-	
+
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
 		renderAModelAt((TileEntityBioGenerator)tileEntity, x, y, z, partialTick);
 	}
-	
+
 	private void renderAModelAt(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
-		
-	    switch(tileEntity.facing)
-	    {
-		    case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+
+		switch(tileEntity.facing)
+		{
+			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
 			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
 			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
-	    }
-		
+		}
+
 		GL11.glRotatef(180, 0F, 0F, 1F);
 		model.render(0.0625F);
 		GL11.glPopMatrix();
-		
+
 		if(tileEntity.bioFuelSlot.fluidStored > 0)
 		{
 			push();
-			
+
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			getDisplayList(ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
-			
+
 			pop();
 		}
 	}
-	
+
 	@SuppressWarnings("incomplete-switch")
 	private DisplayInteger[] getDisplayList(ForgeDirection side)
 	{
@@ -75,24 +75,24 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		{
 			return energyDisplays.get(side);
 		}
-		
+
 		DisplayInteger[] displays = new DisplayInteger[stages];
-		
+
 		Model3D model3D = new Model3D();
 		model3D.baseBlock = Block.waterStill;
 		model3D.setTexture(MekanismRenderer.energyIcon);
-		
+
 		for(int i = 0; i < stages; i++)
 		{
 			displays[i] = DisplayInteger.createAndStart();
-			
+
 			switch(side)
 			{
 				case NORTH:
 				{
 					model3D.minZ = 0.1875;
 					model3D.maxZ = 0.4375;
-					
+
 					model3D.minX = 0.375;
 					model3D.maxX = 0.625;
 					model3D.minY = 0.125;
@@ -103,7 +103,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 				{
 					model3D.minZ = 0.5625;
 					model3D.maxZ = 0.8125;
-					
+
 					model3D.minX = 0.375;
 					model3D.maxX = 0.625;
 					model3D.minY = 0.125;
@@ -114,7 +114,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 				{
 					model3D.minX = 0.1875;
 					model3D.maxX = 0.4375;
-					
+
 					model3D.minZ = 0.375;
 					model3D.maxZ = 0.625;
 					model3D.minY = 0.125;
@@ -125,7 +125,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 				{
 					model3D.minX = 0.5625;
 					model3D.maxX = 0.8125;
-					
+
 					model3D.minZ = 0.375;
 					model3D.maxZ = 0.625;
 					model3D.minY = 0.125;
@@ -133,22 +133,22 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 					break;
 				}
 			}
-			
+
 			MekanismRenderer.renderObject(model3D);
 			displays[i].endList();
 		}
-		
+
 		energyDisplays.put(side, displays);
-		
+
 		return displays;
 	}
-	
+
 	private void pop()
 	{
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 	}
-	
+
 	private void push()
 	{
 		GL11.glPushMatrix();

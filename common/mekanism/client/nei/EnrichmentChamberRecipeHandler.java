@@ -19,7 +19,7 @@ public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 	{
 		return "mekanism.chamber";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -37,7 +37,7 @@ public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 	{
 		return "mekanism:gui/GuiChamber.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{

@@ -6,7 +6,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
 @SideOnly(Side.CLIENT)
-public class ModelMetallurgicInfuser extends ModelBase 
+public class ModelMetallurgicInfuser extends ModelBase
 {
 	ModelRenderer Base;
 	ModelRenderer RightChamber;
@@ -34,7 +34,7 @@ public class ModelMetallurgicInfuser extends ModelBase
 	ModelRenderer ConnectorWireLeft;
 	ModelRenderer ConnectorWireTop;
 
-	public ModelMetallurgicInfuser() 
+	public ModelMetallurgicInfuser()
 	{
 		textureWidth = 128;
 		textureHeight = 64;
@@ -220,7 +220,7 @@ public class ModelMetallurgicInfuser extends ModelBase
 		ConnectorWireTop.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

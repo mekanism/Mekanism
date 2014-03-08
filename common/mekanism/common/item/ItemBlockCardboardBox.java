@@ -25,139 +25,139 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemBlockCardboardBox extends ItemBlock
 {
 	private static boolean isMonitoring;
-	
+
 	public Block metaBlock;
-	
+
 	public ItemBlockCardboardBox(int id, Block block)
 	{
 		super(id);
 		setMaxStackSize(1);
 		metaBlock = block;
-		
+
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		list.add(EnumColor.INDIGO + "Block data: " + (getBlockData(itemstack) != null ? "Yes" : "No"));
-		
+
 		if(getBlockData(itemstack) != null)
 		{
 			list.add("Block ID: " + getBlockData(itemstack).id);
 			list.add("Metadata: " + getBlockData(itemstack).meta);
-			
+
 			if(getBlockData(itemstack).tileTag != null)
 			{
 				list.add("Tile: " + getBlockData(itemstack).tileTag.getString("id"));
 			}
 		}
 	}
-	
+
 	@Override
 	public int getMetadata(int i)
 	{
 		return i;
 	}
-	
+
 	@Override
 	public Icon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
-	
-    @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-    {
+
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
 		if(!player.isSneaking() && !world.isAirBlock(x, y, z) && stack.getItemDamage() == 0)
 		{
 			int id = world.getBlockId(x, y, z);
 			int meta = world.getBlockMetadata(x, y, z);
-			
-	    	if(!world.isRemote && MekanismAPI.isBlockCompatible(id, meta))
-	    	{
-    			BlockData data = new BlockData();
-    			data.id = id;
-    			data.meta = meta;
-    			
-    			isMonitoring = true;
-    			
-    			if(world.getBlockTileEntity(x, y, z) != null)
-    			{
-    				TileEntity tile = world.getBlockTileEntity(x, y, z);
-    				NBTTagCompound tag = new NBTTagCompound();
-    				
-    				tile.writeToNBT(tag);
-    				data.tileTag = tag;
-    			}
-    			
-    			if(!player.capabilities.isCreativeMode)
-    			{
-    				stack.stackSize--;
-    			}
-    			
-    			world.setBlock(x, y, z, Mekanism.cardboardBoxID, 1, 3);
-    			
-    			isMonitoring = false;
-    			
-    			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
-    			
-    			if(tileEntity != null)
-    			{
-    				tileEntity.storedData = data;
-    			}
-    			
-    			return true;
-	    	}
+
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(id, meta))
+			{
+				BlockData data = new BlockData();
+				data.id = id;
+				data.meta = meta;
+
+				isMonitoring = true;
+
+				if(world.getBlockTileEntity(x, y, z) != null)
+				{
+					TileEntity tile = world.getBlockTileEntity(x, y, z);
+					NBTTagCompound tag = new NBTTagCompound();
+
+					tile.writeToNBT(tag);
+					data.tileTag = tag;
+				}
+
+				if(!player.capabilities.isCreativeMode)
+				{
+					stack.stackSize--;
+				}
+
+				world.setBlock(x, y, z, Mekanism.cardboardBoxID, 1, 3);
+
+				isMonitoring = false;
+
+				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+
+				if(tileEntity != null)
+				{
+					tileEntity.storedData = data;
+				}
+
+				return true;
+			}
 		}
-    	
-    	return false;
-    }
-	
+
+		return false;
+	}
+
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
-    {
+	{
 		if(world.isRemote)
 		{
 			return true;
 		}
-		
-    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-    	
-    	if(place)
-    	{
-    		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
-			
+
+		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+
+		if(place)
+		{
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+
 			if(tileEntity != null)
 			{
 				tileEntity.storedData = getBlockData(stack);
 			}
-    	}
-    	
-    	return place;
-    }
+		}
 
-    public void setBlockData(ItemStack itemstack, BlockData data)
-    {
+		return place;
+	}
+
+	public void setBlockData(ItemStack itemstack, BlockData data)
+	{
 		if(itemstack.stackTagCompound == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
-		
-		itemstack.stackTagCompound.setCompoundTag("blockData", data.write(new NBTTagCompound()));
-    }
 
-    public BlockData getBlockData(ItemStack itemstack)
-    {
+		itemstack.stackTagCompound.setCompoundTag("blockData", data.write(new NBTTagCompound()));
+	}
+
+	public BlockData getBlockData(ItemStack itemstack)
+	{
 		if(itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("blockData"))
 		{
 			return null;
 		}
-		
+
 		return BlockData.read(itemstack.stackTagCompound.getCompoundTag("blockData"));
-    }
-	
+	}
+
 	@ForgeSubscribe
 	public void onEntitySpawn(EntityJoinWorldEvent event)
 	{

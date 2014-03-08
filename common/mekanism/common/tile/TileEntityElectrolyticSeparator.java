@@ -44,22 +44,22 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
-	
+
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 2400;
-	
+
 	/** The amount of oxygen this block is storing. */
 	public GasTank leftTank = new GasTank(MAX_GAS);
-	
+
 	/** The amount of hydrogen this block is storing. */
 	public GasTank rightTank = new GasTank(MAX_GAS);
-	
+
 	/** How fast this block can output gas. */
 	public int output = 16;
-	
+
 	/** The type of gas this block is outputting. */
 	public boolean dumpLeft = false;
-	
+
 	/** Type type of gas this block is dumping. */
 	public boolean dumpRight = false;
 
@@ -68,26 +68,26 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
 		inventory = new ItemStack[4];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.discharge(3, this);
-			
+
 			if(inventory[0] != null)
 			{
 				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
 				{
 					FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-					
+
 					if(fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
 					{
 						fluidTank.fill(fluid, true);
-						
+
 						if(inventory[0].getItem().hasContainerItem())
 						{
 							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
@@ -95,7 +95,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						else {
 							inventory[0].stackSize--;
 						}
-						
+
 						if(inventory[0].stackSize == 0)
 						{
 							inventory[0] = null;
@@ -103,7 +103,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					}
 				}
 			}
-			
+
 			if(!worldObj.isRemote)
 			{
 				if(inventory[1] != null && leftTank.getStored() > 0)
@@ -111,14 +111,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					leftTank.draw(GasTransmission.addGas(inventory[1], leftTank.getGas()), true);
 					MekanismUtils.saveChunk(this);
 				}
-				
+
 				if(inventory[2] != null && rightTank.getStored() > 0)
 				{
 					rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
 					MekanismUtils.saveChunk(this);
 				}
 			}
-			
+
 			if(canOperate())
 			{
 				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
@@ -193,16 +193,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return false;
 		}
-		
+
 		return canFill(gases) || canFill(gases.swap());
 	}
-	
+
 	public boolean canFill(ChemicalPair gases)
-	{	
+	{
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
 	}
-	
+
 	public void fillTanks(ChemicalPair gases)
 	{
 		if(gases == null) return;
@@ -218,18 +218,18 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			rightTank.receive(gases.leftGas, true);
 		}
 	}
-	
+
 	public void spawnParticle(int type)
 	{
 		if(type == 0)
 		{
 			ForgeDirection side = ForgeDirection.getOrientation(facing);
-			
+
 			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
 			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
-			
+
 			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
-			
+
 		}
 		else if(type == 1)
 		{
@@ -250,7 +250,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -264,13 +264,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		else if(slotID == 1 || slotID == 2)
 		{
-			return itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null && 
+			return itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 					((IGasItem)itemstack.getItem()).getGas(itemstack).amount == ((IGasItem)itemstack.getItem()).getMaxGas(itemstack);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -290,10 +290,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
@@ -305,10 +305,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return new int[] {1, 2};
 		}
-		
+
 		return new int[] {0};
 	}
-	
+
 	/**
 	 * Gets the scaled hydrogen level for the GUI.
 	 * @param i - multiplier
@@ -318,7 +318,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return leftTank.getStored()*i / MAX_GAS;
 	}
-	
+
 	/**
 	 * Gets the scaled oxygen level for the GUI.
 	 * @param i - multiplier
@@ -328,7 +328,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return rightTank.getStored()*i / MAX_GAS;
 	}
-	
+
 	/**
 	 * Gets the scaled water level for the GUI.
 	 * @param i - multiplier
@@ -338,7 +338,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / fluidTank.getCapacity() : 0;
 	}
-	
+
 	/**
 	 * Gets the scaled energy level for the GUI.
 	 * @param i - multiplier
@@ -348,14 +348,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return (int)(electricityStored*i / MAX_ELECTRICITY);
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
 			byte type = dataStream.readByte();
-			
+
 			if(type == 0)
 			{
 				dumpLeft ^= true;
@@ -364,14 +364,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				dumpRight ^= true;
 			}
-			
+
 			return;
 		}
-		
+
 		super.handlePacketData(dataStream);
-		
+
 		int type = dataStream.readInt();
-		
+
 		if(type == 0)
 		{
 			if(dataStream.readBoolean())
@@ -406,7 +406,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			spawnParticle(dataStream.readInt());
 		}
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -449,7 +449,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		return data;
 	}
-	
+
 	public ArrayList getParticlePacket(int type, ArrayList data)
 	{
 		super.getNetworkedData(data);
@@ -457,11 +457,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		data.add(type);
 		return data;
 	}
-	
+
 	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
 
 		if(nbtTags.hasKey("fluidTank"))
 		{
@@ -471,41 +471,41 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		leftTank.read(nbtTags.getCompoundTag("leftTank"));
 		rightTank.read(nbtTags.getCompoundTag("rightTank"));
 
-        dumpLeft = nbtTags.getBoolean("dumpLeft");
+		dumpLeft = nbtTags.getBoolean("dumpLeft");
 		dumpRight = nbtTags.getBoolean("dumpRight");
-    }
+	}
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
 
-        if(fluidTank.getFluid() != null)
-        {
-        	nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
-        }
+		if(fluidTank.getFluid() != null)
+		{
+			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+		}
 
 		nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
 		nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
 
-        nbtTags.setBoolean("dumpLeft", dumpLeft);
+		nbtTags.setBoolean("dumpLeft", dumpLeft);
 		nbtTags.setBoolean("dumpRight", dumpRight);
-    }
+	}
 
 	@Override
-	public String getType() 
+	public String getType()
 	{
 		return getInvName();
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen", "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -536,7 +536,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canAttachToSide(int side) 
+	public boolean canAttachToSide(int side)
 	{
 		return true;
 	}
@@ -552,51 +552,51 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
 	}
-	
+
 	@Override
-	public void setFluidStack(FluidStack fluidStack, Object... data) 
+	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
 		fluidTank.setFluid(fluidStack);
 	}
 
 	@Override
-	public FluidStack getFluidStack(Object... data) 
+	public FluidStack getFluidStack(Object... data)
 	{
 		return fluidTank.getFluid();
 	}
 
 	@Override
-	public boolean hasTank(Object... data) 
+	public boolean hasTank(Object... data)
 	{
 		return true;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid);
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
 		return false;
 	}
-	
+
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid()))
 		{
 			return fluidTank.fill(resource, doFill);
 		}
-		
+
 		return 0;
 	}
 
@@ -607,19 +607,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return new FluidTankInfo[] {fluidTank.getInfo()};
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount) 
+	public GasStack drawGas(ForgeDirection side, int amount)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
@@ -629,7 +629,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			return rightTank.draw(amount, true);
 		}
-		
+
 		return null;
 	}
 

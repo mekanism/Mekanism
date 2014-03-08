@@ -21,28 +21,28 @@ public class MekanismClient extends Mekanism
 	@SideOnly(Side.CLIENT)
 	/** The main SoundHandler instance that is used by all audio sources */
 	public static SoundHandler audioHandler;
-	
+
 	public static VoiceClient voiceClient;
-	
+
 	//General Configuration
 	public static boolean enableSounds = true;
 	public static boolean fancyUniversalCableRender = true;
 	public static boolean holidays = true;
 	public static double baseSoundVolume = 1;
-	
+
 	public static long ticksPassed = 0;
-	
+
 	public static void updateKey(int key, int type)
 	{
 		boolean down = Minecraft.getMinecraft().currentScreen == null ? Keyboard.isKeyDown(key) : false;
-		
+
 		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketKey().setParams(type, down));
 			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
 		}
 	}
-	
+
 	public static void reset()
 	{
 		if(Mekanism.voiceServerEnabled)
@@ -53,18 +53,18 @@ public class MekanismClient extends Mekanism
 				MekanismClient.voiceClient = null;
 			}
 		}
-		
+
 		ClientTickHandler.tickingSet.clear();
 		Mekanism.proxy.unloadSoundHandler();
-		
+
 		MekanismAPI.getBoxIgnore().clear();
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
-		
+
 		Mekanism.jetpackOn.clear();
 		Mekanism.gasmaskOn.clear();
-		
+
 		Mekanism.proxy.loadConfiguration();
-		
+
 		System.out.println("[Mekanism] Reloaded config.");
 	}
 }

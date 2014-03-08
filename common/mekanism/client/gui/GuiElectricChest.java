@@ -31,50 +31,50 @@ public class GuiElectricChest extends GuiMekanism
 	public TileEntityElectricChest tileEntity;
 	public IInventory itemInventory;
 	public boolean isBlock;
-	
+
 	public GuiElectricChest(InventoryPlayer inventory, TileEntityElectricChest tentity)
-    {
-        super(new ContainerElectricChest(inventory, tentity, null, true));
-        
-        xSize+=26;
-        ySize+=64;
-        tileEntity = tentity;
-        isBlock = true;
-    }
-	
+	{
+		super(new ContainerElectricChest(inventory, tentity, null, true));
+
+		xSize+=26;
+		ySize+=64;
+		tileEntity = tentity;
+		isBlock = true;
+	}
+
 	public GuiElectricChest(InventoryPlayer inventory, IInventory inv)
-    {
-        super(new ContainerElectricChest(inventory, null, inv, false));
-        
-        xSize+=26;
-        ySize+=64;
-        itemInventory = inv;
-        isBlock = false;
-    }
-	
+	{
+		super(new ContainerElectricChest(inventory, null, inv, false));
+
+		xSize+=26;
+		ySize+=64;
+		itemInventory = inv;
+		isBlock = false;
+	}
+
 	@Override
-	public void onGuiClosed() 
+	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		
+
 		if(!isBlock)
 		{
 			mc.sndManager.playSoundFX("random.chestclosed", 1.0F, 1.0F);
 		}
 	}
-	
+
 	@Override
 	public void initGui()
 	{
 		super.initGui();
-		
+
 		int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        
+		int guiHeight = (height - ySize) / 2;
+
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, MekanismUtils.localize("gui.electricChest.editPassword")));
 	}
-	
+
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
@@ -92,43 +92,43 @@ public class GuiElectricChest extends GuiMekanism
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
+	{
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-		
-        fontRenderer.drawString(MekanismUtils.localize("tile.MachineBlock.ElectricChest.name"), 8, 6, 0x404040);
-        fontRenderer.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
-        fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        
-    	if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
+
+		fontRenderer.drawString(MekanismUtils.localize("tile.MachineBlock.ElectricChest.name"), 8, 6, 0x404040);
+		fontRenderer.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
+		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+
+		if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(getEnergy()), xAxis, yAxis);
 		}
-    	
-    	super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-	
+
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+	}
+
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
 		super.mouseClicked(mouseX, mouseY, button);
-		
+
 		if(button == 0)
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
-			
+
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
-			{	
+			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				
+
 				if(isBlock)
 				{
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), true, Coord4D.get(tileEntity)));
 				}
 				else {
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), false));
-					
+
 					ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
 					((IElectricChest)stack.getItem()).setLocked(stack, !getLocked());
 				}
@@ -137,17 +137,17 @@ public class GuiElectricChest extends GuiMekanism
 	}
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-    {
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+	{
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiElectricChest.png"));
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-        
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 88, 176 + 26, 52, 18, 18);
@@ -155,11 +155,11 @@ public class GuiElectricChest extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 88, 176 + 26, 70, 18, 18);
 		}
-        
-        int displayInt = getScale();
-        drawTexturedModalRect(guiWidth + 180, guiHeight + 32 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
-    }
-	
+
+		int displayInt = getScale();
+		drawTexturedModalRect(guiWidth + 180, guiHeight + 32 + 52 - displayInt, 176 + 26, 52 - displayInt, 4, displayInt);
+	}
+
 	public boolean getLocked()
 	{
 		if(isBlock)
@@ -171,7 +171,7 @@ public class GuiElectricChest extends GuiMekanism
 			return ((IElectricChest)stack.getItem()).getLocked(stack);
 		}
 	}
-	
+
 	public int getScale()
 	{
 		if(isBlock)
@@ -183,7 +183,7 @@ public class GuiElectricChest extends GuiMekanism
 			return (int)(((IEnergizedItem)stack.getItem()).getEnergy(stack)*52 / ((IEnergizedItem)stack.getItem()).getMaxEnergy(stack));
 		}
 	}
-	
+
 	public double getEnergy()
 	{
 		if(isBlock)

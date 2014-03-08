@@ -33,17 +33,17 @@ public enum TransmitterType
 		centerIndex = center;
 		sideIndex = side;
 	}
-	
+
 	public String getName()
 	{
 		return unlocalizedName;
 	}
-	
+
 	public Size getSize()
 	{
 		return size;
 	}
-	
+
 	public TransmissionType getTransmission()
 	{
 		return transmissionType;
@@ -58,17 +58,17 @@ public enum TransmitterType
 	{
 		return transmitterIcons.getSideIcon(sideIndex);
 	}
-	
-    public static enum Size
-    {
-        SMALL(6),
-        LARGE(8);
 
-        public int centerSize;
+	public static enum Size
+	{
+		SMALL(6),
+		LARGE(8);
 
-        private Size(int size) 
-        {
-            centerSize = size;
-        }
-    }
+		public int centerSize;
+
+		private Size(int size)
+		{
+			centerSize = size;
+		}
+	}
 }

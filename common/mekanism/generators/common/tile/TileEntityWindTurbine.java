@@ -13,20 +13,20 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 {
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public int angle;
-	
-	public TileEntityWindTurbine() 
+
+	public TileEntityWindTurbine()
 	{
 		super("WindTurbine", 200000, (MekanismGenerators.windGeneration*8)*2);
 		inventory = new ItemStack[1];
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ChargeUtils.charge(0, this);
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(canOperate())
@@ -39,13 +39,13 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			}
 		}
 	}
-	
+
 	/** 0 - 8 **/
 	public float getMultiplier()
 	{
 		return worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord) ? (((float)yCoord+4)/(float)256)*8 : 0;
 	}
-	
+
 	@Override
 	public float getVolumeMultiplier()
 	{
@@ -53,13 +53,13 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -80,13 +80,13 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public boolean canOperate() 
+	public boolean canOperate()
 	{
 		return electricityStored < MAX_ELECTRICITY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
 	}
 
 	@Override
-	public void onPlace() 
+	public void onPlace()
 	{
 		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+1, zCoord, Coord4D.get(this));
 		MekanismUtils.makeBoundingBlock(worldObj, xCoord, yCoord+2, zCoord, Coord4D.get(this));
@@ -95,18 +95,18 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public void onBreak() 
+	public void onBreak()
 	{
 		worldObj.setBlockToAir(xCoord, yCoord+1, zCoord);
 		worldObj.setBlockToAir(xCoord, yCoord+2, zCoord);
 		worldObj.setBlockToAir(xCoord, yCoord+3, zCoord);
 		worldObj.setBlockToAir(xCoord, yCoord+4, zCoord);
-		
+
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
-	public boolean renderUpdate() 
+	public boolean renderUpdate()
 	{
 		return false;
 	}

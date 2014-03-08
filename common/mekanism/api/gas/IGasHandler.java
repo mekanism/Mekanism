@@ -7,7 +7,7 @@ import net.minecraftforge.common.ForgeDirection;
  * @author AidanBrady
  *
  */
-public interface IGasHandler 
+public interface IGasHandler
 {
 	/**
 	 * Transfer a certain amount of gas to this block.
@@ -15,14 +15,14 @@ public interface IGasHandler
 	 * @return gas added
 	 */
 	public int receiveGas(ForgeDirection side, GasStack stack);
-	
+
 	/**
 	 * Draws a certain amount of gas from this block.
 	 * @param amount - amount to draw
 	 * @return gas drawn
 	 */
 	public GasStack drawGas(ForgeDirection side, int amount);
-	
+
 	/**
 	 * Whether or not this block can accept gas from a certain side.
 	 * @param side - side to check
@@ -30,7 +30,7 @@ public interface IGasHandler
 	 * @return if block accepts gas
 	 */
 	public boolean canReceiveGas(ForgeDirection side, Gas type);
-	
+
 	/**
 	 * Whether or not this block can be drawn of gas from a certain side.
 	 * @param side - side to check

@@ -19,7 +19,7 @@ public class GeneratorsCommonProxy
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */
-	public void registerSpecialTileEntities() 
+	public void registerSpecialTileEntities()
 	{
 		GameRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator");
 		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
@@ -28,28 +28,28 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
 		GameRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine");
 	}
-	
+
 	/**
 	 * Register and load client-only render information.
 	 */
 	public void registerRenderInformation() {}
-	
+
 	/**
 	 * Set and load the mod's common configuration properties.
 	 */
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-	  	MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3010).getInt();
-	  	MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 400D).getDouble(400D);
-	  	MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 250D).getDouble(250D);
-	  	MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
-	  	MekanismGenerators.hydrogenGeneration = Mekanism.configuration.get("generation", "HydrogenGeneration", 400D).getDouble(400D);
-	  	MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
-	  	MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 100D).getDouble(100D);
+		MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3010).getInt();
+		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 400D).getDouble(400D);
+		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 250D).getDouble(250D);
+		MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
+		MekanismGenerators.hydrogenGeneration = Mekanism.configuration.get("generation", "HydrogenGeneration", 400D).getDouble(400D);
+		MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
+		MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 100D).getDouble(100D);
 		Mekanism.configuration.save();
 	}
-	
+
 	/**
 	 * Get the actual interface for a GUI. Client-only.
 	 * @param ID - gui ID
@@ -60,11 +60,11 @@ public class GeneratorsCommonProxy
 	 * @param z - gui's z position
 	 * @return the GuiScreen of the GUI
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Get the container for a GUI. Common.
 	 * @param ID - gui ID
@@ -75,10 +75,10 @@ public class GeneratorsCommonProxy
 	 * @param z - gui's z position
 	 * @return the Container of the GUI
 	 */
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
+
 		switch(ID)
 		{
 			case 0:

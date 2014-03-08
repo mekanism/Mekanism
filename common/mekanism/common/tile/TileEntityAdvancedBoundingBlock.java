@@ -24,134 +24,134 @@ import dan200.computer.api.IPeripheral;
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral
 {
 	@Override
-	public int getSizeInventory() 
+	public int getSizeInventory()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getSizeInventory();
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i) 
+	public ItemStack getStackInSlot(int i)
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
-		
+
 		return getInv().getStackInSlot(i);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j) 
+	public ItemStack decrStackSize(int i, int j)
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
-		
+
 		return getInv().decrStackSize(i, j);
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int i) 
+	public ItemStack getStackInSlotOnClosing(int i)
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
-		
+
 		return getInv().getStackInSlotOnClosing(i);
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) 
+	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
-		
+
 		getInv().setInventorySlotContents(i, itemstack);
 	}
 
 	@Override
-	public String getInvName() 
+	public String getInvName()
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
-		
+
 		return getInv().getInvName();
 	}
 
 	@Override
-	public boolean isInvNameLocalized() 
+	public boolean isInvNameLocalized()
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().isInvNameLocalized();
 	}
 
 	@Override
-	public int getInventoryStackLimit() 
+	public int getInventoryStackLimit()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getInventoryStackLimit();
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) 
+	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().isUseableByPlayer(entityplayer);
 	}
 
 	@Override
-	public void openChest() 
+	public void openChest()
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
-		
+
 		getInv().openChest();
 	}
 
 	@Override
-	public void closeChest() 
+	public void closeChest()
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
-		
+
 		getInv().closeChest();
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) 
+	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().canBoundInsert(Coord4D.get(this), i, itemstack);
 	}
 
@@ -162,7 +162,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return InventoryUtils.EMPTY;
 		}
-		
+
 		return getInv().getBoundSlots(Coord4D.get(this), slotID);
 	}
 
@@ -173,24 +173,24 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j) 
+	public boolean canExtractItem(int i, ItemStack itemstack, int j)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, j);
 	}
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) 
+	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().acceptsEnergyFrom(emitter, direction);
 	}
 
@@ -201,7 +201,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return 0;
 		}
-		
+
 		return getInv().receiveEnergy(from, maxReceive, simulate);
 	}
 
@@ -212,193 +212,193 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return 0;
 		}
-		
+
 		return getInv().extractEnergy(from, maxExtract, simulate);
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from) 
+	public boolean canInterface(ForgeDirection from)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().canInterface(from);
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from) 
+	public int getEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getEnergyStored(from);
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from) 
+	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getMaxEnergyStored(from);
 	}
 
 	@Override
-	public double getEnergy() 
+	public double getEnergy()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getEnergy();
 	}
 
 	@Override
-	public void setEnergy(double energy) 
+	public void setEnergy(double energy)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
-		
+
 		getInv().setEnergy(energy);
 	}
 
 	@Override
-	public double getMaxEnergy() 
+	public double getMaxEnergy()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getMaxEnergy();
 	}
 
 	@Override
-	public PowerReceiver getPowerReceiver(ForgeDirection side) 
+	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
-		
+
 		return getInv().getPowerReceiver(side);
 	}
 
 	@Override
-	public void doWork(PowerHandler workProvider) 
+	public void doWork(PowerHandler workProvider)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
-		
+
 		getInv().doWork(workProvider);
 	}
 
 	@Override
-	public World getWorld() 
+	public World getWorld()
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
-		
+
 		return getInv().getWorld();
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount) 
+	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().transferEnergyToAcceptor(side, amount);
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side) 
+	public boolean canReceiveEnergy(ForgeDirection side)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
-		
+
 		return getInv().canReceiveEnergy(side);
 	}
 
 	@Override
-	public double demandedEnergyUnits() 
+	public double demandedEnergyUnits()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().demandedEnergyUnits();
 	}
 
 	@Override
-	public double injectEnergyUnits(ForgeDirection directionFrom, double amount) 
+	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
 		if(getInv() == null)
 		{
 			return amount;
 		}
-		
+
 		return getInv().injectEnergyUnits(directionFrom, amount);
 	}
 
 	@Override
-	public int getMaxSafeInput() 
+	public int getMaxSafeInput()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
-		
+
 		return getInv().getMaxSafeInput();
 	}
-	
+
 	public IAdvancedBoundingBlock getInv()
 	{
 		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
-		
+
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			return null;
 		}
-		
+
 		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
-	
+
 	@Override
 	public void onPower()
 	{
 		super.onPower();
-		
+
 		if(getInv() != null)
 		{
 			getInv().onPower();
 		}
 	}
-	
+
 	@Override
 	public void onNoPower()
 	{
 		super.onNoPower();
-		
+
 		if(getInv() != null)
 		{
 			getInv().onNoPower();
@@ -412,7 +412,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return null;
 		}
-		
+
 		return getInv().getType();
 	}
 
@@ -423,7 +423,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return null;
 		}
-		
+
 		return getInv().getMethodNames();
 	}
 
@@ -434,7 +434,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return null;
 		}
-		
+
 		return getInv().callMethod(computer, context, method, arguments);
 	}
 
@@ -445,7 +445,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return false;
 		}
-		
+
 		return getInv().canAttachToSide(side);
 	}
 
@@ -456,7 +456,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return;
 		}
-		
+
 		getInv().attach(computer);
 	}
 
@@ -467,7 +467,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		{
 			return;
 		}
-		
+
 		getInv().detach(computer);
 	}
 }

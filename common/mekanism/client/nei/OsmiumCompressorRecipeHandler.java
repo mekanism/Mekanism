@@ -24,7 +24,7 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	{
 		return "mekanism.compressor";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -42,13 +42,13 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	{
 		return "mekanism:gui/GuiCompressor.png";
 	}
-	
+
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
 		return ListUtils.asList(new ItemStack(Mekanism.Ingot, 1, 1));
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{

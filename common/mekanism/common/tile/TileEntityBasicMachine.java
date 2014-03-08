@@ -30,43 +30,43 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
-	
+
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-	
+
 	/** The bundled URL of this machine's sound effect */
 	public String soundURL;
-	
+
 	/** How much energy this machine uses per tick. */
 	public double ENERGY_PER_TICK;
-	
+
 	/** How many ticks this machine has operated for. */
 	public int operatingTicks = 0;
-	
+
 	/** Ticks required to operate -- or smelt an item. */
 	public int TICKS_REQUIRED;
-	
+
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
-	
+
 	/** Whether or not this block is in it's active state. */
 	public boolean isActive;
-	
+
 	/** The client's current active state. */
 	public boolean clientActive;
-	
+
 	/** The GUI texture path for this machine. */
 	public ResourceLocation guiLocation;
-	
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
-	
+
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
-	
+
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
-	
+
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
 	 * @param soundPath - location of the sound effect
@@ -85,20 +85,20 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		guiLocation = location;
 		isActive = false;
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.registerSound(this);
-			
+
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-				
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
@@ -106,13 +106,13 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 				}
 			}
 		}
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(updateDelay > 0)
 			{
 				updateDelay--;
-				
+
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
@@ -120,47 +120,47 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			}
 		}
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        operatingTicks = nbtTags.getInteger("operatingTicks");
-        clientActive = isActive = nbtTags.getBoolean("isActive");
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-        
-        if(nbtTags.hasKey("sideDataStored"))
-        {
-        	for(int i = 0; i < 6; i++)
-        	{
-        		sideConfig[i] = nbtTags.getByte("config"+i);
-        	}
-        }
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setInteger("operatingTicks", operatingTicks);
-        nbtTags.setBoolean("isActive", isActive);
-        nbtTags.setInteger("controlType", controlType.ordinal());
-        
-        nbtTags.setBoolean("sideDataStored", true);
-        
-        for(int i = 0; i < 6; i++)
-        {
-        	nbtTags.setByte("config"+i, sideConfig[i]);
-        }
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		operatingTicks = nbtTags.getInteger("operatingTicks");
+		clientActive = isActive = nbtTags.getBoolean("isActive");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+
+		if(nbtTags.hasKey("sideDataStored"))
+		{
+			for(int i = 0; i < 6; i++)
+			{
+				sideConfig[i] = nbtTags.getByte("config"+i);
+			}
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("operatingTicks", operatingTicks);
+		nbtTags.setBoolean("isActive", isActive);
+		nbtTags.setInteger("controlType", controlType.ordinal());
+
+		nbtTags.setBoolean("sideDataStored", true);
+
+		for(int i = 0; i < 6; i++)
+		{
+			nbtTags.setByte("config"+i, sideConfig[i]);
+		}
+	}
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		
+
 		operatingTicks = dataStream.readInt();
 		clientActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
@@ -169,7 +169,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		{
 			sideConfig[i] = dataStream.readByte();
 		}
-		
+
 		if(updateDelay == 0 && clientActive != isActive)
 		{
 			updateDelay = Mekanism.UPDATE_DELAY;
@@ -177,25 +177,25 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(operatingTicks);
 		data.add(isActive);
 		data.add(controlType.ordinal());
 		data.add(sideConfig);
-		
+
 		return data;
 	}
-	
+
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		
+
 		if(worldObj.isRemote)
 		{
 			Mekanism.proxy.unregisterSound(this);
@@ -208,16 +208,16 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 * @return
 	 */
 	public int getScaledProgress(int i)
-	{	
+	{
 		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
-	
+
 	@Override
-	public double getMaxEnergy() 
+	public double getMaxEnergy()
 	{
 		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
 	}
-	
+
 	@Override
 	public boolean getActive()
 	{
@@ -225,31 +225,31 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 
 	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(clientActive != active && updateDelay == 0)
-    	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
-    		
-    		updateDelay = 10;
-    		clientActive = active;
-    	}
-    }
-    
-	@Override
-    public String getType()
-    {
-    	return getInvName();
-    }
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(clientActive != active && updateDelay == 0)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+
+			updateDelay = 10;
+			clientActive = active;
+		}
+	}
 
 	@Override
-	public boolean canAttachToSide(int side) 
+	public String getType()
+	{
+		return getInvName();
+	}
+
+	@Override
+	public boolean canAttachToSide(int side)
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean canSetFacing(int facing)
 	{
@@ -261,77 +261,77 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
 	}
-	
+
 	@Override
 	public ArrayList<SideData> getSideData()
 	{
 		return sideOutputs;
 	}
-	
+
 	@Override
 	public byte[] getConfiguration()
 	{
 		return sideConfig;
 	}
-	
+
 	@Override
 	public int getOrientation()
 	{
 		return facing;
 	}
-	
+
 	@Override
-	public int getEnergyMultiplier(Object... data) 
+	public int getEnergyMultiplier(Object... data)
 	{
 		return upgradeComponent.energyMultiplier;
 	}
 
 	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data) 
+	public void setEnergyMultiplier(int multiplier, Object... data)
 	{
 		upgradeComponent.energyMultiplier = multiplier;
 		MekanismUtils.saveChunk(this);
 	}
 
 	@Override
-	public int getSpeedMultiplier(Object... data) 
+	public int getSpeedMultiplier(Object... data)
 	{
 		return upgradeComponent.speedMultiplier;
 	}
 
 	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data) 
+	public void setSpeedMultiplier(int multiplier, Object... data)
 	{
 		upgradeComponent.speedMultiplier = multiplier;
 		MekanismUtils.saveChunk(this);
 	}
-	
+
 	@Override
 	public boolean supportsUpgrades(Object... data)
 	{
 		return true;
 	}
-	
+
 	@Override
 	public String getSoundPath()
 	{
 		return soundURL;
 	}
-	
+
 	@Override
 	public float getVolumeMultiplier()
 	{
 		return 1;
 	}
-	
+
 	@Override
-	public boolean renderUpdate() 
+	public boolean renderUpdate()
 	{
 		return true;
 	}
@@ -341,26 +341,26 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		return true;
 	}
-	
+
 	@Override
-	public RedstoneControl getControlType() 
+	public RedstoneControl getControlType()
 	{
 		return controlType;
 	}
 
 	@Override
-	public void setControlType(RedstoneControl type) 
+	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
 	}
-	
+
 	@Override
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;
 	}
-	
+
 	@Override
 	public IEjector getEjector()
 	{

@@ -40,14 +40,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemBlockBasic extends ItemBlock
 {
 	public Block metaBlock;
-	
+
 	public ItemBlockBasic(int id, Block block)
 	{
 		super(id);
 		metaBlock = block;
 		setHasSubtypes(true);
 	}
-	
+
 	@Override
 	public int getItemStackLimit(ItemStack stack)
 	{
@@ -58,22 +58,22 @@ public class ItemBlockBasic extends ItemBlock
 				return 1;
 			}
 		}
-		
+
 		return 64;
 	}
-	
+
 	@Override
 	public int getMetadata(int i)
 	{
 		return i;
 	}
-	
+
 	@Override
 	public Icon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -81,7 +81,7 @@ public class ItemBlockBasic extends ItemBlock
 		if(itemID == Mekanism.basicBlockID && itemstack.getItemDamage() == 6)
 		{
 			InventoryBin inv = new InventoryBin(itemstack);
-			
+
 			if(inv.getItemCount() > 0)
 			{
 				list.add(EnumColor.BRIGHT_GREEN + inv.getItemType().getDisplayName());
@@ -92,13 +92,13 @@ public class ItemBlockBasic extends ItemBlock
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean hasContainerItem()
 	{
 		return true; //TODO forge PR
 	}
-	
+
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
@@ -109,15 +109,15 @@ public class ItemBlockBasic extends ItemBlock
 				return true;
 			}
 		}
-		
+
 		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 		{
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public ItemStack getContainerItemStack(ItemStack stack)
 	{
@@ -128,45 +128,45 @@ public class ItemBlockBasic extends ItemBlock
 				return ItemProxy.getDead();
 			}
 		}
-		
+
 		ItemStack ret = stack.copy();
 		ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
-    {
-    	boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-    	
-    	if(place)
-    	{
-    		if(itemID == Mekanism.basicBlockID)
-    		{
-	    		if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
-	    		{
-	    			TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
-	    			InventoryBin inv = new InventoryBin(stack);
-	    			
-	    			if(inv.getItemType() != null)
-	    			{
-	    				tileEntity.setItemType(inv.getItemType());
-	    			}
-	    			
-	    			tileEntity.setItemCount(inv.getItemCount());
-	    		}
-    		}
-    	}
-    	
-    	return place;
-    }
-	
+	{
+		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+
+		if(place)
+		{
+			if(itemID == Mekanism.basicBlockID)
+			{
+				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
+				{
+					TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+					InventoryBin inv = new InventoryBin(stack);
+
+					if(inv.getItemType() != null)
+					{
+						tileEntity.setItemType(inv.getItemType());
+					}
+
+					tileEntity.setItemCount(inv.getItemCount());
+				}
+			}
+		}
+
+		return place;
+	}
+
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
-		
+
 		if(itemID == Mekanism.basicBlockID)
 		{
 			switch(itemstack.getItemDamage())
@@ -233,7 +233,7 @@ public class ItemBlockBasic extends ItemBlock
 					break;
 			}
 		}
-		
+
 		return getUnlocalizedName() + "." + name;
 	}
 }

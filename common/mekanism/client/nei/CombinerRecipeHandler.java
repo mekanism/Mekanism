@@ -24,7 +24,7 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	{
 		return "mekanism.combiner";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -42,13 +42,13 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	{
 		return "mekanism:gui/GuiCombiner.png";
 	}
-	
+
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
 		return ListUtils.asList(new ItemStack(Block.cobblestone));
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
