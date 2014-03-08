@@ -367,7 +367,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				if(tile instanceof IInventory)
 				{
 					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal());
+					InvStack stack = InventoryUtils.takeTopItem(inv, side.getOpposite().ordinal());
 
 					if(stack != null && stack.getStack() != null)
 					{
