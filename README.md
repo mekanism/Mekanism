@@ -1,5 +1,7 @@
 # Mekanism for Minecraft 1.6.4 #
 
+[**Official Website**](http://aidancbrady.com)
+
 Source code.  More information can be found on the [mod's forum post](http://www.minecraftforum.net/topic/1361286-164-mekanism-557-universal-cable-dynamic-tanks-wind-power/).
 
 # About #
