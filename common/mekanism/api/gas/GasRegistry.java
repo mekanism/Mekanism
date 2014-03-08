@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.Fluid;
 public class GasRegistry
 {
 	private static ArrayList<Gas> registeredGasses = new ArrayList<Gas>();
-	
+
 	/**
 	 * Register a new gas into GasRegistry.
 	 * @param gas - Gas to register
@@ -20,12 +20,12 @@ public class GasRegistry
 		{
 			return null;
 		}
-		
+
 		registeredGasses.add(gas);
-		
+
 		return getGas(gas.getName());
 	}
-	
+
 	/**
 	 * Gets the gas associated with the defined ID.
 	 * @param id - ID to check
@@ -37,10 +37,10 @@ public class GasRegistry
 		{
 			return null;
 		}
-		
+
 		return registeredGasses.get(id);
 	}
-	
+
 	/**
 	 * Gets the gas associated with the defined fluid.
 	 * @param f - fluid to check
@@ -55,10 +55,10 @@ public class GasRegistry
 				return gas;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Whether or not GasRegistry contains a gas with the specified name
 	 * @param name - name to check
@@ -68,7 +68,7 @@ public class GasRegistry
 	{
 		return getGas(name) != null;
 	}
-	
+
 	/**
 	 * Gets the list of all gasses registered in GasRegistry.
 	 * @return a cloned list of all registered gasses
@@ -77,7 +77,7 @@ public class GasRegistry
 	{
 		return (List<Gas>)registeredGasses.clone();
 	}
-	
+
 	/**
 	 * Gets the gas associated with the specified name.
 	 * @param name - name of the gas to get
@@ -92,10 +92,10 @@ public class GasRegistry
 				return gas;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Gets the gas ID of a specified gas.
 	 * @param gas - gas to get the ID from
@@ -107,7 +107,7 @@ public class GasRegistry
 		{
 			return -1;
 		}
-		
+
 		return registeredGasses.indexOf(gas);
 	}
 }

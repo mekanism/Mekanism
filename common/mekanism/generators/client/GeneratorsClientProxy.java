@@ -17,9 +17,9 @@ import net.minecraft.world.World;
 public class GeneratorsClientProxy extends GeneratorsCommonProxy
 {
 	public static int GENERATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	
+
 	@Override
-	public void registerSpecialTileEntities() 
+	public void registerSpecialTileEntities()
 	{
 		ClientRegistry.registerTileEntity(TileEntityAdvancedSolarGenerator.class, "AdvancedSolarGenerator", new RenderAdvancedSolarGenerator());
 		ClientRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator", new RenderSolarGenerator());
@@ -28,21 +28,21 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator", new RenderHydrogenGenerator());
 		ClientRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine", new RenderWindTurbine());
 	}
-	
+
 	@Override
 	public void registerRenderInformation()
 	{
 		//Register block handler
 		RenderingRegistry.registerBlockHandler(new BlockRenderingHandler());
-		
+
 		System.out.println("[MekanismGenerators] Render registrations complete.");
 	}
-	
+
 	@Override
-	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
+
 		switch(ID)
 		{
 			case 0:

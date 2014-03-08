@@ -13,7 +13,7 @@ public class MultipartMekanism implements IPartFactory
 	{
 		init();
 	}
-	
+
 	public void init()
 	{
 		MultiPartRegistry.registerParts(this, new String[] {"mekanism:universal_cable_basic",
@@ -21,7 +21,7 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
 				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter"});
-		
+
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IGridTransmitter");
@@ -78,7 +78,7 @@ public class MultipartMekanism implements IPartFactory
 		{
 			return new PartDiversionTransporter();
 		}
-		
+
 		return null;
 	}
 }

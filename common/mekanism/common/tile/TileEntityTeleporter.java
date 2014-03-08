@@ -42,42 +42,42 @@ import dan200.computer.api.IPeripheral;
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
 {
 	private MinecraftServer server = MinecraftServer.getServer();
-	
+
 	/** This teleporter's frequency. */
 	public Teleporter.Code code;
-	
+
 	public AxisAlignedBB teleportBounds = null;
-	
+
 	public Set<Entity> didTeleport = new HashSet<Entity>();
-	
+
 	public int teleDelay = 0;
-	
+
 	public boolean shouldRender;
-	
+
 	public boolean prevShouldRender;
-	
+
 	/** This teleporter's current status. */
 	public String status = (EnumColor.DARK_RED + "Not ready.");
-	
+
 	public TileEntityTeleporter()
 	{
 		super("Teleporter", MachineType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		if(teleportBounds == null)
 		{
 			resetBounds();
 		}
-		
+
 		if(!worldObj.isRemote)
-		{			
+		{
 			if(Mekanism.teleporters.containsKey(code))
 			{
 				if(!Mekanism.teleporters.get(code).contains(Coord4D.get(this)) && hasFrame())
@@ -95,7 +95,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				newCoords.add(Coord4D.get(this));
 				Mekanism.teleporters.put(code, newCoords);
 			}
-			
+
 			switch(canTeleport())
 			{
 				case 1:
@@ -117,38 +117,38 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 					status = EnumColor.DARK_GREEN + "Idle.";
 					break;
 			}
-			
+
 			if(canTeleport() == 1 && teleDelay == 0)
 			{
 				teleport();
 			}
-			
+
 			if(teleDelay == 0 && didTeleport.size() > 0)
 			{
 				cleanTeleportCache();
 			}
-			
+
 			byte b = canTeleport();
 			shouldRender = b == 1 || b > 4;
-			
+
 			if(shouldRender != prevShouldRender)
 			{
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 40D);
 			}
-			
+
 			prevShouldRender = shouldRender;
-			
+
 			teleDelay = Math.max(0, teleDelay-1);
 		}
-		
+
 		ChargeUtils.discharge(0, this);
 	}
-	
+
 	public void cleanTeleportCache()
 	{
 		List<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
 		Set<Entity> teleportCopy = (Set<Entity>)((HashSet<Entity>)didTeleport).clone();
-		
+
 		for(Entity entity : teleportCopy)
 		{
 			if(!list.contains(entity))
@@ -157,13 +157,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			}
 		}
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return new int[] {0};
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -171,15 +171,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return true;
 	}
-	
+
 	public void resetBounds()
 	{
 		teleportBounds = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+3, zCoord+1);
 	}
-	
+
 	/**
 	 * 1: yes
 	 * 2: no frame
@@ -195,23 +195,23 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{
 			return 2;
 		}
-		
+
 		if(!Mekanism.teleporters.containsKey(code) || Mekanism.teleporters.get(code).isEmpty())
 		{
 			return 3;
 		}
-		
-		if(Mekanism.teleporters.get(code).size() > 2) 
+
+		if(Mekanism.teleporters.get(code).size() > 2)
 		{
 			return 4;
 		}
-		
+
 		if(Mekanism.teleporters.get(code).size() == 2)
 		{
 			List<Entity> entitiesInPortal = getToTeleport();
 
 			Coord4D closestCoords = null;
-			
+
 			for(Coord4D coords : Mekanism.teleporters.get(code))
 			{
 				if(!coords.equals(Coord4D.get(this)))
@@ -220,38 +220,38 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 					break;
 				}
 			}
-			
+
 			int electricityNeeded = 0;
-			
+
 			for(Entity entity : entitiesInPortal)
 			{
 				electricityNeeded += calculateEnergyCost(entity, closestCoords);
 			}
-			
+
 			if(entitiesInPortal.size() == 0)
 			{
 				return 6;
 			}
-			
+
 			if(getEnergy() < electricityNeeded)
 			{
 				return 5;
 			}
-			
+
 			return 1;
 		}
-		
+
 		return 3;
 	}
-	
+
 	public void teleport()
 	{
 		if(worldObj.isRemote) return;
-		
+
 		List<Entity> entitiesInPortal = getToTeleport();
 
 		Coord4D closestCoords = null;
-		
+
 		for(Coord4D coords : Mekanism.teleporters.get(code))
 		{
 			if(!coords.equals(Coord4D.get(this)))
@@ -260,17 +260,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				break;
 			}
 		}
-		
+
 		for(Entity entity : entitiesInPortal)
-		{						
+		{
 			World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(closestCoords.dimensionId);
 			TileEntityTeleporter teleporter = (TileEntityTeleporter)closestCoords.getTileEntity(teleWorld);
-			
+
 			if(teleporter != null)
 			{
 				teleporter.didTeleport.add(entity);
 				teleporter.teleDelay = 5;
-				
+
 				if(entity instanceof EntityPlayerMP)
 				{
 					teleportPlayerTo((EntityPlayerMP)entity, closestCoords, teleporter);
@@ -278,92 +278,92 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				else {
 					teleportEntityTo(entity, closestCoords, teleporter);
 				}
-				
+
 				for(Coord4D coords : Mekanism.teleporters.get(code))
 				{
 					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
 				}
-				
+
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
-				
+
 				worldObj.playSoundAtEntity(entity, "mob.endermen.portal", 1.0F, 1.0F);
 			}
 		}
 	}
-	
+
 	public void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter)
 	{
 		if(player.dimension != coord.dimensionId)
 		{
-	        int id = player.dimension;
-	        WorldServer oldWorld = server.worldServerForDimension(player.dimension);
-	        player.dimension = coord.dimensionId;
-	        WorldServer newWorld = server.worldServerForDimension(player.dimension);
-	        player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
-	        oldWorld.removePlayerEntityDangerously(player);
-	        player.isDead = false;
-	        
-	        if(player.isEntityAlive())
-            {
-                newWorld.spawnEntityInWorld(player);
-                player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
-                newWorld.updateEntityWithOptionalForce(player, false);
-                player.setWorld(newWorld);
-            }
-	        
-	        server.getConfigurationManager().func_72375_a(player, oldWorld);
-	        player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
-	        player.theItemInWorldManager.setWorld(newWorld);
-	        server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
-	        server.getConfigurationManager().syncPlayerInventory(player);
-	        Iterator iterator = player.getActivePotionEffects().iterator();
-	        
-	        while(iterator.hasNext())
-	        {
-	            PotionEffect potioneffect = (PotionEffect)iterator.next();
-	            player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, potioneffect));
-	        }
-	
-	        GameRegistry.onPlayerChangedDimension(player);
+			int id = player.dimension;
+			WorldServer oldWorld = server.worldServerForDimension(player.dimension);
+			player.dimension = coord.dimensionId;
+			WorldServer newWorld = server.worldServerForDimension(player.dimension);
+			player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+			oldWorld.removePlayerEntityDangerously(player);
+			player.isDead = false;
+
+			if(player.isEntityAlive())
+			{
+				newWorld.spawnEntityInWorld(player);
+				player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+				newWorld.updateEntityWithOptionalForce(player, false);
+				player.setWorld(newWorld);
+			}
+
+			server.getConfigurationManager().func_72375_a(player, oldWorld);
+			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.theItemInWorldManager.setWorld(newWorld);
+			server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
+			server.getConfigurationManager().syncPlayerInventory(player);
+			Iterator iterator = player.getActivePotionEffects().iterator();
+
+			while(iterator.hasNext())
+			{
+				PotionEffect potioneffect = (PotionEffect)iterator.next();
+				player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, potioneffect));
+			}
+
+			GameRegistry.onPlayerChangedDimension(player);
 		}
 		else {
 			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 		}
 	}
-	
+
 	public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter)
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
-		
+
 		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
 		{
 			entity.worldObj.removeEntity(entity);
 			entity.isDead = false;
-			
+
 			world.spawnEntityInWorld(entity);
 			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
-			
+
 			Entity e = EntityList.createEntityByName(EntityList.getEntityString(entity), world);
-			
+
 			if(e != null)
 			{
 				e.copyDataFrom(entity, true);
 				world.spawnEntityInWorld(e);
 				teleporter.didTeleport.add(e);
 			}
-			
+
 			entity.isDead = true;
 		}
 	}
-	
+
 	public List<Entity> getToTeleport()
 	{
 		List<Entity> entities = worldObj.getEntitiesWithinAABB(Entity.class, teleportBounds);
 		List<Entity> ret = new ArrayList<Entity>();
-		
+
 		for(Entity entity : entities)
 		{
 			if(!didTeleport.contains(entity))
@@ -371,15 +371,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				ret.add(entity);
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(Mekanism.teleporters.containsKey(code))
@@ -388,30 +388,30 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				{
 					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
 				}
-				
-				if(Mekanism.teleporters.get(code).isEmpty()) 
+
+				if(Mekanism.teleporters.get(code).isEmpty())
 				{
 					Mekanism.teleporters.remove(code);
 				}
 			}
 		}
 	}
-	
+
 	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
 		int energyCost = 1000;
-		
+
 		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}
-		
+
 		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
 		energyCost+=(distance*10);
-		
+
 		return energyCost;
 	}
-	
+
 	public boolean hasFrame()
 	{
 		if(isFrame(xCoord-1, yCoord, zCoord) && isFrame(xCoord+1, yCoord, zCoord)
@@ -426,34 +426,34 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				&& isFrame(xCoord, yCoord+3, zCoord)) {return true;}
 		return false;
 	}
-	
+
 	public boolean isFrame(int x, int y, int z)
 	{
 		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        code.digitOne = nbtTags.getInteger("digitOne");
-        code.digitTwo = nbtTags.getInteger("digitTwo");
-        code.digitThree = nbtTags.getInteger("digitThree");
-        code.digitFour = nbtTags.getInteger("digitFour");
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setInteger("digitOne", code.digitOne);
-        nbtTags.setInteger("digitTwo", code.digitTwo);
-        nbtTags.setInteger("digitThree", code.digitThree);
-        nbtTags.setInteger("digitFour", code.digitFour);
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		code.digitOne = nbtTags.getInteger("digitOne");
+		code.digitTwo = nbtTags.getInteger("digitTwo");
+		code.digitThree = nbtTags.getInteger("digitThree");
+		code.digitFour = nbtTags.getInteger("digitFour");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("digitOne", code.digitOne);
+		nbtTags.setInteger("digitTwo", code.digitTwo);
+		nbtTags.setInteger("digitThree", code.digitThree);
+		nbtTags.setInteger("digitFour", code.digitFour);
+	}
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
@@ -465,12 +465,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				{
 					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
 				}
-				
+
 				if(Mekanism.teleporters.get(code).isEmpty()) Mekanism.teleporters.remove(code);
 			}
-			
+
 			int type = dataStream.readInt();
-			
+
 			if(type == 0)
 			{
 				code.digitOne = dataStream.readInt();
@@ -489,9 +489,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			}
 			return;
 		}
-		
+
 		super.handlePacketData(dataStream);
-		
+
 		status = dataStream.readUTF().trim();
 		code.digitOne = dataStream.readInt();
 		code.digitTwo = dataStream.readInt();
@@ -499,22 +499,22 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		code.digitFour = dataStream.readInt();
 		shouldRender = dataStream.readBoolean();
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(status);
 		data.add(code.digitOne);
 		data.add(code.digitTwo);
 		data.add(code.digitThree);
 		data.add(code.digitFour);
 		data.add(shouldRender);
-		
+
 		return data;
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -554,10 +554,10 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				{
 					return new Object[] {"Invalid parameters."};
 				}
-				
+
 				int digit = ((Double)arguments[0]).intValue();
 				int newDigit = ((Double)arguments[1]).intValue();
-				
+
 				switch(digit)
 				{
 					case 0:
@@ -586,13 +586,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		return true;
 	}
-	
+
 	@Override
 	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()

@@ -9,7 +9,7 @@ public class CreativeTabMekanism extends CreativeTabs
 	{
 		super("tabMekanism");
 	}
-	
+
 	@Override
 	public ItemStack getIconItemStack()
 	{

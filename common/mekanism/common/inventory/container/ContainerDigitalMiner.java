@@ -15,131 +15,131 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerDigitalMiner extends Container
 {
-    private TileEntityDigitalMiner tileEntity;
+	private TileEntityDigitalMiner tileEntity;
 
-    public ContainerDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity)
-    {
-        tileEntity = tentity;
-        
-        for(int slotY = 0; slotY < 3; slotY++)
-        {
-            for(int slotX = 0; slotX < 9; slotX++)
-            {
-                addSlotToContainer(new Slot(tentity, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
-            }
-        }
+	public ContainerDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity)
+	{
+		tileEntity = tentity;
 
-        addSlotToContainer(new SlotDischarge(tentity, 27, 152, 6));
-        addSlotToContainer(new SlotMachineUpgrade(tentity, 28, 180, 11));
-        
-        int slotX;
+		for(int slotY = 0; slotY < 3; slotY++)
+		{
+			for(int slotX = 0; slotX < 9; slotX++)
+			{
+				addSlotToContainer(new Slot(tentity, slotX + slotY * 9, 8 + slotX * 18, 80 + slotY * 18));
+			}
+		}
 
-        for(slotX = 0; slotX < 3; ++slotX)
-        {
-            for(int slotY = 0; slotY < 9; ++slotY)
-            {
-                addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
-            }
-        }
+		addSlotToContainer(new SlotDischarge(tentity, 27, 152, 6));
+		addSlotToContainer(new SlotMachineUpgrade(tentity, 28, 180, 11));
 
-        for(slotX = 0; slotX < 9; ++slotX)
-        {
-            addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
-        }
-        
-        tileEntity.open(inventory.player);
-        tileEntity.openChest();
-    }
-    
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer)
-    {
+		int slotX;
+
+		for(slotX = 0; slotX < 3; ++slotX)
+		{
+			for(int slotY = 0; slotY < 9; ++slotY)
+			{
+				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
+			}
+		}
+
+		for(slotX = 0; slotX < 9; ++slotX)
+		{
+			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
+		}
+
+		tileEntity.open(inventory.player);
+		tileEntity.openChest();
+	}
+
+	@Override
+	public void onContainerClosed(EntityPlayer entityplayer)
+	{
 		super.onContainerClosed(entityplayer);
-		
+
 		tileEntity.close(entityplayer);
 		tileEntity.closeChest();
-    }
+	}
 
-    @Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
-    {
+	@Override
+	public boolean canInteractWith(EntityPlayer entityplayer)
+	{
 		return tileEntity.isUseableByPlayer(entityplayer);
-    }
+	}
 
-    @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
-    {
-        ItemStack stack = null;
-        Slot currentSlot = (Slot)inventorySlots.get(slotID);
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
+	{
+		ItemStack stack = null;
+		Slot currentSlot = (Slot)inventorySlots.get(slotID);
 
-        if(currentSlot != null && currentSlot.getHasStack())
-        {
-            ItemStack slotStack = currentSlot.getStack();
-            stack = slotStack.copy();
-            
-        	if(ChargeUtils.canBeDischarged(slotStack))
-            {
-	            if(slotID != 27)
-	            {
-	                if(!mergeItemStack(slotStack, 27, 28, false))
-	                {
-	                	return null;
-	                }
-	            }
-	            else if(slotID == 27)
-	            {
-	            	if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
-	            	{
-	            		return null;
-	            	}
-	            }
-            }
-            else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-            {
-            	if(slotID != 27 && slotID != 28)
-            	{
-            		if(!mergeItemStack(slotStack, 28, 29, false))
-            		{
-            			return null;
-            		}
-            	}
-            	else {
-            		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
-            		{
-            			return null;
-            		}
-            	}
-            }
-            else {
-            	if(slotID < 27)
-            	{
-            		if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
-            		{
-            			return null;
-            		}
-            	}
-            	else if(!mergeItemStack(slotStack, 0, 27, false))
-            	{
-            		return null;
-            	}
-            }
-            
-            if(slotStack.stackSize == 0)
-            {
-                currentSlot.putStack((ItemStack)null);
-            }
-            else {
-                currentSlot.onSlotChanged();
-            }
+		if(currentSlot != null && currentSlot.getHasStack())
+		{
+			ItemStack slotStack = currentSlot.getStack();
+			stack = slotStack.copy();
 
-            if(slotStack.stackSize == stack.stackSize)
-            {
-                return null;
-            }
+			if(ChargeUtils.canBeDischarged(slotStack))
+			{
+				if(slotID != 27)
+				{
+					if(!mergeItemStack(slotStack, 27, 28, false))
+					{
+						return null;
+					}
+				}
+				else if(slotID == 27)
+				{
+					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+			else if(slotStack.getItem() instanceof ItemMachineUpgrade)
+			{
+				if(slotID != 27 && slotID != 28)
+				{
+					if(!mergeItemStack(slotStack, 28, 29, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+			else {
+				if(slotID < 27)
+				{
+					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+				else if(!mergeItemStack(slotStack, 0, 27, false))
+				{
+					return null;
+				}
+			}
 
-            currentSlot.onPickupFromSlot(player, slotStack);
-        }
+			if(slotStack.stackSize == 0)
+			{
+				currentSlot.putStack((ItemStack)null);
+			}
+			else {
+				currentSlot.onSlotChanged();
+			}
 
-        return stack;
-    }
+			if(slotStack.stackSize == stack.stackSize)
+			{
+				return null;
+			}
+
+			currentSlot.onPickupFromSlot(player, slotStack);
+		}
+
+		return stack;
+	}
 }

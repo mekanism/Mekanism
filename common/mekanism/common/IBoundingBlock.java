@@ -6,13 +6,13 @@ package mekanism.common;
  * @author AidanBrady
  *
  */
-public interface IBoundingBlock 
+public interface IBoundingBlock
 {
 	/**
 	 * Called when the main block is placed.
 	 */
 	public void onPlace();
-	
+
 	/**
 	 * Called when any part of the structure is broken.
 	 */

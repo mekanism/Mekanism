@@ -53,22 +53,22 @@ public class ModelBalloon extends ModelBase
 		String.mirror = true;
 		setRotation(String, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size, EnumColor color)
 	{
 		GL11.glPushMatrix();
 		GL11.glColor3f(color.getColor(0), color.getColor(1), color.getColor(2));
 		GL11.glScalef(1.5F, 1.5F, 1.5F);
 		GL11.glTranslatef(0, -0.07F, 0);
-		
+
 		Balloon2.render(size);
 		Balloon1.render(size);
 		Balloon3.render(size);
 		Balloonnub.render(size);
-		
+
 		GL11.glColor3f(1, 1, 1);
 		GL11.glPopMatrix();
-		
+
 		GL11.glPushMatrix();
 		GL11.glScalef(0.2F, 1, 0.2F);
 		String.render(size);

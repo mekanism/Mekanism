@@ -21,7 +21,7 @@ public class TileSound extends Sound
 {
 	/** The TileEntity this sound is associated with. */
 	public TileEntity tileEntity;
-	
+
 	/**
 	 * A sound that runs off of the PaulsCode sound system.
 	 * @param id - unique identifier
@@ -31,22 +31,22 @@ public class TileSound extends Sound
 	public TileSound(String id, String sound, TileEntity tileentity)
 	{
 		super(id, sound, tileentity, new Pos3D(tileentity));
-		
+
 		tileEntity = tileentity;
 	}
-	
+
 	@Override
 	public float getMultiplier()
 	{
 		return super.getMultiplier()*((IHasSound)tileEntity).getVolumeMultiplier();
 	}
-	
+
 	@Override
 	public Pos3D getLocation()
 	{
 		return new Pos3D(tileEntity);
 	}
-    
+
 	@Override
 	public boolean update(World world)
 	{
@@ -75,12 +75,12 @@ public class TileSound extends Sound
 				}
 			}
 		}
-		
+
 		if(isPlaying)
 		{
 			ticksSincePlay++;
 		}
-		
+
 		return true;
 	}
 }

@@ -7,14 +7,14 @@ import net.minecraft.world.World;
 
 public class ContainerRobitRepair extends ContainerRepair
 {
-	public ContainerRobitRepair(InventoryPlayer inventory, World world) 
+	public ContainerRobitRepair(InventoryPlayer inventory, World world)
 	{
 		super(inventory, world, 0, 0, 0, inventory.player);
 	}
-	
+
 	@Override
-    public boolean canInteractWith(EntityPlayer entityplayer)
-    {
+	public boolean canInteractWith(EntityPlayer entityplayer)
+	{
 		return true;
-    }
+	}
 }

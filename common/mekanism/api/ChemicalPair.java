@@ -12,10 +12,10 @@ public class ChemicalPair
 {
 	/** The left gas of this chemical input */
 	public GasStack leftGas;
-	
+
 	/** The right gas of this chemical input */
 	public GasStack rightGas;
-	
+
 	/**
 	 * Creates a chemical input with two defined gasses.
 	 * @param left - left gas
@@ -26,7 +26,7 @@ public class ChemicalPair
 		leftGas = left;
 		rightGas = right;
 	}
-	
+
 	/**
 	 * If this is a valid
 	 * @return
@@ -35,7 +35,7 @@ public class ChemicalPair
 	{
 		return leftGas != null && rightGas != null;
 	}
-	
+
 	/**
 	 * Whether or not the defined input contains the same gasses and at least the required amount of the defined gasses as this input.
 	 * @param input - input to check
@@ -45,7 +45,7 @@ public class ChemicalPair
 	{
 		return meets(input) || meets(input.swap());
 	}
-	
+
 	/**
 	 * Swaps the right gas and left gas of this input.
 	 * @return a swapped ChemicalInput
@@ -54,7 +54,7 @@ public class ChemicalPair
 	{
 		return new ChemicalPair(rightGas, leftGas);
 	}
-	
+
 	/**
 	 * Draws the needed amount of gas from each tank.
 	 * @param leftTank - left tank to draw from
@@ -73,7 +73,7 @@ public class ChemicalPair
 			rightTank.draw(leftGas.amount, true);
 		}
 	}
-	
+
 	/**
 	 * Whether or not one of this ChemicalInput's GasStack entry's gas type is equal to the gas type of the given gas.
 	 * @param stack - stack to check
@@ -85,10 +85,10 @@ public class ChemicalPair
 		{
 			return false;
 		}
-		
+
 		return stack.isGasEqual(leftGas) || stack.isGasEqual(rightGas);
 	}
-	
+
 	/**
 	 * Actual implementation of meetsInput(), performs the checks.
 	 * @param input - input to check
@@ -100,12 +100,12 @@ public class ChemicalPair
 		{
 			return false;
 		}
-		
+
 		if(input.leftGas.getGas() != leftGas.getGas() || input.rightGas.getGas() != rightGas.getGas())
 		{
 			return false;
 		}
-		
+
 		return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
 	}
 

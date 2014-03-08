@@ -18,18 +18,18 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-/** 
+/**
  * Class used to handle machine recipes. This is used for both adding recipes and checking outputs.
  * @author AidanBrady
  *
  */
 public final class RecipeHandler
-{	
+{
 	public static void addRecipe(Recipe recipe, Object input, Object output)
 	{
 		recipe.put(input, output);
 	}
-	
+
 	/**
 	 * Add an Enrichment Chamber recipe.
 	 * @param input - input ItemStack
@@ -39,7 +39,7 @@ public final class RecipeHandler
 	{
 		Recipe.ENRICHMENT_CHAMBER.put(input, output);
 	}
-	
+
 	/**
 	 * Add an Osmium Compressor recipe.
 	 * @param input - input ItemStack
@@ -49,7 +49,7 @@ public final class RecipeHandler
 	{
 		Recipe.OSMIUM_COMPRESSOR.put(new AdvancedInput(input, GasRegistry.getGas("liquidOsmium")), output);
 	}
-	
+
 	/**
 	 * Add a Combiner recipe.
 	 * @param input - input ItemStack
@@ -59,7 +59,7 @@ public final class RecipeHandler
 	{
 		Recipe.COMBINER.put(new AdvancedInput(input, GasRegistry.getGas("liquidStone")), output);
 	}
-	
+
 	/**
 	 * Add a Crusher recipe.
 	 * @param input - input ItemStack
@@ -69,7 +69,7 @@ public final class RecipeHandler
 	{
 		Recipe.CRUSHER.put(input, output);
 	}
-	
+
 	/**
 	 * Add a Purification Chamber recipe.
 	 * @param input - input ItemStack
@@ -79,7 +79,7 @@ public final class RecipeHandler
 	{
 		Recipe.PURIFICATION_CHAMBER.put(new AdvancedInput(input, GasRegistry.getGas("oxygen")), output);
 	}
-	
+
 	/**
 	 * Add a Metallurgic Infuser recipe.
 	 * @param input - input Infusion
@@ -89,7 +89,7 @@ public final class RecipeHandler
 	{
 		Recipe.METALLURGIC_INFUSER.put(input, InfusionOutput.getInfusion(input, output));
 	}
-	
+
 	/**
 	 * Add a Chemical Infuser recipe.
 	 * @param input - input ChemicalPair
@@ -109,7 +109,7 @@ public final class RecipeHandler
 	{
 		Recipe.CHEMICAL_OXIDIZER.put(input, output);
 	}
-	
+
 	/**
 	 * Add a Chemical Injection Chamber recipe.
 	 * @param input - input ItemStack
@@ -129,7 +129,7 @@ public final class RecipeHandler
 	{
 		Recipe.ELECTROLYTIC_SEPARATOR.put(fluid, products);
 	}
-	
+
 	/**
 	 * Add an Precision Sawmill recipe.
 	 * @param input - input ItemStack
@@ -139,7 +139,7 @@ public final class RecipeHandler
 	{
 		Recipe.PRECISION_SAWMILL.put(input, output);
 	}
-	
+
 	/**
 	 * Add a Chemical Dissolution Chamber recipe.
 	 * @param input - input ItemStack
@@ -149,7 +149,7 @@ public final class RecipeHandler
 	{
 		Recipe.CHEMICAL_DISSOLUTION_CHAMBER.put(input, output);
 	}
-	
+
 	/**
 	 * Add a Chemical Washer recipe.
 	 * @param input - input GasStack
@@ -159,7 +159,7 @@ public final class RecipeHandler
 	{
 		Recipe.CHEMICAL_WASHER.put(input, output);
 	}
-	
+
 	/**
 	 * Add a Chemical Crystalizer recipe.
 	 * @param input - input GasStack
@@ -177,15 +177,15 @@ public final class RecipeHandler
 	 * @return InfusionOutput
 	 */
 	public static InfusionOutput getMetallurgicInfuserOutput(InfusionInput infusion, boolean stackDecrease)
-	{		
+	{
 		if(infusion != null && infusion.inputStack != null)
 		{
 			HashMap<InfusionInput, InfusionOutput> recipes = Recipe.METALLURGIC_INFUSER.get();
-			
+
 			for(Map.Entry<InfusionInput, InfusionOutput> entry : recipes.entrySet())
 			{
 				InfusionInput input = (InfusionInput)entry.getKey();
-				
+
 				if(StackUtils.equalsWildcard(input.inputStack, infusion.inputStack) && infusion.inputStack.stackSize >= input.inputStack.stackSize)
 				{
 					if(infusion.infusionType == input.infusionType)
@@ -194,16 +194,16 @@ public final class RecipeHandler
 						{
 							infusion.inputStack.stackSize -= ((InfusionInput)entry.getKey()).inputStack.stackSize;
 						}
-						
+
 						return ((InfusionOutput)entry.getValue()).copy();
 					}
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Gets the GasStack of the ChemicalInput in the parameters.
 	 * @param leftTank - first GasTank
@@ -214,30 +214,30 @@ public final class RecipeHandler
 	public static GasStack getChemicalInfuserOutput(GasTank leftTank, GasTank rightTank, boolean doRemove)
 	{
 		ChemicalPair input = new ChemicalPair(leftTank.getGas(), rightTank.getGas());
-		
+
 		if(input.isValid())
 		{
 			HashMap<ChemicalPair, GasStack> recipes = Recipe.CHEMICAL_INFUSER.get();
-			
+
 			for(Map.Entry<ChemicalPair, GasStack> entry : recipes.entrySet())
 			{
 				ChemicalPair key = (ChemicalPair)entry.getKey();
-				
+
 				if(key.meetsInput(input))
 				{
 					if(doRemove)
 					{
 						key.draw(leftTank, rightTank);
 					}
-					
+
 					return entry.getValue().copy();
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Gets the Chemical Crystalizer ItemStack output of the defined GasTank input.
 	 * @param itemstack - input GasTank
@@ -259,7 +259,7 @@ public final class RecipeHandler
 				if(key != null && key.getGas() == gas.getGas() && gas.amount >= key.amount)
 				{
 					gasTank.draw(key.amount, removeGas);
-					
+
 					return entry.getValue().copy();
 				}
 			}
@@ -267,7 +267,7 @@ public final class RecipeHandler
 
 		return null;
 	}
-	
+
 	/**
 	 * Gets the Chemical Washer GasStack output of the defined GasTank input.
 	 * @param gasTank - input GasTank
@@ -289,7 +289,7 @@ public final class RecipeHandler
 				if(key != null && key.getGas() == gas.getGas() && gas.amount >= key.amount)
 				{
 					gasTank.draw(key.amount, removeGas);
-					
+
 					return entry.getValue().copy();
 				}
 			}
@@ -311,22 +311,22 @@ public final class RecipeHandler
 			for(Map.Entry<ItemStack, GasStack> entry : recipes.entrySet())
 			{
 				ItemStack stack = (ItemStack)entry.getKey();
-				
+
 				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
 				{
 					if(stackDecrease)
 					{
 						itemstack.stackSize -= stack.stackSize;
 					}
-					
+
 					return entry.getValue().copy();
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Gets the output ChanceOutput of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
@@ -341,22 +341,22 @@ public final class RecipeHandler
 			for(Map.Entry entry : recipes.entrySet())
 			{
 				ItemStack stack = (ItemStack)entry.getKey();
-				
+
 				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
 				{
 					if(stackDecrease)
 					{
 						itemstack.stackSize -= stack.stackSize;
 					}
-					
+
 					return ((ChanceOutput)entry.getValue()).copy();
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Gets the output ItemStack of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
@@ -371,19 +371,19 @@ public final class RecipeHandler
 			for(Map.Entry entry : recipes.entrySet())
 			{
 				ItemStack stack = (ItemStack)entry.getKey();
-				
+
 				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
 				{
 					if(stackDecrease)
 					{
 						itemstack.stackSize -= stack.stackSize;
 					}
-					
+
 					return ((ItemStack)entry.getValue()).copy();
 				}
 			}
 		}
-		
+
 		return null;
 	}
 	/**
@@ -405,15 +405,15 @@ public final class RecipeHandler
 					{
 						input.itemStack.stackSize -= entry.getKey().itemStack.stackSize;
 					}
-					
+
 					return entry.getValue().copy();
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Get the result of electrolysing a given fluid
 	 * @param fluidTank - the FluidTank to electrolyse fluid from
@@ -441,7 +441,7 @@ public final class RecipeHandler
 
 		return null;
 	}
-	
+
 	/**
 	 * Gets the output ItemStack of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
@@ -482,19 +482,19 @@ public final class RecipeHandler
 		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStack, FluidStack>()),
 		CHEMICAL_WASHER(new HashMap<GasStack, GasStack>()),
 		CHEMICAL_CRYSTALIZER(new HashMap<GasStack, ItemStack>());
-		
+
 		private HashMap recipes;
-		
+
 		private Recipe(HashMap map)
 		{
 			recipes = map;
 		}
-		
+
 		public void put(Object input, Object output)
 		{
 			recipes.put(input, output);
 		}
-		
+
 		public boolean containsRecipe(ItemStack input)
 		{
 			for(Object obj : get().entrySet())
@@ -502,11 +502,11 @@ public final class RecipeHandler
 				if(obj instanceof Map.Entry)
 				{
 					Map.Entry entry = (Map.Entry)obj;
-					
+
 					if(entry.getKey() instanceof ItemStack)
 					{
 						ItemStack stack = (ItemStack)entry.getKey();
-						
+
 						if(StackUtils.equalsWildcard(stack, input))
 						{
 							return true;
@@ -522,7 +522,7 @@ public final class RecipeHandler
 					else if(entry.getKey() instanceof AdvancedInput)
 					{
 						ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
-						
+
 						if(StackUtils.equalsWildcard(stack, input))
 						{
 							return true;
@@ -530,10 +530,10 @@ public final class RecipeHandler
 					}
 				}
 			}
-			
+
 			return false;
 		}
-		
+
 		public boolean containsRecipe(Fluid input)
 		{
 			for(Object obj : get().entrySet())

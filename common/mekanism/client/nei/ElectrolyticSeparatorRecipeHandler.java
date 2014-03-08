@@ -30,28 +30,28 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	public static int xOffset = 5;
 	public static int yOffset = 9;
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("tile.MachineBlock2.ElectrolyticSeparator.name");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "electrolyticseparator";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/GuiElectrolyticSeparator.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -80,23 +80,23 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
-		
+
 		float f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 		drawProgressBar(165-xOffset, 17-yOffset, 176, 0, 4, 52, f, 3);
-		
+
 		if(recipe.fluidInput != null)
 		{
-        	displayGauge(58, 6-xOffset, 11-yOffset, 176, 68, 58, recipe.fluidInput, null);
+			displayGauge(58, 6-xOffset, 11-yOffset, 176, 68, 58, recipe.fluidInput, null);
 		}
-		
+
 		if(recipe.outputPair.leftGas != null)
 		{
-        	displayGauge(28, 59-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.leftGas);
+			displayGauge(28, 59-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.leftGas);
 		}
-		
+
 		if(recipe.outputPair.rightGas != null)
 		{
-        	displayGauge(28, 101-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.rightGas);
+			displayGauge(28, 101-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.rightGas);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -138,7 +138,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 			super.loadCraftingRecipes(outputId, results);
 		}
 	}
-	
+
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
@@ -156,15 +156,15 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 			super.loadUsageRecipes(inputId, ingredients);
 		}
 	}
-	
+
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidInput.getFluid().getLocalizedName());
@@ -177,7 +177,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputPair.rightGas.getGas().getLocalizedName());
 		}
-		
+
 		return super.handleTooltip(gui, currenttip, recipe);
 	}
 
@@ -185,13 +185,13 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack gas = null;
 		FluidStack fluid = null;
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
@@ -204,7 +204,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.rightGas;
 		}
-		
+
 		if(gas != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
@@ -239,21 +239,21 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		GasStack gas = null;
 		FluidStack fluid = null;
-		
+
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
@@ -266,7 +266,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.rightGas;
 		}
-		
+
 		if(gas != null)
 		{
 			if(button == 0)
@@ -301,10 +301,10 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.mouseClicked(gui, button, recipe);
 	}
-	
+
 	@Override
 	public int recipiesPerPage()
 	{

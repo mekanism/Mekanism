@@ -19,14 +19,14 @@ public class GuiSortingTab extends GuiElement
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSortingTab.png"), gui, tile, def);
 	}
-	
+
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
-		
+
 		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 34, 0, 0, 26, 35);
-		
+
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56)
 		{
 			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 38, 26, 0, 18, 18);
@@ -34,28 +34,28 @@ public class GuiSortingTab extends GuiElement
 		else {
 			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 38, 26, 18, 18, 18);
 		}
-		
+
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
-	
+
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
-		
+
 		getFontRenderer().drawString(((TileEntityFactory)tileEntity).sorting ? "On" : "Off", -21, 58, 0x0404040);
-		
+
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56)
 		{
 			displayTooltip(MekanismUtils.localize("gui.factory.autoSort"), xAxis, yAxis);
 		}
-		
+
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
-	
+
 	@Override
 	public void preMouseClicked(int xAxis, int yAxis, int button) {}
-	
+
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{

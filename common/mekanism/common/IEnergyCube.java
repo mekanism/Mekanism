@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
  * @author AidanBrady
  *
  */
-public interface IEnergyCube 
+public interface IEnergyCube
 {
 	/**
 	 * Gets the tier of this energy cube.
@@ -16,7 +16,7 @@ public interface IEnergyCube
 	 * @return tier
 	 */
 	public EnergyCubeTier getEnergyCubeTier(ItemStack itemstack);
-	
+
 	/**
 	 * Sets the tier of this energy cube
 	 * @param itemstack - ItemStack to set

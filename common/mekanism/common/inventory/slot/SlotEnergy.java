@@ -13,21 +13,21 @@ public class SlotEnergy
 		{
 			super(inventory, index, x, y);
 		}
-		
+
 		@Override
 		public boolean isItemValid(ItemStack itemstack)
 		{
 			return ChargeUtils.canBeCharged(itemstack);
 		}
 	}
-	
+
 	public static class SlotDischarge extends Slot
 	{
 		public SlotDischarge(IInventory inventory, int index, int x, int y)
 		{
 			super(inventory, index, x, y);
 		}
-		
+
 		@Override
 		public boolean isItemValid(ItemStack itemstack)
 		{

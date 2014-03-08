@@ -6,17 +6,17 @@ package mekanism.common;
  * @author AidanBrady
  *
  */
-public class FluidSlot 
+public class FluidSlot
 {
 	/** The amount of fluid this slot is currently holding. */
 	public int fluidStored;
-	
+
 	/** The maximum amount of fluid this slot can handle. */
 	public int MAX_FLUID;
-	
+
 	/** The fluid's ID. */
 	public int fluidID;
-	
+
 	/**
 	 * Creates a FluidSlot with a defined fluid ID and max fluid. The fluid stored starts at 0.
 	 * @param max - max fluid
@@ -27,7 +27,7 @@ public class FluidSlot
 		MAX_FLUID = max;
 		fluidID = id;
 	}
-	
+
 	/**
 	 * Sets the fluid to a new amount.
 	 * @param fluid - amount to store

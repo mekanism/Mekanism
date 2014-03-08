@@ -44,12 +44,12 @@ public class ModelChemicalCrystalizer extends ModelBase
 	ModelRenderer Vial2;
 	ModelRenderer Vial3;
 	ModelRenderer Vial4;
-	
+
 	public ModelChemicalCrystalizer()
 	{
 		textureWidth = 128;
 		textureHeight = 64;
-		
+
 		Base = new ModelRenderer(this, 16, 0);
 		Base.addBox(0F, 0F, 0F, 14, 1, 14);
 		Base.setRotationPoint(-7F, 23F, -7F);
@@ -261,11 +261,11 @@ public class ModelChemicalCrystalizer extends ModelBase
 		Vial4.mirror = true;
 		setRotation(Vial4, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		MekanismRenderer.blendOn();
-		
+
 		Base.render(size);
 		IO1.render(size);
 		IO2.render(size);
@@ -301,23 +301,23 @@ public class ModelChemicalCrystalizer extends ModelBase
 		Vial2.render(size);
 		Vial3.render(size);
 		Vial4.render(size);
-		
+
 		MekanismRenderer.blendOff();
 	}
-	
+
 	public void renderWithRotation(float size, float rotate)
 	{
 		rotate *= Math.PI;
-		
+
 		Spin.rotateAngleY = rotate;
 		Vial1.rotateAngleY = rotate;
 		Vial2.rotateAngleY = rotate;
 		Vial3.rotateAngleY = rotate;
 		Vial4.rotateAngleY = rotate;
-		
+
 		render(size);
 	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;

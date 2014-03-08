@@ -11,7 +11,7 @@ public class JetpackSound extends PlayerSound
 	{
 		super(id, "Jetpack.ogg", entity);
 	}
-    
+
 	@Override
 	public boolean update(World world)
 	{
@@ -35,15 +35,15 @@ public class JetpackSound extends PlayerSound
 				}
 			}
 		}
-		
+
 		if(isPlaying)
 		{
 			ticksSincePlay++;
 		}
-		
+
 		return true;
 	}
-	
+
 	private boolean hasJetpack(EntityPlayer player)
 	{
 		return player.inventory.armorInventory[2] != null && player.inventory.armorInventory[2].getItem() instanceof ItemJetpack;

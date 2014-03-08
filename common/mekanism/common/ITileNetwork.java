@@ -9,7 +9,7 @@ import com.google.common.io.ByteArrayDataInput;
  * @author AidanBrady
  *
  */
-public interface ITileNetwork 
+public interface ITileNetwork
 {
 	/**
 	 * Receive and manage a data input.
@@ -19,7 +19,7 @@ public interface ITileNetwork
 	 * @param dataStream
 	 */
 	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception;
-	
+
 	/**
 	 * Gets an ArrayList of data this tile entity keeps synchronized with the client.
 	 * @param data - list of data

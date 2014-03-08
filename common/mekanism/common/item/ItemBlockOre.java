@@ -26,14 +26,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemBlockOre extends ItemBlock
 {
 	public Block metaBlock;
-	
+
 	public ItemBlockOre(int id, Block block)
 	{
 		super(id);
 		metaBlock = block;
 		setHasSubtypes(true);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -46,24 +46,24 @@ public class ItemBlockOre extends ItemBlock
 			list.addAll(MekanismUtils.splitLines(MekanismUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", ""))));
 		}
 	}
-	
+
 	@Override
 	public int getMetadata(int i)
 	{
 		return i;
 	}
-	
+
 	@Override
 	public Icon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
-	
+
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		String name = "";
-		
+
 		switch(itemstack.getItemDamage())
 		{
 			case 0:
@@ -79,7 +79,7 @@ public class ItemBlockOre extends ItemBlock
 				name = "Unknown";
 				break;
 		}
-		
+
 		return getUnlocalizedName() + "." + name;
 	}
 }

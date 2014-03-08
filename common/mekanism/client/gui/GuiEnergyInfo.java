@@ -11,11 +11,11 @@ import net.minecraft.util.ResourceLocation;
 public class GuiEnergyInfo extends GuiElement
 {
 	public IInfoHandler infoHandler;
-	
+
 	public GuiEnergyInfo(IInfoHandler handler, GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, tile, def);
-		
+
 		infoHandler = handler;
 	}
 
@@ -28,9 +28,9 @@ public class GuiEnergyInfo extends GuiElement
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
-		
+
 		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
-		
+
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
 

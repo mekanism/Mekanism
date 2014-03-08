@@ -61,8 +61,8 @@ public class TransmitterNetworkRegistry implements ITickHandler
 
 	public void pruneEmptyNetworks()
 	{
-	    HashSet<ITransmitterNetwork> copySet = new HashSet<ITransmitterNetwork>(networks);
-	    
+		HashSet<ITransmitterNetwork> copySet = new HashSet<ITransmitterNetwork>(networks);
+
 		for(ITransmitterNetwork e : copySet)
 		{
 			if(e.getSize() == 0)
@@ -111,13 +111,13 @@ public class TransmitterNetworkRegistry implements ITickHandler
 	{
 		String[] strings = new String[networks.size()];
 		int i = 0;
-		
+
 		for(ITransmitterNetwork<?, ?> network : networks)
 		{
 			strings[i] = network.toString();
 			++i;
 		}
-		
+
 		return strings;
 	}
 
@@ -151,21 +151,21 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		public synchronized void refreshChunk(Chunk c)
 		{
 			try {
-			    if(c != null)
-	            {
-			    	Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
-			    	
-	                for(Iterator iter = copy.values().iterator(); iter.hasNext();)
-	                {
-	                	Object obj = iter.next();
-	                	
-	                    if(obj instanceof IGridTransmitter)
-	                    {
-                            ((IGridTransmitter)obj).refreshTransmitterNetwork();
-                            ((IGridTransmitter)obj).chunkLoad();
-	                    }
-	                }
-	            }
+				if(c != null)
+				{
+					Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
+
+					for(Iterator iter = copy.values().iterator(); iter.hasNext();)
+					{
+						Object obj = iter.next();
+
+						if(obj instanceof IGridTransmitter)
+						{
+							((IGridTransmitter)obj).refreshTransmitterNetwork();
+							((IGridTransmitter)obj).chunkLoad();
+						}
+					}
+				}
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

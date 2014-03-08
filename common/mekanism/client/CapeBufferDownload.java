@@ -21,38 +21,38 @@ public class CapeBufferDownload extends Thread
 	public String username;
 
 	public String staticCapeUrl;
-	
+
 	public ResourceLocation resourceLocation;
-	
+
 	public ThreadDownloadImageData capeImage;
 
 	boolean downloaded = false;
 
-	public CapeBufferDownload(String name, String url) 
+	public CapeBufferDownload(String name, String url)
 	{
 		username = name;
 		staticCapeUrl = url;
-		
+
 		setDaemon(true);
 		setName("Cape Downlaod Thread");
 	}
 
 	@Override
-	public void run() 
+	public void run()
 	{
 		try {
 			download();
 		} catch(Exception e) {}
 	}
 
-	private void download() 
+	private void download()
 	{
 		try {
 			resourceLocation = new ResourceLocation("mekanism/" + StringUtils.stripControlCodes(username));
-			
+
 			Method method = MekanismUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getDownloadImage, ResourceLocation.class, String.class, ResourceLocation.class, IImageBuffer.class);
 			Object obj = method.invoke(null, resourceLocation, staticCapeUrl, null, null);
-			
+
 			if(obj instanceof ThreadDownloadImageData)
 			{
 				capeImage = (ThreadDownloadImageData)obj;

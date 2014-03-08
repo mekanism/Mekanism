@@ -23,49 +23,49 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 {
 	/** Whether or not this generator sees the sun. */
 	public boolean seesSun = false;
-	
+
 	/** How fast this tile entity generates energy. */
 	public double GENERATION_RATE;
-	
+
 	public TileEntitySolarGenerator()
 	{
 		super("SolarGenerator", 96000, MekanismGenerators.solarGeneration*2);
 		GENERATION_RATE = MekanismGenerators.solarGeneration;
 		inventory = new ItemStack[1];
 	}
-	
+
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output, double generation)
 	{
 		super(name, maxEnergy, output);
 		GENERATION_RATE = generation;
 		inventory = new ItemStack[1];
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return new int[] {0};
 	}
-	
+
 	@Override
 	public float getVolumeMultiplier()
 	{
 		return 0.05F;
 	}
-	
+
 	@Override
 	public boolean canSetFacing(int facing)
 	{
 		return facing != 0 && facing != 1;
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ChargeUtils.charge(0, this);
-		
+
 		if(!worldObj.isRemote)
 		{
 			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord))
@@ -86,12 +86,12 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			}
 		}
 	}
-	
+
 	public boolean isDesert()
 	{
 		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -99,10 +99,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
-		
+
 		return false;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -110,48 +110,48 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			return ChargeUtils.canBeCharged(itemstack);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean canOperate()
 	{
 		return getEnergy() < getMaxEnergy() && seesSun && MekanismUtils.canFunction(this);
 	}
-	
+
 	public double getProduction()
 	{
 		double ret = 0;
-		
+
 		if(seesSun)
 		{
 			ret = GENERATION_RATE;
-			
+
 			if(worldObj.provider instanceof ISolarLevel)
 			{
 				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
 			}
-			
+
 			if(isDesert())
 			{
 				ret *= 1.5;
 			}
-			
+
 			return ret;
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -170,14 +170,14 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 				return null;
 		}
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
 		seesSun = dataStream.readBoolean();
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -185,15 +185,15 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		data.add(seesSun);
 		return data;
 	}
-	
+
 	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(0));
 	}
-	
+
 	@Override
-	public boolean renderUpdate() 
+	public boolean renderUpdate()
 	{
 		return false;
 	}

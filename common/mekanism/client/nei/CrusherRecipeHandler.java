@@ -19,7 +19,7 @@ public class CrusherRecipeHandler extends MachineRecipeHandler
 	{
 		return "mekanism.crusher";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -37,7 +37,7 @@ public class CrusherRecipeHandler extends MachineRecipeHandler
 	{
 		return "mekanism:gui/GuiCrusher.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{

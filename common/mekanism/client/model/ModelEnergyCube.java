@@ -7,7 +7,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
 @SideOnly(Side.CLIENT)
-public class ModelEnergyCube extends ModelBase 
+public class ModelEnergyCube extends ModelBase
 {
 	ModelRenderer Corner1;
 	ModelRenderer Corner2;
@@ -176,7 +176,7 @@ public class ModelEnergyCube extends ModelBase
 		Corner7.render(size);
 		Corner8.render(size);
 		MekanismRenderer.glowOff();
-		
+
 		Frame4.render(size);
 		Frame3.render(size);
 		Frame2.render(size);
@@ -192,22 +192,22 @@ public class ModelEnergyCube extends ModelBase
 		HoriPole8.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;
 		model.rotateAngleZ = z;
 	}
-	
+
 	public static class ModelEnergyCore extends ModelBase
 	{
 		private ModelRenderer cube;
 
-		public ModelEnergyCore() 
+		public ModelEnergyCore()
 		{
 			textureWidth = 32;
 			textureHeight = 32;
-			
+
 			cube = new ModelRenderer(this, 0, 0);
 			cube.addBox(-8, -8, -8, 16, 16, 16);
 			cube.setTextureSize(32, 32);

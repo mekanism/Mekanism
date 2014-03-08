@@ -12,7 +12,7 @@ import cpw.mods.fml.common.IPlayerTracker;
 public class CommonPlayerTracker implements IPlayerTracker
 {
 	@Override
-	public void onPlayerLogin(EntityPlayer player) 
+	public void onPlayerLogin(EntityPlayer player)
 	{
 		if(!player.worldObj.isRemote)
 		{
@@ -20,7 +20,7 @@ public class CommonPlayerTracker implements IPlayerTracker
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketBoxBlacklist().setParams(), player);
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);
-			
+
 			System.out.println("[Mekanism] Sent config to '" + player.username + ".'");
 		}
 	}
@@ -36,7 +36,7 @@ public class CommonPlayerTracker implements IPlayerTracker
 	public void onPlayerChangedDimension(EntityPlayer player)
 	{
 		Mekanism.jetpackOn.remove(player);
-		
+
 		if(!player.worldObj.isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);

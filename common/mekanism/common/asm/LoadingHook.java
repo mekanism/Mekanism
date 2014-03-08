@@ -11,7 +11,7 @@ public class LoadingHook implements IFMLLoadingPlugin
 	{
 		DepLoader.load();
 	}
-	
+
 	public String[] getLibraryRequestClass()
 	{
 		return null;
@@ -34,6 +34,6 @@ public class LoadingHook implements IFMLLoadingPlugin
 
 	public void injectData(Map<String, Object> data)
 	{
-		
+
 	}
 }

@@ -23,324 +23,324 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public class MekanismRecipe implements IRecipe
 {
-    private static final int MAX_CRAFT_GRID_WIDTH = 3;
-    private static final int MAX_CRAFT_GRID_HEIGHT = 3;
+	private static final int MAX_CRAFT_GRID_WIDTH = 3;
+	private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
-    private ItemStack output = null;
-    private Object[] input = null;
-    
-    public int width = 0;
-    public int height = 0;
-    
-    private boolean mirrored = true;
-    
-    public MekanismRecipe(ItemStack result, Object... recipe)
-    {
-        output = result.copy();
+	private ItemStack output = null;
+	private Object[] input = null;
 
-        String shape = "";
-        int idx = 0;
+	public int width = 0;
+	public int height = 0;
 
-        if(recipe[idx] instanceof Boolean)
-        {
-            mirrored = (Boolean)recipe[idx];
-            
-            if(recipe[idx+1] instanceof Object[])
-            {
-                recipe = (Object[])recipe[idx+1];
-            }
-            else {
-                idx = 1;
-            }
-        }
+	private boolean mirrored = true;
 
-        if(recipe[idx] instanceof String[])
-        {
-            String[] parts = ((String[])recipe[idx++]);
+	public MekanismRecipe(ItemStack result, Object... recipe)
+	{
+		output = result.copy();
 
-            for(String s : parts)
-            {
-                width = s.length();
-                shape += s;
-            }
+		String shape = "";
+		int idx = 0;
 
-            height = parts.length;
-        }
-        else {
-            while(recipe[idx] instanceof String)
-            {
-                String s = (String)recipe[idx++];
-                shape += s;
-                width = s.length();
-                height++;
-            }
-        }
+		if(recipe[idx] instanceof Boolean)
+		{
+			mirrored = (Boolean)recipe[idx];
 
-        if(width * height != shape.length())
-        {
-            String ret = "Invalid shaped ore recipe: ";
-            
-            for(Object tmp :  recipe)
-            {
-                ret += tmp + ", ";
-            }
-            
-            ret += output;
-            
-            throw new RuntimeException(ret);
-        }
+			if(recipe[idx+1] instanceof Object[])
+			{
+				recipe = (Object[])recipe[idx+1];
+			}
+			else {
+				idx = 1;
+			}
+		}
 
-        HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
+		if(recipe[idx] instanceof String[])
+		{
+			String[] parts = ((String[])recipe[idx++]);
 
-        for(; idx < recipe.length; idx += 2)
-        {
-            Character chr = (Character)recipe[idx];
-            Object in = recipe[idx + 1];
+			for(String s : parts)
+			{
+				width = s.length();
+				shape += s;
+			}
 
-            if(in instanceof ItemStack)
-            {
-                itemMap.put(chr, ((ItemStack)in).copy());
-            }
-            else if(in instanceof Item)
-            {
-                itemMap.put(chr, new ItemStack((Item)in));
-            }
-            else if(in instanceof Block)
-            {
-                itemMap.put(chr, new ItemStack((Block)in, 1, OreDictionary.WILDCARD_VALUE));
-            }
-            else if(in instanceof String)
-            {
-                itemMap.put(chr, OreDictionary.getOres((String)in));
-            }
-            else {
-                String ret = "Invalid shaped ore recipe: ";
-                
-                for(Object tmp :  recipe)
-                {
-                    ret += tmp + ", ";
-                }
-                
-                ret += output;
-                throw new RuntimeException(ret);
-            }
-        }
+			height = parts.length;
+		}
+		else {
+			while(recipe[idx] instanceof String)
+			{
+				String s = (String)recipe[idx++];
+				shape += s;
+				width = s.length();
+				height++;
+			}
+		}
 
-        input = new Object[width * height];
-        int x = 0;
-        
-        for(char chr : shape.toCharArray())
-        {
-            input[x++] = itemMap.get(chr);
-        }
-    }
+		if(width * height != shape.length())
+		{
+			String ret = "Invalid shaped ore recipe: ";
 
-    @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv)
-    {
-    	ItemStack toReturn = output.copy();
-    	
-    	if(toReturn.getItem() instanceof IEnergizedItem)
-    	{
-    		double energyFound = 0;
-    		
-    		for(int i = 0; i < 9; i++)
-    		{
-    			ItemStack itemstack = inv.getStackInSlot(i);
-    			
-    			if(itemstack != null)
-    			{
-	    			if(itemstack.getItem() instanceof IEnergizedItem)
-	    			{
-	    				energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
-	    			}
-    			}
-    		}
-    		
-    		((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, Math.min(((IEnergizedItem)toReturn.getItem()).getMaxEnergy(toReturn), energyFound));
-    	}
-    	
-    	if(toReturn.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)toReturn.getItem()).supportsUpgrades(toReturn))
-    	{
-    		int speedUpgrades = 0;
-    		int energyUpgrades = 0;
-    		
-    		for(int i = 0; i < 9; i++)
-    		{
-    			ItemStack itemstack = inv.getStackInSlot(i);
-    			
-    			if(itemstack != null)
-    			{
-    				if(itemstack.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)itemstack.getItem()).supportsUpgrades(toReturn))
-    				{
-    					speedUpgrades = Math.min(8, speedUpgrades + ((IUpgradeManagement)itemstack.getItem()).getSpeedMultiplier(itemstack));
-    					energyUpgrades = Math.min(8, energyUpgrades + ((IUpgradeManagement)itemstack.getItem()).getEnergyMultiplier(itemstack));
-    				}
-    			}
-    		}
-    		
-    		((IUpgradeManagement)toReturn.getItem()).setSpeedMultiplier(speedUpgrades, toReturn);
-    		((IUpgradeManagement)toReturn.getItem()).setEnergyMultiplier(energyUpgrades, toReturn);
-    	}
-    	
-    	return toReturn;
-    }
+			for(Object tmp :  recipe)
+			{
+				ret += tmp + ", ";
+			}
 
-    @Override
-    public int getRecipeSize()
-    { 
-    	return input.length;
-    }
+			ret += output;
 
-    @Override
-    public ItemStack getRecipeOutput()
-    { 
-    	return output; 
-    }
+			throw new RuntimeException(ret);
+		}
 
-    @Override
-    public boolean matches(InventoryCrafting inv, World world)
-    {
-        for(int x = 0; x <= MAX_CRAFT_GRID_WIDTH - width; x++)
-        {
-            for(int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - height; ++y)
-            {
-                if(checkMatch(inv, x, y, true))
-                {
-                    return true;
-                }
+		HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
 
-                if(mirrored && checkMatch(inv, x, y, false))
-                {
-                    return true;
-                }
-            }
-        }
+		for(; idx < recipe.length; idx += 2)
+		{
+			Character chr = (Character)recipe[idx];
+			Object in = recipe[idx + 1];
 
-        return false;
-    }
+			if(in instanceof ItemStack)
+			{
+				itemMap.put(chr, ((ItemStack)in).copy());
+			}
+			else if(in instanceof Item)
+			{
+				itemMap.put(chr, new ItemStack((Item)in));
+			}
+			else if(in instanceof Block)
+			{
+				itemMap.put(chr, new ItemStack((Block)in, 1, OreDictionary.WILDCARD_VALUE));
+			}
+			else if(in instanceof String)
+			{
+				itemMap.put(chr, OreDictionary.getOres((String)in));
+			}
+			else {
+				String ret = "Invalid shaped ore recipe: ";
 
-    private boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror)
-    {
-        for(int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
-        {
-            for(int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
-            {
-                int subX = x - startX;
-                int subY = y - startY;
-                Object target = null;
+				for(Object tmp :  recipe)
+				{
+					ret += tmp + ", ";
+				}
 
-                if(subX >= 0 && subY >= 0 && subX < width && subY < height)
-                {
-                    if(mirror)
-                    {
-                        target = input[width - subX - 1 + subY * width];
-                    }
-                    else {
-                        target = input[subX + subY * width];
-                    }
-                }
+				ret += output;
+				throw new RuntimeException(ret);
+			}
+		}
 
-                ItemStack slot = inv.getStackInRowAndColumn(x, y);
+		input = new Object[width * height];
+		int x = 0;
 
-                if(target instanceof ItemStack)
-                {
-                    if(!checkItemEquals((ItemStack)target, slot))
-                    {
-                        return false;
-                    }
-                }
-                else if(target instanceof ArrayList)
-                {
-                    boolean matched = false;
+		for(char chr : shape.toCharArray())
+		{
+			input[x++] = itemMap.get(chr);
+		}
+	}
 
-                    for(ItemStack item : (ArrayList<ItemStack>)target)
-                    {
-                        matched = matched || checkItemEquals(item, slot);
-                    }
+	@Override
+	public ItemStack getCraftingResult(InventoryCrafting inv)
+	{
+		ItemStack toReturn = output.copy();
 
-                    if(!matched)
-                    {
-                        return false;
-                    }
-                }
-                else if(target == null && slot != null)
-                {
-                    return false;
-                }
-            }
-        }
+		if(toReturn.getItem() instanceof IEnergizedItem)
+		{
+			double energyFound = 0;
 
-        return true;
-    }
+			for(int i = 0; i < 9; i++)
+			{
+				ItemStack itemstack = inv.getStackInSlot(i);
 
-    private boolean checkItemEquals(ItemStack target, ItemStack input)
-    {
-        if(input == null && target != null || input != null && target == null)
-        {
-            return false;
-        }
-        else if(input == null && target == null)
-        {
-        	return true;
-        }
-        
-        if(target.itemID != input.itemID)
-        {
-        	return false;
-        }
-        
-        if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem))
-        {
-	        if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
-	        {
-	        	return false;
-	        }
-        }
-        else {
-        	if(((IEnergizedItem)target.getItem()).isMetadataSpecific() && ((IEnergizedItem)input.getItem()).isMetadataSpecific())
-        	{
-        		if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
-        		{
-        			return false;
-        		}
-        	}
-        	
-            if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
-            {
-            	if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
-            	{
-            		return false;
-            	}
-            }
-            else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
-            {
-            	if(isFactory(target) && isFactory(input))
-            	{
-            		if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
-            		{
-            			return false;
-            		}
-            	}
-            }
-        }
-        
-        return true;
-    }
-    
-    private static boolean isFactory(ItemStack stack)
-    {
-    	return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
-    }
+				if(itemstack != null)
+				{
+					if(itemstack.getItem() instanceof IEnergizedItem)
+					{
+						energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
+					}
+				}
+			}
 
-    public MekanismRecipe setMirrored(boolean mirror)
-    {
-        mirrored = mirror;
-        return this;
-    }
+			((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, Math.min(((IEnergizedItem)toReturn.getItem()).getMaxEnergy(toReturn), energyFound));
+		}
 
-    public Object[] getInput()
-    {
-        return input;
-    }
+		if(toReturn.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)toReturn.getItem()).supportsUpgrades(toReturn))
+		{
+			int speedUpgrades = 0;
+			int energyUpgrades = 0;
+
+			for(int i = 0; i < 9; i++)
+			{
+				ItemStack itemstack = inv.getStackInSlot(i);
+
+				if(itemstack != null)
+				{
+					if(itemstack.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)itemstack.getItem()).supportsUpgrades(toReturn))
+					{
+						speedUpgrades = Math.min(8, speedUpgrades + ((IUpgradeManagement)itemstack.getItem()).getSpeedMultiplier(itemstack));
+						energyUpgrades = Math.min(8, energyUpgrades + ((IUpgradeManagement)itemstack.getItem()).getEnergyMultiplier(itemstack));
+					}
+				}
+			}
+
+			((IUpgradeManagement)toReturn.getItem()).setSpeedMultiplier(speedUpgrades, toReturn);
+			((IUpgradeManagement)toReturn.getItem()).setEnergyMultiplier(energyUpgrades, toReturn);
+		}
+
+		return toReturn;
+	}
+
+	@Override
+	public int getRecipeSize()
+	{
+		return input.length;
+	}
+
+	@Override
+	public ItemStack getRecipeOutput()
+	{
+		return output;
+	}
+
+	@Override
+	public boolean matches(InventoryCrafting inv, World world)
+	{
+		for(int x = 0; x <= MAX_CRAFT_GRID_WIDTH - width; x++)
+		{
+			for(int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - height; ++y)
+			{
+				if(checkMatch(inv, x, y, true))
+				{
+					return true;
+				}
+
+				if(mirrored && checkMatch(inv, x, y, false))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror)
+	{
+		for(int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
+		{
+			for(int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
+			{
+				int subX = x - startX;
+				int subY = y - startY;
+				Object target = null;
+
+				if(subX >= 0 && subY >= 0 && subX < width && subY < height)
+				{
+					if(mirror)
+					{
+						target = input[width - subX - 1 + subY * width];
+					}
+					else {
+						target = input[subX + subY * width];
+					}
+				}
+
+				ItemStack slot = inv.getStackInRowAndColumn(x, y);
+
+				if(target instanceof ItemStack)
+				{
+					if(!checkItemEquals((ItemStack)target, slot))
+					{
+						return false;
+					}
+				}
+				else if(target instanceof ArrayList)
+				{
+					boolean matched = false;
+
+					for(ItemStack item : (ArrayList<ItemStack>)target)
+					{
+						matched = matched || checkItemEquals(item, slot);
+					}
+
+					if(!matched)
+					{
+						return false;
+					}
+				}
+				else if(target == null && slot != null)
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private boolean checkItemEquals(ItemStack target, ItemStack input)
+	{
+		if(input == null && target != null || input != null && target == null)
+		{
+			return false;
+		}
+		else if(input == null && target == null)
+		{
+			return true;
+		}
+
+		if(target.itemID != input.itemID)
+		{
+			return false;
+		}
+
+		if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem))
+		{
+			if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+			{
+				return false;
+			}
+		}
+		else {
+			if(((IEnergizedItem)target.getItem()).isMetadataSpecific() && ((IEnergizedItem)input.getItem()).isMetadataSpecific())
+			{
+				if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+				{
+					return false;
+				}
+			}
+
+			if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
+			{
+				if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+				{
+					return false;
+				}
+			}
+			else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
+			{
+				if(isFactory(target) && isFactory(input))
+				{
+					if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
+					{
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean isFactory(ItemStack stack)
+	{
+		return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+	}
+
+	public MekanismRecipe setMirrored(boolean mirror)
+	{
+		mirrored = mirror;
+		return this;
+	}
+
+	public Object[] getInput()
+	{
+		return input;
+	}
 }

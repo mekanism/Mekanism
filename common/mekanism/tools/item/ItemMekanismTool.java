@@ -12,18 +12,18 @@ import net.minecraft.item.ItemTool;
 
 public class ItemMekanismTool extends ItemTool
 {
-    public ItemMekanismTool(int id, int mobBoost, EnumToolMaterial enumtoolmaterial, Block effectiveBlocks[])
-    {
-        super(id, mobBoost, enumtoolmaterial, effectiveBlocks);
-        setCreativeTab(Mekanism.tabMekanism);
-    }
-    
-    @Override
+	public ItemMekanismTool(int id, int mobBoost, EnumToolMaterial enumtoolmaterial, Block effectiveBlocks[])
+	{
+		super(id, mobBoost, enumtoolmaterial, effectiveBlocks);
+		setCreativeTab(Mekanism.tabMekanism);
+	}
+
+	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-    	list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+		list.add("HP: " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
-    
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

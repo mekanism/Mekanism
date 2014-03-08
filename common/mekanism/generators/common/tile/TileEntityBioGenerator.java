@@ -60,7 +60,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					if(bioFuelSlot.fluidStored+fluidToAdd <= bioFuelSlot.MAX_FLUID)
 					{
 						bioFuelSlot.setFluid(bioFuelSlot.fluidStored+fluidToAdd);
-						
+
 						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 						{
 							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
@@ -68,7 +68,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 						else {
 							inventory[0].stackSize--;
 						}
-						
+
 						if(inventory[0].stackSize == 0)
 						{
 							inventory[0] = null;
@@ -79,15 +79,15 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			else {
 				int fuel = getFuel(inventory[0]);
 				ItemStack prevStack = inventory[0].copy();
-				
+
 				if(fuel > 0)
 				{
 					int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
-					
+
 					if(fuel <= fuelNeeded)
 					{
 						bioFuelSlot.fluidStored += fuel;
-						
+
 						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
 						{
 							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
@@ -95,7 +95,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 						else {
 							inventory[0].stackSize--;
 						}
-						
+
 						if(inventory[0].stackSize == 0)
 						{
 							inventory[0] = null;
@@ -106,12 +106,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		}
 
 		if(canOperate())
-		{	
+		{
 			if(!worldObj.isRemote)
 			{
 				setActive(true);
 			}
-			
+
 			bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
 			setEnergy(electricityStored + MekanismGenerators.bioGeneration);
 		}
@@ -143,7 +143,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 						}
 					}
 				}
-				
+
 				return false;
 			}
 		}
@@ -162,20 +162,20 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-        
-        bioFuelSlot.fluidStored = nbtTags.getInteger("bioFuelStored");
-    }
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		bioFuelSlot.fluidStored = nbtTags.getInteger("bioFuelStored");
+	}
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setInteger("bioFuelStored", bioFuelSlot.fluidStored);
-    }
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("bioFuelStored", bioFuelSlot.fluidStored);
+	}
 
 	public int getFuel(ItemStack itemstack)
 	{
@@ -191,7 +191,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		return bioFuelSlot.fluidStored*i / bioFuelSlot.MAX_FLUID;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
@@ -218,7 +218,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 		data.add(bioFuelSlot.fluidStored);
 		return data;
 	}
-	
+
 	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
@@ -226,13 +226,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -255,7 +255,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		if(FluidRegistry.isFluidRegistered("bioethanol") && from != ForgeDirection.getOrientation(facing))
 		{
@@ -286,7 +286,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
@@ -298,19 +298,19 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return FluidRegistry.isFluidRegistered("bioethanol") && fluid == FluidRegistry.getFluid("bioethanol");
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return null;
 	}

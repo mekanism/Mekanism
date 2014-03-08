@@ -29,38 +29,38 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	private static Map<FluidStack, FluidStack> recipes = new HashMap<FluidStack, FluidStack>();
-	
+
 	public static int xOffset = 5;
 	public static int yOffset = 12;
-	
-	static 
+
+	static
 	{
 		if(recipes.isEmpty())
 		{
 			recipes.put(new FluidStack(FluidRegistry.WATER, 1), new FluidStack(FluidRegistry.getFluid("brine"), 1));
 		}
 	}
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("tile.BasicBlock.SalinationController.name");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "salinationcontroller";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/nei/GuiSalinationController.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -89,17 +89,17 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
-		
+
 		drawProgressBar(49-xOffset, 64-yOffset, 176, 59, 78, 8, ticksPassed < 20 ? ticksPassed % 20 / 20.0F : 1.0F, 0);
-		
+
 		if(recipe.fluidInput != null)
 		{
-        	displayGauge(58, 7-xOffset, 14-yOffset, 176, 0, 58, recipe.fluidInput, null);
+			displayGauge(58, 7-xOffset, 14-yOffset, 176, 0, 58, recipe.fluidInput, null);
 		}
-		
+
 		if(recipe.fluidOutput != null)
 		{
-        	displayGauge(58, 153-xOffset, 14-yOffset, 176, 0, 58, recipe.fluidOutput, null);
+			displayGauge(58, 153-xOffset, 14-yOffset, 176, 0, 58, recipe.fluidOutput, null);
 		}
 	}
 
@@ -107,7 +107,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -135,7 +135,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 			super.loadCraftingRecipes(outputId, results);
 		}
 	}
-	
+
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
@@ -153,15 +153,15 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 			super.loadUsageRecipes(inputId, ingredients);
 		}
 	}
-	
+
 	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidInput.getFluid().getLocalizedName());
@@ -170,7 +170,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidOutput.getFluid().getLocalizedName());
 		}
-		
+
 		return super.handleTooltip(gui, currenttip, recipe);
 	}
 
@@ -178,12 +178,12 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		FluidStack stack = null;
-		
+
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
@@ -192,7 +192,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).fluidOutput;
 		}
-		
+
 		if(stack != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
@@ -210,20 +210,20 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.keyTyped(gui, keyChar, keyCode, recipe);
 	}
-	
+
 	@Override
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
-		
+
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
-		
+
 		FluidStack stack = null;
-		
+
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
@@ -232,7 +232,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 		{
 			stack = ((CachedIORecipe)arecipes.get(recipe)).fluidOutput;
 		}
-		
+
 		if(stack != null)
 		{
 			if(button == 0)
@@ -250,10 +250,10 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 				}
 			}
 		}
-		
+
 		return super.mouseClicked(gui, button, recipe);
 	}
-	
+
 	@Override
 	public int recipiesPerPage()
 	{

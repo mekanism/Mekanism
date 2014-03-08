@@ -26,7 +26,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	{
 		return "mekanism.purificationchamber";
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
@@ -44,7 +44,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	{
 		return "mekanism:gui/GuiPurificationChamber.png";
 	}
-	
+
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
@@ -52,10 +52,10 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 		{
 			return ListUtils.asList(new ItemStack(Item.flint), MekanismUtils.getFullGasTank(GasRegistry.getGas("oxygen")));
 		}
-		
+
 		return new ArrayList<ItemStack>();
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
