@@ -169,28 +169,31 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				}
 			}
 			
-			switch(getEfficiency(stack))
+			if(getEnergy(stack) > 0)
 			{
-				case 20:
-					for(int x1 = x-1; x1 <= x+1; x1++)
-					{
-						for(int z1 = z-1; z1 <= z+1; z1++)
+				switch(getEfficiency(stack))
+				{
+					case 20:
+						for(int x1 = x-1; x1 <= x+1; x1++)
 						{
-							useHoe(stack, player, world, x1, y, z1, side);
+							for(int z1 = z-1; z1 <= z+1; z1++)
+							{
+								useHoe(stack, player, world, x1, y, z1, side);
+							}
 						}
-					}
-					
-					break;
-				case 128:
-					for(int x1 = x-2; x1 <= x+2; x1++)
-					{
-						for(int z1 = z-2; z1 <= z+2; z1++)
+						
+						break;
+					case 128:
+						for(int x1 = x-2; x1 <= x+2; x1++)
 						{
-							useHoe(stack, player, world, x1, y, z1, side);
+							for(int z1 = z-2; z1 <= z+2; z1++)
+							{
+								useHoe(stack, player, world, x1, y, z1, side);
+							}
 						}
-					}
-					
-					break;
+						
+						break;
+				}
 			}
 			
 			return true;
