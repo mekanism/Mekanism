@@ -179,7 +179,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 2 || gasTank.getGas() == null)
+		if(slotID == 2)
 		{
 			return false;
 		}
@@ -189,7 +189,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 0)
 		{
-			return RecipeHandler.getOutput(new AdvancedInput(itemstack, gasTank.getGas().getGas()), false, getRecipes()) != null;
+			return hasRecipe(itemstack);
 		}
 		else if(slotID == 3)
 		{
