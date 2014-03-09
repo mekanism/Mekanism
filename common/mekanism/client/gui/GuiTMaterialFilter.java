@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -12,6 +13,7 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TMaterialFilter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
@@ -21,6 +23,7 @@ import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class GuiTMaterialFilter extends GuiMekanism
 {
@@ -126,6 +129,31 @@ public class GuiTMaterialFilter extends GuiMekanism
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
+		
+		if(filter.color != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glColor4f(1, 1, 1, 1);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
+		{
+			if(filter.color != null)
+			{
+				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
+			}
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -149,7 +177,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 	{
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMaterialFilter.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTMaterialFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
@@ -186,12 +214,12 @@ public class GuiTMaterialFilter extends GuiMekanism
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
 		super.mouseClicked(mouseX, mouseY, button);
+		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
 
 		if(button == 0)
 		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
@@ -219,6 +247,29 @@ public class GuiTMaterialFilter extends GuiMekanism
 				}
 
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+			}
+		}
+		
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
+		{
+			button = 2;
+		}
+
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
+		{
+			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+
+			if(button == 0)
+			{
+				filter.color = TransporterUtils.increment(filter.color);
+			}
+			else if(button == 1)
+			{
+				filter.color = TransporterUtils.decrement(filter.color);
+			}
+			else if(button == 2)
+			{
+				filter.color = null;
 			}
 		}
 	}

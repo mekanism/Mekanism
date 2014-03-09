@@ -44,6 +44,8 @@ public class TMaterialFilter extends TransporterFilter
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
+		super.write(nbtTags);
+		
 		nbtTags.setInteger("type", 2);
 		materialItem.writeToNBT(nbtTags);
 	}
@@ -51,12 +53,16 @@ public class TMaterialFilter extends TransporterFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
+		super.read(nbtTags);
+		
 		materialItem = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 
 	@Override
 	public void write(ArrayList data)
 	{
+		super.write(data);
+		
 		data.add(2);
 
 		data.add(materialItem.itemID);
@@ -67,6 +73,8 @@ public class TMaterialFilter extends TransporterFilter
 	@Override
 	protected void read(ByteArrayDataInput dataStream)
 	{
+		super.read(dataStream);
+		
 		materialItem = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}
 

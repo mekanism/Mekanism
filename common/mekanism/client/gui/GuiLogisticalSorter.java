@@ -12,6 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.miner.MMaterialFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity;
@@ -170,6 +171,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
+						else if(filter instanceof TMaterialFilter)
+						{
+							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i));
+						}
 					}
 				}
 			}
@@ -267,7 +273,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 
 		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRenderer.drawString("IS: " + getItemStackFilters(), 11, 28, 0x00CD00);
+		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
 		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
 		fontRenderer.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
 
@@ -323,6 +329,22 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+				}
+				else if(filter instanceof TMaterialFilter)
+				{
+					TMaterialFilter itemFilter = (TMaterialFilter)filter;
+
+					if(itemFilter.materialItem != null)
+					{
+						GL11.glPushMatrix();
+						GL11.glEnable(GL11.GL_LIGHTING);
+						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						GL11.glDisable(GL11.GL_LIGHTING);
+						GL11.glPopMatrix();
+					}
+
+					fontRenderer.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
 					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 			}
@@ -398,6 +420,10 @@ public class GuiLogisticalSorter extends GuiMekanism
 				else if(filter instanceof TOreDictFilter)
 				{
 					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 195, 96, 29);
+				}
+				else if(filter instanceof TMaterialFilter)
+				{
+					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 224, 96, 29);
 				}
 			}
 		}
