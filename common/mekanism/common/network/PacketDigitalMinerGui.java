@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
+import mekanism.client.gui.GuiMFilterSelect;
 import mekanism.client.gui.GuiMItemStackFilter;
 import mekanism.client.gui.GuiMMaterialFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
@@ -134,6 +135,10 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		{
 			container = new ContainerDigitalMiner(playerMP.inventory, (TileEntityDigitalMiner)obj.getTileEntity(world));
 		}
+		else if(guiType == 5)
+		{
+			container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
+		}
 		else if(guiType == 1 || guiType == 2 || guiType == 3)
 		{
 			container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
@@ -176,6 +181,10 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		else if(type == 4)
 		{
 			return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+		}
+		else if(type == 5)
+		{
+			return new GuiMFilterSelect(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 		}
 		else {
 			if(packetType == MinerGuiPacket.CLIENT)

@@ -251,8 +251,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, MekanismUtils.localize("gui.itemstack")));
-		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, MekanismUtils.localize("gui.oredict")));
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 96, 20, MekanismUtils.localize("gui.newFilter")));
 
 		String prevRad = radiusField != null ? radiusField.getText() : "";
 		String prevMin = minField != null ? minField.getText() : "";
@@ -278,11 +277,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 1));
-		}
-		else if(guibutton.id == 1)
-		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 2));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 5));
 		}
 	}
 
@@ -295,9 +290,9 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 
 		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
-		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
+		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
+		fontRenderer.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
 		fontRenderer.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
 
 		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);

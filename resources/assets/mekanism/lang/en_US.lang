@@ -268,6 +268,7 @@ gui.off=Off
 gui.filters=Filters
 gui.idle=Idle
 gui.data=Data
+gui.newFilter=New Filter
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
@@ -289,6 +290,8 @@ gui.factory.combining=Combining
 gui.factory.purifying=Purifying
 gui.factory.injecting=Injecting
 gui.factory.autoSort=Auto-sort
+
+gui.filterSelect.title=Create New Filter
 
 gui.oredictFilter=OreDict Filter
 gui.oredictFilter.noKey=No key entered

@@ -37,9 +37,9 @@ public class GuiMFilterSelect extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 40, guiHeight + 32, 96, 20, "ItemStack"));
-		buttonList.add(new GuiButton(1, guiWidth + 40, guiHeight + 52, 96, 20, "OreDict"));
-		buttonList.add(new GuiButton(2, guiWidth + 40, guiHeight + 72, 96, 20, "Material"));
+		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, "ItemStack"));
+		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, "OreDict"));
+		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, "Material"));
 	}
 	
 	@Override
@@ -59,6 +59,17 @@ public class GuiMFilterSelect extends GuiMekanism
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 3));
 		}
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		fontRenderer.drawString(MekanismUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
 	@Override
