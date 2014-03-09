@@ -97,7 +97,7 @@ public abstract class TransporterFilter
 		{
 			filter = new TOreDictFilter();
 		}
-		else if(type == 3)
+		else if(type == 2)
 		{
 			filter = new TMaterialFilter();
 		}
