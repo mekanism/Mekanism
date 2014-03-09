@@ -69,8 +69,13 @@ public abstract class TransporterFilter
 		{
 			filter = new TItemStackFilter();
 		}
-		else {
+		else if(type == 1)
+		{
 			filter = new TOreDictFilter();
+		}
+		else if(type == 2)
+		{
+			filter = new TMaterialFilter();
 		}
 
 		filter.read(nbtTags);
@@ -91,6 +96,10 @@ public abstract class TransporterFilter
 		else if(type == 1)
 		{
 			filter = new TOreDictFilter();
+		}
+		else if(type == 3)
+		{
+			filter = new TMaterialFilter();
 		}
 
 		filter.read(dataStream);

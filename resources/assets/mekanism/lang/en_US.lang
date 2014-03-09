@@ -251,6 +251,7 @@ gui.status=Status
 gui.autoEject=Auto-eject
 gui.itemstack=ItemStack
 gui.oredict=OreDict
+gui.material=Material
 gui.out=Out
 gui.noFluid=No fluid
 gui.empty=Empty

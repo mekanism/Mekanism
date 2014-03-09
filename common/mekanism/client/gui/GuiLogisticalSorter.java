@@ -17,6 +17,7 @@ import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TItemStackFilter;
+import mekanism.common.transporter.TMaterialFilter;
 import mekanism.common.transporter.TOreDictFilter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
@@ -243,8 +244,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 54, 20, MekanismUtils.localize("gui.itemstack")));
-		buttonList.add(new GuiButton(1, guiWidth + 110, guiHeight + 136, 43, 20, MekanismUtils.localize("gui.oredict")));
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 96, 20, MekanismUtils.localize("gui.newFilter")));
 	}
 
 	@Override
@@ -271,9 +271,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 
 		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRenderer.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
-		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 37, 0x00CD00);
-		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 46, 0x00CD00);
+		fontRenderer.drawString("IS: " + getItemStackFilters(), 11, 28, 0x00CD00);
+		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
+		fontRenderer.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
 
 		fontRenderer.drawString("RR:", 12, 74, 0x00CD00);
 		fontRenderer.drawString(MekanismUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
@@ -445,6 +445,21 @@ public class GuiLogisticalSorter extends GuiMekanism
 		for(TransporterFilter filter : tileEntity.filters)
 		{
 			if(filter instanceof TOreDictFilter)
+			{
+				list.add(filter);
+			}
+		}
+
+		return list;
+	}
+	
+	public ArrayList getMaterialFilters()
+	{
+		ArrayList list = new ArrayList();
+
+		for(TransporterFilter filter : tileEntity.filters)
+		{
+			if(filter instanceof TMaterialFilter)
 			{
 				list.add(filter);
 			}

@@ -5,12 +5,12 @@ import mekanism.api.EnumColor;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.miner.MMaterialFilter;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
+import mekanism.common.network.PacketLogisticalSorterGui;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.transporter.TMaterialFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -22,30 +22,30 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-public class GuiMMaterialFilter extends GuiMekanism
+public class GuiTMaterialFilter extends GuiMekanism
 {
-	public TileEntityDigitalMiner tileEntity;
+	public TileEntityLogisticalSorter tileEntity;
 
 	public boolean isNew = false;
 
-	public MMaterialFilter origFilter;
+	public TMaterialFilter origFilter;
 
-	public MMaterialFilter filter = new MMaterialFilter();
+	public TMaterialFilter filter = new TMaterialFilter();
 
 	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 
 	public int ticker;
 
-	public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
+	public GuiTMaterialFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
-		origFilter = (MMaterialFilter)tileEntity.filters.get(index);
-		filter = ((MMaterialFilter)tileEntity.filters.get(index)).clone();
+		origFilter = (TMaterialFilter)tileEntity.filters.get(index);
+		filter = ((TMaterialFilter)tileEntity.filters.get(index)).clone();
 	}
 
-	public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
+	public GuiTMaterialFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
@@ -88,7 +88,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
 			else if(filter.materialItem == null)
 			{
@@ -99,7 +99,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 		else if(guibutton.id == 1)
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), true, origFilter));
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 		}
 	}
 
@@ -195,7 +195,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0));
 			}
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)
