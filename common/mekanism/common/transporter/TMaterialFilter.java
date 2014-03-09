@@ -61,9 +61,9 @@ public class TMaterialFilter extends TransporterFilter
 	@Override
 	public void write(ArrayList data)
 	{
-		super.write(data);
-		
 		data.add(2);
+		
+		super.write(data);
 
 		data.add(materialItem.itemID);
 		data.add(materialItem.stackSize);
