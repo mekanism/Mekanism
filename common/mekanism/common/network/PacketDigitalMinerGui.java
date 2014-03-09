@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiDigitalMiner;
 import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.GuiMItemStackFilter;
+import mekanism.client.gui.GuiMMaterialFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -129,11 +130,11 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		{
 			container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
-		else if(guiType == 3)
+		else if(guiType == 4)
 		{
 			container = new ContainerDigitalMiner(playerMP.inventory, (TileEntityDigitalMiner)obj.getTileEntity(world));
 		}
-		else if(guiType == 1 || guiType == 2)
+		else if(guiType == 1 || guiType == 2 || guiType == 3)
 		{
 			container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
@@ -172,7 +173,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		{
 			return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 		}
-		else if(type == 3)
+		else if(type == 4)
 		{
 			return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 		}
@@ -187,6 +188,10 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 				{
 					return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
 				}
+				else if(type == 3)
+				{
+					return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+				}
 			}
 			else if(packetType == MinerGuiPacket.CLIENT_INDEX)
 			{
@@ -197,6 +202,10 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 				else if(type == 2)
 				{
 					return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z), index);
+				}
+				else if(type == 3)
+				{
+					return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z), index);
 				}
 			}
 		}

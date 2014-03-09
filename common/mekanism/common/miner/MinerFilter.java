@@ -29,8 +29,13 @@ public abstract class MinerFilter
 		{
 			filter = new MItemStackFilter();
 		}
-		else {
+		else if(type == 1)
+		{
 			filter = new MOreDictFilter();
+		}
+		else if(type == 2)
+		{
+			filter = new MMaterialFilter();
 		}
 
 		filter.read(nbtTags);

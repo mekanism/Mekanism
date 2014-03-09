@@ -300,6 +300,8 @@ gui.itemFilter.details=ItemStack Details
 gui.itemFilter.min=Min
 gui.itemFilter.max=Max
 
+gui.materialFilter=Material Filter
+
 gui.portableTeleporter=Portable Teleporter
 
 gui.teleporter.notReady=Not Ready

@@ -12,6 +12,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MItemStackFilter;
+import mekanism.common.miner.MMaterialFilter;
 import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
@@ -183,7 +184,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 3));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4));
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
@@ -349,6 +350,21 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
+				else if(filter instanceof MMaterialFilter)
+				{
+					MMaterialFilter itemFilter = (MMaterialFilter)filter;
+
+					if(itemFilter.materialItem != null)
+					{
+						GL11.glPushMatrix();
+						GL11.glEnable(GL11.GL_LIGHTING);
+						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						GL11.glDisable(GL11.GL_LIGHTING);
+						GL11.glPopMatrix();
+					}
+
+					fontRenderer.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+				}
 			}
 		}
 
@@ -392,6 +408,10 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				else if(filter instanceof MOreDictFilter)
 				{
 					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 195, 96, 29);
+				}
+				else if(filter instanceof MMaterialFilter)
+				{
+					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 224, 96, 29);
 				}
 			}
 		}
@@ -543,6 +563,21 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		for(MinerFilter filter : tileEntity.filters)
 		{
 			if(filter instanceof MOreDictFilter)
+			{
+				list.add(filter);
+			}
+		}
+
+		return list;
+	}
+	
+	public ArrayList getMaterialFilters()
+	{
+		ArrayList list = new ArrayList();
+
+		for(MinerFilter filter : tileEntity.filters)
+		{
+			if(filter instanceof MMaterialFilter)
 			{
 				list.add(filter);
 			}
