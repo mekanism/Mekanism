@@ -5,11 +5,11 @@ import mekanism.api.EnumColor;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.miner.MItemStackFilter;
+import mekanism.common.miner.MMaterialFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
+import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketNewFilter;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -28,9 +28,9 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 	public boolean isNew = false;
 
-	public MItemStackFilter origFilter;
+	public MMaterialFilter origFilter;
 
-	public MItemStackFilter filter = new MItemStackFilter();
+	public MMaterialFilter filter = new MMaterialFilter();
 
 	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 
@@ -41,8 +41,8 @@ public class GuiMMaterialFilter extends GuiMekanism
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
-		origFilter = (MItemStackFilter)tileEntity.filters.get(index);
-		filter = ((MItemStackFilter)tileEntity.filters.get(index)).clone();
+		origFilter = (MMaterialFilter)tileEntity.filters.get(index);
+		filter = ((MMaterialFilter)tileEntity.filters.get(index)).clone();
 	}
 
 	public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
@@ -78,7 +78,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			if(filter.itemType != null)
+			if(filter.materialItem != null)
 			{
 				if(isNew)
 				{
@@ -90,7 +90,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
-			else if(filter.itemType == null)
+			else if(filter.materialItem == null)
 			{
 				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.itemFilter.noItem");
 				ticker = 20;
@@ -111,18 +111,18 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
+		fontRenderer.drawString(MekanismUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
 
-		if(filter.itemType != null)
+		if(filter.materialItem != null)
 		{
-			fontRenderer.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
+			fontRenderer.drawString(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00);
 		}
 
-		if(filter.itemType != null)
+		if(filter.materialItem != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), filter.itemType, 12, 19);
+			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), filter.materialItem, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -208,14 +208,14 @@ public class GuiMMaterialFilter extends GuiMekanism
 					{
 						if(stack.itemID != Block.bedrock.blockID)
 						{
-							filter.itemType = stack.copy();
-							filter.itemType.stackSize = 1;
+							filter.materialItem = stack.copy();
+							filter.materialItem.stackSize = 1;
 						}
 					}
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
-					filter.itemType = null;
+					filter.materialItem = null;
 				}
 
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);

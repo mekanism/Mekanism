@@ -177,6 +177,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
+						else if(filter instanceof MMaterialFilter)
+						{
+							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							PacketHandler.sendPacket(Transmission.SERVER, new PacketDigitalMinerGui().setParams(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i));
+						}
 					}
 				}
 			}

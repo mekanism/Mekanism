@@ -57,6 +57,10 @@ public abstract class MinerFilter
 		{
 			filter = new MOreDictFilter();
 		}
+		else if(type == 2)
+		{
+			filter = new MMaterialFilter();
+		}
 
 		filter.read(dataStream);
 

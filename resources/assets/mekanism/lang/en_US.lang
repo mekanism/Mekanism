@@ -304,6 +304,7 @@ gui.itemFilter.min=Min
 gui.itemFilter.max=Max
 
 gui.materialFilter=Material Filter
+gui.materialFilter.details=Using material of
 
 gui.portableTeleporter=Portable Teleporter
 
