@@ -254,11 +254,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 1));
-		}
-		else if(guibutton.id == 1)
-		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 2));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 4));
 		}
 	}
 

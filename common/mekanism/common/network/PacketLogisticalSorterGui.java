@@ -3,10 +3,11 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiTItemStackFilter;
 import mekanism.client.gui.GuiLogisticalSorter;
+import mekanism.client.gui.GuiTFilterSelect;
+import mekanism.client.gui.GuiTItemStackFilter;
+import mekanism.client.gui.GuiTMaterialFilter;
 import mekanism.client.gui.GuiTOreDictFilter;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -127,7 +128,11 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		{
 			container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
-		else if(guiType == 1 || guiType == 2)
+		else if(guiType == 4)
+		{
+			container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
+		}
+		else if(guiType == 1 || guiType == 2 || guiType == 3)
 		{
 			container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
@@ -156,6 +161,10 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		{
 			return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
 		}
+		else if(type == 4)
+		{
+			return new GuiTFilterSelect(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+		}
 		else {
 			if(packetType == SorterGuiPacket.CLIENT)
 			{
@@ -167,6 +176,10 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 				{
 					return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
 				}
+				else if(type == 3)
+				{
+					return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+				}
 			}
 			else if(packetType == SorterGuiPacket.CLIENT_INDEX)
 			{
@@ -177,6 +190,10 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 				else if(type == 2)
 				{
 					return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z), index);
+				}
+				else if(type == 3)
+				{
+					return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z), index);
 				}
 			}
 		}

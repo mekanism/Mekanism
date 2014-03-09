@@ -289,7 +289,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
