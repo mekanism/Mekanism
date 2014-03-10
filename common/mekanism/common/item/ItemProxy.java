@@ -87,10 +87,10 @@ public class ItemProxy extends Item
 		if (par3Entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) par3Entity;
-			for (Object o : player.inventoryContainer.inventorySlots)
+			for (int i = 0; i < player.inventoryContainer.inventorySlots.size(); i++)
 			{
-				Slot s = (Slot) o;
-				if (s.getStack() != null && s.getStack().getItem() == this)
+				Slot s = (Slot) player.inventoryContainer.inventorySlots.get(i);
+				if (s.getStack() != null && s.getStack().getItem() == this && s.slotNumber < player.inventoryContainer.inventorySlots.size())
 					player.inventory.decrStackSize(s.slotNumber, 64);
 			}
 		}
