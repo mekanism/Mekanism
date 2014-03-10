@@ -201,7 +201,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side)
 	{
-		if(!player.canPlayerEdit(x, y, z, side, stack) || getEnergy(stack) < HOE_USAGE)
+		if(!player.canPlayerEdit(x, y, z, side, stack) || (!player.capabilities.isCreativeMode && getEnergy(stack) < HOE_USAGE))
 		{
 			return false;
 		}
@@ -233,7 +233,12 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				}
 				else {
 					world.setBlock(x, y, z, block.blockID);
-					setEnergy(stack, getEnergy(stack)-HOE_USAGE);
+					
+					if(!player.capabilities.isCreativeMode)
+					{
+						setEnergy(stack, getEnergy(stack)-HOE_USAGE);
+					}
+					
 					return true;
 				}
 			}

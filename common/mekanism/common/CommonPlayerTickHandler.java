@@ -156,7 +156,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 	{
 		ItemStack stack = player.inventory.armorInventory[2];
 
-		if(stack != null)
+		if(stack != null && !player.capabilities.isCreativeMode)
 		{
 			if(stack.getItem() instanceof ItemJetpack)
 			{
