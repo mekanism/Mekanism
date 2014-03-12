@@ -365,6 +365,12 @@ tooltip.configurator.noLink=Kein Link
 tooltip.configurator.linkMsg=Verbunden mit
 tooltip.configurator.dim=Dimension
 
+tooltip.filterCard.got=Empfing Filterdaten von
+tooltip.filterCard.set=Injezierte Filterdaten vom Typ
+tooltip.filterCard.unequal=Ungleiche Filter-Dateiformate
+tooltip.filterCard.logisticalSorter=Logistischer Sortierer
+tooltip.filterCard.digitalMiner=Digitalbergbaugerät
+
 tooltip.balloon=Ballon
 
 tooltip.jetpack.regular=Regulär
