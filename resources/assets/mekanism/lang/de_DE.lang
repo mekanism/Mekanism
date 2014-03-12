@@ -33,6 +33,7 @@ item.Salt.name=Salz
 item.BrineBucket.name=Eimer mit Salzwasser
 item.FreeRunners.name=Freiläufer
 item.ArmoredJetpack.name=Panzer-Jetpack
+item.FilterCard.name=Filterkarte
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -250,6 +251,7 @@ gui.status=Status
 gui.autoEject=Auto-Auswerfen
 gui.itemstack=ItemStack
 gui.oredict=OreDict
+gui.material=Material
 gui.out=Out
 gui.noFluid=Keine Flüssigk.
 gui.empty=Leer
@@ -266,6 +268,8 @@ gui.on=An
 gui.off=Aus
 gui.filters=Filter
 gui.idle=Bereit
+gui.data=Daten
+gui.newFilter=Neuer Filter
 
 gui.chemicalInfuser.short=C. Infundierer
 gui.chemicalDissolutionChamber.short=C. Auflösungsk.
@@ -288,6 +292,8 @@ gui.factory.purifying=Purifizieren
 gui.factory.injecting=Injezieren
 gui.factory.autoSort=Auto-Sortieren
 
+gui.filterSelect.title=Neuen Filter kreieren
+
 gui.oredictFilter=OreDict-Filter
 gui.oredictFilter.noKey=Keine Kennung eingegeben
 gui.oredictFilter.sameKey=Selbes Kennwort
@@ -297,6 +303,9 @@ gui.itemFilter.noItem=Kein Item
 gui.itemFilter.details=ItemStack-Details
 gui.itemFilter.min=Min
 gui.itemFilter.max=Max
+
+gui.materialFilter=Materialfilter
+gui.materialFilter.details=Nutze Material von
 
 gui.portableTeleporter=Tragbarer Teleporter
 
