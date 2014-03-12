@@ -365,8 +365,8 @@ tooltip.configurator.noLink=Kein Link
 tooltip.configurator.linkMsg=Verbunden mit
 tooltip.configurator.dim=Dimension
 
-tooltip.filterCard.got=Empfing Filterdaten von
-tooltip.filterCard.set=Injezierte Filterdaten vom Typ
+tooltip.filterCard.got=Filterdaten von %s empfangen
+tooltip.filterCard.set=Filterdaten vom Typ %s injeziert
 tooltip.filterCard.unequal=Ungleiche Filter-Dateiformate
 tooltip.filterCard.logisticalSorter=Logistischer Sortierer
 tooltip.filterCard.digitalMiner=Digitalbergbaugerät
