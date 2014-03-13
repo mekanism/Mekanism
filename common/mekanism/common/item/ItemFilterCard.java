@@ -46,7 +46,7 @@ public class ItemFilterCard extends ItemMekanism
 					{
 						data.setString("dataType", ((IFilterAccess)tileEntity).getDataType());
 						setData(stack, data);
-						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.filterCard.got") + " " + EnumColor.INDIGO + MekanismUtils.localize(data.getString("dataType")));
+						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.filterCard.got").replaceAll("%s", EnumColor.INDIGO + MekanismUtils.localize(data.getString("dataType")) + EnumColor.GREY));
 					}
 					
 					return true;
@@ -56,7 +56,7 @@ public class ItemFilterCard extends ItemMekanism
 					if(((IFilterAccess)tileEntity).getDataType().equals(getDataType(stack)))
 					{
 						((IFilterAccess)tileEntity).setFilterData(getData(stack));
-						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + MekanismUtils.localize("tooltip.filterCard.set") + " " + EnumColor.INDIGO + MekanismUtils.localize(getDataType(stack)));
+						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + MekanismUtils.localize("tooltip.filterCard.set").replaceAll("%s", EnumColor.INDIGO + MekanismUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN));
 						setData(stack, null);
 					}
 					else {

@@ -365,8 +365,8 @@ tooltip.configurator.noLink=No link
 tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
 
-tooltip.filterCard.got=Retrieved filter data from
-tooltip.filterCard.set=Injected filter data of type
+tooltip.filterCard.got=Retrieved filter data from %s
+tooltip.filterCard.set=Injected filter data of type %s
 tooltip.filterCard.unequal=Unequal filter data formats
 tooltip.filterCard.logisticalSorter=Logistical Sorter
 tooltip.filterCard.digitalMiner=Digital Miner
