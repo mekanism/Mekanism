@@ -60,10 +60,10 @@ public class Chunk3D
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Coord4D &&
-				((Coord4D)obj).xCoord == xCoord &&
-				((Coord4D)obj).zCoord == zCoord &&
-				((Coord4D)obj).dimensionId == dimensionId;
+		return obj instanceof Chunk3D &&
+				((Chunk3D)obj).xCoord == xCoord &&
+				((Chunk3D)obj).zCoord == zCoord &&
+				((Chunk3D)obj).dimensionId == dimensionId;
 	}
 
 	@Override

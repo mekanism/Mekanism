@@ -3,13 +3,13 @@ package mekanism.client.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
-import mekanism.common.SideData;
 import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -26,6 +26,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiConfiguration extends GuiMekanism
 {
 	public Map<Integer, GuiPos> slotPosMap = new HashMap<Integer, GuiPos>();

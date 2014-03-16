@@ -336,6 +336,16 @@ public class GuiSeismicReader extends GuiScreen
 				seismicCalculation.add(SeismicType.BEDROCK);
 				continue;
 			}
+			else if(id == Block.waterStill.blockID || id == Block.waterMoving.blockID)
+			{
+				seismicCalculation.add(SeismicType.WATER);
+				continue;
+			}
+			else if(id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID)
+			{
+				seismicCalculation.add(SeismicType.LAVA);
+				continue;
+			}
 			
 			if(block instanceof IFluidBlock)
 			{

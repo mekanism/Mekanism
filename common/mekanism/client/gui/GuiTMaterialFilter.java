@@ -13,8 +13,8 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TMaterialFilter;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +25,10 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiTMaterialFilter extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;

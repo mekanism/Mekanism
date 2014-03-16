@@ -30,7 +30,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	
 	public TileEntitySeismicVibrator()
 	{
-		super("SeismicReader", MachineType.SEISMIC_VIBRATOR.baseEnergy);
+		super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.baseEnergy);
 		
 		inventory = new ItemStack[1];
 	}

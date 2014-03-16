@@ -28,21 +28,28 @@ public class ItemSeismicReader extends ItemEnergized
 	{
 		Chunk3D chunk = new Chunk3D(entityplayer);
 		
-		if(!world.isRemote)
+		if(getEnergy(itemstack) < ENERGY_USAGE && !entityplayer.capabilities.isCreativeMode)
 		{
-			if(getEnergy(itemstack) < ENERGY_USAGE)
+			if(!world.isRemote)
 			{
 				entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + MekanismUtils.localize("tooltip.seismicReader.needsEnergy"));
 			}
-			else if(!MekanismUtils.isChunkVibrated(chunk))
+			
+			return itemstack;
+		}
+		else if(!MekanismUtils.isChunkVibrated(chunk))
+		{
+			if(!world.isRemote)
 			{
 				entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + MekanismUtils.localize("tooltip.seismicReader.noVibrations"));
 			}
 			
-			if(!entityplayer.capabilities.isCreativeMode)
-			{
-				setEnergy(itemstack, getEnergy(itemstack)-ENERGY_USAGE);
-			}
+			return itemstack;
+		}
+		
+		if(!entityplayer.capabilities.isCreativeMode)
+		{
+			setEnergy(itemstack, getEnergy(itemstack)-ENERGY_USAGE);
 		}
 		
 		entityplayer.openGui(Mekanism.instance, 38, world, (int)entityplayer.posX, (int)entityplayer.posY, (int)entityplayer.posZ);
