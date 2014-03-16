@@ -56,6 +56,11 @@ public class PacketPortableTeleport implements IMekanismPacket
 						
 						item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
 						
+						if(player instanceof EntityPlayerMP)
+						{
+							((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
+						}
+						
 						if(world.provider.dimensionId != coords.dimensionId)
 						{
 							((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
