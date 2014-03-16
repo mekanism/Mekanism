@@ -78,6 +78,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
@@ -117,6 +118,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -217,6 +219,8 @@ public class Mekanism
 	public static Set<String> gasmaskOn = new HashSet<String>();
 	
 	public static Set<Coord4D> ic2Registered = new HashSet<Coord4D>();
+	
+	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
     
 	//Block IDs
     public static int basicBlockID;
@@ -262,6 +266,7 @@ public class Mekanism
 	public static Item FreeRunners;
 	public static ItemJetpack ArmoredJetpack;
 	public static Item FilterCard;
+	public static ItemSeismicReader SeismicReader;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -339,6 +344,7 @@ public class Mekanism
 	public static double chemicalDissolutionChamberUsage;
 	public static double chemicalWasherUsage;
 	public static double chemicalCrystalizerUsage;
+	public static double seismicVibratorUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -797,7 +803,7 @@ public class Mekanism
 		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", ITEM_ID++).getInt()).setUnlocalizedName("CompressedRedstone");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("EnergyUpgrade");
-		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", ITEM_ID++).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
+		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", ITEM_ID++).getInt(), 1000000).setUnlocalizedName("EnergyTablet");
 		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", ITEM_ID++).getInt()).setUnlocalizedName("Dictionary");
 		FilterCard = new ItemFilterCard(configuration.getItem("FilterCard", ITEM_ID++).getInt()).setUnlocalizedName("FilterCard");
 		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", ITEM_ID++).getInt()).setUnlocalizedName("ElectricBow");
@@ -805,6 +811,7 @@ public class Mekanism
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", ITEM_ID++).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", ITEM_ID++).getInt()).setUnlocalizedName("NetworkReader");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", ITEM_ID++).getInt()).setUnlocalizedName("WalkieTalkie");
+		SeismicReader = (ItemSeismicReader)new ItemSeismicReader(configuration.getItem("SeismicReader", ITEM_ID++).getInt()).setUnlocalizedName("SeismicReader");
 		AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", ITEM_ID++).getInt()).setUnlocalizedName("AtomicDisassembler");
 		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", ITEM_ID++).getInt()).setUnlocalizedName("GasMask");
 		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", ITEM_ID++).getInt()).setUnlocalizedName("ScubaTank");
@@ -866,6 +873,7 @@ public class Mekanism
 		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 		GameRegistry.registerItem(FilterCard, "FilterCard");
+		GameRegistry.registerItem(SeismicReader, "SeismicReader");
 	}
 	
 	/**
@@ -1055,6 +1063,7 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
+		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -1099,6 +1108,7 @@ public class Mekanism
 		ic2Registered.clear();
 		jetpackOn.clear();
 		gasmaskOn.clear();
+		activeVibrators.clear();
 		
 		TransporterManager.flowingStacks.clear();
 	}

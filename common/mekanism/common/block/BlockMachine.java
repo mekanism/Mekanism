@@ -53,6 +53,7 @@ import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
+import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
@@ -172,6 +173,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
+			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
 		}
 	}
 
@@ -437,6 +440,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 					return icons[meta][2];
 				}
 			}
+			else if(meta == 9)
+			{
+				if(side == 3)
+				{
+					return icons[meta][1];
+				}
+				else {
+					return icons[meta][0];
+				}
+			}
 		}
 
 		return null;
@@ -568,6 +581,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 				}
 				else {
 					return icons[metadata][2];
+				}
+			}
+			else if(metadata == 9)
+			{
+				if(side == tileEntity.facing)
+				{
+					return icons[metadata][1];
+				}
+				else {
+					return icons[metadata][0];
 				}
 			}
 		}
@@ -1102,7 +1125,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		PRECISION_SAWMILL(Mekanism.machineBlock2ID, 5, "PrecisionSawmill", 34, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, false, true),
 		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.machineBlock2ID, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, false),
 		CHEMICAL_WASHER(Mekanism.machineBlock2ID, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, false),
-		CHEMICAL_CRYSTALIZER(Mekanism.machineBlock2ID, 8, "ChemicalCrystalizer", 37, 20000, TileEntityChemicalCrystalizer.class, true, false);
+		CHEMICAL_CRYSTALIZER(Mekanism.machineBlock2ID, 8, "ChemicalCrystalizer", 37, 20000, TileEntityChemicalCrystalizer.class, true, false),
+		SEISMIC_VIBRATOR(Mekanism.machineBlock2ID, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, false, false);
 
 		public int typeId;
 		public int meta;

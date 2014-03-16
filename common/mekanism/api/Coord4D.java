@@ -278,7 +278,16 @@ public class Coord4D
 	 */
 	public Chunk getChunk(World world)
 	{
-		return world.getChunkFromBlockCoords(xCoord >> 4, zCoord >> 4);
+		return world.getChunkFromBlockCoords(xCoord, zCoord);
+	}
+	
+	/**
+	 * Gets the Chunk3D object with chunk coordinates correlating to this Coord4D's location
+	 * @return Chunk3D with correlating chunk coordinates.
+	 */
+	public Chunk3D getChunk3D()
+	{
+		return new Chunk3D(this);
 	}
 
 	/**
@@ -300,7 +309,7 @@ public class Coord4D
 	@Override
 	public String toString()
 	{
-		return "[Object3D: " + xCoord + ", " + yCoord + ", " + zCoord + "]";
+		return "[Coord4D: " + xCoord + ", " + yCoord + ", " + zCoord + ", dim=" + dimensionId + "]";
 	}
 
 	@Override

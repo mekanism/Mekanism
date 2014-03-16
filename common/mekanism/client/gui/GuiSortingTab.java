@@ -9,10 +9,12 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiSortingTab extends GuiElement
 {
 	public GuiSortingTab(GuiMekanism gui, TileEntity tile, ResourceLocation def)

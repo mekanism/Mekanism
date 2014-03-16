@@ -1,14 +1,9 @@
 package mekanism.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.miner.MItemStackFilter;
-import mekanism.common.miner.MOreDictFilter;
-import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -17,6 +12,12 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiMFilterSelect extends GuiMekanism
 {
 	public TileEntityDigitalMiner tileEntity;

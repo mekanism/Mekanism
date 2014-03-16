@@ -22,7 +22,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
 
-	public ItemEnergized(int id, double maxElectricity, float voltage)
+	public ItemEnergized(int id, double maxElectricity)
 	{
 		super(id);
 		MAX_ELECTRICITY = maxElectricity;

@@ -14,7 +14,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 {
 	public ItemPortableTeleporter(int id)
 	{
-		super(id, 1000000, 120);
+		super(id, 1000000);
 	}
 
 	@Override

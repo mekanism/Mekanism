@@ -16,7 +16,7 @@ public class ItemNetworkReader extends ItemEnergized
 
 	public ItemNetworkReader(int id)
 	{
-		super(id, 60000, 120);
+		super(id, 60000);
 	}
 
 	@Override

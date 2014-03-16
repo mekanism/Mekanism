@@ -14,6 +14,10 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiTFilterSelect extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;

@@ -3,6 +3,7 @@ package mekanism.client;
 import java.io.File;
 import java.util.HashMap;
 
+import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiChemicalCrystalizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -38,6 +39,8 @@ import mekanism.client.gui.GuiRobitRepair;
 import mekanism.client.gui.GuiRobitSmelting;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSalinationController;
+import mekanism.client.gui.GuiSeismicReader;
+import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPartTransmitter;
@@ -82,6 +85,7 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
@@ -117,6 +121,7 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySalinationController;
 import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
+import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -447,6 +452,15 @@ public class ClientProxy extends CommonProxy
 				return new GuiChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
 			case 37:
 				return new GuiChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
+			case 38:
+				ItemStack itemStack1 = player.getCurrentEquippedItem().copy();
+
+				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
+				{
+					return new GuiSeismicReader(new Coord4D(x, y, z, world.provider.dimensionId), itemStack1);
+				}
+			case 39:
+				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 		}
 
 		return null;

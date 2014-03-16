@@ -17,7 +17,7 @@ public class ItemElectricBow extends ItemEnergized
 {
 	public ItemElectricBow(int id)
 	{
-		super(id, 120000, 120);
+		super(id, 120000);
 	}
 
 	@Override

@@ -62,6 +62,7 @@ public class MekanismClient extends Mekanism
 
 		Mekanism.jetpackOn.clear();
 		Mekanism.gasmaskOn.clear();
+		Mekanism.activeVibrators.clear();
 
 		Mekanism.proxy.loadConfiguration();
 

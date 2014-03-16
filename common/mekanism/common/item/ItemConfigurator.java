@@ -34,7 +34,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 
 	public ItemConfigurator(int id)
 	{
-		super(id, 60000, 120);
+		super(id, 60000);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -1264,6 +1265,24 @@ public final class MekanismUtils
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Whether or not the provided chunk is being vibrated by a Seismic Vibrator.
+	 * @param chunk - chunk to check
+	 * @return if the chunk is being vibrated
+	 */
+	public static boolean isChunkVibrated(Chunk3D chunk)
+	{
+		for(Coord4D coord : Mekanism.activeVibrators)
+		{
+			if(coord.getChunk3D().equals(chunk))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public static enum ResourceType

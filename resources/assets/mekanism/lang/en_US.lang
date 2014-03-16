@@ -34,6 +34,7 @@ item.BrineBucket.name=Brine Bucket
 item.FreeRunners.name=Free Runners
 item.ArmoredJetpack.name=Armored Jetpack
 item.FilterCard.name=Filter Card
+item.SeismicReader.name=Seismic Reader
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -91,6 +92,7 @@ tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
 tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
 tile.MachineBlock2.ChemicalCrystalizer.name=Chemical Crystalizer
+tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 
 //Infuse types
 infuse.carbon=Carbon
@@ -270,6 +272,7 @@ gui.filters=Filters
 gui.idle=Idle
 gui.data=Data
 gui.newFilter=New Filter
+gui.energy=Energy
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
@@ -291,6 +294,11 @@ gui.factory.combining=Combining
 gui.factory.purifying=Purifying
 gui.factory.injecting=Injecting
 gui.factory.autoSort=Auto-sort
+
+gui.seismicReader.short=S. Reader
+gui.seismicReader.solids=Solids
+gui.seismicReader.fluids=Fluids
+gui.seismicReader.reading=Reading
 
 gui.filterSelect.title=Create New Filter
 
@@ -376,6 +384,9 @@ tooltip.balloon=Balloon
 tooltip.jetpack.regular=Regular
 tooltip.jetpack.hover=Hover
 tooltip.jetpack.disabled=Disabled
+
+tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
+tooltip.seismicReader.noVibrations=Unable to discover any vibrations
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.

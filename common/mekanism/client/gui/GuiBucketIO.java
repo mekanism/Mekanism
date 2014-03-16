@@ -1,20 +1,16 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
-
-import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class GuiBucket extends GuiElement
+@SideOnly(Side.CLIENT)
+public class GuiBucketIO extends GuiElement
 {
-	public GuiBucket(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	public GuiBucketIO(GuiMekanism gui, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiBucket.png"), gui, tile, def);
 	}

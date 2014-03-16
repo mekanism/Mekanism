@@ -1,13 +1,15 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiEnergyInfo extends GuiElement
 {
 	public IInfoHandler infoHandler;

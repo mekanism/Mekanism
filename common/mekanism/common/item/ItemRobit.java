@@ -21,7 +21,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 {
 	public ItemRobit(int id)
 	{
-		super(id, 100000, 120);
+		super(id, 100000);
 	}
 
 	@Override

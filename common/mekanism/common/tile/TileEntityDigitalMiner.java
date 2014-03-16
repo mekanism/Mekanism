@@ -230,7 +230,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				}
 			}
 
-			if(doEject && delayTicks == 0 && getTopEject(false, null) != null && getEjectInv() != null)
+			if(doEject && delayTicks == 0 && getTopEject(false, null) != null && getEjectInv() != null && getEjectTile() != null)
 			{
 				if(getEjectInv() instanceof IInventory)
 				{
