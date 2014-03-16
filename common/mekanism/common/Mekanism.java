@@ -681,6 +681,7 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 2), new ItemStack(Block.stoneBrick, 1, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 1), new ItemStack(Block.stoneBrick, 1, 0));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreNetherQuartz), new ItemStack(Item.netherQuartz, 2));
 		
 		//Combiner recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 16), new ItemStack(Block.oreRedstone));
@@ -748,7 +749,7 @@ public class Mekanism
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
 		
-		//Chemical Washer Recipes
+		//T4 Processing Recipes
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
 			if(gas instanceof OreGas && !((OreGas)gas).isClean())
@@ -759,6 +760,9 @@ public class Mekanism
 				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
 			}
 		}
+		
+		//Chemical Dissolution Chamber Recipes
+		RecipeHandler.addChemicalDissolutionChamberRecipe(new ItemStack(Block.obsidian), new GasStack(GasRegistry.getGas("obsidian"), 1000));
 
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
