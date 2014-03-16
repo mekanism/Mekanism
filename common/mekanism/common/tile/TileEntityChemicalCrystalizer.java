@@ -85,7 +85,7 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {2}));
 
 		inventory = new ItemStack[3];
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(1));
+		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(2));
 	}
 
 	@Override
