@@ -61,6 +61,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 		{
 			CableUtils.emit(this);
 		}
+		
+		int newScale = getScaledEnergyLevel(100);
+
+		if(newScale != prevScale)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+		}
+
+		prevScale = newScale;
 	}
 
 	@Override
@@ -235,18 +244,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 		{
 			onInventoryChanged();
 			currentRedstoneLevel = newRedstoneLevel;
-		}
-
-		if(!worldObj.isRemote)
-		{
-			int newScale = getScaledEnergyLevel(100);
-
-			if(newScale != prevScale)
-			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
-			}
-
-			prevScale = newScale;
 		}
 	}
 

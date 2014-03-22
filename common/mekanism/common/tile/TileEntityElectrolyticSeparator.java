@@ -85,7 +85,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 
-					if(fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
+					if(fluid != null && fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
 					{
 						fluidTank.fill(fluid, true);
 
