@@ -209,6 +209,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
+			prevTransferAmount = 0;
+
 			if(transferDelay == 0)
 			{
 				didTransfer = false;
@@ -236,7 +238,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			if(fluidStored != null)
 			{
-				fluidStored.amount -= tickEmit(fluidStored, true);
+				prevTransferAmount = tickEmit(fluidStored, true);
+				fluidStored.amount -= prevTransferAmount;
 
 				if(fluidStored != null && fluidStored.amount <= 0)
 				{
@@ -470,6 +473,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getFlow()
 	{
-		return Integer.toString(prevTransferAmount);
+		return Integer.toString(prevTransferAmount) + "mB/t";
 	}
 }
