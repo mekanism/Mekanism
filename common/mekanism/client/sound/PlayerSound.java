@@ -8,20 +8,20 @@ public abstract class PlayerSound extends Sound
 {
 	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
-	
+
 	public PlayerSound(String id, String sound, EntityPlayer entity)
 	{
 		super(id, sound, entity, new Pos3D(entity));
-		
+
 		player = entity;
 	}
-	
+
 	@Override
 	public float getMultiplier()
 	{
 		return super.getMultiplier()*0.3F;
 	}
-	
+
 	@Override
 	public boolean update(World world)
 	{
@@ -37,10 +37,10 @@ public abstract class PlayerSound extends Sound
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public Pos3D getLocation()
 	{

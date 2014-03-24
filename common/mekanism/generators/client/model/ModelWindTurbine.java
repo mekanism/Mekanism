@@ -4,7 +4,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
-public class ModelWindTurbine extends ModelBase 
+public class ModelWindTurbine extends ModelBase
 {
 	ModelRenderer Base;
 	ModelRenderer TowerFront;
@@ -21,7 +21,7 @@ public class ModelWindTurbine extends ModelBase
 	ModelRenderer BladeBaseB;
 	ModelRenderer BladeBaseA;
 
-	public ModelWindTurbine() 
+	public ModelWindTurbine()
 	{
 		textureWidth = 128;
 		textureHeight = 64;
@@ -111,7 +111,7 @@ public class ModelWindTurbine extends ModelBase
 		BladeBaseA.mirror = true;
 		setRotation(BladeBaseA, 0F, 0F, getRotation(240));
 	}
-	
+
 	public void render(float size, int angle)
 	{
 		Base.render(size);
@@ -132,12 +132,12 @@ public class ModelWindTurbine extends ModelBase
 		setRotation(BladeBaseA, 0.0F, 0.0F, getRotation(getAbsoluteAngle(240 + angle)));
 		BladeBaseA.render(size);
 	}
-	
+
 	public float getRotation(int angle)
 	{
 		return ((float)angle/(float)180)*(float)Math.PI;
 	}
-	
+
 	public int getAbsoluteAngle(int angle)
 	{
 		return angle % 360;

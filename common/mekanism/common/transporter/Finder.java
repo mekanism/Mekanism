@@ -4,12 +4,15 @@ import java.util.List;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public abstract class Finder
 {
 	public abstract boolean modifies(ItemStack stack);
-	
+
 	public static class FirstFinder extends Finder
 	{
 		@Override
@@ -18,26 +21,26 @@ public abstract class Finder
 			return true;
 		}
 	}
-	
+
 	public static class OreDictFinder extends Finder
 	{
 		public String oreDictName;
-		
+
 		public OreDictFinder(String name)
 		{
 			oreDictName = name;
 		}
-		
+
 		@Override
 		public boolean modifies(ItemStack stack)
 		{
 			List<String> oreKeys = MekanismUtils.getOreDictName(stack);
-			
+
 			if(oreKeys.isEmpty())
 			{
 				return false;
 			}
-			
+
 			for(String oreKey : oreKeys)
 			{
 				if(oreDictName.equals(oreKey) || oreDictName.equals("*"))
@@ -66,24 +69,45 @@ public abstract class Finder
 					}
 				}
 			}
-			
+
 			return false;
 		}
 	}
-	
+
 	public static class ItemStackFinder extends Finder
 	{
 		public ItemStack itemType;
-		
+
 		public ItemStackFinder(ItemStack type)
 		{
 			itemType = type;
+		}
+
+		@Override
+		public boolean modifies(ItemStack stack)
+		{
+			return StackUtils.equalsWildcard(itemType, stack);
+		}
+	}
+	
+	public static class MaterialFinder extends Finder
+	{
+		public Material materialType;
+		
+		public MaterialFinder(Material type)
+		{
+			materialType = type;
 		}
 		
 		@Override
 		public boolean modifies(ItemStack stack)
 		{
-			return StackUtils.equalsWildcard(itemType, stack);
+			if(stack == null || !(stack.getItem() instanceof ItemBlock))
+			{
+				return false;
+			}
+			
+			return Block.blocksList[stack.itemID].blockMaterial == materialType;
 		}
 	}
 }

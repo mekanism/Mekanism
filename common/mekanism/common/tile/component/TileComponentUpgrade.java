@@ -15,30 +15,30 @@ public class TileComponentUpgrade implements ITileComponent
 {
 	/** How long it takes this machine to install an upgrade. */
 	public static int UPGRADE_TICKS_REQUIRED = 40;
-	
+
 	/** The inventory slot the upgrade slot of this component occupies. */
 	private int upgradeSlot;
-	
+
 	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
-	
+
 	/** This machine's speed multiplier. */
 	public int speedMultiplier;
-	
+
 	/** This machine's energy multiplier. */
 	public int energyMultiplier;
-	
+
 	/** TileEntity implementing this component. */
 	public TileEntityContainerBlock tileEntity;
-	
+
 	public TileComponentUpgrade(TileEntityContainerBlock tile, int slot)
 	{
 		tileEntity = tile;
 		upgradeSlot = slot;
-		
+
 		tile.components.add(this);
 	}
-	
+
 	@Override
 	public void tick()
 	{
@@ -56,9 +56,9 @@ public class TileComponentUpgrade implements ITileComponent
 					{
 						upgradeTicks = 0;
 						energyMultiplier++;
-						
+
 						tileEntity.inventory[upgradeSlot].stackSize--;
-						
+
 						if(tileEntity.inventory[upgradeSlot].stackSize == 0)
 						{
 							tileEntity.inventory[upgradeSlot] = null;
@@ -77,14 +77,14 @@ public class TileComponentUpgrade implements ITileComponent
 					{
 						upgradeTicks = 0;
 						speedMultiplier++;
-						
+
 						tileEntity.inventory[upgradeSlot].stackSize--;
-						
+
 						if(tileEntity.inventory[upgradeSlot].stackSize == 0)
 						{
 							tileEntity.inventory[upgradeSlot] = null;
 						}
-						
+
 						tileEntity.onInventoryChanged();
 					}
 				}
@@ -97,19 +97,19 @@ public class TileComponentUpgrade implements ITileComponent
 			}
 		}
 	}
-	
+
 	public int getScaledUpgradeProgress(int i)
 	{
 		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
 	}
-	
+
 	@Override
 	public void read(NBTTagCompound nbtTags)
 	{
-    	speedMultiplier = nbtTags.getInteger("speedMultiplier");
-    	energyMultiplier = nbtTags.getInteger("energyMultiplier");
+		speedMultiplier = nbtTags.getInteger("speedMultiplier");
+		energyMultiplier = nbtTags.getInteger("energyMultiplier");
 	}
-	
+
 	@Override
 	public void read(ByteArrayDataInput dataStream)
 	{
@@ -117,14 +117,14 @@ public class TileComponentUpgrade implements ITileComponent
 		energyMultiplier = dataStream.readInt();
 		upgradeTicks = dataStream.readInt();
 	}
-	
+
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
-        nbtTags.setInteger("speedMultiplier", speedMultiplier);
-        nbtTags.setInteger("energyMultiplier", energyMultiplier);
+		nbtTags.setInteger("speedMultiplier", speedMultiplier);
+		nbtTags.setInteger("energyMultiplier", energyMultiplier);
 	}
-	
+
 	@Override
 	public void write(ArrayList data)
 	{

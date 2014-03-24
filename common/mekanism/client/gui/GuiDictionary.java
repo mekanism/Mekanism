@@ -13,44 +13,48 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiDictionary extends GuiMekanism
 {
-    public ItemStack itemType;
-    
-    public List<String> oreDictNames;
-    
+	public ItemStack itemType;
+
+	public List<String> oreDictNames;
+
 	public GuiDictionary(InventoryPlayer inventory)
 	{
 		super(new ContainerDictionary(inventory));
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-		
-        fontRenderer.drawString(MekanismUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
+
+		fontRenderer.drawString(MekanismUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
-        
-        if(itemType != null)
-        {
-        	if(!oreDictNames.isEmpty())
-        	{
-        		int currentY = 57;
-        		
-        		for(String name : oreDictNames)
-        		{
-        			fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + name, 9, currentY, 0x00CD00);
-        			currentY += 9;
-        		}
-        	}
-        	else {
-           		fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.noKey"), 9, 57, 0x00CD00);
-        	}
-        }
-        
-    	if(itemType != null)
+
+		if(itemType != null)
+		{
+			if(!oreDictNames.isEmpty())
+			{
+				int currentY = 57;
+
+				for(String name : oreDictNames)
+				{
+					fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + name, 9, currentY, 0x00CD00);
+					currentY += 9;
+				}
+			}
+			else {
+				fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.noKey"), 9, 57, 0x00CD00);
+			}
+		}
+
+		if(itemType != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
@@ -58,40 +62,40 @@ public class GuiDictionary extends GuiMekanism
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
-		
+
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
-	
+
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-    {
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+	{
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-		
+
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDictionary.png"));
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
-        int xAxis = mouseX - guiWidth;
- 		int yAxis = mouseY - guiHeight;
-        
- 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 23 && yAxis <= 39)
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+
+		int xAxis = mouseX - guiWidth;
+		int yAxis = mouseY - guiHeight;
+
+		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 23 && yAxis <= 39)
 		{
 			GL11.glPushMatrix();
-	        GL11.glDisable(GL11.GL_LIGHTING);
-	        GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        
-	        int x = guiWidth + 80;
-	        int y = guiHeight + 23;
-	        drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
-	        
-	        GL11.glEnable(GL11.GL_LIGHTING);
-	        GL11.glEnable(GL11.GL_DEPTH_TEST);
-	        GL11.glPopMatrix();
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+			int x = guiWidth + 80;
+			int y = guiHeight + 23;
+			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glPopMatrix();
 		}
-    }
-    
+	}
+
 	@Override
 	public boolean doesGuiPauseGame()
 	{
@@ -109,35 +113,35 @@ public class GuiDictionary extends GuiMekanism
 			if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 			{
 				Slot hovering = null;
-				
-		        for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)
-		        {
-		            Slot slot = (Slot)inventorySlots.inventorySlots.get(i);
-		
-		            if(isMouseOverSlot(slot, mouseX, mouseY))
-		            {
-		            	hovering = slot;
-		            	break;
-		            }
-		        }
-		        
-		        if(hovering != null)
-		        {
-		        	ItemStack stack = hovering.getStack();
-		        	
-		        	if(stack != null)
-		        	{
-		        		itemType = stack.copy();
+
+				for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)
+				{
+					Slot slot = (Slot)inventorySlots.inventorySlots.get(i);
+
+					if(isMouseOverSlot(slot, mouseX, mouseY))
+					{
+						hovering = slot;
+						break;
+					}
+				}
+
+				if(hovering != null)
+				{
+					ItemStack stack = hovering.getStack();
+
+					if(stack != null)
+					{
+						itemType = stack.copy();
 						itemType.stackSize = 1;
-						
+
 						oreDictNames = MekanismUtils.getOreDictName(itemType);
 						mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-						
-		        		return;
-		        	}
-		        }
+
+						return;
+					}
+				}
 			}
-	        
+
 			if(xAxis >= 80 && xAxis <= 96 && yAxis >= 23 && yAxis <= 39)
 			{
 				ItemStack stack = mc.thePlayer.inventory.getItemStack();
@@ -146,7 +150,7 @@ public class GuiDictionary extends GuiMekanism
 				{
 					itemType = stack.copy();
 					itemType.stackSize = 1;
-					
+
 					oreDictNames = MekanismUtils.getOreDictName(itemType);
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
@@ -158,7 +162,7 @@ public class GuiDictionary extends GuiMekanism
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}
-		
+
 		super.mouseClicked(mouseX, mouseY, button);
 	}
 }

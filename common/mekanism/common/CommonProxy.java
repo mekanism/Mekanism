@@ -30,6 +30,7 @@ import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerSalinationController;
+import mekanism.common.inventory.container.ContainerSeismicVibrator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -68,6 +69,7 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySalinationController;
 import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
+import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -91,7 +93,7 @@ public class CommonProxy
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */
-	public void registerSpecialTileEntities() 
+	public void registerSpecialTileEntities()
 	{
 		GameRegistry.registerTileEntity(TileEntityEnrichmentChamber.class, "EnrichmentChamber");
 		GameRegistry.registerTileEntity(TileEntityOsmiumCompressor.class, "OsmiumCompressor");
@@ -128,19 +130,19 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
 		GameRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer");
 	}
-	
+
 	/**
 	 * Registers a client-side sound, assigned to a TileEntity.
 	 * @param obj - TileEntity who is registering the sound
 	 */
 	public void registerSound(Object obj) {}
-	
+
 	/**
 	 * Unregisters a client-side sound, assigned to a TileEntity;
 	 * @param tileEntity - TileEntity who is unregistering the sound
 	 */
 	public void unregisterSound(TileEntity tileEntity) {}
-	
+
 	/**
 	 * Handles an ELECTRIC_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
 	 * @param entityplayer - player the packet was sent from
@@ -152,22 +154,22 @@ public class CommonProxy
 	 * @param z - z coordinate
 	 */
 	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z) {}
-	
+
 	/**
 	 * Register and load client-only render information.
 	 */
 	public void registerRenderInformation() {}
-	
+
 	/**
 	 * Gets the armor index number from ClientProxy.
 	 * @param string - armor indicator
 	 * @return armor index number
 	 */
-	public int getArmorIndex(String string) 
+	public int getArmorIndex(String string)
 	{
 		return 0;
 	}
-	
+
 	/**
 	 * Set and load the mod's common configuration properties.
 	 */
@@ -180,41 +182,41 @@ public class CommonProxy
 		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.cardboardBoxID = Mekanism.configuration.getBlock("CardboardBox", Mekanism.BLOCK_ID++).getInt();
-	  	Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", Mekanism.BLOCK_ID++).getInt();
-	  	Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", Mekanism.BLOCK_ID++).getInt();
-	  	Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
-	  	Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
-	  	
-	  	Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
-	  	Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);
-	  	Mekanism.tinGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationEnabled", true).getBoolean(true);
-	  	Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(false);
-	  	Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(false);
-	  	Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);
-	  	Mekanism.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean(true);
-	  	Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(false);
-	  	Mekanism.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean(true);
-	  	Mekanism.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", true).getBoolean(true);
-	  	Mekanism.forceBuildcraft = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ForceBuildcraftPower", false).getBoolean(false);
-	  	Mekanism.cardboardSpawners = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true).getBoolean(true);
-	  	Mekanism.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();
-	  	Mekanism.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
-	  	Mekanism.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();
-	  	Mekanism.osmiumGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationAmount", 12).getInt();
-	  	Mekanism.copperGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationAmount", 16).getInt();
-	  	Mekanism.tinGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationAmount", 14).getInt();
-	  	Mekanism.FROM_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToEU", 10D).getDouble(10D);
-	  	Mekanism.TO_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EUToJoules", .1D).getDouble(.1D);
-	  	Mekanism.FROM_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToMJ", 25D).getDouble(25D);
-	  	Mekanism.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04D).getDouble(.04D);
-	  	Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
-	  	Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123).getInt();
+		Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
+
+		Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
+		Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);
+		Mekanism.tinGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationEnabled", true).getBoolean(true);
+		Mekanism.disableBCSteelCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCSteelCrafting", false).getBoolean(false);
+		Mekanism.disableBCBronzeCrafting = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableBCBronzeCrafting", false).getBoolean(false);
+		Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);
+		Mekanism.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean(true);
+		Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(false);
+		Mekanism.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean(true);
+		Mekanism.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", true).getBoolean(true);
+		Mekanism.forceBuildcraft = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ForceBuildcraftPower", false).getBoolean(false);
+		Mekanism.cardboardSpawners = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true).getBoolean(true);
+		Mekanism.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();
+		Mekanism.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
+		Mekanism.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();
+		Mekanism.osmiumGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationAmount", 12).getInt();
+		Mekanism.copperGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationAmount", 16).getInt();
+		Mekanism.tinGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationAmount", 14).getInt();
+		Mekanism.FROM_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToEU", 10D).getDouble(10D);
+		Mekanism.TO_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EUToJoules", .1D).getDouble(.1D);
+		Mekanism.FROM_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToMJ", 25D).getDouble(25D);
+		Mekanism.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04D).getDouble(.04D);
+		Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
+		Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
-	  	Mekanism.maxUpgradeMultiplier = Math.max(1, Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10).getInt());
-	  	
-	  	Mekanism.TO_TE = Mekanism.TO_BC*10;
-	  	Mekanism.FROM_TE = Mekanism.FROM_BC/10;
-	  	
+		Mekanism.maxUpgradeMultiplier = Math.max(1, Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10).getInt());
+
+		Mekanism.TO_TE = Mekanism.TO_BC*10;
+		Mekanism.FROM_TE = Mekanism.FROM_BC/10;
+
 		if(Mekanism.cardboardSpawners)
 		{
 			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
@@ -222,7 +224,7 @@ public class CommonProxy
 		else {
 			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
 		}
-	  	
+
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
 		Mekanism.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble(100D);
 		Mekanism.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50D).getDouble(50D);
@@ -241,9 +243,10 @@ public class CommonProxy
 		Mekanism.chemicalDissolutionChamberUsage = Mekanism.configuration.get("usage", "ChemicalDissolutionChamberUsage", 400D).getDouble(400D);
 		Mekanism.chemicalWasherUsage = Mekanism.configuration.get("usage", "ChemicalWasherUsage", 200D).getDouble(200D);
 		Mekanism.chemicalCrystalizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystalizerUsage", 400D).getDouble(400D);
-	  	Mekanism.configuration.save();
+		Mekanism.seismicVibratorUsage = Mekanism.configuration.get("usage", "SeismicVibratorUsage", 50D).getDouble(50D);
+		Mekanism.configuration.save();
 	}
-	
+
 	/**
 	 * Set up and load the utilities this mod uses.
 	 */
@@ -252,30 +255,30 @@ public class CommonProxy
 		TickRegistry.registerTickHandler(new CommonPlayerTickHandler(), Side.SERVER);
 		TickRegistry.registerTickHandler(new CommonWorldTickHandler(), Side.SERVER);
 	}
-	
+
 	/**
 	 * Set up and load the sound handler.
 	 */
 	public void loadSoundHandler() {}
-	
+
 	/**
 	 * Unload the sound handler.
 	 */
 	public void unloadSoundHandler() {}
-	
-	/** 
-	 * Whether or not the game is paused. 
+
+	/**
+	 * Whether or not the game is paused.
 	 */
-	public boolean isPaused() 
+	public boolean isPaused()
 	{
 		return false;
 	}
-	
+
 	/**
 	 * Does the Dynamic Tank creation animation, starting from the rendering block.
 	 */
 	public void doTankAnimation(TileEntityDynamicTank tileEntity) {}
-	
+
 	/**
 	 * Get the actual interface for a GUI. Client-only.
 	 * @param ID - gui ID
@@ -286,11 +289,11 @@ public class CommonProxy
 	 * @param z - gui's z position
 	 * @return the GuiScreen of the GUI
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Get the container for a GUI. Common.
 	 * @param ID - gui ID
@@ -301,10 +304,10 @@ public class CommonProxy
 	 * @param z - gui's z position
 	 * @return the Container of the GUI
 	 */
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z) 
+	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
+
 		switch(ID)
 		{
 			case 0:
@@ -343,7 +346,7 @@ public class CommonProxy
 				return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
 			case 21:
 				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
-				
+
 				if(robit != null)
 				{
 					return new ContainerRobitMain(player.inventory, robit);
@@ -352,14 +355,14 @@ public class CommonProxy
 				return new ContainerRobitCrafting(player.inventory, world);
 			case 23:
 				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
-				
+
 				if(robit1 != null)
 				{
 					return new ContainerRobitInventory(player.inventory, robit1);
 				}
 			case 24:
 				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
-				
+
 				if(robit2 != null)
 				{
 					return new ContainerRobitSmelting(player.inventory, robit2);
@@ -390,23 +393,25 @@ public class CommonProxy
 				return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
 			case 37:
 				return new ContainerChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
+			case 39:
+				return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 		}
-		
+
 		return null;
 	}
-	
+
 	public void preInit() {}
-	
+
 	public double getReach(EntityPlayer player)
 	{
 		if(player instanceof EntityPlayerMP)
 		{
 			return ((EntityPlayerMP)player).theItemInWorldManager.getBlockReachDistance();
 		}
-		
+
 		return 0;
 	}
-	
+
 	/**
 	 * Gets the Minecraft base directory.
 	 * @return base directory
@@ -415,8 +420,8 @@ public class CommonProxy
 	{
 		return (File)FMLInjectionData.data()[6];
 	}
-	
-	public void onConfigSync() 
+
+	public void onConfigSync()
 	{
 		if(Mekanism.cardboardSpawners)
 		{
@@ -425,7 +430,7 @@ public class CommonProxy
 		else {
 			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
 		}
-		
+
 		System.out.println("[Mekanism] Received config from server.");
 	}
 }

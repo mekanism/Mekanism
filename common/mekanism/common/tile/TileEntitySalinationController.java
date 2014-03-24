@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ISalinationSolar;
 import mekanism.common.IConfigurable;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,7 +39,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
 
 	public Set<TileEntitySalinationTank> tankParts = new HashSet<TileEntitySalinationTank>();
-	public TileEntityAdvancedSolarGenerator[] solars = new TileEntityAdvancedSolarGenerator[4];
+	public ISalinationSolar[] solars = new ISalinationSolar[4];
 
 	public boolean temperatureSet = false;
 	
@@ -332,9 +332,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		
 		int ret = 0;
 		
-		for(TileEntityAdvancedSolarGenerator solar : solars)
+		for(ISalinationSolar solar : solars)
 		{
-			if(solar != null && solar.seesSun)
+			if(solar != null && solar.seesSun())
 			{
 				ret++;
 			}
@@ -589,9 +589,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 
 	public boolean addSolarPanel(TileEntity tile, int i)
 	{
-		if(tile instanceof TileEntityAdvancedSolarGenerator && !tile.isInvalid())
+		if(tile instanceof ISalinationSolar && !tile.isInvalid())
 		{
-			solars[i] = (TileEntityAdvancedSolarGenerator)tile;
+			solars[i] = (ISalinationSolar)tile;
 			return true;
 		}
 		else {
@@ -777,7 +777,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		}
 		
 		tankParts.clear();
-		solars = new TileEntityAdvancedSolarGenerator[] {null, null, null, null};
+		solars = new ISalinationSolar[] {null, null, null, null};
 	}
 	
 	@Override

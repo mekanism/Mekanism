@@ -44,12 +44,12 @@ public class ModelChemicalDissolutionChamber extends ModelBase
 	ModelRenderer Coil2;
 	ModelRenderer Coil3;
 	ModelRenderer Coil4;
-	
+
 	public ModelChemicalDissolutionChamber()
 	{
 		textureWidth = 128;
 		textureHeight = 64;
-		
+
 		Centre = new ModelRenderer(this, 0, 17);
 		Centre.addBox(0F, 0F, 0F, 2, 13, 2);
 		Centre.setRotationPoint(-1F, 9F, -1F);
@@ -261,11 +261,11 @@ public class ModelChemicalDissolutionChamber extends ModelBase
 		Coil4.mirror = true;
 		setRotation(Coil4, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		MekanismRenderer.blendOn();
-		
+
 		Centre.render(size);
 		Base.render(size);
 		Base2.render(size);
@@ -301,10 +301,10 @@ public class ModelChemicalDissolutionChamber extends ModelBase
 		Coil2.render(size);
 		Coil3.render(size);
 		Coil4.render(size);
-		
+
 		MekanismRenderer.blendOff();
 	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;

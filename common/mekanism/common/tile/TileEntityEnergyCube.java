@@ -27,15 +27,15 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 {
 	/** This Energy Cube's tier. */
 	public EnergyCubeTier tier = EnergyCubeTier.BASIC;
-	
+
 	/** The redstone level this Energy Cube is outputting at. */
 	public int currentRedstoneLevel;
-	
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType;
-	
+
 	public int prevScale;
-	
+
 	/**
 	 * A block used to store and transfer electricity.
 	 * @param energy - maximum energy this block can hold.
@@ -44,37 +44,46 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public TileEntityEnergyCube()
 	{
 		super("EnergyCube", 0);
-		
+
 		inventory = new ItemStack[2];
 		controlType = RedstoneControl.DISABLED;
 	}
-	
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ChargeUtils.charge(0, this);
 		ChargeUtils.discharge(1, this);
-		
+
 		if(MekanismUtils.canFunction(this))
 		{
 			CableUtils.emit(this);
 		}
+		
+		int newScale = getScaledEnergyLevel(100);
+
+		if(newScale != prevScale)
+		{
+			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+		}
+
+		prevScale = newScale;
 	}
-	
+
 	@Override
 	public String getInvName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + ".name");
 	}
-	
+
 	@Override
 	public double getMaxOutput()
 	{
 		return tier.OUTPUT;
 	}
-	
+
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
@@ -86,26 +95,26 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		EnumSet set = EnumSet.allOf(ForgeDirection.class);
 		set.removeAll(getOutputtingSides());
 		set.remove(ForgeDirection.UNKNOWN);
-		
+
 		return set;
 	}
-	
+
 	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(facing));
 	}
-	
+
 	@Override
 	public boolean canSetFacing(int side)
 	{
@@ -113,17 +122,17 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public double getMaxEnergy() 
+	public double getMaxEnergy()
 	{
 		return tier.MAX_ELECTRICITY;
 	}
-	
+
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		return side == 1 ? new int[] {0} : new int[] {1};
 	}
-	
+
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -135,24 +144,24 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 		{
 			return ChargeUtils.canBeOutputted(itemstack, true);
 		}
-		
+
 		return false;
 	}
 
 	@Override
-	public String getType() 
+	public String getType()
 	{
 		return getInvName();
 	}
 
 	@Override
-	public String[] getMethodNames() 
+	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception 
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
 		{
@@ -171,7 +180,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public boolean canAttachToSide(int side) 
+	public boolean canAttachToSide(int side)
 	{
 		return true;
 	}
@@ -181,89 +190,77 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 	@Override
 	public void detach(IComputerAccess computer) {}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
-		
+
 		super.handlePacketData(dataStream);
-		
+
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-		
+
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		data.add(tier.name);
-		
+
 		super.getNetworkedData(data);
-		
+
 		data.add(controlType.ordinal());
-		
+
 		return data;
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
-        controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setString("tier", tier.name);
-        nbtTags.setInteger("controlType", controlType.ordinal());
-    }
-	
-	@Override
-	public void setEnergy(double energy) 
+	public void readFromNBT(NBTTagCompound nbtTags)
 	{
-	    super.setEnergy(energy);
-	    
-	    int newRedstoneLevel = getRedstoneLevel();
-	    
-	    if(newRedstoneLevel != currentRedstoneLevel)
-	    {
-	        onInventoryChanged();
-	        currentRedstoneLevel = newRedstoneLevel;
-	    }
-	    
-	    if(!worldObj.isRemote)
-	    {
-		    int newScale = getScaledEnergyLevel(100);
-		    
-		    if(newScale != prevScale)
-		    {
-		    	PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
-		    }
-		    
-		    prevScale = newScale;
-	    }
+		super.readFromNBT(nbtTags);
+
+		tier = EnergyCubeTier.getFromName(nbtTags.getString("tier"));
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setString("tier", tier.name);
+		nbtTags.setInteger("controlType", controlType.ordinal());
+	}
+
+	@Override
+	public void setEnergy(double energy)
+	{
+		super.setEnergy(energy);
+
+		int newRedstoneLevel = getRedstoneLevel();
+
+		if(newRedstoneLevel != currentRedstoneLevel)
+		{
+			onInventoryChanged();
+			currentRedstoneLevel = newRedstoneLevel;
+		}
 	}
 
 	public int getRedstoneLevel()
 	{
-        double fractionFull = getEnergy()/getMaxEnergy();
-        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+		double fractionFull = getEnergy()/getMaxEnergy();
+		return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
 	}
-	
+
 	@Override
-	public RedstoneControl getControlType() 
+	public RedstoneControl getControlType()
 	{
 		return controlType;
 	}
 
 	@Override
-	public void setControlType(RedstoneControl type) 
+	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
 	}

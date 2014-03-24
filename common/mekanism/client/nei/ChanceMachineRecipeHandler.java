@@ -25,7 +25,7 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 	public abstract String getRecipeId();
 
 	public abstract Set<Entry<ItemStack, ChanceOutput>> getRecipes();
-	
+
 	@Override
 	public void drawBackground(int i)
 	{
@@ -38,12 +38,12 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 	public void drawExtras(int i)
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
-		
+
 		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
 		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
 		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 		drawProgressBar(149, 12, 176, 7, 4, 52, f, 3);
-		
+
 		if(recipe.output.hasSecondary())
 		{
 			drawString(Math.round(recipe.output.secondaryChance*100) + "%", 116, 52, 0x404040, false);
@@ -124,10 +124,10 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 			{
 				return new PositionedStack(output.primaryOutput, 100, 30);
 			}
-			
+
 			return null;
 		}
-		
+
 		@Override
 		public PositionedStack getOtherStack()
 		{
@@ -135,7 +135,7 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 			{
 				return new PositionedStack(output.secondaryOutput, 116, 30);
 			}
-			
+
 			return null;
 		}
 

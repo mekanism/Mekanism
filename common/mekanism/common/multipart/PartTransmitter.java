@@ -22,7 +22,7 @@ import net.minecraftforge.common.ForgeDirection;
 public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends PartSidedPipe implements IGridTransmitter<N>, IConfigurable
 {
 	public N theNetwork;
-	
+
 	@Override
 	public void bind(TileMultipart t)
 	{
@@ -36,19 +36,19 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			super.bind(t);
 		}
 	}
-	
+
 	@Override
 	public void refreshTransmitterNetwork()
 	{
 		byte possibleTransmitters = getPossibleTransmitterConnections();
 		byte possibleAcceptors = getPossibleAcceptorConnections();
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			if(connectionMapContainsSide(possibleTransmitters, side))
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-				
+
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
 				{
 					((DynamicNetwork<?,N>)getTransmitterNetwork()).merge(((IGridTransmitter<N>)tileEntity).getTransmitterNetwork());
@@ -58,20 +58,20 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh();
 	}
-	
+
 	@Override
 	public void onRefresh()
 	{
 		refreshTransmitterNetwork();
 	}
-	
+
 	@Override
 	public void onRedstoneSplit()
 	{
 		getTransmitterNetwork().split((IGridTransmitter<N>)tile());
 		setTransmitterNetwork(null);
 	}
-	
+
 	@Override
 	public void setTransmitterNetwork(N network)
 	{
@@ -81,19 +81,19 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			theNetwork = network;
 		}
 	}
-	
+
 	@Override
 	public boolean areTransmitterNetworksEqual(TileEntity tileEntity)
 	{
 		return tileEntity instanceof IGridTransmitter && getTransmissionType() == ((IGridTransmitter)tileEntity).getTransmissionType();
 	}
-	
+
 	@Override
 	public N getTransmitterNetwork()
 	{
 		return getTransmitterNetwork(true);
 	}
-	
+
 	@Override
 	public N getTransmitterNetwork(boolean createIfNull)
 	{
@@ -101,20 +101,20 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 		{
 			byte possibleTransmitters = getPossibleTransmitterConnections();
 			HashSet<N> connectedNets = new HashSet<N>();
-			
+
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				if(connectionMapContainsSide(possibleTransmitters, side))
 				{
 					TileEntity cable = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-					
+
 					if(TransmissionType.checkTransmissionType(cable, getTransmissionType()) && ((IGridTransmitter<N>)cable).getTransmitterNetwork(false) != null)
 					{
 						connectedNets.add(((IGridTransmitter<N>)cable).getTransmitterNetwork());
 					}
 				}
 			}
-			
+
 			if(connectedNets.size() == 0)
 			{
 				theNetwork = createNetworkFromSingleTransmitter((IGridTransmitter<N>)tile());
@@ -132,12 +132,12 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 				theNetwork.transmitters.add((IGridTransmitter<N>)tile());
 			}
 		}
-		
+
 		return theNetwork;
 	}
-	
+
 	public void preSingleMerge(N network) {}
-	
+
 	@Override
 	public void removeFromTransmitterNetwork()
 	{
@@ -152,18 +152,18 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	{
 		getTransmitterNetwork().fixMessedUpNetwork((IGridTransmitter<N>) tile());
 	}
-	
+
 	public abstract N createNetworkFromSingleTransmitter(IGridTransmitter<N> transmitter);
-	
+
 	public abstract N createNetworkByMergingSet(Set<N> networks);
-	
+
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		
+
 		getTransmitterNetwork().split(this);
-		
+
 		if(!world().isRemote)
 		{
 			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
@@ -174,14 +174,14 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			} catch(Exception e) {}
 		}
 	}
-	
+
 	@Override
 	public void preRemove()
 	{
 		if(tile() instanceof IGridTransmitter)
 		{
 			getTransmitterNetwork().split((IGridTransmitter<N>)tile());
-			
+
 			if(!world().isRemote)
 			{
 				TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
@@ -195,23 +195,23 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		super.preRemove();
 	}
-	
+
 	@Override
 	protected void onModeChange(ForgeDirection side)
 	{
 		super.onModeChange(side);
-		
+
 		if(!world().isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);
 		}
 	}
-	
+
 	@Override
 	public void onNeighborChanged()
 	{
 		super.onNeighborChanged();
-		
+
 		if(!world().isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);

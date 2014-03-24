@@ -12,26 +12,26 @@ import com.google.common.io.ByteArrayDataInput;
 public class PacketStatusUpdate implements IMekanismPacket
 {
 	public int status;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "StatusUpdate";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		status = (Integer)data[0];
-		
+
 		return this;
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		ItemStack currentStack = player.getCurrentEquippedItem();
-		
+
 		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
@@ -40,7 +40,7 @@ public class PacketStatusUpdate implements IMekanismPacket
 	}
 
 	@Override
-	public void write(DataOutputStream dataStream) throws Exception 
+	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(status);
 	}

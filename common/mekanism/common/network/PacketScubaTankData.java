@@ -15,27 +15,27 @@ import com.google.common.io.ByteArrayDataInput;
 public class PacketScubaTankData implements IMekanismPacket
 {
 	public ScubaTankPacket packetType;
-	
+
 	public String username;
 	public boolean value;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "ScubaTankData";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		packetType = (ScubaTankPacket)data[0];
-		
+
 		if(packetType == ScubaTankPacket.UPDATE)
 		{
 			username = (String)data[1];
 			value = (Boolean)data[2];
 		}
-	
+
 		return this;
 	}
 
@@ -43,9 +43,9 @@ public class PacketScubaTankData implements IMekanismPacket
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = ScubaTankPacket.values()[dataStream.readInt()];
-		
-        if(packetType == ScubaTankPacket.FULL)
-        {
+
+		if(packetType == ScubaTankPacket.FULL)
+		{
 			Mekanism.gasmaskOn.clear();
 
 			int amount = dataStream.readInt();
@@ -54,12 +54,12 @@ public class PacketScubaTankData implements IMekanismPacket
 			{
 				Mekanism.gasmaskOn.add(dataStream.readUTF());
 			}
-        }
-        else if(packetType == ScubaTankPacket.UPDATE)
+		}
+		else if(packetType == ScubaTankPacket.UPDATE)
 		{
 			String username = dataStream.readUTF();
 			boolean value = dataStream.readBoolean();
-			
+
 			if(value)
 			{
 				Mekanism.gasmaskOn.add(username);
@@ -67,7 +67,7 @@ public class PacketScubaTankData implements IMekanismPacket
 			else {
 				Mekanism.gasmaskOn.remove(username);
 			}
-			
+
 			if(!world.isRemote)
 			{
 				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, username, value), world.provider.dimensionId);
@@ -76,7 +76,7 @@ public class PacketScubaTankData implements IMekanismPacket
 		else if(packetType == ScubaTankPacket.MODE)
 		{
 			ItemStack stack = player.getCurrentItemOrArmor(3);
-			
+
 			if(stack != null && stack.getItem() instanceof ItemScubaTank)
 			{
 				((ItemScubaTank)stack.getItem()).toggleFlowing(stack);
@@ -88,7 +88,7 @@ public class PacketScubaTankData implements IMekanismPacket
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
-		
+
 		if(packetType == ScubaTankPacket.UPDATE)
 		{
 			dataStream.writeUTF(username);
@@ -104,7 +104,7 @@ public class PacketScubaTankData implements IMekanismPacket
 			}
 		}
 	}
-	
+
 	public static enum ScubaTankPacket
 	{
 		UPDATE,

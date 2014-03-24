@@ -13,12 +13,12 @@ import net.minecraft.util.ResourceLocation;
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 {
 	public static Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<ItemStack, ItemStack>();
-	
+
 	public TileEntityEnergizedSmelter()
 	{
 		super("Smelter.ogg", "EnergizedSmelter", new ResourceLocation("mekanism", "gui/GuiEnergizedSmelter.png"), Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
 	}
-	
+
 	@Override
 	public Map getRecipes()
 	{

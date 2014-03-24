@@ -29,25 +29,25 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
-	
+
 	@Override
 	public String getRecipeName()
 	{
 		return MekanismUtils.localize("tile.MachineBlock.MetallurgicInfuser.name");
 	}
-	
+
 	@Override
 	public String getOverlayIdentifier()
 	{
 		return "infuser";
 	}
-	
+
 	@Override
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/GuiMetallurgicInfuser.png";
 	}
-	
+
 	@Override
 	public Class getGuiClass()
 	{
@@ -58,11 +58,11 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		return "mekanism.infuser";
 	}
-	
+
 	public List<ItemStack> getInfuseStacks(InfuseType type)
 	{
 		List<ItemStack> ret = new ArrayList<ItemStack>();
-		
+
 		for(Map.Entry<ItemStack, InfuseObject> obj : InfuseRegistry.getObjectMap().entrySet())
 		{
 			if(obj.getValue().type == type)
@@ -70,7 +70,7 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 				ret.add(obj.getKey());
 			}
 		}
-		
+
 		return ret;
 	}
 
@@ -91,16 +91,16 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	public void drawExtras(int i)
 	{
 		InfuseType type = ((CachedIORecipe)arecipes.get(i)).infusionType;
-		
+
 		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
 		drawProgressBar(67, 32, 176, 52, 32, 8, f, 0);
-		
+
 		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
-		
+
 		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 		drawProgressBar(160, 2, 176, 0, 4, 52, f, 3);
-		
+
 		changeTexture(type.texture);
 		drawProgressBar(2, 2, type.texX, type.texY, 4, 52, f, 3);
 	}
@@ -109,7 +109,7 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	public void onUpdate()
 	{
 		super.onUpdate();
-		
+
 		ticksPassed++;
 	}
 
@@ -133,7 +133,7 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 			super.loadCraftingRecipes(outputId, results);
 		}
 	}
-	
+
 	@Override
 	public int recipiesPerPage()
 	{
@@ -167,10 +167,10 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public List<ItemStack> infuseStacks;
-		
+
 		public PositionedStack inputStack;
 		public PositionedStack outputStack;
-		
+
 		public InfuseType infusionType;
 
 		@Override
@@ -184,7 +184,7 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		{
 			return outputStack;
 		}
-		
+
 		@Override
 		public PositionedStack getOtherStack()
 		{
@@ -194,12 +194,12 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		public CachedIORecipe(ItemStack input, ItemStack output, List<ItemStack> infuses, InfuseType type)
 		{
 			super();
-			
+
 			inputStack = new PositionedStack(input, 46, 28);
 			outputStack = new PositionedStack(output, 104, 28);
-			
+
 			infuseStacks = infuses;
-			
+
 			infusionType = type;
 		}
 

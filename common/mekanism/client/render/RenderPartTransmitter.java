@@ -65,22 +65,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderPartTransmitter implements IIconRegister
 {
 	public static RenderPartTransmitter INSTANCE;
-	
+
 	public static Map<String, CCModel> small_models;
-    public static Map<String, CCModel> large_models;
+	public static Map<String, CCModel> large_models;
 	public static Map<String, CCModel> contents_models;
-	
+
 	private static final int stages = 100;
 	private static final double height = 0.45;
 	private static final double offset = 0.015;
-	
+
 	private ModelTransporterBox modelBox = new ModelTransporterBox();
-	
+
 	private HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>> cachedLiquids = new HashMap<ForgeDirection, HashMap<Fluid, DisplayInteger[]>>();
 	private HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<Integer, DisplayInteger>>();
-	
+
 	private Minecraft mc = Minecraft.getMinecraft();
-	
+
 	private EntityItem entityItem = new EntityItem(null);
 	private RenderItem renderer = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 
@@ -88,31 +88,31 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		return INSTANCE;
 	}
-	
+
 	public static void init()
 	{
 		INSTANCE = new RenderPartTransmitter();
 		TextureUtils.addIconRegistrar(INSTANCE);
-		
-        small_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_small.obj"), 7, null);
 
-        for(CCModel c : small_models.values())
-        {
-            c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(LightModel.standardLightModel);
-            c.shrinkUVs(0.0005);
-        }
+		small_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_small.obj"), 7, null);
 
-        large_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_large.obj"), 7, null);
+		for(CCModel c : small_models.values())
+		{
+			c.apply(new Translation(.5, .5, .5));
+			c.computeLighting(LightModel.standardLightModel);
+			c.shrinkUVs(0.0005);
+		}
 
-        for(CCModel c : large_models.values())
-        {
-            c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(LightModel.standardLightModel);
-            c.shrinkUVs(0.0005);
-        }
+		large_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_large.obj"), 7, null);
 
-        contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
+		for(CCModel c : large_models.values())
+		{
+			c.apply(new Translation(.5, .5, .5));
+			c.computeLighting(LightModel.standardLightModel);
+			c.shrinkUVs(0.0005);
+		}
+
+		contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
 		LightModel interiorLightModel = new LightModel()
 				.setAmbient(new Vector3(0.6, 0.6, 0.6))
 				.addLight(new Light(new Vector3(0.3, 1, -0.7))
@@ -121,13 +121,13 @@ public class RenderPartTransmitter implements IIconRegister
 						.setDiffuse(new Vector3(0.6, 0.6, 0.6)));
 
 		for(CCModel c : contents_models.values())
-        {
-            c.apply(new Translation(.5, .5, .5));
-            c.computeLighting(interiorLightModel);
-            c.shrinkUVs(0.0005);
-        }
+		{
+			c.apply(new Translation(.5, .5, .5));
+			c.computeLighting(interiorLightModel);
+			c.shrinkUVs(0.0005);
+		}
 	}
-	
+
 	private void push()
 	{
 		GL11.glPushMatrix();
@@ -137,7 +137,7 @@ public class RenderPartTransmitter implements IIconRegister
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
+
 	private void pop()
 	{
 		GL11.glPopAttrib();
@@ -154,32 +154,32 @@ public class RenderPartTransmitter implements IIconRegister
 		}
 		CCRenderState.draw();
 	}
-	
+
 	public void renderContents(PartLogisticalTransporter transporter, float partialTick, Vector3 vec)
 	{
 		GL11.glPushMatrix();
-		
+
 		entityItem.age = 0;
 		entityItem.hoverStart = 0;
-		
+
 		entityItem.setPosition(transporter.x() + 0.5, transporter.y() + 0.5, transporter.z() + 0.5);
 		entityItem.worldObj = transporter.world();
-		
+
 		for(TransporterStack stack : transporter.transit)
 		{
 			if(stack != null)
 			{
 				GL11.glPushMatrix();
 				entityItem.setEntityItemStack(stack.itemStack);
-				
+
 				float[] pos = TransporterUtils.getStackPosition(transporter, stack, partialTick*PartLogisticalTransporter.SPEED);
-				
+
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);
-				
+
 				renderer.doRenderItem(entityItem, 0, 0, 0, 0, 0);
 				GL11.glPopMatrix();
-				
+
 				if(stack.color != null)
 				{
 					CCRenderState.changeTexture(MekanismUtils.getResource(ResourceType.RENDER, "TransporterBox.png"));
@@ -194,66 +194,66 @@ public class RenderPartTransmitter implements IIconRegister
 				}
 			}
 		}
-		
+
 		if(transporter instanceof PartDiversionTransporter)
 		{
 			EntityPlayer player = mc.thePlayer;
 			World world = mc.thePlayer.worldObj;
 			ItemStack itemStack = player.getCurrentEquippedItem();
 			MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
-			
+
 			if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator)
 			{
 				int xPos = MathHelper.floor_double(pos.blockX);
 				int yPos = MathHelper.floor_double(pos.blockY);
 				int zPos = MathHelper.floor_double(pos.blockZ);
-				
+
 				Coord4D obj = new Coord4D(xPos, yPos, zPos, transporter.world().provider.dimensionId);
-				
+
 				if(obj.equals(Coord4D.get(transporter.tile())))
 				{
 					int mode = ((PartDiversionTransporter)transporter).modes[pos.sideHit];
 					ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
-					
+
 					pushTransporter();
-					
+
 					GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
-					
+
 					CCRenderState.changeTexture(mode == 0 ? MekanismRenderer.getItemsTexture() : MekanismRenderer.getBlocksTexture());
 					GL11.glTranslatef((float)vec.x, (float)vec.y, (float)vec.z);
 					GL11.glScalef(0.5F, 0.5F, 0.5F);
 					GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-					
+
 					int display = getOverlayDisplay(world, side, mode).display;
 					GL11.glCallList(display);
-					
+
 					popTransporter();
 				}
 			}
 		}
-		
+
 		GL11.glPopMatrix();
 	}
-	
+
 	public void renderContents(PartUniversalCable cable, Vector3 pos)
 	{
 		if(cable.currentPower == 0)
 		{
 			return;
 		}
-		
+
 		GL11.glPushMatrix();
 		CCRenderState.reset();
 		CCRenderState.useNormals(true);
 		CCRenderState.useModelColours(true);
 		CCRenderState.startDrawing(7);
 		GL11.glTranslated(pos.x, pos.y, pos.z);
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderEnergySide(side, cable);
 		}
-		
+
 		MekanismRenderer.glowOn();
 		MekanismRenderer.cullFrontFace();
 
@@ -261,14 +261,14 @@ public class RenderPartTransmitter implements IIconRegister
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
-		
+
 		GL11.glPopMatrix();
 	}
-	
+
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
 		float targetScale = pipe.getTransmitterNetwork().fluidScale;
-		
+
 		if(Math.abs(pipe.currentScale - targetScale) > 0.01)
 		{
 			pipe.currentScale = (12 * pipe.currentScale + targetScale) / 13;
@@ -276,27 +276,27 @@ public class RenderPartTransmitter implements IIconRegister
 		else {
 			pipe.currentScale = targetScale;
 		}
-		
+
 		Fluid fluid = pipe.getTransmitterNetwork().refFluid;
 		float scale = pipe.currentScale;
-		
+
 		if(scale > 0.01 && fluid != null)
-		{	
+		{
 			push();
-			
+
 			MekanismRenderer.glowOn(fluid.getLuminosity());
-			
+
 			CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslated(pos.x, pos.y, pos.z);
-			
+
 			boolean gas = fluid.isGaseous();
-			
+
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				if(pipe.getConnectionType(side) == ConnectionType.NORMAL)
 				{
 					DisplayInteger[] displayLists = getListAndRender(side, fluid);
-					
+
 					if(displayLists != null)
 					{
 						if(!gas)
@@ -317,9 +317,9 @@ public class RenderPartTransmitter implements IIconRegister
 					GL11.glCullFace(GL11.GL_BACK);
 				}
 			}
-			
+
 			DisplayInteger[] displayLists = getListAndRender(ForgeDirection.UNKNOWN, fluid);
-			
+
 			if(displayLists != null)
 			{
 				if(!gas)
@@ -331,35 +331,35 @@ public class RenderPartTransmitter implements IIconRegister
 					displayLists[stages-1].render();
 				}
 			}
-			
+
 			MekanismRenderer.glowOff();
-			
+
 			pop();
 		}
-		
+
 	}
-	
+
 	private DisplayInteger[] getListAndRender(ForgeDirection side, Fluid fluid)
 	{
 		if(side == null || fluid == null || fluid.getIcon() == null)
 		{
 			return null;
 		}
-		
+
 		if(cachedLiquids.containsKey(side) && cachedLiquids.get(side).containsKey(fluid))
 		{
 			return cachedLiquids.get(side).get(fluid);
 		}
-		
+
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.waterStill;
 		toReturn.setTexture(fluid.getIcon());
-		
+
 		toReturn.setSideRender(side, false);
 		toReturn.setSideRender(side.getOpposite(), false);
-		
+
 		DisplayInteger[] displays = new DisplayInteger[stages];
-		
+
 		if(cachedLiquids.containsKey(side))
 		{
 			cachedLiquids.get(side).put(fluid, displays);
@@ -369,13 +369,13 @@ public class RenderPartTransmitter implements IIconRegister
 			map.put(fluid, displays);
 			cachedLiquids.put(side, map);
 		}
-		
+
 		MekanismRenderer.colorFluid(fluid);
-		
+
 		for(int i = 0; i < stages; i++)
 		{
 			displays[i] = DisplayInteger.createAndStart();
-			
+
 			switch(side)
 			{
 				case UNKNOWN:
@@ -383,7 +383,7 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.25 + offset;
 					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.25 + offset;
-					
+
 					toReturn.maxX = 0.75 - offset;
 					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 0.75 - offset;
@@ -394,7 +394,7 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.5 - (((float)i / (float)stages)*height)/2;
 					toReturn.minY = 0.0;
 					toReturn.minZ = 0.5 - (((float)i / (float)stages)*height)/2;
-					
+
 					toReturn.maxX = 0.5 + (((float)i / (float)stages)*height)/2;
 					toReturn.maxY = 0.25 + offset;
 					toReturn.maxZ = 0.5 + (((float)i / (float)stages)*height)/2;
@@ -405,7 +405,7 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.5 - (((float)i / (float)stages)*height)/2;
 					toReturn.minY = 0.25 - offset + ((float)i / (float)stages)*height;
 					toReturn.minZ = 0.5 - (((float)i / (float)stages)*height)/2;
-					
+
 					toReturn.maxX = 0.5 + (((float)i / (float)stages)*height)/2;
 					toReturn.maxY = 1.0;
 					toReturn.maxZ = 0.5 + (((float)i / (float)stages)*height)/2;
@@ -416,7 +416,7 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.25 + offset;
 					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.0;
-					
+
 					toReturn.maxX = 0.75 - offset;
 					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 0.25 + offset;
@@ -427,7 +427,7 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.25 + offset;
 					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.75 - offset;
-					
+
 					toReturn.maxX = 0.75 - offset;
 					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 1.0;
@@ -438,7 +438,7 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.0;
 					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.25 + offset;
-					
+
 					toReturn.maxX = 0.25 + offset;
 					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 0.75 - offset;
@@ -449,20 +449,20 @@ public class RenderPartTransmitter implements IIconRegister
 					toReturn.minX = 0.75 - offset;
 					toReturn.minY = 0.25 + offset;
 					toReturn.minZ = 0.25 + offset;
-					
+
 					toReturn.maxX = 1.0;
 					toReturn.maxY = 0.25 + offset + ((float)i / (float)stages)*height;
 					toReturn.maxZ = 0.75 - offset;
 					break;
 				}
 			}
-			
+
 			MekanismRenderer.renderObject(toReturn);
 			displays[i].endList();
 		}
-		
+
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		
+
 		return displays;
 	}
 
@@ -472,54 +472,54 @@ public class RenderPartTransmitter implements IIconRegister
 		{
 			return;
 		}
-		
+
 		GL11.glPushMatrix();
 		CCRenderState.reset();
 		CCRenderState.useNormals(true);
 		CCRenderState.useModelColours(true);
 		CCRenderState.startDrawing(7);
 		GL11.glTranslated(pos.x, pos.y, pos.z);
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderGasSide(side, tube);
 		}
-		
+
 		MekanismRenderer.glowOn(0);
 		MekanismRenderer.cullFrontFace();
 
 		CCRenderState.draw();
-		
+
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
 		GL11.glPopMatrix();
 	}
-	
+
 	public void renderStatic(PartSidedPipe transmitter, LazyLightMatrix olm)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
 		CCRenderState.useModelColours(true);
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderSide(side, transmitter, olm);
 		}
 	}
-	
+
 	public void renderSide(ForgeDirection side, PartSidedPipe transmitter, LazyLightMatrix olm)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		Icon renderIcon = transmitter.getIconForSide(side);
-		
+
 		Colour c = null;
-		
+
 		if(transmitter.getRenderColor() != null)
 		{
 			c = new ColourRGBA(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1);
 		}
-		
+
 		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c, olm);
 	}
 
@@ -537,7 +537,7 @@ public class RenderPartTransmitter implements IIconRegister
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
-	
+
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
@@ -550,15 +550,15 @@ public class RenderPartTransmitter implements IIconRegister
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
-    public void renderPart(Icon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
+	public void renderPart(Icon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
 	{
-        cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new TransmitterTransformation(color, null));
-    }
+		cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new TransmitterTransformation(color, null));
+	}
 
-    public void renderTransparency(Icon icon, CCModel cc, Colour colour) 
-    {
-        cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
-    }
+	public void renderTransparency(Icon icon, CCModel cc, Colour colour)
+	{
+		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
+	}
 
 	public CCModel getItemModel(ForgeDirection side, TransmitterType type)
 	{
@@ -589,7 +589,7 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		return 0;
 	}
-	
+
 	private void popTransporter()
 	{
 		GL11.glPopAttrib();
@@ -597,7 +597,7 @@ public class RenderPartTransmitter implements IIconRegister
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
-	
+
 	private void pushTransporter()
 	{
 		GL11.glPushMatrix();
@@ -607,16 +607,16 @@ public class RenderPartTransmitter implements IIconRegister
 		MekanismRenderer.glowOn();
 		MekanismRenderer.blendOn();
 	}
-	
+
 	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, int mode)
 	{
 		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode))
 		{
 			return cachedOverlays.get(side).get(mode);
 		}
-		
+
 		Icon icon = null;
-		
+
 		switch(mode)
 		{
 			case 0:
@@ -629,13 +629,13 @@ public class RenderPartTransmitter implements IIconRegister
 				icon = Block.torchRedstoneIdle.getIcon(0, 0);
 				break;
 		}
-		
+
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.stone;
 		toReturn.setTexture(icon);
-		
+
 		DisplayInteger display = DisplayInteger.createAndStart();
-		
+
 		if(cachedOverlays.containsKey(side))
 		{
 			cachedOverlays.get(side).put(mode, display);
@@ -645,14 +645,14 @@ public class RenderPartTransmitter implements IIconRegister
 			map.put(mode, display);
 			cachedOverlays.put(side, map);
 		}
-		
+
 		switch(side)
 		{
 			case DOWN:
 			{
 				toReturn.minY = -0.01;
 				toReturn.maxY = 0;
-				
+
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
 				toReturn.maxX = 1;
@@ -663,7 +663,7 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				toReturn.minY = 1;
 				toReturn.maxY = 1.01;
-				
+
 				toReturn.minX = 0;
 				toReturn.minZ = 0;
 				toReturn.maxX = 1;
@@ -674,7 +674,7 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				toReturn.minZ = -0.01;
 				toReturn.maxZ = 0;
-				
+
 				toReturn.minX = 0;
 				toReturn.minY = 0;
 				toReturn.maxX = 1;
@@ -685,7 +685,7 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				toReturn.minZ = 1;
 				toReturn.maxZ = 1.01;
-				
+
 				toReturn.minX = 0;
 				toReturn.minY = 0;
 				toReturn.maxX = 1;
@@ -696,7 +696,7 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				toReturn.minX = -0.01;
 				toReturn.maxX = 0;
-				
+
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
 				toReturn.maxY = 1;
@@ -707,7 +707,7 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				toReturn.minX = 1;
 				toReturn.maxX = 1.01;
-				
+
 				toReturn.minY = 0;
 				toReturn.minZ = 0;
 				toReturn.maxY = 1;
@@ -719,31 +719,31 @@ public class RenderPartTransmitter implements IIconRegister
 				break;
 			}
 		}
-		
+
 		MekanismRenderer.renderObject(toReturn);
 		display.endList();
-		
+
 		return display;
 	}
-	
+
 	public static class TransmitterTransformation implements IVertexModifier
 	{
 		public ColourMultiplier colour;
 		public LightMatrix lightMatrix;
-		
+
 		public TransmitterTransformation(Colour color, LazyLightMatrix olm)
 		{
 			if(color != null)
 			{
 				colour = new ColourMultiplier(color);
 			}
-			
+
 			if(olm != null)
 			{
 				lightMatrix = olm.lightMatrix();
 			}
 		}
-		
+
 		@Override
 		public void applyModifiers(CCModel m, Tessellator tess, Vector3 vec, UV uv, Vector3 normal, int i)
 		{
@@ -751,7 +751,7 @@ public class RenderPartTransmitter implements IIconRegister
 			{
 				colour.applyModifiers(m, tess, vec, uv, normal, i);
 			}
-			
+
 			if(lightMatrix != null)
 			{
 				lightMatrix.applyModifiers(m, tess, vec, uv, normal, i);

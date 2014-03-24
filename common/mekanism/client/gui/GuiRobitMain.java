@@ -23,36 +23,36 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiRobitMain extends GuiMekanism
 {
 	public EntityRobit robit;
-	
+
 	public boolean displayNameChange;
-	
+
 	private GuiTextField nameChangeField;
 	private GuiButton confirmName;
-    
-    public GuiRobitMain(InventoryPlayer inventory, EntityRobit entity)
-    {
-    	super(new ContainerRobitMain(inventory, entity));
-    	xSize += 25;
-    	robit = entity;
-    }
-    
-    private void toggleNameChange()
-    {
-    	displayNameChange = !displayNameChange;
-    	confirmName.drawButton = displayNameChange;
-    	nameChangeField.setFocused(displayNameChange);
-    }
-    
-    private void changeName()
-    {
-    	if(nameChangeField.getText() != null && !nameChangeField.getText().isEmpty())
-    	{
-    		PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.NAME, nameChangeField.getText(), robit.entityId));
-    		toggleNameChange();
-    		nameChangeField.setText("");
-    	}
-    }
-    
+
+	public GuiRobitMain(InventoryPlayer inventory, EntityRobit entity)
+	{
+		super(new ContainerRobitMain(inventory, entity));
+		xSize += 25;
+		robit = entity;
+	}
+
+	private void toggleNameChange()
+	{
+		displayNameChange = !displayNameChange;
+		confirmName.drawButton = displayNameChange;
+		nameChangeField.setFocused(displayNameChange);
+	}
+
+	private void changeName()
+	{
+		if(nameChangeField.getText() != null && !nameChangeField.getText().isEmpty())
+		{
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.NAME, nameChangeField.getText(), robit.entityId));
+			toggleNameChange();
+			nameChangeField.setText("");
+		}
+	}
+
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
@@ -61,24 +61,24 @@ public class GuiRobitMain extends GuiMekanism
 			changeName();
 		}
 	}
-    
-    @Override
-    public void initGui()
+
+	@Override
+	public void initGui()
 	{
 		super.initGui();
-		
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-		
+
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+
 		buttonList.clear();
 		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, MekanismUtils.localize("gui.confirm")));
 		confirmName.drawButton = displayNameChange;
-		
+
 		nameChangeField = new GuiTextField(fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
 		nameChangeField.setMaxStringLength(12);
 		nameChangeField.setFocused(true);
 	}
-    
+
 	@Override
 	public void keyTyped(char c, int i)
 	{
@@ -95,29 +95,29 @@ public class GuiRobitMain extends GuiMekanism
 			{
 				mc.thePlayer.closeScreen();
 			}
-			
+
 			nameChangeField.textboxKeyTyped(c, i);
 		}
 	}
-	
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {
-    	fontRenderer.drawString(MekanismUtils.localize("gui.robit"), 76, 6, 0x404040);
-    	
-    	if(!displayNameChange)
-    	{
-    		CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-	    	fontRenderer.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
-	    	fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
-	    	fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
-	    	fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
-	    	fontRenderer.drawString("Owner: " + owner, 29, 63-4, 0x00CD00);
-    	}
-    	
+
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+	{
+		fontRenderer.drawString(MekanismUtils.localize("gui.robit"), 76, 6, 0x404040);
+
+		if(!displayNameChange)
+		{
+			CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
+			fontRenderer.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
+			fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
+			fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
+			fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
+			fontRenderer.drawString("Owner: " + owner, 29, 63-4, 0x00CD00);
+		}
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-    	
+
 		if(xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(robit.getEnergy()), xAxis, yAxis);
@@ -138,24 +138,24 @@ public class GuiRobitMain extends GuiMekanism
 		{
 			drawCreativeTabHoveringText(MekanismUtils.localize("gui.robit.togglePickup"), xAxis, yAxis);
 		}
-		
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-    {
-    	super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-    	
-    	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+	{
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRobitMain.png"));
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-        
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 0, 18, 18);
@@ -163,7 +163,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 10, 176 + 25, 18, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 176 + 25, 36, 18, 18);
@@ -171,7 +171,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 30, 176 + 25, 54, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 72, 18, 18);
@@ -179,7 +179,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 50, 176 + 25, 90, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 108, 18, 18);
@@ -187,7 +187,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 70, 176 + 25, 126, 18, 18);
 		}
-		
+
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 		{
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 144, 18, 18);
@@ -195,7 +195,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 179, guiHeight + 90, 176 + 25, 162, 18, 18);
 		}
-		
+
 		if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 		{
 			drawTexturedModalRect(guiWidth + 152, guiHeight + 54, 176 + 25, 180, 18, 18);
@@ -203,7 +203,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 152, guiHeight + 54, 176 + 25, 198, 18, 18);
 		}
-		
+
 		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 		{
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 54, 176 + 25, 216, 18, 18);
@@ -211,7 +211,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 54, 176 + 25, 234, 18, 18);
 		}
-		
+
 		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 		{
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 176 + 25 + 18, 36, 18, 18);
@@ -219,7 +219,7 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 16, 176 + 25 + 18, 54, 18, 18);
 		}
-		
+
 		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 		{
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 35, 176 + 25 + 18, 72, 18, 18);
@@ -227,46 +227,46 @@ public class GuiRobitMain extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 35, 176 + 25 + 18, 90, 18, 18);
 		}
-		
+
 		int displayInt;
-		
-        displayInt = getScaledEnergyLevel(120);
-        drawTexturedModalRect(guiWidth + 28, guiHeight + 75, 0, 166, displayInt, 4);
-        
-    	if(displayNameChange)
-    	{
-    		drawTexturedModalRect(guiWidth + 28, guiHeight + 17, 0, 166 + 4, 120, 54);
-    	   	nameChangeField.drawTextBox();
-    	}
-    }
-    
+
+		displayInt = getScaledEnergyLevel(120);
+		drawTexturedModalRect(guiWidth + 28, guiHeight + 75, 0, 166, displayInt, 4);
+
+		if(displayNameChange)
+		{
+			drawTexturedModalRect(guiWidth + 28, guiHeight + 17, 0, 166 + 4, 120, 54);
+			nameChangeField.drawTextBox();
+		}
+	}
+
 	private int getScaledEnergyLevel(int i)
 	{
 		return (int)(robit.getEnergy()*i / robit.MAX_ELECTRICITY);
 	}
-	
+
 	@Override
 	public void updateScreen()
 	{
 		super.updateScreen();
-		
+
 		nameChangeField.updateCursorCounter();
 	}
-	
+
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
 		super.mouseClicked(mouseX, mouseY, button);
-		
+
 		nameChangeField.mouseClicked(mouseX, mouseY, button);
-		
+
 		if(button == 0)
 		{
 			int xAxis = (mouseX - (width - xSize) / 2);
 			int yAxis = (mouseY - (height - ySize) / 2);
-			
+
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
-			{	
+			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)

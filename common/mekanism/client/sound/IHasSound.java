@@ -5,14 +5,14 @@ package mekanism.client.sound;
  * @author AidanBrady
  *
  */
-public interface IHasSound 
+public interface IHasSound
 {
 	/**
 	 * Gets the sound path of this block's sound.
 	 * @return sound path
 	 */
 	public String getSoundPath();
-	
+
 	/**
 	 * Gets the multiplier to play this sound by.
 	 * @return sound multiplier

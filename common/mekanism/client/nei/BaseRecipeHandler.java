@@ -14,29 +14,29 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 {
 	public void displayGauge(int length, int xPos, int yPos, int overlayX, int overlayY, int scale, FluidStack fluid, GasStack gas)
 	{
-	    if(fluid == null && gas == null)
-	    {
-	        return;
-	    }
-	    
+		if(fluid == null && gas == null)
+		{
+			return;
+		}
+
 		int start = 0;
 
 		while(true)
 		{
 			int renderRemaining = 0;
 
-			if(scale > 16) 
+			if(scale > 16)
 			{
 				renderRemaining = 16;
 				scale -= 16;
-			} 
+			}
 			else {
 				renderRemaining = scale;
 				scale = 0;
 			}
 
 			changeTexture(MekanismRenderer.getBlocksTexture());
-			
+
 			if(fluid != null)
 			{
 				gui.drawTexturedModelRectFromIcon(xPos, yPos + length - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
@@ -45,7 +45,7 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 			{
 				gui.drawTexturedModelRectFromIcon(xPos, yPos + length - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
 			}
-			
+
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)
@@ -57,7 +57,7 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(xPos, yPos, overlayX, overlayY, 16, length+1);
 	}
-	
+
 	/*
 	 * true = usage, false = recipe
 	 */
@@ -78,24 +78,24 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, GasStack gas)
 	{
-	    if(gas == null)
-	    {
-	        return;
-	    }
-	    
+		if(gas == null)
+		{
+			return;
+		}
+
 		changeTexture(MekanismRenderer.getBlocksTexture());
 		gui.drawTexturedModelRectFromIcon(xPos, yPos, gas.getGas().getIcon(), sizeX, sizeY);
 	}
-	
+
 	/*
 	 * true = usage, false = recipe
 	 */
@@ -116,10 +116,10 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 }

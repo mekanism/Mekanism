@@ -66,6 +66,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemFilterCard;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemIngot;
@@ -77,6 +78,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
+import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemPartTransmitter;
@@ -116,6 +118,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -159,7 +162,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "6.0.3")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "6.0.4")
 @NetworkMod(channels = {"MEK"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -184,7 +187,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(6, 0, 3);
+	public static Version versionNumber = new Version(6, 0, 4);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
@@ -216,6 +219,8 @@ public class Mekanism
 	public static Set<String> gasmaskOn = new HashSet<String>();
 	
 	public static Set<Coord4D> ic2Registered = new HashSet<Coord4D>();
+	
+	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
     
 	//Block IDs
     public static int basicBlockID;
@@ -260,6 +265,8 @@ public class Mekanism
 	public static Item BrineBucket;
 	public static Item FreeRunners;
 	public static ItemJetpack ArmoredJetpack;
+	public static Item FilterCard;
+	public static ItemSeismicReader SeismicReader;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -337,6 +344,7 @@ public class Mekanism
 	public static double chemicalDissolutionChamberUsage;
 	public static double chemicalWasherUsage;
 	public static double chemicalCrystalizerUsage;
+	public static double seismicVibratorUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -573,6 +581,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(ArmoredJetpack.getEmptyItem(), new Object[] {
 			"D D", "BSB", " J ", Character.valueOf('D'), "dustDiamond", Character.valueOf('B'), "ingotBronze", Character.valueOf('S'), "blockSteel", Character.valueOf('J'), Jetpack.getEmptyItem()
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FilterCard), new Object[] {
+			" A ", "ACA", " A ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('C'), "circuitBasic"
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
@@ -670,6 +681,7 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 2), new ItemStack(Block.stoneBrick, 1, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 1), new ItemStack(Block.stoneBrick, 1, 0));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreNetherQuartz), new ItemStack(Item.netherQuartz, 2));
 		
 		//Combiner recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 16), new ItemStack(Block.oreRedstone));
@@ -737,7 +749,7 @@ public class Mekanism
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
 		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
 		
-		//Chemical Washer Recipes
+		//T4 Processing Recipes
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
 			if(gas instanceof OreGas && !((OreGas)gas).isClean())
@@ -748,6 +760,9 @@ public class Mekanism
 				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
 			}
 		}
+		
+		//Chemical Dissolution Chamber Recipes
+		RecipeHandler.addChemicalDissolutionChamberRecipe(new ItemStack(Block.obsidian), new GasStack(GasRegistry.getGas("obsidian"), 1000));
 
         //Infuse objects
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
@@ -792,20 +807,22 @@ public class Mekanism
 		CompressedRedstone = new ItemMekanism(configuration.getItem("CompressedRedstone", ITEM_ID++).getInt()).setUnlocalizedName("CompressedRedstone");
 		SpeedUpgrade = new ItemMachineUpgrade(configuration.getItem("SpeedUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("SpeedUpgrade");
 		EnergyUpgrade = new ItemMachineUpgrade(configuration.getItem("EnergyUpgrade", ITEM_ID++).getInt()).setUnlocalizedName("EnergyUpgrade");
-		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", ITEM_ID++).getInt(), 1000000, 120).setUnlocalizedName("EnergyTablet");
+		EnergyTablet = (ItemEnergized)new ItemEnergized(configuration.getItem("EnergyTablet", ITEM_ID++).getInt(), 1000000).setUnlocalizedName("EnergyTablet");
 		Dictionary = new ItemDictionary(configuration.getItem("Dictionary", ITEM_ID++).getInt()).setUnlocalizedName("Dictionary");
+		FilterCard = new ItemFilterCard(configuration.getItem("FilterCard", ITEM_ID++).getInt()).setUnlocalizedName("FilterCard");
 		ElectricBow = (ItemElectricBow)new ItemElectricBow(configuration.getItem("ElectricBow", ITEM_ID++).getInt()).setUnlocalizedName("ElectricBow");
 		PortableTeleporter = new ItemPortableTeleporter(configuration.getItem("PortableTeleporter", ITEM_ID++).getInt()).setUnlocalizedName("PortableTeleporter");
 		Configurator = new ItemConfigurator(configuration.getItem("Configurator", ITEM_ID++).getInt()).setUnlocalizedName("Configurator");
 		NetworkReader = new ItemNetworkReader(configuration.getItem("NetworkReader", ITEM_ID++).getInt()).setUnlocalizedName("NetworkReader");
 		WalkieTalkie = new ItemWalkieTalkie(configuration.getItem("WalkieTalkie", ITEM_ID++).getInt()).setUnlocalizedName("WalkieTalkie");
+		SeismicReader = (ItemSeismicReader)new ItemSeismicReader(configuration.getItem("SeismicReader", ITEM_ID++).getInt()).setUnlocalizedName("SeismicReader");
 		AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler(configuration.getItem("AtomicDisassembler", ITEM_ID++).getInt()).setUnlocalizedName("AtomicDisassembler");
 		GasMask = (ItemGasMask)new ItemGasMask(configuration.getItem("GasMask", ITEM_ID++).getInt()).setUnlocalizedName("GasMask");
 		ScubaTank = (ItemScubaTank)new ItemScubaTank(configuration.getItem("ScubaTank", ITEM_ID++).getInt()).setUnlocalizedName("ScubaTank");
 		Jetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("Jetpack", ITEM_ID++).getInt()).setUnlocalizedName("Jetpack");
 		ArmoredJetpack = (ItemJetpack)new ItemJetpack(configuration.getItem("ArmoredJetpack", ITEM_ID++).getInt()).setUnlocalizedName("ArmoredJetpack");
 		FreeRunners = new ItemFreeRunners(configuration.getItem("FreeRunners", ITEM_ID++).getInt()).setUnlocalizedName("FreeRunners");
-		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", ITEM_ID++).getInt()).setMaxStackSize(1).setUnlocalizedName("BrineBucket");
+		BrineBucket = new ItemMekanism(configuration.getItem("BrineBucket", ITEM_ID++).getInt()).setMaxStackSize(1).setContainerItem(Item.bucketEmpty).setUnlocalizedName("BrineBucket");
 		Sawdust = new ItemMekanism(configuration.getItem("Sawdust", ITEM_ID++).getInt()).setUnlocalizedName("Sawdust");
 		Salt = new ItemMekanism(configuration.getItem("Salt", ITEM_ID++).getInt()).setUnlocalizedName("Salt");
 		Ingot = new ItemIngot(configuration.getItem("Ingot", ITEM_ID++).getInt());
@@ -859,6 +876,8 @@ public class Mekanism
 		GameRegistry.registerItem(Crystal, "Crystal");
 		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
+		GameRegistry.registerItem(FilterCard, "FilterCard");
+		GameRegistry.registerItem(SeismicReader, "SeismicReader");
 	}
 	
 	/**
@@ -1048,6 +1067,7 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
+		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
@@ -1092,6 +1112,7 @@ public class Mekanism
 		ic2Registered.clear();
 		jetpackOn.clear();
 		gasmaskOn.clear();
+		activeVibrators.clear();
 		
 		TransporterManager.flowingStacks.clear();
 	}

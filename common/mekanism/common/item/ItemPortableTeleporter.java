@@ -14,37 +14,37 @@ public class ItemPortableTeleporter extends ItemEnergized
 {
 	public ItemPortableTeleporter(int id)
 	{
-		super(id, 1000000, 120);
+		super(id, 1000000);
 	}
-	
+
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
 		entityplayer.openGui(Mekanism.instance, 14, world, 0, 0, 0);
 		return itemstack;
 	}
-	
+
 	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
 		if(coords == null)
 		{
 			return 0;
 		}
-		
+
 		int neededEnergy = 1000;
-		
+
 		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
 		{
 			neededEnergy+=10000;
 		}
-		
+
 		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
-		
+
 		neededEnergy+=(distance*10);
-		
+
 		return neededEnergy;
 	}
-	
+
 	public String getStatusAsString(int i)
 	{
 		switch(i)
@@ -63,17 +63,17 @@ public class ItemPortableTeleporter extends ItemEnergized
 				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.notReady");
 		}
 	}
-	
+
 	public int getStatus(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null) 
-		{ 
+		if(itemstack.stackTagCompound == null)
+		{
 			return 0;
 		}
-		
+
 		return itemstack.stackTagCompound.getInteger("status");
 	}
-	
+
 	public void setStatus(ItemStack itemstack, int status)
 	{
 		if(itemstack.stackTagCompound == null)
@@ -83,17 +83,17 @@ public class ItemPortableTeleporter extends ItemEnergized
 
 		itemstack.stackTagCompound.setInteger("status", status);
 	}
-	
+
 	public int getDigit(ItemStack itemstack, int index)
 	{
-		if(itemstack.stackTagCompound == null) 
-		{ 
-			return 0; 
+		if(itemstack.stackTagCompound == null)
+		{
+			return 0;
 		}
-		
+
 		return itemstack.stackTagCompound.getInteger("digit"+index);
 	}
-	
+
 	public void setDigit(ItemStack itemstack, int index, int digit)
 	{
 		if(itemstack.stackTagCompound == null)
@@ -103,7 +103,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 
 		itemstack.stackTagCompound.setInteger("digit"+index, digit);
 	}
-	
+
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{

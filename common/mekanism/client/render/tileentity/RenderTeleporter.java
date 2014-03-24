@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 public class RenderTeleporter extends TileEntitySpecialRenderer
 {
 	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
-	
+
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
@@ -33,27 +33,27 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		if(tileEntity.shouldRender)
 		{
 			push();
-			
+
 			GL11.glColor4f(EnumColor.PURPLE.getColor(0), EnumColor.PURPLE.getColor(1), EnumColor.PURPLE.getColor(2), 0.75F);
-			
+
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
-			
+
 			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
 			int type = 0;
-			
+
 			if(obj.getBlockId(tileEntity.worldObj) == Mekanism.basicBlockID && obj.getMetadata(tileEntity.worldObj) == 7)
 			{
 				type = 1;
 			}
-			
+
 			int display = getOverlayDisplay(type).display;
 			GL11.glCallList(display);
-			
+
 			pop();
 		}
 	}
-	
+
 	private void pop()
 	{
 		GL11.glPopAttrib();
@@ -61,7 +61,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
-	
+
 	private void push()
 	{
 		GL11.glPushMatrix();
@@ -71,20 +71,20 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		MekanismRenderer.glowOn();
 		MekanismRenderer.blendOn();
 	}
-	
+
 	private DisplayInteger getOverlayDisplay(Integer type)
 	{
 		if(cachedOverlays.containsKey(type))
 		{
 			return cachedOverlays.get(type);
 		}
-		
+
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Block.stone;
 		toReturn.setTexture(GasRegistry.getGas("oxygen").getIcon());
-		
+
 		DisplayInteger display = DisplayInteger.createAndStart();
-		
+
 		if(cachedOverlays.containsKey(type))
 		{
 			cachedOverlays.get(type);
@@ -92,14 +92,14 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		else {
 			cachedOverlays.put(type, display);
 		}
-		
+
 		switch(type)
 		{
 			case 0:
 			{
 				toReturn.minY = 1;
 				toReturn.maxY = 3;
-				
+
 				toReturn.minX = 0.46;
 				toReturn.minZ = 0;
 				toReturn.maxX = 0.54;
@@ -110,7 +110,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			{
 				toReturn.minY = 1;
 				toReturn.maxY = 3;
-				
+
 				toReturn.minX = 0;
 				toReturn.minZ = 0.46;
 				toReturn.maxX = 1;
@@ -118,10 +118,10 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 				break;
 			}
 		}
-		
+
 		MekanismRenderer.renderObject(toReturn);
 		display.endList();
-		
+
 		return display;
 	}
 }

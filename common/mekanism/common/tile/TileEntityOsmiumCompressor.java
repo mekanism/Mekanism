@@ -18,7 +18,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	{
 		super("Compressor.ogg", "OsmiumCompressor", new ResourceLocation("mekanism", "gui/GuiCompressor.png"), Mekanism.osmiumCompressorUsage, 1, 200, MachineType.OSMIUM_COMPRESSOR.baseEnergy);
 	}
-	
+
 	@Override
 	public Map getRecipes()
 	{
@@ -29,7 +29,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		int amount = 0;
-		
+
 		for(ItemStack ore : OreDictionary.getOres("ingotOsmium"))
 		{
 			if(ore.isItemEqual(itemstack))
@@ -37,7 +37,7 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 				return new GasStack(GasRegistry.getGas("liquidOsmium"), 200);
 			}
 		}
-		
+
 		for(ItemStack ore : OreDictionary.getOres("blockOsmium"))
 		{
 			if(ore.isItemEqual(itemstack))
@@ -45,10 +45,10 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 				return new GasStack(GasRegistry.getGas("liquidOsmium"), 1800);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public boolean isValidGas(Gas gas)
 	{

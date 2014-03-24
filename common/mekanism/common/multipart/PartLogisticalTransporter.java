@@ -49,15 +49,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
 {
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
-	
+
 	public static final int SPEED = 5;
-	
+
 	public EnumColor color;
-	
+
 	public int pullDelay = 0;
-	
+
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
-	
+
 	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
 
 	@Override
@@ -71,7 +71,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		return TransmitterType.LOGISTICAL_TRANSPORTER;
 	}
-	
+
 	@Override
 	public TransmissionType getTransmissionType()
 	{
@@ -83,7 +83,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
 		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterSide", "RestrictiveTransporterSide"});
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
@@ -93,7 +93,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
 		}
 	}
-	
+
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
@@ -102,12 +102,12 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		testingSide = null;
 		return unblocked;
 	}
-	
+
 	@Override
 	public byte getPossibleTransmitterConnections()
 	{
 		byte connections = 0x00;
-		
+
 		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return connections;
@@ -122,7 +122,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()))
 				{
 					ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
-					
+
 					if(getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor())
 					{
 						connections |= 1 << side.ordinal();
@@ -133,7 +133,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 		return connections;
 	}
-	
+
 	@Override
 	public byte getPossibleAcceptorConnections()
 	{
@@ -175,12 +175,12 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 	@Override
 	public void onModeChange(ForgeDirection side) {}
-	
+
 	@Override
 	public void update()
 	{
 		super.update();
-		
+
 		if(world().isRemote)
 		{
 			for(TransporterStack stack : transit)
@@ -193,9 +193,9 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		}
 		else {
 			Set<TransporterStack> remove = new HashSet<TransporterStack>();
-			
+
 			pullItems();
-			
+
 			for(TransporterStack stack : transit)
 			{
 				if(!stack.initiatedPath)
@@ -206,18 +206,18 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 						continue;
 					}
 				}
-				
+
 				stack.progress += SPEED;
-				
+
 				if(stack.progress > 100)
 				{
 					Coord4D prevSet = null;
-					
+
 					if(stack.hasPath())
 					{
 						int currentIndex = stack.pathToTarget.indexOf(Coord4D.get(tile()));
 						Coord4D next = stack.pathToTarget.get(currentIndex-1);
-						
+
 						if(!stack.isFinal(this))
 						{
 							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))))
@@ -225,7 +225,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 								ILogisticalTransporter nextTile = (ILogisticalTransporter)next.getTileEntity(world());
 								nextTile.entityEntering(stack);
 								remove.add(stack);
-								
+
 								continue;
 							}
 							else if(next != null)
@@ -240,11 +240,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 								{
 									needsSync.add(stack);
 									IInventory inventory = (IInventory)next.getTileEntity(world());
-									
+
 									if(inventory != null)
 									{
 										ItemStack rejected = InventoryUtils.putStackInInventory(inventory, stack.itemStack, stack.getSide(this), stack.pathType == Path.HOME);
-										
+
 										if(rejected == null)
 										{
 											TransporterManager.remove(stack);
@@ -254,7 +254,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 										else {
 											needsSync.add(stack);
 											stack.itemStack = rejected;
-											
+
 											prevSet = next;
 										}
 									}
@@ -262,7 +262,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 							}
 						}
 					}
-					
+
 					if(!recalculate(stack, prevSet))
 					{
 						remove.add(stack);
@@ -310,12 +310,12 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 					else {
 						TileEntity next = stack.getNext(this).getTileEntity(world());
 						boolean recalculate = false;
-						
+
 						if(!stack.canInsertToTransporter(next, ForgeDirection.getOrientation(stack.getSide(this))))
 						{
 							recalculate = true;
 						}
-						
+
 						if(recalculate)
 						{
 							if(!recalculate(stack, null))
@@ -327,14 +327,14 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 					}
 				}
 			}
-			
+
 			for(TransporterStack stack : remove)
 			{
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, true)), Coord4D.get(tile()), 50D);
 				transit.remove(stack);
 				MekanismUtils.saveChunk(tile());
 			}
-			
+
 			for(TransporterStack stack : needsSync)
 			{
 				if(transit.contains(stack))
@@ -342,37 +342,37 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
 				}
 			}
-			
+
 			needsSync.clear();
 		}
 	}
-	
+
 	private boolean checkSideForInsert(TransporterStack stack)
 	{
 		ForgeDirection side = ForgeDirection.getOrientation(stack.getSide(this));
-		
+
 		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
 	}
-	
+
 	private void pullItems()
 	{
 		if(pullDelay == 0)
 		{
 			boolean did = false;
-			
+
 			for(ForgeDirection side : getConnections(ConnectionType.PULL))
 			{
 				TileEntity tile = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-				
+
 				if(tile instanceof IInventory)
 				{
 					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal());
-					
+					InvStack stack = InventoryUtils.takeTopItem(inv, side.getOpposite().ordinal());
+
 					if(stack != null && stack.getStack() != null)
 					{
 						ItemStack rejects = TransporterUtils.insert(tile, this, stack.getStack(), color, true, 0);
-						
+
 						if(TransporterManager.didEmit(stack.getStack(), rejects))
 						{
 							did = true;
@@ -381,7 +381,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 					}
 				}
 			}
-			
+
 			if(did)
 			{
 				pullDelay = 10;
@@ -391,11 +391,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			pullDelay--;
 		}
 	}
-	
+
 	private boolean recalculate(TransporterStack stack, Coord4D from)
 	{
 		needsSync.add(stack);
-		
+
 		if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this, 0)))
 		{
 			if(!stack.calculateIdle(this))
@@ -404,42 +404,42 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				return false;
 			}
 		}
-		
+
 		if(from != null)
 		{
 			stack.originalLocation = from;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		return insert_do(original, itemStack, color, doEmit, min, false);
 	}
-	
+
 	private ItemStack insert_do(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min, boolean force)
 	{
 		ForgeDirection from = Coord4D.get(tile()).sideDifference(original).getOpposite();
-		
+
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = original;
 		stack.homeLocation = original;
 		stack.color = color;
-		
+
 		if((force && !canReceiveFrom(original.getTileEntity(world()), from)) || !stack.canInsertToTransporter(tile(), from))
 		{
 			return itemStack;
 		}
-		
+
 		ItemStack rejected = stack.recalculatePath(this, min);
-		
+
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
 			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
-			
+
 			if(doEmit)
 			{
 				transit.add(stack);
@@ -447,35 +447,35 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
 				MekanismUtils.saveChunk(tile());
 			}
-			
+
 			return rejected;
 		}
-		
+
 		return itemStack;
 	}
-	
+
 	@Override
 	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
 		ForgeDirection from = Coord4D.get(tile()).sideDifference(Coord4D.get(outputter)).getOpposite();
-		
+
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
 		stack.originalLocation = Coord4D.get(outputter);
 		stack.homeLocation = Coord4D.get(outputter);
 		stack.color = color;
-		
+
 		if(!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(tile(), from))
 		{
 			return itemStack;
 		}
-		
+
 		ItemStack rejected = stack.recalculateRRPath(outputter, this, min);
-		
+
 		if(TransporterManager.didEmit(stack.itemStack, rejected))
 		{
 			stack.itemStack = TransporterManager.getToUse(stack.itemStack, rejected);
-			
+
 			if(doEmit)
 			{
 				transit.add(stack);
@@ -483,13 +483,13 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
 				MekanismUtils.saveChunk(tile());
 			}
-			
+
 			return rejected;
 		}
-		
+
 		return itemStack;
 	}
-	
+
 	@Override
 	public void entityEntering(TransporterStack stack)
 	{
@@ -498,29 +498,29 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
 		MekanismUtils.saveChunk(tile());
 	}
-	
+
 	@Override
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
-		
+
 		if(world().isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(tile())));
 		}
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		int type = dataStream.readInt();
-		
+
 		if(type == 0)
 		{
 			int c = dataStream.readInt();
-			
+
 			EnumColor prev = color;
-			
+
 			if(c != -1)
 			{
 				color = TransporterUtils.colors.get(c);
@@ -528,16 +528,16 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			else {
 				color = null;
 			}
-			
+
 			if(prev != color)
 			{
 				tile().markRender();
 			}
-			
+
 			transit.clear();
-			
+
 			int amount = dataStream.readInt();
-			
+
 			for(int i = 0; i < amount; i++)
 			{
 				transit.add(TransporterStack.readFromPacket(dataStream));
@@ -547,29 +547,29 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			boolean kill = dataStream.readBoolean();
 			int index = dataStream.readInt();
-			
+
 			if(kill)
 			{
 				transit.remove(index);
 			}
 			else {
 				TransporterStack stack = TransporterStack.readFromPacket(dataStream);
-				
+
 				if(stack.progress == 0)
 				{
 					stack.progress = 5;
 				}
-				
+
 				transit.replace(index, stack);
 			}
 		}
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		data.add(0);
-		
+
 		if(color != null)
 		{
 			data.add(TransporterUtils.colors.indexOf(color));
@@ -577,81 +577,81 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		else {
 			data.add(-1);
 		}
-		
+
 		data.add(transit.size());
-		
+
 		for(TransporterStack stack : transit)
 		{
 			stack.write(this, data);
 		}
-		
+
 		return data;
 	}
-	
+
 	public ArrayList getSyncPacket(TransporterStack stack, boolean kill)
 	{
 		ArrayList data = new ArrayList();
-		
+
 		data.add(1);
 		data.add(kill);
 		data.add(transit.indexOf(stack));
-		
+
 		if(!kill)
 		{
 			stack.write(this, data);
 		}
-		
+
 		return data;
 	}
-	
-	@Override
-    public void load(NBTTagCompound nbtTags)
-    {
-        super.load(nbtTags);
-        
-        if(nbtTags.hasKey("color"))
-        {
-        	color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
-        }
-        
-    	if(nbtTags.hasKey("stacks"))
-    	{
-    		NBTTagList tagList = nbtTags.getTagList("stacks");
-    		
-    		for(int i = 0; i < tagList.tagCount(); i++)
-    		{
-    			TransporterStack stack = TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i));
-    			
-    			transit.add(stack);
-    			TransporterManager.add(stack);
-    		}
-    	}
-    }
 
 	@Override
-    public void save(NBTTagCompound nbtTags)
-    {
-        super.save(nbtTags);
-        
-        if(color != null)
-        {
-        	nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
-        }
-        
-        NBTTagList stacks = new NBTTagList();
-        
-        for(TransporterStack stack : transit)
-        {
-        	NBTTagCompound tagCompound = new NBTTagCompound();
-        	stack.write(tagCompound);
-        	stacks.appendTag(tagCompound);
-        }
-        
-        if(stacks.tagCount() != 0)
-        {
-        	nbtTags.setTag("stacks", stacks);
-        }
-    }
+	public void load(NBTTagCompound nbtTags)
+	{
+		super.load(nbtTags);
+
+		if(nbtTags.hasKey("color"))
+		{
+			color = TransporterUtils.colors.get(nbtTags.getInteger("color"));
+		}
+
+		if(nbtTags.hasKey("stacks"))
+		{
+			NBTTagList tagList = nbtTags.getTagList("stacks");
+
+			for(int i = 0; i < tagList.tagCount(); i++)
+			{
+				TransporterStack stack = TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i));
+
+				transit.add(stack);
+				TransporterManager.add(stack);
+			}
+		}
+	}
+
+	@Override
+	public void save(NBTTagCompound nbtTags)
+	{
+		super.save(nbtTags);
+
+		if(color != null)
+		{
+			nbtTags.setInteger("color", TransporterUtils.colors.indexOf(color));
+		}
+
+		NBTTagList stacks = new NBTTagList();
+
+		for(TransporterStack stack : transit)
+		{
+			NBTTagCompound tagCompound = new NBTTagCompound();
+			stack.write(tagCompound);
+			stacks.appendTag(tagCompound);
+		}
+
+		if(stacks.tagCount() != 0)
+		{
+			nbtTags.setTag("stacks", stacks);
+		}
+	}
 
 	@Override
 	public boolean isSolidOnSide(ForgeDirection side)
@@ -660,69 +660,69 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid) 
+	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid) 
+	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return PipeUtils.EMPTY;
 	}
 
 	@Override
-	public IPipe getPipe() 
+	public IPipe getPipe()
 	{
 		return null;
 	}
 
 	@Override
-	public PipeType getPipeType() 
+	public PipeType getPipeType()
 	{
 		return PipeType.ITEM;
 	}
 
 	@Override
-	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from) 
+	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from)
 	{
 		if(doAdd)
 		{
 			TileEntity tile = Coord4D.get(tile()).getFromSide(from).getTileEntity(world());
-			
+
 			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
 			return TransporterManager.getToUse(stack, rejects).stackSize;
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public boolean isPipeConnected(ForgeDirection with) 
+	public boolean isPipeConnected(ForgeDirection with)
 	{
 		return true;
 	}
@@ -735,10 +735,10 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		tile().notifyPartChange(this);
 		PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()), 50D);
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
@@ -746,31 +746,31 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + (color != null ? color.getName() : "None")));
 		return true;
 	}
-	
+
 	@Override
 	public EnumColor getColor()
 	{
 		return color;
 	}
-	
+
 	@Override
 	public void setColor(EnumColor c)
 	{
 		color = c;
 	}
-	
+
 	@Override
 	public TileEntity getTile()
 	{
 		return tile();
 	}
-	
+
 	@Override
 	public EnumColor getRenderColor()
 	{
 		return color;
 	}
-	
+
 	@Override
 	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
 	{
@@ -778,10 +778,10 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			return false;
 		}
-		
+
 		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
 	}
-	
+
 	@Override
 	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
 	{
@@ -789,24 +789,24 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			return false;
 		}
-		
+
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
-	
+
 	@Override
 	public void onRemoved()
 	{
 		super.onRemoved();
-		
+
 		if(!world().isRemote)
 		{
 			for(TransporterStack stack : transit)
-    		{
-    			TransporterUtils.drop(this, stack);
-    		}
+			{
+				TransporterUtils.drop(this, stack);
+			}
 		}
 	}
-	
+
 	@Override
 	public int getCost()
 	{

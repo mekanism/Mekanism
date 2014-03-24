@@ -29,28 +29,28 @@ import com.google.common.io.ByteArrayDataInput;
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable
 {
 	public boolean isActive;
-	
+
 	public boolean clientActive;
-	
+
 	public final int MAX_DELAY = 10;
-	
+
 	public int addTicks = 0;
-	
+
 	public int delayTicks;
-	
+
 	public int cacheCount;
-	
+
 	public final int MAX_STORAGE = 4096;
-	
+
 	public ItemStack itemType;
-	
+
 	public ItemStack topStack;
 	public ItemStack bottomStack;
-	
+
 	public int prevCount;
-	
+
 	public int clientAmount;
-	
+
 	public void sortStacks()
 	{
 		if(getItemCount() == 0 || itemType == null)
@@ -59,13 +59,13 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			topStack = null;
 			bottomStack = null;
 			cacheCount = 0;
-			
+
 			return;
 		}
-		
+
 		int count = getItemCount();
 		int remain = MAX_STORAGE-count;
-		
+
 		if(remain >= itemType.getMaxStackSize())
 		{
 			topStack = null;
@@ -74,47 +74,47 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			topStack = itemType.copy();
 			topStack.stackSize = itemType.getMaxStackSize()-remain;
 		}
-		
+
 		count -= StackUtils.getSize(topStack);
-		
+
 		bottomStack = itemType.copy();
 		bottomStack.stackSize = Math.min(itemType.getMaxStackSize(), count);
-		
+
 		count -= StackUtils.getSize(bottomStack);
-		
+
 		cacheCount = count;
 	}
-	
+
 	public boolean isValid(ItemStack stack)
 	{
 		if(stack == null || stack.stackSize <= 0)
 		{
 			return false;
 		}
-		
+
 		if(stack.isItemStackDamageable() && stack.isItemDamaged())
 		{
 			return false;
 		}
-		
+
 		if(stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6)
 		{
 			return false;
 		}
-		
+
 		if(itemType == null)
 		{
 			return true;
 		}
-		
+
 		if(!stack.isItemEqual(itemType) || !ItemStack.areItemStackTagsEqual(stack, itemType))
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	public ItemStack add(ItemStack stack)
 	{
 		if(isValid(stack) && getItemCount() != MAX_STORAGE)
@@ -123,7 +123,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				setItemType(stack);
 			}
-			
+
 			if(getItemCount() + stack.stackSize <= MAX_STORAGE)
 			{
 				setItemCount(getItemCount() + stack.stackSize);
@@ -132,74 +132,74 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			else {
 				ItemStack rejects = itemType.copy();
 				rejects.stackSize = (getItemCount()+stack.stackSize) - MAX_STORAGE;
-				
+
 				setItemCount(MAX_STORAGE);
-				
+
 				return rejects;
 			}
 		}
-		
+
 		return stack;
 	}
-	
+
 	public ItemStack removeStack()
 	{
 		if(getItemCount() == 0)
 		{
 			return null;
 		}
-		
+
 		return remove(bottomStack.stackSize);
 	}
-	
+
 	public ItemStack remove(int amount)
 	{
 		if(getItemCount() == 0)
 		{
 			return null;
 		}
-		
+
 		ItemStack ret = itemType.copy();
 		ret.stackSize = Math.min(Math.min(amount, itemType.getMaxStackSize()), getItemCount());
-		
+
 		setItemCount(getItemCount() - ret.stackSize);
-		
+
 		return ret;
 	}
-	
+
 	public int getItemCount()
 	{
 		return StackUtils.getSize(bottomStack) + cacheCount + StackUtils.getSize(topStack);
 	}
-	
+
 	@Override
-	public void onUpdate() 
+	public void onUpdate()
 	{
 		if(!worldObj.isRemote)
 		{
 			addTicks = Math.max(0, addTicks-1);
 			delayTicks = Math.max(0, delayTicks-1);
-			
+
 			sortStacks();
-			
+
 			if(getItemCount() != prevCount)
 			{
 				onInventoryChanged();
 				MekanismUtils.saveChunk(this);
 			}
-			
+
 			if(delayTicks == 0)
 			{
 				if(bottomStack != null && isActive)
 				{
 					TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
-					
+
 					if(tile instanceof ILogisticalTransporter)
 					{
 						ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
-						
+
 						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
-						
+
 						if(TransporterManager.didEmit(bottomStack, rejects))
 						{
 							setInventorySlotContents(0, rejects);
@@ -209,7 +209,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					{
 						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
 					}
-					
+
 					delayTicks = 10;
 				}
 			}
@@ -218,73 +218,73 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			}
 		}
 	}
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
-		
+
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("itemCount", cacheCount);
-		
+
 		if(bottomStack != null)
 		{
 			nbtTags.setCompoundTag("bottomStack", bottomStack.writeToNBT(new NBTTagCompound()));
 		}
-		
+
 		if(topStack != null)
 		{
 			nbtTags.setCompoundTag("topStack", topStack.writeToNBT(new NBTTagCompound()));
 		}
-		
+
 		if(getItemCount() > 0)
 		{
 			nbtTags.setCompoundTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
-		
+
 		isActive = nbtTags.getBoolean("isActive");
 		cacheCount = nbtTags.getInteger("itemCount");
-		
+
 		bottomStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("bottomStack"));
 		topStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("topStack"));
-		
+
 		if(getItemCount() > 0)
 		{
 			itemType = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("itemType"));
 		}
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		
+
 		data.add(isActive);
 		data.add(getItemCount());
-		
+
 		if(getItemCount() > 0)
 		{
 			data.add(itemType.itemID);
 			data.add(itemType.getItemDamage());
 		}
-		
+
 		return data;
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
-		
+
 		isActive = dataStream.readBoolean();
 		clientAmount = dataStream.readInt();
-		
+
 		if(clientAmount > 0)
 		{
 			itemType = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
@@ -292,12 +292,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		else {
 			itemType = null;
 		}
-		
+
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
-	public ItemStack getStackInSlot(int slotID) 
+	public ItemStack getStackInSlot(int slotID)
 	{
 		if(slotID == 1)
 		{
@@ -307,10 +307,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			return bottomStack;
 		}
 	}
-	
+
 	@Override
-    public ItemStack decrStackSize(int slotID, int amount)
-    {
+	public ItemStack decrStackSize(int slotID, int amount)
+	{
 		if(slotID == 1)
 		{
 			return null;
@@ -318,35 +318,35 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		else if(slotID == 0)
 		{
 			int toRemove = Math.min(getItemCount(), amount);
-			
+
 			if(toRemove > 0)
 			{
 				ItemStack ret = itemType.copy();
 				ret.stackSize = toRemove;
-				
+
 				setItemCount(getItemCount()-toRemove);
-				
+
 				return ret;
 			}
 		}
-		
+
 		return null;
-    }
-	
-	@Override
-    public ItemStack getStackInSlotOnClosing(int slotID)
-    {
-		return getStackInSlot(slotID);
-    }
+	}
 
 	@Override
-	public int getSizeInventory() 
+	public ItemStack getStackInSlotOnClosing(int slotID)
+	{
+		return getStackInSlot(slotID);
+	}
+
+	@Override
+	public int getSizeInventory()
 	{
 		return 2;
 	}
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack itemstack) 
+	public void setInventorySlotContents(int i, ItemStack itemstack)
 	{
 		if(i == 0)
 		{
@@ -354,7 +354,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				return;
 			}
-			
+
 			if(itemstack == null)
 			{
 				setItemCount(getItemCount() - bottomStack.stackSize);
@@ -371,12 +371,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			}
 		}
 	}
-	
+
 	@Override
 	public void onInventoryChanged()
 	{
 		super.onInventoryChanged();
-		
+
 		if(!worldObj.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
@@ -385,7 +385,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			sortStacks();
 		}
 	}
-	
+
 	public void setItemType(ItemStack stack)
 	{
 		if(stack == null)
@@ -396,46 +396,46 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			bottomStack = null;
 			return;
 		}
-		
+
 		ItemStack ret = stack.copy();
 		ret.stackSize = 1;
 		itemType = ret;
 	}
-	
+
 	public void setItemCount(int count)
 	{
 		cacheCount = Math.max(0, count);
 		topStack = null;
 		bottomStack = null;
-		
+
 		if(count == 0)
 		{
 			setItemType(null);
 		}
-		
+
 		onInventoryChanged();
 	}
 
 	@Override
-	public String getInvName() 
+	public String getInvName()
 	{
 		return MekanismUtils.localize("tile.BasicBlock.Bin.name");
 	}
 
 	@Override
-	public boolean isInvNameLocalized() 
+	public boolean isInvNameLocalized()
 	{
 		return true;
 	}
 
 	@Override
-	public int getInventoryStackLimit() 
+	public int getInventoryStackLimit()
 	{
 		return 64;
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer entityplayer) 
+	public boolean isUseableByPlayer(EntityPlayer entityplayer)
 	{
 		return true;
 	}
@@ -447,13 +447,13 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public void closeChest() {}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack) 
+	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
 		return i == 1 ? isValid(itemstack) : false;
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side) 
+	public int[] getAccessibleSlotsFromSide(int side)
 	{
 		if(side == 1)
 		{
@@ -461,14 +461,14 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 		else if(side == 0)
 		{
-			return new int[] {0};		
+			return new int[] {0};
 		}
-		
+
 		return InventoryUtils.EMPTY;
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j) 
+	public boolean canInsertItem(int i, ItemStack itemstack, int j)
 	{
 		return isItemValidForSlot(i, itemstack);
 	}
@@ -478,7 +478,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		return i == 0 ? isValid(itemstack) : false;
 	}
-	
+
 	@Override
 	public boolean canSetFacing(int facing)
 	{
@@ -486,32 +486,32 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-    public void setActive(boolean active)
-    {
-    	isActive = active;
-    	
-    	if(clientActive != active)
-    	{
-    		PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
-    		
-    		clientActive = active;
-    	}
-    }
-    
-    @Override
-    public boolean getActive()
-    {
-    	return isActive;
-    }
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(clientActive != active)
+		{
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+
+			clientActive = active;
+		}
+	}
 
 	@Override
-	public boolean renderUpdate() 
+	public boolean getActive()
+	{
+		return isActive;
+	}
+
+	@Override
+	public boolean renderUpdate()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean lightUpdate() 
+	public boolean lightUpdate()
 	{
 		return true;
 	}
@@ -523,7 +523,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			return null;
 		}
-		
+
 		return MekanismUtils.size(itemType, getItemCount());
 	}
 
@@ -534,7 +534,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		{
 			setStoredItemType(null, 0);
 		}
-		
+
 		setItemCount(amount);
 	}
 
@@ -543,10 +543,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		itemType = type;
 		cacheCount = amount;
-		
+
 		topStack = null;
 		bottomStack = null;
-		
+
 		onInventoryChanged();
 	}
 

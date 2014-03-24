@@ -49,12 +49,12 @@ public class ModelChemicalInfuser extends ModelBase
 	ModelRenderer RGlassR;
 	ModelRenderer RGlassL;
 	ModelRenderer LGlassR;
-	
+
 	public ModelChemicalInfuser()
 	{
 		textureWidth = 128;
 		textureHeight = 128;
-		
+
 		Base = new ModelRenderer(this, 0, 0);
 		Base.addBox(0F, 0F, 0F, 16, 1, 16);
 		Base.setRotationPoint(-8F, 23F, -8F);
@@ -278,7 +278,7 @@ public class ModelChemicalInfuser extends ModelBase
 		LGlassR.mirror = true;
 		setRotation(LGlassR, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		Base.render(size);
@@ -306,20 +306,20 @@ public class ModelChemicalInfuser extends ModelBase
 		LTopW.render(size);
 		FrontPanel.render(size);
 		FrontConnection.render(size);
-		
+
 		GL11.glPushMatrix();
 		GL11.glScalef(0.999F, 0.999F, 0.999F);
 		RightConnection.render(size);
 		LeftConnection.render(size);
 		GL11.glPopMatrix();
 	}
-	
+
 	public void renderGlass(float size)
 	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		GL11.glColor4f(1, 1, 1, 0.2F);
-		
+
 		LGlassT.render(size);
 		RGlassT.render(size);
 		LGlassS.render(size);
@@ -330,12 +330,12 @@ public class ModelChemicalInfuser extends ModelBase
 		RGlassR.render(size);
 		RGlassL.render(size);
 		LGlassR.render(size);
-		
+
 		MekanismRenderer.blendOff();
 		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glPopMatrix();
 	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;

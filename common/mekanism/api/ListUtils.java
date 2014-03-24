@@ -164,69 +164,69 @@ public class ListUtils
 	{
 		return (List<V>)Arrays.asList(set.toArray());
 	}
-	
+
 	public static <V> List<V> asList(V... values)
 	{
 		return (List<V>)Arrays.asList(values);
 	}
-	
+
 	public static double[] splitDouble(int size, double num)
 	{
 		double[] split = new double[size];
-		
+
 		for(int i = 0; i < size; i++)
 		{
 			double remain = num%size;
 			double ret = (num-remain)/size;
 			ret += remain;
-			
+
 			split[i] = ret;
 			num -= remain;
 		}
-		
+
 		return split;
 	}
-	
+
 	public static double[] percent(double[] values)
 	{
 		double[] ret = new double[values.length];
 		double total = 0;
-		
+
 		for(double d : values) total += d;
-		
+
 		for(int i = 0; i < values.length; i++)
 		{
 			ret[i] = values[i]/total;
 		}
-		
+
 		return ret;
 	}
-	
+
 	public static int[] calcPercentInt(double[] percent, int val)
 	{
 		int[] ret = new int[percent.length];
-		
+
 		for(int i = 0; i < percent.length; i++)
 		{
 			ret[i] = (int)Math.round(val*percent[i]);
 		}
-		
+
 		int newTotal = 0;
 		for(int i : ret) newTotal += i;
-		
+
 		int diff = val-newTotal;
-		
+
 		if(diff != val)
 		{
 			for(int i = 0; i < ret.length; i++)
 			{
 				int num = ret[i];
-				
+
 				if(diff < 0 && num == 0)
 				{
 					continue;
 				}
-				
+
 				if(diff > 0)
 				{
 					ret[i]++;
@@ -237,46 +237,46 @@ public class ListUtils
 					ret[i]--;
 					diff++;
 				}
-				
+
 				if(diff == 0)
 				{
 					return ret;
 				}
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	public static int[] splitInt(int size, int num)
 	{
 		int[] split = new int[size];
-		
+
 		for(int i = 0; i < size; i++)
 		{
 			int remain = num%size;
 			int ret = (num-remain)/size;
 			ret += remain;
-			
+
 			split[i] = ret;
 			num -= remain;
 		}
-		
+
 		return split;
 	}
-	
+
 	public static double[] percent(int[] values)
 	{
 		double[] ret = new double[values.length];
 		double total = 0;
-		
+
 		for(double d : values) total += d;
-		
+
 		for(int i = 0; i < values.length; i++)
 		{
 			ret[i] = values[i]/total;
 		}
-		
+
 		return ret;
 	}
 }

@@ -16,14 +16,14 @@ public class MekanismKeyHandler extends KeyHandler
 {
 	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism Mode Switch", Keyboard.KEY_M);
 	public static KeyBinding voiceKey = new KeyBinding("Mekanism Voice", Keyboard.KEY_U);
-	
+
 	public MekanismKeyHandler()
 	{
 		super(new KeyBinding[] {modeSwitchKey, voiceKey}, new boolean[] {false, false});
 	}
 
 	@Override
-	public String getLabel() 
+	public String getLabel()
 	{
 		return "MekanismKey";
 	}
@@ -35,7 +35,7 @@ public class MekanismKeyHandler extends KeyHandler
 	public void keyUp(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd) {}
 
 	@Override
-	public EnumSet<TickType> ticks() 
+	public EnumSet<TickType> ticks()
 	{
 		return EnumSet.of(TickType.CLIENT);
 	}

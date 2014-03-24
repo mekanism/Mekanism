@@ -13,30 +13,30 @@ public class PacketDigitUpdate implements IMekanismPacket
 {
 	public int index;
 	public int digit;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "DigitUpdate";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		index = (Integer)data[0];
 		digit = (Integer)data[1];
-		
+
 		return this;
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		int index = dataStream.readInt();
 		int digit = dataStream.readInt();
-		
+
 		ItemStack currentStack = player.getCurrentEquippedItem();
-		
+
 		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();

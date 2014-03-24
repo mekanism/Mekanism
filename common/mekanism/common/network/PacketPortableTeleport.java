@@ -50,20 +50,27 @@ public class PacketPortableTeleport implements IMekanismPacket
 				
 				if(teleporter != null)
 				{
-					teleporter.didTeleport.add(player);
-					teleporter.teleDelay = 5;
-					
-					item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
-					
-					if(world.provider.dimensionId != coords.dimensionId)
-					{
-						((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
-					}
-					
-					((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
-					
-					world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+					try {
+						teleporter.didTeleport.add(player);
+						teleporter.teleDelay = 5;
+						
+						item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
+						
+						if(player instanceof EntityPlayerMP)
+						{
+							((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
+						}
+						
+						if(world.provider.dimensionId != coords.dimensionId)
+						{
+							((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
+						}
+						
+						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+						
+						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+					} catch(Exception e) {}
 				}
 			}
 		}

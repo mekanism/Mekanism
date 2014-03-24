@@ -19,13 +19,13 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 	{
 		super("Combiner.ogg", "Combiner", new ResourceLocation("mekanism", "gui/GuiCombiner.png"), Mekanism.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
 	}
-	
+
 	@Override
 	public Map getRecipes()
 	{
 		return Recipe.COMBINER.get();
 	}
-	
+
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
@@ -33,10 +33,10 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 		{
 			return new GasStack(GasRegistry.getGas("liquidStone"), 200);
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public boolean isValidGas(Gas gas)
 	{

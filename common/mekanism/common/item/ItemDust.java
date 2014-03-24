@@ -11,19 +11,19 @@ import net.minecraft.util.Icon;
 public class ItemDust extends ItemMekanism
 {
 	public Icon[] icons = new Icon[256];
-	
-	public static String[] en_USNames = {"Iron", "Gold", "Osmium", 
+
+	public static String[] en_USNames = {"Iron", "Gold", "Osmium",
 										"Obsidian", "Diamond", "Steel",
 										"Copper", "Tin", "Silver",
 										"Lead", "Sulfur"};
-	
+
 	public ItemDust(int id)
 	{
 		super(id);
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

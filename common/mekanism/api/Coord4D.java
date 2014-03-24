@@ -19,14 +19,14 @@ import com.google.common.io.ByteArrayDataInput;
  * @author aidancbrady
  *
  */
-public class Coord4D 
+public class Coord4D
 {
 	public int xCoord;
 	public int yCoord;
 	public int zCoord;
-	
+
 	public int dimensionId;
-	
+
 	/**
 	 * Creates a Coord4D WITHOUT a dimensionId. Don't use unless absolutely necessary.
 	 * @param x - x coordinate
@@ -38,10 +38,10 @@ public class Coord4D
 		xCoord = x;
 		yCoord = y;
 		zCoord = z;
-		
+
 		dimensionId = 0;
 	}
-	
+
 	/**
 	 * Creates a Coord4D from the defined x, y, z, and dimension values.
 	 * @param x - x coordinate
@@ -54,10 +54,10 @@ public class Coord4D
 		xCoord = x;
 		yCoord = y;
 		zCoord = z;
-		
+
 		dimensionId = dimension;
 	}
-	
+
 	/**
 	 * Gets the metadata of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in
@@ -67,7 +67,7 @@ public class Coord4D
 	{
 		return world.getBlockMetadata(xCoord, yCoord, zCoord);
 	}
-	
+
 	/**
 	 * Gets the block ID of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in
@@ -77,7 +77,7 @@ public class Coord4D
 	{
 		return world.getBlockId(xCoord, yCoord, zCoord);
 	}
-	
+
 	/**
 	 * Gets the TileEntity of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in
@@ -89,10 +89,10 @@ public class Coord4D
 		{
 			return null;
 		}
-		
+
 		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
 	}
-	
+
 	/**
 	 * Gets the Block value of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in
@@ -104,10 +104,10 @@ public class Coord4D
 		{
 			return null;
 		}
-		
+
 		return Block.blocksList[getBlockId(world)];
 	}
-	
+
 	/**
 	 * Writes this Coord4D's data to an NBTTagCompound.
 	 * @param nbtTags - tag compound to write to
@@ -119,10 +119,10 @@ public class Coord4D
 		nbtTags.setInteger("y", yCoord);
 		nbtTags.setInteger("z", zCoord);
 		nbtTags.setInteger("dimensionId", dimensionId);
-		
+
 		return nbtTags;
 	}
-	
+
 	/**
 	 * Writes this Coord4D's data to an ArrayList for packet transfer.
 	 * @param data - the ArrayList to add the data to
@@ -147,10 +147,10 @@ public class Coord4D
 		xCoord += x;
 		yCoord += y;
 		zCoord += z;
-		
+
 		return this;
 	}
-	
+
 	/**
 	 * Creates and returns a new Coord4D translated to the defined offsets of the side.
 	 * @param side - side to translate this Coord4D to
@@ -160,12 +160,12 @@ public class Coord4D
 	{
 		return getFromSide(side, 1);
 	}
-	
+
 	public Coord4D getFromSide(ForgeDirection side, int amount)
 	{
 		return new Coord4D(xCoord+(side.offsetX*amount), yCoord+(side.offsetY*amount), zCoord+(side.offsetZ*amount), dimensionId);
 	}
-	
+
 	/**
 	 * Returns a new Coord4D from a defined TileEntity's xCoord, yCoord and zCoord values.
 	 * @param tileEntity - TileEntity at the location that will represent this Coord4D
@@ -175,7 +175,7 @@ public class Coord4D
 	{
 		return new Coord4D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
 	}
-	
+
 	/**
 	 * Returns a new Coord4D from a tag compound.
 	 * @param nbtTags - tag compound to read from
@@ -185,7 +185,7 @@ public class Coord4D
 	{
 		return new Coord4D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
 	}
-	
+
 	/**
 	 * Returns a new Coord4D from a ByteArrayDataInput.
 	 * @param dataStream - data input to read from
@@ -195,7 +195,7 @@ public class Coord4D
 	{
 		return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}
-	
+
 	/**
 	 * Creates and returns a new Coord4D with values representing the difference between the defined Coord4D
 	 * @param other - the Coord4D to subtract from this
@@ -205,7 +205,7 @@ public class Coord4D
 	{
 		return new Coord4D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord, dimensionId);
 	}
-	
+
 	/**
 	 * A method used to find the ForgeDirection represented by the distance of the defined Coord4D. Most likely won't have many
 	 * applicable uses.
@@ -215,7 +215,7 @@ public class Coord4D
 	public ForgeDirection sideDifference(Coord4D other)
 	{
 		Coord4D diff = difference(other);
-		
+
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			if(side.offsetX == diff.xCoord && side.offsetY == diff.yCoord && side.offsetZ == diff.zCoord)
@@ -223,10 +223,10 @@ public class Coord4D
 				return side;
 			}
 		}
-		
+
 		return ForgeDirection.UNKNOWN;
 	}
-	
+
 	/**
 	 * Gets the distance to a defined Coord4D.
 	 * @param obj - the Coord4D to find the distance to
@@ -234,12 +234,12 @@ public class Coord4D
 	 */
 	public int distanceTo(Coord4D obj)
 	{
-	    int subX = xCoord - obj.xCoord;
-	    int subY = yCoord - obj.yCoord;
-	    int subZ = zCoord - obj.zCoord;
-	    return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
+		int subX = xCoord - obj.xCoord;
+		int subY = yCoord - obj.yCoord;
+		int subZ = zCoord - obj.zCoord;
+		return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
 	}
-	
+
 	/**
 	 * Whether or not the defined side of this Coord4D is visible.
 	 * @param side - side to check
@@ -250,7 +250,7 @@ public class Coord4D
 	{
 		return world.isAirBlock(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ);
 	}
-	
+
 	/**
 	 * Steps this Coord4D in the defined side's offset without creating a new value.
 	 * @param side - side to step towards
@@ -260,7 +260,7 @@ public class Coord4D
 	{
 		return translate(side.offsetX, side.offsetY, side.offsetZ);
 	}
-	
+
 	/**
 	 * Whether or not the chunk this Coord4D is in exists and is loaded.
 	 * @param world - world this Coord4D is in
@@ -270,7 +270,7 @@ public class Coord4D
 	{
 		return world.getChunkProvider().chunkExists(xCoord >> 4, zCoord >> 4);
 	}
-	
+
 	/**
 	 * Gets the chunk this Coord4D is in.
 	 * @param world - world this Coord4D is in
@@ -278,9 +278,18 @@ public class Coord4D
 	 */
 	public Chunk getChunk(World world)
 	{
-		return world.getChunkFromBlockCoords(xCoord >> 4, zCoord >> 4);
+		return world.getChunkFromBlockCoords(xCoord, zCoord);
 	}
 	
+	/**
+	 * Gets the Chunk3D object with chunk coordinates correlating to this Coord4D's location
+	 * @return Chunk3D with correlating chunk coordinates.
+	 */
+	public Chunk3D getChunk3D()
+	{
+		return new Chunk3D(this);
+	}
+
 	/**
 	 * Whether or not the block this Coord4D represents is an air block.
 	 * @param world - world this Coord4D is in
@@ -290,31 +299,31 @@ public class Coord4D
 	{
 		return world.isAirBlock(xCoord, yCoord, zCoord);
 	}
-	
+
 	@Override
 	public Coord4D clone()
 	{
 		return new Coord4D(xCoord, yCoord, zCoord, dimensionId);
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return "[Object3D: " + xCoord + ", " + yCoord + ", " + zCoord + "]";
+		return "[Coord4D: " + xCoord + ", " + yCoord + ", " + zCoord + ", dim=" + dimensionId + "]";
 	}
-	
+
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Coord4D && 
-				((Coord4D)obj).xCoord == xCoord && 
-				((Coord4D)obj).yCoord == yCoord && 
-				((Coord4D)obj).zCoord == zCoord && 
+		return obj instanceof Coord4D &&
+				((Coord4D)obj).xCoord == xCoord &&
+				((Coord4D)obj).yCoord == yCoord &&
+				((Coord4D)obj).zCoord == zCoord &&
 				((Coord4D)obj).dimensionId == dimensionId;
 	}
-	
+
 	@Override
-	public int hashCode() 
+	public int hashCode()
 	{
 		int code = 1;
 		code = 31 * code + xCoord;

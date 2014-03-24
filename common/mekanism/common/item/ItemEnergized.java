@@ -21,8 +21,8 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
-	
-	public ItemEnergized(int id, double maxElectricity, float voltage)
+
+	public ItemEnergized(int id, double maxElectricity)
 	{
 		super(id);
 		MAX_ELECTRICITY = maxElectricity;
@@ -31,20 +31,20 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 	}
-	
+
 	public ItemStack getUnchargedItem()
 	{
 		ItemStack charged = new ItemStack(this);
 		charged.setItemDamage(100);
 		return charged;
 	}
-	
+
 	@Override
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
@@ -55,7 +55,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy(charged));
 		list.add(charged);
 	}
-	
+
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
@@ -93,21 +93,21 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public double getEnergy(ItemStack itemStack) 
+	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null) 
-		{ 
-			return 0; 
+		if(itemStack.stackTagCompound == null)
+		{
+			return 0;
 		}
-		
+
 		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-		
+
 		return electricityStored;
 	}
 
 	@Override
-	public void setEnergy(ItemStack itemStack, double amount) 
+	public void setEnergy(ItemStack itemStack, double amount)
 	{
 		if(itemStack.stackTagCompound == null)
 		{
@@ -120,19 +120,19 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public double getMaxEnergy(ItemStack itemStack) 
+	public double getMaxEnergy(ItemStack itemStack)
 	{
 		return MAX_ELECTRICITY;
 	}
 
 	@Override
-	public double getMaxTransfer(ItemStack itemStack) 
+	public double getMaxTransfer(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)*0.005;
 	}
 
 	@Override
-	public boolean canReceive(ItemStack itemStack) 
+	public boolean canReceive(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)-getEnergy(itemStack) > 0;
 	}
@@ -150,34 +150,34 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
 			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
-			
+
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
-			
+
 			return (int)Math.round(toReceive*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public int extractEnergy(ItemStack theItem, int energy, boolean simulate) 
+	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
 			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
-			
+
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
-			
+
 			return (int)Math.round(toSend*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
@@ -192,7 +192,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	{
 		return (int)Math.round(getMaxEnergy(theItem)*Mekanism.TO_TE);
 	}
-	
+
 	@Override
 	public boolean isMetadataSpecific()
 	{
@@ -200,7 +200,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public IElectricItemManager getManager(ItemStack itemStack) 
+	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
 	}

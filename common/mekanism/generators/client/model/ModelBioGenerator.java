@@ -3,7 +3,7 @@ package mekanism.generators.client.model;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
-public class ModelBioGenerator extends ModelBase 
+public class ModelBioGenerator extends ModelBase
 {
 	ModelRenderer Base;
 	ModelRenderer Pipe1;
@@ -23,7 +23,7 @@ public class ModelBioGenerator extends ModelBase
 	ModelRenderer RightPanel;
 	ModelRenderer BackPanel;
 
-	public ModelBioGenerator() 
+	public ModelBioGenerator()
 	{
 		textureWidth = 64;
 		textureHeight = 64;
@@ -153,7 +153,7 @@ public class ModelBioGenerator extends ModelBase
 		BackPanel.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

@@ -23,31 +23,31 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		super("ChemicalInjectionChamber.ogg", "ChemicalInjectionChamber", new ResourceLocation("mekanism", "gui/GuiChemicalInjectionChamber.png"), Mekanism.chemicalInjectionChamberUsage, 1, 200, MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
 	}
-	
+
 	@Override
 	public Map getRecipes()
 	{
 		return Recipe.CHEMICAL_INJECTION_CHAMBER.get();
 	}
-	
+
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
-		
+
 		return null;
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
 		if(isValidGas(stack.getGas()))
 		{
 			return gasTank.receive(stack, true);
 		}
-		
+
 		return 0;
 	}
 
@@ -56,23 +56,23 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		return isValidGas(type);
 	}
-	
+
 	@Override
 	public void handleSecondaryFuel()
 	{
 		if(inventory[1] != null && gasTank.getNeeded() > 0 && inventory[1].getItem() instanceof IGasItem)
 		{
 			GasStack gas = ((IGasItem)inventory[1].getItem()).getGas(inventory[1]);
-			
+
 			if(gas != null && isValidGas(gas.getGas()))
 			{
 				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
 				gasTank.receive(removed, true);
 			}
-			
+
 			return;
 		}
-		
+
 		super.handleSecondaryFuel();
 	}
 
@@ -81,7 +81,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		return true;
 	}
-	
+
 	@Override
 	public boolean isValidGas(Gas gas)
 	{

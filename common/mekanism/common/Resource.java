@@ -10,14 +10,14 @@ public enum Resource
 	SILVER("Silver"),
 	OBSIDIAN("Obsidian"),
 	LEAD("Lead");
-	
+
 	private String name;
-	
+
 	private Resource(String s)
 	{
 		name = s;
 	}
-	
+
 	public static Resource getFromName(String s)
 	{
 		for(Resource r : values())
@@ -27,10 +27,10 @@ public enum Resource
 				return r;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	public String getName()
 	{
 		return name;

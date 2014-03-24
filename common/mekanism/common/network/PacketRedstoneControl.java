@@ -15,19 +15,19 @@ public class PacketRedstoneControl implements IMekanismPacket
 {
 	public Coord4D coord;
 	public RedstoneControl value;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "RedstoneControl";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		coord = (Coord4D)data[0];
 		value = (RedstoneControl)data[1];
-		
+
 		return this;
 	}
 
@@ -36,9 +36,9 @@ public class PacketRedstoneControl implements IMekanismPacket
 	{
 		Coord4D obj = Coord4D.read(dataStream);
 		RedstoneControl control = RedstoneControl.values()[dataStream.readInt()];
-		
+
 		TileEntity tileEntity = obj.getTileEntity(world);
-		
+
 		if(tileEntity instanceof IRedstoneControl)
 		{
 			((IRedstoneControl)tileEntity).setControlType(control);
@@ -52,7 +52,7 @@ public class PacketRedstoneControl implements IMekanismPacket
 		dataStream.writeInt(coord.yCoord);
 		dataStream.writeInt(coord.zCoord);
 		dataStream.writeInt(coord.dimensionId);
-		
+
 		dataStream.writeInt(value.ordinal());
 	}
 }

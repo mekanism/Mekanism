@@ -28,7 +28,7 @@ public final class ChargeUtils
 			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
 				IElectricItem item = (IElectricItem)storer.inventory[slotID].getItem();
-				
+
 				if(item.canProvideEnergy(storer.inventory[slotID]))
 				{
 					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
@@ -39,25 +39,25 @@ public final class ChargeUtils
 			{
 				ItemStack itemStack = storer.inventory[slotID];
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
-				
+
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
 				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_TE)));
-				
+
 				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 			else if(storer.inventory[slotID].itemID == Item.redstone.itemID && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
 				storer.setEnergy(storer.getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
 				storer.inventory[slotID].stackSize--;
-				
-	            if(storer.inventory[slotID].stackSize <= 0)
-	            {
-	                storer.inventory[slotID] = null;
-	            }
+
+				if(storer.inventory[slotID].stackSize <= 0)
+				{
+					storer.inventory[slotID] = null;
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Universally charges an item, and updates the TileEntity's energy level.
 	 * @param slotID - ID of the slot of which to discharge
@@ -80,10 +80,10 @@ public final class ChargeUtils
 			{
 				ItemStack itemStack = storer.inventory[slotID];
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
-				
+
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack)));
 				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE)));
-				
+
 				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 			}
 		}
@@ -96,8 +96,8 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeDischarged(ItemStack itemstack)
 	{
-		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) || 
-				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canSend(itemstack)) || 
+		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) ||
+				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canSend(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
 				itemstack.itemID == Item.redstone.itemID;
 	}
@@ -109,7 +109,7 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeCharged(ItemStack itemstack)
 	{
-		return itemstack.getItem() instanceof IElectricItem || 
+		return itemstack.getItem() instanceof IElectricItem ||
 				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canReceive(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0);
 	}
@@ -125,7 +125,7 @@ public final class ChargeUtils
 	{
 		if(chargeSlot)
 		{
-	    	return itemstack.getItem() instanceof IElectricItem;
+			return itemstack.getItem() instanceof IElectricItem;
 		}
 		else {
 			return itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack);

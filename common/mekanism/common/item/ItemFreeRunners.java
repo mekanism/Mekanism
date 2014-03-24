@@ -35,7 +35,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 {
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY = 64000;
-	
+
 	public ItemFreeRunners(int id)
 	{
 		super(id, EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
@@ -45,45 +45,45 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		setCreativeTab(Mekanism.tabMekanism);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register) {}
-	
+
 	@Override
-    public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
-    {
-    	return armorType == 3;
-    }
-	
+	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
+	{
+		return armorType == 3;
+	}
+
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
-    {
+	{
 		return "mekanism:render/NullArmor.png";
-    }
-	
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
-    {
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 		model.modelType = ArmorModel.FREERUNNERS;
-        return model;
-    }
-	
+		return model;
+	}
+
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		list.add(EnumColor.AQUA + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 	}
-	
+
 	public ItemStack getUnchargedItem()
 	{
 		ItemStack charged = new ItemStack(this);
 		charged.setItemDamage(100);
 		return charged;
 	}
-	
+
 	@Override
 	public void getSubItems(int i, CreativeTabs tabs, List list)
 	{
@@ -94,7 +94,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		setEnergy(charged, ((IEnergizedItem)charged.getItem()).getMaxEnergy(charged));
 		list.add(charged);
 	}
-	
+
 	@Override
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
@@ -132,21 +132,21 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public double getEnergy(ItemStack itemStack) 
+	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null) 
-		{ 
-			return 0; 
+		if(itemStack.stackTagCompound == null)
+		{
+			return 0;
 		}
-		
+
 		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
-		
+
 		return electricityStored;
 	}
 
 	@Override
-	public void setEnergy(ItemStack itemStack, double amount) 
+	public void setEnergy(ItemStack itemStack, double amount)
 	{
 		if(itemStack.stackTagCompound == null)
 		{
@@ -159,19 +159,19 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public double getMaxEnergy(ItemStack itemStack) 
+	public double getMaxEnergy(ItemStack itemStack)
 	{
 		return MAX_ELECTRICITY;
 	}
 
 	@Override
-	public double getMaxTransfer(ItemStack itemStack) 
+	public double getMaxTransfer(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)*0.005;
 	}
 
 	@Override
-	public boolean canReceive(ItemStack itemStack) 
+	public boolean canReceive(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)-getEnergy(itemStack) > 0;
 	}
@@ -189,34 +189,34 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
 			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
-			
+
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
-			
+
 			return (int)Math.round(toReceive*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public int extractEnergy(ItemStack theItem, int energy, boolean simulate) 
+	public int extractEnergy(ItemStack theItem, int energy, boolean simulate)
 	{
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
 			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
-			
+
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
-			
+
 			return (int)Math.round(toSend*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
@@ -231,7 +231,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	{
 		return (int)Math.round(getMaxEnergy(theItem)*Mekanism.TO_TE);
 	}
-	
+
 	@Override
 	public boolean isMetadataSpecific()
 	{
@@ -239,21 +239,21 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public IElectricItemManager getManager(ItemStack itemStack) 
+	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
 	}
-	
+
 	@ForgeSubscribe
 	public void onEntityAttacked(LivingAttackEvent event)
 	{
 		EntityLivingBase base = event.entityLiving;
-		
+
 		if(base.getCurrentItemOrArmor(1) != null && base.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
 		{
 			ItemStack stack = base.getCurrentItemOrArmor(1);
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
-			
+
 			if(boots.getEnergy(stack) > 0 && event.source == DamageSource.fall)
 			{
 				boots.setEnergy(stack, boots.getEnergy(stack)-event.ammount*50);

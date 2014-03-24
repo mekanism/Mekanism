@@ -18,7 +18,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	public int mainX;
 	public int mainY;
 	public int mainZ;
-	
+
 	public boolean prevPower;
 
 	public void setMainLocation(int x, int y, int z)
@@ -28,38 +28,38 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 			mainX = x;
 			mainY = y;
 			mainZ = z;
-			
+
 			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
-	
+
 	@Override
 	public void validate()
 	{
 		super.validate();
-		
+
 		if(worldObj.isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
 		}
 	}
-	
+
 	@Override
 	public boolean canUpdate()
 	{
 		return false;
 	}
-	
+
 	public void onNeighborChange(int id)
 	{
 		TileEntity tile = worldObj.getBlockTileEntity(mainX, mainY, mainZ);
-		
+
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
-			
+
 			boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-			
+
 			if(prevPower != power)
 			{
 				if(power)
@@ -69,15 +69,15 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				else {
 					onNoPower();
 				}
-				
+
 				prevPower = power;
 				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.worldObj.provider.dimensionId);
 			}
 		}
 	}
-	
+
 	public void onPower() {}
-	
+
 	public void onNoPower() {}
 
 	@Override
@@ -88,29 +88,29 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		mainZ = dataStream.readInt();
 		prevPower = dataStream.readBoolean();
 	}
-	
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        mainX = nbtTags.getInteger("mainX");
-        mainY = nbtTags.getInteger("mainY");
-        mainZ = nbtTags.getInteger("mainZ");
-        prevPower = nbtTags.getBoolean("prevPower");
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setInteger("mainX", mainX);
-        nbtTags.setInteger("mainY", mainY);
-        nbtTags.setInteger("mainZ", mainZ);
-        nbtTags.setBoolean("prevPower", prevPower);
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		mainX = nbtTags.getInteger("mainX");
+		mainY = nbtTags.getInteger("mainY");
+		mainZ = nbtTags.getInteger("mainZ");
+		prevPower = nbtTags.getBoolean("prevPower");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("mainX", mainX);
+		nbtTags.setInteger("mainY", mainY);
+		nbtTags.setInteger("mainZ", mainZ);
+		nbtTags.setBoolean("prevPower", prevPower);
+	}
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -118,7 +118,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		data.add(mainY);
 		data.add(mainZ);
 		data.add(prevPower);
-		
+
 		return data;
 	}
 }

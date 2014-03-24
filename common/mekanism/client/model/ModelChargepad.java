@@ -15,7 +15,7 @@ public class ModelChargepad extends ModelBase
 	ModelRenderer Shape4;
 	ModelRenderer Shape5;
 
-	public ModelChargepad() 
+	public ModelChargepad()
 	{
 		textureWidth = 64;
 		textureHeight = 64;
@@ -61,7 +61,7 @@ public class ModelChargepad extends ModelBase
 		Shape5.render(size);
 	}
 
-	private void setRotation(ModelRenderer model, float x, float y, float z) 
+	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;
 		model.rotateAngleY = y;

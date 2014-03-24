@@ -17,32 +17,32 @@ public class ItemProxy extends Item
 		super(id);
 		setMaxDamage(1);
 	}
-	
+
 	@Override
 	public ItemStack getContainerItemStack(ItemStack stack)
 	{
 		return getSavedItem(stack) != null ? getSavedItem(stack) : getDead();
 	}
-	
+
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
 		return stack.stackTagCompound == null || !stack.stackTagCompound.getBoolean("hasStack");
 	}
-	
+
 	@Override
 	public boolean hasContainerItem()
 	{
 		return true; //TODO forge PR
 	}
-	
+
 	public void setSavedItem(ItemStack stack, ItemStack save)
 	{
 		if(stack.stackTagCompound == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
-		
+
 		if(save == null)
 		{
 			stack.stackTagCompound.setBoolean("hasStack", false);
@@ -53,28 +53,28 @@ public class ItemProxy extends Item
 			stack.stackTagCompound.setCompoundTag("savedItem", save.writeToNBT(new NBTTagCompound()));
 		}
 	}
-	
+
 	public ItemStack getSavedItem(ItemStack stack)
 	{
 		if(stack.stackTagCompound == null)
 		{
 			return null;
 		}
-		
+
 		if(stack.stackTagCompound.getBoolean("hasStack"))
 		{
 			return ItemStack.loadItemStackFromNBT(stack.stackTagCompound.getCompoundTag("savedItem"));
 		}
-		
+
 		return null;
 	}
-	
+
 	public static ItemStack getDead()
 	{
 		ItemStack stack = new ItemStack(Mekanism.ItemProxy);
 		stack.stackSize = 0;
 		stack.setItemDamage(2);
-		
+
 		return stack;
 	}
 
@@ -87,11 +87,10 @@ public class ItemProxy extends Item
 		if (par3Entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) par3Entity;
-			for (Object o : player.inventoryContainer.inventorySlots)
+			for (int i = 0; i < player.inventory.mainInventory.length; i++)
 			{
-				Slot s = (Slot) o;
-				if (s.getStack() != null && s.getStack().getItem() == this)
-					player.inventory.decrStackSize(s.slotNumber, 64);
+				if (player.inventory.mainInventory[i] != null && player.inventory.mainInventory[i].getItem() == this)
+					player.inventory.mainInventory[i] = null;					
 			}
 		}
 	}

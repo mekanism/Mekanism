@@ -12,7 +12,7 @@ public class TileEntityEliteFactory extends TileEntityFactory
 	public TileEntityEliteFactory()
 	{
 		super(FactoryTier.ELITE, MachineType.ELITE_FACTORY);
-		
+
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
 		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));

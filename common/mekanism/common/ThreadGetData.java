@@ -14,13 +14,13 @@ public class ThreadGetData extends Thread
 		setDaemon(true);
 		start();
 	}
-	
+
 	@Override
 	public void run()
 	{
 		Mekanism.latestVersionNumber = MekanismUtils.getLatestVersion();
 		Mekanism.recentNews = MekanismUtils.getRecentNews();
-		
+
 		MekanismUtils.updateDonators();
 	}
 }

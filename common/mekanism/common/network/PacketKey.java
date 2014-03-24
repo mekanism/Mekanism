@@ -12,35 +12,35 @@ public class PacketKey implements IMekanismPacket
 {
 	public int key;
 	public boolean add;
-	
+
 	@Override
-	public String getName() 
+	public String getName()
 	{
 		return "Key";
 	}
-	
+
 	@Override
 	public IMekanismPacket setParams(Object... data)
 	{
 		key = (Integer)data[0];
 		add = (Boolean)data[1];
-		
+
 		return this;
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
- 		key = dataStream.readInt();
- 		add = dataStream.readBoolean();
- 		
- 		if(add)
- 		{
- 			Mekanism.keyMap.add(player, key);
- 		}
- 		else {
- 			Mekanism.keyMap.remove(player, key);
- 		}
+		key = dataStream.readInt();
+		add = dataStream.readBoolean();
+
+		if(add)
+		{
+			Mekanism.keyMap.add(player, key);
+		}
+		else {
+			Mekanism.keyMap.remove(player, key);
+		}
 	}
 
 	@Override

@@ -11,16 +11,16 @@ import net.minecraft.util.Icon;
 public class ItemIngot extends ItemMekanism
 {
 	public Icon[] icons = new Icon[256];
-	
+
 	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", "Glowstone", "Steel", "Copper", "Tin"};
-	
+
 	public ItemIngot(int id)
 	{
 		super(id);
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-	
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

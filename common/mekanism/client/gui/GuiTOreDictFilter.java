@@ -3,10 +3,9 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -15,7 +14,6 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.transporter.TOreDictFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -30,71 +28,75 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiTOreDictFilter extends GuiMekanism
 {
 	public TileEntityLogisticalSorter tileEntity;
-	
+
 	public boolean isNew = false;
-	
+
 	public TOreDictFilter origFilter;
-	
+
 	public TOreDictFilter filter = new TOreDictFilter();
-	
+
 	private GuiTextField oreDictText;
-	
+
 	public ItemStack renderStack;
-	
+
 	public int ticker = 0;
-	
+
 	public int stackSwitch = 0;
-	
+
 	public int stackIndex = 0;
-	
+
 	public List<ItemStack> iterStacks;
-	
+
 	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
-	
+
 	public GuiTOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
-		
+
 		origFilter = (TOreDictFilter)tileEntity.filters.get(index);
 		filter = ((TOreDictFilter)tentity.filters.get(index)).clone();
-		
+
 		updateStackList(filter.oreDictName);
 	}
-	
+
 	public GuiTOreDictFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
-		
+
 		isNew = true;
 	}
-	
+
 	@Override
 	public void initGui()
 	{
 		super.initGui();
-		
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-		
+
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 27, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.save")));
 		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 60, 20, MekanismUtils.localize("gui.delete")));
-		
+
 		if(isNew)
 		{
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
-		
+
 		oreDictText = new GuiTextField(fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
 		oreDictText.setMaxStringLength(12);
 		oreDictText.setFocused(true);
 	}
-	
+
 	@Override
 	public void keyTyped(char c, int i)
 	{
@@ -102,31 +104,31 @@ public class GuiTOreDictFilter extends GuiMekanism
 		{
 			super.keyTyped(c, i);
 		}
-		
+
 		if(oreDictText.isFocused() && i == Keyboard.KEY_RETURN)
 		{
 			setOreDictKey();
 			return;
 		}
-		
+
 		if(Character.isLetter(c) || Character.isDigit(c) || c == '*' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
 			oreDictText.textboxKeyTyped(c, i);
 		}
 	}
-	
+
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
 		super.actionPerformed(guibutton);
-		
+
 		if(guibutton.id == 0)
 		{
 			if(!oreDictText.getText().isEmpty())
 			{
 				setOreDictKey();
 			}
-			
+
 			if(filter.oreDictName != null && !filter.oreDictName.isEmpty())
 			{
 				if(isNew)
@@ -136,7 +138,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 				else {
 					PacketHandler.sendPacket(Transmission.SERVER, new PacketEditFilter().setParams(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
-				
+
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
 			else {
@@ -150,17 +152,17 @@ public class GuiTOreDictFilter extends GuiMekanism
 			PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 		}
 	}
-	
+
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
-    {	
+	{
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-		
+
 		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
 		fontRenderer.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
-		
+
 		if(renderStack != null)
 		{
 			try {
@@ -171,21 +173,21 @@ public class GuiTOreDictFilter extends GuiMekanism
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
 		}
-		
+
 		if(filter.color != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glColor4f(1, 1, 1, 1);
-	        GL11.glEnable(GL11.GL_LIGHTING);
-	        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-	        
-	        mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
-			
+
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
-		
+
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
 			if(filter.color != null)
@@ -196,24 +198,24 @@ public class GuiTOreDictFilter extends GuiMekanism
 				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
-		
+
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
+	}
 
 	@Override
-    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
-    {
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
+	{
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-		
+
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTOreDictFilter.png"));
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int guiWidth = (width - xSize) / 2;
-        int guiHeight = (height - ySize) / 2;
-        drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-        
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-		
+
 		if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 		{
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 0, 11, 11);
@@ -221,7 +223,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 5, guiHeight + 5, 176, 11, 11, 11);
 		}
-		
+
 		if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 		{
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 0, 12, 12);
@@ -229,17 +231,17 @@ public class GuiTOreDictFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
-		
-        oreDictText.drawTextBox();
-    }
-	
+
+		oreDictText.drawTextBox();
+	}
+
 	@Override
 	public void updateScreen()
 	{
 		super.updateScreen();
-		
+
 		oreDictText.updateCursorCounter();
-		
+
 		if(ticker > 0)
 		{
 			ticker--;
@@ -247,16 +249,16 @@ public class GuiTOreDictFilter extends GuiMekanism
 		else {
 			status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 		}
-		
+
 		if(stackSwitch > 0)
 		{
 			stackSwitch--;
 		}
-		
+
 		if(stackSwitch == 0 && iterStacks != null && iterStacks.size() > 0)
 		{
 			stackSwitch = 20;
-			
+
 			if(stackIndex == -1 || stackIndex == iterStacks.size()-1)
 			{
 				stackIndex = 0;
@@ -265,7 +267,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			{
 				stackIndex++;
 			}
-			
+
 			renderStack = iterStacks.get(stackIndex);
 		}
 		else if(iterStacks != null && iterStacks.size() == 0)
@@ -273,132 +275,132 @@ public class GuiTOreDictFilter extends GuiMekanism
 			renderStack = null;
 		}
 	}
-	
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int button)
-    {
-        super.mouseClicked(mouseX, mouseY, button);
-        
-        oreDictText.mouseClicked(mouseX, mouseY, button);
-        
+
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+
+		oreDictText.mouseClicked(mouseX, mouseY, button);
+
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
-        
-    	if(button == 0)
-		{	
+
+		if(button == 0)
+		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0));
 			}
-			
+
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				setOreDictKey();
 			}
 		}
-    	
-    	if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
+
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
 		{
 			button = 2;
 		}
-    	
+
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-           	mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-           	
-           	if(button == 0)
-           	{
-           		filter.color = TransporterUtils.increment(filter.color);
-           	}
-           	else if(button == 1)
-           	{
-           		filter.color = TransporterUtils.decrement(filter.color);
-           	}
-           	else if(button == 2)
-           	{
-           		filter.color = null;
-           	}
+			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+
+			if(button == 0)
+			{
+				filter.color = TransporterUtils.increment(filter.color);
+			}
+			else if(button == 1)
+			{
+				filter.color = TransporterUtils.decrement(filter.color);
+			}
+			else if(button == 2)
+			{
+				filter.color = null;
+			}
 		}
-    }
-    
-    private void updateStackList(String oreName)
-    {
-       	if(iterStacks == null)
-    	{
-    		iterStacks = new ArrayList<ItemStack>();
-    	}
-    	else {
-    		iterStacks.clear();
-    	}
-    	
-    	List<String> keys = new ArrayList<String>();
-    	
-    	for(String s : OreDictionary.getOreNames())
-    	{
-    		if(oreName.equals(s) || oreName.equals("*"))
-    		{
-    			keys.add(s);
-    		}
-    		else if(oreName.endsWith("*") && !oreName.startsWith("*"))
-    		{
-    			if(s.startsWith(oreName.substring(0, oreName.length()-1)))
-    			{
-    				keys.add(s);
-    			}
-    		}
-    		else if(oreName.startsWith("*") && !oreName.endsWith("*"))
-    		{
-    			if(s.endsWith(oreName.substring(1)))
-    			{
-    				keys.add(s);
-    			}
-    		}
-    		else if(oreName.startsWith("*") && oreName.endsWith("*"))
-    		{
-    			if(s.contains(oreName.substring(1, oreName.length()-1)))
-    			{
-    				keys.add(s);
-    			}
-    		}
-    	}
-    	
-    	for(String key : keys)
-    	{
-    		for(ItemStack stack : OreDictionary.getOres(key))
-    		{
-    			ItemStack toAdd = stack.copy();
-    			
-    			if(!iterStacks.contains(stack))
-    			{
-    				iterStacks.add(stack.copy());
-    			}
-    		}
-    	}
-    	
-    	stackSwitch = 0;
-    	stackIndex = -1;
-    }
-    
-    private void setOreDictKey()
-    {
-    	String oreName = oreDictText.getText();
-    	
-    	if(oreName == null || oreName.isEmpty())
-    	{
-    		status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
-    		return;
-    	}
-    	else if(oreName.equals(filter.oreDictName))
-    	{
-    		status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.sameKey");
-    		return;
-    	}
-    	
-    	updateStackList(oreName);
-    	
-    	filter.oreDictName = oreName;
-    	oreDictText.setText("");
-    }
+	}
+
+	private void updateStackList(String oreName)
+	{
+		if(iterStacks == null)
+		{
+			iterStacks = new ArrayList<ItemStack>();
+		}
+		else {
+			iterStacks.clear();
+		}
+
+		List<String> keys = new ArrayList<String>();
+
+		for(String s : OreDictionary.getOreNames())
+		{
+			if(oreName.equals(s) || oreName.equals("*"))
+			{
+				keys.add(s);
+			}
+			else if(oreName.endsWith("*") && !oreName.startsWith("*"))
+			{
+				if(s.startsWith(oreName.substring(0, oreName.length()-1)))
+				{
+					keys.add(s);
+				}
+			}
+			else if(oreName.startsWith("*") && !oreName.endsWith("*"))
+			{
+				if(s.endsWith(oreName.substring(1)))
+				{
+					keys.add(s);
+				}
+			}
+			else if(oreName.startsWith("*") && oreName.endsWith("*"))
+			{
+				if(s.contains(oreName.substring(1, oreName.length()-1)))
+				{
+					keys.add(s);
+				}
+			}
+		}
+
+		for(String key : keys)
+		{
+			for(ItemStack stack : OreDictionary.getOres(key))
+			{
+				ItemStack toAdd = stack.copy();
+
+				if(!iterStacks.contains(stack))
+				{
+					iterStacks.add(stack.copy());
+				}
+			}
+		}
+
+		stackSwitch = 0;
+		stackIndex = -1;
+	}
+
+	private void setOreDictKey()
+	{
+		String oreName = oreDictText.getText();
+
+		if(oreName == null || oreName.isEmpty())
+		{
+			status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
+			return;
+		}
+		else if(oreName.equals(filter.oreDictName))
+		{
+			status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.sameKey");
+			return;
+		}
+
+		updateStackList(oreName);
+
+		filter.oreDictName = oreName;
+		oreDictText.setText("");
+	}
 }

@@ -21,12 +21,12 @@ public class ModelElectricPump extends ModelBase
 	ModelRenderer Ring2;
 	ModelRenderer Plug;
 	ModelRenderer Ring3;
-	
+
 	public ModelElectricPump()
 	{
 		textureWidth = 64;
 		textureHeight = 64;
-		
+
 		PumpHead = new ModelRenderer(this, 33, 0);
 		PumpHead.addBox(0F, 0F, 0F, 6, 3, 6);
 		PumpHead.setRotationPoint(-3F, 19F, -3F);
@@ -100,7 +100,7 @@ public class ModelElectricPump extends ModelBase
 		Ring3.mirror = true;
 		setRotation(Ring3, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		PumpHead.render(size);
@@ -116,7 +116,7 @@ public class ModelElectricPump extends ModelBase
 		Plug.render(size);
 		Ring3.render(size);
 	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;

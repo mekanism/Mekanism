@@ -34,13 +34,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
-	
+
 	/** Maximum amount of energy this machine can hold. */
 	public double MAX_ELECTRICITY;
-	
+
 	/** BuildCraft power handler. */
 	public PowerHandler powerHandler;
-	
+
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
 	 * and a current amount of stored energy.
@@ -51,12 +51,12 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
-		
+
 		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
 		powerHandler.configurePowerPerdition(0, 0);
 		powerHandler.configure(0, 0, 0, 0);
 	}
-	
+
 	public void register()
 	{
 		if(!worldObj.isRemote)
@@ -69,12 +69,24 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 	}
 	
+	public void deregister()
+	{
+		if(!worldObj.isRemote)
+		{
+			if(Mekanism.ic2Registered.contains(Coord4D.get(this)))
+			{
+				Mekanism.ic2Registered.remove(Coord4D.get(this));
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+			}
+		}
+	}
+
 	@Override
 	public void onUpdate()
 	{
 		reconfigure();
 	}
-	
+
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
@@ -86,38 +98,38 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		set.remove(ForgeDirection.UNKNOWN);
 		return set;
 	}
-	
+
 	public double getMaxOutput()
 	{
 		return 0;
 	}
-	
+
 	@Override
 	public double getEnergy()
 	{
 		return electricityStored;
 	}
-	
+
 	@Override
 	public void setEnergy(double energy)
 	{
 		electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
 		MekanismUtils.saveChunk(this);
 	}
-	
+
 	@Override
 	public double getMaxEnergy()
 	{
 		return MAX_ELECTRICITY;
 	}
-	
+
 	@Override
 	public void handlePacketData(ByteArrayDataInput dataStream)
 	{
 		super.handlePacketData(dataStream);
 		setEnergy(dataStream.readDouble());
 	}
-	
+
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -125,59 +137,51 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		data.add(getEnergy());
 		return data;
 	}
-	
+
 	@Override
 	public void onChunkUnload()
 	{
-		if(!worldObj.isRemote)
-		{
-			Mekanism.ic2Registered.remove(Coord4D.get(this));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}
-		
+		deregister();
+
 		super.onChunkUnload();
 	}
-	
+
 	@Override
 	public void invalidate()
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote)
-		{
-			Mekanism.ic2Registered.remove(Coord4D.get(this));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}
+		deregister();
 	}
-    
-	@Override
-    public void readFromNBT(NBTTagCompound nbtTags)
-    {
-        super.readFromNBT(nbtTags);
-
-        electricityStored = nbtTags.getDouble("electricityStored");
-        reconfigure();
-    }
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbtTags)
-    {
-        super.writeToNBT(nbtTags);
-        
-        nbtTags.setDouble("electricityStored", getEnergy());
-    }
-	
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		electricityStored = nbtTags.getDouble("electricityStored");
+		reconfigure();
+	}
+
 	@Override
-	public PowerReceiver getPowerReceiver(ForgeDirection side) 
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setDouble("electricityStored", getEnergy());
+	}
+
+	@Override
+	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
 		if(getConsumingSides().contains(side))
 		{
 			return powerHandler.getPowerReceiver();
 		}
-		
+
 		return null;
 	}
-	
+
 	protected void reconfigure()
 	{
 		if(MekanismUtils.useBuildCraft())
@@ -185,9 +189,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			powerHandler.configure(1, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
 		}
 	}
-	
+
 	@Override
-	public void doWork(PowerHandler workProvider) 
+	public void doWork(PowerHandler workProvider)
 	{
 		if(powerHandler.getEnergyStored() > 0)
 		{
@@ -195,19 +199,19 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			{
 				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
 			}
-			
+
 			powerHandler.setEnergy(0);
 		}
-		
+
 		reconfigure();
 	}
-	
+
 	@Override
 	public World getWorld()
 	{
 		return worldObj;
 	}
-	
+
 	/**
 	 * Gets the scaled energy level for the GUI.
 	 * @param i - multiplier
@@ -217,22 +221,22 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		return (int)(getEnergy()*i / getMaxEnergy());
 	}
-	
+
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
 		{
 			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*Mekanism.FROM_TE);
-			
+
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
-			
+
 			return (int)Math.round(toAdd*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
@@ -242,20 +246,20 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(getOutputtingSides().contains(from))
 		{
 			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*Mekanism.FROM_TE));
-			
+
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
-			
+
 			return (int)Math.round(toSend*Mekanism.TO_TE);
 		}
-		
+
 		return 0;
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from) 
+	public boolean canInterface(ForgeDirection from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
@@ -267,11 +271,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from) 
+	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getMaxEnergy()*Mekanism.TO_TE);
 	}
-	
+
 	@Override
 	public int getMaxSafeInput()
 	{
@@ -292,17 +296,17 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public boolean isTeleporterCompatible(ForgeDirection side) 
+	public boolean isTeleporterCompatible(ForgeDirection side)
 	{
 		return getOutputtingSides().contains(side);
 	}
-	
+
 	@Override
 	public boolean canOutputTo(ForgeDirection side)
 	{
 		return getOutputtingSides().contains(side);
 	}
-	
+
 	@Override
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
@@ -310,29 +314,29 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public int getStored() 
+	public int getStored()
 	{
 		return (int)Math.round(getEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
-	public int getCapacity() 
+	public int getCapacity()
 	{
 		return (int)Math.round(getMaxEnergy()*Mekanism.TO_IC2);
 	}
 
 	@Override
-	public int getOutput() 
+	public int getOutput()
 	{
 		return (int)Math.round(getMaxOutput()*Mekanism.TO_IC2);
 	}
 
 	@Override
-	public double demandedEnergyUnits() 
+	public double demandedEnergyUnits()
 	{
 		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
 	}
-	
+
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
@@ -346,16 +350,16 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-    public double injectEnergyUnits(ForgeDirection direction, double i)
-    {
+	public double injectEnergyUnits(ForgeDirection direction, double i)
+	{
 		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
 		{
 			return i;
 		}
-    	
-    	return i-transferEnergyToAcceptor(direction, i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
-    }
-	
+
+		return i-transferEnergyToAcceptor(direction, i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
+	}
+
 	@Override
 	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 	{
@@ -363,15 +367,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		{
 			return 0;
 		}
-		
-    	double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
-    	setEnergy(getEnergy() + toUse);
-    	
-    	return toUse;
+
+		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
+		setEnergy(getEnergy() + toUse);
+
+		return toUse;
 	}
-	
+
 	@Override
-	public boolean canEmitPowerFrom(ForgeDirection side) 
+	public boolean canEmitPowerFrom(ForgeDirection side)
 	{
 		return getOutputtingSides().contains(side);
 	}

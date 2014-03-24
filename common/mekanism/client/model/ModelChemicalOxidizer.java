@@ -31,12 +31,12 @@ public class ModelChemicalOxidizer extends ModelBase
 	ModelRenderer GlassW;
 	ModelRenderer GlassE;
 	ModelRenderer GlassU;
-	
+
 	public ModelChemicalOxidizer()
 	{
 		textureWidth = 128;
 		textureHeight = 128;
-		
+
 		Base = new ModelRenderer(this, 0, 0);
 		Base.addBox(0F, 0F, 0F, 16, 1, 16);
 		Base.setRotationPoint(-8F, 23F, -8F);
@@ -158,7 +158,7 @@ public class ModelChemicalOxidizer extends ModelBase
 		GlassU.mirror = true;
 		setRotation(GlassU, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size)
 	{
 		Base.render(size);
@@ -177,24 +177,24 @@ public class ModelChemicalOxidizer extends ModelBase
 		Machine.render(size);
 		Post.render(size);
 	}
-	
+
 	public void renderGlass(float size)
 	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		GL11.glColor4f(1, 1, 1, 0.2F);
-		
+
 		GlassN.render(size);
 		GlassS.render(size);
 		GlassW.render(size);
 		GlassE.render(size);
 		GlassU.render(size);
-		
+
 		MekanismRenderer.blendOff();
 		GL11.glColor4f(1, 1, 1, 1);
 		GL11.glPopMatrix();
 	}
-	
+
 	private void setRotation(ModelRenderer model, float x, float y, float z)
 	{
 		model.rotateAngleX = x;

@@ -19,44 +19,44 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class VoiceConnection extends Thread
 {
 	public Socket socket;
-	
+
 	public String username;
-	
+
 	public boolean open = true;
-	
+
 	public DataInputStream input;
 	public DataOutputStream output;
-	
+
 	public MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-	
+
 	public VoiceConnection(Socket s)
 	{
 		socket = s;
 	}
-	
+
 	@Override
 	public void run()
 	{
 		try {
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 			output = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-			
+
 			synchronized(Mekanism.voiceManager)
 			{
 				int retryCount = 0;
-				
+
 				while(username == null && retryCount <= 100)
 				{
 					try {
 						List l = Collections.synchronizedList((List)((ArrayList)server.getConfigurationManager().playerEntityList).clone());
-						
+
 						for(Object obj : l)
 						{
 							if(obj instanceof EntityPlayerMP)
 							{
 								EntityPlayerMP playerMP = (EntityPlayerMP)obj;
 								String playerIP = playerMP.getPlayerIP();
-								
+
 								if(!server.isDedicatedServer() && playerIP.equals("127.0.0.1") && !Mekanism.voiceManager.foundLocal)
 								{
 									Mekanism.voiceManager.foundLocal = true;
@@ -70,12 +70,12 @@ public class VoiceConnection extends Thread
 								}
 							}
 						}
-						
+
 						retryCount++;
 						Thread.sleep(50);
 					} catch(Exception e) {}
 				}
-				
+
 				if(username == null)
 				{
 					System.out.println("[Mekanism] VoiceServer: Unable to trace connection's IP address.");
@@ -91,7 +91,7 @@ public class VoiceConnection extends Thread
 			e.printStackTrace();
 			open = false;
 		}
-			
+
 		//Main client listen thread
 		new Thread(new Runnable()
 		{
@@ -104,7 +104,7 @@ public class VoiceConnection extends Thread
 						short byteCount = VoiceConnection.this.input.readShort();
 						byte[] audioData = new byte[byteCount];
 						VoiceConnection.this.input.readFully(audioData);
-						
+
 						if(byteCount > 0)
 						{
 							Mekanism.voiceManager.sendToPlayers(byteCount, audioData, VoiceConnection.this);
@@ -113,7 +113,7 @@ public class VoiceConnection extends Thread
 						open = false;
 					}
 				}
-				
+
 				if(!open)
 				{
 					kill();
@@ -121,39 +121,39 @@ public class VoiceConnection extends Thread
 			}
 		}).start();
 	}
-	
+
 	public void kill()
 	{
 		try {
 			input.close();
 			output.close();
 			socket.close();
-			
+
 			Mekanism.voiceManager.connections.remove(this);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while stopping server-based connection.");
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendToPlayer(short byteCount, byte[] audioData, VoiceConnection connection)
 	{
 		if(!open)
 		{
 			kill();
 		}
-		
+
 		try {
 			output.writeShort(byteCount);
 			output.write(audioData);
-			
+
 			output.flush();
 		} catch(Exception e) {
 			System.err.println("[Mekanism] VoiceServer: Error while sending data to player.");
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean canListen(int channel)
 	{
 		for(ItemStack itemStack : getPlayer().inventory.mainInventory)
@@ -172,18 +172,18 @@ public class VoiceConnection extends Thread
 				}
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public int getCurrentChannel()
 	{
 		ItemStack itemStack = getPlayer().getCurrentEquippedItem();
-		
+
 		if(itemStack != null)
 		{
 			ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie)itemStack.getItem();
-			
+
 			if(walkieTalkie != null)
 			{
 				if(walkieTalkie.getOn(itemStack))
@@ -192,10 +192,10 @@ public class VoiceConnection extends Thread
 				}
 			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	public EntityPlayerMP getPlayer()
 	{
 		return server.getConfigurationManager().getPlayerForUsername(username);

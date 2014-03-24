@@ -5,5 +5,5 @@ import net.minecraft.tileentity.TileEntity;
 
 public interface IGasTransmitter extends IGridTransmitter<GasNetwork>
 {
-    public boolean canTransferGasToTube(TileEntity tile);
+	public boolean canTransferGasToTube(TileEntity tile);
 }
