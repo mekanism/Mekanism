@@ -34,6 +34,7 @@ item.BrineBucket.name=Eimer mit Salzwasser
 item.FreeRunners.name=Freiläufer
 item.ArmoredJetpack.name=Panzer-Jetpack
 item.FilterCard.name=Filterkarte
+item.SeismicReader.name=Seismisches Lesegerät
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -91,6 +92,7 @@ tile.MachineBlock2.PrecisionSawmill.name=Präzisionssägewerk
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemische Auflösungskammer
 tile.MachineBlock2.ChemicalWasher.name=Chemische Waschanlage
 tile.MachineBlock2.ChemicalCrystalizer.name=Chemischer Kristallisierer
+tile.MachineBlock2.SeismicVibrator.name=Seismischer Vibrator
 
 //Infuse types
 infuse.carbon=Kohlenstoff
@@ -270,6 +272,7 @@ gui.filters=Filter
 gui.idle=Bereit
 gui.data=Daten
 gui.newFilter=Neuer Filter
+gui.energy=Energie
 
 gui.chemicalInfuser.short=C. Infundierer
 gui.chemicalDissolutionChamber.short=C. Auflösungsk.
@@ -291,6 +294,11 @@ gui.factory.combining=Kombinieren
 gui.factory.purifying=Purifizieren
 gui.factory.injecting=Injezieren
 gui.factory.autoSort=Auto-Sortieren
+
+gui.seismicReader.short=S. Lesegerät
+gui.seismicReader.solids=Feststoffe
+gui.seismicReader.fluids=Flüssigkeiten
+gui.seismicReader.reading=Lesend
 
 gui.filterSelect.title=Neuen Filter kreieren
 
@@ -376,6 +384,9 @@ tooltip.balloon=Ballon
 tooltip.jetpack.regular=Regulär
 tooltip.jetpack.hover=Schweben
 tooltip.jetpack.disabled=Deaktiviert
+
+tooltip.seismicReader.needsEnergy=Nicht genügend Energie, um Erschütterung zu bestimmen
+tooltip.seismicReader.noVibrations=Nicht fähig, Vibrationen zu erkennen
 
 tooltip.EnrichmentChamber=Eine einfache Maschine, genutzt, um Erze zu !nzwei ihrer entsprechenden Stäube anzureichern !nsowie viele andere Operationen auszuführen.
 tooltip.OsmiumCompressor=Eine ziemlich fortschrittliche Maschine, genutzt, !num Osmium in verschiedene Stäube zu pressen, !num ihre entsprechenden Barren zu kreieren.
