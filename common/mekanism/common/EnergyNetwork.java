@@ -38,15 +38,18 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	
 	public double electricityStored;
 	
+	
 	public EnergyNetwork(IGridTransmitter<EnergyNetwork>... varCables)
 	{
 		transmitters.addAll(Arrays.asList(varCables));
+		updateCapacity();
 		register();
 	}
 	
 	public EnergyNetwork(Collection<IGridTransmitter<EnergyNetwork>> collection)
 	{
 		transmitters.addAll(collection);
+		updateCapacity();
 		register();
 	}
 	
@@ -81,9 +84,8 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
     @Override
-	public double getMeanCapacity()
+	protected synchronized void updateMeanCapacity()
 	{
-        //Use the harmonic mean. Because we're mean.
         int numCables = transmitters.size();
         double reciprocalSum = 0;
         
@@ -91,8 +93,8 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
         {
             reciprocalSum += 1.0/(double)cable.getCapacity();
         }
-        
-		return (double)numCables / reciprocalSum;
+
+        meanCapacity = (double)numCables / reciprocalSum;            
 	}
     
     @Override
@@ -105,8 +107,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	    	
 	    	for(EnergyNetwork network : networks)
 	    	{
-	    		caps[networks.indexOf(network)] = network.getCapacity();
-	    		cap += network.getCapacity();
+	    		double networkCapacity = network.getCapacity();
+	    		caps[networks.indexOf(network)] = networkCapacity;
+	    		cap += networkCapacity;
 	    	}
 	    	
 	    	electricityStored = Math.min(cap, electricityStored);
@@ -312,6 +315,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
 		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
+		boolean networkChanged = false;
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
@@ -324,6 +328,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				it.remove();
 				transmitters.remove(conductor);
+				networkChanged = true;
 			}
 			else {
 				conductor.setTransmitterNetwork(this);
@@ -345,7 +350,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				}
 			}
 		}
-		
+
+		if (networkChanged) {
+			this.updateCapacity();
+		}
+
 		needsUpdate = true;
 	}
 
@@ -448,6 +457,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
+		network.updateCapacity();
 		return network;
 	}
 

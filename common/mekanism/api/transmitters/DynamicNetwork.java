@@ -31,6 +31,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	
 	protected int ticksSinceCreate = 0;
 	
+	protected int capacity = 0;
+	protected double meanCapacity = 0;
+	
 	protected boolean fixed = false;
 	
 	protected boolean needsUpdate = false;
@@ -44,6 +47,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void addAllTransmitters(Set<IGridTransmitter<N>> newTransmitters)
 	{
 		transmitters.addAll(newTransmitters);
+		updateCapacity();
 	}
 	
 	public boolean isFirst(IGridTransmitter<N> transmitter)
@@ -55,6 +59,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void removeTransmitter(IGridTransmitter<N> transmitter)
 	{
 		transmitters.remove(transmitter);
+		updateCapacity();
 		
 		if(transmitters.size() == 0)
 		{
@@ -107,18 +112,31 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		return possibleAcceptors.size();
 	}
 
-    public int getCapacity()
-    {
-        return (int)getMeanCapacity() * transmitters.size();
-    }
+	protected synchronized void updateCapacity() {
+		updateMeanCapacity();
+		capacity = (int)meanCapacity * transmitters.size();
+	}
 
     /**
      * Override this if things can have variable capacity along the network.
      * @return An 'average' value of capacity. Calculate it how you will.
      */
+	protected synchronized void updateMeanCapacity() {
+		if (transmitters.size() > 0) {
+			meanCapacity = transmitters.iterator().next().getCapacity();
+		} else {
+			meanCapacity = 0;
+		}
+	}
+	
+    public int getCapacity()
+    {
+    	return capacity;
+    }
+
     public double getMeanCapacity()
     {
-		return transmitters.size() > 0 ? transmitters.iterator().next().getCapacity() : 0;
+    	return meanCapacity;
     }
 	
 	@Override

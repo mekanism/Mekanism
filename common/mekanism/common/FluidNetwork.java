@@ -42,12 +42,14 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public FluidNetwork(IGridTransmitter<FluidNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
+		updateCapacity();
 		register();
 	}
 	
 	public FluidNetwork(Collection<IGridTransmitter<FluidNetwork>> collection)
 	{
 		transmitters.addAll(collection);
+		updateCapacity();
 		register();
 	}
 	
@@ -92,6 +94,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		
 		fluidScale = getScale();
 		
+		updateCapacity();
 		refresh();
 		register();
 	}
@@ -295,6 +298,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		Set<IGridTransmitter<FluidNetwork>> iterPipes = (Set<IGridTransmitter<FluidNetwork>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
+		boolean networkChanged = false;
 		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
@@ -306,6 +310,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
+				networkChanged = true;
 				transmitters.remove(conductor);
 			}
 			else {
@@ -327,6 +332,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 				}
 			}
+		}
+
+		if(networkChanged) {
+			updateCapacity();
 		}
 	}
 
