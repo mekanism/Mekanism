@@ -11,6 +11,7 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class ThreadMinerSearch extends Thread
 {
@@ -66,7 +67,8 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 
-			if(tileEntity.worldObj.getBlockTileEntity(x, y, z) instanceof IBoundingBlock)
+			TileEntity bte;
+			if ((bte = tileEntity.worldObj.getBlockTileEntity(x,  y,  z)) != null && bte instanceof IBoundingBlock) 
 			{
 				continue;
 			}

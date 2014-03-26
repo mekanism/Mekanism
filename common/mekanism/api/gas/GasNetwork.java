@@ -44,12 +44,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	public GasNetwork(IGridTransmitter<GasNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
+		updateCapacity();
 		register();
 	}
 
 	public GasNetwork(Collection<IGridTransmitter<GasNetwork>> collection)
 	{
 		transmitters.addAll(collection);
+		updateCapacity();
 		register();
 	}
 
@@ -94,6 +96,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		gasScale = getScale();
 
+		updateCapacity();
 		refresh();
 		register();
 	}
@@ -300,6 +303,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	{
 		Set<IGridTransmitter<GasNetwork>> iterTubes = (Set<IGridTransmitter<GasNetwork>>)transmitters.clone();
 		Iterator<IGridTransmitter<GasNetwork>> it = iterTubes.iterator();
+		boolean networkChanged = false;
 
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
@@ -311,6 +315,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			if(conductor == null || ((TileEntity)conductor).isInvalid())
 			{
 				it.remove();
+				networkChanged = true;
 				transmitters.remove(conductor);
 			}
 			else {
@@ -332,6 +337,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 				}
 			}
+		}
+
+		if (networkChanged) {
+			updateCapacity();
 		}
 	}
 

@@ -41,12 +41,14 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public EnergyNetwork(IGridTransmitter<EnergyNetwork>... varCables)
 	{
 		transmitters.addAll(Arrays.asList(varCables));
+		updateCapacity();
 		register();
 	}
 
 	public EnergyNetwork(Collection<IGridTransmitter<EnergyNetwork>> collection)
 	{
 		transmitters.addAll(collection);
+		updateCapacity();
 		register();
 	}
 
@@ -80,46 +82,46 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		register();
 	}
 
-	@Override
-	public double getMeanCapacity()
+    @Override
+	protected synchronized void updateMeanCapacity()
 	{
-		//Use the harmonic mean. Because we're mean.
-		int numCables = transmitters.size();
-		double reciprocalSum = 0;
+        int numCables = transmitters.size();
+        double reciprocalSum = 0;
+        
+        for(IGridTransmitter<EnergyNetwork> cable : transmitters)
+        {
+            reciprocalSum += 1.0/(double)cable.getCapacity();
+        }
 
-		for(IGridTransmitter<EnergyNetwork> cable : transmitters)
-		{
-			reciprocalSum += 1.0/(double)cable.getCapacity();
-		}
-
-		return (double)numCables / reciprocalSum;
+        meanCapacity = (double)numCables / reciprocalSum;            
 	}
-
-	@Override
-	public void onNetworksCreated(List<EnergyNetwork> networks)
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			double[] caps = new double[networks.size()];
-			double cap = 0;
-
-			for(EnergyNetwork network : networks)
-			{
-				caps[networks.indexOf(network)] = network.getCapacity();
-				cap += network.getCapacity();
-			}
-
-			electricityStored = Math.min(cap, electricityStored);
-
-			double[] percent = ListUtils.percent(caps);
-
-			for(EnergyNetwork network : networks)
-			{
-				network.electricityStored = round(percent[networks.indexOf(network)]*electricityStored);
-			}
-		}
-	}
-
+    
+    @Override
+    public void onNetworksCreated(List<EnergyNetwork> networks)
+    {
+    	if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+    	{
+	    	double[] caps = new double[networks.size()];
+	    	double cap = 0;
+	    	
+	    	for(EnergyNetwork network : networks)
+	    	{
+	    		double networkCapacity = network.getCapacity();
+	    		caps[networks.indexOf(network)] = networkCapacity;
+	    		cap += networkCapacity;
+	    	}
+	    	
+	    	electricityStored = Math.min(cap, electricityStored);
+	    	
+	    	double[] percent = ListUtils.percent(caps);
+	    	
+	    	for(EnergyNetwork network : networks)
+	    	{
+	    		network.electricityStored = round(percent[networks.indexOf(network)]*electricityStored);
+	    	}
+    	}
+    }
+	
 	public synchronized double getEnergyNeeded()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -312,7 +314,8 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
 		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
-
+		boolean networkChanged = false;
+		
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
 
@@ -324,6 +327,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				it.remove();
 				transmitters.remove(conductor);
+				networkChanged = true;
 			}
 			else {
 				conductor.setTransmitterNetwork(this);
@@ -344,6 +348,10 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 				}
 			}
+		}
+
+		if (networkChanged) {
+			this.updateCapacity();
 		}
 
 		needsUpdate = true;
@@ -448,6 +456,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.joulesTransmitted = joulesTransmitted;
 		network.lastPowerScale = lastPowerScale;
 		network.electricityStored += electricityStored;
+		network.updateCapacity();
 		return network;
 	}
 
