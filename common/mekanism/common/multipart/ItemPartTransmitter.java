@@ -86,9 +86,15 @@ public class ItemPartTransmitter extends JItemMultiPart
 	{
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			if(itemstack.getItemDamage() < Tier.CableTier.values().length)
+			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.ENERGY)
 			{
 				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
+			}
+
+			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.FLUID)
+			{
+				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipeCapacity + "mB/t");
+				list.add(EnumColor.INDIGO + "Pump Rate: " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipePullAmount + "mB/t");
 			}
 
 			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
@@ -105,7 +111,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
 					break;
 				}
-				case 4:
+				case 4: case 9: case 10: case 11:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");

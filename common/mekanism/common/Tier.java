@@ -109,4 +109,45 @@ public final class Tier
 			type = transmitterType;
 		}
 	}
+
+	/**
+	 * The tiers used by Mechanical Pipes and their corresponding values.
+	 * @author unpairedbracket
+	 *
+	 */
+	public static enum PipeTier
+	{
+		BASIC(1000, 100, TransmitterType.MECHANICAL_PIPE_BASIC),
+		ADVANCED(4000, 400, TransmitterType.MECHANICAL_PIPE_ADVANCED),
+		ELITE(16000, 1600, TransmitterType.MECHANICAL_PIPE_ELITE),
+		ULTIMATE(64000, 6400, TransmitterType.MECHANICAL_PIPE_ULTIMATE);
+
+		public int pipeCapacity;
+		public int pipePullAmount;
+		public TransmitterType type;
+
+		private PipeTier(int capacity, int pullAmount, TransmitterType transmitterType)
+		{
+			pipeCapacity = capacity;
+			pipePullAmount = pullAmount;
+			type = transmitterType;
+		}
+
+		public static PipeTier getTierFromMeta(int meta)
+		{
+			switch(meta)
+			{
+				case 4:
+					return BASIC;
+				case 9:
+					return ADVANCED;
+				case 10:
+					return ELITE;
+				case 11:
+					return ULTIMATE;
+				default:
+					return BASIC;
+			}
+		}
+	}
 }

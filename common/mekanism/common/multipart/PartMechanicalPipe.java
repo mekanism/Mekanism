@@ -6,6 +6,8 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
+import mekanism.common.Tier;
+import mekanism.common.Tier.PipeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -25,6 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements IFluidHandler
 {
+	public Tier.PipeTier tier;
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 
@@ -34,6 +37,11 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
 	public FluidStack cacheFluid;
 	public FluidStack lastWrite;
+
+	public PartMechanicalPipe(Tier.PipeTier pipeTier)
+	{
+		this.tier = pipeTier;
+	}
 
 	@Override
 	public void update()
@@ -73,7 +81,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
 					if(container != null)
 					{
-						FluidStack received = container.drain(side.getOpposite(), 100, false);
+						FluidStack received = container.drain(side.getOpposite(), getPullAmount(), false);
 
 						if(received != null && received.amount != 0)
 						{
@@ -153,6 +161,8 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 		{
 			cacheFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheFluid"));
 		}
+
+		tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
 	}
 
 	@Override
@@ -177,12 +187,14 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 				nbtTags.setCompoundTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
 			}
 		}
+
+		nbtTags.setInteger("tier", tier.ordinal());
 	}
 
 	@Override
 	public String getType()
 	{
-		return "mekanism:mechanical_pipe";
+		return "mekanism:mechanical_pipe_" + tier.name().toLowerCase();
 	}
 
 	public static void registerIcons(IconRegister register)
@@ -210,10 +222,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	}
 
 	@Override
-	public TransmitterType getTransmitter()
-	{
-		return TransmitterType.MECHANICAL_PIPE;
-	}
+	public TransmitterType getTransmitter() { return tier.type; }
 
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
@@ -316,6 +325,11 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public int getCapacity()
 	{
-		return 1000;
+		return tier.pipeCapacity;
+	}
+
+	public int getPullAmount()
+	{
+		return tier.pipePullAmount;
 	}
 }

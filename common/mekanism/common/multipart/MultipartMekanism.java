@@ -1,7 +1,7 @@
 package mekanism.common.multipart;
 
 import mekanism.common.Tier;
-import mekanism.common.Tier.CableTier;
+
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
@@ -19,6 +19,8 @@ public class MultipartMekanism implements IPartFactory
 		MultiPartRegistry.registerParts(this, new String[] {"mekanism:universal_cable_basic",
 				"mekanism:universal_cable_advanced", "mekanism:universal_cable_elite",
 				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
+				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
+				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
 				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter"});
 
@@ -60,7 +62,23 @@ public class MultipartMekanism implements IPartFactory
 		}
 		else if(name.equals("mekanism:mechanical_pipe"))
 		{
-			return new PartMechanicalPipe();
+			return new PartMechanicalPipe(Tier.PipeTier.BASIC);
+		}
+		else if(name.equals("mekanism:mechanical_pipe_basic"))
+		{
+			return new PartMechanicalPipe(Tier.PipeTier.BASIC);
+		}
+		else if(name.equals("mekanism:mechanical_pipe_advanced"))
+		{
+			return new PartMechanicalPipe(Tier.PipeTier.ADVANCED);
+		}
+		else if(name.equals("mekanism:mechanical_pipe_elite"))
+		{
+			return new PartMechanicalPipe(Tier.PipeTier.ELITE);
+		}
+		else if(name.equals("mekanism:mechanical_pipe_ultimate"))
+		{
+			return new PartMechanicalPipe(Tier.PipeTier.ULTIMATE);
 		}
 		else if(name.equals("mekanism:pressurized_tube"))
 		{

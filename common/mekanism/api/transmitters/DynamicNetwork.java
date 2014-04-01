@@ -112,7 +112,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		return possibleAcceptors.size();
 	}
 
-	protected synchronized void updateCapacity() {
+	public synchronized void updateCapacity() {
 		updateMeanCapacity();
 		capacity = (int)meanCapacity * transmitters.size();
 	}

@@ -101,6 +101,20 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
+	protected synchronized void updateMeanCapacity()
+	{
+		int numCables = transmitters.size();
+		double sum = 0;
+
+		for(IGridTransmitter<FluidNetwork> pipe : transmitters)
+		{
+			sum += pipe.getCapacity();
+		}
+
+		meanCapacity = sum / (double)numCables;
+	}
+
+	@Override
 	public void onNetworksCreated(List<FluidNetwork> networks)
 	{
 		if(fluidStored != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
@@ -425,6 +439,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 
+		network.updateCapacity();
 		network.fluidScale = network.getScale();
 
 		return network;

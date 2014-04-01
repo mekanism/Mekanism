@@ -126,6 +126,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 				theNetwork = network;
 				theNetwork.transmitters.add((IGridTransmitter<N>)tile());
 				theNetwork.refresh();
+				theNetwork.updateCapacity();
 			}
 			else {
 				theNetwork = createNetworkByMergingSet(connectedNets);
