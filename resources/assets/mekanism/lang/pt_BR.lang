@@ -94,7 +94,7 @@ tile.MachineBlock2.ChemicalCrystalizer.name=Cristalizador Químico
 //Infuse types
 infuse.carbon=Carbono
 infuse.tin=Estanho
-infuse.diamond=Diamente
+infuse.diamond=Diamante
 infuse.redstone=Redstone
 infuse.fungi=Fungos
 
@@ -104,7 +104,7 @@ tile.OreBlock.CopperOre.name=Minério de Cobre
 tile.OreBlock.TinOre.name=Minério de Estanho
 
 item.MultipartTransmitter.PressurizedTube.name=Tubo Pressurizado
-item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Basico
+item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Básico
 item.MultipartTransmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
 item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal de Elite
 item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Definitivo
@@ -124,8 +124,9 @@ item.ironDust.name=Pó de Ferro
 item.goldDust.name=Pó de Ouro
 item.osmiumDust.name=Pó de Ósmio
 item.obsidianDust.name=Pó de Obsidiana Refinada
-item.diamondDust.name=Pó de Diamente
+item.diamondDust.name=Pó de Diamante
 item.steelDust.name=Pó de Aço
+item.copperDust.name=Pó de Cobre
 item.tinDust.name=Pó de Estanho
 item.silverDust.name=Pó de Prata
 item.leadDust.name=Pó de Chumbo
@@ -291,9 +292,9 @@ gui.oredictFilter=Filtro OreDict
 gui.oredictFilter.noKey=Nenhuma entrada digitada
 gui.oredictFilter.sameKey=Mesma entrada
 
-gui.itemFilter=Filtro de Items
-gui.itemFilter.noItem=Sem Items
-gui.itemFilter.details=Detalhes da PilhaDeItems
+gui.itemFilter=Filtro de Itens
+gui.itemFilter.noItem=Sem Itens
+gui.itemFilter.details=Detalhes da Pilha De Itens
 gui.itemFilter.min=Min
 gui.itemFilter.max=Máx
 
@@ -313,7 +314,7 @@ gui.robit.greeting=Olá eu sou
 gui.robit.toggleFollow=Alternar modo 'seguir'
 gui.robit.rename=Renomear este Robit
 gui.robit.teleport=Teleportar para casa
-gui.robit.togglePickup=Alternar modo 'coletar items'
+gui.robit.togglePickup=Alternar modo 'coletar itens'
 
 gui.password.setPassword=Definir senha
 gui.password.enterPassword=Digitar senha
@@ -323,7 +324,7 @@ gui.password.identical=Idêntica
 gui.password.invalid=Inválida
 gui.password=Senha
 
-gui.logisticalSorter.default=Default
+gui.logisticalSorter.default=Padrão
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Rodízio
 
@@ -351,7 +352,7 @@ tooltip.configurator.toggleDiverter=Modo do Diversor alterado para
 tooltip.configurator.toggleColor=Cor passada para
 tooltip.configurator.viewColor=Cor atual
 tooltip.configurator.unauth=Este baú está trancado
-tooltip.configurator.noLink=No link
+tooltip.configurator.noLink=Sem ligação
 tooltip.configurator.linkMsg=Ligado a
 tooltip.configurator.dim=dimensão
 
@@ -386,7 +387,7 @@ tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and 
 tooltip.ChemicalCrystalizer=An ultimate machine used to crystalize !npurified ore slurry into ore crystals.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
-tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
+tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
 
 //Redstone control
@@ -407,9 +408,9 @@ color.purple=Roxo
 color.orange=Laranja
 color.grey=Cinza
 color.darkGrey=Cinza Escuro
-color.indigo=Indigo
+color.indigo=Índigo
 color.brightGreen=Verde Claro
-color.aqua=Cian
+color.aqua=Ciano
 color.red=Vermelho
 color.pink=Rosa
 color.yellow=Amarelo
@@ -452,80 +453,80 @@ gui.electrolyticSeparator.dump=Despejar
 //*****//
 
 //Vanilla Paxels
-item.WoodPaxel.name=Wood Paxel
-item.StonePaxel.name=Stone Paxel
-item.IronPaxel.name=Iron Paxel
-item.DiamondPaxel.name=Diamond Paxel
-item.GoldPaxel.name=Gold Paxel
+item.WoodPaxel.name=Paxel de Madeira
+item.StonePaxel.name=Paxel de Pedra
+item.IronPaxel.name=Iron Paxel de Ferro
+item.DiamondPaxel.name=Paxel de Diamante
+item.GoldPaxel.name=Paxel de Ouro
 
 //Obsidian
-item.ObsidianHelmet.name=Obsidian Helmet
-item.ObsidianChestplate.name=Obsidian Chestplate
-item.ObsidianLeggings.name=Obsidian Leggings
-item.ObsidianBoots.name=Obsidian Boots
-item.ObsidianPaxel.name=Obsidian Paxel
-item.ObsidianPickaxe.name=Obsidian Pickaxe
-item.ObsidianAxe.name=Obsidian Axe
-item.ObsidianShovel.name=Obsidian Shovel
-item.ObsidianHoe.name=Obsidian Hoe
-item.ObsidianSword.name=Obsidian Sword
+item.ObsidianHelmet.name=Elmo de Obsidiana
+item.ObsidianChestplate.name=Peitoral de Obsidiana
+item.ObsidianLeggings.name=Calças de Obsidiana
+item.ObsidianBoots.name=Botas de Obsidiana
+item.ObsidianPaxel.name=Paxel de Obsidiana
+item.ObsidianPickaxe.name=Picareta de Obsidiana
+item.ObsidianAxe.name=Machado de Obsidiana
+item.ObsidianShovel.name=Pá de Obsidiana
+item.ObsidianHoe.name=Enxada de Obsidiana
+item.ObsidianSword.name=Espada de Obsidiana
 
 //Lapis Lazuli
-item.LazuliHelmet.name=Lapis Lazuli Helmet
-item.LazuliChestplate.name=Lapis Lazuli Chestplate
-item.LazuliLeggings.name=Lapis Lazuli Leggings
-item.LazuliBoots.name=Lapis Lazuli Boots
-item.LazuliPaxel.name=Lapis Lazuli Paxel
-item.LazuliPickaxe.name=Lapis Lazuli Pickaxe
-item.LazuliAxe.name=Lapis Lazuli Axe
-item.LazuliShovel.name=Lapis Lazuli Shovel
-item.LazuliHoe.name=Lapis Lazuli Hoe
-item.LazuliSword.name=Lapis Lazuli Sword
+item.LazuliHelmet.name=Elmo de Lápis-Lazúli
+item.LazuliChestplate.name=Peitoral de Lápis-Lazúli
+item.LazuliLeggings.name=Calças de Lápis-Lazúli
+item.LazuliBoots.name=Botas de Lápis-Lazúli
+item.LazuliPaxel.name=Paxel de Lápis-Lazúli
+item.LazuliPickaxe.name=Picareta de Lápis-Lazúli
+item.LazuliAxe.name=Machado de Lápis-Lazúli
+item.LazuliShovel.name=Pá de Lápis-Lazúli
+item.LazuliHoe.name=Enxada de Lápis-Lazúli
+item.LazuliSword.name=Espada de Lápis-Lazúli
 
 //Osmium
-item.OsmiumHelmet.name=Osmium Helmet
-item.OsmiumChestplate.name=Osmium Chestplate
-item.OsmiumLeggings.name=Osmium Leggings
-item.OsmiumBoots.name=Osmium Boots
-item.OsmiumPaxel.name=Osmium Paxel
-item.OsmiumPickaxe.name=Osmium Pickaxe
-item.OsmiumAxe.name=Osmium Axe
-item.OsmiumShovel.name=Osmium Shovel
-item.OsmiumHoe.name=Osmium Hoe
-item.OsmiumSword.name=Osmium Sword
+item.OsmiumHelmet.name=Elmo de Ósmio
+item.OsmiumChestplate.name=Peitoral de Ósmio
+item.OsmiumLeggings.name=Calças de Ósmio
+item.OsmiumBoots.name=Botas de Ósmio
+item.OsmiumPaxel.name=Paxel de Ósmio
+item.OsmiumPickaxe.name=Picareta de Ósmio
+item.OsmiumAxe.name=Machado de Ósmio
+item.OsmiumShovel.name=Pá de Ósmio
+item.OsmiumHoe.name=Enxada de Ósmio
+item.OsmiumSword.name=Espada de Ósmio
 
 //Bronze
-item.BronzeHelmet.name=Bronze Helmet
-item.BronzeChestplate.name=Bronze Chestplate
-item.BronzeLeggings.name=Bronze Leggings
-item.BronzeBoots.name=Bronze Boots
-item.BronzePaxel.name=Bronze Paxel
-item.BronzePickaxe.name=Bronze Pickaxe
-item.BronzeAxe.name=Bronze Axe
-item.BronzeShovel.name=Bronze Shovel
-item.BronzeHoe.name=Bronze Hoe
-item.BronzeSword.name=Bronze Sword
+item.BronzeHelmet.name=Elmo de Bronze
+item.BronzeChestplate.name=Peitoral de Bronze
+item.BronzeLeggings.name=Calças de Bronze
+item.BronzeBoots.name=Botas de Bronze
+item.BronzePaxel.name=Paxel de Bronze
+item.BronzePickaxe.name=Picareta de Bronze
+item.BronzeAxe.name=Machado de Bronze
+item.BronzeShovel.name=Pá de Bronze
+item.BronzeHoe.name=Enxada de Bronze
+item.BronzeSword.name=Espada de Bronze
 
 //Glow
-item.GlowstoneHelmet.name=Glowstone Helmet
-item.GlowstoneChestplate.name=Glowstone Chestplate
-item.GlowstoneLeggings.name=Glowstone Leggings
-item.GlowstoneBoots.name=Glowstone Boots
-item.GlowstonePaxel.name=Glowstone Paxel
-item.GlowstonePickaxe.name=Glowstone Pickaxe
-item.GlowstoneAxe.name=Glowstone Axe
-item.GlowstoneShovel.name=Glowstone Shovel
-item.GlowstoneHoe.name=Glowstone Hoe
-item.GlowstoneSword.name=Glowstone Sword
+item.GlowstoneHelmet.name=Elmo de Glowstone
+item.GlowstoneChestplate.name=Peitoral de Glowstone
+item.GlowstoneLeggings.name=Calças de Glowstone
+item.GlowstoneBoots.name=Botas de Glowstone
+item.GlowstonePaxel.name=Paxel de Glowstone
+item.GlowstonePickaxe.name=Picareta de Glowstone
+item.GlowstoneAxe.name=Machado de Glowstone
+item.GlowstoneShovel.name=Pá de Glowstone
+item.GlowstoneHoe.name=Enxada de Glowstone
+item.GlowstoneSword.name=Espada de Glowstone
 
 //Steel
-item.SteelHelmet.name=Steel Helmet
-item.SteelChestplate.name=Steel Chestplate
-item.SteelLeggings.name=Steel Leggings
-item.SteelBoots.name=Steel Boots
-item.SteelPaxel.name=Steel Paxel
-item.SteelPickaxe.name=Steel Pickaxe
-item.SteelAxe.name=Steel Axe
-item.SteelShovel.name=Steel Shovel
-item.SteelHoe.name=Steel Hoe
-item.SteelSword.name=Steel Sword
+item.SteelHelmet.name=Elmo de Aço
+item.SteelChestplate.name=Peitoral de Aço
+item.SteelLeggings.name=Calças de Aço
+item.SteelBoots.name=Botas de Aço
+item.SteelPaxel.name=Paxel de Aço
+item.SteelPickaxe.name=Picareta de Aço
+item.SteelAxe.name=Machado de Aço
+item.SteelShovel.name=Pá de Aço
+item.SteelHoe.name=Enxada de Aço
+item.SteelSword.name=Espada de Aço
