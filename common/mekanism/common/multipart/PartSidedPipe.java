@@ -265,7 +265,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public Iterable<Cuboid6> getOcclusionBoxes()
 	{
-		return getCollisionBoxes();
+		List<Cuboid6> boxes = new ArrayList<Cuboid6>();
+		boxes.add(getTransmitter().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
+		
+		return boxes;
 	}
 
 	@Override
