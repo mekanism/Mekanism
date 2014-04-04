@@ -28,7 +28,7 @@ public class ChemicalPair
 	}
 
 	/**
-	 * If this is a valid
+	 * If this is a valid ChemicalPair
 	 * @return
 	 */
 	public boolean isValid()

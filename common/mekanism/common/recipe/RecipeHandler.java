@@ -6,6 +6,8 @@ import java.util.Map;
 import mekanism.api.AdvancedInput;
 import mekanism.api.ChanceOutput;
 import mekanism.api.ChemicalPair;
+import mekanism.api.PressurizedProducts;
+import mekanism.api.PressurizedReactants;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -388,7 +390,7 @@ public final class RecipeHandler
 	}
 	/**
 	 * Gets the output ItemStack of the AdvancedInput in the parameters.
-	 * @param itemstack - input AdvancedInput
+	 * @param input - input AdvancedInput
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size
 	 * @param recipes - Map of recipes
 	 * @return output ItemStack
@@ -481,7 +483,8 @@ public final class RecipeHandler
 		PRECISION_SAWMILL(new HashMap<ItemStack, ChanceOutput>()),
 		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStack, FluidStack>()),
 		CHEMICAL_WASHER(new HashMap<GasStack, GasStack>()),
-		CHEMICAL_CRYSTALIZER(new HashMap<GasStack, ItemStack>());
+		CHEMICAL_CRYSTALIZER(new HashMap<GasStack, ItemStack>()),
+		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedReactants, PressurizedProducts>());
 
 		private HashMap recipes;
 

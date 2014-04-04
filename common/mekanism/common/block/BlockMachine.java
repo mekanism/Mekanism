@@ -50,6 +50,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -175,6 +176,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
 			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
+			icons[10][0] = register.registerIcon("mekanism:PressurizedReactionChamber");
 		}
 	}
 
@@ -1126,7 +1128,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.machineBlock2ID, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, false),
 		CHEMICAL_WASHER(Mekanism.machineBlock2ID, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, false),
 		CHEMICAL_CRYSTALIZER(Mekanism.machineBlock2ID, 8, "ChemicalCrystalizer", 37, 20000, TileEntityChemicalCrystalizer.class, true, false),
-		SEISMIC_VIBRATOR(Mekanism.machineBlock2ID, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, false, false);
+		SEISMIC_VIBRATOR(Mekanism.machineBlock2ID, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, false, false),
+		PRESSURIZED_REACTION_CHAMBER(Mekanism.machineBlock2ID, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, false, false);
 
 		public int typeId;
 		public int meta;
