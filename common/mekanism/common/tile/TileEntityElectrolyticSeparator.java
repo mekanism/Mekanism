@@ -123,7 +123,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			if(canOperate())
 			{
 				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
-				setEnergy(getEnergy() - Mekanism.electrolyticSeparatorUsage);
+				setEnergy(getEnergy() - Mekanism.FROM_H2*2);
 			}
 
 			if(leftTank.getGas() != null)
@@ -185,7 +185,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public boolean canOperate()
 	{
-		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.electrolyticSeparatorUsage;
+		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.FROM_H2*2;
 	}
 
 	public boolean canFillWithSwap(ChemicalPair gases)

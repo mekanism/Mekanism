@@ -62,7 +62,6 @@ public class MekanismGenerators implements IModule
 	public static double advancedSolarGeneration;
 	public static double bioGeneration;
 	public static double heatGeneration;
-	public static double hydrogenGeneration;
 	public static double solarGeneration;
 	public static double windGeneration;
 
@@ -191,7 +190,6 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(advancedSolarGeneration);
 		dataStream.writeDouble(bioGeneration);
 		dataStream.writeDouble(heatGeneration);
-		dataStream.writeDouble(hydrogenGeneration);
 		dataStream.writeDouble(solarGeneration);
 		dataStream.writeDouble(windGeneration);
 	}
@@ -202,7 +200,6 @@ public class MekanismGenerators implements IModule
 		advancedSolarGeneration = dataStream.readDouble();
 		bioGeneration = dataStream.readDouble();
 		heatGeneration = dataStream.readDouble();
-		hydrogenGeneration = dataStream.readDouble();
 		solarGeneration = dataStream.readDouble();
 		windGeneration = dataStream.readDouble();
 	}

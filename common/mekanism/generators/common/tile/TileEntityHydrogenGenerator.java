@@ -9,6 +9,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -31,7 +32,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 
 	public TileEntityHydrogenGenerator()
 	{
-		super("HydrogenGenerator", 40000, MekanismGenerators.hydrogenGeneration*2);
+		super("HydrogenGenerator", 40000, Mekanism.FROM_H2*4);
 		inventory = new ItemStack[2];
 	}
 
@@ -55,7 +56,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				setActive(true);
 
 				hydrogenStored-=2;
-				setEnergy(electricityStored + MekanismGenerators.hydrogenGeneration);
+				setEnergy(electricityStored + Mekanism.FROM_H2 * 2);
 			}
 			else {
 				setActive(false);

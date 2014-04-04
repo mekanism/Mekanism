@@ -48,6 +48,7 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.TO_IC2 = dataStream.readDouble();
 		Mekanism.FROM_BC = dataStream.readDouble();
 		Mekanism.TO_BC = dataStream.readDouble();
+		Mekanism.FROM_H2 = dataStream.readDouble();
 		Mekanism.ENERGY_PER_REDSTONE = dataStream.readDouble();
 		Mekanism.VOICE_PORT = dataStream.readInt();
 		Mekanism.maxUpgradeMultiplier = dataStream.readInt();
@@ -68,7 +69,6 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.oxidationChamberUsage = dataStream.readDouble();
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();
 		Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
-		Mekanism.electrolyticSeparatorUsage = dataStream.readDouble();
 		Mekanism.precisionSawmillUsage = dataStream.readDouble();
 		Mekanism.chemicalDissolutionChamberUsage = dataStream.readDouble();
 		Mekanism.chemicalWasherUsage = dataStream.readDouble();
@@ -108,6 +108,7 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.TO_IC2);
 		dataStream.writeDouble(Mekanism.FROM_BC);
 		dataStream.writeDouble(Mekanism.TO_BC);
+		dataStream.writeDouble(Mekanism.FROM_H2);
 		dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
 		dataStream.writeInt(Mekanism.VOICE_PORT);
 		dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
@@ -125,7 +126,6 @@ public class PacketConfigSync implements IMekanismPacket
 		dataStream.writeDouble(Mekanism.oxidationChamberUsage);
 		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
 		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
-		dataStream.writeDouble(Mekanism.electrolyticSeparatorUsage);
 		dataStream.writeDouble(Mekanism.precisionSawmillUsage);
 		dataStream.writeDouble(Mekanism.chemicalDissolutionChamberUsage);
 		dataStream.writeDouble(Mekanism.chemicalWasherUsage);

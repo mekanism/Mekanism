@@ -320,6 +320,7 @@ public class Mekanism
 	public static double TO_BC;
 	public static double TO_TE;
 	public static double TO_UE = .001;
+	public static double FROM_H2;
 	public static double FROM_IC2;
 	public static double FROM_BC;
 	public static double FROM_TE;
@@ -339,7 +340,6 @@ public class Mekanism
 	public static double oxidationChamberUsage;
 	public static double chemicalInfuserUsage;
 	public static double chemicalInjectionChamberUsage;
-	public static double electrolyticSeparatorUsage;
 	public static double precisionSawmillUsage;
 	public static double chemicalDissolutionChamberUsage;
 	public static double chemicalWasherUsage;

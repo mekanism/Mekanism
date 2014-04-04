@@ -37,7 +37,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(Mekanism.electrolyticSeparatorUsage);
+				String multiplier = MekanismUtils.getEnergyDisplay(Mekanism.FROM_H2*2);
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png")));
