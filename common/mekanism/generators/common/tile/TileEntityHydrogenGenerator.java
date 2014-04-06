@@ -81,7 +81,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				else if(fuelTank.getStored() > 0)
 				{
 					FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
-					burnTicks = fuel.burnTicks;
+					burnTicks = fuel.burnTicks - 1;
 					generationRate = fuel.energyPerTick;
 					fuelTank.draw(1, true);
 					setEnergy(electricityStored + generationRate);
@@ -185,6 +185,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.handlePacketData(dataStream);
 		fuelTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+		generationRate = dataStream.readDouble();
 	}
 
 	@Override
@@ -193,6 +194,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		super.getNetworkedData(data);
 		data.add(fuelTank.getGas() == null ? 0 : fuelTank.getGas().getGas().getID());
 		data.add(fuelTank.getStored());
+		data.add(generationRate);
 		return data;
 	}
 
@@ -212,12 +214,12 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.readFromNBT(nbtTags);
 
-		int gasID = nbtTags.getInteger("gasID");
+		String gasName = nbtTags.getString("gasName");
 		int stored = nbtTags.getInteger("gasStored");
 
-		if(stored > 0)
+		if(stored > 0 && !gasName.equals("none"))
 		{
-			fuelTank.setGas(new GasStack(gasID, stored));
+			fuelTank.setGas(new GasStack(GasRegistry.getGas(gasName), stored));
 		}
 	}
 
@@ -226,7 +228,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("gasID", fuelTank.getGas().getGas().getID());
+		nbtTags.setString("gasName", fuelTank.getGas() == null ? "none" : fuelTank.getGas().getGas().getName());
 		nbtTags.setInteger("gasStored", fuelTank.getStored());
 	}
 

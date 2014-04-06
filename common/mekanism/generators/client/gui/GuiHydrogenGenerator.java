@@ -1,7 +1,13 @@
 package mekanism.generators.client.gui;
 
+import java.util.List;
+
+import mekanism.api.ListUtils;
+import mekanism.client.gui.GuiEnergyInfo;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRedstoneControl;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
@@ -23,6 +29,14 @@ public class GuiHydrogenGenerator extends GuiMekanism
 		super(new ContainerHydrogenGenerator(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String production = MekanismUtils.getEnergyDisplay(tileEntity.generationRate);
+				return ListUtils.asList("Producing: " + production + "/t", "Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()));
+			}
+		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
 	}
 
 	@Override
