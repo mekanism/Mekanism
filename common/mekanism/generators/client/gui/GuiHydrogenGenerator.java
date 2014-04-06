@@ -36,7 +36,7 @@ public class GuiHydrogenGenerator extends GuiMekanism
 		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRenderer.drawString("H: " + tileEntity.hydrogenStored, 51, 35, 0x00CD00);
+		fontRenderer.drawString("H: " + tileEntity.fuelTank.getStored(), 51, 35, 0x00CD00);
 		fontRenderer.drawString(MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
 
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
