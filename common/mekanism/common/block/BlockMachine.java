@@ -112,6 +112,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:6: Chemical Dissolution Chamber
  * 1:7: Chemical Washer
  * 1:8: Chemical Crystalizer
+ * 1:9: Seismic Vibrator
+ * 1:10: Pressurized Reaction Chamber
  * @author AidanBrady
  *
  */
@@ -176,7 +178,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
 			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
-			icons[10][0] = register.registerIcon("mekanism:PressurizedReactionChamber");
+			icons[10][0] = register.registerIcon("mekanism:SteelCasing");
+			icons[10][1] = register.registerIcon("mekanism:PressurizedReactionChamber");
 		}
 	}
 
@@ -452,6 +455,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 					return icons[meta][0];
 				}
 			}
+			else if(meta == 10)
+			{
+				if(side == 3)
+				{
+					return icons[meta][1];
+				}
+				else {
+					return icons[meta][0];
+				}
+			}
 		}
 
 		return null;
@@ -586,6 +599,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 				}
 			}
 			else if(metadata == 9)
+			{
+				if(side == tileEntity.facing)
+				{
+					return icons[metadata][1];
+				}
+				else {
+					return icons[metadata][0];
+				}
+			}
+			else if(metadata == 10)
 			{
 				if(side == tileEntity.facing)
 				{

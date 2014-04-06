@@ -93,6 +93,11 @@ public class PressurizedReactants
 		return stack.isGasEqual(theGas);
 	}
 
+	public boolean meetsInput(ItemStack itemStack, FluidStack fluidStack, GasStack gasStack)
+	{
+		return meets(new PressurizedReactants(itemStack, fluidStack, gasStack));
+	}
+
 	/**
 	 * Actual implementation of meetsInput(), performs the checks.
 	 * @param input - input to check
@@ -105,7 +110,7 @@ public class PressurizedReactants
 			return false;
 		}
 
-		if(StackUtils.equalsWildcard(input.theSolid, theSolid) || input.theFluid.getFluid() != theFluid.getFluid() || input.theGas.getGas() != theGas.getGas())
+		if(!(StackUtils.equalsWildcard(input.theSolid, theSolid) && input.theFluid.isFluidEqual(theFluid) && input.theGas.isGasEqual(theGas)))
 		{
 			return false;
 		}
@@ -115,7 +120,7 @@ public class PressurizedReactants
 
 	public PressurizedReactants copy()
 	{
-		return new PressurizedReactants(theSolid, theFluid, theGas);
+		return new PressurizedReactants(theSolid.copy(), theFluid.copy(), theGas.copy());
 	}
 
 }

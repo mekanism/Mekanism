@@ -49,7 +49,6 @@ public class MekanismGenerators implements IModule
 	public static Version versionNumber = new Version(6, 0, 4);
 	
 	//Items
-	public static Item BioFuel;
 	public static Item SolarPanel;
 	
 	//Blocks
@@ -95,20 +94,6 @@ public class MekanismGenerators implements IModule
 		Mekanism.logger.info("[MekanismGenerators] Loaded module.");
 	}
 	
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
-		try {
-			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
-			{
-				if(ore.getItemDamage() == 0 || ore.getItemDamage() == OreDictionary.WILDCARD_VALUE)
-				{
-					RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(BioFuel, 2));
-				}
-			}
-		} catch(Exception e) {}
-	}
-	
 	public void addRecipes()
 	{
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 0), new Object[] {
@@ -121,7 +106,7 @@ public class MekanismGenerators implements IModule
 			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(Generator, 1, 1), Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 4), new Object[] {
-			"RER", "BCB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('B'), BioFuel, Character.valueOf('C'), "circuitBasic", Character.valueOf('N'), Item.ingotIron
+			"RER", "BCB", "NEN", Character.valueOf('R'), Item.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('B'), Mekanism.BioFuel, Character.valueOf('C'), "circuitBasic", Character.valueOf('N'), Item.ingotIron
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 3), new Object[] {
 			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('I'), new ItemStack(Mekanism.BasicBlock, 1, 8), Character.valueOf('C'), Mekanism.ElectrolyticCore
@@ -132,20 +117,6 @@ public class MekanismGenerators implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 6), new Object[] {
 			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "circuitBasic"
 		}));
-		
-		//BioFuel Crusher Recipes
-        RecipeHandler.addCrusherRecipe(new ItemStack(Block.tallGrass), new ItemStack(BioFuel, 4));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.reed), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.seeds), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.wheat), new ItemStack(BioFuel, 4));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.pumpkinSeeds), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.melonSeeds), new ItemStack(BioFuel, 2));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.appleRed), new ItemStack(BioFuel, 4));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 4));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 4));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Item.carrot), new ItemStack(BioFuel, 4));
-        
-        InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
 	}
 	
 	public void addBlocks()
@@ -161,15 +132,10 @@ public class MekanismGenerators implements IModule
 		//Declarations
 		Mekanism.configuration.load();
 		SolarPanel = new ItemMekanism(Mekanism.configuration.getItem("SolarPanel", 11300).getInt()).setUnlocalizedName("SolarPanel");
-		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", 11301).getInt()).setUnlocalizedName("BioFuel");
 		Mekanism.configuration.save();
 		
 		//Registrations
 		GameRegistry.registerItem(SolarPanel, "SolarPanel");
-		GameRegistry.registerItem(BioFuel, "BioFuel");
-
-		//Ore Dictionary
-		OreDictionary.registerOre("itemBioFuel", new ItemStack(BioFuel));
 	}
 
 	@Override

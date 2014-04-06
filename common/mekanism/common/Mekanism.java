@@ -17,6 +17,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
+import mekanism.api.PressurizedProducts;
+import mekanism.api.PressurizedReactants;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -123,6 +125,8 @@ import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
+import mekanism.generators.common.MekanismGenerators;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -136,11 +140,14 @@ import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
+import scala.tools.nsc.backend.icode.Primitives;
+
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.Mod;
@@ -267,6 +274,9 @@ public class Mekanism
 	public static ItemJetpack ArmoredJetpack;
 	public static Item FilterCard;
 	public static ItemSeismicReader SeismicReader;
+	public static Item Substrate;
+	public static Item Polyethene;
+	public static Item BioFuel;
 
 	//Blocks
 	public static Block BasicBlock;
@@ -345,7 +355,7 @@ public class Mekanism
 	public static double chemicalWasherUsage;
 	public static double chemicalCrystalizerUsage;
 	public static double seismicVibratorUsage;
-	public static double pressurizedReactionUsage;
+	public static double pressurizedReactionBaseUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.
@@ -704,8 +714,19 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.stoneBrick, 1, 3), new ItemStack(Block.stoneBrick, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Item.flint, 4), new ItemStack(Item.gunpowder));
         RecipeHandler.addCrusherRecipe(new ItemStack(Block.sandStone), new ItemStack(Block.sand, 2));
+		//BioFuel Crusher Recipes
+		RecipeHandler.addCrusherRecipe(new ItemStack(Block.tallGrass), new ItemStack(BioFuel, 4));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.reed), new ItemStack(BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.seeds), new ItemStack(BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.wheat), new ItemStack(BioFuel, 4));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.pumpkinSeeds), new ItemStack(BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.melonSeeds), new ItemStack(BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.appleRed), new ItemStack(BioFuel, 4));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.bread), new ItemStack(BioFuel, 4));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.potato), new ItemStack(BioFuel, 4));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Item.carrot), new ItemStack(BioFuel, 4));
 
-        //Purification Chamber Recipes
+		//Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.obsidian), new ItemStack(Clump, 3, 6));
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Block.gravel), new ItemStack(Item.flint));
         
@@ -765,8 +786,24 @@ public class Mekanism
 		//Chemical Dissolution Chamber Recipes
 		RecipeHandler.addChemicalDissolutionChamberRecipe(new ItemStack(Block.obsidian), new GasStack(GasRegistry.getGas("obsidian"), 1000));
 
+		//Pressurized Reaction Chamber Recipes
+		RecipeHandler.addPRCRecipe(
+				new PressurizedReactants(new ItemStack(BioFuel, 2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(GasRegistry.getGas("hydrogen"), 100)),
+				new PressurizedProducts(new ItemStack(Substrate), new GasStack(GasRegistry.getGas("ethene"), 100)),
+				0,
+				100
+		);
+
+		RecipeHandler.addPRCRecipe(
+				new PressurizedReactants(new ItemStack(Substrate), new FluidStack(FluidRegistry.getFluid("ethene"), 50), new GasStack(GasRegistry.getGas("oxygen"), 10)),
+				new PressurizedProducts(new ItemStack(Polyethene), new GasStack(GasRegistry.getGas("oxygen"), 5)),
+				1000,
+				60
+		);
+
         //Infuse objects
-        InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
+		InfuseRegistry.registerInfuseObject(new ItemStack(BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
+		InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.coal, 1, 1), new InfuseObject(InfuseRegistry.get("CARBON"), 20));
         InfuseRegistry.registerInfuseObject(new ItemStack(CompressedCarbon), new InfuseObject(InfuseRegistry.get("CARBON"), 100));
         InfuseRegistry.registerInfuseObject(new ItemStack(Item.redstone), new InfuseObject(InfuseRegistry.get("REDSTONE"), 10));
@@ -835,6 +872,9 @@ public class Mekanism
 		Robit = (ItemRobit)new ItemRobit(configuration.getItem("Robit", ITEM_ID++).getInt()).setUnlocalizedName("Robit");
 		Balloon = new ItemBalloon(configuration.getItem("Balloon", ITEM_ID++).getInt()).setUnlocalizedName("Balloon");
 		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", ITEM_ID++).getInt()).setUnlocalizedName("ItemProxy");
+		Substrate = new ItemMekanism(configuration.getItem("Substrate", ITEM_ID++).getInt()).setUnlocalizedName("Substrate");
+		Polyethene = new ItemMekanism(configuration.getItem("HDPE", ITEM_ID++).getInt()).setUnlocalizedName("HDPE");
+		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", ITEM_ID++).getInt()).setUnlocalizedName("BioFuel");
 
 		configuration.save();
 		
@@ -879,6 +919,9 @@ public class Mekanism
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 		GameRegistry.registerItem(FilterCard, "FilterCard");
 		GameRegistry.registerItem(SeismicReader, "SeismicReader");
+		GameRegistry.registerItem(Substrate, "Substrate");
+		GameRegistry.registerItem(Polyethene, "Polyethene");
+		GameRegistry.registerItem(BioFuel, "BioFuel");
 	}
 	
 	/**
@@ -983,6 +1026,7 @@ public class Mekanism
 		
 		OreDictionary.registerOre("itemCompressedCarbon", new ItemStack(CompressedCarbon));
 		OreDictionary.registerOre("itemEnrichedAlloy", new ItemStack(EnrichedAlloy));
+		OreDictionary.registerOre("itemBioFuel", new ItemStack(BioFuel));
 	}
 	
 	/**
@@ -1146,6 +1190,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
 		GasRegistry.register(new Gas("liquidOsmium").setVisible(false));
 		GasRegistry.register(new Gas("liquidStone").setVisible(false));
+		GasRegistry.register(new Gas("ethene").registerFluid());
 		
 		for(Resource resource : Resource.values())
 		{

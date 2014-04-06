@@ -450,6 +450,17 @@ public final class OreDictManager
 				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreSilver").get(0), 1));
 			}
 		} catch(Exception e) {}
+
+		try {
+			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
+			{
+				if(ore.getItemDamage() == 0 || ore.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+				{
+					RecipeHandler.addCrusherRecipe(new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE), new ItemStack(Mekanism.BioFuel, 2));
+				}
+			}
+		} catch(Exception e) {}
+
 	}
 	
 	/**

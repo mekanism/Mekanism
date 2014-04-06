@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.inventory.container.ContainerRobitMain;
@@ -63,6 +64,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -209,7 +211,7 @@ public class CommonProxy
 		Mekanism.TO_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EUToJoules", .1D).getDouble(.1D);
 		Mekanism.FROM_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToMJ", 25D).getDouble(25D);
 		Mekanism.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04D).getDouble(.04D);
-		Mekanism.FROM_H2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HydrogenEnergyDensity", 200D).getDouble(200D);
+		Mekanism.FROM_H2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HydrogenEnergyDensity", 18250D).getDouble(18250D);
 		Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
 		Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
@@ -244,6 +246,7 @@ public class CommonProxy
 		Mekanism.chemicalWasherUsage = Mekanism.configuration.get("usage", "ChemicalWasherUsage", 200D).getDouble(200D);
 		Mekanism.chemicalCrystalizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystalizerUsage", 400D).getDouble(400D);
 		Mekanism.seismicVibratorUsage = Mekanism.configuration.get("usage", "SeismicVibratorUsage", 50D).getDouble(50D);
+		Mekanism.pressurizedReactionBaseUsage = Mekanism.configuration.get("usage", "PressurizedReactionBaseUsage", 5D).getDouble(5D);
 		Mekanism.configuration.save();
 	}
 
@@ -395,6 +398,8 @@ public class CommonProxy
 				return new ContainerChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
 			case 39:
 				return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
+			case 40:
+				return new ContainerPRC(player.inventory, (TileEntityPRC)tileEntity);
 		}
 
 		return null;

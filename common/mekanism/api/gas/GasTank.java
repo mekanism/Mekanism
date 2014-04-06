@@ -90,7 +90,7 @@ public class GasTank
 		{
 			if(stored == null)
 			{
-				stored = amount;
+				stored = amount.copy();
 			}
 			else {
 				stored.amount = Math.min(getMaxGas(), getStored()+amount.amount);

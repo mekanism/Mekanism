@@ -2,12 +2,14 @@ package mekanism.common.recipe;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import mekanism.api.AdvancedInput;
 import mekanism.api.ChanceOutput;
 import mekanism.api.ChemicalPair;
 import mekanism.api.PressurizedProducts;
 import mekanism.api.PressurizedReactants;
+import mekanism.api.PressurizedRecipe;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -16,6 +18,7 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -173,6 +176,18 @@ public final class RecipeHandler
 	}
 
 	/**
+	 * Add a Pressurized Reaction Chamber recipe
+	 * @param input - input PressurizedReactants
+	 * @param output - output PressurizedProducts
+	 * @param extraEnergy - extra energy needed by the recipe
+	 */
+	public static void addPRCRecipe(PressurizedReactants input, PressurizedProducts output, double extraEnergy, int ticks)
+	{
+		PressurizedRecipe recipe = new PressurizedRecipe(input, extraEnergy, output, ticks);
+		Recipe.PRESSURIZED_REACTION_CHAMBER.put(input, recipe);
+	}
+
+	/**
 	 * Gets the InfusionOutput of the InfusionInput in the parameters.
 	 * @param infusion - input Infusion
 	 * @param stackDecrease - whether or not to decrease the input slot's stack size AND the infuse amount
@@ -242,7 +257,7 @@ public final class RecipeHandler
 
 	/**
 	 * Gets the Chemical Crystalizer ItemStack output of the defined GasTank input.
-	 * @param itemstack - input GasTank
+	 * @param gasTank - input GasTank
 	 * @param removeGas - whether or not to use gas in the gas tank
 	 * @return output ItemStack
 	 */
@@ -444,6 +459,29 @@ public final class RecipeHandler
 		return null;
 	}
 
+	public static PressurizedRecipe getPRCOutput(ItemStack inputItem, FluidTank inputFluidTank, GasTank inputGasTank)
+	{
+		FluidStack inputFluid = inputFluidTank.getFluid();
+		GasStack inputGas = inputGasTank.getGas();
+
+		if(inputFluid != null && inputGas != null)
+		{
+			HashMap<PressurizedReactants, PressurizedRecipe> recipes = Recipe.PRESSURIZED_REACTION_CHAMBER.get();
+
+			for(PressurizedRecipe recipe : recipes.values())
+			{
+				PressurizedReactants reactants = recipe.reactants;
+
+				if(reactants.meetsInput(inputItem, inputFluid, inputGas))
+				{
+					return recipe.copy();
+				}
+			}
+		}
+
+		return null;
+	}
+
 	/**
 	 * Gets the output ItemStack of the ItemStack in the parameters.
 	 * @param itemstack - input ItemStack
@@ -484,7 +522,7 @@ public final class RecipeHandler
 		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStack, FluidStack>()),
 		CHEMICAL_WASHER(new HashMap<GasStack, GasStack>()),
 		CHEMICAL_CRYSTALIZER(new HashMap<GasStack, ItemStack>()),
-		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedReactants, PressurizedProducts>());
+		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedReactants, PressurizedRecipe>());
 
 		private HashMap recipes;
 

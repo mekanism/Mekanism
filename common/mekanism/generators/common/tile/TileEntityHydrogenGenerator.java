@@ -32,7 +32,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 
 	public TileEntityHydrogenGenerator()
 	{
-		super("HydrogenGenerator", 40000, Mekanism.FROM_H2*4);
+		super("HydrogenGenerator", Mekanism.FROM_H2*200, Mekanism.FROM_H2*4);
 		inventory = new ItemStack[2];
 	}
 

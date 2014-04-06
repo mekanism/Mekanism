@@ -80,6 +80,7 @@ public class MekanismRenderer
 			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
 			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
 			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:Ethene"));
 			
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{

@@ -5,6 +5,7 @@ import java.util.EnumSet;
 
 import mekanism.client.sound.TileSound;
 import mekanism.common.FluidSlot;
+import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -179,7 +180,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 	public int getFuel(ItemStack itemstack)
 	{
-		return itemstack.itemID == MekanismGenerators.BioFuel.itemID ? 200 : 0;
+		return itemstack.itemID == Mekanism.BioFuel.itemID ? 200 : 0;
 	}
 
 	/**

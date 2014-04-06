@@ -27,6 +27,7 @@ import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
+import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
 import mekanism.client.gui.GuiPortableTeleporter;
@@ -115,6 +116,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
+import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -316,6 +318,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer", new RenderChemicalCrystalizer());
+		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
 	}
 
 	@Override
@@ -461,6 +464,8 @@ public class ClientProxy extends CommonProxy
 				}
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
+			case 40:
+				return new GuiPRC(player.inventory, (TileEntityPRC)tileEntity);
 		}
 
 		return null;

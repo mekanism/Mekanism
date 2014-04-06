@@ -1,7 +1,5 @@
 package mekanism.api;
 
-import java.util.Random;
-
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 
@@ -9,17 +7,14 @@ import net.minecraft.item.ItemStack;
 
 public class PressurizedProducts
 {
-	private static Random rand = new Random();
 
-	private ItemStack probabilityOutput;
-	private double probability;
+	private ItemStack itemOutput;
 
 	private GasStack gasOutput;
 
-	public PressurizedProducts(ItemStack item, double chance, GasStack gas)
+	public PressurizedProducts(ItemStack item, GasStack gas)
 	{
-		probabilityOutput = item;
-		probability = chance;
+		itemOutput = item;
 		gasOutput = gas;
 	}
 
@@ -28,12 +23,31 @@ public class PressurizedProducts
 		tank.receive(gasOutput, true);
 	}
 
-	public void addProducts(ItemStack itemStack)
+	public void addProducts(ItemStack[] inventory, int index)
 	{
-		if(itemStack.isItemEqual(probabilityOutput) && rand.nextDouble() <= probability)
+		if(inventory[index] == null)
 		{
-			itemStack.stackSize += probabilityOutput.stackSize;
+			inventory[index] = itemOutput.copy();
 		}
+		else if(inventory[index].isItemEqual(itemOutput))
+		{
+			inventory[index].stackSize += itemOutput.stackSize;
+		}
+	}
+
+	public ItemStack getOptionalOutput()
+	{
+		return itemOutput;
+	}
+
+	public GasStack getGasOutput()
+	{
+		return gasOutput;
+	}
+
+	public PressurizedProducts copy()
+	{
+		return new PressurizedProducts(itemOutput.copy(), gasOutput.copy());
 	}
 
 }
