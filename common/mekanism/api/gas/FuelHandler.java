@@ -4,18 +4,25 @@ import java.util.HashMap;
 
 import mekanism.common.Mekanism;
 
+import net.minecraftforge.fluids.FluidContainerRegistry;
+
 import buildcraft.api.fuels.IronEngineFuel;
 import buildcraft.api.fuels.IronEngineFuel.Fuel;
 
 public class FuelHandler
 {
-	public static HashMap<Gas, FuelGas> fuels = new HashMap<Gas, FuelGas>();
+	public static HashMap<String, FuelGas> fuels = new HashMap<String, FuelGas>();
+
+	public static void addGas(Gas gas, int burnTicks, double energyPerMilliBucket)
+	{
+		fuels.put(gas.getName(), new FuelGas(burnTicks, energyPerMilliBucket));
+	}
 
 	public static FuelGas getFuel(Gas gas)
 	{
-		if(fuels.containsKey(gas))
+		if(fuels.containsKey(gas.getName()))
 		{
-			return fuels.get(gas);
+			return fuels.get(gas.getName());
 		}
 
 		if(gas.hasFluid())
@@ -24,7 +31,7 @@ public class FuelHandler
 			if(bcFuel != null)
 			{
 				FuelGas fuel = new FuelGas(bcFuel);
-				fuels.put(gas, fuel);
+				fuels.put(gas.getName(), fuel);
 				return fuel;
 			}
 		}
@@ -45,7 +52,7 @@ public class FuelHandler
 
 		public FuelGas(Fuel bcFuel)
 		{
-			burnTicks = bcFuel.totalBurningTime;
+			burnTicks = bcFuel.totalBurningTime / FluidContainerRegistry.BUCKET_VOLUME;
 			energyPerTick = bcFuel.powerPerCycle * Mekanism.FROM_BC;
 		}
 	}

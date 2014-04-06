@@ -33,6 +33,16 @@ public class Gas
 	}
 
 	/**
+	 * Creates a new Gas object that corresponds to the given Fluid
+	 */
+	public Gas(Fluid f)
+	{
+		unlocalizedName = name = f.getName();
+		icon = f.getStillIcon();
+		fluid = f;
+	}
+
+	/**
 	 * Gets the name (key) of this Gas. This is NOT a translated or localized display name.
 	 * @return this Gas's name or key
 	 */

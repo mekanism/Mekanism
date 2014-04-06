@@ -19,6 +19,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.PressurizedProducts;
 import mekanism.api.PressurizedReactants;
+import mekanism.api.gas.FuelHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -825,6 +826,10 @@ public class Mekanism
 				return 0;
 			}
         });
+
+		//Fuel Gases
+		FuelHandler.addGas(GasRegistry.getGas("hydrogen"), 1, FROM_H2);
+		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, 25000);
 	}
 	
 	/**
@@ -1210,6 +1215,7 @@ public class Mekanism
         InfuseRegistry.registerInfuseType(new InfuseType("DIAMOND", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 8, 0).setUnlocalizedName("infuse.diamond"));
         InfuseRegistry.registerInfuseType(new InfuseType("REDSTONE", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 16, 0).setUnlocalizedName("infuse.redstone"));
         InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 20, 0).setUnlocalizedName("infuse.fungi"));
+		InfuseRegistry.registerInfuseType(new InfuseType("BIO", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 12, 0).setUnlocalizedName("infuse.bio"));
 	}
 	
 	@EventHandler

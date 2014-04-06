@@ -3,25 +3,24 @@ package mekanism.generators.common;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import mekanism.api.infuse.InfuseObject;
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.recipe.MekanismRecipe;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 
+import buildcraft.api.fuels.IronEngineFuel;
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.Mod;
@@ -30,7 +29,6 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -65,10 +63,18 @@ public class MekanismGenerators implements IModule
 	public static double windGeneration;
 
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
+	public void postInit(FMLPostInitializationEvent event)
 	{
-		//Register infuses
-        InfuseRegistry.registerInfuseType(new InfuseType("BIO", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 12, 0).setUnlocalizedName("infuse.bio"));
+		for(String s : IronEngineFuel.fuels.keySet())
+		{
+			Fluid f = FluidRegistry.getFluid(s);
+			if(!(f == null || GasRegistry.containsGas(s)))
+			{
+				GasRegistry.register(new Gas(f));
+			}
+		}
+
+		IronEngineFuel.addFuel("ethene", (int)(240 * Mekanism.TO_BC), 40* FluidContainerRegistry.BUCKET_VOLUME);
 	}
 	
 	@EventHandler

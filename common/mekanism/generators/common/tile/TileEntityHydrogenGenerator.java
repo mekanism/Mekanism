@@ -2,6 +2,8 @@ package mekanism.generators.common.tile;
 
 import java.util.ArrayList;
 
+import mekanism.api.gas.FuelHandler;
+import mekanism.api.gas.FuelHandler.FuelGas;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -29,6 +31,9 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 
 	/** The tank this block is storing fuel in. */
 	public GasTank fuelTank;
+
+	public int burnTicks = 0;
+	public double generationRate = 0;
 
 	public TileEntityHydrogenGenerator()
 	{
@@ -68,8 +73,23 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			{
 				setActive(true);
 
-				fuelTank.draw(1, true);
-				setEnergy(electricityStored + Mekanism.FROM_H2);
+				if(burnTicks > 0)
+				{
+					burnTicks--;
+					setEnergy(electricityStored + generationRate);
+				}
+				else if(fuelTank.getStored() > 0)
+				{
+					FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+					burnTicks = fuel.burnTicks;
+					generationRate = fuel.energyPerTick;
+					fuelTank.draw(1, true);
+					setEnergy(electricityStored + generationRate);
+				}
+				else {
+					burnTicks = 0;
+					generationRate = 0;
+				}
 			}
 			else {
 				setActive(false);
@@ -179,7 +199,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
-		if(fuelTank.getGas() == null || fuelTank.getGas().getGas() == stack.getGas())
+		if(fuelTank.getGas() == null || fuelTank.getGas().isGasEqual(stack))
 		{
 			return fuelTank.receive(stack, true);
 		}
@@ -213,7 +233,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return (type == GasRegistry.getGas("hydrogen") || type == GasRegistry.getGas("ethene")) && side != ForgeDirection.getOrientation(facing);
+		return FuelHandler.getFuel(type) != null && side != ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
