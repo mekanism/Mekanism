@@ -11,7 +11,6 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 

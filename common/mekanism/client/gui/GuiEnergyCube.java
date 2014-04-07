@@ -1,13 +1,10 @@
 package mekanism.client.gui;
 
-import mekanism.common.EnergyDisplay;
-import mekanism.common.EnergyDisplay.ElectricUnit;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 

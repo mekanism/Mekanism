@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;

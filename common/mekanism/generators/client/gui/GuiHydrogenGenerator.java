@@ -8,11 +8,10 @@ import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiGasGauge;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
-import mekanism.client.gui.GuiGasGauge.Type;
+import mekanism.client.gui.GuiGauge.Type;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiRedstoneControl;
-import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
@@ -41,7 +40,7 @@ public class GuiHydrogenGenerator extends GuiMekanism
 				return ListUtils.asList(
 						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate) + "/t",
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()));
+						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
@@ -64,11 +63,6 @@ public class GuiHydrogenGenerator extends GuiMekanism
 
 		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
-		}
 	}
 
 	@Override
@@ -79,9 +73,6 @@ public class GuiHydrogenGenerator extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
