@@ -3,8 +3,12 @@ package mekanism.generators.client.gui;
 import java.util.List;
 
 import mekanism.api.ListUtils;
+import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiGasGauge;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiGasGauge.Type;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRedstoneControl;
 import mekanism.common.Mekanism;
@@ -37,6 +41,13 @@ public class GuiHydrogenGenerator extends GuiMekanism
 				return ListUtils.asList("Producing: " + production + "/t", "Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.fuelTank;
+			}
+		}, Type.WIDE, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 20, 20));
 	}
 
 	@Override
@@ -62,8 +73,6 @@ public class GuiHydrogenGenerator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -73,12 +82,6 @@ public class GuiHydrogenGenerator extends GuiMekanism
 		int xAxis = mouseX - guiWidth;
 		int yAxis = mouseY - guiHeight;
 
-		int displayInt;
-
-		displayInt = tileEntity.getScaledHydrogenLevel(52);
-		drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176, 52 + 52 - displayInt, 4, displayInt);
-
-		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 }
