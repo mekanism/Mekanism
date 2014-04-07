@@ -10,6 +10,7 @@ import mekanism.client.gui.GuiGasGauge;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiGasGauge.Type;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
@@ -37,8 +38,10 @@ public class GuiHydrogenGenerator extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String production = MekanismUtils.getEnergyDisplay(tileEntity.generationRate);
-				return ListUtils.asList("Producing: " + production + "/t", "Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()));
+				return ListUtils.asList(
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate) + "/t",
+						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
@@ -47,7 +50,8 @@ public class GuiHydrogenGenerator extends GuiMekanism
 			{
 				return tileEntity.fuelTank;
 			}
-		}, Type.WIDE, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 20, 20));
+		}, Type.WIDE, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 55, 18));
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 164, 15));
 	}
 
 	@Override
@@ -60,9 +64,6 @@ public class GuiHydrogenGenerator extends GuiMekanism
 
 		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRenderer.drawString("H: " + tileEntity.fuelTank.getStored(), 51, 35, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
 
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{

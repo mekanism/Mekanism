@@ -14,11 +14,10 @@ public class GuiGasGauge extends GuiElement
 	private int xLocation;
 	private int yLocation;
 
-	private int width = 6;
-	private int height = 56;
-	private int innerOffsetY = 2;
+	private int width;
+	private int height;
 
-	private Type gaugeType;
+	private int number;
 
 	IGasInfoHandler infoHandler;
 
@@ -31,15 +30,21 @@ public class GuiGasGauge extends GuiElement
 
 		width = type.width;
 		height = type.height;
+		number = type.number;
+
 		infoHandler = handler;
 	}
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
-		int scale = getScaledGasLevel(height);
+		mc.renderEngine.bindTexture(RESOURCE);
+
+		int scale = getScaledGasLevel(height-2);
 		int start = 0;
 		GasStack gas = infoHandler.getTank().getGas();
+
+		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
 
 		while(true)
 		{
@@ -57,7 +62,10 @@ public class GuiGasGauge extends GuiElement
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
 
-			guiObj.drawTexturedModelRectFromIcon(guiWidth + xLocation, guiHeight + yLocation + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
+			for(int i = 0; i < number; i++)
+			{
+				guiObj.drawTexturedModelRectFromIcon(guiWidth + xLocation + 16*i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, gas.getGas().getIcon(), 16, renderRemaining);
+			}
 
 			start+=16;
 
@@ -67,9 +75,10 @@ public class GuiGasGauge extends GuiElement
 			}
 		}
 
-		mc.renderEngine.bindTexture(defaultLocation);
-		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, 176, 40, 16, 59);
+		mc.renderEngine.bindTexture(RESOURCE);
+		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
 
+		mc.renderEngine.bindTexture(defaultLocation);
 	}
 
 	@Override
@@ -102,17 +111,19 @@ public class GuiGasGauge extends GuiElement
 
 	public static enum Type
 	{
-		STANDARD(20, 58, "mekanism:gasGaugeStandard"),
-		WIDE(100, 58, "mekanism:gasGaugeWide");
+		STANDARD(18, 60, 1, "GuiGaugeStandard.png"),
+		WIDE(66, 50, 4, "GuiGaugeWide.png");
 
 		public int width;
 		public int height;
+		public int number;
 		public String textureLocation;
 
-		private Type(int w, int h, String t)
+		private Type(int w, int h, int n, String t)
 		{
 			width = w;
 			height = h;
+			number = n;
 			textureLocation = t;
 		}
 	}

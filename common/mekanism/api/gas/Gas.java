@@ -23,6 +23,8 @@ public class Gas
 
 	private boolean visible = true;
 
+	private boolean from_fluid = false;
+
 	/**
 	 * Creates a new Gas object with a defined name or key value.
 	 * @param s - name or key to associate this Gas with
@@ -40,6 +42,7 @@ public class Gas
 		unlocalizedName = name = f.getName();
 		icon = f.getStillIcon();
 		fluid = f;
+		from_fluid = true;
 	}
 
 	/**
@@ -108,6 +111,10 @@ public class Gas
 	 */
 	public Icon getIcon()
 	{
+		if(from_fluid)
+		{
+			return this.getFluid().getIcon();
+		}
 		return icon;
 	}
 
@@ -124,7 +131,7 @@ public class Gas
 		{
 			fluid.setIcons(getIcon());
 		}
-
+		from_fluid = false;
 		return this;
 	}
 
