@@ -1,16 +1,17 @@
 package mekanism.client.gui;
 
+import mekanism.api.gas.GasTank;
+import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created by ben on 05/04/14.
- */
 public class GuiPRC extends GuiMekanism
 {
 	public TileEntityPRC tileEntity;
@@ -21,6 +22,27 @@ public class GuiPRC extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png")));
+		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
+			@Override
+			public FluidTank getTank()
+			{
+				return tileEntity.inputFluidTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 5, 10));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.inputGasTank;
+			}
+		}, GuiGauge.Type.SMALL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 33, 18));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.outputGasTank;
+			}
+		}, GuiGauge.Type.SMALL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 164, 15));
 	}
 
