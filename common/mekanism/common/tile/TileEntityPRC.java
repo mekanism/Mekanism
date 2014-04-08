@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.PressurizedProducts;
 import mekanism.api.PressurizedRecipe;
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
@@ -28,24 +29,27 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import com.google.common.io.ByteArrayDataInput;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.ILuaContext;
 
 public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandler, IGasHandler, ITubeConnection
 {
-	FluidTank inputFluidTank = new FluidTank(10000);
-	GasTank inputGasTank = new GasTank(10000);
+	public FluidTank inputFluidTank = new FluidTank(10000);
+	public GasTank inputGasTank = new GasTank(10000);
 
-	GasTank outputGasTank = new GasTank(10000);
+	public GasTank outputGasTank = new GasTank(10000);
 
 	public TileEntityPRC()
 	{
@@ -222,6 +226,108 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 
 		return false;
 	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+
+		if(inputFluidTank.getFluid() != null)
+		{
+			data.add(true);
+			data.add(inputFluidTank.getFluid().getFluid().getID());
+			data.add(inputFluidTank.getFluidAmount());
+		}
+		else {
+			data.add(false);
+		}
+
+		if(inputGasTank.getGas() != null)
+		{
+			data.add(true);
+			data.add(inputGasTank.getGas().getGas().getID());
+			data.add(inputGasTank.getStored());
+		}
+		else {
+			data.add(false);
+		}
+
+		if(outputGasTank.getGas() != null)
+		{
+			data.add(true);
+			data.add(outputGasTank.getGas().getGas().getID());
+			data.add(outputGasTank.getStored());
+		}
+		else {
+			data.add(false);
+		}
+
+		return data;
+	}
+
+	@Override
+	public void handlePacketData(ByteArrayDataInput dataStream)
+	{
+		super.handlePacketData(dataStream);
+
+		if(dataStream.readBoolean())
+		{
+			inputFluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
+		}
+		else {
+			inputFluidTank.setFluid(null);
+		}
+
+		if(dataStream.readBoolean())
+		{
+			inputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+		}
+		else {
+			inputGasTank.setGas(null);
+		}
+
+		if(dataStream.readBoolean())
+		{
+			outputGasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+		}
+		else {
+			outputGasTank.setGas(null);
+		}
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+/*
+		if(nbtTags.hasKey("fluidTank"))
+		{
+			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+		}
+
+		leftTank.read(nbtTags.getCompoundTag("leftTank"));
+		rightTank.read(nbtTags.getCompoundTag("rightTank"));
+
+		dumpLeft = nbtTags.getBoolean("dumpLeft");
+		dumpRight = nbtTags.getBoolean("dumpRight");
+*/	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+/*
+		if(fluidTank.getFluid() != null)
+		{
+			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
+		}
+
+		nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
+		nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
+
+		nbtTags.setBoolean("dumpLeft", dumpLeft);
+		nbtTags.setBoolean("dumpRight", dumpRight);
+*/	}
 
 	@Override
 	public Map getRecipes()
