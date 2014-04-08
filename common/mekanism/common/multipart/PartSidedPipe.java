@@ -1,5 +1,6 @@
 package mekanism.common.multipart;
 
+import codechicken.microblock.ISidedHollowConnect;
 import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import codechicken.microblock.IHollowConnect;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
@@ -55,7 +55,7 @@ import com.google.common.io.ByteArrayDataInput;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, IHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, IWrenchable
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, ISidedHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, IWrenchable
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -299,9 +299,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public int getHollowSize()
+	public int getHollowSize(int side)
 	{
-		return getTransmitter().getSize().centerSize+1;
+		ForgeDirection direction = ForgeDirection.getOrientation(side);
+
+		if(connectionMapContainsSide(getAllCurrentConnections(), direction) || direction == testingSide)
+		{
+			return getTransmitter().getSize().centerSize+1;
+		}
+		return 0;
 	}
 
 	@Override
@@ -360,6 +366,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		for(int i = 0; i < 6; i++)
 		{
 			connectionTypes[i] = ConnectionType.values()[packet.readInt()];
+		}
+
+		if(tile() != null)
+		{
+			tile().internalPartChange(this);
+			tile().markRender();
 		}
 	}
 
