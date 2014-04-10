@@ -194,52 +194,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		}
 	}
 
-	public void register()
-	{
-		if(!world().isRemote)
-		{
-			if(!Mekanism.ic2Registered.contains(Coord4D.get(tile())))
-			{
-				Mekanism.ic2Registered.add(Coord4D.get(tile()));
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent((IEnergyTile)tile()));
-			}
-		}
-	}
-
-	@Override
-	public void chunkLoad()
-	{
-		register();
-	}
-
-	@Override
-	public void preRemove()
-	{
-		if(!world().isRemote)
-		{
-			Mekanism.ic2Registered.remove(Coord4D.get(tile()));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)tile()));
-		}
-
-		super.preRemove();
-	}
-
-	@Override
-	public void onAdded()
-	{
-		super.onAdded();
-
-		register();
-	}
-
 	@Override
 	public void onChunkUnload()
 	{
 		if(!world().isRemote)
 		{
-			Mekanism.ic2Registered.remove(Coord4D.get(tile()));
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)tile()));
-
 			getTransmitterNetwork().electricityStored -= lastWrite;
 		}
 
