@@ -286,8 +286,6 @@ public class RenderPartTransmitter implements IIconRegister
 
 			MekanismRenderer.glowOn(fluid.getLuminosity());
 
-			CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(pos.x, pos.y, pos.z);
 
 			boolean gas = fluid.isGaseous();
 

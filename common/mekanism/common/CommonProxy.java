@@ -65,6 +65,7 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
+import mekanism.common.tile.TileEntityPlasticBlock;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -125,12 +126,12 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
 		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
-		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
-		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
 		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
 		GameRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer");
+		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
+		GameRegistry.registerTileEntity(TileEntityPlasticBlock.class, "PlasticBlock");
 	}
 
 	/**
@@ -188,6 +189,8 @@ public class CommonProxy
 		Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.plasticID = Mekanism.configuration.getBlock("PlasticBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.plasticFenceID = Mekanism.configuration.getBlock("PlasticFenceBlock", Mekanism.BLOCK_ID++).getInt();
 
 		Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
 		Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);

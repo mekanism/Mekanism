@@ -35,6 +35,11 @@ item.FreeRunners.name=Free Runners
 item.ArmoredJetpack.name=Armored Jetpack
 item.FilterCard.name=Filter Card
 item.SeismicReader.name=Seismic Reader
+item.HDPEPellet.name=HDPE Pellet
+item.HDPERod.name=HDPE Rod
+item.HDPESheet.name=HDPE Sheet
+item.PlaStick.name=PlaStick
+item.Substrate.name=Substrate
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
@@ -93,6 +98,7 @@ tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
 tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
 tile.MachineBlock2.ChemicalCrystalizer.name=Chemical Crystalizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
+tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 
 //Infuse types
 infuse.carbon=Carbon
@@ -198,6 +204,7 @@ gas.sulfuricAcid=Sulfuric Acid
 gas.hydrogenChloride=Hydrogen Chloride
 gas.liquidOsmium=Liquid Osmium
 gas.liquidStone=Liquid Stone
+gas.ethene=Ethylene
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -217,6 +224,10 @@ gas.cleanSilver=Clean Silver Slurry
 gas.cleanObsidian=Clean Obsidian Slurry
 gas.cleanLead=Clean Lead Slurry
 
+//BC Fuel Gases
+gas.fuel=Vaporized Fuel
+gas.oil=Vaporized Oil
+
 //Fluids
 fluid.hydrogen=Liquid Hydrogen
 fluid.oxygen=Liquid Oxygen
@@ -226,6 +237,7 @@ fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
 fluid.sulfuricAcid=Liquid Sulfuric Acid
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
 fluid.brine=Brine
+fluid.ethene=Liquid Ethylene
 
 //OreGas names
 oregas.iron=Iron Ore

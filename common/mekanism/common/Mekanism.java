@@ -48,6 +48,8 @@ import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
+import mekanism.common.block.BlockPlastic;
+import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
@@ -61,6 +63,7 @@ import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
+import mekanism.common.item.ItemBlockPlastic;
 import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemCrystal;
@@ -72,6 +75,7 @@ import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemFilterCard;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
+import mekanism.common.item.ItemHDPE;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMachineUpgrade;
@@ -121,6 +125,8 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntitySalinationTank;
+import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
@@ -241,7 +247,9 @@ public class Mekanism
 	public static int boundingBlockID;
 	public static int gasTankID;
 	public static int cardboardBoxID;
-	
+	public static int plasticID;
+	public static int plasticFenceID;
+
 	//Items
 	public static ItemElectricBow ElectricBow;
 	public static Item EnrichedAlloy;
@@ -290,6 +298,8 @@ public class Mekanism
 	public static Block BoundingBlock;
 	public static Block GasTank;
 	public static Block CardboardBox;
+	public static Block BlockHDPE;
+	public static Block BlockHDPEFence;
 
 	//Multi-ID Items
 	public static Item Dust;
@@ -640,6 +650,15 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 2, 8), new Object[] {
 			"RRR", "SBS", "RRR", Character.valueOf('R'), Item.redstone, Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Block.fenceIron
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Polyethene, 1, 1), new Object[] {
+			"PP", "PP", "PP", Character.valueOf('P'), new ItemStack(Polyethene, 1, 0)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Polyethene, 1, 2), new Object[] {
+			"PPP", "P P", "PPP", Character.valueOf('P'), new ItemStack(Polyethene, 1, 0)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Polyethene, 1, 3), new Object[] {
+			"R", "R", Character.valueOf('R'), new ItemStack(Polyethene, 1, 1)
+		}));
         
         for(int i = 0; i < EnumColor.DYES.length; i++)
         {
@@ -878,7 +897,7 @@ public class Mekanism
 		Balloon = new ItemBalloon(configuration.getItem("Balloon", ITEM_ID++).getInt()).setUnlocalizedName("Balloon");
 		ItemProxy = new ItemProxy(configuration.getItem("ItemProxy", ITEM_ID++).getInt()).setUnlocalizedName("ItemProxy");
 		Substrate = new ItemMekanism(configuration.getItem("Substrate", ITEM_ID++).getInt()).setUnlocalizedName("Substrate");
-		Polyethene = new ItemMekanism(configuration.getItem("HDPE", ITEM_ID++).getInt()).setUnlocalizedName("HDPE");
+		Polyethene = new ItemHDPE(configuration.getItem("HDPE", ITEM_ID++).getInt()).setUnlocalizedName("HDPE");
 		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", ITEM_ID++).getInt()).setUnlocalizedName("BioFuel");
 
 		configuration.save();
@@ -945,7 +964,9 @@ public class Mekanism
 		BoundingBlock = (BlockBounding) new BlockBounding(boundingBlockID).setUnlocalizedName("BoundingBlock");
 		GasTank = new BlockGasTank(gasTankID).setUnlocalizedName("GasTank");
 		CardboardBox = new BlockCardboardBox(cardboardBoxID).setUnlocalizedName("CardboardBox");
-		
+		BlockHDPE = new BlockPlastic(plasticID).setUnlocalizedName("PlasticBlock");
+		BlockHDPEFence = new BlockPlasticFence(plasticFenceID).setUnlocalizedName("PlasticFence");
+
 		//Registrations
 		GameRegistry.registerBlock(BasicBlock, ItemBlockBasic.class, "BasicBlock");
 		GameRegistry.registerBlock(BasicBlock2, ItemBlockBasic.class, "BasicBlock2");
@@ -957,6 +978,8 @@ public class Mekanism
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
 		GameRegistry.registerBlock(GasTank, ItemBlockGasTank.class, "GasTank");
 		GameRegistry.registerBlock(CardboardBox, ItemBlockCardboardBox.class, "CardboardBox");
+		GameRegistry.registerBlock(BlockHDPE, ItemBlockPlastic.class, "PlasticBlock");
+		GameRegistry.registerBlock(BlockHDPEFence, "PlasticFence");
 	}
 	
 	/**
@@ -1118,7 +1141,9 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityAdvancedBoundingBlock.class, "AdvancedBoundingBlock");
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
 		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
-		
+		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
+		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
+
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();
 	}
