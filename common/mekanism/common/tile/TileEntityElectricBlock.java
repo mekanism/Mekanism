@@ -363,7 +363,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 	{
-		if(!getConsumingSides().contains(side))
+		if(!(getConsumingSides().contains(side) || side == ForgeDirection.UNKNOWN))
 		{
 			return 0;
 		}
