@@ -149,6 +149,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
@@ -659,29 +660,43 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Polyethene, 1, 3), new Object[] {
 			"R", "R", Character.valueOf('R'), new ItemStack(Polyethene, 1, 1)
 		}));
-        
-        for(int i = 0; i < EnumColor.DYES.length; i++)
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, 15), new Object[] {
+			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2)
+		}));
+		for(int i = 0; i < EnumColor.DYES.length-1; i++)
+		{
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
+				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+			}));
+		}
+
+		for(int i = 0; i < EnumColor.DYES.length; i++)
         {
-        	EnumColor color = EnumColor.DYES[i];
-        	
-        	if(color != null)
-        	{
-        		CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 2, i), new Object[] {
-        			Item.leather, Item.silk, new ItemStack(Item.dyePowder, 1, i)
-        		}));
-        		
-        		for(int j = 0; j < EnumColor.DYES.length; j++)
-        		{
-        			EnumColor color1 = EnumColor.DYES[j];
-        			
-        			if(color1 != null)
-        			{
-        				CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 1, i), new Object[] {
-        					new ItemStack(Balloon, 1, j), new ItemStack(Item.dyePowder, 1, i)
-        				}));
-        			}
-        		}
-        	}
+			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 2, i), new Object[] {
+				Item.leather, Item.silk, new ItemStack(Item.dyePowder, 1, i)
+			}));
+
+			for(int j = 0; j < EnumColor.DYES.length; j++)
+			{
+				CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 1, i), new Object[] {
+					new ItemStack(Balloon, 1, j), new ItemStack(Item.dyePowder, 1, i)
+				}));
+
+				for(int meta=0; meta < 4; meta++)
+				{
+					CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockHDPE, 4, 16*meta+i), new Object[] {
+						" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, meta*16+j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+					}));
+				}
+			}
+
+			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(BlockHDPE, 3, 32+i), new Object[] {
+					new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(Item.glowstone)
+			}));
+
+			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockHDPE, 4, 48+i), new Object[] {
+					" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(Dust, 1, 2)
+			}));
         }
 	
 		//Furnace Recipes
@@ -713,6 +728,10 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 0), new ItemStack(Block.stoneBrick, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.stoneBrick, 1, 1), new ItemStack(Block.stoneBrick, 1, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreNetherQuartz), new ItemStack(Item.netherQuartz, 2));
+		for(int i = 0; i < EnumColor.DYES.length; i++)
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, 16+i));
+		}
 		
 		//Combiner recipes
 		RecipeHandler.addCombinerRecipe(new ItemStack(Item.redstone, 16), new ItemStack(Block.oreRedstone));
