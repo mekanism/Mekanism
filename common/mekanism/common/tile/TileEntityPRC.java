@@ -330,6 +330,12 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 */	}
 
 	@Override
+	public String getInvName()
+	{
+		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".short.name");
+	}
+
+	@Override
 	public Map getRecipes()
 	{
 		return null;

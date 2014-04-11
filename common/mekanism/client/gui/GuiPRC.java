@@ -3,6 +3,8 @@ package mekanism.client.gui;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.MekanismUtils;
@@ -28,22 +30,26 @@ public class GuiPRC extends GuiMekanism
 			{
 				return tileEntity.inputFluidTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 5, 10));
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 5, 10));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.inputGasTank;
 			}
-		}, GuiGauge.Type.SMALL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 33, 18));
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 28, 10));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.outputGasTank;
 			}
-		}, GuiGauge.Type.SMALL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18));
+		}, GuiGauge.Type.SMALL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 40));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 164, 15));
+
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 53, 34));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 18).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 115, 34));
 	}
 
 	@Override
@@ -52,7 +58,7 @@ public class GuiPRC extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRenderer.drawString(tileEntity.getInvName(), 81, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

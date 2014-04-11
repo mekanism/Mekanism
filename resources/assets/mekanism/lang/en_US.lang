@@ -99,6 +99,7 @@ tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
 tile.MachineBlock2.ChemicalCrystalizer.name=Chemical Crystalizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
+tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 
 //Plastic
 tile.PlasticBlock.PlasticBlock.name=Plastic Block

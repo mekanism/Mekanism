@@ -663,6 +663,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, 15), new Object[] {
 			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2)
 		}));
+
 		for(int i = 0; i < EnumColor.DYES.length-1; i++)
 		{
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
