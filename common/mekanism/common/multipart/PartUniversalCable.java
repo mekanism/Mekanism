@@ -32,7 +32,7 @@ import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergySink, IEnergyHandler, IPowerReceptor
+public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler, IPowerReceptor
 {
 	public Tier.CableTier tier;
 
@@ -252,30 +252,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	public String getTransmitterNetworkFlow()
 	{
 		return getTransmitterNetwork().getFlow();
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
-	{
-		return true;
-	}
-
-	@Override
-	public double demandedEnergyUnits()
-	{
-		return getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_IC2;
-	}
-
-	@Override
-	public int getMaxSafeInput()
-	{
-		return Integer.MAX_VALUE;
-	}
-
-	@Override
-	public double injectEnergyUnits(ForgeDirection direction, double i)
-	{
-		return getTransmitterNetwork().emit(i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
 	}
 
 	@Override
