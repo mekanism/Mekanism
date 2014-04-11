@@ -67,11 +67,19 @@ public class ItemBlockPlastic extends ItemBlock
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack stack, EntityPlayer player, List info, boolean flag)
+	public String getItemDisplayName(ItemStack stack)
 	{
 		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
-		info.add(colour.getDyedName());
+		String colourName;
+		if(colour == EnumColor.BLACK)
+		{
+			colourName = EnumColor.DARK_GREY + colour.getDyeName();
+		}
+		else {
+			colourName = colour.getDyedName();
+		}
+
+		return colourName + " " + super.getItemDisplayName(stack);
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public enum EnumColor
 	INDIGO("\u00a79", "indigo", new int[] {85, 85, 255}, 12),
 	BRIGHT_GREEN("\u00a7a", "brightGreen", new int[] {85, 255, 85}, 10),
 	AQUA("\u00a7b", "aqua", new int[] {85, 255, 255}, -1),
-	RED("\u00a7c", "red", new int[] {255, 85, 85}, 1),
+	RED("\u00a7c", "red", new int[] {255, 0, 0}, 1),
 	PINK("\u00a7d", "pink", new int[] {255, 85, 255}, 13),
 	YELLOW("\u00a7e", "yellow", new int[] {255, 255, 85}, 11),
 	WHITE("\u00a7f", "white", new int[] {255, 255, 255}, 15),

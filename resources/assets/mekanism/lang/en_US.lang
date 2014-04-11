@@ -100,6 +100,12 @@ tile.MachineBlock2.ChemicalCrystalizer.name=Chemical Crystalizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 
+//Plastic
+tile.PlasticBlock.PlasticBlock.name=Plastic Block
+tile.PlasticBlock.SlickPlasticBlock.name=Slick Plastic Block
+tile.PlasticBlock.GlowPlasticBlock.name=Plastic Glow Block
+tile.PlasticBlock.ReinforcedPlasticBlock.name=Reinforced Plastic Block
+
 //Infuse types
 infuse.carbon=Carbon
 infuse.tin=Tin
@@ -456,6 +462,26 @@ color.red=Red
 color.pink=Pink
 color.yellow=Yellow
 color.white=White
+
+//Dyes
+dye.black=Black
+dye.darkBlue=Blue
+dye.brown=Brown
+dye.darkGreen=Green
+dye.darkAqua=Cyan
+dye.darkRed=Dark Red
+dye.purple=Purple
+dye.orange=Orange
+dye.grey=Light Grey
+dye.darkGrey=Grey
+dye.indigo=Light Blue
+dye.brightGreen=Lime
+dye.aqua=Aqua
+dye.red=Red
+dye.brightPink=Pink
+dye.pink=Magenta
+dye.yellow=Yellow
+dye.white=White
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism

@@ -69,11 +69,11 @@ public class ItemBalloon extends ItemMekanism
 	@Override
 	public String getItemDisplayName(ItemStack stack)
 	{
-		String color = getColor(stack).getName();
+		String color = getColor(stack).getDyedName();
 
 		if(getColor(stack) == EnumColor.BLACK)
 		{
-			color = EnumColor.DARK_GREY + getColor(stack).getLocalizedName();
+			color = EnumColor.DARK_GREY + getColor(stack).getDyeName();
 		}
 
 		return color + " " + MekanismUtils.localize("tooltip.balloon");
