@@ -1,13 +1,11 @@
 package mekanism.common.multipart;
 
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.energy.tile.IEnergySource;
 
+import java.util.List;
 import java.util.Set;
 
-import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -18,13 +16,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
+
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -82,6 +81,32 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 			{
 				getTransmitterNetwork().electricityStored += cacheEnergy;
 				cacheEnergy = 0;
+			}
+
+			List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
+			if(!sides.isEmpty())
+			{
+				TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tile());
+
+				for(ForgeDirection side : sides)
+				{
+					if(connectedAcceptors[side.ordinal()] != null)
+					{
+						TileEntity acceptor = connectedAcceptors[side.ordinal()];
+
+						if(acceptor instanceof IEnergySource)
+						{
+							double received = ((IEnergySource) acceptor).getOfferedEnergy()*Mekanism.FROM_IC2;
+							double toDraw = received;
+
+							if(received > 0)
+							{
+								toDraw -= getTransmitterNetwork().emit(received);
+							}
+							((IEnergySource) acceptor).drawEnergy(toDraw*Mekanism.TO_IC2);
+						}
+					}
+				}
 			}
 		}
 
