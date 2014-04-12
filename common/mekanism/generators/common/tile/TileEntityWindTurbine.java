@@ -6,8 +6,8 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.ItemStack;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
 {

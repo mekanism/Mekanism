@@ -23,8 +23,8 @@ import net.minecraft.util.ResourceLocation;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
 {
@@ -245,9 +245,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
+	public boolean equals(IPeripheral other)
 	{
-		return true;
+		return this == other;
 	}
 
 	@Override

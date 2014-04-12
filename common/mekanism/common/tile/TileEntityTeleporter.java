@@ -35,9 +35,9 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
 {
@@ -582,9 +582,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
+	public boolean equals(IPeripheral other)
 	{
-		return true;
+		return this == other;
 	}
 
 	@Override

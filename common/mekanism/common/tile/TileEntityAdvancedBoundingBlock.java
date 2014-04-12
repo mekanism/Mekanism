@@ -19,9 +19,9 @@ import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
 {
@@ -441,17 +441,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
-	{
-		if(getInv() == null)
-		{
-			return false;
-		}
-
-		return getInv().canAttachToSide(side);
-	}
-
-	@Override
 	public void attach(IComputerAccess computer)
 	{
 		if(getInv() == null)
@@ -471,6 +460,12 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 
 		getInv().detach(computer);
+	}
+
+	@Override
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
 	}
 
 	@Override

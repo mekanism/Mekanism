@@ -41,8 +41,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandler, IGasHandler, ITubeConnection
 {

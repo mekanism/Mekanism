@@ -23,8 +23,8 @@ import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler
 {

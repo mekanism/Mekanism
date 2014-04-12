@@ -23,8 +23,8 @@ import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPowerReceptor, IPeripheral, IActiveState, IHasSound, IRedstoneControl
 {
@@ -163,16 +163,16 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
-	{
-		return true;
-	}
-
-	@Override
 	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+
+	@Override
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
+	}
 
 	@Override
 	public boolean canSetFacing(int side)

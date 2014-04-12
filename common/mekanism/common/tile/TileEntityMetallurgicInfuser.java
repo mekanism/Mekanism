@@ -33,9 +33,9 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
 {
@@ -470,9 +470,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
+	public boolean equals(IPeripheral other)
 	{
-		return true;
+		return this == other;
 	}
 
 	@Override

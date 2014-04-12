@@ -16,8 +16,8 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator
 {

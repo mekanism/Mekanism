@@ -288,7 +288,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 			CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslated(pos.x, pos.y, pos.z);
-			
+
 			boolean gas = fluid.isGaseous();
 
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)

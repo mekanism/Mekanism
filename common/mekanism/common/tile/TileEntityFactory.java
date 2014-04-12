@@ -39,9 +39,9 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl, IGasHandler, ITubeConnection
 {
@@ -742,16 +742,16 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
-	{
-		return true;
-	}
-
-	@Override
 	public void attach(IComputerAccess computer) {}
 
 	@Override
 	public void detach(IComputerAccess computer) {}
+
+	@Override
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
+	}
 
 	@Override
 	public double getMaxEnergy()

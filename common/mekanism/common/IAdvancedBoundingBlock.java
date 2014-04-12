@@ -10,7 +10,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import buildcraft.api.power.IPowerReceptor;
 import cofh.api.energy.IEnergyHandler;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
 {

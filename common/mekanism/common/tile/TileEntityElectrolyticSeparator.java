@@ -37,9 +37,9 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
-import dan200.computer.api.IPeripheral;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedTank, IGasHandler
 {
@@ -537,9 +537,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canAttachToSide(int side)
+	public boolean equals(IPeripheral other)
 	{
-		return true;
+		return this == other;
 	}
 
 	@Override
