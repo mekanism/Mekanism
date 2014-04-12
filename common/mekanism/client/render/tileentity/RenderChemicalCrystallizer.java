@@ -1,8 +1,8 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.client.model.ModelChemicalCrystalizer;
+import mekanism.client.model.ModelChemicalCrystallizer;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -14,21 +14,21 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderChemicalCrystalizer extends TileEntitySpecialRenderer
+public class RenderChemicalCrystallizer extends TileEntitySpecialRenderer
 {
-	private ModelChemicalCrystalizer model = new ModelChemicalCrystalizer();
+	private ModelChemicalCrystallizer model = new ModelChemicalCrystallizer();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityChemicalCrystalizer)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityChemicalCrystallizer)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityChemicalCrystalizer tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityChemicalCrystallizer tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystalizer.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
 
 		switch(tileEntity.facing)
 		{

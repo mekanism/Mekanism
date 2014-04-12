@@ -89,7 +89,7 @@ tile.MachineBlock2.ElectrolyticSeparator.name=電解分離器
 tile.MachineBlock2.PrecisionSawmill.name=精密鋸木機
 tile.MachineBlock2.ChemicalDissolutionChamber.name=化學溶解機
 tile.MachineBlock2.ChemicalWasher.name=化學清洗機
-tile.MachineBlock2.ChemicalCrystalizer.name=化學結晶器
+tile.MachineBlock2.ChemicalCrystallizer.name=化學結晶器
 
 //Infuse types
 infuse.carbon=碳
@@ -384,7 +384,7 @@ tooltip.ElectrolyticSeparator=這台機器使用電解的方式 !n產生兩個�
 tooltip.PrecisionSawmill=一台處理木頭的機器 !n透過這台機器能夠產生更多的木材以及額外的木屑!
 tooltip.ChemicalDissolutionChamber=強大的終極機器 !n他能夠將礦物溶解成礦物泥漿!n未去除雜質留下未處理的泥漿!.
 tooltip.ChemicalWasher=強大的終極機器 !n使未清潔的泥漿進入準備結晶化的機器
-tooltip.ChemicalCrystalizer=強大的終極機器 !n泥漿結晶化的最後機器
+tooltip.ChemicalCrystallizer=強大的終極機器 !n泥漿結晶化的最後機器
 
 tooltip.OsmiumOre=一個可以在任何地方發現的強大的礦物 !n已知可以製作成非常多的機器
 tooltip.CopperOre=常見導電性強的礦物 !n主要用在進階型機器上

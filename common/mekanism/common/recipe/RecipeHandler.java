@@ -2,7 +2,6 @@ package mekanism.common.recipe;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import mekanism.api.AdvancedInput;
 import mekanism.api.ChanceOutput;
@@ -10,7 +9,6 @@ import mekanism.api.ChemicalPair;
 import mekanism.api.PressurizedProducts;
 import mekanism.api.PressurizedReactants;
 import mekanism.api.PressurizedRecipe;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -18,7 +16,6 @@ import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -166,13 +163,13 @@ public final class RecipeHandler
 	}
 
 	/**
-	 * Add a Chemical Crystalizer recipe.
+	 * Add a Chemical Crystallizer recipe.
 	 * @param input - input GasStack
 	 * @param output - output ItemStack
 	 */
-	public static void addChemicalCrystalizerRecipe(GasStack input, ItemStack output)
+	public static void addChemicalCrystallizerRecipe(GasStack input, ItemStack output)
 	{
-		Recipe.CHEMICAL_CRYSTALIZER.put(input, output);
+		Recipe.CHEMICAL_CRYSTALLIZER.put(input, output);
 	}
 
 	/**
@@ -256,18 +253,18 @@ public final class RecipeHandler
 	}
 
 	/**
-	 * Gets the Chemical Crystalizer ItemStack output of the defined GasTank input.
+	 * Gets the Chemical Crystallizer ItemStack output of the defined GasTank input.
 	 * @param gasTank - input GasTank
 	 * @param removeGas - whether or not to use gas in the gas tank
 	 * @return output ItemStack
 	 */
-	public static ItemStack getChemicalCrystalizerOutput(GasTank gasTank, boolean removeGas)
+	public static ItemStack getChemicalCrystallizerOutput(GasTank gasTank, boolean removeGas)
 	{
 		GasStack gas = gasTank.getGas();
 
 		if(gas != null)
 		{
-			HashMap<GasStack, ItemStack> recipes = Recipe.CHEMICAL_CRYSTALIZER.get();
+			HashMap<GasStack, ItemStack> recipes = Recipe.CHEMICAL_CRYSTALLIZER.get();
 
 			for(Map.Entry<GasStack, ItemStack> entry : recipes.entrySet())
 			{
@@ -521,7 +518,7 @@ public final class RecipeHandler
 		PRECISION_SAWMILL(new HashMap<ItemStack, ChanceOutput>()),
 		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStack, FluidStack>()),
 		CHEMICAL_WASHER(new HashMap<GasStack, GasStack>()),
-		CHEMICAL_CRYSTALIZER(new HashMap<GasStack, ItemStack>()),
+		CHEMICAL_CRYSTALLIZER(new HashMap<GasStack, ItemStack>()),
 		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedReactants, PressurizedRecipe>());
 
 		private HashMap recipes;

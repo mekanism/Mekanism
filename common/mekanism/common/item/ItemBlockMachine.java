@@ -78,7 +78,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:5: Precision Sawmill
  * 1:6: Chemical Dissolution Chamber
  * 1:7: Chemical Washer
- * 1:8: Chemical Crystalizer
+ * 1:8: Chemical Crystallizer
  * @author AidanBrady
  *
  */

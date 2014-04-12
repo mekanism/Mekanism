@@ -7,7 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelChemicalCrystalizer extends ModelBase
+public class ModelChemicalCrystallizer extends ModelBase
 {
 	ModelRenderer Base;
 	ModelRenderer IO1;
@@ -45,7 +45,7 @@ public class ModelChemicalCrystalizer extends ModelBase
 	ModelRenderer Vial3;
 	ModelRenderer Vial4;
 
-	public ModelChemicalCrystalizer()
+	public ModelChemicalCrystallizer()
 	{
 		textureWidth = 128;
 		textureHeight = 64;

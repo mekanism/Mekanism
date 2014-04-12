@@ -37,7 +37,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IInvConfiguration
+public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IInvConfiguration
 {
 	public static final int MAX_GAS = 10000;
 	public static final int MAX_FLUID = 10000;
@@ -68,16 +68,16 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 
 	public float spin;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalCrystalizerUsage;
+	public final double ENERGY_USAGE = Mekanism.chemicalCrystallizerUsage;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileComponentEjector ejectorComponent;
 
-	public TileEntityChemicalCrystalizer()
+	public TileEntityChemicalCrystallizer()
 	{
-		super("ChemicalCrystalizer", MachineType.CHEMICAL_CRYSTALIZER.baseEnergy);
+		super("ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {0}));
@@ -166,7 +166,7 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 			return false;
 		}
 
-		ItemStack itemstack = RecipeHandler.getChemicalCrystalizerOutput(inputTank, false);
+		ItemStack itemstack = RecipeHandler.getChemicalCrystallizerOutput(inputTank, false);
 
 		if(itemstack == null)
 		{
@@ -189,7 +189,7 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 
 	public void operate()
 	{
-		ItemStack itemstack = RecipeHandler.getChemicalCrystalizerOutput(inputTank, true);
+		ItemStack itemstack = RecipeHandler.getChemicalCrystallizerOutput(inputTank, true);
 
 		if(inventory[1] == null)
 		{
@@ -461,7 +461,7 @@ public class TileEntityChemicalCrystalizer extends TileEntityElectricBlock imple
 	@Override
 	public String getSoundPath()
 	{
-		return "ChemicalCrystalizer.ogg";
+		return "ChemicalCrystallizer.ogg";
 	}
 
 	@Override

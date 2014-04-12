@@ -1,5 +1,8 @@
 package mekanism.client.gui;
 
+import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.tile.TileEntityElectricPump;
@@ -8,6 +11,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
@@ -26,7 +30,18 @@ public class GuiElectricPump extends GuiMekanism
 		super(new ContainerElectricPump(inventory, tentity));
 		tileEntity = tentity;
 
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, guiLocation, 27, 19));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, guiLocation, 27, 50));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, guiLocation, 142, 34).with(SlotOverlay.POWER));
 		guiElements.add(new GuiPowerBar(this, tileEntity, guiLocation, 164, 15));
+		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
+			@Override
+			public FluidTank getTank()
+			{
+				return tileEntity.fluidTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, guiLocation, 6, 13));
+
 	}
 
 	@Override
@@ -39,11 +54,6 @@ public class GuiElectricPump extends GuiMekanism
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
 		fontRenderer.drawString(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getName() + ": " + tileEntity.fluidTank.getFluid().amount : MekanismUtils.localize("gui.noFluid"), 51, 35, 0x00CD00);
-
-		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluid().amount + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

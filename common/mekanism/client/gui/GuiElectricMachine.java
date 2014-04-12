@@ -4,9 +4,13 @@ import java.util.List;
 
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -36,6 +40,11 @@ public class GuiElectricMachine extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, tileEntity.guiLocation));
+
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, tileEntity.guiLocation, 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, tileEntity.guiLocation, 55, 52).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity, tileEntity.guiLocation, 111, 30));
+
 	}
 
 	@Override

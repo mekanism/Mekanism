@@ -6,7 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
-import mekanism.common.inventory.container.ContainerChemicalCrystalizer;
+import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.inventory.container.ContainerChemicalDissolutionChamber;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.inventory.container.ContainerChemicalOxidizer;
@@ -38,7 +38,7 @@ import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
@@ -70,8 +70,6 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySalinationController;
-import mekanism.common.tile.TileEntitySalinationTank;
-import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.Block;
@@ -129,7 +127,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
 		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
-		GameRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer");
+		GameRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer");
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
 		GameRegistry.registerTileEntity(TileEntityPlasticBlock.class, "PlasticBlock");
 	}
@@ -247,7 +245,7 @@ public class CommonProxy
 		Mekanism.precisionSawmillUsage = Mekanism.configuration.get("usage", "PrecisionSawmillUsage", 50D).getDouble(50D);
 		Mekanism.chemicalDissolutionChamberUsage = Mekanism.configuration.get("usage", "ChemicalDissolutionChamberUsage", 400D).getDouble(400D);
 		Mekanism.chemicalWasherUsage = Mekanism.configuration.get("usage", "ChemicalWasherUsage", 200D).getDouble(200D);
-		Mekanism.chemicalCrystalizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystalizerUsage", 400D).getDouble(400D);
+		Mekanism.chemicalCrystallizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystallizerUsage", 400D).getDouble(400D);
 		Mekanism.seismicVibratorUsage = Mekanism.configuration.get("usage", "SeismicVibratorUsage", 50D).getDouble(50D);
 		Mekanism.pressurizedReactionBaseUsage = Mekanism.configuration.get("usage", "PressurizedReactionBaseUsage", 5D).getDouble(5D);
 		Mekanism.configuration.save();
@@ -398,7 +396,7 @@ public class CommonProxy
 			case 36:
 				return new ContainerChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
 			case 37:
-				return new ContainerChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
+				return new ContainerChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer)tileEntity);
 			case 39:
 				return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:

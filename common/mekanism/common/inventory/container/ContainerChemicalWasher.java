@@ -23,7 +23,7 @@ public class ContainerChemicalWasher extends Container
 		tileEntity = tentity;
 		addSlotToContainer(new Slot(tentity, 0, -20, 9));
 		addSlotToContainer(new SlotOutput(tentity, 1, -20, 40));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, 2, 155, 56));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
 
 		int slotY;

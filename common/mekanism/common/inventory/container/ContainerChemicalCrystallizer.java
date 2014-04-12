@@ -4,9 +4,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,14 +12,14 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerChemicalCrystalizer extends Container
+public class ContainerChemicalCrystallizer extends Container
 {
-	private TileEntityChemicalCrystalizer tileEntity;
+	private TileEntityChemicalCrystallizer tileEntity;
 
-	public ContainerChemicalCrystalizer(InventoryPlayer inventory, TileEntityChemicalCrystalizer tentity)
+	public ContainerChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 6, 65));
+		addSlotToContainer(new SlotStorageTank(tentity, 0, 6, 65));
 		addSlotToContainer(new SlotOutput(tentity, 1, 131, 57));
 		addSlotToContainer(new SlotDischarge(tentity, 2, 155, 5));
 

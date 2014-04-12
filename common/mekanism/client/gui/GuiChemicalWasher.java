@@ -6,7 +6,13 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiGauge.Type;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -17,6 +23,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
@@ -43,35 +50,38 @@ public class GuiChemicalWasher extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
+		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
+		{
+			@Override
+			public FluidTank getTank()
+			{
+				return tileEntity.fluidTank;
+			}
+		}, Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 5, 4));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.inputTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 26, 13));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.outputTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 133, 13));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 154, 55).with(SlotOverlay.MINUS));
+
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
-
 		fontRenderer.drawString(tileEntity.getInvName(), 45, 4, 0x404040);
-
-		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
-		}
-
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5 && yAxis <= 63)
-		{
-			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.inputTank.getGas() != null ? tileEntity.inputTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.inputTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.outputTank.getGas() != null ? tileEntity.outputTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.outputTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -79,41 +89,18 @@ public class GuiChemicalWasher extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
-		int displayInt;
-
-		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
-
 		if(tileEntity.isActive)
 		{
 			drawTexturedModalRect(guiWidth + 61, guiHeight + 39, 176, 63, 55, 8);
 		}
 
-		if(tileEntity.getScaledFluidLevel(58) > 0)
-		{
-			displayGauge(6, 5, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid(), null);
-		}
-
-		if(tileEntity.getScaledInputGasLevel(58) > 0)
-		{
-			displayGauge(27, 14, tileEntity.getScaledInputGasLevel(58), null, tileEntity.inputTank.getGas());
-		}
-
-		if(tileEntity.getScaledOutputGasLevel(58) > 0)
-		{
-			displayGauge(134, 14, tileEntity.getScaledOutputGasLevel(58), null, tileEntity.outputTank.getGas());
-		}
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

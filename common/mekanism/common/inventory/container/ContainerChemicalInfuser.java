@@ -19,9 +19,9 @@ public class ContainerChemicalInfuser extends Container
 	public ContainerChemicalInfuser(InventoryPlayer inventory, TileEntityChemicalInfuser tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 5, 56));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 155, 56));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 80, 65));
+		addSlotToContainer(new SlotStorageTank(tentity, 0, 5, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, 1, 155, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, 2, 80, 65));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
 
 		int slotX;

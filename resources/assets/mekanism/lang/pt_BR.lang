@@ -89,7 +89,7 @@ tile.MachineBlock2.ElectrolyticSeparator.name=Separador Eletrolítico
 tile.MachineBlock2.PrecisionSawmill.name=Serraria de Precisão
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Câmara de Dissolução Química
 tile.MachineBlock2.ChemicalWasher.name=Lavador Químico
-tile.MachineBlock2.ChemicalCrystalizer.name=Cristalizador Químico
+tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador Químico
 
 //Infuse types
 infuse.carbon=Carbono
@@ -383,7 +383,7 @@ tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis 
 tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
 tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
-tooltip.ChemicalCrystalizer=An ultimate machine used to crystalize !npurified ore slurry into ore crystals.
+tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.

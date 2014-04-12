@@ -20,8 +20,8 @@ public class ContainerRotaryCondensentrator extends Container
 	public ContainerRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 5, 25));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 5, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, 0, 5, 25));
+		addSlotToContainer(new SlotStorageTank(tentity, 1, 5, 56));
 		addSlotToContainer(new Slot(tentity, 2, 155, 25));
 		addSlotToContainer(new SlotOutput(tentity, 3, 155, 56));
 		addSlotToContainer(new SlotDischarge(tentity, 4, 155, 5));

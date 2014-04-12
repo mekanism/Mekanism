@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -14,6 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
@@ -31,6 +37,30 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 4, 24).with(SlotOverlay.PLUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 4, 55).with(SlotOverlay.MINUS));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 154, 24));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 154, 55));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 154, 4).with(SlotOverlay.POWER));
+
+		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
+			@Override
+			public FluidTank getTank()
+			{
+				return tileEntity.fluidTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 133, 13));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.gasTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 25, 13));
+
+
 	}
 
 	@Override
@@ -41,16 +71,6 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 		fontRenderer.drawString(tileEntity.getInvName(), 26, 4, 0x404040);
 		fontRenderer.drawString(tileEntity.mode == 0 ? MekanismUtils.localize("gui.condensentrating") : MekanismUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
-
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.gasTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getLocalizedName() + ": " + tileEntity.fluidTank.getFluid().amount + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
 
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{
@@ -68,8 +88,6 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -82,16 +100,6 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 		displayInt = tileEntity.getScaledEnergyLevel(52);
 		drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 36, displayInt, 4);
-
-		if(tileEntity.getScaledGasLevel(58) > 0)
-		{
-			displayGauge(26, 14, tileEntity.getScaledGasLevel(58), null, tileEntity.gasTank.getGas());
-		}
-
-		if(tileEntity.getScaledFluidLevel(58) > 0)
-		{
-			displayGauge(134, 14, tileEntity.getScaledFluidLevel(58), tileEntity.fluidTank.getFluid(), null);
-		}
 
 		if(xAxis >= 4 && xAxis <= 22 && yAxis >= 4 && yAxis <= 22)
 		{
@@ -109,6 +117,8 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		{
 			drawTexturedModalRect(guiWidth + 64, guiHeight + 39, 176, tileEntity.isActive ? 115 : 99, 48, 8);
 		}
+
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

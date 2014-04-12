@@ -211,11 +211,11 @@ public final class RecipeHelper
 	 * @param input - input GasStack
 	 * @param output - output ItemStack
 	 */
-	public static void addChemicalCrystalizerRecipe(GasStack input, ItemStack output)
+	public static void addChemicalCrystallizerRecipe(GasStack input, ItemStack output)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
-			Method m = recipeClass.getMethod("addChemicalCrystalizerRecipe", GasStack.class, ItemStack.class);
+			Method m = recipeClass.getMethod("addChemicalCrystallizerRecipe", GasStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());

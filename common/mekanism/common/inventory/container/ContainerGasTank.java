@@ -16,8 +16,8 @@ public class ContainerGasTank extends Container
 	public ContainerGasTank(InventoryPlayer inventory, TileEntityGasTank tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 8, 8));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 8, 40));
+		addSlotToContainer(new SlotStorageTank(tentity, 0, 8, 8));
+		addSlotToContainer(new SlotStorageTank(tentity, 1, 8, 40));
 
 		int slotX;
 

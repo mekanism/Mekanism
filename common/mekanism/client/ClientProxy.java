@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiChemicalCrystalizer;
+import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
@@ -54,7 +54,7 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
-import mekanism.client.render.tileentity.RenderChemicalCrystalizer;
+import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
 import mekanism.client.render.tileentity.RenderChemicalInfuser;
 import mekanism.client.render.tileentity.RenderChemicalOxidizer;
@@ -92,7 +92,7 @@ import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChargepad;
-import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
@@ -315,7 +315,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
-		ClientRegistry.registerTileEntity(TileEntityChemicalCrystalizer.class, "ChemicalCrystalizer", new RenderChemicalCrystalizer());
+		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityPlasticBlock.class, "PlasticBlock", new RenderPlastic());
 	}
@@ -454,7 +454,7 @@ public class ClientProxy extends CommonProxy
 			case 36:
 				return new GuiChemicalWasher(player.inventory, (TileEntityChemicalWasher)tileEntity);
 			case 37:
-				return new GuiChemicalCrystalizer(player.inventory, (TileEntityChemicalCrystalizer)tileEntity);
+				return new GuiChemicalCrystallizer(player.inventory, (TileEntityChemicalCrystallizer)tileEntity);
 			case 38:
 				ItemStack itemStack1 = player.getCurrentEquippedItem().copy();
 

@@ -20,9 +20,9 @@ public class ContainerChemicalDissolutionChamber extends Container
 	public ContainerChemicalDissolutionChamber(InventoryPlayer inventory, TileEntityChemicalDissolutionChamber tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 0, 6, 65));
+		addSlotToContainer(new SlotStorageTank(tentity, 0, 6, 65));
 		addSlotToContainer(new Slot(tentity, 1, 26, 36));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 155, 25));
+		addSlotToContainer(new SlotStorageTank(tentity, 2, 155, 25));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
 
 		int slotY;

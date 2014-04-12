@@ -3,6 +3,8 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerTeleporter;
@@ -26,6 +28,9 @@ public class GuiTeleporter extends GuiMekanism
 	{
 		super(new ContainerTeleporter(inventory, tentity));
 		tileEntity = tentity;
+
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 164, 15));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 26, 13).with(SlotOverlay.POWER));
 	}
 
 	@Override
@@ -97,8 +102,6 @@ public class GuiTeleporter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -120,6 +123,8 @@ public class GuiTeleporter extends GuiMekanism
 
 		displayInt = getYAxisForNumber(tileEntity.code.digitFour);
 		drawTexturedModalRect(guiWidth + 140, guiHeight + 44, 176, displayInt, 13, 13);
+
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	public int getIncrementedNumber(int i)

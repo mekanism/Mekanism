@@ -6,6 +6,8 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
@@ -33,6 +35,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
 		guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
 		guiElements.add(new GuiConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 164, 15));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -41,6 +44,11 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
+
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 16, 34));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 42));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 108, 42));
 	}
 
 	@Override
@@ -51,11 +59,6 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 
 		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
-		}
 
 		if(xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69)
 		{
@@ -68,8 +71,6 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -84,15 +85,14 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 		displayInt = tileEntity.getScaledProgress(32);
 		drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176, 52, displayInt + 1, 8);
 
-		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 165, guiHeight + 17 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-
 		if(tileEntity.type != null)
 		{
 			displayInt = tileEntity.getScaledInfuseLevel(52);
 			mc.renderEngine.bindTexture(tileEntity.type.texture);
 			drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
 		}
+
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

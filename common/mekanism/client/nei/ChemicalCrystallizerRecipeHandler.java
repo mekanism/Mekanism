@@ -10,17 +10,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiChemicalCrystalizer;
-import mekanism.client.nei.MachineRecipeHandler.CachedIORecipe;
+import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -31,7 +27,7 @@ import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
+public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
@@ -41,35 +37,35 @@ public class ChemicalCrystalizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalCrystalizer.name");
+		return MekanismUtils.localize("tile.MachineBlock2.ChemicalCrystallizer.name");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "chemicalcrystalizer";
+		return "chemicalcrystallizer";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiChemicalCrystalizer.png";
+		return "mekanism:gui/nei/GuiChemicalCrystallizer.png";
 	}
 
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiChemicalCrystalizer.class;
+		return GuiChemicalCrystallizer.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.chemicalcrystalizer";
+		return "mekanism.chemicalcrystallizer";
 	}
 
 	public Set<Entry<GasStack, ItemStack>> getRecipes()
 	{
-		return Recipe.CHEMICAL_CRYSTALIZER.get().entrySet();
+		return Recipe.CHEMICAL_CRYSTALLIZER.get().entrySet();
 	}
 
 	@Override

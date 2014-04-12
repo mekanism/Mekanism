@@ -21,8 +21,8 @@ public class ContainerElectrolyticSeparator extends Container
 	{
 		tileEntity = tentity;
 		addSlotToContainer(new Slot(tentity, 0, 26, 35));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 1, 59, 52));
-		addSlotToContainer(new SlotStorageTank(tentity, null, true, 2, 101, 52));
+		addSlotToContainer(new SlotStorageTank(tentity, 1, 59, 52));
+		addSlotToContainer(new SlotStorageTank(tentity, 2, 101, 52));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 143, 35));
 		int slotX;
 

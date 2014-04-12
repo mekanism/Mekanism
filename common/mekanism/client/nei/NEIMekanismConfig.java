@@ -1,6 +1,6 @@
 package mekanism.client.nei;
 
-import mekanism.client.gui.GuiChemicalCrystalizer;
+import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
@@ -73,8 +73,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new ChemicalWasherRecipeHandler());
 		API.registerUsageHandler(new ChemicalWasherRecipeHandler());
 
-		API.registerRecipeHandler(new ChemicalCrystalizerRecipeHandler());
-		API.registerUsageHandler(new ChemicalCrystalizerRecipeHandler());
+		API.registerRecipeHandler(new ChemicalCrystallizerRecipeHandler());
+		API.registerUsageHandler(new ChemicalCrystallizerRecipeHandler());
 
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
@@ -91,7 +91,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiSalinationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
-		API.setGuiOffset(GuiChemicalCrystalizer.class, ChemicalCrystalizerRecipeHandler.xOffset, ChemicalCrystalizerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 
 		API.hideItem(Mekanism.boundingBlockID);
 		API.hideItem(Mekanism.ItemProxy.itemID);

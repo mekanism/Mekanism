@@ -4,6 +4,8 @@ import java.util.List;
 
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerChanceMachine;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +38,11 @@ public class GuiChanceMachine extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, tileEntity.guiLocation));
+
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, tileEntity.guiLocation, 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, tileEntity.guiLocation, 55, 52).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, tileEntity, tileEntity.guiLocation, 111, 30));
+
 	}
 
 	@Override
@@ -58,14 +65,6 @@ public class GuiChanceMachine extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
-		int displayInt;
-
-		displayInt = tileEntity.getScaledProgress(24);
-		drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

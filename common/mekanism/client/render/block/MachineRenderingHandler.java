@@ -2,7 +2,7 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.model.ModelChargepad;
-import mekanism.client.model.ModelChemicalCrystalizer;
+import mekanism.client.model.ModelChemicalCrystallizer;
 import mekanism.client.model.ModelChemicalDissolutionChamber;
 import mekanism.client.model.ModelChemicalInfuser;
 import mekanism.client.model.ModelChemicalOxidizer;
@@ -42,7 +42,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelElectrolyticSeparator electrolyticSeparator = new ModelElectrolyticSeparator();
 	public ModelChemicalDissolutionChamber chemicalDissolutionChamber = new ModelChemicalDissolutionChamber();
 	public ModelChemicalWasher chemicalWasher = new ModelChemicalWasher();
-	public ModelChemicalCrystalizer chemicalCrystalizer = new ModelChemicalCrystalizer();
+	public ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -145,13 +145,13 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalWasher.png"));
 			chemicalWasher.render(0.0625F);
 		}
-		else if(type == MachineType.CHEMICAL_CRYSTALIZER)
+		else if(type == MachineType.CHEMICAL_CRYSTALLIZER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystalizer.png"));
-			chemicalCrystalizer.render(0.0625F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ChemicalCrystallizer.png"));
+			chemicalCrystallizer.render(0.0625F);
 		}
 		else {
 			MekanismRenderer.renderItem(renderer, metadata, block);

@@ -14,6 +14,13 @@ public class SlotStorageTank extends Slot
 	public Collection<Gas> types;
 	public boolean acceptsAllGasses;
 
+	public SlotStorageTank(IInventory inventory, int index, int x, int y)
+	{
+		super(inventory, index, x, y);
+		types = null;
+		acceptsAllGasses = true;
+	}
+
 	public SlotStorageTank(IInventory inventory, Gas gas, boolean all, int index, int x, int y)
 	{
 		super(inventory, index, x, y);

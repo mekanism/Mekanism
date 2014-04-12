@@ -6,7 +6,11 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
@@ -42,6 +46,33 @@ public class GuiChemicalInfuser extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.leftTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 25, 13));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.rightTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 79, 4));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.rightTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 133, 13));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 154, 55).with(SlotOverlay.MINUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 4, 55).with(SlotOverlay.MINUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 79, 64).with(SlotOverlay.PLUS));
+
 	}
 
 	@Override
@@ -53,47 +84,17 @@ public class GuiChemicalInfuser extends GuiMekanism
 		fontRenderer.drawString(MekanismUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 
-		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
-		}
-
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.leftTank.getGas() != null ? tileEntity.leftTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.leftTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.rightTank.getGas() != null ? tileEntity.rightTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.rightTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5 && yAxis <= 63)
-		{
-			drawCreativeTabHoveringText(tileEntity.centerTank.getGas() != null ? tileEntity.centerTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.centerTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
-		int displayInt;
-
-		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
 
 		if(tileEntity.isActive)
 		{
@@ -101,20 +102,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 101, guiHeight + 39, 176, 63, 28, 8);
 		}
 
-		if(tileEntity.getScaledLeftGasLevel(58) > 0)
-		{
-			displayGauge(26, 14, tileEntity.getScaledLeftGasLevel(58), null, tileEntity.leftTank.getGas());
-		}
-
-		if(tileEntity.getScaledRightGasLevel(58) > 0)
-		{
-			displayGauge(134, 14, tileEntity.getScaledRightGasLevel(58), null, tileEntity.rightTank.getGas());
-		}
-
-		if(tileEntity.getScaledCenterGasLevel(58) > 0)
-		{
-			displayGauge(80, 5, tileEntity.getScaledCenterGasLevel(58), null, tileEntity.centerTank.getGas());
-		}
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override

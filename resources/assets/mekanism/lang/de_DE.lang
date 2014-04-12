@@ -91,7 +91,7 @@ tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytischer Separator
 tile.MachineBlock2.PrecisionSawmill.name=Präzisionssägewerk
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemische Auflösungskammer
 tile.MachineBlock2.ChemicalWasher.name=Chemische Waschanlage
-tile.MachineBlock2.ChemicalCrystalizer.name=Chemischer Kristallisierer
+tile.MachineBlock2.ChemicalCrystallizer.name=Chemischer Kristallisierer
 tile.MachineBlock2.SeismicVibrator.name=Seismischer Vibrator
 
 //Infuse types
@@ -410,7 +410,7 @@ tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nut
 tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere !nhölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
 tooltip.ChemicalDissolutionChamber=Eine ultimative Maschine, genutzt, !num jegliche Unreinheiten in einem Erz aufzulösen, !nwas unverarbeiteten Schlamm zurücklässt.
 tooltip.ChemicalWasher=Eine ultimative Maschine, die unverarbeiteten Schlamm !nsäubert und ihn für die Kristallisierung vorbereitet.
-tooltip.ChemicalCrystalizer=Eine ultimative Maschine, genutzt, um!n Purifizierten Erzschlamm zu Erzkristallen zu verarbeiten.
+tooltip.ChemicalCrystallizer=Eine ultimative Maschine, genutzt, um!n Purifizierten Erzschlamm zu Erzkristallen zu verarbeiten.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
 tooltip.CopperOre=Ein häufiges, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.

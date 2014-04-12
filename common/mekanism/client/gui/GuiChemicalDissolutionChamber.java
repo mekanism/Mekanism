@@ -4,7 +4,11 @@ import java.util.List;
 
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
@@ -37,6 +41,25 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png")));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.injectTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 5, 4));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.outputTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 133, 13));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 25, 35));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 154, 24).with(SlotOverlay.PLUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 5, 64).with(SlotOverlay.MINUS));
 	}
 
 	@Override
@@ -52,50 +75,24 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5 && yAxis <= 63)
-		{
-			drawCreativeTabHoveringText(tileEntity.injectTank.getGas() != null ? tileEntity.injectTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.injectTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14 && yAxis <= 72)
-		{
-			drawCreativeTabHoveringText(tileEntity.outputTank.getGas() != null ? tileEntity.outputTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.outputTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
 		int displayInt;
-
-		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
 
 		displayInt = tileEntity.getScaledProgress(48);
 		drawTexturedModalRect(guiWidth + 64, guiHeight + 40, 176, 63, displayInt, 8);
 
-		if(tileEntity.getScaledInjectGasLevel(58) > 0)
-		{
-			displayGauge(6, 5, tileEntity.getScaledInjectGasLevel(58), null, tileEntity.injectTank.getGas());
-		}
-
-		if(tileEntity.getScaledOutputGasLevel(58) > 0)
-		{
-			displayGauge(134, 14, tileEntity.getScaledOutputGasLevel(58), null, tileEntity.outputTank.getGas());
-		}
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)

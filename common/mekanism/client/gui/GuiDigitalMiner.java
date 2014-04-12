@@ -6,6 +6,8 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
@@ -44,6 +46,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 		guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 163, 23));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -52,6 +55,10 @@ public class GuiDigitalMiner extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 151, 5).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 143, 26));
+
 
 		ySize+=64;
 	}
@@ -210,8 +217,6 @@ public class GuiDigitalMiner extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -258,9 +263,12 @@ public class GuiDigitalMiner extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 63, 176 + 4 + 42, 14, 14, 14);
 		}
 
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 		{
 			GL11.glPushMatrix();
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -268,8 +276,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			int y = guiHeight + 27;
 			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GL11.glPopAttrib();
 			GL11.glPopMatrix();
 		}
 	}

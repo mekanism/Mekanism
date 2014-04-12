@@ -5,6 +5,8 @@ import java.util.List;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
@@ -38,6 +40,12 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, tileEntity, tileEntity.guiLocation));
+
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, tileEntity.guiLocation, 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, tileEntity.guiLocation, 30, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, tileEntity, tileEntity.guiLocation, 55, 52));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity, tileEntity.guiLocation, 111, 30));
+
 	}
 
 	@Override

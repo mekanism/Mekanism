@@ -7,14 +7,18 @@ import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.OreGas;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
 import mekanism.common.PacketHandler.Transmission;
-import mekanism.common.inventory.container.ContainerChemicalCrystalizer;
+import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tile.TileEntityChemicalCrystalizer;
+import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -29,9 +33,9 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiChemicalCrystalizer extends GuiMekanism
+public class GuiChemicalCrystallizer extends GuiMekanism
 {
-	public TileEntityChemicalCrystalizer tileEntity;
+	public TileEntityChemicalCrystallizer tileEntity;
 
 	public Gas prevGas;
 
@@ -43,14 +47,14 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 
 	public List<ItemStack> iterStacks = new ArrayList<ItemStack>();
 
-	public GuiChemicalCrystalizer(InventoryPlayer inventory, TileEntityChemicalCrystalizer tentity)
+	public GuiChemicalCrystallizer(InventoryPlayer inventory, TileEntityChemicalCrystallizer tentity)
 	{
-		super(tentity, new ContainerChemicalCrystalizer(inventory, tentity));
+		super(tentity, new ContainerChemicalCrystallizer(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png")));
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png"), 160, 23));
-		guiElements.add(new GuiConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png")));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 160, 23));
+		guiElements.add(new GuiConfigurationTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -58,7 +62,17 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.ENERGY_USAGE);
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png")));
+		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
+		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
+			@Override
+			public GasTank getTank()
+			{
+				return tileEntity.inputTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 4));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 5, 64).with(SlotOverlay.PLUS));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"), 130, 56));
 	}
 
 	@Override
@@ -90,18 +104,13 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 			} catch(Exception e) {}
 		}
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5 && yAxis <= 63)
-		{
-			drawCreativeTabHoveringText(tileEntity.inputTank.getGas() != null ? tileEntity.inputTank.getGas().getGas().getLocalizedName() + ": " + tileEntity.inputTank.getStored() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}
-
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
@@ -254,7 +263,7 @@ public class GuiChemicalCrystalizer extends GuiMekanism
 			}
 		}
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystalizer.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png"));
 		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 4, 16, 59);
 	}
 

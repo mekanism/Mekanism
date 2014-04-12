@@ -16,7 +16,7 @@ public class ContainerSeismicVibrator extends Container
 	public ContainerSeismicVibrator(InventoryPlayer inventory, TileEntitySeismicVibrator tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 27, 14));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 143, 35));
 		int slotX;
 
 		for(slotX = 0; slotX < 3; ++slotX)

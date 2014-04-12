@@ -132,7 +132,6 @@ import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
-import mekanism.generators.common.MekanismGenerators;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -154,7 +153,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
-import scala.tools.nsc.backend.icode.Primitives;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IFuelHandler;
@@ -365,7 +363,7 @@ public class Mekanism
 	public static double precisionSawmillUsage;
 	public static double chemicalDissolutionChamberUsage;
 	public static double chemicalWasherUsage;
-	public static double chemicalCrystalizerUsage;
+	public static double chemicalCrystallizerUsage;
 	public static double seismicVibratorUsage;
 	public static double pressurizedReactionBaseUsage;
 
@@ -819,7 +817,7 @@ public class Mekanism
 				OreGas oreGas = (OreGas)gas;
 				
 				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
-				RecipeHandler.addChemicalCrystalizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+				RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
 			}
 		}
 		
