@@ -88,6 +88,7 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketBoxBlacklist;
@@ -268,6 +269,7 @@ public class Mekanism
 	public static Item WalkieTalkie;
 	public static Item ItemProxy;
 	public static Item PartTransmitter;
+	public static Item GlowPanel;
 	public static ItemJetpack Jetpack;
 	public static ItemScubaTank ScubaTank;
 	public static ItemGasMask GasMask;
@@ -917,6 +919,7 @@ public class Mekanism
 		Substrate = new ItemMekanism(configuration.getItem("Substrate", ITEM_ID++).getInt()).setUnlocalizedName("Substrate");
 		Polyethene = new ItemHDPE(configuration.getItem("HDPE", ITEM_ID++).getInt()).setUnlocalizedName("HDPE");
 		BioFuel = new ItemMekanism(Mekanism.configuration.getItem("BioFuel", ITEM_ID++).getInt()).setUnlocalizedName("BioFuel");
+		GlowPanel = new ItemGlowPanel(configuration.getItem("GlowPanel", ITEM_ID++).getInt()).setUnlocalizedName("GlowPanel");
 
 		configuration.save();
 		

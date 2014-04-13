@@ -327,7 +327,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public void addDestroyEffects(EffectRenderer effectRenderer)
+	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
 	{
 		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}

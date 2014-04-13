@@ -22,7 +22,8 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
 				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
 				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
-				"mekanism:restrictive_transporter", "mekanism:diversion_transporter"});
+				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
+				"mekanism:glow_panel"});
 
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
@@ -94,6 +95,10 @@ public class MultipartMekanism implements IPartFactory
 		else if(name.equals("mekanism:diversion_transporter"))
 		{
 			return new PartDiversionTransporter();
+		}
+		else if(name.equals("mekanism:glow_panel"))
+		{
+			return new PartGlowPanel();
 		}
 
 		return null;
