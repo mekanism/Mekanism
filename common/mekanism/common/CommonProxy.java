@@ -129,7 +129,6 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
 		GameRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer");
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
-		GameRegistry.registerTileEntity(TileEntityPlasticBlock.class, "PlasticBlock");
 	}
 
 	/**

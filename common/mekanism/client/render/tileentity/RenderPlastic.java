@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 
 
 @SideOnly(Side.CLIENT)
-public class RenderPlastic extends TileEntitySpecialRenderer
+public class RenderPlastic
 {
 	public static Model3D toRender;
 
@@ -25,27 +25,6 @@ public class RenderPlastic extends TileEntitySpecialRenderer
 	{
 		toRender = new Model3D();
 		toRender.setBlockBounds(0,0,0,1,1,1);
-	}
-
-	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
-	{
-		renderAModelAt((TileEntityPlasticBlock) tileEntity, x, y, z, partialTick);
-	}
-
-	public void renderAModelAt(TileEntityPlasticBlock plastic, double x, double y, double z, float partialTick)
-	{
-		GL11.glPushMatrix();
-		GL11.glTranslatef((float) x, (float) y, (float) z);
-		bindTexture(MekanismRenderer.getBlocksTexture());
-
-		toRender.setTexture(Mekanism.BlockHDPE.getBlockTexture(plastic.worldObj, plastic.xCoord, plastic.yCoord, plastic.zCoord, 0));
-		EnumColor color = EnumColor.DYES[plastic.colour];
-		float[] colour = {color.getColor(0), color.getColor(1), color.getColor(2)};
-		GL11.glColor3f(colour[0], colour[1], colour[2]);
-		RenderHelper.disableStandardItemLighting();
-		MekanismRenderer.renderObject(toRender);
-		GL11.glPopMatrix();
 	}
 
 	public static void renderItem(ItemStack stack)

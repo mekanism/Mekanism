@@ -155,6 +155,7 @@ public class ClientProxy extends CommonProxy
 	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int TRANSMITTER_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
 	@Override
 	public void loadConfiguration()
@@ -318,7 +319,6 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
 		ClientRegistry.registerTileEntity(TileEntityChemicalCrystallizer.class, "ChemicalCrystallizer", new RenderChemicalCrystallizer());
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderConfigurableMachine());
-		ClientRegistry.registerTileEntity(TileEntityPlasticBlock.class, "PlasticBlock", new RenderPlastic());
 	}
 
 	@Override

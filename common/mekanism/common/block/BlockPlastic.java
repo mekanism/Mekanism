@@ -2,6 +2,8 @@ package mekanism.common.block;
 
 import java.util.List;
 
+import mekanism.api.EnumColor;
+import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityPlasticBlock;
 
@@ -76,21 +78,11 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public boolean renderAsNormalBlock()
+	public int colorMultiplier(IBlockAccess world, int x, int y, int z)
 	{
-		return false;
-	}
-
-	@Override
-	public boolean isOpaqueCube()
-	{
-		return false;
-	}
-
-	@Override
-	public int getRenderType()
-	{
-		return -1;
+		TileEntityPlasticBlock plastic = (TileEntityPlasticBlock)world.getBlockTileEntity(x, y, z);
+		EnumColor colour = EnumColor.DYES[plastic.colour];
+		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
 	}
 
 	@Override
