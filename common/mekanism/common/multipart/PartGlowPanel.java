@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import mekanism.api.EnumColor;
 import mekanism.client.render.RenderGlowPanel;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.Mekanism;
 
 import net.minecraft.client.particle.EffectRenderer;
@@ -24,14 +23,12 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
-import codechicken.microblock.ISidedHollowConnect;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TSlottedPart;
 
 public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIconHitEffects
 {
