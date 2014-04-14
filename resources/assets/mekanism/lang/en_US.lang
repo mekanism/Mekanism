@@ -134,6 +134,9 @@ item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
 
+//Glow Panel
+item.GlowPanel.name=Glow Panel
+
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basic Energy Cube
 tile.EnergyCube.Advanced.name=Advanced Energy Cube
