@@ -89,7 +89,7 @@ tile.MachineBlock2.ElectrolyticSeparator.name=Separator elektrolityczny
 tile.MachineBlock2.PrecisionSawmill.name=Pilarka ramowa
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Komora rozpadu chemicznego
 tile.MachineBlock2.ChemicalWasher.name=Pralka chemiczna
-tile.MachineBlock2.ChemicalCrystallizer.name=Krystallizator chemiczny
+tile.MachineBlock2.ChemicalCrystallizer.name=Krystalizator chemiczny
 
 //Infuse types
 infuse.carbon=Węglik
@@ -383,8 +383,8 @@ tooltip.ChemicalInjectionChamber=Maszyna zdolna przetworzyć rudy na cztery !nod
 tooltip.ElectrolyticSeparator=Maszyna służąca do rozdzielania !ngazów i cieczy na dwa różne gazy !nza pomocą elektrolizy.
 tooltip.PrecisionSawmill=Maszyna służąca do przetwarzania drewna !ni drewnopodobnych produktów jak również !ndo otrzymywania trocin.
 tooltip.ChemicalDissolutionChamber=Maszyna służąca do chemicznego rozkładu wszystkich !nzanieczyszczeń w rudach pozostawiając tylko zawiesinę rudy !nwykorzystywaną fazie pięciokrotnego otrzymywania metali.
-tooltip.ChemicalWasher=Maszyna służąca do oczyszczania nieprzetworzonej !nzawiesiny przygotowując ją do krystallizacji.
-tooltip.ChemicalCrystallizer=Maszyna służąca do krystallizacji !noczyszczonej zawiesiny w kryształy rud.
+tooltip.ChemicalWasher=Maszyna służąca do oczyszczania nieprzetworzonej !nzawiesiny przygotowując ją do krystalizacji.
+tooltip.ChemicalCrystalizer=Maszyna służąca do krystalizacji !noczyszczonej zawiesiny w kryształy rud.
 
 tooltip.OsmiumOre=Wytrzymały materiał znajdywany na każdej !nwysokości. Ma wiele zastosowań w budowie !nmaszyn.
 tooltip.CopperOre=Pospolity materiał z wysoką przewodnością !nprądu wykorzystywaną do tworzenia kabli. !nWysoka temperatura topnienia daje miedzi !nwiele zastosowań również w budowie maszyn.
