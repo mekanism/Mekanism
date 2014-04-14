@@ -781,7 +781,7 @@ public class Mekanism
 			{
 				if(fuel.isItemEqual(new ItemStack(BasicBlock, 1, 3)))
 				{
-					return 1800;
+					return 200 * 8 * 9; // 1 item (200) * 8 items (1 charcoal) * 9 (9 in a block)
 				}
 				
 				return 0;
