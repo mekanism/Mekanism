@@ -102,10 +102,11 @@ tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 
 //Plastic
-tile.PlasticBlock.PlasticBlock.name=Plastic Block
-tile.PlasticBlock.SlickPlasticBlock.name=Slick Plastic Block
-tile.PlasticBlock.GlowPlasticBlock.name=Plastic Glow Block
-tile.PlasticBlock.ReinforcedPlasticBlock.name=Reinforced Plastic Block
+tile.PlasticBlock.name=Plastic Block
+tile.SlickPlasticBlock.name=Slick Plastic Block
+tile.GlowPlasticBlock.name=Plastic Glow Block
+tile.ReinforcedPlasticBlock.name=Reinforced Plastic Block
+tile.RoadPlasticBlock.name=Plastic Road
 
 tile.PlasticFence.name=Plastic Barrier
 

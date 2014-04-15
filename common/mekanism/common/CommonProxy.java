@@ -189,6 +189,7 @@ public class CommonProxy
 		Mekanism.slickPlasticID = Mekanism.configuration.getBlock("SlickPlasticBlock", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.glowPlasticID = Mekanism.configuration.getBlock("GlowPlasticBlock", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.reinforcedPlasticID = Mekanism.configuration.getBlock("ReinforcedPlasticBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.roadPlasticID = Mekanism.configuration.getBlock("RoadPlasticBlock", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.plasticFenceID = Mekanism.configuration.getBlock("PlasticFenceBlock", Mekanism.BLOCK_ID++).getInt();
 
 		Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);

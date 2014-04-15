@@ -251,6 +251,7 @@ public class Mekanism
 	public static int slickPlasticID;
 	public static int glowPlasticID;
 	public static int reinforcedPlasticID;
+	public static int roadPlasticID;
 	public static int plasticFenceID;
 
 	//Items
@@ -306,6 +307,7 @@ public class Mekanism
 	public static Block BlockSlickHDPE;
 	public static Block BlockGlowHDPE;
 	public static Block BlockReinforcedHDPE;
+	public static Block BlockRoadHDPE;
 	public static Block BlockHDPEFence;
 
 	//Multi-ID Items
@@ -669,11 +671,17 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, 15), new Object[] {
 			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, 15), new Object[] {
+			"PSP", "S S", "GSG", Character.valueOf('P'), Block.thinGlass, Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('G'), Item.glowstone
+		}));
 
 		for(int i = 0; i < EnumColor.DYES.length-1; i++)
 		{
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
 				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+			}));
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, i), new Object[] {
+				"PSP", "SDS", "GSG", Character.valueOf('P'), Block.thinGlass, Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i), Character.valueOf('G'), Item.glowstone
 			}));
 		}
 
@@ -704,14 +712,22 @@ public class Mekanism
 				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockReinforcedHDPE, 1, j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
 				}));
+
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(GlowPanel, 1, j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+				}));
 			}
 
 			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(BlockGlowHDPE, 3, i), new Object[] {
-					new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(Item.glowstone)
+				new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(Item.glowstone)
 			}));
 
 			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
-					" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(Dust, 1, 2)
+				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(Dust, 1, 2)
+			}));
+
+			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockRoadHDPE, 3, i), new Object[] {
+				"SSS", "PPP", "SSS", Character.valueOf('S'), Block.sand, Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, i)
 			}));
         }
 	
@@ -1004,6 +1020,7 @@ public class Mekanism
 		BlockSlickHDPE = new BlockPlastic(slickPlasticID).setUnlocalizedName("SlickPlasticBlock");
 		BlockGlowHDPE = new BlockPlastic(glowPlasticID).setUnlocalizedName("GlowPlasticBlock");
 		BlockReinforcedHDPE = new BlockPlastic(reinforcedPlasticID).setUnlocalizedName("ReinforcedPlasticBlock");
+		BlockRoadHDPE = new BlockPlastic(roadPlasticID).setUnlocalizedName("RoadPlasticBlock");
 		BlockHDPEFence = new BlockPlasticFence(plasticFenceID).setUnlocalizedName("PlasticFence");
 
 		//Registrations
@@ -1021,6 +1038,7 @@ public class Mekanism
 		GameRegistry.registerBlock(BlockSlickHDPE, ItemBlockPlastic.class, "SlickPlasticBlock");
 		GameRegistry.registerBlock(BlockGlowHDPE, ItemBlockPlastic.class, "GlowPlasticBlock");
 		GameRegistry.registerBlock(BlockReinforcedHDPE, ItemBlockPlastic.class, "ReinforcedPlasticBlock");
+		GameRegistry.registerBlock(BlockRoadHDPE, ItemBlockPlastic.class, "RoadPlasticBlock");
 		GameRegistry.registerBlock(BlockHDPEFence, "PlasticFence");
 	}
 	
