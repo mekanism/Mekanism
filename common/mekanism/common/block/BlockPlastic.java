@@ -17,6 +17,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import net.minecraftforge.common.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -95,5 +96,16 @@ public class BlockPlastic extends Block
 		}
 
 		return 0;
+	}
+
+	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		if (meta != colour)
+		{
+			world.setBlockMetadataWithNotify(x, y, z, colour, 3);
+			return true;
+		}
+		return false;
 	}
 }
