@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -54,6 +55,23 @@ public class BlockPlastic extends Block
 		else if(blockID == Mekanism.reinforcedPlasticID)
 		{
 			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
+		}
+		else if(blockID == Mekanism.roadPlasticID)
+		{
+			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
+		}
+	}
+
+	@Override
+	public void onEntityWalking(World world, int x, int y, int z, Entity e)
+	{
+		if(blockID == Mekanism.roadPlasticID)
+		{
+			double boost = 1.6;
+
+			double a = Math.atan2(e.motionX, e.motionZ);
+			e.motionX += Math.sin(a) * boost * slipperiness;
+			e.motionZ += Math.cos(a) * boost * slipperiness;
 		}
 	}
 
@@ -101,9 +119,9 @@ public class BlockPlastic extends Block
 	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		if (meta != colour)
+		if (meta != (15 - colour))
 		{
-			world.setBlockMetadataWithNotify(x, y, z, colour, 3);
+			world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
 			return true;
 		}
 		return false;
