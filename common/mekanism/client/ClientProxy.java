@@ -71,7 +71,6 @@ import mekanism.client.render.tileentity.RenderGasTank;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
-import mekanism.client.render.tileentity.RenderPlastic;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderTeleporter;
@@ -119,7 +118,6 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPlasticBlock;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -351,7 +349,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon.itemID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners.itemID, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.plasticID, handler);
 
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());

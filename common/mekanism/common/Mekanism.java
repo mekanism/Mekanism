@@ -126,7 +126,6 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
-import mekanism.common.tile.TileEntityPlasticBlock;
 import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.tile.TileEntitySeismicVibrator;
@@ -249,6 +248,9 @@ public class Mekanism
 	public static int gasTankID;
 	public static int cardboardBoxID;
 	public static int plasticID;
+	public static int slickPlasticID;
+	public static int glowPlasticID;
+	public static int reinforcedPlasticID;
 	public static int plasticFenceID;
 
 	//Items
@@ -301,6 +303,9 @@ public class Mekanism
 	public static Block GasTank;
 	public static Block CardboardBox;
 	public static Block BlockHDPE;
+	public static Block BlockSlickHDPE;
+	public static Block BlockGlowHDPE;
+	public static Block BlockReinforcedHDPE;
 	public static Block BlockHDPEFence;
 
 	//Multi-ID Items
@@ -684,19 +689,28 @@ public class Mekanism
 					new ItemStack(Balloon, 1, j), new ItemStack(Item.dyePowder, 1, i)
 				}));
 
-				for(int meta=0; meta < 4; meta++)
-				{
-					CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockHDPE, 4, 16*meta+i), new Object[] {
-						" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, meta*16+j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
-					}));
-				}
+				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+				}));
+
+				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockSlickHDPE, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+				}));
+
+				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockGlowHDPE, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockGlowHDPE, 1, j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+				}));
+
+				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockReinforcedHDPE, 1, j), Character.valueOf('D'), new ItemStack(Item.dyePowder, 1, i)
+				}));
 			}
 
-			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(BlockHDPE, 3, 32+i), new Object[] {
+			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(BlockGlowHDPE, 3, i), new Object[] {
 					new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(Item.glowstone)
 			}));
 
-			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockHDPE, 4, 48+i), new Object[] {
+			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
 					" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(Dust, 1, 2)
 			}));
         }
@@ -732,7 +746,7 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Block.oreNetherQuartz), new ItemStack(Item.netherQuartz, 2));
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, 16+i));
+			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockSlickHDPE, 1, i));
 		}
 		
 		//Combiner recipes
@@ -987,6 +1001,9 @@ public class Mekanism
 		GasTank = new BlockGasTank(gasTankID).setUnlocalizedName("GasTank");
 		CardboardBox = new BlockCardboardBox(cardboardBoxID).setUnlocalizedName("CardboardBox");
 		BlockHDPE = new BlockPlastic(plasticID).setUnlocalizedName("PlasticBlock");
+		BlockSlickHDPE = new BlockPlastic(slickPlasticID).setUnlocalizedName("SlickPlasticBlock");
+		BlockGlowHDPE = new BlockPlastic(glowPlasticID).setUnlocalizedName("GlowPlasticBlock");
+		BlockReinforcedHDPE = new BlockPlastic(reinforcedPlasticID).setUnlocalizedName("ReinforcedPlasticBlock");
 		BlockHDPEFence = new BlockPlasticFence(plasticFenceID).setUnlocalizedName("PlasticFence");
 
 		//Registrations
@@ -1001,6 +1018,9 @@ public class Mekanism
 		GameRegistry.registerBlock(GasTank, ItemBlockGasTank.class, "GasTank");
 		GameRegistry.registerBlock(CardboardBox, ItemBlockCardboardBox.class, "CardboardBox");
 		GameRegistry.registerBlock(BlockHDPE, ItemBlockPlastic.class, "PlasticBlock");
+		GameRegistry.registerBlock(BlockSlickHDPE, ItemBlockPlastic.class, "SlickPlasticBlock");
+		GameRegistry.registerBlock(BlockGlowHDPE, ItemBlockPlastic.class, "GlowPlasticBlock");
+		GameRegistry.registerBlock(BlockReinforcedHDPE, ItemBlockPlastic.class, "ReinforcedPlasticBlock");
 		GameRegistry.registerBlock(BlockHDPEFence, "PlasticFence");
 	}
 	
@@ -1165,7 +1185,6 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySalinationTank.class, "SalinationTank");
-		GameRegistry.registerTileEntity(TileEntityPlasticBlock.class, "PlasticBlock");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

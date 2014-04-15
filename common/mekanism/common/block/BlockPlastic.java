@@ -1,11 +1,10 @@
 package mekanism.common.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.tile.TileEntityPlasticBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -23,42 +22,38 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockPlastic extends Block
 {
-	public Icon[] icons = new Icon[256];
-
-	public int numColours = 16;
-
-	public String[] names = {"PlasticBlock", "SlickPlasticBlock", "GlowPlasticBlock", "ReinforcedPlasticBlock"};
-
 	public BlockPlastic(int id)
 	{
-		super(id, Material.clay);
+		super(id, Material.wood);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
+		if(id == Mekanism.slickPlasticID)
+		{
+			slipperiness = 0.98F;
+		}
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister register)
 	{
-		icons[0] = register.registerIcon("mekanism:PlasticBlock");
-		icons[1] = register.registerIcon("mekanism:SlickPlasticBlock");
-		icons[2] = register.registerIcon("mekanism:GlowPlasticBlock");
-		icons[3] = register.registerIcon("mekanism:ReinforcedPlasticBlock");
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
-	{
-		return icons[world.getBlockMetadata(x,y,z)];
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta)
-	{
-		return icons[meta>>4];
+		if(blockID == Mekanism.plasticID)
+		{
+			blockIcon = register.registerIcon("mekanism:PlasticBlock");
+		}
+		else if(blockID == Mekanism.slickPlasticID)
+		{
+			blockIcon = register.registerIcon("mekanism:SlickPlasticBlock");
+		}
+		else if(blockID == Mekanism.glowPlasticID)
+		{
+			blockIcon = register.registerIcon("mekanism:GlowPlasticBlock");
+		}
+		else if(blockID == Mekanism.reinforcedPlasticID)
+		{
+			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
+		}
 	}
 
 	@Override
@@ -71,7 +66,7 @@ public class BlockPlastic extends Block
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int id, CreativeTabs creativetabs, List list)
 	{
-		for(int i = 0; i < numColours*4; i++)
+		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
 			list.add(new ItemStack(id, 1, i));
 		}
@@ -80,40 +75,25 @@ public class BlockPlastic extends Block
 	@Override
 	public int colorMultiplier(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntityPlasticBlock plastic = (TileEntityPlasticBlock)world.getBlockTileEntity(x, y, z);
-		EnumColor colour = EnumColor.DYES[plastic.colour];
+		return getRenderColor(world.getBlockMetadata(x, y, z));
+	}
+
+	@Override
+	public int getRenderColor(int meta)
+	{
+		EnumColor colour = EnumColor.DYES[meta];
 		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
+
 	}
 
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
-
-		if(metadata == 2)
+		if(blockID == Mekanism.glowPlasticID)
 		{
 			return 10;
 		}
 
 		return 0;
-	}
-
-	@Override
-	public boolean hasTileEntity(int metadata)
-	{
-		return true;
-	}
-
-	@Override
-	public TileEntity createTileEntity(World world, int metadata)
-	{
-		return new TileEntityPlasticBlock();
-	}
-
-	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
-	{
-		TileEntityPlasticBlock tile = (TileEntityPlasticBlock)world.getBlockTileEntity(x, y, z);
-		return new ItemStack(blockID, 1, tile.getItemMeta());
 	}
 }

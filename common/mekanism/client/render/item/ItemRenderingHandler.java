@@ -19,7 +19,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
-import mekanism.client.render.tileentity.RenderPlastic;
 import mekanism.common.IElectricChest;
 import mekanism.common.IEnergyCube;
 import mekanism.common.Mekanism;
@@ -415,10 +414,6 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
 			GL11.glEnable(GL11.GL_CULL_FACE);
-		}
-		else if(item.getItem() instanceof ItemBlockPlastic)
-		{
-			RenderPlastic.renderItem(item);
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

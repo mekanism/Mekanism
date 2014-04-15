@@ -65,7 +65,6 @@ import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
-import mekanism.common.tile.TileEntityPlasticBlock;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
@@ -187,6 +186,9 @@ public class CommonProxy
 		Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.plasticID = Mekanism.configuration.getBlock("PlasticBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.slickPlasticID = Mekanism.configuration.getBlock("SlickPlasticBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.glowPlasticID = Mekanism.configuration.getBlock("GlowPlasticBlock", Mekanism.BLOCK_ID++).getInt();
+		Mekanism.reinforcedPlasticID = Mekanism.configuration.getBlock("ReinforcedPlasticBlock", Mekanism.BLOCK_ID++).getInt();
 		Mekanism.plasticFenceID = Mekanism.configuration.getBlock("PlasticFenceBlock", Mekanism.BLOCK_ID++).getInt();
 
 		Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
