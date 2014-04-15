@@ -87,4 +87,10 @@ public class ItemGlowPanel extends JItemMultiPart
 
 		return colourName + " " + super.getItemDisplayName(stack);
 	}
+
+	@Override
+	public boolean shouldRotateAroundWhenRendering()
+	{
+		return true;
+	}
 }

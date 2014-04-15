@@ -122,6 +122,24 @@ public class RenderGlowPanel implements IIconRegister
 		lightModels[side].render(0, lightModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), new ColourMultiplier(colour));
 	}
 
+	public void renderItem(int metadata)
+	{
+		TextureUtils.bindAtlas(0);
+		CCRenderState.reset();
+		CCRenderState.startDrawing(7);
+		CCRenderState.useModelColours(true);
+		EnumColor c = EnumColor.DYES[metadata];
+
+		Colour colour = new ColourRGBA(c.getColor(0), c.getColor(1), c.getColor(2), 1);
+		Colour white = new ColourRGBA(1.0, 1.0, 1.0, 1.0);
+		for(int i=4;i<5;i++){
+
+		frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(white));
+		lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
+		}
+		CCRenderState.draw();
+	}
+
 	@Override
 	public void registerIcons(IconRegister register)
 	{

@@ -16,6 +16,7 @@ import mekanism.client.model.ModelObsidianTNT;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
@@ -35,6 +36,7 @@ import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
+import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.tile.TileEntityBin;
@@ -46,6 +48,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -414,6 +417,20 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
 			GL11.glEnable(GL11.GL_CULL_FACE);
+		}
+		else if(item.getItem() instanceof ItemGlowPanel)
+		{
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			GL11.glTranslated(-0.5, -0.5, -0.5);
+			double d = 0.15;
+			GL11.glTranslated(d, d, d);
+			GL11.glScaled(2, 2, 2);
+			GL11.glTranslated(0.4-2*d, -2*d, -2*d);
+			GL11.glDisable(GL11.GL_CULL_FACE);
+			RenderHelper.disableStandardItemLighting();
+			RenderGlowPanel.getInstance().renderItem(item.getItemDamage());
+			GL11.glEnable(GL11.GL_CULL_FACE);
+			GL11.glPopAttrib();
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)
