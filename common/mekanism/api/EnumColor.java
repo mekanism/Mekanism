@@ -26,7 +26,7 @@ public enum EnumColor
 	YELLOW("\u00a7e", "yellow", new int[] {255, 255, 85}, 11),
 	WHITE("\u00a7f", "white", new int[] {255, 255, 255}, 15),
 	//Extras for dye-completeness
-	BROWN("\u00a73", "brown", new int[] {150, 75, 0}, 3),
+	BROWN("\u00a76", "brown", new int[] {150, 75, 0}, 3),
 	BRIGHT_PINK("\u00a7d", "brightPink", new int[] {255, 192, 203}, 9);
 
 	public static EnumColor[] DYES = new EnumColor[] {BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GREY, DARK_GREY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW, INDIGO, PINK, ORANGE, WHITE};
