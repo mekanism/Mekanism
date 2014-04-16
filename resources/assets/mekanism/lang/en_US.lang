@@ -511,7 +511,7 @@ infuse.bio=Biomass
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
 tile.Generator.SolarGenerator.name=Solar Generator
-tile.Generator.HydrogenGenerator.name=Hydrogen Generator
+tile.Generator.HydrogenGenerator.name=Gas-Burning Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine

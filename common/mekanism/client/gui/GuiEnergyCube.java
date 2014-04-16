@@ -1,7 +1,13 @@
 package mekanism.client.gui;
 
+import java.util.List;
+
+import mekanism.api.ListUtils;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
@@ -31,17 +37,24 @@ public class GuiEnergyCube extends GuiMekanism
 				return tileEntity;
 			}
 		}, GuiEnergyGauge.Type.WIDE, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 55, 18));
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
+		{
+			@Override
+			public List<String> getInfo()
+			{
+				return ListUtils.asList(
+						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+			}
+		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 16, 34).with(SlotOverlay.MINUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 142, 34).with(SlotOverlay.PLUS));
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		String capacityInfo = MekanismUtils.getEnergyDisplay(tileEntity.getEnergy());
-		String outputInfo = MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t";
-
 		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
-		fontRenderer.drawString(capacityInfo, 45, 40, 0x00CD00);
-		fontRenderer.drawString(outputInfo, 45, 49, 0x00CD00);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -55,9 +68,6 @@ public class GuiEnergyCube extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int displayInt = tileEntity.getScaledEnergyLevel(72);
-		drawTexturedModalRect(guiWidth + 65, guiHeight + 17, 176, 0, displayInt, 10);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

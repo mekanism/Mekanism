@@ -19,8 +19,8 @@ public class ContainerEnergyCube extends Container
 	public ContainerEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube unit)
 	{
 		tileEntity = unit;
-		addSlotToContainer(new SlotCharge(unit, 0, 8, 8));
-		addSlotToContainer(new SlotDischarge(unit, 1, 8, 40));
+		addSlotToContainer(new SlotDischarge(unit, 1, 17, 35));
+		addSlotToContainer(new SlotCharge(unit, 0, 143, 35));
 
 		int slotX;
 

@@ -33,7 +33,7 @@ public class GuiGasGauge extends GuiGauge
 	@Override
 	public String getTooltipText()
 	{
-		return infoHandler.getTank().getGas() != null ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() + "mB" : MekanismUtils.localize("gui.empty");
+		return (infoHandler.getTank().getGas() != null && infoHandler.getTank().getStored() != 0) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() + "mB" : MekanismUtils.localize("gui.empty");
 	}
 
 	public static interface IGasInfoHandler
