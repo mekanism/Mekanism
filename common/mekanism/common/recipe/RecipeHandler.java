@@ -2,6 +2,7 @@ package mekanism.common.recipe;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import mekanism.api.AdvancedInput;
 import mekanism.api.ChanceOutput;
@@ -494,6 +495,22 @@ public final class RecipeHandler
 				ItemStack stack = (ItemStack)entry.getKey();
 
 				if(StackUtils.equalsWildcard(stack, itemstack))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static boolean isInPressurizedRecipe(ItemStack stack)
+	{
+		if(stack != null)
+		{
+			for(PressurizedReactants key : (Set<PressurizedReactants>)Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet())
+			{
+				if(key.containsType(stack))
 				{
 					return true;
 				}

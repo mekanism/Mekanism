@@ -15,12 +15,9 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemMachineUpgrade;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -133,7 +130,11 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
-		if(slotID == 1)
+		if(slotID == 0)
+		{
+			return RecipeHandler.isInPressurizedRecipe(itemstack);
+		}
+		else if(slotID == 1)
 		{
 			return ChargeUtils.canBeDischarged(itemstack);
 		}
@@ -177,16 +178,16 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 
 		PressurizedProducts products = recipe.products;
 
-		if(products.getOptionalOutput() != null)
+		if(products.getItemOutput() != null)
 		{
 			if(inventory[2] != null)
 			{
-				if(!inventory[2].isItemEqual(products.getOptionalOutput()))
+				if(!inventory[2].isItemEqual(products.getItemOutput()))
 				{
 					return false;
 				}
 				else {
-					if(inventory[2].stackSize + products.getOptionalOutput().stackSize > inventory[2].getMaxStackSize())
+					if(inventory[2].stackSize + products.getItemOutput().stackSize > inventory[2].getMaxStackSize())
 					{
 						return false;
 					}
@@ -299,35 +300,21 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
-/*
-		if(nbtTags.hasKey("fluidTank"))
-		{
-			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
-		}
 
-		leftTank.read(nbtTags.getCompoundTag("leftTank"));
-		rightTank.read(nbtTags.getCompoundTag("rightTank"));
-
-		dumpLeft = nbtTags.getBoolean("dumpLeft");
-		dumpRight = nbtTags.getBoolean("dumpRight");
-*/	}
+		inputFluidTank.readFromNBT(nbtTags.getCompoundTag("inputFluidTank"));
+		inputGasTank.read(nbtTags.getCompoundTag("inputGasTank"));
+		outputGasTank.read(nbtTags.getCompoundTag("outputGasTank"));
+	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
-/*
-		if(fluidTank.getFluid() != null)
-		{
-			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
-		}
 
-		nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
-		nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
-
-		nbtTags.setBoolean("dumpLeft", dumpLeft);
-		nbtTags.setBoolean("dumpRight", dumpRight);
-*/	}
+		nbtTags.setCompoundTag("inputFluidTank", inputFluidTank.writeToNBT(new NBTTagCompound()));
+		nbtTags.setCompoundTag("inputGasTank", inputGasTank.write(new NBTTagCompound()));
+		nbtTags.setCompoundTag("outputGasTank", outputGasTank.write(new NBTTagCompound()));
+	}
 
 	@Override
 	public String getInvName()

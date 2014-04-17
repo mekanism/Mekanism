@@ -4,6 +4,7 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.item.ItemMachineUpgrade;
+import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.ChargeUtils;
 
@@ -88,6 +89,22 @@ public class ContainerPRC extends Container
 				else if(slotID == 1)
 				{
 					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+			else if(RecipeHandler.isInPressurizedRecipe(slotStack))
+			{
+				if(slotID != 0)
+				{
+					if(!mergeItemStack(slotStack, 0, 1, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
 					{
 						return null;
 					}
