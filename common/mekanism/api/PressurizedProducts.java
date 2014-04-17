@@ -35,7 +35,7 @@ public class PressurizedProducts
 		}
 	}
 
-	public ItemStack getOptionalOutput()
+	public ItemStack getItemOutput()
 	{
 		return itemOutput;
 	}
