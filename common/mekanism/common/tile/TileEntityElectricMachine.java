@@ -9,6 +9,8 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -22,14 +24,13 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	 *
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
-	 * @param location - GUI texture path of this machine
 	 * @param perTick - energy used per tick.
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityElectricMachine(String soundPath, String name, double perTick, int ticksRequired, double maxEnergy)
 	{
-		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), perTick, ticksRequired, maxEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));

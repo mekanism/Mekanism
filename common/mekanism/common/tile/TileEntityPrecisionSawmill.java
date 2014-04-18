@@ -2,16 +2,20 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+
 import net.minecraft.util.ResourceLocation;
 
 public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 {
 	public TileEntityPrecisionSawmill()
 	{
-		super("PrecisionSawmill.ogg", "PrecisionSawmill", new ResourceLocation("mekanism", "gui/GuiPrecisionSawmill.png"), Mekanism.precisionSawmillUsage, 200, MachineType.PRECISION_SAWMILL.baseEnergy);
+		super("PrecisionSawmill.ogg", "PrecisionSawmill", MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), Mekanism.precisionSawmillUsage, 200, MachineType.PRECISION_SAWMILL.baseEnergy);
 	}
 
 	@Override
@@ -24,5 +28,11 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 	public float getVolumeMultiplier()
 	{
 		return 0.7F;
+	}
+
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.PURPLE;
 	}
 }

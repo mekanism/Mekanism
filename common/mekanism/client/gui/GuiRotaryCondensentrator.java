@@ -7,6 +7,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -60,6 +62,34 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 			}
 		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 25, 13));
 
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.isActive ? 1 : 0;
+			}
+
+			@Override
+			public boolean isActive()
+			{
+				return tileEntity.mode == 0;
+			}
+		}, ProgressBar.LARGE_RIGHT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 62, 38));
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.isActive ? 1 : 0;
+			}
+
+			@Override
+			public boolean isActive()
+			{
+				return tileEntity.mode == 1;
+			}
+		}, ProgressBar.LARGE_LEFT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 62, 38));
 
 	}
 
@@ -109,15 +139,6 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 4, guiHeight + 4, 176, 18, 18, 18);
 		}
 
-		if(tileEntity.mode == 0)
-		{
-			drawTexturedModalRect(guiWidth + 64, guiHeight + 39, 176, tileEntity.isActive ? 123 : 107, 48, 8);
-		}
-		else if(tileEntity.mode == 1)
-		{
-			drawTexturedModalRect(guiWidth + 64, guiHeight + 39, 176, tileEntity.isActive ? 115 : 99, 48, 8);
-		}
-
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
@@ -140,54 +161,5 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}
-	}
-
-	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
-	{
-		if(fluid == null && gas == null)
-		{
-			return;
-		}
-
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
-		int start = 0;
-
-		while(true)
-		{
-			int renderRemaining = 0;
-
-			if(scale > 16)
-			{
-				renderRemaining = 16;
-				scale -= 16;
-			}
-			else {
-				renderRemaining = scale;
-				scale = 0;
-			}
-
-			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-
-			if(fluid != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-			else if(gas != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-
-			start+=16;
-
-			if(renderRemaining == 0 || scale == 0)
-			{
-				break;
-			}
-		}
-
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 40, 16, 59);
 	}
 }

@@ -11,6 +11,8 @@ import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiGauge.Type;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -64,18 +66,26 @@ public class GuiChemicalWasher extends GuiMekanism
 			{
 				return tileEntity.inputTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 26, 13));
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 26, 13));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.outputTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 133, 13));
+		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 133, 13));
 
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 154, 4).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png"), 154, 55).with(SlotOverlay.MINUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 154, 55).with(SlotOverlay.MINUS));
 
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.isActive ? 1 : 0;
+			}
+		}, ProgressBar.LARGE_RIGHT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"), 62, 38));
 	}
 
 	@Override
@@ -94,11 +104,6 @@ public class GuiChemicalWasher extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		if(tileEntity.isActive)
-		{
-			drawTexturedModalRect(guiWidth + 61, guiHeight + 39, 176, 63, 55, 8);
-		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
@@ -124,52 +129,4 @@ public class GuiChemicalWasher extends GuiMekanism
 		}
 	}
 
-	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
-	{
-		if(fluid == null && gas == null)
-		{
-			return;
-		}
-
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
-		int start = 0;
-
-		while(true)
-		{
-			int renderRemaining = 0;
-
-			if(scale > 16)
-			{
-				renderRemaining = 16;
-				scale -= 16;
-			}
-			else {
-				renderRemaining = scale;
-				scale = 0;
-			}
-
-			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-
-			if(fluid != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-			else if(gas != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-
-			start+=16;
-
-			if(renderRemaining == 0 || scale == 0)
-			{
-				break;
-			}
-		}
-
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 4, 16, 59);
-	}
 }

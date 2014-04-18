@@ -64,6 +64,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	/** Type type of gas this block is dumping. */
 	public boolean dumpRight = false;
 
+	public boolean isActive = false;
+
 	public TileEntityElectrolyticSeparator()
 	{
 		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
@@ -122,8 +124,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			if(canOperate())
 			{
+				setActive(true);
 				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
 				setEnergy(getEnergy() - Mekanism.FROM_H2*2);
+			}
+			else {
+				setActive(false);
 			}
 
 			if(leftTank.getGas() != null)
@@ -401,6 +407,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			dumpLeft = dataStream.readBoolean();
 			dumpRight = dataStream.readBoolean();
+			isActive = dataStream.readBoolean();
 		}
 		else if(type == 1)
 		{
@@ -447,6 +454,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		data.add(dumpLeft);
 		data.add(dumpRight);
+		data.add(isActive);
 
 		return data;
 	}
@@ -653,5 +661,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 
 		return false;
+	}
+
+	public void setActive(boolean active)
+	{
+		isActive = active;
 	}
 }

@@ -9,6 +9,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -21,7 +22,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "PurificationChamber", new ResourceLocation("mekanism", "gui/GuiPurificationChamber.png"), Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
+		super("PurificationChamber.ogg", "PurificationChamber", Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
 	}
 
 	@Override
@@ -80,5 +81,11 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	public boolean isValidGas(Gas gas)
 	{
 		return gas == GasRegistry.getGas("oxygen");
+	}
+
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.RED;
 	}
 }

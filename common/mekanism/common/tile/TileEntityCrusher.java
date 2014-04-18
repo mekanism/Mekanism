@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.EnumSet;
 import java.util.Map;
 
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -15,7 +16,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 
 	public TileEntityCrusher()
 	{
-		super("Crusher.ogg", "Crusher", new ResourceLocation("mekanism", "gui/GuiCrusher.png"), Mekanism.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
+		super("Crusher.ogg", "Crusher", Mekanism.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
 	}
 
 	@Override
@@ -58,5 +59,11 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	public float getVolumeMultiplier()
 	{
 		return 0.5F;
+	}
+
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.CRUSH;
 	}
 }

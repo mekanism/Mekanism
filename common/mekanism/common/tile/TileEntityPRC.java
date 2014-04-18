@@ -14,6 +14,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -128,6 +129,12 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	}
 
 	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.MEDIUM;
+	}
+
+	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
 	{
 		if(slotID == 0)
@@ -195,9 +202,9 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 			}
 		}
 
-		if(products.getGasOutput() != null)
+		if(products.getGasOutput() != null && outputGasTank.getGas() != null)
 		{
-			products.getGasOutput().isGasEqual(outputGasTank.getGas());
+			return products.getGasOutput().isGasEqual(outputGasTank.getGas()) && products.getGasOutput().amount <= outputGasTank.getNeeded();
 		}
 
 		return true;

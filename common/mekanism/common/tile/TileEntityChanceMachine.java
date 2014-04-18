@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
 
-public class TileEntityChanceMachine extends TileEntityBasicMachine
+public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 {
 	public TileEntityChanceMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
 	{

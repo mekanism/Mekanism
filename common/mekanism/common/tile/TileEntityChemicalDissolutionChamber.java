@@ -218,6 +218,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		return operatingTicks*i / TICKS_REQUIRED;
 	}
 
+	public double getScaledProgress()
+	{
+		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);
+	}
+
 	public boolean canOperate()
 	{
 		if(inventory[1] == null)

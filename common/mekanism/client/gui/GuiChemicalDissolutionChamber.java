@@ -3,19 +3,18 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.ListUtils;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -60,6 +59,15 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 25, 35));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 154, 24).with(SlotOverlay.PLUS));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 5, 64).with(SlotOverlay.MINUS));
+
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.getScaledProgress();
+			}
+		}, ProgressBar.LARGE_RIGHT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 62, 39));
 	}
 
 	@Override
@@ -93,54 +101,5 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 		drawTexturedModalRect(guiWidth + 64, guiHeight + 40, 176, 63, displayInt, 8);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-	}
-
-	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
-	{
-		if(fluid == null && gas == null)
-		{
-			return;
-		}
-
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
-		int start = 0;
-
-		while(true)
-		{
-			int renderRemaining = 0;
-
-			if(scale > 16)
-			{
-				renderRemaining = 16;
-				scale -= 16;
-			}
-			else {
-				renderRemaining = scale;
-				scale = 0;
-			}
-
-			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-
-			if(fluid != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-			else if(gas != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-
-			start+=16;
-
-			if(renderRemaining == 0 || scale == 0)
-			{
-				break;
-			}
-		}
-
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 4, 16, 59);
 	}
 }

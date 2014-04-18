@@ -214,13 +214,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.readFromNBT(nbtTags);
 
-		String gasName = nbtTags.getString("gasName");
-		int stored = nbtTags.getInteger("gasStored");
-
-		if(stored > 0 && !gasName.equals("none"))
-		{
-			fuelTank.setGas(new GasStack(GasRegistry.getGas(gasName), stored));
-		}
+		fuelTank.read(nbtTags.getCompoundTag("fuelTank"));
 	}
 
 	@Override
@@ -228,8 +222,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setString("gasName", fuelTank.getGas() == null ? "none" : fuelTank.getGas().getGas().getName());
-		nbtTags.setInteger("gasStored", fuelTank.getStored());
+		nbtTags.setCompoundTag("fuelTank", fuelTank.write(new NBTTagCompound()));
 	}
 
 	@Override

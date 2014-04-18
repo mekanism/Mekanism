@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -11,7 +12,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("Chamber.ogg", "EnrichmentChamber", new ResourceLocation("mekanism", "gui/GuiChamber.png"), Mekanism.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
+		super("Chamber.ogg", "EnrichmentChamber", Mekanism.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
 	}
 
 	@Override
@@ -24,5 +25,11 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 	public float getVolumeMultiplier()
 	{
 		return 0.3F;
+	}
+
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.BLUE;
 	}
 }

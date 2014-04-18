@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -17,7 +18,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 {
 	public TileEntityCombiner()
 	{
-		super("Combiner.ogg", "Combiner", new ResourceLocation("mekanism", "gui/GuiCombiner.png"), Mekanism.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
+		super("Combiner.ogg", "Combiner", Mekanism.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
 	}
 
 	@Override
@@ -41,5 +42,11 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 	public boolean isValidGas(Gas gas)
 	{
 		return false;
+	}
+
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.STONE;
 	}
 }

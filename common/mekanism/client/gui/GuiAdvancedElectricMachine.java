@@ -5,6 +5,8 @@ import java.util.List;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -46,6 +48,14 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.EXTRA, this, tileEntity, tileEntity.guiLocation, 55, 52));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity, tileEntity.guiLocation, 111, 30));
 
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.getScaledProgress();
+			}
+		}, tileEntity.getProgressType(), this, tileEntity, tileEntity.guiLocation, 77, 37));
 	}
 
 	@Override
@@ -74,13 +84,7 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
 		int displayInt;
-
-		displayInt = tileEntity.getScaledProgress(24);
-		drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
 
 		if(tileEntity.getScaledGasLevel(12) > 0)
 		{

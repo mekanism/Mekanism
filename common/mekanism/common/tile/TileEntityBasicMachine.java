@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IInvConfiguration;
@@ -71,7 +72,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
-	 * @param path - GUI texture path of this machine
+	 * @param location - GUI texture path of this machine
 	 * @param perTick - the energy this machine consumes every tick in it's active state
 	 * @param ticksRequired - how many ticks it takes to run a cycle
 	 * @param maxEnergy - how much energy this machine can store
@@ -85,6 +86,8 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		guiLocation = location;
 		isActive = false;
 	}
+
+	public abstract ProgressBar getProgressType();
 
 	@Override
 	public void onUpdate()
@@ -210,6 +213,15 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int getScaledProgress(int i)
 	{
 		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
+	}
+
+	/**
+	 * Gets the scaled progress level for the GUI.
+	 * @return
+	 */
+	public double getScaledProgress()
+	{
+		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED));
 	}
 
 	@Override

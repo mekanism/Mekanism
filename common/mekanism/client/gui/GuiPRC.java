@@ -3,6 +3,8 @@ package mekanism.client.gui;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerPRC;
@@ -50,6 +52,15 @@ public class GuiPRC extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 53, 34));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 18).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 115, 34));
+
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.getScaledProgress();
+			}
+		}, ProgressBar.MEDIUM, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 75, 37));
 	}
 
 	@Override

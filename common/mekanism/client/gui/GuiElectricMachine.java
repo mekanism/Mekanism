@@ -4,6 +4,8 @@ import java.util.List;
 
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerElectricMachine;
@@ -45,14 +47,19 @@ public class GuiElectricMachine extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, tileEntity.guiLocation, 55, 52).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity, tileEntity.guiLocation, 111, 30));
 
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.getScaledProgress();
+			}
+		}, tileEntity.getProgressType(), this, tileEntity, tileEntity.guiLocation, 77, 37));
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
-
 		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
 		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
@@ -67,14 +74,6 @@ public class GuiElectricMachine extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
-		int displayInt;
-
-		displayInt = tileEntity.getScaledProgress(24);
-		drawTexturedModalRect(guiWidth + 79, guiHeight + 39, 176, 0, displayInt + 1, 7);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

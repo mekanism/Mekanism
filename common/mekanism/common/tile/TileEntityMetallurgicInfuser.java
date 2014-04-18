@@ -321,6 +321,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
 	}
 
+	public double getScaledProgress()
+	{
+		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED));
+	}
+
 	@Override
 	public void invalidate()
 	{
