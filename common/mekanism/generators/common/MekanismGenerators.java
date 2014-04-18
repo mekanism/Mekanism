@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mekanism.api.gas.FuelHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.common.IModule;
@@ -123,6 +124,9 @@ public class MekanismGenerators implements IModule
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 6), new Object[] {
 			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "circuitBasic"
 		}));
+
+		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, Mekanism.FROM_H2 + bioGeneration * 80); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+
 	}
 	
 	public void addBlocks()

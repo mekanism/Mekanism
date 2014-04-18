@@ -899,7 +899,6 @@ public class Mekanism
 
 		//Fuel Gases
 		FuelHandler.addGas(GasRegistry.getGas("hydrogen"), 1, FROM_H2);
-		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, 25000);
 	}
 	
 	/**
