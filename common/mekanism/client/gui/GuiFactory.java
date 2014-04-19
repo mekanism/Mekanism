@@ -42,7 +42,7 @@ public class GuiFactory extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_PER_TICK));
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, tileEntity, tileEntity.tier.guiLocation));
+		}, this, tileEntity.tier.guiLocation));
 	}
 
 	@Override

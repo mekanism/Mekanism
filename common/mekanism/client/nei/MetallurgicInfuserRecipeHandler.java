@@ -164,6 +164,12 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		}
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public List<ItemStack> infuseStacks;

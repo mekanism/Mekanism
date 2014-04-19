@@ -13,9 +13,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiUpgradeManagement extends GuiElement
 {
-	public GuiUpgradeManagement(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	TileEntity tileEntity;
+
+	public GuiUpgradeManagement(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeManagement.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeManagement.png"), gui, def);
+
+		tileEntity = tile;
 	}
 
 	@Override
@@ -23,12 +27,12 @@ public class GuiUpgradeManagement extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 63);
+		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 6, 0, 0, 26, 63);
 
 		IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
 		int displayInt = upgradeTile.getComponent().getScaledUpgradeProgress(14);
 
-		guiObj.drawTexturedModalRect(guiWidth + 180, guiHeight + 30, 26, 0, 10, displayInt);
+		guiObj.drawTexturedRect(guiWidth + 180, guiHeight + 30, 26, 0, 10, displayInt);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

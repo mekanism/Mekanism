@@ -19,9 +19,9 @@ public class GuiPowerBar extends GuiElement
 
 	private TileEntityElectricBlock tileEntityElectric;
 
-	public GuiPowerBar(GuiMekanism gui, TileEntityElectricBlock tile, ResourceLocation def, int x, int y)
+	public GuiPowerBar(IGuiWrapper gui, TileEntityElectricBlock tile, ResourceLocation def, int x, int y)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
 		tileEntityElectric = tile;
 		xLocation = x;
 		yLocation = y;
@@ -32,9 +32,9 @@ public class GuiPowerBar extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
 		int displayInt = tileEntityElectric.getScaledEnergyLevel(52) + innerOffsetY;
-		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6, height - displayInt, width, displayInt);
+		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6, height - displayInt, width, displayInt);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

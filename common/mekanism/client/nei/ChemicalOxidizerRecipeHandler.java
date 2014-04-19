@@ -225,6 +225,12 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		}
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public PositionedStack inputStack;

@@ -15,10 +15,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 import org.lwjgl.opengl.GL11;
 
-public abstract class GuiMekanism extends GuiContainer
+public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
 
@@ -149,6 +150,36 @@ public abstract class GuiMekanism extends GuiContainer
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
 		super.func_102021_a(list, x, y);
 		GL11.glPopAttrib();
+	}
+
+	@Override
+	public void drawTexturedRect(int x, int y, int u, int v, int w, int h)
+	{
+		drawTexturedModalRect(x, y, u, v, w, h);
+	}
+
+	@Override
+	public void drawTexturedRectFromIcon(int x, int y, Icon icon, int w, int h)
+	{
+		drawTexturedModelRectFromIcon(x, y, icon, w, h);
+	}
+
+	@Override
+	public void displayTooltip(String s, int x, int y)
+	{
+		drawCreativeTabHoveringText(s, x, y);
+	}
+
+	@Override
+	public void displayTooltips(List<String> list, int xAxis, int yAxis)
+	{
+		func_102021_a(list, xAxis, yAxis);
+	}
+
+	@Override
+	public FontRenderer getFont()
+	{
+		return fontRenderer;
 	}
 
 	protected FontRenderer getFontRenderer()

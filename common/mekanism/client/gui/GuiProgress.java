@@ -20,10 +20,9 @@ public class GuiProgress extends GuiElement
 	private ProgressBar type;
 	private IProgressInfoHandler handler;
 
-	public GuiProgress(IProgressInfoHandler handler, ProgressBar type, GuiMekanism gui, TileEntity tile, ResourceLocation def, int x, int y)
+	public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiProgress.png"), gui, tile, def);
-		tileEntity = tile;
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiProgress.png"), gui, def);
 		xLocation = x;
 		yLocation = y;
 
@@ -37,9 +36,9 @@ public class GuiProgress extends GuiElement
 		mc.renderEngine.bindTexture(RESOURCE);
 		if(handler.isActive())
 		{
-			guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
+			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
 			int displayInt = (int)(handler.getProgress() * (type.width-2*innerOffsetX));
-			guiObj.drawTexturedModalRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
+			guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
 		}
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

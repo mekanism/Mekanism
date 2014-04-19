@@ -11,9 +11,9 @@ public class GuiGasGauge extends GuiGauge
 {
 	IGasInfoHandler infoHandler;
 
-	public GuiGasGauge(IGasInfoHandler handler, Type type, GuiMekanism gui, TileEntity tile, ResourceLocation def, int x, int y)
+	public GuiGasGauge(IGasInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
-		super(type, gui, tile, def, x, y);
+		super(type, gui, def, x, y);
 
 		infoHandler = handler;
 	}

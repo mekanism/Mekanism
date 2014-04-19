@@ -14,9 +14,9 @@ public class GuiEnergyInfo extends GuiElement
 {
 	public IInfoHandler infoHandler;
 
-	public GuiEnergyInfo(IInfoHandler handler, GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
 
 		infoHandler = handler;
 	}
@@ -31,7 +31,7 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

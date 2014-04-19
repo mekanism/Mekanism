@@ -19,28 +19,25 @@ public abstract class GuiElement
 
 	protected ResourceLocation RESOURCE;
 
-	public GuiMekanism guiObj;
-
-	public TileEntity tileEntity;
+	public IGuiWrapper guiObj;
 
 	public ResourceLocation defaultLocation;
 
-	public GuiElement(ResourceLocation resource, GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	public GuiElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def)
 	{
 		RESOURCE = resource;
 		guiObj = gui;
-		tileEntity = tile;
 		defaultLocation = def;
 	}
 
 	protected void displayTooltip(String s, int xAxis, int yAxis)
 	{
-		guiObj.drawCreativeTabHoveringText(s, xAxis, yAxis);
+		guiObj.displayTooltip(s, xAxis, yAxis);
 	}
 
 	protected void displayTooltips(List<String> list, int xAxis, int yAxis)
 	{
-		guiObj.func_102021_a(list, xAxis, yAxis);
+		guiObj.displayTooltips(list, xAxis, yAxis);
 	}
 
 	protected void offsetX(int xSize)
@@ -67,7 +64,7 @@ public abstract class GuiElement
 
 	protected FontRenderer getFontRenderer()
 	{
-		return guiObj.getFontRenderer();
+		return guiObj.getFont();
 	}
 
 	public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);

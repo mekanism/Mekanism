@@ -17,9 +17,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiSortingTab extends GuiElement
 {
-	public GuiSortingTab(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	TileEntityFactory tileEntity;
+
+	public GuiSortingTab(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSortingTab.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSortingTab.png"), gui, def);
+
+		tileEntity = tile;
 	}
 
 	@Override
@@ -27,14 +31,14 @@ public class GuiSortingTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 34, 0, 0, 26, 35);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 34, 0, 0, 26, 35);
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 38 && yAxis <= 56)
 		{
-			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 38, 26, 0, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 38, 26, 0, 18, 18);
 		}
 		else {
-			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 38, 26, 18, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 38, 26, 18, 18, 18);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

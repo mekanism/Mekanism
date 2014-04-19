@@ -221,6 +221,12 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 		return super.mouseClicked(gui, button, recipe);
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public List<ItemStack> fuelStacks;

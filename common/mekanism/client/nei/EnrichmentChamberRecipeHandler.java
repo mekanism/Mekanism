@@ -33,12 +33,6 @@ public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 	}
 
 	@Override
-	public String getGuiTexture()
-	{
-		return "mekanism:gui/GuiChamber.png";
-	}
-
-	@Override
 	public Class getGuiClass()
 	{
 		return GuiEnrichmentChamber.class;

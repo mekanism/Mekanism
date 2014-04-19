@@ -9,9 +9,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiRecipeType extends GuiElement
 {
-	public GuiRecipeType(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	TileEntityFactory tileEntity;
+
+	public GuiRecipeType(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRecipeType.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRecipeType.png"), gui, def);
+
+		tileEntity = tile;
 	}
 
 	@Override
@@ -19,12 +23,12 @@ public class GuiRecipeType extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
+		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 70, 0, 0, 26, 63);
 
-		TileEntityFactory factory = (TileEntityFactory)tileEntity;
+		TileEntityFactory factory = tileEntity;
 		int displayInt = factory.getScaledRecipeProgress(15);
 
-		guiObj.drawTexturedModalRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
+		guiObj.drawTexturedRect(guiWidth + 181, guiHeight + 94, 26, 0, 10, displayInt);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

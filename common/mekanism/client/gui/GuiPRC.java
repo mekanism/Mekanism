@@ -32,26 +32,26 @@ public class GuiPRC extends GuiMekanism
 			{
 				return tileEntity.inputFluidTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 5, 10));
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 5, 10));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.inputGasTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 28, 10));
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 28, 10));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.outputGasTank;
 			}
-		}, GuiGauge.Type.SMALL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 40));
+		}, GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 40));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 164, 15));
 
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 53, 34));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 18).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 115, 34));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 53, 34));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 18).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 115, 34));
 
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
@@ -60,7 +60,7 @@ public class GuiPRC extends GuiMekanism
 			{
 				return tileEntity.getScaledProgress();
 			}
-		}, ProgressBar.MEDIUM, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 75, 37));
+		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 75, 37));
 	}
 
 	@Override

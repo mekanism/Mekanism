@@ -276,6 +276,12 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		return 1;
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public ChemicalPair chemicalInput;

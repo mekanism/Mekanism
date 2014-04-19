@@ -1,17 +1,35 @@
 package mekanism.client.nei;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import static codechicken.core.gui.GuiDraw.changeTexture;
 import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
 import static codechicken.core.gui.GuiDraw.gui;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
+
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.Icon;
 import net.minecraftforge.fluids.FluidStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public abstract class BaseRecipeHandler extends TemplateRecipeHandler
+public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements IGuiWrapper
 {
+	public BaseRecipeHandler()
+	{
+		addGuiElements();
+	}
+
+	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
+
+	public abstract void addGuiElements();
+
 	public void displayGauge(int length, int xPos, int yPos, int overlayX, int overlayY, int scale, FluidStack fluid, GasStack gas)
 	{
 		if(fluid == null && gas == null)
@@ -122,4 +140,21 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler
 
 		return false;
 	}
+
+	public void drawTexturedRect(int x, int y, int u, int v, int w, int h)
+	{
+		drawTexturedModalRect(x, y, u, v, w, h);
+	}
+
+	public void drawTexturedRectFromIcon(int x, int y, Icon icon, int w, int h)
+	{
+		gui.drawTexturedModelRectFromIcon(x, y, icon, w, h);
+	}
+
+	public void displayTooltip(String s, int xAxis, int yAxis) {}
+
+	public void displayTooltips(List<String> list, int xAxis, int yAxis) {}
+
+	public FontRenderer getFont() { return null; }
+
 }

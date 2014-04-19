@@ -45,17 +45,17 @@ public class GuiHydrogenGenerator extends GuiMekanism
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
-		}, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.fuelTank;
 			}
-		}, Type.WIDE, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 55, 18));
+		}, Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 55, 18));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 164, 15));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 16, 34).with(SlotOverlay.MINUS));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 16, 34).with(SlotOverlay.MINUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHydrogenGenerator.png"), 142, 34).with(SlotOverlay.POWER));
 	}
 
 	@Override

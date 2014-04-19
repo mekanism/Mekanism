@@ -318,6 +318,12 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		return 1;
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public GasStack inputStack;

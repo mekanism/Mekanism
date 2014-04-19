@@ -260,6 +260,12 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 		return 1;
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public FluidStack fluidInput;

@@ -14,9 +14,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiRedstoneControl extends GuiElement
 {
-	public GuiRedstoneControl(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	TileEntity tileEntity;
+
+	public GuiRedstoneControl(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRedstoneControl.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRedstoneControl.png"), gui, def);
+
+		tileEntity = tile;
 	}
 
 	@Override
@@ -24,17 +28,17 @@ public class GuiRedstoneControl extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth + 176, guiHeight + 138, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 138, 0, 0, 26, 26);
 
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 		int renderX = 26 + (18*control.getControlType().ordinal());
 
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 142 && yAxis <= 160)
 		{
-			guiObj.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 0, 18, 18);
+			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 142, renderX, 0, 18, 18);
 		}
 		else {
-			guiObj.drawTexturedModalRect(guiWidth + 179, guiHeight + 142, renderX, 18, 18, 18);
+			guiObj.drawTexturedRect(guiWidth + 179, guiHeight + 142, renderX, 18, 18, 18);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -20,9 +20,9 @@ public abstract class GuiGauge extends GuiElement
 
 	protected int number;
 
-	public GuiGauge(Type type, GuiMekanism gui, TileEntity tile, ResourceLocation def, int x, int y)
+	public GuiGauge(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, def);
 
 		xLocation = x;
 		yLocation = y;
@@ -46,7 +46,7 @@ public abstract class GuiGauge extends GuiElement
 		int scale = getScaledLevel();
 		int start = 0;
 
-		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
 
 		while(scale > 0)
 		{
@@ -66,7 +66,7 @@ public abstract class GuiGauge extends GuiElement
 
 			for(int i = 0; i < number; i++)
 			{
-				guiObj.drawTexturedModelRectFromIcon(guiWidth + xLocation + 16*i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
+				guiObj.drawTexturedRectFromIcon(guiWidth + xLocation + 16*i + 1, guiHeight + yLocation + height - renderRemaining - start - 1, getIcon(), 16, renderRemaining);
 			}
 
 			start+=16;
@@ -78,7 +78,7 @@ public abstract class GuiGauge extends GuiElement
 		}
 
 		mc.renderEngine.bindTexture(RESOURCE);
-		guiObj.drawTexturedModalRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
+		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -88,7 +88,7 @@ public abstract class GuiGauge extends GuiElement
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			guiObj.drawCreativeTabHoveringText(getTooltipText(), xAxis, yAxis);
+			guiObj.displayTooltip(getTooltipText(), xAxis, yAxis);
 		}
 	}
 

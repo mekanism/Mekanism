@@ -30,9 +30,9 @@ public class GuiElectricPump extends GuiMekanism
 		super(new ContainerElectricPump(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, guiLocation, 27, 19));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, tileEntity, guiLocation, 27, 50));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, guiLocation, 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 27, 19));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 27, 50));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 142, 34).with(SlotOverlay.POWER));
 		guiElements.add(new GuiPowerBar(this, tileEntity, guiLocation, 164, 15));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
 			@Override
@@ -40,7 +40,7 @@ public class GuiElectricPump extends GuiMekanism
 			{
 				return tileEntity.fluidTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, tileEntity, guiLocation, 6, 13));
+		}, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
 
 	}
 

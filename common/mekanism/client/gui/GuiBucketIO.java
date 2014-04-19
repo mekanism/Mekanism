@@ -10,9 +10,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiBucketIO extends GuiElement
 {
-	public GuiBucketIO(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	public GuiBucketIO(IGuiWrapper gui, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiBucket.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiBucket.png"), gui, def);
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class GuiBucketIO extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 4, 0, 0, 26, 57);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 4, 0, 0, 26, 57);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}

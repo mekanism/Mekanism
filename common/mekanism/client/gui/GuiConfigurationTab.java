@@ -15,9 +15,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiConfigurationTab extends GuiElement
 {
-	public GuiConfigurationTab(GuiMekanism gui, TileEntity tile, ResourceLocation def)
+	TileEntity tileEntity;
+
+	public GuiConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, tile, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, def);
+
+		tileEntity = tile;
 	}
 
 	@Override
@@ -25,14 +29,14 @@ public class GuiConfigurationTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedModalRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
 		}
 		else {
-			guiObj.drawTexturedModalRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

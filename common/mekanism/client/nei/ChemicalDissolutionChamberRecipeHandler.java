@@ -252,6 +252,12 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		}
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public PositionedStack inputStack;

@@ -38,11 +38,11 @@ public class GuiChanceMachine extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_PER_TICK));
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, tileEntity, tileEntity.guiLocation));
+		}, this, tileEntity.guiLocation));
 
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity, tileEntity.guiLocation, 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity, tileEntity.guiLocation, 55, 52).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, tileEntity, tileEntity.guiLocation, 111, 30));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity.guiLocation, 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity.guiLocation, 55, 52).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, tileEntity.guiLocation, 111, 30));
 
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
@@ -51,7 +51,7 @@ public class GuiChanceMachine extends GuiMekanism
 			{
 				return tileEntity.getScaledProgress();
 			}
-		}, tileEntity.getProgressType(), this, tileEntity, tileEntity.guiLocation, 77, 37));
+		}, tileEntity.getProgressType(), this, tileEntity.guiLocation, 77, 37));
 	}
 
 	@Override

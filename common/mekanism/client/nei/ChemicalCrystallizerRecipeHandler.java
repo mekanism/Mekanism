@@ -243,6 +243,12 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 		}
 	}
 
+	@Override
+	public void addGuiElements()
+	{
+
+	}
+
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public GasStack inputStack;
