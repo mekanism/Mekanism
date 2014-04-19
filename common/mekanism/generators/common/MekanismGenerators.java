@@ -34,7 +34,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "6.0.4", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "6.1.0", dependencies = "required-after:Mekanism")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class MekanismGenerators implements IModule
 {
