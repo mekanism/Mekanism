@@ -228,7 +228,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z)
 	{
-		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.getWorldObj().getTileEntity(x, y, z);
+		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getTileEntity(x, y, z);
 
 		if(id == 0)
 		{

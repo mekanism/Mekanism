@@ -250,9 +250,9 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	{
 		EntityLivingBase base = event.entityLiving;
 
-		if(base.getCurrentItemOrArmor(1) != null && base.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
+		if(base.getEquipmentInSlot(1) != null && base.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
 		{
-			ItemStack stack = base.getCurrentItemOrArmor(1);
+			ItemStack stack = base.getEquipmentInSlot(1);
 			ItemFreeRunners boots = (ItemFreeRunners)stack.getItem();
 
 			if(boots.getEnergy(stack) > 0 && event.source == DamageSource.fall)

@@ -688,7 +688,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		if(structured != prev)
 		{
 			waterTank.setCapacity(getMaxWater());
-			worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+			worldObj.func_147479_m(xCoord, yCoord, zCoord);
 		}
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);

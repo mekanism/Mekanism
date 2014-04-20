@@ -56,15 +56,15 @@ public class ItemGasMask extends ItemArmor
 	{
 		EntityLivingBase base = event.entityLiving;
 
-		if(base.getCurrentItemOrArmor(4) != null && base.getCurrentItemOrArmor(4).getItem() instanceof ItemGasMask)
+		if(base.getEquipmentInSlot(4) != null && base.getEquipmentInSlot(4).getItem() instanceof ItemGasMask)
 		{
-			ItemGasMask mask = (ItemGasMask)base.getCurrentItemOrArmor(4).getItem();
+			ItemGasMask mask = (ItemGasMask)base.getEquipmentInSlot(4).getItem();
 
-			if(base.getCurrentItemOrArmor(3) != null && base.getCurrentItemOrArmor(3).getItem() instanceof ItemScubaTank)
+			if(base.getEquipmentInSlot(3) != null && base.getEquipmentInSlot(3).getItem() instanceof ItemScubaTank)
 			{
-				ItemScubaTank tank = (ItemScubaTank)base.getCurrentItemOrArmor(3).getItem();
+				ItemScubaTank tank = (ItemScubaTank)base.getEquipmentInSlot(3).getItem();
 
-				if(tank.getFlowing(base.getCurrentItemOrArmor(3)) && tank.getGas(base.getCurrentItemOrArmor(3)) != null)
+				if(tank.getFlowing(base.getEquipmentInSlot(3)) && tank.getGas(base.getEquipmentInSlot(3)) != null)
 				{
 					if(event.source == DamageSource.magic)
 					{

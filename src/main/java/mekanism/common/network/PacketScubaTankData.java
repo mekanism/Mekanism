@@ -65,7 +65,7 @@ public class PacketScubaTankData extends MekanismPacket
 		}
 		else if(packetType == ScubaTankPacket.MODE)
 		{
-			ItemStack stack = player.getCurrentItemOrArmor(3);
+			ItemStack stack = player.getEquipmentInSlot(3);
 
 			if(stack != null && stack.getItem() instanceof ItemScubaTank)
 			{

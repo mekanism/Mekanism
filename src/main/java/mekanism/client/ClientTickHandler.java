@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,7 +14,6 @@ import mekanism.client.sound.JetpackSound;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
-import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemFreeRunners;
@@ -43,8 +41,9 @@ import net.minecraft.util.StringUtils;
 import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -54,7 +53,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  *
  */
 @SideOnly(Side.CLIENT)
-public class ClientTickHandler implements ITickHandler
+public class ClientTickHandler
 {
 	public boolean hasNotified = false;
 	public boolean initHoliday = false;
@@ -77,8 +76,21 @@ public class ClientTickHandler implements ITickHandler
 
 	public static Set<IClientTicker> tickingSet = new HashSet<IClientTicker>();
 
+	@SubscribeEvent
+	public void onTick(ClientTickEvent event)
+	{
+		if(event.phase == Phase.START)
+		{
+			tickStart();
+		}
+		else if(event.phase == Phase.END)
+		{
+			tickEnd();
+		}
+	}
+
 	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData)
+	public void tickStart()
 	{
 		if(!preloadedSounds && mc.sndManager.sndSystem != null && MekanismClient.enableSounds)
 		{
@@ -142,14 +154,14 @@ public class ClientTickHandler implements ITickHandler
 
 					if(player != null)
 					{
-						if(StringUtils.stripControlCodes(player.username).equals("mikeacttck"))
+						if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("mikeacttck"))
 						{
-							CapeBufferDownload download = mikeDownload.get(player.username);
+							CapeBufferDownload download = mikeDownload.get(player.getCommandSenderName());
 
 							if(download == null)
 							{
-								download = new CapeBufferDownload(player.username, MIKE_CAPE);
-								mikeDownload.put(player.username, download);
+								download = new CapeBufferDownload(player.getCommandSenderName(), MIKE_CAPE);
+								mikeDownload.put(player.getCommandSenderName(), download);
 
 								download.start();
 							}
@@ -163,14 +175,14 @@ public class ClientTickHandler implements ITickHandler
 								MekanismUtils.setPrivateValue(player, download.getResourceLocation(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
 							}
 						}
-						else if(StringUtils.stripControlCodes(player.username).equals("aidancbrady"))
+						else if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("aidancbrady"))
 						{
-							CapeBufferDownload download = aidanDownload.get(player.username);
+							CapeBufferDownload download = aidanDownload.get(player.getCommandSenderName());
 
 							if(download == null)
 							{
-								download = new CapeBufferDownload(player.username, AIDAN_CAPE);
-								aidanDownload.put(player.username, download);
+								download = new CapeBufferDownload(player.getCommandSenderName(), AIDAN_CAPE);
+								aidanDownload.put(player.getCommandSenderName(), download);
 
 								download.start();
 							}
@@ -184,14 +196,14 @@ public class ClientTickHandler implements ITickHandler
 								MekanismUtils.setPrivateValue(player, download.getResourceLocation(), AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_locationCape);
 							}
 						}
-						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.username)))
+						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getCommandSenderName())))
 						{
-							CapeBufferDownload download = donateDownload.get(player.username);
+							CapeBufferDownload download = donateDownload.get(player.getCommandSenderName());
 
 							if(download == null)
 							{
-								download = new CapeBufferDownload(player.username, DONATE_CAPE);
-								donateDownload.put(player.username, download);
+								download = new CapeBufferDownload(player.getCommandSenderName(), DONATE_CAPE);
+								donateDownload.put(player.getCommandSenderName(), download);
 
 								download.start();
 							}
@@ -268,9 +280,9 @@ public class ClientTickHandler implements ITickHandler
 						lastTickUpdate = false;
 					}
 				}
-				else if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+				else if(mc.thePlayer.getEquipmentInSlot(3) != null && mc.thePlayer.getEquipmentInSlot(3).getItem() instanceof ItemJetpack)
 				{
-					ItemStack jetpack = mc.thePlayer.getCurrentItemOrArmor(3);
+					ItemStack jetpack = mc.thePlayer.getEquipmentInSlot(3);
 
 					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
 					{
@@ -286,9 +298,9 @@ public class ClientTickHandler implements ITickHandler
 						lastTickUpdate = false;
 					}
 				}
-				else if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemScubaTank)
+				else if(mc.thePlayer.getEquipmentInSlot(3) != null && mc.thePlayer.getEquipmentInSlot(3).getItem() instanceof ItemScubaTank)
 				{
-					ItemStack scubaTank = mc.thePlayer.getCurrentItemOrArmor(3);
+					ItemStack scubaTank = mc.thePlayer.getEquipmentInSlot(3);
 
 					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
 					{
@@ -309,7 +321,7 @@ public class ClientTickHandler implements ITickHandler
 				}
 			}
 
-			if(mc.thePlayer.getCurrentItemOrArmor(1) != null && mc.thePlayer.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
+			if(mc.thePlayer.getEquipmentInSlot(1) != null && mc.thePlayer.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
 			{
 				mc.thePlayer.stepHeight = 1.002F;
 			}
@@ -320,30 +332,30 @@ public class ClientTickHandler implements ITickHandler
 				}
 			}
 
-			if(Mekanism.jetpackOn.contains(mc.thePlayer.username) != isJetpackOn(mc.thePlayer))
+			if(Mekanism.jetpackOn.contains(mc.thePlayer.getCommandSenderName()) != isJetpackOn(mc.thePlayer))
 			{
 				if(isJetpackOn(mc.thePlayer))
 				{
-					Mekanism.jetpackOn.add(mc.thePlayer.username);
+					Mekanism.jetpackOn.add(mc.thePlayer.getCommandSenderName());
 				}
 				else {
-					Mekanism.jetpackOn.remove(mc.thePlayer.username);
+					Mekanism.jetpackOn.remove(mc.thePlayer.getCommandSenderName());
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.UPDATE, mc.thePlayer.username, isJetpackOn(mc.thePlayer)));
+				Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isJetpackOn(mc.thePlayer)));
 			}
 
-			if(Mekanism.gasmaskOn.contains(mc.thePlayer.username) != isGasMaskOn(mc.thePlayer))
+			if(Mekanism.gasmaskOn.contains(mc.thePlayer.getCommandSenderName()) != isGasMaskOn(mc.thePlayer))
 			{
 				if(isGasMaskOn(mc.thePlayer) && mc.currentScreen == null)
 				{
-					Mekanism.gasmaskOn.add(mc.thePlayer.username);
+					Mekanism.gasmaskOn.add(mc.thePlayer.getCommandSenderName());
 				}
 				else {
-					Mekanism.gasmaskOn.remove(mc.thePlayer.username);
+					Mekanism.gasmaskOn.remove(mc.thePlayer.getCommandSenderName());
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
+				Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isGasMaskOn(mc.thePlayer)));
 			}
 
 			if(MekanismClient.audioHandler != null)
@@ -371,7 +383,7 @@ public class ClientTickHandler implements ITickHandler
 				}
 			}
 
-			if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
+			if(mc.thePlayer.getEquipmentInSlot(3) != null && mc.thePlayer.getEquipmentInSlot(3).getItem() instanceof ItemJetpack)
 			{
 				MekanismClient.updateKey(mc.gameSettings.keyBindJump.getKeyCode(), KeySync.ASCEND);
 				MekanismClient.updateKey(mc.gameSettings.keyBindSneak.getKeyCode(), KeySync.DESCEND);
@@ -379,16 +391,16 @@ public class ClientTickHandler implements ITickHandler
 
 			if(isJetpackOn(mc.thePlayer))
 			{
-				ItemJetpack jetpack = (ItemJetpack)mc.thePlayer.getCurrentItemOrArmor(3).getItem();
+				ItemJetpack jetpack = (ItemJetpack)mc.thePlayer.getEquipmentInSlot(3).getItem();
 
-				if(jetpack.getMode(mc.thePlayer.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
+				if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.NORMAL)
 				{
 					mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.5D);
 					mc.thePlayer.fallDistance = 0.0F;
 				}
-				else if(jetpack.getMode(mc.thePlayer.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
+				else if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.HOVER)
 				{
-					if((!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || mc.currentScreen != null)
+					if((!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) || (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) || mc.currentScreen != null)
 					{
 						if(mc.thePlayer.motionY > 0)
 						{
@@ -413,14 +425,14 @@ public class ClientTickHandler implements ITickHandler
 					mc.thePlayer.fallDistance = 0.0F;
 				}
 
-				jetpack.useGas(mc.thePlayer.getCurrentItemOrArmor(3));
+				jetpack.useGas(mc.thePlayer.getEquipmentInSlot(3));
 			}
 
 			if(isGasMaskOn(mc.thePlayer))
 			{
-				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getCurrentItemOrArmor(3).getItem();
+				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getEquipmentInSlot(3).getItem();
 
-				tank.useGas(mc.thePlayer.getCurrentItemOrArmor(3));
+				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
 				mc.thePlayer.setAir(300);
 				mc.thePlayer.clearActivePotions();
 			}
@@ -442,7 +454,7 @@ public class ClientTickHandler implements ITickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.jetpackOn.contains(player.username);
+			return Mekanism.jetpackOn.contains(player.getCommandSenderName());
 		}
 
 		ItemStack stack = player.inventory.armorInventory[2];
@@ -474,7 +486,7 @@ public class ClientTickHandler implements ITickHandler
 	{
 		if(player != mc.thePlayer)
 		{
-			return Mekanism.gasmaskOn.contains(player.username);
+			return Mekanism.gasmaskOn.contains(player.getCommandSenderName());
 		}
 
 		ItemStack tank = player.inventory.armorInventory[2];
@@ -499,8 +511,7 @@ public class ClientTickHandler implements ITickHandler
 		return false;
 	}
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	public void tickEnd()
 	{
 		if(MekanismClient.audioHandler != null)
 		{
@@ -509,17 +520,5 @@ public class ClientTickHandler implements ITickHandler
 				MekanismClient.audioHandler.onTick();
 			}
 		}
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.CLIENT);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "MekanismClient";
 	}
 }

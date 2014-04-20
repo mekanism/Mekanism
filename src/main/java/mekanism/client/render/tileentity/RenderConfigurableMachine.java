@@ -52,7 +52,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 		TileEntity tileEntity = (TileEntity)configurable;
 		EntityPlayer player = mc.thePlayer;
-		World world = mc.thePlayer.getWorldObj();
+		World world = mc.thePlayer.worldObj;
 		ItemStack itemStack = player.getCurrentEquippedItem();
 		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 

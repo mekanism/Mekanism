@@ -29,7 +29,7 @@ public abstract class PlayerSound extends Sound
 		{
 			return false;
 		}
-		else if(player.getWorldObj() != world)
+		else if(player.worldObj != world)
 		{
 			return false;
 		}

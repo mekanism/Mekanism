@@ -13,68 +13,61 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
-public class CommonPlayerTickHandler implements ITickHandler
+public class CommonPlayerTickHandler
 {
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	@SubscribeEvent
+	public void onTick(PlayerTickEvent event)
 	{
-		if(tickData[0] instanceof EntityPlayer)
+		if(event.phase == Phase.END)
 		{
-			EntityPlayer player = (EntityPlayer)tickData[0];
+			tickEnd(event.player);
+		}
+	}
 
-			if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
+	public void tickEnd(EntityPlayer player)
+	{
+		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
+		{
+			ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
+			ItemStack itemstack = player.getCurrentEquippedItem();
+
+			Teleporter.Code teleCode = new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3));
+
+			if(Mekanism.teleporters.containsKey(teleCode))
 			{
-				ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
-				ItemStack itemstack = player.getCurrentEquippedItem();
-
-				Teleporter.Code teleCode = new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3));
-
-				if(Mekanism.teleporters.containsKey(teleCode))
+				if(Mekanism.teleporters.get(teleCode).size() > 0 && Mekanism.teleporters.get(teleCode).size() <= 2)
 				{
-					if(Mekanism.teleporters.get(teleCode).size() > 0 && Mekanism.teleporters.get(teleCode).size() <= 2)
-					{
-						int energyNeeded = item.calculateEnergyCost(player, MekanismUtils.getClosestCoords(teleCode, player));
+					int energyNeeded = item.calculateEnergyCost(player, MekanismUtils.getClosestCoords(teleCode, player));
 
-						if(item.getEnergy(itemstack) < energyNeeded)
-						{
-							if(item.getStatus(itemstack) != 2)
-							{
-								item.setStatus(itemstack, 2);
-								Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(2), player);
-							}
-						}
-						else {
-							if(item.getStatus(itemstack) != 1)
-							{
-								item.setStatus(itemstack, 1);
-								Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(1), player);
-							}
-						}
-						return;
-					}
-					else if(Mekanism.teleporters.get(teleCode).size() > 2)
+					if(item.getEnergy(itemstack) < energyNeeded)
 					{
-						if(item.getStatus(itemstack) != 3)
+						if(item.getStatus(itemstack) != 2)
 						{
-							item.setStatus(itemstack, 3);
-							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(3), player);
+							item.setStatus(itemstack, 2);
+							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(2), player);
 						}
-						return;
 					}
 					else {
-						if(item.getStatus(itemstack) != 4)
+						if(item.getStatus(itemstack) != 1)
 						{
-							item.setStatus(itemstack, 4);
-							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), player);
+							item.setStatus(itemstack, 1);
+							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(1), player);
 						}
-						return;
 					}
+					return;
+				}
+				else if(Mekanism.teleporters.get(teleCode).size() > 2)
+				{
+					if(item.getStatus(itemstack) != 3)
+					{
+						item.setStatus(itemstack, 3);
+						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(3), player);
+					}
+					return;
 				}
 				else {
 					if(item.getStatus(itemstack) != 4)
@@ -85,69 +78,77 @@ public class CommonPlayerTickHandler implements ITickHandler
 					return;
 				}
 			}
-
-			if(player.getCurrentItemOrArmor(1) != null && player.getCurrentItemOrArmor(1).getItem() instanceof ItemFreeRunners)
-			{
-				player.stepHeight = 1.002F;
-			}
 			else {
-				if(player.stepHeight == 1.002F)
+				if(item.getStatus(itemstack) != 4)
 				{
-					player.stepHeight = 0.5F;
+					item.setStatus(itemstack, 4);
+					Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), player);
 				}
+				return;
 			}
+		}
 
-			if(isJetpackOn(player))
+		if(player.getEquipmentInSlot(1) != null && player.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
+		{
+			player.stepHeight = 1.002F;
+		}
+		else {
+			if(player.stepHeight == 1.002F)
 			{
-				ItemJetpack jetpack = (ItemJetpack)player.getCurrentItemOrArmor(3).getItem();
+				player.stepHeight = 0.5F;
+			}
+		}
 
-				if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.NORMAL)
+		if(isJetpackOn(player))
+		{
+			ItemJetpack jetpack = (ItemJetpack)player.getEquipmentInSlot(3).getItem();
+
+			if(jetpack.getMode(player.getEquipmentInSlot(3)) == JetpackMode.NORMAL)
+			{
+				player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
+			}
+			else if(jetpack.getMode(player.getEquipmentInSlot(3)) == JetpackMode.HOVER)
+			{
+				if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
 				{
-					player.motionY = Math.min(player.motionY + 0.15D, 0.5D);
-				}
-				else if(jetpack.getMode(player.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
-				{
-					if((!Mekanism.keyMap.has(player, KeySync.ASCEND) && !Mekanism.keyMap.has(player, KeySync.DESCEND)) || (Mekanism.keyMap.has(player, KeySync.ASCEND) && Mekanism.keyMap.has(player, KeySync.DESCEND)))
+					if(player.motionY > 0)
 					{
-						if(player.motionY > 0)
-						{
-							player.motionY = Math.max(player.motionY - 0.15D, 0);
-						}
-						else if(player.motionY < 0)
-						{
-							player.motionY = Math.min(player.motionY + 0.15D, 0);
-						}
+						player.motionY = Math.max(player.motionY - 0.15D, 0);
 					}
-					else {
-						if(Mekanism.keyMap.has(player, KeySync.ASCEND))
-						{
-							player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
-						}
-						else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
-						{
-							player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
-						}
+					else if(player.motionY < 0)
+					{
+						player.motionY = Math.min(player.motionY + 0.15D, 0);
 					}
 				}
-
-				player.fallDistance = 0.0F;
-
-				if(player instanceof EntityPlayerMP)
-				{
-					((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
+				else {
+					if(Mekanism.keyMap.has(player, KeySync.ASCEND))
+					{
+						player.motionY = Math.min(player.motionY + 0.15D, 0.2D);
+					}
+					else if(Mekanism.keyMap.has(player, KeySync.DESCEND))
+					{
+						player.motionY = Math.max(player.motionY - 0.15D, -0.2D);
+					}
 				}
-
-				jetpack.useGas(player.getCurrentItemOrArmor(3));
 			}
 
-			if(isGasMaskOn(player))
+			player.fallDistance = 0.0F;
+
+			if(player instanceof EntityPlayerMP)
 			{
-				ItemScubaTank tank = (ItemScubaTank)player.getCurrentItemOrArmor(3).getItem();
-
-				tank.useGas(player.getCurrentItemOrArmor(3));
-				player.setAir(300);
-				player.clearActivePotions();
+				((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
 			}
+
+			jetpack.useGas(player.getEquipmentInSlot(3));
+		}
+
+		if(isGasMaskOn(player))
+		{
+			ItemScubaTank tank = (ItemScubaTank)player.getEquipmentInSlot(3).getItem();
+
+			tank.useGas(player.getEquipmentInSlot(3));
+			player.setAir(300);
+			player.clearActivePotions();
 		}
 	}
 
@@ -200,17 +201,5 @@ public class CommonPlayerTickHandler implements ITickHandler
 		}
 
 		return false;
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.PLAYER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "MekanismCommonPlayer";
 	}
 }

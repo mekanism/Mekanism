@@ -24,29 +24,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderTickHandler implements ITickHandler
+public class RenderTickHandler
 {
 	public Random rand = new Random();
 	public Minecraft mc = Minecraft.getMinecraft();
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	@SubscribeEvent
+	public void onTick(RenderTickEvent event)
 	{
-		float partialTick = (Float)tickData[0];
+		if(event.phase == Phase.END)
+		{
+			tickEnd(event.renderTickTime);
+		}
+	}
 
+	@Override
+	public void tickEnd(float partialTick)
+	{
 		if(mc.thePlayer != null && mc.theWorld != null)
 		{
 			EntityPlayer player = mc.thePlayer;
-			World world = mc.thePlayer.getWorldObj();
+			World world = mc.thePlayer.worldObj;
 
 			FontRenderer font = mc.fontRenderer;
 
@@ -72,7 +77,7 @@ public class RenderTickHandler implements ITickHandler
 						}
 					}
 
-					font.drawStringWithShadow("Block ID: " + obj.getBlockId(world), 1, 1, 0x404040);
+					font.drawStringWithShadow("Block: " + obj.getBlock(world).getUnlocalizedName(), 1, 1, 0x404040);
 					font.drawStringWithShadow("Metadata: " + obj.getMetadata(world), 1, 10, 0x404040);
 					font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
 					font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
@@ -80,9 +85,9 @@ public class RenderTickHandler implements ITickHandler
 				}
 			}
 
-			if(player != null && !(mc.currentScreen instanceof GuiChat) && player.getCurrentItemOrArmor(3) != null)
+			if(player != null && !(mc.currentScreen instanceof GuiChat) && player.getEquipmentInSlot(3) != null)
 			{
-				ItemStack stack = player.getCurrentItemOrArmor(3);
+				ItemStack stack = player.getEquipmentInSlot(3);
 
 				ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 
@@ -183,17 +188,5 @@ public class RenderTickHandler implements ITickHandler
 		}
 
 		mc.effectRenderer.addEffect(fx);
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.RENDER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "MekanismRender";
 	}
 }

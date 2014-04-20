@@ -65,7 +65,7 @@ public class PacketJetpackData extends MekanismPacket
 		}
 		else if(packetType == JetpackPacket.MODE)
 		{
-			ItemStack stack = player.getCurrentItemOrArmor(3);
+			ItemStack stack = player.getEquipmentInSlot(3);
 
 			if(stack != null && stack.getItem() instanceof ItemJetpack)
 			{

@@ -712,7 +712,7 @@ public class BlockBasic extends Block
 			}
 		}
 
-		world.markBlockForRenderUpdate(x, y, z);
+		world.func_147479_m(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 
 		if(!world.isRemote && world.getTileEntity(x, y, z) != null)

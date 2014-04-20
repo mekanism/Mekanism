@@ -200,7 +200,7 @@ public class RenderPartTransmitter implements IIconRegister
 		if(transporter instanceof PartDiversionTransporter)
 		{
 			EntityPlayer player = mc.thePlayer;
-			World world = mc.thePlayer.getWorldObj();
+			World world = mc.thePlayer.worldObj;
 			ItemStack itemStack = player.getCurrentEquippedItem();
 			MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 

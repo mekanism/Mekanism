@@ -51,7 +51,7 @@ public class PacketHandler //implements IPacketHandler
 				}
 
 				try {
-					packetType.read(dataStream, entityplayer, entityplayer.getWorldObj());
+					packetType.read(dataStream, entityplayer, entityplayer.worldObj);
 				} catch(Exception e) {
 					System.err.println("[Mekanism] Error while reading '" + packetType.getName() + "' packet.");
 					e.printStackTrace();

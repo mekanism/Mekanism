@@ -10,14 +10,15 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.ICraftingHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
-public class BinRecipe implements IRecipe, ICraftingHandler
+public class BinRecipe implements IRecipe//, ICraftingHandler
 {
 	public BinRecipe()
 	{
-		GameRegistry.registerCraftingHandler(this);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -113,18 +114,18 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 		return null;
 	}
 
-	@Override
-	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix)
+	@SubscribeEvent
+	public void onCrafting(ItemCraftedEvent event) //EntityPlayer player, ItemStack item, IInventory craftMatrix)
 	{
-		if(getResult(craftMatrix) != null)
+		if(getResult(event.craftMatrix) != null)
 		{
-			if(!isBin(item))
+			if(!isBin(event.crafting))
 			{
-				for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
+				for(int i = 0; i < event.craftMatrix.getSizeInventory(); i++)
 				{
-					if(isBin(craftMatrix.getStackInSlot(i)))
+					if(isBin(event.craftMatrix.getStackInSlot(i)))
 					{
-						ItemStack bin = craftMatrix.getStackInSlot(i);
+						ItemStack bin = event.craftMatrix.getStackInSlot(i);
 						InventoryBin inv = new InventoryBin(bin.copy());
 
 						int size = inv.getItemCount();
@@ -139,20 +140,20 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 				int bin = -1;
 				int other = -1;
 
-				for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
+				for(int i = 0; i < event.craftMatrix.getSizeInventory(); i++)
 				{
-					if(isBin(craftMatrix.getStackInSlot(i)))
+					if(isBin(event.craftMatrix.getStackInSlot(i)))
 					{
 						bin = i;
 					}
-					else if(!isBin(craftMatrix.getStackInSlot(i)) && craftMatrix.getStackInSlot(i) != null)
+					else if(!isBin(event.craftMatrix.getStackInSlot(i)) && event.craftMatrix.getStackInSlot(i) != null)
 					{
 						other = i;
 					}
 				}
 
-				ItemStack binStack = craftMatrix.getStackInSlot(bin);
-				ItemStack otherStack = craftMatrix.getStackInSlot(other);
+				ItemStack binStack = event.craftMatrix.getStackInSlot(bin);
+				ItemStack otherStack = event.craftMatrix.getStackInSlot(other);
 
 				ItemStack testRemain = new InventoryBin(binStack.copy()).add(otherStack.copy());
 
@@ -160,17 +161,14 @@ public class BinRecipe implements IRecipe, ICraftingHandler
 				{
 					ItemStack proxy = new ItemStack(Mekanism.ItemProxy);
 					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());
-					craftMatrix.setInventorySlotContents(other, proxy);
+					event.craftMatrix.setInventorySlotContents(other, proxy);
 				}
 				else {
-					craftMatrix.setInventorySlotContents(other, null);
+					event.craftMatrix.setInventorySlotContents(other, null);
 				}
 
-				craftMatrix.setInventorySlotContents(bin, null);
+				event.craftMatrix.setInventorySlotContents(bin, null);
 			}
 		}
 	}
-
-	@Override
-	public void onSmelting(EntityPlayer player, ItemStack item) {}
 }

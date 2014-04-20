@@ -53,7 +53,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.packet.Packet3Chat;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
@@ -70,7 +69,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.server.FMLServerHandler;
 
 /**
@@ -219,7 +217,7 @@ public final class MekanismUtils
 
 	/**
 	 * Sends a Packet3Chat packet to the defined player, with the defined message.
-	 * @param player - Player to send packet to.
+	 * @param playerUsername - Player to send packet to.
 	 * @param msg - message sent to player.
 	 */
 	public static void sendChatMessageToPlayer(String playerUsername, String msg)
@@ -243,7 +241,7 @@ public final class MekanismUtils
 			return Mekanism.teleporters.get(teleCode).get(0);
 		}
 		else {
-			int dimensionId = player.getWorldObj().provider.dimensionId;
+			int dimensionId = player.worldObj.provider.dimensionId;
 
 			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
 			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
@@ -343,7 +341,7 @@ public final class MekanismUtils
 	 */
 	public static void doFakeEntityExplosion(EntityPlayer entityplayer)
 	{
-		World world = entityplayer.getWorldObj();
+		World world = entityplayer.worldObj;
 		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
 	}
@@ -701,7 +699,7 @@ public final class MekanismUtils
 	{
 		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).renderUpdate())
 		{
-			world.markBlockForRenderUpdate(x, y, z);
+			world.func_147479_m(x, y, z);
 		}
 
 		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
@@ -1123,7 +1121,7 @@ public final class MekanismUtils
 	{
 		Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
 
-		if(!player.getWorldObj().isRemote)
+		if(!player.worldObj.isRemote)
 		{
 			vec.yCoord += player.getEyeHeight();
 

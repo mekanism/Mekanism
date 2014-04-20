@@ -1,27 +1,18 @@
 package mekanism.client;
 
 import mekanism.common.Mekanism;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ClientPlayerTracker implements IPlayerTracker
+public class ClientPlayerTracker
 {
-	@Override
-	public void onPlayerLogin(EntityPlayer player) {}
-
-	@Override
-	public void onPlayerLogout(EntityPlayer player) {}
-
-	@Override
-	public void onPlayerChangedDimension(EntityPlayer player)
+	@SubscribeEvent
+	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
 	{
-		Mekanism.jetpackOn.remove(player);
+		Mekanism.jetpackOn.remove(event.player);
 	}
-
-	@Override
-	public void onPlayerRespawn(EntityPlayer player) {}
 }

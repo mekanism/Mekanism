@@ -46,24 +46,22 @@ import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.lighting.LightMatrix;
 import codechicken.lib.lighting.LightModel;
 import codechicken.lib.lighting.LightModel.Light;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
-import codechicken.lib.render.IVertexModifier;
-import codechicken.lib.render.IIconTransformation;
 import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TextureUtils.IIIconRegister;
-import codechicken.lib.render.UV;
+import codechicken.lib.render.TextureUtils.IIconSelfRegister;
+import codechicken.lib.render.uv.UV;
+import codechicken.lib.render.uv.IconTransformation;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Transformation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 
-public class RenderGlowPanel implements IIIconRegister
+public class RenderGlowPanel implements IIconSelfRegister
 {
 	public static RenderGlowPanel INSTANCE;
 
@@ -107,35 +105,33 @@ public class RenderGlowPanel implements IIIconRegister
 		}
 	}
 
-	public void renderStatic(PartGlowPanel panel, LazyLightMatrix olm)
+	public void renderStatic(PartGlowPanel panel)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
-		CCRenderState.useModelColours(true);
 		CCRenderState.setBrightness(panel.world(), panel.x(), panel.y(), panel.z());
 
 		Colour colour = new ColourRGBA(panel.colour.getColor(0), panel.colour.getColor(1), panel.colour.getColor(2), 1);
 		int side = panel.side.ordinal();
 
-		frameModels[side].render(0, frameModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IIconTransformation(icon), null);
+		frameModels[side].render(0, frameModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), null);
 
-		lightModels[side].render(0, lightModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IIconTransformation(icon), new ColourMultiplier(colour));
+		lightModels[side].render(0, lightModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
 	}
 
 	public void renderItem(int metadata)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
-		CCRenderState.startDrawing(7);
-		CCRenderState.useModelColours(true);
+		CCRenderState.startDrawing();
 		EnumColor c = EnumColor.DYES[metadata];
 
 		Colour colour = new ColourRGBA(c.getColor(0), c.getColor(1), c.getColor(2), 1);
 		Colour white = new ColourRGBA(1.0, 1.0, 1.0, 1.0);
 		for(int i=4;i<5;i++){
 
-		frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IIconTransformation(icon), new ColourMultiplier(white));
-		lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IIconTransformation(icon), new ColourMultiplier(colour));
+		frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(white.rgba()));
+		lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
 		}
 		CCRenderState.draw();
 	}

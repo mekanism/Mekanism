@@ -56,7 +56,7 @@ public class RobitAIFollow extends EntityAIBase
 		{
 			return false;
 		}
-		else if(theRobit.getWorldObj().provider.dimensionId != player.getWorldObj().provider.dimensionId)
+		else if(theRobit.getWorldObj().provider.dimensionId != player.worldObj.provider.dimensionId)
 		{
 			return false;
 		}
