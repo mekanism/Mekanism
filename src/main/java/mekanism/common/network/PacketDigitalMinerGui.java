@@ -10,8 +10,7 @@ import mekanism.client.gui.GuiMFilterSelect;
 import mekanism.client.gui.GuiMItemStackFilter;
 import mekanism.client.gui.GuiMMaterialFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -24,62 +23,54 @@ import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PacketDigitalMinerGui implements IMekanismPacket
+public class PacketDigitalMinerGui extends MekanismPacket
 {
 	public Coord4D object3D;
 
 	public MinerGuiPacket packetType;
 
-	public int type;
+	public int guiType;
 
 	public int windowId = -1;
 
 	public int index = -1;
 
-	@Override
-	public String getName()
+	public PacketDigitalMinerGui(MinerGuiPacket type, Coord4D coord, int guiID, int extra, int extra2)
 	{
-		return "DigitalMinerGui";
-	}
+		packetType = type;
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		packetType = (MinerGuiPacket)data[0];
-
-		object3D = (Coord4D)data[1];
-		type = (Integer)data[2];
+		object3D = coord;
+		guiType = guiID;
 
 		if(packetType == MinerGuiPacket.CLIENT)
 		{
-			windowId = (Integer)data[3];
+			windowId = extra;
 		}
 		else if(packetType == MinerGuiPacket.SERVER_INDEX)
 		{
-			index = (Integer)data[3];
+			index = extra;
 		}
 		else if(packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
-			windowId = (Integer)data[3];
-			index = (Integer)data[4];
+			windowId = extra;
+			index = extra2;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = MinerGuiPacket.values()[dataStream.readInt()];
 
 		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-		type = dataStream.readInt();
+		guiType = dataStream.readInt();
 
 		if(packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
@@ -97,7 +88,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 
 			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
 			{
-				openServerGui(packetType, type, worldServer, (EntityPlayerMP)player, object3D, index);
+				openServerGui(packetType, guiType, worldServer, (EntityPlayerMP)player, object3D, index);
 			}
 		}
 		else {
@@ -106,11 +97,11 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 				try {
 					if(packetType == MinerGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, type, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
 					}
 					else if(packetType == MinerGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, type, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
 					}
 
 					player.openContainer.windowId = windowId;
@@ -149,11 +140,11 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 
 		if(t == MinerGuiPacket.SERVER)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketDigitalMinerGui().setParams(MinerGuiPacket.CLIENT, obj, guiType, window), playerMP);
+			Mekanism.packetPipeline.sendTo(new PacketDigitalMinerGui(MinerGuiPacket.CLIENT, obj, guiType, window, 0), playerMP);
 		}
 		else if(t == MinerGuiPacket.SERVER_INDEX)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketDigitalMinerGui().setParams(MinerGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
+			Mekanism.packetPipeline.sendTo(new PacketDigitalMinerGui(MinerGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
 		}
 
 		playerMP.openContainer = container;
@@ -166,7 +157,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 
 			for(EntityPlayer player : tile.playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(obj, tile.getFilterPacket(new ArrayList())), player);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(obj, tile.getFilterPacket(new ArrayList())), (EntityPlayerMP)player);
 			}
 		}
 	}
@@ -222,7 +213,6 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		return null;
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
@@ -233,7 +223,7 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 
 		dataStream.writeInt(object3D.dimensionId);
 
-		dataStream.writeInt(type);
+		dataStream.writeInt(guiType);
 
 		if(packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX)
 		{
@@ -244,6 +234,30 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 		{
 			dataStream.writeInt(index);
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum MinerGuiPacket

@@ -13,7 +13,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -161,7 +160,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 			for(EntityPlayer player : playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 			}
 
 			return;

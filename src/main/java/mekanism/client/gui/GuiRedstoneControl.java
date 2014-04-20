@@ -4,7 +4,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -75,7 +74,7 @@ public class GuiRedstoneControl extends GuiElement
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
 
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRedstoneControl().setParams(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+				Mekanism.packetPipeline.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
 			}
 		}
 	}

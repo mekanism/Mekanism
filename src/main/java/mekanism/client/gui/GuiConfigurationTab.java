@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -67,7 +66,7 @@ public class GuiConfigurationTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 			{
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Coord4D.get(tileEntity), 9));
+				Mekanism.packetPipeline.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 9));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

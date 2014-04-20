@@ -12,6 +12,7 @@ import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -22,9 +23,9 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY;
 
-	public ItemEnergized(int id, double maxElectricity)
+	public ItemEnergized(double maxElectricity)
 	{
-		super(id);
+		super();
 		MAX_ELECTRICITY = maxElectricity;
 		setMaxStackSize(1);
 		setMaxDamage(100);
@@ -46,7 +47,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
 		discharged.setItemDamage(100);
@@ -63,15 +64,15 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public int getChargedItemId(ItemStack itemStack)
+	public Item getChargedItem(ItemStack itemStack)
 	{
-		return itemID;
+		return this;
 	}
 
 	@Override
-	public int getEmptyItemId(ItemStack itemStack)
+	public Item getEmptyItem(ItemStack itemStack)
 	{
-		return itemID;
+		return this;
 	}
 
 	@Override

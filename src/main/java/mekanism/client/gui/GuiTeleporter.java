@@ -6,7 +6,6 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -66,7 +65,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(0);
 			data.add(getIncrementedNumber(tileEntity.code.digitOne));
 
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitOne = getIncrementedNumber(tileEntity.code.digitOne);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -75,7 +74,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(1);
 			data.add(getIncrementedNumber(tileEntity.code.digitTwo));
 
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitTwo = getIncrementedNumber(tileEntity.code.digitTwo);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -84,7 +83,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(2);
 			data.add(getIncrementedNumber(tileEntity.code.digitThree));
 
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitThree = getIncrementedNumber(tileEntity.code.digitThree);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}
@@ -93,7 +92,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(3);
 			data.add(getIncrementedNumber(tileEntity.code.digitFour));
 
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitFour = getIncrementedNumber(tileEntity.code.digitFour);
 			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 		}

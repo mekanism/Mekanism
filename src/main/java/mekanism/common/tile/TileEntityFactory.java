@@ -22,7 +22,6 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -154,7 +153,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 
@@ -304,7 +303,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 				if(didOp)
 				{
-					onInventoryChanged();
+					markDirty();
 					break;
 				}
 			}
@@ -534,7 +533,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			inventory[outputSlot].stackSize += itemstack.stackSize;
 		}
 
-		onInventoryChanged();
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 
@@ -766,7 +765,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			updateDelay = 10;
 			clientActive = active;

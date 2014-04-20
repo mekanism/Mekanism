@@ -130,7 +130,7 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 			}
 		}
 
-		onInventoryChanged();
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 

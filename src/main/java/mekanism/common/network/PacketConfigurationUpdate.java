@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.ITileNetwork;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -17,10 +16,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketConfigurationUpdate implements IMekanismPacket
+public class PacketConfigurationUpdate extends MekanismPacket
 {
-	public Coord4D object3D;
+	public Coord4D coord4D;
 
 	public int configIndex;
 
@@ -30,47 +31,37 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 
 	public ConfigurationPacket packetType;
 
-	@Override
-	public String getName()
+	public PacketConfigurationUpdate(ConfigurationPacket type, Coord4D coord, int click, int extra)
 	{
-		return "ConfigurationUpdate";
-	}
+		packetType = type;
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		packetType = (ConfigurationPacket)data[0];
-
-		object3D = (Coord4D)data[1];
+		coord4D = coord;
 
 		if(packetType == ConfigurationPacket.EJECT_COLOR)
 		{
-			clickType = (Integer)data[2];
+			clickType = click;
 		}
 
 		if(packetType == ConfigurationPacket.SIDE_DATA)
 		{
-			clickType = (Integer)data[2];
-			configIndex = (Integer)data[3];
+			clickType = click;
+			configIndex = extra;
 		}
 
 		if(packetType == ConfigurationPacket.INPUT_COLOR)
 		{
-			clickType = (Integer)data[2];
-			inputSide = (Integer)data[3];
+			clickType = click;
+			inputSide = extra;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = ConfigurationPacket.values()[dataStream.readInt()];
 
-		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-		TileEntity tile = object3D.getTileEntity(world);
+		TileEntity tile = coord4D.getTileEntity(world);
 
 		if(tile instanceof IInvConfiguration)
 		{
@@ -98,7 +89,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 					((IInvConfiguration)tile).getConfiguration()[configIndex] = 0;
 				}
 
-				PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), object3D, 50D);
+				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), coord4D, 50D);
 			}
 			else if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{
@@ -144,21 +135,20 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 
 			for(EntityPlayer p : ((TileEntityBasicBlock)config).playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(object3D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), p);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), p);
 			}
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
 
-		dataStream.writeInt(object3D.xCoord);
-		dataStream.writeInt(object3D.yCoord);
-		dataStream.writeInt(object3D.zCoord);
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
 
-		dataStream.writeInt(object3D.dimensionId);
+		dataStream.writeInt(coord4D.dimensionId);
 
 		if(packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT)
 		{
@@ -174,6 +164,29 @@ public class PacketConfigurationUpdate implements IMekanismPacket
 		{
 			dataStream.writeInt(inputSide);
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{	
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum ConfigurationPacket

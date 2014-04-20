@@ -17,8 +17,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketTransmitterUpdate implements IMekanismPacket
+public class PacketTransmitterUpdate extends MekanismPacket
 {
 	public PacketType packetType;
 
@@ -32,37 +34,27 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 	public FluidStack fluidStack;
 	public boolean didFluidTransfer;
 
-	@Override
-	public String getName()
+	public PacketTransmitterUpdate(PacketType type, TileEntity tile, Object... data)
 	{
-		return "TransmitterUpdate";
-	}
-
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		packetType = (PacketType)data[0];
-		tileEntity = (TileEntity)data[1];
+		packetType = type;
+		tileEntity = tile;
 
 		switch(packetType)
 		{
 			case ENERGY:
-				power = (Double)data[2];
+				power = (Double)data[0];
 				break;
 			case GAS:
-				gasStack = (GasStack)data[2];
-				didGasTransfer = (Boolean)data[3];
+				gasStack = (GasStack)data[0];
+				didGasTransfer = (Boolean)data[1];
 				break;
 			case FLUID:
-				fluidStack = (FluidStack)data[2];
-				didFluidTransfer = (Boolean)data[3];
+				fluidStack = (FluidStack)data[0];
+				didFluidTransfer = (Boolean)data[1];
 				break;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		int transmitterType = dataStream.readInt();
@@ -149,7 +141,6 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
@@ -174,6 +165,30 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 				dataStream.writeBoolean(didFluidTransfer);
 				break;
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum PacketType

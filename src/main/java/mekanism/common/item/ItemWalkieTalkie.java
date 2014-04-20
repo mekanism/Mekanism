@@ -16,9 +16,9 @@ public class ItemWalkieTalkie extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public ItemWalkieTalkie(int id)
+	public ItemWalkieTalkie()
 	{
-		super(id);
+		super();
 		setMaxStackSize(1);
 	}
 

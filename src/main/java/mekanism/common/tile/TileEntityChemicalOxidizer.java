@@ -15,7 +15,6 @@ import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
@@ -87,7 +86,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 
@@ -118,7 +117,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 						inventory[0] = null;
 					}
 
-					onInventoryChanged();
+					markDirty();
 				}
 			}
 			else {
@@ -302,7 +301,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			updateDelay = 10;
 			clientActive = active;

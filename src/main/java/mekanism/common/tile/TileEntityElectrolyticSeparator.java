@@ -15,7 +15,6 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.RecipeHandler;
@@ -154,7 +153,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this), 40D);
+						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this), 40D);
 					}
 				}
 			}
@@ -181,7 +180,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this), 40D);
+						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this), 40D);
 					}
 				}
 			}

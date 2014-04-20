@@ -9,7 +9,6 @@ import mekanism.api.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -20,7 +19,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
@@ -32,9 +31,9 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 
 	private Random random = new Random();
 
-	public ItemConfigurator(int id)
+	public ItemConfigurator()
 	{
-		super(id, 60000);
+		super(60000);
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 
 					if(!player.isSneaking())
 					{
-						player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+						player.sendChatToPlayer(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 						return true;
 					}
 					else {
@@ -93,12 +92,12 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 						{
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 							MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-							player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 
 							if(config instanceof TileEntityBasicBlock)
 							{
 								TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-								PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Coord4D.get(tileEntity), 50D);
+								Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Coord4D.get(tileEntity), 50D);
 							}
 
 							return true;
@@ -162,7 +161,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 						return true;
 					}
 					else {
-						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.unauth"));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.unauth")));
 						return true;
 					}
 				}
@@ -196,7 +195,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 				if(!world.isRemote && player.isSneaking())
 				{
 					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
-					player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Set link to block " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", dimension " + EnumColor.INDIGO + obj.dimensionId);
+					player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Set link to block " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", dimension " + EnumColor.INDIGO + obj.dimensionId));
 					setLink(stack, obj);
 
 					return true;
@@ -307,7 +306,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	@Override
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
-		return !(player.getWorldObj().getTileEntity(x, y, z) instanceof TileEntityBasicBlock);
+		return !(player.worldObj.getTileEntity(x, y, z) instanceof TileEntityBasicBlock);
 	}
 
 	@Override

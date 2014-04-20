@@ -6,10 +6,11 @@ import com.google.common.io.ByteArrayDataInput;
 
 import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
+
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -29,7 +30,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 			mainY = y;
 			mainZ = z;
 
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 
@@ -40,7 +41,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
+			Mekanism.packetPipeline.sendToServer(new PacketDataRequest(Coord4D.get(this)));
 		}
 	}
 
@@ -50,7 +51,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		return false;
 	}
 
-	public void onNeighborChange(int id)
+	public void onNeighborChange(Block block)
 	{
 		TileEntity tile = worldObj.getTileEntity(mainX, mainY, mainZ);
 
@@ -71,7 +72,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				}
 
 				prevPower = power;
-				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.getWorldObj().provider.dimensionId);
+				Mekanism.packetPipeline.sendToDimension(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.getWorldObj().provider.dimensionId);
 			}
 		}
 	}

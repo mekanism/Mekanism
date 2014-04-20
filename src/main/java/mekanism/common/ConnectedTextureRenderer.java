@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -15,17 +17,17 @@ public class ConnectedTextureRenderer
 {
 	public static final byte[][] sideEdges = {{2, 5, 3, 4}, {2, 5, 3, 4}, {1, 4, 0, 5}, {1, 5, 0, 4}, {1, 3, 0, 2}, {1, 2, 0, 3}};
 
-	public int blockID;
+	public Block block;
 	public int metadata;
 
 	public String iconTitle;
 
 	public Map<Integer, IIcon> glassMap = new HashMap<Integer, IIcon>();
 
-	public ConnectedTextureRenderer(String title, int id, int meta)
+	public ConnectedTextureRenderer(String title, Block block, int meta)
 	{
 		iconTitle = title;
-		blockID = id;
+		this.block = block;
 		metadata = meta;
 	}
 
@@ -113,13 +115,13 @@ public class ConnectedTextureRenderer
 		Coord4D block = obj.getFromSide(ForgeDirection.getOrientation(side));
 		Coord4D blockabove = obj.getFromSide(ForgeDirection.getOrientation(face));
 
-		return (block.getBlockId(access) == blockID && block.getMetadata(access) == metadata) && (blockabove.getBlockId(access) != blockID || blockabove.getMetadata(access) != metadata);
+		return (block.getBlock(access) == this.block && block.getMetadata(access) == metadata) && (blockabove.getBlock(access) != this.block || blockabove.getMetadata(access) != metadata);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		return obj.getBlockId(world) != blockID || obj.getMetadata(world) != metadata;
+		return obj.getBlock(world) != block || obj.getMetadata(world) != metadata;
 	}
 }

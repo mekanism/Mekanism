@@ -28,7 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -600,7 +600,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			sendDesc = true;
 
 			onModeChange(ForgeDirection.getOrientation(side));
-			player.sendChatToPlayer(ChatMessageComponent.createFromText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
+			player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
 
 			return true;
 		}
@@ -626,7 +626,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		refreshConnections();
 		tile().notifyPartChange(this);
 
-		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
 		return true;
 	}
 

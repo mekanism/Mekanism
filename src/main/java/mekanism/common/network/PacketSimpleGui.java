@@ -4,8 +4,6 @@ import java.io.DataOutputStream;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,55 +11,47 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PacketSimpleGui implements IMekanismPacket
+public class PacketSimpleGui extends MekanismPacket
 {
-	public Coord4D object3D;
+	public Coord4D coord4D;
 
 	public int guiId;
 
-	@Override
-	public String getName()
+	public PacketSimpleGui(Coord4D coord, int gui)
 	{
-		return "SimpleGui";
+		coord4D = coord;
+		guiId = gui;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		object3D = (Coord4D)data[0];
-		guiId = (Integer)data[1];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
 		guiId = dataStream.readInt();
 
 		if(!world.isRemote)
 		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
+			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coord4D.dimensionId);
 
-			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
+			if(worldServer != null && coord4D.getTileEntity(worldServer) instanceof TileEntityBasicBlock)
 			{
 				if(guiId == -1)
 				{
 					return;
 				}
 
-				openServerGui(guiId, (EntityPlayerMP)player, world, object3D);
+				openServerGui(guiId, (EntityPlayerMP)player, world, coord4D);
 			}
 		}
 		else {
-			FMLCommonHandler.instance().showGuiScreen(getGui(guiId, player, world, object3D));
+			FMLCommonHandler.instance().showGuiScreen(getGui(guiId, player, world, coord4D));
 		}
 	}
 
@@ -72,7 +62,7 @@ public class PacketSimpleGui implements IMekanismPacket
 
 		int window = playerMP.currentWindowId;
 
-		PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketSimpleGui().setParams(obj, id), playerMP);
+		Mekanism.packetPipeline.sendTo(new PacketSimpleGui(obj, id), playerMP);
 
 		playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj.xCoord, obj.yCoord, obj.zCoord);
 		playerMP.openContainer.windowId = window;
@@ -85,15 +75,38 @@ public class PacketSimpleGui implements IMekanismPacket
 		return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj.xCoord, obj.yCoord, obj.zCoord);
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
-		dataStream.writeInt(object3D.xCoord);
-		dataStream.writeInt(object3D.yCoord);
-		dataStream.writeInt(object3D.zCoord);
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
 
-		dataStream.writeInt(object3D.dimensionId);
+		dataStream.writeInt(coord4D.dimensionId);
 
 		dataStream.writeInt(guiId);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

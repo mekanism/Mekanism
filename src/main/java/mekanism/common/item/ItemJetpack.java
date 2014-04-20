@@ -17,11 +17,12 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.ISpecialArmor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -31,9 +32,9 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
 
-	public ItemJetpack(int id)
+	public ItemJetpack()
 	{
-		super(id, EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
+		super(EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
 		setMaxDamage(100);
 		setNoRepair();
@@ -235,7 +236,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	}
 
 	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);

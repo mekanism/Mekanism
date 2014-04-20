@@ -12,14 +12,14 @@ import net.minecraft.world.World;
 
 public class ItemProxy extends Item
 {
-	public ItemProxy(int id)
+	public ItemProxy()
 	{
-		super(id);
+		super();
 		setMaxDamage(1);
 	}
 
 	@Override
-	public ItemStack getContainerItemStack(ItemStack stack)
+	public ItemStack getContainerItem(ItemStack stack)
 	{
 		return getSavedItem(stack) != null ? getSavedItem(stack) : getDead();
 	}
@@ -31,9 +31,9 @@ public class ItemProxy extends Item
 	}
 
 	@Override
-	public boolean hasContainerItem()
+	public boolean hasContainerItem(ItemStack itemStack)
 	{
-		return true; //TODO forge PR
+		return true; //TODO forge PR -- Is this sorted now? -unpairedbracket
 	}
 
 	public void setSavedItem(ItemStack stack, ItemStack save)

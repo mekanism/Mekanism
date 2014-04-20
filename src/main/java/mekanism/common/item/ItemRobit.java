@@ -19,9 +19,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRobit extends ItemEnergized implements ISustainedInventory
 {
-	public ItemRobit(int id)
+	public ItemRobit()
 	{
-		super(id, 100000);
+		super(100000);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 					robit.setHome(Coord4D.get(chargepad));
 					robit.setEnergy(getEnergy(itemstack));
-					robit.setOwner(entityplayer.username);
+					robit.setOwner(entityplayer.getCommandSenderName());
 					robit.setInventory(getInventory(itemstack));
 					robit.setName(getName(itemstack));
 
@@ -126,7 +126,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items");
+			return itemStack.stackTagCompound.getTagList("Items", 10);
 		}
 
 		return null;

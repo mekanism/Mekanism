@@ -8,28 +8,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketDigitUpdate implements IMekanismPacket
+public class PacketDigitUpdate extends MekanismPacket
 {
 	public int index;
 	public int digit;
 
-	@Override
-	public String getName()
+	public PacketDigitUpdate(int ind, int dig)
 	{
-		return "DigitUpdate";
+		index = ind;
+		digit = dig;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		index = (Integer)data[0];
-		digit = (Integer)data[1];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		int index = dataStream.readInt();
@@ -44,10 +36,33 @@ public class PacketDigitUpdate implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(index);
 		dataStream.writeInt(digit);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

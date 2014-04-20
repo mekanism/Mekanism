@@ -10,28 +10,20 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketRedstoneControl implements IMekanismPacket
+public class PacketRedstoneControl extends MekanismPacket
 {
-	public Coord4D coord;
+	public Coord4D coord4D;
 	public RedstoneControl value;
 
-	@Override
-	public String getName()
+	public PacketRedstoneControl(Coord4D coord, RedstoneControl control)
 	{
-		return "RedstoneControl";
+		coord4D = coord;
+		value = control;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		coord = (Coord4D)data[0];
-		value = (RedstoneControl)data[1];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		Coord4D obj = Coord4D.read(dataStream);
@@ -45,14 +37,37 @@ public class PacketRedstoneControl implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
-		dataStream.writeInt(coord.xCoord);
-		dataStream.writeInt(coord.yCoord);
-		dataStream.writeInt(coord.zCoord);
-		dataStream.writeInt(coord.dimensionId);
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
+		dataStream.writeInt(coord4D.dimensionId);
 
 		dataStream.writeInt(value.ordinal());
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

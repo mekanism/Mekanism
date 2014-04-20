@@ -21,7 +21,6 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
@@ -524,11 +523,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				if(!getAuthenticated(itemstack))
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
+					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
 				}
 				else if(getLocked(itemstack) && getEnergy(itemstack) > 0)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
+					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
 				}
 				else {
 					InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);

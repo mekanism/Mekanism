@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.util.EnumSet;
 
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
@@ -47,14 +46,14 @@ public class CommonPlayerTickHandler implements ITickHandler
 							if(item.getStatus(itemstack) != 2)
 							{
 								item.setStatus(itemstack, 2);
-								PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate().setParams(2), player);
+								Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(2), player);
 							}
 						}
 						else {
 							if(item.getStatus(itemstack) != 1)
 							{
 								item.setStatus(itemstack, 1);
-								PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate().setParams(1), player);
+								Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(1), player);
 							}
 						}
 						return;
@@ -64,7 +63,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 						if(item.getStatus(itemstack) != 3)
 						{
 							item.setStatus(itemstack, 3);
-							PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate().setParams(3), player);
+							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(3), player);
 						}
 						return;
 					}
@@ -72,7 +71,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 						if(item.getStatus(itemstack) != 4)
 						{
 							item.setStatus(itemstack, 4);
-							PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate().setParams(4), player);
+							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), player);
 						}
 						return;
 					}
@@ -81,7 +80,7 @@ public class CommonPlayerTickHandler implements ITickHandler
 					if(item.getStatus(itemstack) != 4)
 					{
 						item.setStatus(itemstack, 4);
-						PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketStatusUpdate().setParams(4), player);
+						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), player);
 					}
 					return;
 				}

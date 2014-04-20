@@ -7,6 +7,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,9 +16,9 @@ import net.minecraft.world.World;
 
 public class ItemElectricBow extends ItemEnergized
 {
-	public ItemElectricBow(int id)
+	public ItemElectricBow()
 	{
-		super(id, 120000);
+		super(120000);
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class ItemElectricBow extends ItemEnergized
 		{
 			boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
 
-			if(flag || player.inventory.hasItem(Items.arrow.itemID))
+			if(flag || player.inventory.hasItem(Items.arrow))
 			{
 				int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
 				float f = maxItemUse / 20F;
@@ -69,7 +70,7 @@ public class ItemElectricBow extends ItemEnergized
 					entityarrow.canBePickedUp = 2;
 				}
 				else {
-					player.inventory.consumeInventoryItem(Items.arrow.itemID);
+					player.inventory.consumeInventoryItem(Items.arrow);
 				}
 
 				if(!world.isRemote)
@@ -96,7 +97,7 @@ public class ItemElectricBow extends ItemEnergized
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
-		if(entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Items.arrow.itemID))
+		if(entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Items.arrow))
 		{
 			entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
 		}

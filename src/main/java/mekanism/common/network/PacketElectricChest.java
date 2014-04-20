@@ -16,8 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketElectricChest implements IMekanismPacket
+public class PacketElectricChest extends MekanismPacket
 {
 	public ElectricChestPacketType activeType;
 
@@ -34,16 +36,9 @@ public class PacketElectricChest implements IMekanismPacket
 
 	public Coord4D obj;
 
-	@Override
-	public String getName()
+	public PacketElectricChest(ElectricChestPacketType type)//TODO I'm bored now.)
 	{
-		return "ElectricChest";
-	}
-
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		activeType = (ElectricChestPacketType)data[0];
+		activeType = type;
 
 		switch(activeType)
 		{
@@ -89,11 +84,8 @@ public class PacketElectricChest implements IMekanismPacket
 
 				break;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		ElectricChestPacketType packetType = ElectricChestPacketType.values()[dataStream.readInt()];
@@ -222,7 +214,6 @@ public class PacketElectricChest implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(activeType.ordinal());
@@ -279,6 +270,30 @@ public class PacketElectricChest implements IMekanismPacket
 
 				break;
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum ElectricChestPacketType

@@ -8,22 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketConfigSync implements IMekanismPacket
+public class PacketConfigSync extends MekanismPacket
 {
-	@Override
-	public String getName()
-	{
-		return "ConfigSync";
-	}
-
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		Mekanism.osmiumGenerationEnabled = dataStream.readBoolean();
@@ -83,7 +72,6 @@ public class PacketConfigSync implements IMekanismPacket
 		Mekanism.proxy.onConfigSync();
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeBoolean(Mekanism.osmiumGenerationEnabled);
@@ -136,5 +124,29 @@ public class PacketConfigSync implements IMekanismPacket
 		{
 			module.writeConfig(dataStream);
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

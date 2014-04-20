@@ -4,7 +4,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
 import mekanism.common.IElectricChest;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -163,13 +162,13 @@ public class GuiPasswordModify extends GuiScreen
 		else {
 			if(isBlock)
 			{
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Coord4D.get(tileEntity)));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, false, true, Coord4D.get(tileEntity)));
+				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), true, Coord4D.get(tileEntity)));
+				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, true, Coord4D.get(tileEntity)));
 			}
 			else {
 				((IElectricChest)itemStack.getItem()).setPassword(itemStack, confirmPasswordField.getText());
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), false));
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.SERVER_OPEN, false, false));
+				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.PASSWORD, confirmPasswordField.getText(), false));
+				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, false));
 			}
 		}
 	}

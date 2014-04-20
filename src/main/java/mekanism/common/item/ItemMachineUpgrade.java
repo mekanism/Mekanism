@@ -4,9 +4,9 @@ import mekanism.common.Mekanism;
 
 public class ItemMachineUpgrade extends ItemMekanism
 {
-	public ItemMachineUpgrade(int id)
+	public ItemMachineUpgrade()
 	{
-		super(id);
+		super();
 		setMaxStackSize(8);
 		setCreativeTab(Mekanism.tabMekanism);
 	}

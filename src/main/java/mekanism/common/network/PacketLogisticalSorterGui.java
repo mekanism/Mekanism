@@ -8,8 +8,7 @@ import mekanism.client.gui.GuiTFilterSelect;
 import mekanism.client.gui.GuiTItemStackFilter;
 import mekanism.client.gui.GuiTMaterialFilter;
 import mekanism.client.gui.GuiTOreDictFilter;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityContainerBlock;
@@ -21,62 +20,54 @@ import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PacketLogisticalSorterGui implements IMekanismPacket
+public class PacketLogisticalSorterGui extends MekanismPacket
 {
 	public Coord4D object3D;
 
 	public SorterGuiPacket packetType;
 
-	public int type;
+	public int guiType;
 
 	public int windowId = -1;
 
 	public int index = -1;
 
-	@Override
-	public String getName()
+	public PacketLogisticalSorterGui(SorterGuiPacket type, Coord4D coord, int guiId, int extra, int extra2)
 	{
-		return "LogisticalSorterGui";
-	}
+		packetType = type;
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		packetType = (SorterGuiPacket)data[0];
-
-		object3D = (Coord4D)data[1];
-		type = (Integer)data[2];
+		object3D = coord;
+		guiType = guiId;
 
 		if(packetType == SorterGuiPacket.CLIENT)
 		{
-			windowId = (Integer)data[3];
+			windowId = extra;
 		}
 		else if(packetType == SorterGuiPacket.SERVER_INDEX)
 		{
-			index = (Integer)data[3];
+			index = extra;
 		}
 		else if(packetType == SorterGuiPacket.CLIENT_INDEX)
 		{
-			windowId = (Integer)data[3];
-			index = (Integer)data[4];
+			windowId = extra2;
+			index = extra2;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = SorterGuiPacket.values()[dataStream.readInt()];
 
 		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-		type = dataStream.readInt();
+		guiType = dataStream.readInt();
 
 		if(packetType == SorterGuiPacket.CLIENT || packetType == SorterGuiPacket.CLIENT_INDEX)
 		{
@@ -94,7 +85,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 
 			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
 			{
-				openServerGui(packetType, type, worldServer, (EntityPlayerMP)player, object3D, index);
+				openServerGui(packetType, guiType, worldServer, (EntityPlayerMP)player, object3D, index);
 			}
 		}
 		else {
@@ -103,11 +94,11 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 				try {
 					if(packetType == SorterGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, type, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
 					}
 					else if(packetType == SorterGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, type, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
 					}
 
 					player.openContainer.windowId = windowId;
@@ -142,11 +133,11 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 
 		if(t == SorterGuiPacket.SERVER)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.CLIENT, obj, guiType, window), playerMP);
+			Mekanism.packetPipeline.sendTo(new PacketLogisticalSorterGui(SorterGuiPacket.CLIENT, obj, guiType, window, 0), playerMP);
 		}
 		else if(t == SorterGuiPacket.SERVER_INDEX)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketLogisticalSorterGui().setParams(SorterGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
+			Mekanism.packetPipeline.sendTo(new PacketLogisticalSorterGui(SorterGuiPacket.CLIENT_INDEX, obj, guiType, window, i), playerMP);
 		}
 
 		playerMP.openContainer = container;
@@ -201,7 +192,6 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		return null;
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
@@ -212,7 +202,7 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 
 		dataStream.writeInt(object3D.dimensionId);
 
-		dataStream.writeInt(type);
+		dataStream.writeInt(guiType);
 
 		if(packetType == SorterGuiPacket.CLIENT || packetType == SorterGuiPacket.CLIENT_INDEX)
 		{
@@ -223,6 +213,30 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 		{
 			dataStream.writeInt(index);
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum SorterGuiPacket

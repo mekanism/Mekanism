@@ -22,9 +22,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemBalloon extends ItemMekanism
 {
-	public ItemBalloon(int id)
+	public ItemBalloon()
 	{
-		super(id);
+		super();
 		setHasSubtypes(true);
 	}
 
@@ -88,7 +88,7 @@ public class ItemBalloon extends ItemMekanism
 		{
 			AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+3, z+1);
 
-			List<EntityBalloon> balloonsNear = player.getWorldObj().getEntitiesWithinAABB(EntityBalloon.class, bound);
+			List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
 
 			if(balloonsNear.size() > 0)
 			{
@@ -125,11 +125,11 @@ public class ItemBalloon extends ItemMekanism
 	{
 		if(player.isSneaking())
 		{
-			if(!player.getWorldObj().isRemote)
+			if(!player.worldObj.isRemote)
 			{
 				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
 
-				List<EntityBalloon> balloonsNear = player.getWorldObj().getEntitiesWithinAABB(EntityBalloon.class, bound);
+				List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
 
 				for(EntityBalloon balloon : balloonsNear)
 				{
@@ -139,7 +139,7 @@ public class ItemBalloon extends ItemMekanism
 					}
 				}
 
-				player.getWorldObj().spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
+				player.worldObj.spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
 				stack.stackSize--;
 			}
 

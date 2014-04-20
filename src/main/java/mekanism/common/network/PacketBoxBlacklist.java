@@ -8,22 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketBoxBlacklist implements IMekanismPacket
+public class PacketBoxBlacklist extends MekanismPacket
 {
-	@Override
-	public String getName()
-	{
-		return "BoxBlacklist";
-	}
-
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		MekanismAPI.getBoxIgnore().clear();
@@ -38,7 +27,6 @@ public class PacketBoxBlacklist implements IMekanismPacket
 		System.out.println("[Mekanism] Received Cardboard Box blacklist entries from server (" + amount + " total)");
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(MekanismAPI.getBoxIgnore().size());
@@ -48,5 +36,29 @@ public class PacketBoxBlacklist implements IMekanismPacket
 			dataStream.writeInt(info.id);
 			dataStream.writeInt(info.meta);
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

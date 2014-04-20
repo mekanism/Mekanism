@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -25,9 +26,9 @@ public class BlockCardboardBox extends BlockContainer
 {
 	public IIcon[] icons = new IIcon[6];
 
-	public BlockCardboardBox(int id)
+	public BlockCardboardBox()
 	{
-		super(id, Material.cloth);
+		super(Material.cloth);
 		setCreativeTab(Mekanism.tabMekanism);
 		setHardness(0.5F);
 		setResistance(1F);
@@ -35,7 +36,7 @@ public class BlockCardboardBox extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:CardboardBoxTop");
 		icons[1] = register.registerIcon("mekanism:CardboardBoxSide");
@@ -67,12 +68,12 @@ public class BlockCardboardBox extends BlockContainer
 			{
 				BlockData data = tileEntity.storedData;
 
-				if(Blocks.blocksList[data.id] != null)
+				if(data.block != null)
 				{
-					data.meta = Blocks.blocksList[data.id].onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
+					data.meta =data.block.onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
 				}
 
-				world.setBlock(x, y, z, data.id, data.meta, 3);
+				world.setBlock(x, y, z, data.block, data.meta, 3);
 
 				if(data.tileTag != null && world.getTileEntity(x, y, z) != null)
 				{
@@ -80,10 +81,10 @@ public class BlockCardboardBox extends BlockContainer
 					world.getTileEntity(x, y, z).readFromNBT(data.tileTag);
 				}
 
-				if(Blocks.blocksList[data.id] != null)
+				if(data.block != null)
 				{
-					Blocks.blocksList[data.id].onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.id, 1, data.meta));
-					Blocks.blocksList[data.id].onPostBlockPlaced(world, x, y, z, data.meta);
+					data.block.onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.block, 1, data.meta));
+					data.block.onPostBlockPlaced(world, x, y, z, data.meta);
 				}
 
 				float motion = 0.7F;
@@ -101,7 +102,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world)
+	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return new TileEntityCardboardBox();
 	}
@@ -170,20 +171,20 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public int idDropped(int i, Random random, int j)
+	public Item getItemDropped(int i, Random random, int j)
 	{
-		return 0;
+		return null;
 	}
 
 	public static class BlockData
 	{
-		public int id;
+		public Block block;
 		public int meta;
 		public NBTTagCompound tileTag;
 
-		public BlockData(int i, int j, NBTTagCompound nbtTags)
+		public BlockData(Block b, int j, NBTTagCompound nbtTags)
 		{
-			id = i;
+			block = b;
 			meta = j;
 			tileTag = nbtTags;
 		}

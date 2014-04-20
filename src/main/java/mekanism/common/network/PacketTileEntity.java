@@ -5,35 +5,26 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
-import mekanism.common.PacketHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketTileEntity implements IMekanismPacket
+public class PacketTileEntity extends MekanismPacket
 {
-	public Coord4D object3D;
+	public Coord4D coord4D;
 
 	public ArrayList parameters;
 
-	@Override
-	public String getName()
+	public PacketTileEntity(Coord4D coord, ArrayList params)
 	{
-		return "TileEntity";
+		coord4D = coord;
+		parameters = params;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		object3D = (Coord4D)data[0];
-		parameters = (ArrayList)data[1];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		int x = dataStream.readInt();
@@ -48,13 +39,36 @@ public class PacketTileEntity implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
-		dataStream.writeInt(object3D.xCoord);
-		dataStream.writeInt(object3D.yCoord);
-		dataStream.writeInt(object3D.zCoord);
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
 
 		PacketHandler.encode(new Object[] {parameters}, dataStream);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

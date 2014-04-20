@@ -8,13 +8,14 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
 public class ItemDictionary extends ItemMekanism
 {
-	public ItemDictionary(int id)
+	public ItemDictionary()
 	{
-		super(id);
+		super();
 		setMaxStackSize(1);
 	}
 
@@ -34,15 +35,15 @@ public class ItemDictionary extends ItemMekanism
 
 					if(!names.isEmpty())
 					{
-						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Key(s) found:");
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Key(s) found:"));
 
 						for(String name : names)
 						{
-							player.addChatMessage(EnumColor.DARK_GREEN + " - " + name);
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_GREEN + " - " + name));
 						}
 					}
 					else {
-						player.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " No key.");
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " No key."));
 					}
 				}
 

@@ -36,4 +36,10 @@ public class LoadingHook implements IFMLLoadingPlugin
 	{
 
 	}
+
+	@Override
+	public String getAccessTransformerClass()
+	{
+		return null;
+	}
 }

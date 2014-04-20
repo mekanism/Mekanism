@@ -10,8 +10,8 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.ITileComponent;
 import mekanism.common.ITileNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
@@ -63,7 +63,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		if(worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketDataRequest().setParams(Coord4D.get(this)));
+			Mekanism.packetPipeline.sendToServer(new PacketDataRequest(Coord4D.get(this)));
 		}
 	}
 
@@ -180,8 +180,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		if(facing != clientFacing)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+			Mekanism.packetPipeline.sendToDimension(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}
 	}
@@ -228,7 +228,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			if(redstone != power)
 			{
 				redstone = power;
-				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+				Mekanism.packetPipeline.sendToDimension(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
 			}
 		}
 	}

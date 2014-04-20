@@ -7,7 +7,6 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.TankUpdateProtocol;
@@ -177,7 +176,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					}
 				}
 
-				PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+				Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 			}
 
 			prevStructure = structure != null;
@@ -230,7 +229,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.inventory[1].stackSize++;
 							}
 
-							onInventoryChanged();
+							markDirty();
 
 							structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
 
@@ -239,7 +238,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.fluidStored = null;
 							}
 
-							PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+							Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 						}
 					}
 				}
@@ -273,7 +272,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.inventory[1].stackSize++;
 							}
 
-							onInventoryChanged();
+							markDirty();
 							filled = true;
 						}
 					}
@@ -299,7 +298,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						}
 					}
 
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
@@ -434,7 +433,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 				}
 			}
 		}

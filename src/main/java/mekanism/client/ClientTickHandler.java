@@ -16,7 +16,6 @@ import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemFreeRunners;
@@ -38,7 +37,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StringUtils;
 
 import org.lwjgl.input.Keyboard;
@@ -218,13 +217,13 @@ public class ClientTickHandler implements ITickHandler
 				{
 					ItemConfigurator item = (ItemConfigurator)mc.thePlayer.getCurrentEquippedItem().getItem();
 
-					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
 					{
 						if(!lastTickUpdate)
 						{
 							item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketConfiguratorState().setParams(item.getState(stack)));
-							mc.thePlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
+							Mekanism.packetPipeline.sendToServer(new PacketConfiguratorState(item.getState(stack)));
+							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
 							lastTickUpdate = true;
 						}
 					}
@@ -236,13 +235,13 @@ public class ClientTickHandler implements ITickHandler
 				{
 					ItemElectricBow item = (ItemElectricBow)mc.thePlayer.getCurrentEquippedItem().getItem();
 
-					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
 					{
 						if(!lastTickUpdate)
 						{
 							item.setFireState(stack, !item.getFireState(stack));
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricBowState().setParams(item.getFireState(stack)));
-							mc.thePlayer.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
+							Mekanism.packetPipeline.sendToServer(new PacketElectricBowState(item.getFireState(stack)));
+							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
 							lastTickUpdate = true;
 						}
 					}
@@ -254,13 +253,13 @@ public class ClientTickHandler implements ITickHandler
 				{
 					ItemWalkieTalkie item = (ItemWalkieTalkie)mc.thePlayer.getCurrentEquippedItem().getItem();
 
-					if(MekanismKeyHandler.modeSwitchKey.pressed && item.getOn(stack))
+					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed() && item.getOn(stack))
 					{
 						if(!lastTickUpdate)
 						{
 							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
 							item.setChannel(stack, newChan);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketWalkieTalkieState().setParams(newChan));
+							Mekanism.packetPipeline.sendToServer(new PacketWalkieTalkieState(newChan));
 							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}
@@ -273,12 +272,12 @@ public class ClientTickHandler implements ITickHandler
 				{
 					ItemStack jetpack = mc.thePlayer.getCurrentItemOrArmor(3);
 
-					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
 					{
 						if(!lastTickUpdate)
 						{
 							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(JetpackPacket.MODE));
+							Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.MODE));
 							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}
@@ -291,12 +290,12 @@ public class ClientTickHandler implements ITickHandler
 				{
 					ItemStack scubaTank = mc.thePlayer.getCurrentItemOrArmor(3);
 
-					if(MekanismKeyHandler.modeSwitchKey.pressed)
+					if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
 					{
 						if(!lastTickUpdate)
 						{
 							((ItemScubaTank)scubaTank.getItem()).toggleFlowing(scubaTank);
-							PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(ScubaTankPacket.MODE));
+							Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.MODE));
 							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}
@@ -331,7 +330,7 @@ public class ClientTickHandler implements ITickHandler
 					Mekanism.jetpackOn.remove(mc.thePlayer.username);
 				}
 
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketJetpackData().setParams(JetpackPacket.UPDATE, mc.thePlayer.username, isJetpackOn(mc.thePlayer)));
+				Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.UPDATE, mc.thePlayer.username, isJetpackOn(mc.thePlayer)));
 			}
 
 			if(Mekanism.gasmaskOn.contains(mc.thePlayer.username) != isGasMaskOn(mc.thePlayer))
@@ -344,7 +343,7 @@ public class ClientTickHandler implements ITickHandler
 					Mekanism.gasmaskOn.remove(mc.thePlayer.username);
 				}
 
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
+				Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.UPDATE, mc.thePlayer.username, isGasMaskOn(mc.thePlayer)));
 			}
 
 			if(MekanismClient.audioHandler != null)
@@ -374,8 +373,8 @@ public class ClientTickHandler implements ITickHandler
 
 			if(mc.thePlayer.getCurrentItemOrArmor(3) != null && mc.thePlayer.getCurrentItemOrArmor(3).getItem() instanceof ItemJetpack)
 			{
-				MekanismClient.updateKey(mc.gameSettings.keyBindJump.keyCode, KeySync.ASCEND);
-				MekanismClient.updateKey(mc.gameSettings.keyBindSneak.keyCode, KeySync.DESCEND);
+				MekanismClient.updateKey(mc.gameSettings.keyBindJump.getKeyCode(), KeySync.ASCEND);
+				MekanismClient.updateKey(mc.gameSettings.keyBindSneak.getKeyCode(), KeySync.DESCEND);
 			}
 
 			if(isJetpackOn(mc.thePlayer))
@@ -389,7 +388,7 @@ public class ClientTickHandler implements ITickHandler
 				}
 				else if(jetpack.getMode(mc.thePlayer.getCurrentItemOrArmor(3)) == JetpackMode.HOVER)
 				{
-					if((!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || mc.currentScreen != null)
+					if((!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode)) || mc.currentScreen != null)
 					{
 						if(mc.thePlayer.motionY > 0)
 						{
@@ -401,11 +400,11 @@ public class ClientTickHandler implements ITickHandler
 						}
 					}
 					else {
-						if(Keyboard.isKeyDown(mc.gameSettings.keyBindJump.keyCode) && mc.currentScreen == null)
+						if(Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
 						}
-						else if(Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.keyCode) && mc.currentScreen == null)
+						else if(Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
 						}

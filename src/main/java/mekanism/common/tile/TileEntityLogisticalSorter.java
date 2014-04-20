@@ -11,7 +11,6 @@ import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.Finder.FirstFinder;
@@ -112,7 +111,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 								if(used != null)
 								{
 									invStack.use(used.stackSize);
-									inventory.onInventoryChanged();
+									inventory.markDirty();
 									setActive(true);
 									sentItems = true;
 								}
@@ -133,7 +132,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 							if(used != null)
 							{
 								invStack.use(used.stackSize);
-								inventory.onInventoryChanged();
+								inventory.markDirty();
 								setActive(true);
 							}
 						}
@@ -147,7 +146,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
+					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
 				}
 			}
 		}
@@ -492,7 +491,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this), 50D);
+			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this), 50D);
 		}
 	}
 
@@ -515,7 +514,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(clientActive != active)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			if(active)
 			{

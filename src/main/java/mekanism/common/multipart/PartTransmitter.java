@@ -12,7 +12,6 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.IConfigurable;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -204,7 +203,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);
+			Mekanism.packetPipeline.sendToDimension(new PacketTransmitterUpdate(PacketType.UPDATE, tile()), world().provider.dimensionId);
 		}
 	}
 
@@ -215,7 +214,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTransmitterUpdate().setParams(PacketType.UPDATE, tile()), world().provider.dimensionId);
+			Mekanism.packetPipeline.sendToDimension(new PacketTransmitterUpdate(PacketType.UPDATE, tile()), world().provider.dimensionId);
 		}
 	}
 

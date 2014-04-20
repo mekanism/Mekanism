@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
@@ -13,9 +14,9 @@ public class ItemHDPE extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public ItemHDPE(int id)
+	public ItemHDPE()
 	{
-		super(id);
+		super();
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -36,11 +37,11 @@ public class ItemHDPE extends ItemMekanism
 	}
 
 	@Override
-	public void getSubItems(int id, CreativeTabs tabs, List itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
 		for(int counter = 0; counter < PlasticItem.values().length; counter++)
 		{
-			itemList.add(new ItemStack(this, 1, counter));
+			itemList.add(new ItemStack(item, 1, counter));
 		}
 	}
 

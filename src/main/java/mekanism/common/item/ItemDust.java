@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
@@ -17,9 +18,9 @@ public class ItemDust extends ItemMekanism
 										"Copper", "Tin", "Silver",
 										"Lead", "Sulfur"};
 
-	public ItemDust(int id)
+	public ItemDust()
 	{
-		super(id);
+		super();
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -40,11 +41,11 @@ public class ItemDust extends ItemMekanism
 	}
 
 	@Override
-	public void getSubItems(int id, CreativeTabs tabs, List itemList)
+	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
 		for(int counter = 0; counter <= 10; ++counter)
 		{
-			itemList.add(new ItemStack(this, 1, counter));
+			itemList.add(new ItemStack(item, 1, counter));
 		}
 	}
 

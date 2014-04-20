@@ -7,28 +7,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketKey implements IMekanismPacket
+public class PacketKey extends MekanismPacket
 {
 	public int key;
 	public boolean add;
 
-	@Override
-	public String getName()
+	public PacketKey(int k, boolean a)
 	{
-		return "Key";
+		key = k;
+		add = a;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		key = (Integer)data[0];
-		add = (Boolean)data[1];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		key = dataStream.readInt();
@@ -43,10 +35,33 @@ public class PacketKey implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(key);
 		dataStream.writeBoolean(add);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

@@ -1,11 +1,8 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.Teleporter;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
@@ -15,23 +12,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PacketPortableTeleport implements IMekanismPacket
+public class PacketPortableTeleport extends MekanismPacket
 {
-	@Override
-	public String getName()
-	{
-		return "PortableTeleport";
-	}
-	
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		return this;
-	}
-
 	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
 	{
@@ -69,7 +56,7 @@ public class PacketPortableTeleport implements IMekanismPacket
 						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 						
 						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-						PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketPortalFX().setParams(coords), coords, 40D);
+						Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords, 40D);
 					} catch(Exception e) {}
 				}
 			}
@@ -77,5 +64,26 @@ public class PacketPortableTeleport implements IMekanismPacket
 	}
 
 	@Override
-	public void write(DataOutputStream dataStream) throws Exception {}
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
+	}
 }

@@ -9,6 +9,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityGasTank;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -29,9 +31,9 @@ public class BlockGasTank extends BlockContainer
 {
 	public Random machineRand = new Random();
 
-	public BlockGasTank(int id)
+	public BlockGasTank()
 	{
-		super(id, Material.iron);
+		super(Material.iron);
 		setBlockBounds(0.2F, 0.0F, 0.2F, 0.8F, 1.0F, 0.8F);
 		setHardness(3.5F);
 		setResistance(8F);
@@ -40,7 +42,7 @@ public class BlockGasTank extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) {}
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
@@ -63,7 +65,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
 		if(!world.isRemote)
 		{
@@ -71,7 +73,7 @@ public class BlockGasTank extends BlockContainer
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
 			}
 		}
 	}
@@ -127,7 +129,7 @@ public class BlockGasTank extends BlockContainer
 					}
 
 					tileEntity.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+					world.notifyBlocksOfNeighborChange(x, y, z, this);
 					return true;
 				}
 			}
@@ -190,9 +192,9 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public int idDropped(int i, Random random, int j)
+	public Item getItemDropped(int i, Random random, int j)
 	{
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -214,7 +216,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world)
+	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return new TileEntityGasTank();
 	}

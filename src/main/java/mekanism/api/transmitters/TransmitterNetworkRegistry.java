@@ -1,36 +1,24 @@
 package mekanism.api.transmitters;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.world.ChunkEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
-public class TransmitterNetworkRegistry implements ITickHandler
+public class TransmitterNetworkRegistry
 {
 	private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
 	private static boolean loaderRegistered = false;
 
 	private HashSet<ITransmitterNetwork> networks = new HashSet<ITransmitterNetwork>();
-
-	public TransmitterNetworkRegistry()
-	{
-		TickRegistry.registerTickHandler(this, Side.SERVER);
-	}
 
 	public static void initiate()
 	{
@@ -73,11 +61,13 @@ public class TransmitterNetworkRegistry implements ITickHandler
 		}
 	}
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
+	@SubscribeEvent
+	public void onTick(ServerTickEvent event)
+	{
+		tickEnd();
+	}
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	public void tickEnd()
 	{
 		Set<ITransmitterNetwork> iterNetworks = (Set<ITransmitterNetwork>)networks.clone();
 
@@ -88,18 +78,6 @@ public class TransmitterNetworkRegistry implements ITickHandler
 				net.tick();
 			}
 		}
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.SERVER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return "MekanismNetworks";
 	}
 
 	@Override

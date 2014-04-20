@@ -20,7 +20,6 @@ import mekanism.common.IUpgradeManagement;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -741,10 +740,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 					}
 					else if(!electricChest.authenticated)
 					{
-						PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Coord4D.get(electricChest)), entityplayer);
+						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Coord4D.get(electricChest)), entityplayer);
 					}
 					else {
-						PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketElectricChest().setParams(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Coord4D.get(electricChest)), entityplayer);
+						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Coord4D.get(electricChest)), entityplayer);
 					}
 
 					return true;

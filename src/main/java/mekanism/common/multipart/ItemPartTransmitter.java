@@ -14,6 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -30,9 +31,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemPartTransmitter extends JItemMultiPart
 {
-	public ItemPartTransmitter(int id)
+	public ItemPartTransmitter()
 	{
-		super(id);
+		super();
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -152,11 +153,11 @@ public class ItemPartTransmitter extends JItemMultiPart
 	}
 
 	@Override
-	public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
+	public void getSubItems(Item item, CreativeTabs tab, List listToAddTo)
 	{
 		for(TransmitterType type : TransmitterType.values())
 		{
-			listToAddTo.add(new ItemStack(itemID, 1, type.ordinal()));
+			listToAddTo.add(new ItemStack(item, 1, type.ordinal()));
 		}
 	}
 

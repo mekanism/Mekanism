@@ -8,26 +8,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketElectricBowState implements IMekanismPacket
+public class PacketElectricBowState extends MekanismPacket
 {
 	public boolean fireMode;
 
-	@Override
-	public String getName()
+	public PacketElectricBowState(boolean state)
 	{
-		return "ElectricBowState";
+		fireMode = state;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		fireMode = (Boolean)data[0];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		boolean state = dataStream.readBoolean();
@@ -40,9 +32,32 @@ public class PacketElectricBowState implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeBoolean(fireMode);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

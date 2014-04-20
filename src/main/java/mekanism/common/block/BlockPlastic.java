@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -24,13 +25,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockPlastic extends Block
 {
-	public BlockPlastic(int id)
+	public BlockPlastic()
 	{
-		super(id, Material.wood);
+		super(Material.wood);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		if(id == Mekanism.slickPlasticID)
+		if(this == Mekanism.BlockSlickHDPE)
 		{
 			slipperiness = 0.98F;
 		}
@@ -38,25 +39,25 @@ public class BlockPlastic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
-		if(blockID == Mekanism.plasticID)
+		if(this == Mekanism.BlockHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:PlasticBlock");
 		}
-		else if(blockID == Mekanism.slickPlasticID)
+		else if(this == Mekanism.BlockSlickHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:SlickPlasticBlock");
 		}
-		else if(blockID == Mekanism.glowPlasticID)
+		else if(this == Mekanism.BlockGlowHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:GlowPlasticBlock");
 		}
-		else if(blockID == Mekanism.reinforcedPlasticID)
+		else if(this == Mekanism.BlockReinforcedHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
 		}
-		else if(blockID == Mekanism.roadPlasticID)
+		else if(this == Mekanism.BlockRoadHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
 		}
@@ -65,7 +66,7 @@ public class BlockPlastic extends Block
 	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity e)
 	{
-		if(blockID == Mekanism.roadPlasticID)
+		if(this == Mekanism.BlockRoadHDPE)
 		{
 			double boost = 1.6;
 
@@ -83,11 +84,11 @@ public class BlockPlastic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(int id, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
-			list.add(new ItemStack(id, 1, i));
+			list.add(new ItemStack(item, 1, i));
 		}
 	}
 
@@ -108,7 +109,7 @@ public class BlockPlastic extends Block
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(blockID == Mekanism.glowPlasticID)
+		if(this == Mekanism.BlockGlowHDPE)
 		{
 			return 10;
 		}

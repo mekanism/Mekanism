@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.common.IConfigurable;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
@@ -115,7 +114,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			{
 				if(Math.abs((float)waterTank.getFluidAmount()/waterTank.getCapacity()-prevScale) > 0.01)
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 					prevScale = (float)waterTank.getFluidAmount()/waterTank.getCapacity();
 				}
 			}
@@ -151,7 +150,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				
 				if(structured != prev)
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 				}
 				
 				if(structured)
@@ -208,7 +207,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 								inventory[2] = null;
 							}
 							
-							onInventoryChanged();
+							markDirty();
 						}
 						else if(tempStack.isItemEqual(inventory[3]) && tempStack.getMaxStackSize() > inventory[3].stackSize)
 						{
@@ -222,7 +221,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 								inventory[2] = null;
 							}
 							
-							onInventoryChanged();
+							markDirty();
 						}
 					}
 				}

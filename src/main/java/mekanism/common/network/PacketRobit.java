@@ -8,8 +8,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketRobit implements IMekanismPacket
+public class PacketRobit extends MekanismPacket
 {
 	public RobitPacketType activeType;
 
@@ -18,42 +20,32 @@ public class PacketRobit implements IMekanismPacket
 
 	public String name;
 
-	@Override
-	public String getName()
+	public PacketRobit(RobitPacketType type, int i1, int i2, String s)
 	{
-		return "Robit";
-	}
-
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		activeType = (RobitPacketType)data[0];
+		activeType = type;
 
 		switch(activeType)
 		{
 			case GUI:
-				guiType = (Integer)data[1];
-				entityId = (Integer)data[2];
+				guiType = i1;
+				entityId = i2;
 				break;
 			case FOLLOW:
-				entityId = (Integer)data[1];
+				entityId = i1;
 				break;
 			case NAME:
-				name = (String)data[1];
-				entityId = (Integer)data[2];
+				name = s;
+				entityId = i1;
 				break;
 			case GO_HOME:
-				entityId = (Integer)data[1];
+				entityId = i1;
 				break;
 			case DROP_PICKUP:
-				entityId = (Integer)data[1];
+				entityId = i1;
 				break;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		int subType = dataStream.readInt();
@@ -131,7 +123,6 @@ public class PacketRobit implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(activeType.ordinal());
@@ -156,6 +147,30 @@ public class PacketRobit implements IMekanismPacket
 				dataStream.writeInt(entityId);
 				break;
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum RobitPacketType

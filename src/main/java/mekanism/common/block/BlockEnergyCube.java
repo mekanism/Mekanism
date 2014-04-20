@@ -19,6 +19,8 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -52,9 +54,9 @@ public class BlockEnergyCube extends BlockContainer
 {
 	public IIcon[][] icons = new IIcon[256][256];
 
-	public BlockEnergyCube(int id)
+	public BlockEnergyCube()
 	{
-		super(id, Material.iron);
+		super(Material.iron);
 		setHardness(2F);
 		setResistance(4F);
 		setCreativeTab(Mekanism.tabMekanism);
@@ -62,10 +64,10 @@ public class BlockEnergyCube extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) {}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
 		if(!world.isRemote)
 		{
@@ -73,7 +75,7 @@ public class BlockEnergyCube extends BlockContainer
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
 			}
 		}
 	}
@@ -115,14 +117,14 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public int idDropped(int i, Random random, int j)
+	public Item getItemDropped(int i, Random random, int j)
 	{
-		return 0;
+		return null;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
 		for(EnergyCubeTier tier : EnergyCubeTier.values())
 		{
@@ -194,7 +196,7 @@ public class BlockEnergyCube extends BlockContainer
 						}
 
 						tileEntity.setFacing((short)change);
-						world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+						world.notifyBlocksOfNeighborChange(x, y, z, this);
 						return true;
 					}
 				}
@@ -231,7 +233,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world)
+	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return new TileEntityEnergyCube();
 	}
@@ -318,7 +320,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		return true;
 	}

@@ -17,7 +17,6 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -158,7 +157,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

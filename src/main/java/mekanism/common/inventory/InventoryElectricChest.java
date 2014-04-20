@@ -32,9 +32,9 @@ public class InventoryElectricChest extends InventoryBasic
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		super.onInventoryChanged();
+		super.markDirty();
 
 		if(!reading)
 		{

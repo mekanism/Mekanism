@@ -7,36 +7,27 @@ import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ITileNetwork;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PacketDataRequest implements IMekanismPacket
+public class PacketDataRequest extends MekanismPacket
 {
-	public Coord4D object3D;
+	public Coord4D coord4D;
 
-	@Override
-	public String getName()
+	public PacketDataRequest(Coord4D coord)
 	{
-		return "DataRequest";
+		coord4D = coord;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		object3D = (Coord4D)data[0];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		int x = dataStream.readInt();
@@ -66,17 +57,40 @@ public class PacketDataRequest implements IMekanismPacket
 				}
 			}
 
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(worldServer.getTileEntity(x, y, z)), ((ITileNetwork)worldServer.getTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(worldServer.getTileEntity(x, y, z)), ((ITileNetwork) worldServer.getTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
-		dataStream.writeInt(object3D.xCoord);
-		dataStream.writeInt(object3D.yCoord);
-		dataStream.writeInt(object3D.zCoord);
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
 
-		dataStream.writeInt(object3D.dimensionId);
+		dataStream.writeInt(coord4D.dimensionId);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

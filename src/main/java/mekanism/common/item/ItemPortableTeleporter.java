@@ -12,9 +12,9 @@ import net.minecraft.world.World;
 
 public class ItemPortableTeleporter extends ItemEnergized
 {
-	public ItemPortableTeleporter(int id)
+	public ItemPortableTeleporter()
 	{
-		super(id, 1000000);
+		super(1000000);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 
 		int neededEnergy = 1000;
 
-		if(entity.getWorldObj().provider.dimensionId != coords.dimensionId)
+		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
 		{
 			neededEnergy+=10000;
 		}

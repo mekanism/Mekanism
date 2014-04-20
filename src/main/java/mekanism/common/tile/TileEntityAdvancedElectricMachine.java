@@ -220,7 +220,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			inventory[2].stackSize += itemstack.stackSize;
 		}
 
-		onInventoryChanged();
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 

@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.CableUtils;
@@ -66,7 +65,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 		if(newScale != prevScale)
 		{
-			PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 		}
 
 		prevScale = newScale;
@@ -242,7 +241,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 		if(newRedstoneLevel != currentRedstoneLevel)
 		{
-			onInventoryChanged();
+			markDirty();
 			currentRedstoneLevel = newRedstoneLevel;
 		}
 	}

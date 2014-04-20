@@ -13,7 +13,6 @@ import mekanism.api.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedTank;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -23,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -79,7 +78,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 								inventory[0] = null;
 							}
 
-							onInventoryChanged();
+							markDirty();
 						}
 						else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
 						{
@@ -93,7 +92,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 								inventory[0] = null;
 							}
 
-							onInventoryChanged();
+							markDirty();
 						}
 					}
 				}
@@ -106,7 +105,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(suck(true))
 				{
-					PacketHandler.sendPacket(Transmission.CLIENTS_RANGE, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
 				}
 
 				clean(true);
@@ -531,7 +530,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		recurringNodes.clear();
 		cleaningNodes.clear();
 
-		player.sendChatToPlayer(ChatMessageComponent.createFromText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
 
 		return true;
 	}

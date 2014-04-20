@@ -7,7 +7,6 @@ import mekanism.common.IActiveState;
 import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterManager;
@@ -184,7 +183,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 			if(getItemCount() != prevCount)
 			{
-				onInventoryChanged();
+				markDirty();
 				MekanismUtils.saveChunk(this);
 			}
 
@@ -373,14 +372,14 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public void onInventoryChanged()
+	public void markDirty()
 	{
-		super.onInventoryChanged();
+		super.markDirty();
 
 		if(!worldObj.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 			prevCount = getItemCount();
 			sortStacks();
 		}
@@ -413,7 +412,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			setItemType(null);
 		}
 
-		onInventoryChanged();
+		markDirty();
 	}
 
 	@Override
@@ -492,7 +491,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientActive != active)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			clientActive = active;
 		}
@@ -547,7 +546,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		topStack = null;
 		bottomStack = null;
 
-		onInventoryChanged();
+		markDirty();
 	}
 
 	@Override

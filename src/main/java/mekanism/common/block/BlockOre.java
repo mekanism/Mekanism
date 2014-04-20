@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
@@ -24,9 +25,9 @@ public class BlockOre extends Block
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public BlockOre(int id)
+	public BlockOre()
 	{
-		super(id, Material.rock);
+		super(Material.rock);
 		setHardness(3F);
 		setResistance(5F);
 		setCreativeTab(Mekanism.tabMekanism);
@@ -34,7 +35,7 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
+	public void registerBlockIcons(IIconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 		icons[1] = register.registerIcon("mekanism:CopperOre");
@@ -56,10 +57,10 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		list.add(new ItemStack(i, 1, 0));
-		list.add(new ItemStack(i, 1, 1));
-		list.add(new ItemStack(i, 1, 2));
+		list.add(new ItemStack(item, 1, 0));
+		list.add(new ItemStack(item, 1, 1));
+		list.add(new ItemStack(item, 1, 2));
 	}
 }

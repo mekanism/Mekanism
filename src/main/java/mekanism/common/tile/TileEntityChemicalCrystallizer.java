@@ -19,7 +19,6 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
@@ -115,7 +114,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 
@@ -199,7 +198,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 			inventory[1].stackSize += itemstack.stackSize;
 		}
 
-		onInventoryChanged();
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 
@@ -217,7 +216,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 			for(EntityPlayer player : playersUsing)
 			{
-				PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
 			}
 
 			return;
@@ -337,7 +336,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			updateDelay = 10;
 			clientActive = active;

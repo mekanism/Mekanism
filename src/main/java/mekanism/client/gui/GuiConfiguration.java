@@ -8,7 +8,6 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
@@ -256,19 +255,19 @@ public class GuiConfiguration extends GuiMekanism
 			{
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Coord4D.get(tile), guiId));
+				Mekanism.packetPipeline.sendToServer(new PacketSimpleGui(Coord4D.get(tile), guiId));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT, Coord4D.get(tile)));
+				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile)));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile)));
+				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile)));
 			}
 		}
 
@@ -280,7 +279,7 @@ public class GuiConfiguration extends GuiMekanism
 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
 			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button));
+			Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button));
 		}
 
 		for(int i = 0; i < slotPosMap.size(); i++)
@@ -291,7 +290,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i));
+				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i));
 			}
 		}
 
@@ -303,7 +302,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketConfigurationUpdate().setParams(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i));
+				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i));
 			}
 		}
 	}

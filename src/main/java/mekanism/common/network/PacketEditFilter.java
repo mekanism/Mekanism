@@ -4,22 +4,24 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
+import mekanism.common.Mekanism;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterFilter;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class PacketEditFilter implements IMekanismPacket
+public class PacketEditFilter extends MekanismPacket
 {
-	public Coord4D object3D;
+	public Coord4D coord4D;
 
 	public TransporterFilter tFilter;
 	public TransporterFilter tEdited;
@@ -31,48 +33,38 @@ public class PacketEditFilter implements IMekanismPacket
 
 	public boolean delete;
 
-	@Override
-	public String getName()
+	public PacketEditFilter(Coord4D coord, boolean deletion, Object filter, Object edited)
 	{
-		return "EditFilter";
-	}
+		coord4D = coord;
+		delete = deletion;
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		object3D = (Coord4D)data[0];
-		delete = (Boolean)data[1];
-
-		if(data[2] instanceof TransporterFilter)
+		if(filter instanceof TransporterFilter)
 		{
-			tFilter = (TransporterFilter)data[2];
+			tFilter = (TransporterFilter)filter;
 
 			if(!delete)
 			{
-				tEdited = (TransporterFilter)data[3];
+				tEdited = (TransporterFilter)edited;
 			}
 
 			type = 0;
 		}
-		else if(data[2] instanceof MinerFilter)
+		else if(filter instanceof MinerFilter)
 		{
-			mFilter = (MinerFilter)data[2];
+			mFilter = (MinerFilter)filter;
 
 			if(!delete)
 			{
-				mEdited = (MinerFilter)data[3];
+				mEdited = (MinerFilter)edited;
 			}
 
 			type = 1;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
-		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
 		type = dataStream.readByte();
 		delete = dataStream.readBoolean();
@@ -96,13 +88,13 @@ public class PacketEditFilter implements IMekanismPacket
 			}
 		}
 
-		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
+		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coord4D.dimensionId);
 
 		if(worldServer != null)
 		{
-			if(type == 0 && object3D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+			if(type == 0 && coord4D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
 			{
-				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)object3D.getTileEntity(worldServer);
+				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) coord4D.getTileEntity(worldServer);
 
 				if(!sorter.filters.contains(tFilter))
 				{
@@ -120,12 +112,12 @@ public class PacketEditFilter implements IMekanismPacket
 
 				for(EntityPlayer iterPlayer : sorter.playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), iterPlayer);
+					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(sorter), sorter.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
 				}
 			}
-			else if(type == 1 && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+			else if(type == 1 && coord4D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
 			{
-				TileEntityDigitalMiner miner = (TileEntityDigitalMiner)object3D.getTileEntity(worldServer);
+				TileEntityDigitalMiner miner = (TileEntityDigitalMiner) coord4D.getTileEntity(worldServer);
 
 				if(!miner.filters.contains(mFilter))
 				{
@@ -143,7 +135,7 @@ public class PacketEditFilter implements IMekanismPacket
 
 				for(EntityPlayer iterPlayer : miner.playersUsing)
 				{
-					PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketTileEntity().setParams(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), iterPlayer);
+					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
 				}
 			}
 		}
@@ -152,11 +144,11 @@ public class PacketEditFilter implements IMekanismPacket
 	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
-		dataStream.writeInt(object3D.xCoord);
-		dataStream.writeInt(object3D.yCoord);
-		dataStream.writeInt(object3D.zCoord);
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
 
-		dataStream.writeInt(object3D.dimensionId);
+		dataStream.writeInt(coord4D.dimensionId);
 
 		dataStream.writeByte(type);
 
@@ -184,5 +176,29 @@ public class PacketEditFilter implements IMekanismPacket
 		}
 
 		PacketHandler.encode(data.toArray(), dataStream);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

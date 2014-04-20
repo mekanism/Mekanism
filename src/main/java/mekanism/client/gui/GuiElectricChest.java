@@ -6,7 +6,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -124,10 +123,10 @@ public class GuiElectricChest extends GuiMekanism
 
 				if(isBlock)
 				{
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), true, Coord4D.get(tileEntity)));
+					Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), true, Coord4D.get(tileEntity)));
 				}
 				else {
-					PacketHandler.sendPacket(Transmission.SERVER, new PacketElectricChest().setParams(ElectricChestPacketType.LOCK, !getLocked(), false));
+					Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), false));
 
 					ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
 					((IElectricChest)stack.getItem()).setLocked(stack, !getLocked());

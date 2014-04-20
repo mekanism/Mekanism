@@ -10,7 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -19,9 +19,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemGasMask extends ItemArmor
 {
-	public ItemGasMask(int id)
+	public ItemGasMask()
 	{
-		super(id, EnumHelper.addArmorMaterial("GASMASK", 0, new int[] {0, 0, 0, 0}, 0), 0, 0);
+		super(EnumHelper.addArmorMaterial("GASMASK", 0, new int[] {0, 0, 0, 0}, 0), 0, 0);
 		setCreativeTab(Mekanism.tabMekanism);
 		MinecraftForge.EVENT_BUS.register(this);
 	}

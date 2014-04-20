@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -19,9 +20,9 @@ import codechicken.multipart.TMultiPart;
 
 public class ItemGlowPanel extends JItemMultiPart
 {
-	public ItemGlowPanel(int id)
+	public ItemGlowPanel()
 	{
-		super(id);
+		super();
 		setHasSubtypes(true);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
@@ -64,16 +65,16 @@ public class ItemGlowPanel extends JItemMultiPart
 	}
 
 	@Override
-	public void getSubItems(int itemID, CreativeTabs tab, List listToAddTo)
+	public void getSubItems(Item item, CreativeTabs tab, List listToAddTo)
 	{
 		for(EnumColor color : EnumColor.DYES)
 		{
-			listToAddTo.add(new ItemStack(itemID, 1, color.getMetaValue()));
+			listToAddTo.add(new ItemStack(item, 1, color.getMetaValue()));
 		}
 	}
 
 	@Override
-	public String getItemDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(ItemStack stack)
 	{
 		EnumColor colour = EnumColor.DYES[stack.getItemDamage()];
 		String colourName;
@@ -85,7 +86,7 @@ public class ItemGlowPanel extends JItemMultiPart
 			colourName = colour.getDyedName();
 		}
 
-		return colourName + " " + super.getItemDisplayName(stack);
+		return colourName + " " + super.getItemStackDisplayName(stack);
 	}
 
 	@Override

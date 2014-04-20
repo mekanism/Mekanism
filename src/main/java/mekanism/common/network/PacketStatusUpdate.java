@@ -8,26 +8,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketStatusUpdate implements IMekanismPacket
+public class PacketStatusUpdate extends MekanismPacket
 {
 	public int status;
 
-	@Override
-	public String getName()
+	public PacketStatusUpdate(int state)
 	{
-		return "StatusUpdate";
+		status = state;
 	}
 
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		status = (Integer)data[0];
-
-		return this;
-	}
-
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		ItemStack currentStack = player.getCurrentEquippedItem();
@@ -39,9 +31,32 @@ public class PacketStatusUpdate implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(status);
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 }

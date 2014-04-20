@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * Packet pipeline class. Directs all registered packet data to be handled by
  * the packets themselves.
  *
- * @author unpairedbracket based on sirgingalot's work in TiCon
+ * @author unpairedbracket based on sirgingalot's tutorial
  */
 @ChannelHandler.Sharable
 public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, MekanismPacket>
@@ -130,12 +130,38 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	// Method to call from FMLInitializationEvent
 	public void initalise ()
 	{
-		this.channels = NetworkRegistry.INSTANCE.newChannel("TConstruct", this);
+		this.channels = NetworkRegistry.INSTANCE.newChannel("Mekanism", this);
 		registerPackets();
 	}
 
 	public void registerPackets ()
 	{
+		//Packet registrations
+		registerPacket(PacketRobit.class);
+		registerPacket(PacketTransmitterUpdate.class);
+		registerPacket(PacketElectricChest.class);
+		registerPacket(PacketElectricBowState.class);
+		registerPacket(PacketConfiguratorState.class);
+		registerPacket(PacketTileEntity.class);
+		registerPacket(PacketPortalFX.class);
+		registerPacket(PacketDataRequest.class);
+		registerPacket(PacketStatusUpdate.class);
+		registerPacket(PacketDigitUpdate.class);
+		registerPacket(PacketPortableTeleport.class);
+		registerPacket(PacketRemoveUpgrade.class);
+		registerPacket(PacketRedstoneControl.class);
+		registerPacket(PacketWalkieTalkieState.class);
+		registerPacket(PacketLogisticalSorterGui.class);
+		registerPacket(PacketNewFilter.class);
+		registerPacket(PacketEditFilter.class);
+		registerPacket(PacketConfigurationUpdate.class);
+		registerPacket(PacketSimpleGui.class);
+		registerPacket(PacketDigitalMinerGui.class);
+		registerPacket(PacketJetpackData.class);
+		registerPacket(PacketKey.class);
+		registerPacket(PacketScubaTankData.class);
+		registerPacket(PacketConfigSync.class);
+		registerPacket(PacketBoxBlacklist.class);
 
 	}
 

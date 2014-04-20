@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -29,16 +30,16 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	public double ENERGY_USAGE = 10;
 	public double HOE_USAGE = 100;
 
-	public ItemAtomicDisassembler(int id)
+	public ItemAtomicDisassembler()
 	{
-		super(id, 1000000);
+		super(1000000);
 	}
 
 	@Override
 	public void registerIcons(IIconRegister register) {}
 
 	@Override
-	public boolean canHarvestBlock(Block block)
+	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
 		return block != Blocks.bedrock;
 	}
@@ -151,7 +152,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			toggleMode(itemstack);
-			entityplayer.addChatMessage(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Mode toggled to " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")");
+			entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Mode toggled to " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
 		}
 
 		return itemstack;

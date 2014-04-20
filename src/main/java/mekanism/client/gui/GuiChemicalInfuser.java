@@ -15,7 +15,6 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityChemicalInfuser;
@@ -132,7 +131,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
@@ -140,7 +139,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(1);
 
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketTileEntity().setParams(Coord4D.get(tileEntity), data));
+				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 			}
 		}

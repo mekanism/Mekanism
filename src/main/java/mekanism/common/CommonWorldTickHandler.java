@@ -1,7 +1,6 @@
 package mekanism.common;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,91 +11,81 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
+import cpw.mods.fml.relauncher.Side;
 
-public class CommonWorldTickHandler implements ITickHandler
+public class CommonWorldTickHandler
 {
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) {}
-
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	@SubscribeEvent
+	public void onTick(WorldTickEvent event)
 	{
-		if(tickData[0] instanceof World)
+		if(event.side == Side.SERVER && event.phase == Phase.END)
 		{
-			ArrayList<Integer> idsToKill = new ArrayList<Integer>();
-			HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
-
-			World world = (World)tickData[0];
-
-			if(!world.isRemote)
-			{
-				for(Map.Entry<Integer, DynamicTankCache> entry : Mekanism.dynamicInventories.entrySet())
-				{
-					int inventoryID = entry.getKey();
-
-					for(Coord4D obj : entry.getValue().locations)
-					{
-						if(obj.dimensionId == world.provider.dimensionId)
-						{
-							TileEntity tileEntity = obj.getTileEntity(world);
-
-							if(!(tileEntity instanceof TileEntityDynamicTank) || ((TileEntityDynamicTank)tileEntity).inventoryID != inventoryID)
-							{
-								if(!tilesToKill.containsKey(inventoryID))
-								{
-									tilesToKill.put(inventoryID, new HashSet<Coord4D>());
-								}
-
-								tilesToKill.get(inventoryID).add(obj);
-							}
-						}
-					}
-
-					if(entry.getValue().locations.isEmpty())
-					{
-						idsToKill.add(inventoryID);
-					}
-				}
-
-				for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
-				{
-					for(Coord4D obj : entry.getValue())
-					{
-						Mekanism.dynamicInventories.get(entry.getKey()).locations.remove(obj);
-					}
-				}
-
-				for(int inventoryID : idsToKill)
-				{
-					for(Coord4D obj : Mekanism.dynamicInventories.get(inventoryID).locations)
-					{
-						TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)obj.getTileEntity(world);
-
-						if(dynamicTank != null)
-						{
-							dynamicTank.cachedFluid = null;
-							dynamicTank.inventory = new ItemStack[2];
-							dynamicTank.inventoryID = -1;
-						}
-					}
-
-					Mekanism.dynamicInventories.remove(inventoryID);
-				}
-			}
+			tickEnd(event.world);
 		}
 	}
 
-	@Override
-	public EnumSet<TickType> ticks()
+	public void tickEnd(World world)
 	{
-		return EnumSet.of(TickType.WORLD);
-	}
+		ArrayList<Integer> idsToKill = new ArrayList<Integer>();
+		HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
 
-	@Override
-	public String getLabel()
-	{
-		return "MekanismCommonWorld";
+		if(!world.isRemote)
+		{
+			for(Map.Entry<Integer, DynamicTankCache> entry : Mekanism.dynamicInventories.entrySet())
+			{
+				int inventoryID = entry.getKey();
+
+				for(Coord4D obj : entry.getValue().locations)
+				{
+					if(obj.dimensionId == world.provider.dimensionId)
+					{
+						TileEntity tileEntity = obj.getTileEntity(world);
+
+						if(!(tileEntity instanceof TileEntityDynamicTank) || ((TileEntityDynamicTank)tileEntity).inventoryID != inventoryID)
+						{
+							if(!tilesToKill.containsKey(inventoryID))
+							{
+								tilesToKill.put(inventoryID, new HashSet<Coord4D>());
+							}
+
+							tilesToKill.get(inventoryID).add(obj);
+						}
+					}
+				}
+
+				if(entry.getValue().locations.isEmpty())
+				{
+					idsToKill.add(inventoryID);
+				}
+			}
+
+			for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
+			{
+				for(Coord4D obj : entry.getValue())
+				{
+					Mekanism.dynamicInventories.get(entry.getKey()).locations.remove(obj);
+				}
+			}
+
+			for(int inventoryID : idsToKill)
+			{
+				for(Coord4D obj : Mekanism.dynamicInventories.get(inventoryID).locations)
+				{
+					TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)obj.getTileEntity(world);
+
+					if(dynamicTank != null)
+					{
+						dynamicTank.cachedFluid = null;
+						dynamicTank.inventory = new ItemStack[2];
+						dynamicTank.inventoryID = -1;
+					}
+				}
+
+				Mekanism.dynamicInventories.remove(inventoryID);
+			}
+		}
 	}
 }

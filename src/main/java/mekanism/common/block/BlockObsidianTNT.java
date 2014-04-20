@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -21,15 +22,15 @@ public class BlockObsidianTNT extends Block
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public BlockObsidianTNT(int id)
+	public BlockObsidianTNT()
 	{
-		super(id, Material.tnt);
+		super(Material.tnt);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) {}
 
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
@@ -44,7 +45,7 @@ public class BlockObsidianTNT extends Block
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int blockID)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
 		if(world.isBlockIndirectlyGettingPowered(x, y, z))
 		{
@@ -77,7 +78,7 @@ public class BlockObsidianTNT extends Block
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
 	{
-		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Items.flintAndSteel.itemID)
+		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().getItem() == Items.flint_and_steel)
 		{
 			explode(world, x, y, z);
 			world.setBlockToAir(x, y, z);

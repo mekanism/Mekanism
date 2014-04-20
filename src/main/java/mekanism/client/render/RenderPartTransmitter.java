@@ -51,12 +51,13 @@ import codechicken.lib.lighting.LightModel;
 import codechicken.lib.lighting.LightModel.Light;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.CCRenderState.IVertexOperation;
 import codechicken.lib.render.ColourMultiplier;
-import codechicken.lib.render.IVertexModifier;
-import codechicken.lib.render.IIconTransformation;
+import codechicken.lib.render.uv.IVertexModifier;
+import codechicken.lib.render.uv.UVTransformation;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconRegister;
-import codechicken.lib.render.UV;
+import codechicken.lib.render.uv.UV;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
@@ -727,12 +728,12 @@ public class RenderPartTransmitter implements IIconRegister
 		return display;
 	}
 
-	public static class TransmitterTransformation implements IVertexModifier
+	public static class TransmitterTransformation implements IVertexOperation
 	{
 		public ColourMultiplier colour;
 		public LightMatrix lightMatrix;
 
-		public TransmitterTransformation(Colour color, LazyLightMatrix olm)
+		public TransmitterTransformation(Colour color, LightMatrix olm)
 		{
 			if(color != null)
 			{

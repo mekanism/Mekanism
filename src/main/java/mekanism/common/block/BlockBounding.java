@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -17,16 +18,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockBounding extends Block
 {
-	public BlockBounding(int id)
+	public BlockBounding()
 	{
-		super(id, Material.iron);
+		super(Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) {}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
@@ -62,12 +63,12 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			tileEntity.onNeighborChange(id);
-			Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, id);
+			tileEntity.onNeighborChange(block);
+			world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
 		} catch(Exception e) {}
 	}
 
@@ -78,9 +79,9 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public int idDropped(int i, Random random, int j)
+	public Item getItemDropped(int i, Random random, int j)
 	{
-		return 0;
+		return null;
 	}
 
 	@Override

@@ -3,43 +3,33 @@ package mekanism.common.network;
 import java.io.DataOutputStream;
 
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.item.ItemScubaTank;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 
-public class PacketScubaTankData implements IMekanismPacket
+public class PacketScubaTankData extends MekanismPacket
 {
 	public ScubaTankPacket packetType;
 
 	public String username;
 	public boolean value;
 
-	@Override
-	public String getName()
+	public PacketScubaTankData(ScubaTankPacket type, String name, boolean state)
 	{
-		return "ScubaTankData";
-	}
-
-	@Override
-	public IMekanismPacket setParams(Object... data)
-	{
-		packetType = (ScubaTankPacket)data[0];
+		packetType = type;
 
 		if(packetType == ScubaTankPacket.UPDATE)
 		{
-			username = (String)data[1];
-			value = (Boolean)data[2];
+			username = name;
+			value = state;
 		}
-
-		return this;
 	}
 
-	@Override
 	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
 	{
 		packetType = ScubaTankPacket.values()[dataStream.readInt()];
@@ -70,7 +60,7 @@ public class PacketScubaTankData implements IMekanismPacket
 
 			if(!world.isRemote)
 			{
-				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketScubaTankData().setParams(ScubaTankPacket.UPDATE, username, value), world.provider.dimensionId);
+				Mekanism.packetPipeline.sendToDimension(new PacketScubaTankData(ScubaTankPacket.UPDATE, username, value), world.provider.dimensionId);
 			}
 		}
 		else if(packetType == ScubaTankPacket.MODE)
@@ -84,7 +74,6 @@ public class PacketScubaTankData implements IMekanismPacket
 		}
 	}
 
-	@Override
 	public void write(DataOutputStream dataStream) throws Exception
 	{
 		dataStream.writeInt(packetType.ordinal());
@@ -103,6 +92,30 @@ public class PacketScubaTankData implements IMekanismPacket
 				dataStream.writeUTF(username);
 			}
 		}
+	}
+
+	@Override
+	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
+	{
+
 	}
 
 	public static enum ScubaTankPacket

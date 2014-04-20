@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import mekanism.api.Coord4D;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketRemoveUpgrade;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -83,13 +82,13 @@ public class GuiUpgradeManagement extends GuiElement
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Coord4D.get(tileEntity), (byte)0));
+				Mekanism.packetPipeline.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), (byte)0));
 			}
 
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRemoveUpgrade().setParams(Coord4D.get(tileEntity), (byte)1));
+				Mekanism.packetPipeline.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), (byte)1));
 			}
 
 			if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)

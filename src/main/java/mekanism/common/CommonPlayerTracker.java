@@ -1,5 +1,4 @@
 package mekanism.common;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketConfigSync;
 import mekanism.common.network.PacketJetpackData;
@@ -8,7 +7,9 @@ import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 
 public class CommonPlayerTracker
 {
@@ -18,25 +19,35 @@ public class CommonPlayerTracker
 		onPlayerLogin(event.player);
 	}
 
-	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		if(!player.getWorldObj().isRemote)
+		if(!player.worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketConfigSync().setParams(), player);
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketBoxBlacklist().setParams(), player);
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);
+			Mekanism.packetPipeline.sendTo(new PacketConfigSync(), player);
+			Mekanism.packetPipeline.sendTo(new PacketBoxBlacklist(), player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), player);
 
-			System.out.println("[Mekanism] Sent config to '" + player.username + ".'");
+			Mekanism.logger.info((String) "Sent config to '" + player.getDisplayName() + ".'");
 		}
 	}
 
-	@Override
+	@SubscribeEvent
+	public void onPlayerLogoutEvent(PlayerLoggedOutEvent event)
+	{
+		onPlayerLogout(event.player);
+	}
+
 	public void onPlayerLogout(EntityPlayer player)
 	{
 		Mekanism.jetpackOn.remove(player);
 		Mekanism.gasmaskOn.remove(player);
+	}
+
+	@SubscribeEvent
+	public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event)
+	{
+		onPlayerChangedDimension(event.player);
 	}
 
 	@Override
@@ -44,13 +55,10 @@ public class CommonPlayerTracker
 	{
 		Mekanism.jetpackOn.remove(player);
 
-		if(!player.getWorldObj().isRemote)
+		if(!player.worldObj.isRemote)
 		{
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
-			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), player);
 		}
 	}
-
-	@Override
-	public void onPlayerRespawn(EntityPlayer player) {}
 }

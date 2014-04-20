@@ -169,7 +169,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 
 		recipe.products.addProducts(inventory, 2);
 
-		onInventoryChanged();
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 

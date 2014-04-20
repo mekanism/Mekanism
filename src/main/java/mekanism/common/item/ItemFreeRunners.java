@@ -19,12 +19,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -36,9 +37,9 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	/** The maximum amount of energy this item can hold. */
 	public double MAX_ELECTRICITY = 64000;
 
-	public ItemFreeRunners(int id)
+	public ItemFreeRunners()
 	{
-		super(id, EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
+		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
@@ -85,7 +86,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack discharged = new ItemStack(this);
 		discharged.setItemDamage(100);
@@ -102,15 +103,15 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public int getChargedItemId(ItemStack itemStack)
+	public Item getChargedItem(ItemStack itemStack)
 	{
-		return itemID;
+		return this;
 	}
 
 	@Override
-	public int getEmptyItemId(ItemStack itemStack)
+	public Item getEmptyItem(ItemStack itemStack)
 	{
-		return itemID;
+		return this;
 	}
 
 	@Override

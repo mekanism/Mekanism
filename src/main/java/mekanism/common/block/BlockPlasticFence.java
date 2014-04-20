@@ -7,9 +7,9 @@ import net.minecraft.block.material.Material;
 
 public class BlockPlasticFence extends BlockFence
 {
-	public BlockPlasticFence(int id)
+	public BlockPlasticFence()
 	{
-		super(id, "mekanism:PlasticFence", Material.clay);
+		super("mekanism:PlasticFence", Material.clay);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 }

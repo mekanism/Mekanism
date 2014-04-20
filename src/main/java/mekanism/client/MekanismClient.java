@@ -6,7 +6,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketKey;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,7 +37,7 @@ public class MekanismClient extends Mekanism
 
 		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketKey().setParams(type, down));
+			Mekanism.packetPipeline.sendToServer(new PacketKey(type, down));
 			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
 		}
 	}
