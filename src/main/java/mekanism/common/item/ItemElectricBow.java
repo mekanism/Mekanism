@@ -34,7 +34,7 @@ public class ItemElectricBow extends ItemEnergized
 		{
 			boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, itemstack) > 0;
 
-			if(flag || player.inventory.hasItem(Item.arrow.itemID))
+			if(flag || player.inventory.hasItem(Items.arrow.itemID))
 			{
 				int maxItemUse = getMaxItemUseDuration(itemstack) - itemUseCount;
 				float f = maxItemUse / 20F;
@@ -69,7 +69,7 @@ public class ItemElectricBow extends ItemEnergized
 					entityarrow.canBePickedUp = 2;
 				}
 				else {
-					player.inventory.consumeInventoryItem(Item.arrow.itemID);
+					player.inventory.consumeInventoryItem(Items.arrow.itemID);
 				}
 
 				if(!world.isRemote)
@@ -96,7 +96,7 @@ public class ItemElectricBow extends ItemEnergized
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
-		if(entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Item.arrow.itemID))
+		if(entityplayer.capabilities.isCreativeMode || entityplayer.inventory.hasItem(Items.arrow.itemID))
 		{
 			entityplayer.setItemInUse(itemstack, getMaxItemUseDuration(itemstack));
 		}

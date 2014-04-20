@@ -8,10 +8,12 @@ import mekanism.api.Pos3D;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -32,7 +34,7 @@ public class ItemBalloon extends ItemMekanism
 	}
 
 	@Override
-	public void getSubItems(int id, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
@@ -67,7 +69,7 @@ public class ItemBalloon extends ItemMekanism
 	}
 
 	@Override
-	public String getItemDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(ItemStack stack)
 	{
 		String color = getColor(stack).getDyedName();
 
@@ -86,7 +88,7 @@ public class ItemBalloon extends ItemMekanism
 		{
 			AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+3, z+1);
 
-			List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
+			List<EntityBalloon> balloonsNear = player.getWorldObj().getEntitiesWithinAABB(EntityBalloon.class, bound);
 
 			if(balloonsNear.size() > 0)
 			{
@@ -95,7 +97,7 @@ public class ItemBalloon extends ItemMekanism
 
 			Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
 
-			if(Block.blocksList[obj.getBlockId(world)].isBlockReplaceable(world, x, y, z))
+			if(obj.getBlock(world).isReplaceable(world, x, y, z))
 			{
 				obj.yCoord--;
 			}
@@ -123,11 +125,11 @@ public class ItemBalloon extends ItemMekanism
 	{
 		if(player.isSneaking())
 		{
-			if(!player.worldObj.isRemote)
+			if(!player.getWorldObj().isRemote)
 			{
 				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
 
-				List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
+				List<EntityBalloon> balloonsNear = player.getWorldObj().getEntitiesWithinAABB(EntityBalloon.class, bound);
 
 				for(EntityBalloon balloon : balloonsNear)
 				{
@@ -137,7 +139,7 @@ public class ItemBalloon extends ItemMekanism
 					}
 				}
 
-				player.worldObj.spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
+				player.getWorldObj().spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
 				stack.stackSize--;
 			}
 
@@ -149,10 +151,10 @@ public class ItemBalloon extends ItemMekanism
 
 	private boolean canReplace(World world, int x, int y, int z)
 	{
-		return world.isAirBlock(x, y, z) || Block.blocksList[world.getBlockId(x, y, z)].isBlockReplaceable(world, x, y, z);
+		return world.isAirBlock(x, y, z) || world.getBlock(x, y, z).isReplaceable(world, x, y, z);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 }

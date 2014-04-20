@@ -3,14 +3,14 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 
 public class ItemDust extends ItemMekanism
 {
-	public Icon[] icons = new Icon[256];
+	public IIcon[] icons = new IIcon[256];
 
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium",
 										"Obsidian", "Diamond", "Steel",
@@ -25,7 +25,7 @@ public class ItemDust extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		for(int i = 0; i <= 10; i++)
 		{
@@ -34,7 +34,7 @@ public class ItemDust extends ItemMekanism
 	}
 
 	@Override
-	public Icon getIconFromDamage(int meta)
+	public IIcon getIconFromDamage(int meta)
 	{
 		return icons[meta];
 	}

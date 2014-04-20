@@ -131,7 +131,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
@@ -228,7 +228,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z)
 	{
-		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getBlockTileEntity(x, y, z);
+		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.getWorldObj().getTileEntity(x, y, z);
 
 		if(id == 0)
 		{
@@ -361,7 +361,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		switch(ID)
 		{

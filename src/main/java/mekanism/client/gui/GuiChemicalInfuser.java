@@ -99,8 +99,8 @@ public class GuiChemicalInfuser extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

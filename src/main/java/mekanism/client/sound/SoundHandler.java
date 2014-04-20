@@ -21,7 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import paulscode.sound.SoundSystem;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -321,7 +321,7 @@ public class SoundHandler
 		return Minecraft.getMinecraft().sndManager.sndSystem;
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onChunkUnload(ChunkEvent.Unload event)
 	{
 		if(event.getChunk() != null)

@@ -1,33 +1,35 @@
 package mekanism.tools.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemStack;
 
 public class ItemMekanismShovel extends ItemMekanismTool
 {
 	private static Block blocksEffectiveAgainst[];
 
-	public ItemMekanismShovel(int id, EnumToolMaterial enumtoolmaterial)
+	public ItemMekanismShovel(ToolMaterial enumtoolmaterial)
 	{
-		super(id, 1, enumtoolmaterial, blocksEffectiveAgainst);
+		super(1, enumtoolmaterial, blocksEffectiveAgainst);
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block block)
+	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if(block == Block.snow)
+		if(block == Blocks.snow)
 		{
 			return true;
 		}
 
-		return block == Block.blockSnow;
+		return block == Blocks.snow;
 	}
 
 	static
 	{
 		blocksEffectiveAgainst = (new Block[]
 				{
-					Block.grass, Block.dirt, Block.sand, Block.gravel, Block.snow, Block.blockSnow, Block.blockClay, Block.tilledField, Block.slowSand, Block.mycelium
+					Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium
 				});
 	}
 }

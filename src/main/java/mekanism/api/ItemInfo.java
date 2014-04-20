@@ -1,28 +1,29 @@
 package mekanism.api;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemInfo
 {
-	public int id;
+	public Item item;
 	public int meta;
 
-	public ItemInfo(int i, int j)
+	public ItemInfo(Item i, int j)
 	{
-		id = i;
+		item = i;
 		meta = j;
 	}
 
 	public static ItemInfo get(ItemStack stack)
 	{
-		return new ItemInfo(stack.itemID, stack.getItemDamage());
+		return new ItemInfo(stack.getItem(), stack.getItemDamage());
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof ItemInfo &&
-				((ItemInfo)obj).id == id &&
+				((ItemInfo)obj).item == item &&
 				((ItemInfo)obj).meta == meta;
 	}
 
@@ -30,7 +31,7 @@ public class ItemInfo
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + id;
+		code = 31 * code + item.getUnlocalizedName().hashCode();
 		code = 31 * code + meta;
 		return code;
 	}

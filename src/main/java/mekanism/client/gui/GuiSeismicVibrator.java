@@ -35,11 +35,11 @@ public class GuiSeismicVibrator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
-		fontRenderer.drawString(tileEntity.isActive ? "Vibrating" : "Idle", 19, 26, 0x00CD00);
-		fontRenderer.drawString("Chunk: " + (tileEntity.xCoord >> 4) + ", " + (tileEntity.zCoord >> 4), 19, 35, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.isActive ? "Vibrating" : "Idle", 19, 26, 0x00CD00);
+		fontRendererObj.drawString("Chunk: " + (tileEntity.xCoord >> 4) + ", " + (tileEntity.zCoord >> 4), 19, 35, 0x00CD00);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

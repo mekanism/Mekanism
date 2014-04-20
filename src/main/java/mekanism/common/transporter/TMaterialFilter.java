@@ -7,6 +7,7 @@ import mekanism.common.transporter.Finder.OreDictFinder;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,7 @@ public class TMaterialFilter extends TransporterFilter
 	
 	public Material getMaterial()
 	{
-		return Block.blocksList[materialItem.itemID].blockMaterial;
+		return Blocks.blocksList[materialItem.itemID].getMaterial();
 	}
 
 	@Override

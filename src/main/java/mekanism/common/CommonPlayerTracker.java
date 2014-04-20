@@ -7,14 +7,21 @@ import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.IPlayerTracker;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
-public class CommonPlayerTracker implements IPlayerTracker
+public class CommonPlayerTracker
 {
+	@SubscribeEvent
+	public void onPlayerLoginEvent(PlayerLoggedInEvent event)
+	{
+		onPlayerLogin(event.player);
+	}
+
 	@Override
 	public void onPlayerLogin(EntityPlayer player)
 	{
-		if(!player.worldObj.isRemote)
+		if(!player.getWorldObj().isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketConfigSync().setParams(), player);
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketBoxBlacklist().setParams(), player);
@@ -37,7 +44,7 @@ public class CommonPlayerTracker implements IPlayerTracker
 	{
 		Mekanism.jetpackOn.remove(player);
 
-		if(!player.worldObj.isRemote)
+		if(!player.getWorldObj().isRemote)
 		{
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketJetpackData().setParams(JetpackPacket.FULL), player);
 			PacketHandler.sendPacket(Transmission.SINGLE_CLIENT, new PacketScubaTankData().setParams(ScubaTankPacket.FULL), player);

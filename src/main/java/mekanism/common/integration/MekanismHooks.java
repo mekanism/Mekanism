@@ -88,7 +88,7 @@ public final class MekanismHooks
 			try {
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Item.glowstone));
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone));
 				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
 			} catch(Exception e) {}
 
@@ -140,8 +140,8 @@ public final class MekanismHooks
 		NBTTagCompound nbtTags = new NBTTagCompound();
 
 		nbtTags.setInteger("energy", energy);
-		nbtTags.setCompoundTag("input", input.writeToNBT(new NBTTagCompound()));
-		nbtTags.setCompoundTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
+		nbtTags.setTag("input", input.writeToNBT(new NBTTagCompound()));
+		nbtTags.setTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
 
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
 	}

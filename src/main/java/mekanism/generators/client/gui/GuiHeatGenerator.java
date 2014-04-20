@@ -68,8 +68,8 @@ public class GuiHeatGenerator extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 	}
 
 	@Override

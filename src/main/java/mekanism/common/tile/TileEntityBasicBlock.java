@@ -15,6 +15,8 @@ import mekanism.common.PacketHandler.Transmission;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -217,7 +219,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		return redstone;
 	}
 
-	public void onNeighborChange(int id)
+	public void onNeighborChange(Block block)
 	{
 		if(!worldObj.isRemote)
 		{

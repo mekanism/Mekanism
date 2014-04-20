@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.common.Mekanism;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -50,7 +50,7 @@ public class ItemProxy extends Item
 		}
 		else {
 			stack.stackTagCompound.setBoolean("hasStack", true);
-			stack.stackTagCompound.setCompoundTag("savedItem", save.writeToNBT(new NBTTagCompound()));
+			stack.stackTagCompound.setTag("savedItem", save.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
@@ -79,7 +79,7 @@ public class ItemProxy extends Item
 	}
 
 	@Override
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)

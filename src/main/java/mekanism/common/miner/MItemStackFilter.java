@@ -5,6 +5,7 @@ import java.util.List;
 
 import mekanism.api.ListUtils;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -12,9 +13,9 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class MItemStackFilter extends MinerFilter
 {
-	private static List<Integer> metaIgnoreArray = ListUtils.asList(Block.planks.blockID, Block.ladder.blockID, Block.torchWood.blockID,
-			Block.furnaceBurning.blockID, Block.furnaceIdle.blockID, Block.dispenser.blockID, Block.pistonBase.blockID,
-			Block.pistonExtension.blockID, Block.pistonStickyBase.blockID, Block.pistonMoving.blockID);
+	private static List<Integer> metaIgnoreArray = ListUtils.asList(Blocks.planks.blockID, Blocks.ladder.blockID, Blocks.torchWood.blockID,
+			Blocks.furnaceBurning.blockID, Blocks.furnaceIdle.blockID, Blocks.dispenser.blockID, Blocks.pistonBase.blockID,
+			Blocks.pistonExtension.blockID, Blocks.pistonStickyBase.blockID, Blocks.pistonMoving.blockID);
 
 	public ItemStack itemType;
 

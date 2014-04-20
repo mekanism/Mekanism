@@ -40,7 +40,7 @@ public class PacketTileEntity implements IMekanismPacket
 		int y = dataStream.readInt();
 		int z = dataStream.readInt();
 
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof ITileNetwork)
 		{

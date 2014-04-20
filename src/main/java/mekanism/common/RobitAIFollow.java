@@ -39,7 +39,7 @@ public class RobitAIFollow extends EntityAIBase
 	public RobitAIFollow(EntityRobit entityRobit, float speed, float min, float max)
 	{
 		theRobit = entityRobit;
-		theWorld = entityRobit.worldObj;
+		theWorld = entityRobit.getWorldObj();
 		moveSpeed = speed;
 		thePathfinder = entityRobit.getNavigator();
 		minDist = min;
@@ -56,7 +56,7 @@ public class RobitAIFollow extends EntityAIBase
 		{
 			return false;
 		}
-		else if(theRobit.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
+		else if(theRobit.getWorldObj().provider.dimensionId != player.getWorldObj().provider.dimensionId)
 		{
 			return false;
 		}
@@ -84,7 +84,7 @@ public class RobitAIFollow extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
+		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.getWorldObj().provider.dimensionId == theRobit.getWorldObj().provider.dimensionId;
 	}
 
 	@Override

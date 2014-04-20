@@ -36,6 +36,7 @@ import mekanism.common.util.MinerUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -298,9 +299,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, replaceStack.itemID, replaceStack.getItemDamage(), 3);
 
-			if(Block.blocksList[obj.getBlockId(worldObj)] != null && !Block.blocksList[obj.getBlockId(worldObj)].canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
+			if(Blocks.blocksList[obj.getBlockId(worldObj)] != null && !Blocks.blocksList[obj.getBlockId(worldObj)].canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
 			{
-				Block.blocksList[obj.getBlockId(worldObj)].dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
+				Blocks.blocksList[obj.getBlockId(worldObj)].dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
 				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 			}
 		}
@@ -576,7 +577,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(replaceStack != null)
 		{
-			nbtTags.setCompoundTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+			nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
 		}
 
 		NBTTagList filterTags = new NBTTagList();
@@ -1308,7 +1309,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(replaceStack != null)
 		{
-			nbtTags.setCompoundTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+			nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
 		}
 
 		NBTTagList filterTags = new NBTTagList();

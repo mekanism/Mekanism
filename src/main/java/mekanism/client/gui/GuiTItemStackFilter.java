@@ -79,11 +79,11 @@ public class GuiTItemStackFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		minField = new GuiTextField(fontRenderer, guiWidth + 149, guiHeight + 19, 20, 11);
+		minField = new GuiTextField(fontRendererObj, guiWidth + 149, guiHeight + 19, 20, 11);
 		minField.setMaxStringLength(2);
 		minField.setText("" + filter.min);
 
-		maxField = new GuiTextField(fontRenderer, guiWidth + 149, guiHeight + 31, 20, 11);
+		maxField = new GuiTextField(fontRendererObj, guiWidth + 149, guiHeight + 31, 20, 11);
 		maxField.setMaxStringLength(2);
 		maxField.setText("" + filter.max);
 	}
@@ -165,24 +165,24 @@ public class GuiTItemStackFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
+		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.itemFilter"), 43, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter.details") + ":", 35, 32, 0x00CD00);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter.min") + ":", 128, 20, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter.max") + ":", 128, 32, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui." + (filter.sizeMode ? "on" : "off")), 141, 46, 0x404040);
 
 		if(filter.itemType != null)
 		{
-			fontRenderer.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
+			fontRendererObj.drawString(filter.itemType.getDisplayName(), 35, 41, 0x00CD00);
 		}
 
 		if(filter.itemType != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), filter.itemType, 12, 19);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.itemType, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -195,7 +195,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

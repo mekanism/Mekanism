@@ -57,7 +57,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj);
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
 
 				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
@@ -82,7 +82,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
-						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.worldObj).render();
+						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
 
 						MekanismRenderer.glowOff();
 
@@ -117,7 +117,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
+		toReturn.baseBlock = Blocks.waterStill;
 		toReturn.setTexture(fluid.getIcon());
 
 		final int stages = getStages(data.height);
@@ -168,7 +168,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
+		toReturn.baseBlock = Blocks.waterStill;
 		toReturn.setTexture(fluid.getFlowingIcon());
 
 		DisplayInteger display = DisplayInteger.createAndStart();

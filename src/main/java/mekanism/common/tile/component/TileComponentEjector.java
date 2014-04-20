@@ -83,7 +83,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void onOutput()
 	{
-		if(!ejecting || tileEntity.worldObj.isRemote)
+		if(!ejecting || tileEntity.getWorldObj().isRemote)
 		{
 			return;
 		}
@@ -114,7 +114,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 			for(ForgeDirection side : outputs)
 			{
-				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.worldObj);
+				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.getWorldObj());
 				ItemStack prev = stack.copy();
 
 				if(tile instanceof IInventory && !(tile instanceof ILogisticalTransporter))

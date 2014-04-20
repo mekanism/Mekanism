@@ -27,13 +27,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -52,7 +53,7 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
 import codechicken.lib.render.IVertexModifier;
-import codechicken.lib.render.IconTransformation;
+import codechicken.lib.render.IIconTransformation;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconRegister;
 import codechicken.lib.render.UV;
@@ -163,7 +164,7 @@ public class RenderPartTransmitter implements IIconRegister
 		entityItem.hoverStart = 0;
 
 		entityItem.setPosition(transporter.x() + 0.5, transporter.y() + 0.5, transporter.z() + 0.5);
-		entityItem.worldObj = transporter.world();
+		entityItem.getWorldObj() = transporter.world();
 
 		for(TransporterStack stack : transporter.transit)
 		{
@@ -198,7 +199,7 @@ public class RenderPartTransmitter implements IIconRegister
 		if(transporter instanceof PartDiversionTransporter)
 		{
 			EntityPlayer player = mc.thePlayer;
-			World world = mc.thePlayer.worldObj;
+			World world = mc.thePlayer.getWorldObj();
 			ItemStack itemStack = player.getCurrentEquippedItem();
 			MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 
@@ -352,7 +353,7 @@ public class RenderPartTransmitter implements IIconRegister
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
+		toReturn.baseBlock = Blocks.waterStill;
 		toReturn.setTexture(fluid.getIcon());
 
 		toReturn.setSideRender(side, false);
@@ -511,7 +512,7 @@ public class RenderPartTransmitter implements IIconRegister
 	public void renderSide(ForgeDirection side, PartSidedPipe transmitter, LazyLightMatrix olm)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
-		Icon renderIcon = transmitter.getIconForSide(side);
+		IIcon renderIcon = transmitter.getIconForSide(side);
 
 		Colour c = null;
 
@@ -527,7 +528,7 @@ public class RenderPartTransmitter implements IIconRegister
 	{
 		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
 
-		Icon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
+		IIcon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
 
 		renderPart(renderIcon, getItemModel(side, type), 0,0,0, null, null);
 	}
@@ -550,14 +551,14 @@ public class RenderPartTransmitter implements IIconRegister
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
-	public void renderPart(Icon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
+	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
 	{
-		cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new TransmitterTransformation(color, null));
+		cc.render(0, cc.verts.length, new Translation(x, y, z), new IIconTransformation(icon), new TransmitterTransformation(color, null));
 	}
 
-	public void renderTransparency(Icon icon, CCModel cc, Colour colour)
+	public void renderTransparency(IIcon icon, CCModel cc, Colour colour)
 	{
-		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
+		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IIconTransformation(icon), new ColourMultiplier(colour));
 	}
 
 	public CCModel getItemModel(ForgeDirection side, TransmitterType type)
@@ -576,7 +577,7 @@ public class RenderPartTransmitter implements IIconRegister
 	}
 
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		PartUniversalCable.registerIcons(register);
 		PartMechanicalPipe.registerIcons(register);
@@ -615,23 +616,23 @@ public class RenderPartTransmitter implements IIconRegister
 			return cachedOverlays.get(side).get(mode);
 		}
 
-		Icon icon = null;
+		IIcon icon = null;
 
 		switch(mode)
 		{
 			case 0:
-				icon = Item.gunpowder.getIcon(new ItemStack(Item.gunpowder), 0);
+				icon = Items.gunpowder.getIcon(new ItemStack(Items.gunpowder), 0);
 				break;
 			case 1:
-				icon = Block.torchRedstoneActive.getIcon(0, 0);
+				icon = Blocks.torchRedstoneActive.getIcon(0, 0);
 				break;
 			case 2:
-				icon = Block.torchRedstoneIdle.getIcon(0, 0);
+				icon = Blocks.torchRedstoneIdle.getIcon(0, 0);
 				break;
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.stone;
+		toReturn.baseBlock = Blocks.stone;
 		toReturn.setTexture(icon);
 
 		DisplayInteger display = DisplayInteger.createAndStart();

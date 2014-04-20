@@ -15,7 +15,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 
 import org.lwjgl.opengl.GL11;
 
@@ -141,14 +141,14 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	protected void drawCreativeTabHoveringText(String text, int x, int y)
 	{
-		func_102021_a(Arrays.asList(new String[] {text}), x, y);
+		func_146283_a(Arrays.asList(new String[] {text}), x, y);
 	}
 
 	@Override
-	protected void func_102021_a(List list, int x, int y)
+	protected void func_146283_a(List list, int x, int y)
 	{
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
-		super.func_102021_a(list, x, y);
+		super.func_146283_a(list, x, y);
 		GL11.glPopAttrib();
 	}
 
@@ -159,7 +159,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	}
 
 	@Override
-	public void drawTexturedRectFromIcon(int x, int y, Icon icon, int w, int h)
+	public void drawTexturedRectFromIcon(int x, int y, IIcon icon, int w, int h)
 	{
 		drawTexturedModelRectFromIcon(x, y, icon, w, h);
 	}
@@ -173,17 +173,17 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	public void displayTooltips(List<String> list, int xAxis, int yAxis)
 	{
-		func_102021_a(list, xAxis, yAxis);
+		func_146283_a(list, xAxis, yAxis);
 	}
 
 	@Override
 	public FontRenderer getFont()
 	{
-		return fontRenderer;
+		return fontRendererObj;
 	}
 
 	protected FontRenderer getFontRenderer()
 	{
-		return fontRenderer;
+		return fontRendererObj;
 	}
 }

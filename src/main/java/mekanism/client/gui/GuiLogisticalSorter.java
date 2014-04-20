@@ -269,20 +269,20 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
-		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
-		fontRenderer.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+		fontRendererObj.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
+		fontRendererObj.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
+		fontRendererObj.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
 
-		fontRenderer.drawString("RR:", 12, 74, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
+		fontRendererObj.drawString("RR:", 12, 74, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -299,13 +299,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
 
-					fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TOreDictFilter)
 				{
@@ -321,14 +321,14 @@ public class GuiLogisticalSorter extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(Exception e) {}
 					}
 
-					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TMaterialFilter)
 				{
@@ -338,13 +338,13 @@ public class GuiLogisticalSorter extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
 
-					fontRenderer.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-					fontRenderer.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 			}
 		}
@@ -357,7 +357,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRenderer.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
+			itemRender.renderIcon(13, 137, MekanismRenderer.getColorIcon(tileEntity.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

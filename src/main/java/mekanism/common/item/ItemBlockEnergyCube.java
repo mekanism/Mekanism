@@ -82,7 +82,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 		if(place)
 		{
-			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
 			tileEntity.tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
 			tileEntity.electricityStored = getEnergy(stack);
 

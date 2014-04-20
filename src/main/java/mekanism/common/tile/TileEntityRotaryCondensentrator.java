@@ -379,7 +379,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		nbtTags.setInteger("mode", mode);
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
-		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 
 		if(fluidTank.getFluid() != null)
 		{

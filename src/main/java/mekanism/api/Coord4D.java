@@ -3,6 +3,7 @@ package mekanism.api;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -69,16 +70,6 @@ public class Coord4D
 	}
 
 	/**
-	 * Gets the block ID of the block representing this Coord4D.
-	 * @param world - world this Coord4D is in
-	 * @return the block ID of this Coord4D's block
-	 */
-	public int getBlockId(IBlockAccess world)
-	{
-		return world.getBlockId(xCoord, yCoord, zCoord);
-	}
-
-	/**
 	 * Gets the TileEntity of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in
 	 * @return the TileEntity of this Coord4D's block
@@ -90,7 +81,7 @@ public class Coord4D
 			return null;
 		}
 
-		return world.getBlockTileEntity(xCoord, yCoord, zCoord);
+		return world.getTileEntity(xCoord, yCoord, zCoord);
 	}
 
 	/**
@@ -105,7 +96,7 @@ public class Coord4D
 			return null;
 		}
 
-		return Block.blocksList[getBlockId(world)];
+		return world.getBlock(xCoord, yCoord, zCoord);
 	}
 
 	/**
@@ -173,7 +164,7 @@ public class Coord4D
 	 */
 	public static Coord4D get(TileEntity tileEntity)
 	{
-		return new Coord4D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.worldObj.provider.dimensionId);
+		return new Coord4D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.getWorldObj().provider.dimensionId);
 	}
 
 	/**

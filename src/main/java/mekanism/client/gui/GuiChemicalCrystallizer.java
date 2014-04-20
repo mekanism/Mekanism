@@ -92,15 +92,15 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 37, 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 37, 4, 0x404040);
 
 		if(tileEntity.inputTank.getGas() != null)
 		{
-			fontRenderer.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
+			fontRendererObj.drawString(tileEntity.inputTank.getGas().getGas().getLocalizedName(), 29, 15, 0x00CD00);
 
 			if(tileEntity.inputTank.getGas().getGas() instanceof OreGas)
 			{
-				fontRenderer.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
+				fontRendererObj.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
 			}
 		}
 
@@ -109,7 +109,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 131, 14);
+				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 131, 14);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}

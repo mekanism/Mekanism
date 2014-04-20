@@ -6,16 +6,17 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public final class MinerUtils
 {
-	public static List<Integer> specialSilkIDs = ListUtils.asList(Block.ice.blockID);
+	public static List<Integer> specialSilkIDs = ListUtils.asList(Blocks.ice.blockID);
 
 	public static List<ItemStack> getDrops(World world, Coord4D obj, boolean silk)
 	{
-		Block block = Block.blocksList[obj.getBlockId(world)];
+		Block block = Blocks.blocksList[obj.getBlockId(world)];
 
 		if(block == null)
 		{

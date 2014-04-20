@@ -26,7 +26,7 @@ import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
@@ -36,7 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -71,7 +71,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockBasic extends Block
 {
-	public Icon[][] icons = new Icon[256][6];
+	public IIcon[][] icons = new IIcon[256][6];
 
 	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", blockID, 10);
 
@@ -88,7 +88,7 @@ public class BlockBasic extends Block
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(id == blockID && tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -104,7 +104,7 @@ public class BlockBasic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		if(blockID == Mekanism.basicBlockID)
 		{
@@ -141,7 +141,7 @@ public class BlockBasic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
+	public IIcon getBlockTexture(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -149,7 +149,7 @@ public class BlockBasic extends Block
 		{
 			if(metadata == 6)
 			{
-				TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+				TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 				if(side == 0 || side == 1)
 				{
@@ -169,7 +169,7 @@ public class BlockBasic extends Block
 			}
 			else if(metadata == 14)
 			{
-				TileEntitySalinationController tileEntity = (TileEntitySalinationController)world.getBlockTileEntity(x, y, z);
+				TileEntitySalinationController tileEntity = (TileEntitySalinationController)world.getTileEntity(x, y, z);
 
 				if(side == tileEntity.facing)
 				{
@@ -193,7 +193,7 @@ public class BlockBasic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		if(blockID == Mekanism.basicBlockID)
 		{
@@ -278,7 +278,7 @@ public class BlockBasic extends Block
 		{
 			if(meta == 9 || meta == 10 || meta == 11)
 			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
+				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
 
 				if(tileEntity != null)
 				{
@@ -315,7 +315,7 @@ public class BlockBasic extends Block
 		{
 			if(!world.isRemote && meta == 6)
 			{
-				TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
 				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
 
 				if(pos != null && pos.sideHit == bin.facing)
@@ -375,7 +375,7 @@ public class BlockBasic extends Block
 
 			if(metadata == 6)
 			{
-				TileEntityBin bin = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
 
 				if(bin.getItemCount() < bin.MAX_STORAGE)
 				{
@@ -413,9 +413,9 @@ public class BlockBasic extends Block
 			}
 			else if(metadata == 9 || metadata == 10 || metadata == 11)
 			{
-				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getBlockTileEntity(x, y, z)).structure != null)
+				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getTileEntity(x, y, z)).structure != null)
 				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getBlockTileEntity(x, y, z);
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
 
 					if(!manageInventory(entityplayer, tileEntity))
 					{
@@ -539,7 +539,7 @@ public class BlockBasic extends Block
 
 						if(!player.capabilities.isCreativeMode)
 						{
-							player.setCurrentItemOrArmor(0, new ItemStack(Item.bucketEmpty));
+							player.setCurrentItemOrArmor(0, new ItemStack(Items.bucketEmpty));
 						}
 
 						return true;
@@ -594,7 +594,7 @@ public class BlockBasic extends Block
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(tileEntity instanceof IActiveState)
@@ -672,9 +672,9 @@ public class BlockBasic extends Block
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		if(world.getBlockTileEntity(x, y, z) instanceof TileEntityBasicBlock)
+		if(world.getTileEntity(x, y, z) instanceof TileEntityBasicBlock)
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 			int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 			int height = Math.round(entityliving.rotationPitch);
 			int change = 3;
@@ -714,9 +714,9 @@ public class BlockBasic extends Block
 		world.markBlockForRenderUpdate(x, y, z);
 		world.updateAllLightTypes(x, y, z);
 
-		if(!world.isRemote && world.getBlockTileEntity(x, y, z) != null)
+		if(!world.isRemote && world.getTileEntity(x, y, z) != null)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -734,7 +734,7 @@ public class BlockBasic extends Block
 		{
 			if(ret.getItemDamage() == 6)
 			{
-				TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
 				InventoryBin inv = new InventoryBin(ret);
 
 				inv.setItemCount(tileEntity.getItemCount());
@@ -756,11 +756,11 @@ public class BlockBasic extends Block
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;

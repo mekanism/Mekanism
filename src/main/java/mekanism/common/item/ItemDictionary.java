@@ -23,7 +23,7 @@ public class ItemDictionary extends ItemMekanism
 	{
 		if(!player.isSneaking())
 		{
-			Block block = Block.blocksList[world.getBlockId(x, y, z)];
+			Block block = world.getBlock(x, y, z);
 
 			if(block != null)
 			{

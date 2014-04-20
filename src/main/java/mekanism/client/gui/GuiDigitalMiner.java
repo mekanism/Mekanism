@@ -21,6 +21,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -159,24 +160,24 @@ public class GuiDigitalMiner extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 69, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 69, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRenderer.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.idle"), 9, 10, 0x00CD00);
-		fontRenderer.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.idle"), 9, 10, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.eject") + ": " + MekanismUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.pull") + ": " + MekanismUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.silk") + ": " + MekanismUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + MekanismUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.pull") + ": " + MekanismUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.silk") + ": " + MekanismUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
-		fontRenderer.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
+		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
 		if(tileEntity.replaceStack != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), tileEntity.replaceStack, 144, 27);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.replaceStack, 144, 27);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -341,7 +342,7 @@ public class GuiDigitalMiner extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(stack.itemID != Block.bedrock.blockID)
+						if(Block.getBlockFromItem(stack.getItem()) == Blocks.bedrock)
 						{
 							toUse = stack.copy();
 							toUse.stackSize = 1;

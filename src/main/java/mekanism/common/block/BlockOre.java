@@ -5,10 +5,10 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockOre extends Block
 {
-	public Icon[] icons = new Icon[256];
+	public IIcon[] icons = new IIcon[256];
 
 	public BlockOre(int id)
 	{
@@ -34,7 +34,7 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 		icons[1] = register.registerIcon("mekanism:CopperOre");
@@ -43,7 +43,7 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		return icons[meta];
 	}

@@ -46,7 +46,7 @@ public class RenderTickHandler implements ITickHandler
 		if(mc.thePlayer != null && mc.theWorld != null)
 		{
 			EntityPlayer player = mc.thePlayer;
-			World world = mc.thePlayer.worldObj;
+			World world = mc.thePlayer.getWorldObj();
 
 			FontRenderer font = mc.fontRenderer;
 

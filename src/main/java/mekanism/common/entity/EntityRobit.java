@@ -188,7 +188,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 				}
-				else if(inventory[27].itemID == Item.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(inventory[27].itemID == Items.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
 					inventory[27].stackSize--;
@@ -355,7 +355,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		int y = MathHelper.floor_double(posY);
 		int z = MathHelper.floor_double(posZ);
 
-		if(worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityChargepad)
+		if(worldObj.getTileEntity(x, y, z) instanceof TileEntityChargepad)
 		{
 			return true;
 		}

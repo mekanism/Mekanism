@@ -2,68 +2,69 @@ package mekanism.tools.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 
 public class ItemMekanismPickaxe extends ItemMekanismTool
 {
 	private static Block blocksEffectiveAgainst[];
 
-	public ItemMekanismPickaxe(int id, EnumToolMaterial enumtoolmaterial)
+	public ItemMekanismPickaxe(ToolMaterial toolMaterial)
 	{
-		super(id, 2, enumtoolmaterial, blocksEffectiveAgainst);
+		super(2, toolMaterial, blocksEffectiveAgainst);
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block block)
+	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if(block == Block.obsidian)
+		if(block == Blocks.obsidian)
 		{
 			return toolMaterial.getHarvestLevel() == 3;
 		}
 
-		if(block == Block.blockDiamond || block == Block.oreDiamond)
+		if(block == Blocks.diamond_block || block == Blocks.diamond_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Block.blockGold || block == Block.oreGold)
+		if(block == Blocks.gold_block || block == Blocks.gold_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Block.blockIron || block == Block.oreIron)
+		if(block == Blocks.iron_block || block == Blocks.iron_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 1;
 		}
 
-		if(block == Block.blockLapis || block == Block.oreLapis)
+		if(block == Blocks.lapis_block || block == Blocks.lapis_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 1;
 		}
 
-		if(block == Block.oreRedstone || block == Block.oreRedstoneGlowing)
+		if(block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block.blockMaterial == Material.rock)
+		if(block.getMaterial() == Material.rock)
 		{
 			return true;
 		}
 
-		return block.blockMaterial == Material.iron;
+		return block.getMaterial() == Material.iron;
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack itemstack, Block block)
+	public float getDigSpeed(ItemStack itemstack, Block block, int meta)
 	{
-		if(block != null && (block.blockMaterial == Material.iron || block.blockMaterial == Material.anvil || block.blockMaterial == Material.rock))
+		if(block != null && (block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil || block.getMaterial() == Material.rock))
 		{
 			return efficiencyOnProperMaterial;
 		}
 		else {
-			return super.getStrVsBlock(itemstack, block);
+			return super.getDigSpeed(itemstack, block, meta);
 		}
 	}
 
@@ -71,9 +72,9 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
 	{
 		blocksEffectiveAgainst = (new Block[]
 				{
-					Block.cobblestone, Block.stoneSingleSlab, Block.stoneDoubleSlab, Block.stone, Block.sandStone, Block.cobblestoneMossy, Block.oreIron, Block.blockIron, Block.oreCoal, Block.blockGold,
-					Block.oreGold, Block.oreDiamond, Block.blockDiamond, Block.ice, Block.netherrack, Block.oreLapis, Block.blockLapis, Block.oreRedstone, Block.oreRedstoneGlowing, Block.rail,
-					Block.railDetector, Block.railPowered, Block.railActivator
+					Blocks.cobblestone, Blocks.stone_slab, Blocks.double_stone_slab, Blocks.stone, Blocks.sandstone, Blocks.mossy_cobblestone, Blocks.iron_ore, Blocks.iron_block, Blocks.coal_ore, Blocks.gold_block,
+					Blocks.gold_ore, Blocks.diamond_ore, Blocks.diamond_block, Blocks.ice, Blocks.netherrack, Blocks.lapis_ore, Blocks.lapis_block, Blocks.redstone_ore, Blocks.lit_redstone_ore, Blocks.rail,
+					Blocks.detector_rail, Blocks.golden_rail, Blocks.activator_rail
 				});
 	}
 }

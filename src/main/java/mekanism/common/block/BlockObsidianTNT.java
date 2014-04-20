@@ -5,13 +5,13 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockObsidianTNT extends Block
 {
-	public Icon[] icons = new Icon[256];
+	public IIcon[] icons = new IIcon[256];
 
 	public BlockObsidianTNT(int id)
 	{
@@ -29,7 +29,7 @@ public class BlockObsidianTNT extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
@@ -77,7 +77,7 @@ public class BlockObsidianTNT extends Block
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
 	{
-		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Item.flintAndSteel.itemID)
+		if(entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().itemID == Items.flintAndSteel.itemID)
 		{
 			explode(world, x, y, z);
 			world.setBlockToAir(x, y, z);

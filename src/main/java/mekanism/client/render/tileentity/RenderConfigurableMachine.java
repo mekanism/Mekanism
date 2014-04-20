@@ -52,7 +52,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 		TileEntity tileEntity = (TileEntity)configurable;
 		EntityPlayer player = mc.thePlayer;
-		World world = mc.thePlayer.worldObj;
+		World world = mc.thePlayer.getWorldObj();
 		ItemStack itemStack = player.getCurrentEquippedItem();
 		MovingObjectPosition pos = player.rayTrace(8.0D, 1.0F);
 
@@ -62,7 +62,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 			int yPos = MathHelper.floor_double(pos.blockY);
 			int zPos = MathHelper.floor_double(pos.blockZ);
 
-			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.worldObj.provider.dimensionId);
+			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
 
 			if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
 			{
@@ -111,7 +111,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.stone;
+		toReturn.baseBlock = Blocks.stone;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(color));
 
 		DisplayInteger display = DisplayInteger.createAndStart();

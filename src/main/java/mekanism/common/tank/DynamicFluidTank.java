@@ -32,7 +32,7 @@ public class DynamicFluidTank implements IFluidTank
 	@Override
 	public int fill(FluidStack resource, boolean doFill)
 	{
-		if(dynamicTank.structure != null && !dynamicTank.worldObj.isRemote)
+		if(dynamicTank.structure != null && !dynamicTank.getWorldObj().isRemote)
 		{
 			if(resource == null || resource.fluidID <= 0)
 			{
@@ -139,7 +139,7 @@ public class DynamicFluidTank implements IFluidTank
 	@Override
 	public FluidStack drain(int maxDrain, boolean doDrain)
 	{
-		if(dynamicTank.structure != null && !dynamicTank.worldObj.isRemote)
+		if(dynamicTank.structure != null && !dynamicTank.getWorldObj().isRemote)
 		{
 			if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.fluidID <= 0)
 			{

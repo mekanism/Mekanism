@@ -24,7 +24,7 @@ public class ItemNetworkReader extends ItemEnergized
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof IGridTransmitter)
 			{

@@ -6,7 +6,7 @@ import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -26,14 +26,14 @@ public class BlockBounding extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
-			return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
 		} catch(Exception e) {
 			return false;
 		}
@@ -43,19 +43,19 @@ public class BlockBounding extends Block
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
-			return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
 		} catch(Exception e) {
 			return null;
 		}
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
-			return Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].removeBlockByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
 		} catch(Exception e) {
 			return false;
 		}
@@ -65,7 +65,7 @@ public class BlockBounding extends Block
 	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
 			tileEntity.onNeighborChange(id);
 			Block.blocksList[world.getBlockId(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ)].onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, id);
 		} catch(Exception e) {}

@@ -90,7 +90,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		oreDictText = new GuiTextField(fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
+		oreDictText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
 		oreDictText.setMaxStringLength(12);
 		oreDictText.setFocused(true);
 	}
@@ -157,16 +157,16 @@ public class GuiMOreDictFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString((isNew ? "New" : "Edit") + " OreDict Filter", 43, 6, 0x404040);
-		fontRenderer.drawString("Status: " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
+		fontRendererObj.drawString((isNew ? "New" : "Edit") + " OreDict Filter", 43, 6, 0x404040);
+		fontRendererObj.drawString("Status: " + status, 35, 20, 0x00CD00);
+		fontRendererObj.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
 
 		if(renderStack != null)
 		{
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 12, 19);
+				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 12, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}

@@ -54,7 +54,7 @@ public class TileSound extends Sound
 		{
 			return false;
 		}
-		else if(world.getBlockTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) != tileEntity)
+		else if(world.getTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) != tileEntity)
 		{
 			return false;
 		}

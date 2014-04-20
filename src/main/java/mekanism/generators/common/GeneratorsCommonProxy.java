@@ -40,7 +40,6 @@ public class GeneratorsCommonProxy
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-		MekanismGenerators.generatorID = Mekanism.configuration.getBlock("Generator", 3010).getInt();
 		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 400D).getDouble(400D);
 		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 250D).getDouble(250D);
 		MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
@@ -76,7 +75,7 @@ public class GeneratorsCommonProxy
 	 */
 	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		switch(ID)
 		{

@@ -22,13 +22,13 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -43,9 +43,9 @@ public class MekanismRenderer
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	
-	public static Icon[] colors = new Icon[256];
+	public static IIcon[] colors = new IIcon[256];
 	
-	public static Icon energyIcon;
+	public static IIcon energyIcon;
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -58,7 +58,7 @@ public class MekanismRenderer
 		MinecraftForge.EVENT_BUS.register(new MekanismRenderer());
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
 		if(event.map.textureType == 0)
@@ -109,11 +109,11 @@ public class MekanismRenderer
 		public double maxY;
 		public double maxZ;
 		
-		public Icon[] textures = new Icon[6];
+		public IIcon[] textures = new IIcon[6];
 		
 		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
-		public Block baseBlock = Block.sand;
+		public Block baseBlock = Blocks.sand;
 		
 	    public final void setBlockBounds(float xNeg, float yNeg, float zNeg, float xPos, float yPos, float zPos)
 	    {
@@ -135,17 +135,17 @@ public class MekanismRenderer
 			return renderSides[side.ordinal()];
 		}
 
-		public Icon getBlockTextureFromSide(int i) 
+		public IIcon getBlockTextureFromSide(int i)
 		{
 			return textures[i];
 		}
 		
-		public void setTexture(Icon tex)
+		public void setTexture(IIcon tex)
 		{
 			Arrays.fill(textures, tex);
 		}
 		
-		public void setTextures(Icon down, Icon up, Icon north, Icon south, Icon west, Icon east)
+		public void setTextures(IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east)
 		{
 			textures[0] = down;
 			textures[1] = up;
@@ -210,7 +210,7 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static Icon getColorIcon(EnumColor color)
+	public static IIcon getColorIcon(EnumColor color)
 	{
 		return colors[color.ordinal()];
 	}
@@ -287,7 +287,7 @@ public class MekanismRenderer
      */
     public static void renderItem(ItemStack item)
     {
-		Icon icon = item.getItem().getIconIndex(item);
+		IIcon icon = item.getItem().getIconIndex(item);
 		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
 
         if(icon == null)
@@ -312,7 +312,7 @@ public class MekanismRenderer
         GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
         
-        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
+        RenderManager.instance.itemRender.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }

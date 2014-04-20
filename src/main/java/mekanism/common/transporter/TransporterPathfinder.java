@@ -234,13 +234,13 @@ public final class TransporterPathfinder
 			}
 		};
 
-		InventoryFinder d = new InventoryFinder(start.getTile().worldObj, Coord4D.get(start.getTile()), stack);
+		InventoryFinder d = new InventoryFinder(start.getTile().getWorldObj(), Coord4D.get(start.getTile()), stack);
 		Set<Coord4D> destsFound = d.find();
 		List<Destination> paths = new ArrayList<Destination>();
 
 		for(Coord4D obj : destsFound)
 		{
-			Pathfinder p = new Pathfinder(checker, start.getTile().worldObj, obj, Coord4D.get(start.getTile()), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), obj, Coord4D.get(start.getTile()), stack);
 
 			if(p.getPath().size() >= 2)
 			{
@@ -504,7 +504,7 @@ public final class TransporterPathfinder
 				}
 			};
 
-			Pathfinder p = new Pathfinder(checker, start.getTile().worldObj, stack.homeLocation, Coord4D.get(start.getTile()), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), stack.homeLocation, Coord4D.get(start.getTile()), stack);
 			List<Coord4D> path = p.getPath();
 
 			if(path.size() >= 2)
@@ -513,14 +513,14 @@ public final class TransporterPathfinder
 				return path;
 			}
 			else {
-				if(stack.homeLocation.getTileEntity(start.getTile().worldObj) == null)
+				if(stack.homeLocation.getTileEntity(start.getTile().getWorldObj()) == null)
 				{
 					stack.homeLocation = null;
 				}
 			}
 		}
 
-		IdlePath d = new IdlePath(start.getTile().worldObj, Coord4D.get(start.getTile()), stack);
+		IdlePath d = new IdlePath(start.getTile().getWorldObj(), Coord4D.get(start.getTile()), stack);
 		List<Coord4D> path = d.find();
 		stack.pathType = Path.NONE;
 

@@ -92,7 +92,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		oreDictText = new GuiTextField(fontRenderer, guiWidth + 35, guiHeight + 47, 95, 12);
+		oreDictText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
 		oreDictText.setMaxStringLength(12);
 		oreDictText.setFocused(true);
 	}
@@ -159,16 +159,16 @@ public class GuiTOreDictFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
+		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRendererObj.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
 
 		if(renderStack != null)
 		{
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), renderStack, 12, 19);
+				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 12, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
@@ -182,7 +182,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRenderer.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

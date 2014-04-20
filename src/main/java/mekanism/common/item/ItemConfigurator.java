@@ -62,7 +62,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tile = world.getBlockTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(x, y, z);
 
 			if(tile instanceof IConfigurable)
 			{
@@ -290,7 +290,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.getTagCompound().setCompoundTag("position", obj.write(new NBTTagCompound()));
+		itemStack.getTagCompound().setTag("position", obj.write(new NBTTagCompound()));
 	}
 
 	public void clearLink(ItemStack itemStack)
@@ -307,7 +307,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	@Override
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
-		return !(player.worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityBasicBlock);
+		return !(player.getWorldObj().getTileEntity(x, y, z) instanceof TileEntityBasicBlock);
 	}
 
 	@Override

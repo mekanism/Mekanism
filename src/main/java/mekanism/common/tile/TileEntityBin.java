@@ -229,17 +229,17 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(bottomStack != null)
 		{
-			nbtTags.setCompoundTag("bottomStack", bottomStack.writeToNBT(new NBTTagCompound()));
+			nbtTags.setTag("bottomStack", bottomStack.writeToNBT(new NBTTagCompound()));
 		}
 
 		if(topStack != null)
 		{
-			nbtTags.setCompoundTag("topStack", topStack.writeToNBT(new NBTTagCompound()));
+			nbtTags.setTag("topStack", topStack.writeToNBT(new NBTTagCompound()));
 		}
 
 		if(getItemCount() > 0)
 		{
-			nbtTags.setCompoundTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
+			nbtTags.setTag("itemType", itemType.writeToNBT(new NBTTagCompound()));
 		}
 	}
 

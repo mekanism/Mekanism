@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,7 +26,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -41,7 +41,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	@Override
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float posX, float posY, float posZ)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof TileEntityChargepad)
 		{

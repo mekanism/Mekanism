@@ -47,7 +47,7 @@ public class GuiRobitMain extends GuiMekanism
 	{
 		if(nameChangeField.getText() != null && !nameChangeField.getText().isEmpty())
 		{
-			PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.NAME, nameChangeField.getText(), robit.entityId));
+			PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.NAME, nameChangeField.getText(), robit.getEntityId()));
 			toggleNameChange();
 			nameChangeField.setText("");
 		}
@@ -74,7 +74,7 @@ public class GuiRobitMain extends GuiMekanism
 		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, MekanismUtils.localize("gui.confirm")));
 		confirmName.drawButton = displayNameChange;
 
-		nameChangeField = new GuiTextField(fontRenderer, guiWidth + 48, guiHeight + 21, 80, 12);
+		nameChangeField = new GuiTextField(fontRendererObj, guiWidth + 48, guiHeight + 21, 80, 12);
 		nameChangeField.setMaxStringLength(12);
 		nameChangeField.setFocused(true);
 	}
@@ -103,16 +103,16 @@ public class GuiRobitMain extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRenderer.drawString(MekanismUtils.localize("gui.robit"), 76, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.robit"), 76, 6, 0x404040);
 
 		if(!displayNameChange)
 		{
 			CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-			fontRenderer.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
-			fontRenderer.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
-			fontRenderer.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
-			fontRenderer.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
-			fontRenderer.drawString("Owner: " + owner, 29, 63-4, 0x00CD00);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.robit.greeting") + " " + robit.getTranslatedEntityName() + "!", 29, 18, 0x00CD00);
+			fontRendererObj.drawString("Energy: " + MekanismUtils.getEnergyDisplay(robit.getEnergy()), 29, 36-4, 0x00CD00);
+			fontRendererObj.drawString("Following: " + robit.getFollowing(), 29, 45-4, 0x00CD00);
+			fontRendererObj.drawString("Drop pickup: " + robit.getDropPickup(), 29, 54-4, 0x00CD00);
+			fontRendererObj.drawString("Owner: " + owner, 29, 63-4, 0x00CD00);
 		}
 
 		int xAxis = (mouseX - (width - xSize) / 2);
@@ -272,31 +272,31 @@ public class GuiRobitMain extends GuiMekanism
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 1, robit.entityId));
-				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.entityId, 0, 0);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 1, robit.getEntityId()));
+				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 2, robit.entityId));
-				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.entityId, 0, 0);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 2, robit.getEntityId()));
+				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 3, robit.entityId));
-				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.entityId, 0, 0);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 3, robit.getEntityId()));
+				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 4, robit.entityId));
-				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.entityId, 0, 0);
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GUI, 4, robit.getEntityId()));
+				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.FOLLOW, robit.entityId));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.FOLLOW, robit.getEntityId()));
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 			{
@@ -306,13 +306,13 @@ public class GuiRobitMain extends GuiMekanism
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GO_HOME, robit.entityId));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.GO_HOME, robit.getEntityId()));
 				mc.displayGuiScreen(null);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 			{
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.DROP_PICKUP, robit.entityId));
+				PacketHandler.sendPacket(Transmission.SERVER, new PacketRobit().setParams(RobitPacketType.DROP_PICKUP, robit.getEntityId()));
 			}
 		}
 	}

@@ -298,7 +298,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 	}
 
 	/**

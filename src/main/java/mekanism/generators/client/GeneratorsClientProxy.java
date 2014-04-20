@@ -41,7 +41,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 	@Override
 	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		switch(ID)
 		{

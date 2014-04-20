@@ -752,8 +752,8 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
     {
         super.writeToNBT(nbtTags);
         
-        nbtTags.setCompoundTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
-        nbtTags.setCompoundTag("brineTank", brineTank.writeToNBT(new NBTTagCompound()));
+        nbtTags.setTag("waterTank", waterTank.writeToNBT(new NBTTagCompound()));
+        nbtTags.setTag("brineTank", brineTank.writeToNBT(new NBTTagCompound()));
         
         nbtTags.setFloat("temperature", temperature);
         

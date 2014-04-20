@@ -24,7 +24,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -78,7 +78,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		return TransmissionType.ITEM;
 	}
 
-	public static void registerIcons(IconRegister register)
+	public static void registerIcons(IIconRegister register)
 	{
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
 		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterSide", "RestrictiveTransporterSide"});
@@ -156,13 +156,13 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return transporterIcons.getCenterIcon(0);
 	}
 
 	@Override
-	public Icon getSideIcon()
+	public IIcon getSideIcon()
 	{
 		return transporterIcons.getSideIcon(0);
 	}

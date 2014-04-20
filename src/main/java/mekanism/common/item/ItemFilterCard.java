@@ -34,7 +34,7 @@ public class ItemFilterCard extends ItemMekanism
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			
 			if(tileEntity instanceof IFilterAccess)
 			{
@@ -80,7 +80,7 @@ public class ItemFilterCard extends ItemMekanism
 
 		if(data != null)
 		{
-			itemstack.stackTagCompound.setCompoundTag("data", data);
+			itemstack.stackTagCompound.setTag("data", data);
 		}
 		else {
 			itemstack.stackTagCompound.removeTag("data");

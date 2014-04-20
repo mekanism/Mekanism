@@ -52,7 +52,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 
 	public void onNeighborChange(int id)
 	{
-		TileEntity tile = worldObj.getBlockTileEntity(mainX, mainY, mainZ);
+		TileEntity tile = worldObj.getTileEntity(mainX, mainY, mainZ);
 
 		if(tile instanceof TileEntityBasicBlock)
 		{
@@ -71,7 +71,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				}
 
 				prevPower = power;
-				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.worldObj.provider.dimensionId);
+				PacketHandler.sendPacket(Transmission.CLIENTS_DIM, new PacketTileEntity().setParams(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.getWorldObj().provider.dimensionId);
 			}
 		}
 	}

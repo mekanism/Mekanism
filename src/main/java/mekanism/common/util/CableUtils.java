@@ -46,7 +46,7 @@ public final class CableUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isEnergyAcceptor(acceptor))
 			{
@@ -76,7 +76,7 @@ public final class CableUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity cable = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity cable = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isCable(cable))
 			{
@@ -115,7 +115,7 @@ public final class CableUtils
 
 		for(ForgeDirection side : sides)
 		{
-			TileEntity tile = coord.getFromSide(side).getTileEntity(tileEntity.worldObj);
+			TileEntity tile = coord.getFromSide(side).getTileEntity(tileEntity.getWorldObj());
 
 			connectable[side.ordinal()] |= isEnergyAcceptor(tile) && isConnectable(tileEntity, tile, side);
 			connectable[side.ordinal()] |= isCable(tile);
@@ -136,7 +136,7 @@ public final class CableUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity outputter = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity outputter = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isOutputter(tileEntity, orientation))
 			{
@@ -168,7 +168,7 @@ public final class CableUtils
 			return false;
 		}
 
-		TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
+		TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
 
 		return isConnectable(tile, tileEntity, side);
 	}
@@ -221,7 +221,7 @@ public final class CableUtils
 
 	public static void emit(TileEntityElectricBlock emitter)
 	{
-		if(!emitter.worldObj.isRemote && MekanismUtils.canFunction(emitter))
+		if(!emitter.getWorldObj().isRemote && MekanismUtils.canFunction(emitter))
 		{
 			double sendingEnergy = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
@@ -271,7 +271,7 @@ public final class CableUtils
 
 		for(ForgeDirection side : outputtingSides)
 		{
-			TileEntity tileEntity = Coord4D.get(emitter).getFromSide(side).getTileEntity(emitter.worldObj);
+			TileEntity tileEntity = Coord4D.get(emitter).getFromSide(side).getTileEntity(emitter.getWorldObj());
 			double toSend = splitSend+remains;
 			remains = 0;
 

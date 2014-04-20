@@ -54,18 +54,18 @@ public class GuiWindTurbine extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRenderer.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.power") + ": " + MekanismGenerators.windGeneration*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.power") + ": " + MekanismGenerators.windGeneration*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
 
 		int size = 44;
 
-		if(!tileEntity.worldObj.canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
+		if(!tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
 		{
 			size += 9;
-			fontRenderer.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);
+			fontRendererObj.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);
 		}
 	}
 

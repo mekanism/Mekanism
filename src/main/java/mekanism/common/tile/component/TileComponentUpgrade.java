@@ -42,7 +42,7 @@ public class TileComponentUpgrade implements ITileComponent
 	@Override
 	public void tick()
 	{
-		if(!tileEntity.worldObj.isRemote)
+		if(!tileEntity.getWorldObj().isRemote)
 		{
 			if(tileEntity.inventory[upgradeSlot] != null)
 			{

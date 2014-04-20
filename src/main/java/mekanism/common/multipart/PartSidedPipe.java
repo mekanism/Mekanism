@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
@@ -42,7 +42,7 @@ import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import codechicken.multipart.IconHitEffects;
+import codechicken.multipart.IIconHitEffects;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
@@ -132,9 +132,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return (connections & tester) > 0;
 	}
 
-	public abstract Icon getCenterIcon();
+	public abstract IIcon getCenterIcon();
 
-	public abstract Icon getSideIcon();
+	public abstract IIcon getSideIcon();
 
 	@Override
 	public void update()
@@ -159,7 +159,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 
-	public Icon getIconForSide(ForgeDirection side)
+	public IIcon getIconForSide(ForgeDirection side)
 	{
 		ConnectionType type = getConnectionType(side);
 
@@ -281,13 +281,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public Icon getBreakingIcon(Object subPart, int side)
+	public IIcon getBreakingIcon(Object subPart, int side)
 	{
 		return getCenterIcon();
 	}
 
 	@Override
-	public Icon getBrokenIcon(int side)
+	public IIcon getBrokenIcon(int side)
 	{
 		return getCenterIcon();
 	}
@@ -323,13 +323,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
 	{
-		IconHitEffects.addHitEffects(this, hit, effectRenderer);
+		IIconHitEffects.addHitEffects(this, hit, effectRenderer);
 	}
 
 	@Override
 	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
 	{
-		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
+		IIconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
 
 	public abstract boolean isValidAcceptor(TileEntity tile, ForgeDirection side);

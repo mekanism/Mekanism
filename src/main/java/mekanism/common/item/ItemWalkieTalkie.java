@@ -3,18 +3,18 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemWalkieTalkie extends ItemMekanism
 {
-	public Icon[] icons = new Icon[256];
+	public IIcon[] icons = new IIcon[256];
 
 	public ItemWalkieTalkie(int id)
 	{
@@ -32,7 +32,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public Icon getIconIndex(ItemStack itemStack)
+	public IIcon getIconIndex(ItemStack itemStack)
 	{
 		if(!getOn(itemStack))
 		{
@@ -43,7 +43,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:WalkieTalkieOff");
 

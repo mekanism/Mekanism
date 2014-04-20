@@ -52,7 +52,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 		int i = (width - xSize) / 2;
 		int j = (height - ySize) / 2;
 
-		itemNameField = new GuiTextField(fontRenderer, i + 62, j + 24, 103, 12);
+		itemNameField = new GuiTextField(fontRendererObj, i + 62, j + 24, 103, 12);
 		itemNameField.setTextColor(-1);
 		itemNameField.setDisabledTextColour(-1);
 		itemNameField.setEnableBackgroundDrawing(false);
@@ -73,7 +73,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
 		GL11.glDisable(GL11.GL_LIGHTING);
-		fontRenderer.drawString(MekanismUtils.localize("container.repair"), 60, 6, 4210752);
+		fontRendererObj.drawString(MekanismUtils.localize("container.repair"), 60, 6, 4210752);
 
 		if(repairContainer.maximumCost > 0)
 		{
@@ -98,21 +98,21 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 			if(flag)
 			{
 				int l = -16777216 | (k & 16579836) >> 2 | k & -16777216;
-				int i1 = (xSize - 25) - 8 - fontRenderer.getStringWidth(s);
+				int i1 = (xSize - 25) - 8 - fontRendererObj.getStringWidth(s);
 				byte b0 = 67;
 
-				if(fontRenderer.getUnicodeFlag())
+				if(fontRendererObj.getUnicodeFlag())
 				{
 					drawRect(i1 - 3, b0 - 2, (xSize - 25) - 7, b0 + 10, -16777216);
 					drawRect(i1 - 2, b0 - 1, (xSize - 25) - 8, b0 + 9, -12895429);
 				}
 				else {
-					fontRenderer.drawString(s, i1, b0 + 1, l);
-					fontRenderer.drawString(s, i1 + 1, b0, l);
-					fontRenderer.drawString(s, i1 + 1, b0 + 1, l);
+					fontRendererObj.drawString(s, i1, b0 + 1, l);
+					fontRendererObj.drawString(s, i1 + 1, b0, l);
+					fontRendererObj.drawString(s, i1 + 1, b0 + 1, l);
 				}
 
-				fontRenderer.drawString(s, i1, b0, k);
+				fontRendererObj.drawString(s, i1, b0, k);
 			}
 		}
 

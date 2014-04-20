@@ -3,17 +3,17 @@ package mekanism.tools.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
 public class ItemMekanismSword extends ItemSword
 {
-	public ItemMekanismSword(int id, EnumToolMaterial enumtoolmaterial)
+	public ItemMekanismSword(ToolMaterial enumtoolmaterial)
 	{
-		super(id, enumtoolmaterial);
+		super(enumtoolmaterial);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -24,7 +24,7 @@ public class ItemMekanismSword extends ItemSword
 	}
 
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}

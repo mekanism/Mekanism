@@ -70,7 +70,7 @@ public class GuiPasswordEnter extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, MekanismUtils.localize("gui.open")));
 
-		passwordField = new GuiTextField(fontRenderer, guiWidth + 45, guiHeight + 50, 80, 12);
+		passwordField = new GuiTextField(fontRendererObj, guiWidth + 45, guiHeight + 50, 80, 12);
 		passwordField.setMaxStringLength(12);
 		passwordField.setFocused(true);
 	}
@@ -172,9 +172,9 @@ public class GuiPasswordEnter extends GuiScreen
 
 		super.drawScreen(mouseX, mouseY, partialTick);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
-		fontRenderer.drawString("Enter:", guiWidth + 45, guiHeight + 40, 0x404040);
-		fontRenderer.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
+		fontRendererObj.drawString("Enter:", guiWidth + 45, guiHeight + 40, 0x404040);
+		fontRendererObj.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
 
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_CULL_FACE);

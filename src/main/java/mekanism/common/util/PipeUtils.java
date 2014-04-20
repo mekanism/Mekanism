@@ -25,7 +25,7 @@ public final class PipeUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity pipe = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity pipe = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(TransmissionType.checkTransmissionType(pipe, TransmissionType.FLUID))
 			{
@@ -101,7 +101,7 @@ public final class PipeUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.worldObj);
+			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IGridTransmitter))
 			{

@@ -494,8 +494,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		}
 
-		nbtTags.setCompoundTag("leftTank", leftTank.write(new NBTTagCompound()));
-		nbtTags.setCompoundTag("rightTank", rightTank.write(new NBTTagCompound()));
+		nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
+		nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
 
 		nbtTags.setBoolean("dumpLeft", dumpLeft);
 		nbtTags.setBoolean("dumpRight", dumpRight);

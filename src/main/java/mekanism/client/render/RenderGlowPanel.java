@@ -30,13 +30,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -54,23 +54,23 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
 import codechicken.lib.render.IVertexModifier;
-import codechicken.lib.render.IconTransformation;
+import codechicken.lib.render.IIconTransformation;
 import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TextureUtils.IIconRegister;
+import codechicken.lib.render.TextureUtils.IIIconRegister;
 import codechicken.lib.render.UV;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Transformation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 
-public class RenderGlowPanel implements IIconRegister
+public class RenderGlowPanel implements IIIconRegister
 {
 	public static RenderGlowPanel INSTANCE;
 
 	public static CCModel[] frameModels;
 	public static CCModel[] lightModels;
 
-	public static Icon icon;
+	public static IIcon icon;
 
 	public static RenderGlowPanel getInstance()
 	{
@@ -117,9 +117,9 @@ public class RenderGlowPanel implements IIconRegister
 		Colour colour = new ColourRGBA(panel.colour.getColor(0), panel.colour.getColor(1), panel.colour.getColor(2), 1);
 		int side = panel.side.ordinal();
 
-		frameModels[side].render(0, frameModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), null);
+		frameModels[side].render(0, frameModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IIconTransformation(icon), null);
 
-		lightModels[side].render(0, lightModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), new ColourMultiplier(colour));
+		lightModels[side].render(0, lightModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IIconTransformation(icon), new ColourMultiplier(colour));
 	}
 
 	public void renderItem(int metadata)
@@ -134,14 +134,14 @@ public class RenderGlowPanel implements IIconRegister
 		Colour white = new ColourRGBA(1.0, 1.0, 1.0, 1.0);
 		for(int i=4;i<5;i++){
 
-		frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(white));
-		lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
+		frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IIconTransformation(icon), new ColourMultiplier(white));
+		lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IIconTransformation(icon), new ColourMultiplier(colour));
 		}
 		CCRenderState.draw();
 	}
 
 	@Override
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icon = register.registerIcon("mekanism:models/GlowPanel");
 	}

@@ -3,7 +3,7 @@ package mekanism.api;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class MekanismAPI

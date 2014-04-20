@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,7 +26,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -48,7 +48,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)
@@ -244,7 +244,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		return IC2ItemManager.getManager(this);
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onEntityAttacked(LivingAttackEvent event)
 	{
 		EntityLivingBase base = event.entityLiving;

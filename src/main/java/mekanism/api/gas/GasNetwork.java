@@ -16,7 +16,7 @@ import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 /**

@@ -318,9 +318,9 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setCompoundTag("inputFluidTank", inputFluidTank.writeToNBT(new NBTTagCompound()));
-		nbtTags.setCompoundTag("inputGasTank", inputGasTank.write(new NBTTagCompound()));
-		nbtTags.setCompoundTag("outputGasTank", outputGasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("inputFluidTank", inputFluidTank.writeToNBT(new NBTTagCompound()));
+		nbtTags.setTag("inputGasTank", inputGasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("outputGasTank", outputGasTank.write(new NBTTagCompound()));
 	}
 
 	@Override

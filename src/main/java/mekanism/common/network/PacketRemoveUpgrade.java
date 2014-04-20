@@ -43,7 +43,7 @@ public class PacketRemoveUpgrade implements IMekanismPacket
 
 		byte type = dataStream.readByte();
 
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof IUpgradeManagement && tileEntity instanceof TileEntityBasicBlock)
 		{

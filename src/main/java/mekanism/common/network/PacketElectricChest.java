@@ -110,7 +110,7 @@ public class PacketElectricChest implements IMekanismPacket
 					int y = dataStream.readInt();
 					int z = dataStream.readInt();
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getBlockTileEntity(x, y, z);
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
 
 					if(energy)
 					{
@@ -174,7 +174,7 @@ public class PacketElectricChest implements IMekanismPacket
 					int y = dataStream.readInt();
 					int z = dataStream.readInt();
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getBlockTileEntity(x, y, z);
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
 					tileEntity.password = pass;
 					tileEntity.authenticated = true;
 				}
@@ -204,7 +204,7 @@ public class PacketElectricChest implements IMekanismPacket
 					int y = dataStream.readInt();
 					int z = dataStream.readInt();
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getBlockTileEntity(x, y, z);
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
 					tileEntity.locked = lock;
 				}
 				else {

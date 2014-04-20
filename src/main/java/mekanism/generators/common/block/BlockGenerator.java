@@ -5,7 +5,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.*;
-import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
@@ -15,11 +14,12 @@ import mekanism.generators.common.tile.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -46,27 +46,27 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 {
 	public Random machineRand = new Random();
 
-	public BlockGenerator(int id)
+	public BlockGenerator()
 	{
-		super(id, Material.iron);
+		super(Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
-	public void registerIcons(IconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) {}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(id);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
 			}
 		}
 	}
@@ -74,7 +74,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
@@ -115,7 +115,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 		{
@@ -136,7 +136,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item i, CreativeTabs creativetabs, List list)
 	{
 		list.add(new ItemStack(i, 1, 0));
 		list.add(new ItemStack(i, 1, 1));
@@ -151,7 +151,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 		if(MekanismUtils.isActive(world, x, y, z))
 		{
 			float xRandom = (float)x + 0.5F;
@@ -230,47 +230,47 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		{
 			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
 
-			int idSum = 0;
-			idSum += world.getBlockId(x, y, z);
+			boolean nonAir = false;
+			nonAir |= world.isAirBlock(x, y, z);
 
 			for(int xPos=-1;xPos<=2;xPos++)
 			{
 				for(int zPos=-1;zPos<=2;zPos++)
 				{
-					idSum += world.getBlockId(x+xPos, y+2, z+zPos);
+					nonAir |= world.isAirBlock(x+xPos, y+2, z+zPos);
 				}
 			}
 
-			return (idSum == 0) && canPlace;
+			return (!nonAir) && canPlace;
 		}
 		else if(world.getBlockMetadata(x, y, z) == GeneratorType.WIND_TURBINE.meta)
 		{
 			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
 
-			int idSum = 0;
+			boolean nonAir = false;
 
 			for(int yPos = y+1; yPos <= y+4; yPos++)
 			{
-				idSum += world.getBlockId(x, yPos, z);
+				nonAir |= world.isAirBlock(x, yPos, z);
 			}
 
-			return (idSum == 0) && canPlace;
+			return (!nonAir) && canPlace;
 		}
 
 		return super.canPlaceBlockAt(world, x, y, z);
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int i1, int i2)
+	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
 
-		super.breakBlock(world, x, y, z, i1, i2);
+		super.breakBlock(world, x, y, z, block, meta);
 	}
 
 	@Override
@@ -286,7 +286,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			return true;
 		}
 
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
@@ -320,14 +320,14 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				}
 
 				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, blockID);
+				world.notifyBlocksOfNeighborChange(x, y, z, this);
 				return true;
 			}
 		}
 
 		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(MekanismGenerators.Generator, 1, 2)))
 		{
-			if(((TileEntityBasicBlock)world.getBlockTileEntity(x, y, z)).facing != facing)
+			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != facing)
 			{
 				return false;
 			}
@@ -365,9 +365,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	}
 
 	@Override
-	public int idDropped(int i, Random random, int j)
+	public Item getItemDropped(int i, Random random, int j)
 	{
-		return 0;
+		//TODO ????
+		return null;
 	}
 
 	@Override
@@ -391,7 +392,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/
 	@Override
-	public TileEntity createNewTileEntity(World world)
+	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return null;
 	}
@@ -411,11 +412,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
-			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -433,7 +434,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z));
 
 		if(tileEntity == null)
@@ -485,7 +486,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		if(!world.isRemote)
 		{
@@ -497,7 +498,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	}
 
 	@Override
-	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 

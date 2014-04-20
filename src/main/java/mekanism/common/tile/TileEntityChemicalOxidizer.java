@@ -281,7 +281,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("operatingTicks", operatingTicks);
-		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 	}
 
 	@Override

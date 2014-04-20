@@ -14,10 +14,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -62,7 +62,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public Icon getIconFromDamage(int i)
+	public IIcon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -83,9 +83,9 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				isMonitoring = true;
 
-				if(world.getBlockTileEntity(x, y, z) != null)
+				if(world.getTileEntity(x, y, z) != null)
 				{
-					TileEntity tile = world.getBlockTileEntity(x, y, z);
+					TileEntity tile = world.getTileEntity(x, y, z);
 					NBTTagCompound tag = new NBTTagCompound();
 
 					tile.writeToNBT(tag);
@@ -101,7 +101,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				isMonitoring = false;
 
-				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
 
 				if(tileEntity != null)
 				{
@@ -127,7 +127,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 		if(place)
 		{
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
 
 			if(tileEntity != null)
 			{
@@ -145,7 +145,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setCompoundTag("blockData", data.write(new NBTTagCompound()));
+		itemstack.stackTagCompound.setTag("blockData", data.write(new NBTTagCompound()));
 	}
 
 	public BlockData getBlockData(ItemStack itemstack)
@@ -158,7 +158,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 		return BlockData.read(itemstack.stackTagCompound.getCompoundTag("blockData"));
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinWorldEvent event)
 	{
 		if(event.entity instanceof EntityItem && isMonitoring)

@@ -47,6 +47,7 @@ import mekanism.common.tile.TileEntityElectricChest;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -242,7 +243,7 @@ public final class MekanismUtils
 			return Mekanism.teleporters.get(teleCode).get(0);
 		}
 		else {
-			int dimensionId = player.worldObj.provider.dimensionId;
+			int dimensionId = player.getWorldObj().provider.dimensionId;
 
 			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
 			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
@@ -342,7 +343,7 @@ public final class MekanismUtils
 	 */
 	public static void doFakeEntityExplosion(EntityPlayer entityplayer)
 	{
-		World world = entityplayer.worldObj;
+		World world = entityplayer.getWorldObj();
 		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
 	}
@@ -427,7 +428,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isActive(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = (TileEntity)world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = (TileEntity)world.getTileEntity(x, y, z);
 
 		if(tileEntity != null)
 		{
@@ -591,7 +592,7 @@ public final class MekanismUtils
 		TileEntity tile = (TileEntity)config;
 		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.worldObj.notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
+		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
 	}
 
 	/**
@@ -616,7 +617,7 @@ public final class MekanismUtils
 		TileEntity tile = (TileEntity)config;
 		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.worldObj.notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
+		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
 	}
 
 	/**
@@ -667,7 +668,7 @@ public final class MekanismUtils
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityBoundingBlock)world.getTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
 		}
 	}
 
@@ -685,7 +686,7 @@ public final class MekanismUtils
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)world.getBlockTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityAdvancedBoundingBlock)world.getTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
 		}
 	}
 
@@ -698,12 +699,12 @@ public final class MekanismUtils
 	 */
 	public static void updateBlock(World world, int x, int y, int z)
 	{
-		if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).renderUpdate())
+		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).renderUpdate())
 		{
 			world.markBlockForRenderUpdate(x, y, z);
 		}
 
-		if(!(world.getBlockTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getBlockTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
+		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
 		{
 			world.updateAllLightTypes(x, y, z);
 		}
@@ -740,17 +741,17 @@ public final class MekanismUtils
 			return null;
 		}
 
-		if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta == 0)
+		if((id == Blocks.waterStill.blockID || id == Blocks.waterMoving.blockID) && meta == 0)
 		{
 			return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 		}
-		else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta == 0)
+		else if((id == Blocks.lavaStill.blockID || id == Blocks.lavaMoving.blockID) && meta == 0)
 		{
 			return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
 		}
-		else if(Block.blocksList[id] instanceof IFluidBlock)
+		else if(Blocks.blocksList[id] instanceof IFluidBlock)
 		{
-			IFluidBlock fluid = (IFluidBlock)Block.blocksList[id];
+			IFluidBlock fluid = (IFluidBlock)Blocks.blocksList[id];
 
 			if(meta == 0)
 			{
@@ -779,11 +780,11 @@ public final class MekanismUtils
 			return 0;
 		}
 
-		if(id == Block.waterMoving.blockID)
+		if(id == Blocks.waterMoving.blockID)
 		{
 			return FluidRegistry.WATER.getID();
 		}
-		else if(id == Block.lavaMoving.blockID)
+		else if(id == Blocks.lavaMoving.blockID)
 		{
 			return FluidRegistry.LAVA.getID();
 		}
@@ -817,17 +818,17 @@ public final class MekanismUtils
 			return false;
 		}
 
-		if((id == Block.waterStill.blockID || id == Block.waterMoving.blockID) && meta != 0)
+		if((id == Blocks.waterStill.blockID || id == Blocks.waterMoving.blockID) && meta != 0)
 		{
 			return true;
 		}
-		else if((id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID) && meta != 0)
+		else if((id == Blocks.lavaStill.blockID || id == Blocks.lavaMoving.blockID) && meta != 0)
 		{
 			return true;
 		}
-		else if(Block.blocksList[id] instanceof IFluidBlock)
+		else if(Blocks.blocksList[id] instanceof IFluidBlock)
 		{
-			IFluidBlock fluid = (IFluidBlock)Block.blocksList[id];
+			IFluidBlock fluid = (IFluidBlock)Blocks.blocksList[id];
 
 			if(meta != 0)
 			{
@@ -1056,12 +1057,12 @@ public final class MekanismUtils
 	 */
 	public static void saveChunk(TileEntity tileEntity)
 	{
-		if(tileEntity == null || tileEntity.isInvalid() || tileEntity.worldObj == null)
+		if(tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorldObj() == null)
 		{
 			return;
 		}
 
-		tileEntity.worldObj.markTileEntityChunkModified(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity);
+		tileEntity.getWorldObj().markTileEntityChunkModified(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity);
 	}
 
 	/**
@@ -1077,7 +1078,7 @@ public final class MekanismUtils
 			return true;
 		}
 
-		World world = tileEntity.worldObj;
+		World world = tileEntity.getWorldObj();
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 
 		if(control.getControlType() == RedstoneControl.DISABLED)
@@ -1122,7 +1123,7 @@ public final class MekanismUtils
 	{
 		Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
 
-		if(!player.worldObj.isRemote)
+		if(!player.getWorldObj().isRemote)
 		{
 			vec.yCoord += player.getEyeHeight();
 
@@ -1241,14 +1242,14 @@ public final class MekanismUtils
 			}
 		}
 
-		if((dmgItems[0] == null) || (Item.itemsList[dmgItems[0].itemID] == null))
+		if((dmgItems[0] == null) || (Items.itemsList[dmgItems[0].itemID] == null))
 		{
 			return null;
 		}
 
-		if((dmgItems[1] != null) && (dmgItems[0].itemID == dmgItems[1].itemID) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && (Item.itemsList[dmgItems[0].itemID].isRepairable()))
+		if((dmgItems[1] != null) && (dmgItems[0].itemID == dmgItems[1].itemID) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && (Items.itemsList[dmgItems[0].itemID].isRepairable()))
 		{
-			Item theItem = Item.itemsList[dmgItems[0].itemID];
+			Item theItem = Items.itemsList[dmgItems[0].itemID];
 			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamageForDisplay();
 			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;

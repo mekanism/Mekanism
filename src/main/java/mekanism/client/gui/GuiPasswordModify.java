@@ -64,11 +64,11 @@ public class GuiPasswordModify extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, MekanismUtils.localize("gui.confirm")));
 
-		newPasswordField = new GuiTextField(fontRenderer, guiWidth + 60, guiHeight + 34, 80, 12);
+		newPasswordField = new GuiTextField(fontRendererObj, guiWidth + 60, guiHeight + 34, 80, 12);
 		newPasswordField.setMaxStringLength(12);
 		newPasswordField.setFocused(true);
 
-		confirmPasswordField = new GuiTextField(fontRenderer, guiWidth + 60, guiHeight + 51, 80, 12);
+		confirmPasswordField = new GuiTextField(fontRendererObj, guiWidth + 60, guiHeight + 51, 80, 12);
 		confirmPasswordField.setMaxStringLength(12);
 		confirmPasswordField.setFocused(false);
 	}
@@ -198,10 +198,10 @@ public class GuiPasswordModify extends GuiScreen
 
 		super.drawScreen(mouseX, mouseY, partialTick);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
-		fontRenderer.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
-		fontRenderer.drawString("Enter:", guiWidth + 27, guiHeight + 37, 0x404040);
-		fontRenderer.drawString("Repeat:", guiWidth + 21, guiHeight + 54, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
+		fontRendererObj.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
+		fontRendererObj.drawString("Enter:", guiWidth + 27, guiHeight + 37, 0x404040);
+		fontRendererObj.drawString("Repeat:", guiWidth + 21, guiHeight + 54, 0x404040);
 		newPasswordField.drawTextBox();
 		confirmPasswordField.drawTextBox();
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

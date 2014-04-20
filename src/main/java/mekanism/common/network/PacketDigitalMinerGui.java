@@ -176,45 +176,45 @@ public class PacketDigitalMinerGui implements IMekanismPacket
 	{
 		if(type == 0)
 		{
-			return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+			return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 		}
 		else if(type == 4)
 		{
-			return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+			return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 		}
 		else if(type == 5)
 		{
-			return new GuiMFilterSelect(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+			return new GuiMFilterSelect(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 		}
 		else {
 			if(packetType == MinerGuiPacket.CLIENT)
 			{
 				if(type == 1)
 				{
-					return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+					return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 				}
 				else if(type == 2)
 				{
-					return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+					return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 				}
 				else if(type == 3)
 				{
-					return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z));
+					return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 				}
 			}
 			else if(packetType == MinerGuiPacket.CLIENT_INDEX)
 			{
 				if(type == 1)
 				{
-					return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z), index);
+					return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
 				}
 				else if(type == 2)
 				{
-					return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z), index);
+					return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
 				}
 				else if(type == 3)
 				{
-					return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getBlockTileEntity(x, y, z), index);
+					return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
 				}
 			}
 		}

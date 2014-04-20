@@ -10,6 +10,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
@@ -115,15 +116,15 @@ public class GuiSeismicReader extends GuiScreen
 		
 		drawTexturedModalRect(guiWidth + scrollStartX + 38 + 1, guiHeight + getScrollButtonY(), xSize, 0, 4, 4);
 		
-		fontRenderer.drawString(MekanismUtils.localize("gui.seismicReader.short"), guiWidth + 62, guiHeight + 18, 0x000000);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.short"), guiWidth + 62, guiHeight + 18, 0x000000);
 		
-		fontRenderer.drawString(MekanismUtils.localize("gui.seismicReader.solids"), guiWidth + 70, guiHeight + 40, 0x0404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.seismicReader.fluids"), guiWidth + 70, guiHeight + 62, 0x0404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.empty"), guiWidth + 70, guiHeight + 78, 0x0404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.solids"), guiWidth + 70, guiHeight + 40, 0x0404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.fluids"), guiWidth + 70, guiHeight + 62, 0x0404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.empty"), guiWidth + 70, guiHeight + 78, 0x0404040);
 		
-		fontRenderer.drawString(MekanismUtils.localize("gui.seismicReader.reading"), guiWidth + 62, guiHeight + 114, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.energy") + ":", guiWidth + 62, guiHeight + 132, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.getEnergyDisplay(getEnergy()), guiWidth + 62, guiHeight + 141, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.reading"), guiWidth + 62, guiHeight + 114, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", guiWidth + 62, guiHeight + 132, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(getEnergy()), guiWidth + 62, guiHeight + 141, 0x00CD00);
 		
 		super.drawScreen(mouseX, mouseY, partialTick);
 	}
@@ -224,7 +225,7 @@ public class GuiSeismicReader extends GuiScreen
 					yPos -= 2;
 				}
 				
-				fontRenderer.drawString(Integer.toString(index), guiWidth + 28-fontRenderer.getStringWidth(Integer.toString(index)), yPos, 0xFFFFFF);
+				fontRendererObj.drawString(Integer.toString(index), guiWidth + 28-fontRendererObj.getStringWidth(Integer.toString(index)), yPos, 0xFFFFFF);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
 			}
 			
@@ -312,36 +313,35 @@ public class GuiSeismicReader extends GuiScreen
 				continue;
 			}
 			
-			int id = coord.getBlockId(worldObj);
-			int meta = coord.getMetadata(worldObj);
 			Block block = coord.getBlock(worldObj);
-			
-			if(id == Block.grass.blockID)
+			int meta = coord.getMetadata(worldObj);
+
+			if(block == Blocks.grass)
 			{
 				seismicCalculation.add(SeismicType.GRASS);
 				continue;
 			}
-			else if(id == Block.dirt.blockID)
+			else if(block == Blocks.dirt)
 			{
 				seismicCalculation.add(SeismicType.DIRT);
 				continue;
 			}
-			else if(id == Block.stone.blockID)
+			else if(block == Blocks.stone)
 			{
 				seismicCalculation.add(SeismicType.STONE);
 				continue;
 			}
-			else if(id == Block.bedrock.blockID)
+			else if(block == Blocks.bedrock)
 			{
 				seismicCalculation.add(SeismicType.BEDROCK);
 				continue;
 			}
-			else if(id == Block.waterStill.blockID || id == Block.waterMoving.blockID)
+			else if(block == Blocks.water || block == Blocks.flowing_water)
 			{
 				seismicCalculation.add(SeismicType.WATER);
 				continue;
 			}
-			else if(id == Block.lavaStill.blockID || id == Block.lavaMoving.blockID)
+			else if(block == Blocks.lava || block == Blocks.flowing_lava)
 			{
 				seismicCalculation.add(SeismicType.LAVA);
 				continue;
@@ -373,7 +373,7 @@ public class GuiSeismicReader extends GuiScreen
 				}
 			}
 			
-			List<String> oreDictNames = MekanismUtils.getOreDictName(new ItemStack(id, 1, meta));
+			List<String> oreDictNames = MekanismUtils.getOreDictName(new ItemStack(block, 1, meta));
 			boolean foundName = false;
 			
 			if(oreDictNames != null && !oreDictNames.isEmpty())

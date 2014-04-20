@@ -40,7 +40,7 @@ public class RobitAIPickup extends EntityAIBase
 	public RobitAIPickup(EntityRobit entityRobit, float speed)
 	{
 		theRobit = entityRobit;
-		theWorld = entityRobit.worldObj;
+		theWorld = entityRobit.getWorldObj();
 		moveSpeed = speed;
 		thePathfinder = entityRobit.getNavigator();
 		setMutexBits(3);
@@ -58,7 +58,7 @@ public class RobitAIPickup extends EntityAIBase
 			return true;
 		}
 
-		List items = theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
+		List items = theRobit.getWorldObj().getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
 		Iterator iter = items.iterator();
 		//Cached for slight performance
 		double closestDistance=-1;
@@ -95,7 +95,7 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
+		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.getWorldObj().provider.dimensionId == theRobit.getWorldObj().provider.dimensionId;
 	}
 
 	@Override

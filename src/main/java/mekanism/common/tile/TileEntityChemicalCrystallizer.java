@@ -299,7 +299,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 
-		nbtTags.setCompoundTag("rightTank", inputTank.write(new NBTTagCompound()));
+		nbtTags.setTag("rightTank", inputTank.write(new NBTTagCompound()));
 
 		nbtTags.setBoolean("sideDataStored", true);
 

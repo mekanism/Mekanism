@@ -192,7 +192,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 	public int getFuel(ItemStack itemstack)
 	{
-		if(itemstack.itemID == Item.bucketLava.itemID)
+		if(itemstack.itemID == Items.bucketLava.itemID)
 		{
 			return 1000;
 		}

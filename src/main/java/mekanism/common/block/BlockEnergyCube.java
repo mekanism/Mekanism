@@ -21,7 +21,7 @@ import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -29,7 +29,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -50,7 +50,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockEnergyCube extends BlockContainer
 {
-	public Icon[][] icons = new Icon[256][256];
+	public IIcon[][] icons = new IIcon[256][256];
 
 	public BlockEnergyCube(int id)
 	{
@@ -62,14 +62,14 @@ public class BlockEnergyCube extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, int id)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -81,7 +81,7 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
 		int change = 3;
@@ -150,7 +150,7 @@ public class BlockEnergyCube extends BlockContainer
 			return true;
 		}
 		else {
-			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
 
 			if(entityplayer.getCurrentEquippedItem() != null)
@@ -213,7 +213,7 @@ public class BlockEnergyCube extends BlockContainer
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -257,7 +257,7 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
 
 		IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
@@ -275,7 +275,7 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		if(!world.isRemote)
 		{
@@ -313,7 +313,7 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
 	{
-		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getBlockTileEntity(x, y, z);
+		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
 		return tileEntity.getRedstoneLevel();
 	}
 

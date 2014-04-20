@@ -2,72 +2,66 @@ package mekanism.tools.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 
 public class ItemMekanismPaxel extends ItemMekanismTool
 {
-	public ItemMekanismPaxel(int i, EnumToolMaterial enumtoolmaterial)
+	public ItemMekanismPaxel(ToolMaterial toolMaterial)
 	{
-		super(i, 3, enumtoolmaterial, new Block[256]);
+		super(3, toolMaterial, new Block[0]);
 	}
 
 	@Override
-	public float getStrVsBlock(ItemStack itemstack, Block block)
-	{
-		return block.blockID != Block.bedrock.blockID ? efficiencyOnProperMaterial : 1.0F;
-	}
-
-	@Override
-	public float getStrVsBlock(ItemStack stack, Block block, int meta)
+	public float getDigSpeed(ItemStack stack, Block block, int meta)
 	{
 		if(ForgeHooks.isToolEffective(stack, block, meta))
 		{
 			return efficiencyOnProperMaterial;
 		}
 
-		return getStrVsBlock(stack, block);
+		return getDigSpeed(stack, block, meta);
 	}
 
 	@Override
-	public boolean canHarvestBlock(Block block)
+	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if(block == Block.obsidian)
+		if(block == Blocks.obsidian)
 		{
 			return toolMaterial.getHarvestLevel() == 3;
 		}
 
-		if(block == Block.blockDiamond || block == Block.oreDiamond)
+		if(block == Blocks.diamond_block || block == Blocks.diamond_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Block.blockGold || block == Block.oreGold)
+		if(block == Blocks.gold_block || block == Blocks.gold_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block == Block.blockIron || block == Block.oreIron)
+		if(block == Blocks.iron_block || block == Blocks.iron_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 1;
 		}
 
-		if(block == Block.blockLapis || block == Block.oreLapis)
+		if(block == Blocks.lapis_block || block == Blocks.lapis_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 1;
 		}
 
-		if(block == Block.oreRedstone || block == Block.oreRedstoneGlowing)
+		if(block == Blocks.redstone_ore || block == Blocks.lit_redstone_ore)
 		{
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
-		if(block.blockMaterial == Material.rock)
+		if(block.getMaterial() == Material.rock)
 		{
 			return true;
 		}
 
-		return block.blockMaterial == Material.iron;
+		return block.getMaterial() == Material.iron;
 	}
 }

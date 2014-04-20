@@ -98,11 +98,11 @@ public class TransporterStack
 		}
 
 		nbtTags.setInteger("progress", progress);
-		nbtTags.setCompoundTag("originalLocation", originalLocation.write(new NBTTagCompound()));
+		nbtTags.setTag("originalLocation", originalLocation.write(new NBTTagCompound()));
 
 		if(homeLocation != null)
 		{
-			nbtTags.setCompoundTag("homeLocation", homeLocation.write(new NBTTagCompound()));
+			nbtTags.setTag("homeLocation", homeLocation.write(new NBTTagCompound()));
 		}
 
 		nbtTags.setInteger("pathType", pathType.ordinal());
@@ -207,7 +207,7 @@ public class TransporterStack
 
 	public Coord4D getNext(ILogisticalTransporter tileEntity)
 	{
-		if(!tileEntity.getTile().worldObj.isRemote)
+		if(!tileEntity.getTile().getWorldObj().isRemote)
 		{
 			int index = pathToTarget.indexOf(Coord4D.get(tileEntity.getTile()))-1;
 
@@ -225,7 +225,7 @@ public class TransporterStack
 
 	public Coord4D getPrev(ILogisticalTransporter tileEntity)
 	{
-		if(!tileEntity.getTile().worldObj.isRemote)
+		if(!tileEntity.getTile().getWorldObj().isRemote)
 		{
 			int index = pathToTarget.indexOf(Coord4D.get(tileEntity.getTile()))+1;
 
@@ -276,7 +276,7 @@ public class TransporterStack
 			return false;
 		}
 
-		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.worldObj);
+		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.getWorldObj());
 		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 
 		if(!transporter.canConnectMutual(side.getOpposite()))

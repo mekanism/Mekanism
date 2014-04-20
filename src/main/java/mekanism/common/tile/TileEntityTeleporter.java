@@ -299,7 +299,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			WorldServer oldWorld = server.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = server.worldServerForDimension(player.dimension);
-			player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+			player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.getWorldObj().difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
 			oldWorld.removePlayerEntityDangerously(player);
 			player.isDead = false;
 
@@ -321,7 +321,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			while(iterator.hasNext())
 			{
 				PotionEffect potioneffect = (PotionEffect)iterator.next();
-				player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, potioneffect));
+				player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.getEntityId(), potioneffect));
 			}
 
 			GameRegistry.onPlayerChangedDimension(player);
@@ -335,9 +335,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
+		if(entity.getWorldObj().provider.dimensionId != coord.dimensionId)
 		{
-			entity.worldObj.removeEntity(entity);
+			entity.getWorldObj().removeEntity(entity);
 			entity.isDead = false;
 
 			world.spawnEntityInWorld(entity);
@@ -401,7 +401,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		int energyCost = 1000;
 
-		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
+		if(entity.getWorldObj().provider.dimensionId != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}

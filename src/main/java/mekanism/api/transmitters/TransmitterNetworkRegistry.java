@@ -11,11 +11,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -123,7 +124,7 @@ public class TransmitterNetworkRegistry implements ITickHandler
 
 	public static class NetworkLoader
 	{
-		@ForgeSubscribe
+		@SubscribeEvent
 		public void onChunkLoad(ChunkEvent.Load event)
 		{
 			if(event.getChunk() != null && !event.world.isRemote)

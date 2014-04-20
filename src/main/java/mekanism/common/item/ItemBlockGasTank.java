@@ -17,7 +17,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
@@ -50,7 +50,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public Icon getIconFromDamage(int i)
+	public IIcon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -68,7 +68,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		if(place)
 		{
-			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
+			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
 			tileEntity.gasTank.setGas(getGas(stack));
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -144,7 +144,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
+			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 

@@ -159,41 +159,41 @@ public class PacketLogisticalSorterGui implements IMekanismPacket
 	{
 		if(type == 0)
 		{
-			return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+			return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 		}
 		else if(type == 4)
 		{
-			return new GuiTFilterSelect(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+			return new GuiTFilterSelect(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 		}
 		else {
 			if(packetType == SorterGuiPacket.CLIENT)
 			{
 				if(type == 1)
 				{
-					return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+					return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 				}
 				else if(type == 2)
 				{
-					return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+					return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 				}
 				else if(type == 3)
 				{
-					return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z));
+					return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 				}
 			}
 			else if(packetType == SorterGuiPacket.CLIENT_INDEX)
 			{
 				if(type == 1)
 				{
-					return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z), index);
+					return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
 				}
 				else if(type == 2)
 				{
-					return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z), index);
+					return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
 				}
 				else if(type == 3)
 				{
-					return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getBlockTileEntity(x, y, z), index);
+					return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
 				}
 			}
 		}

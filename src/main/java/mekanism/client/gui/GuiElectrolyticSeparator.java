@@ -117,13 +117,13 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
 
 		String name = tileEntity.dumpLeft ? "Dumping..." : tileEntity.leftTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.leftTank.getGas().getGas().getLocalizedName();
-		fontRenderer.drawString(name, 21, 73, 0x404040);
+		fontRendererObj.drawString(name, 21, 73, 0x404040);
 
 		name = tileEntity.dumpRight ? "Dumping..." : tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
-		fontRenderer.drawString(name, 156-fontRenderer.getStringWidth(name), 73, 0x404040);
+		fontRendererObj.drawString(name, 156-fontRendererObj.getStringWidth(name), 73, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

@@ -37,7 +37,7 @@ public class TankUpdateProtocol
 	 */
 	public void loopThrough(TileEntity tile)
 	{
-		World worldObj = tile.worldObj;
+		World worldObj = tile.getWorldObj();
 
 		int origX = tile.xCoord, origY = tile.yCoord, origZ = tile.zCoord;
 
@@ -189,7 +189,7 @@ public class TankUpdateProtocol
 
 				for(Coord4D obj : structure.locations)
 				{
-					if(obj.getTileEntity(pointer.worldObj) instanceof TileEntityDynamicValve)
+					if(obj.getTileEntity(pointer.getWorldObj()) instanceof TileEntityDynamicValve)
 					{
 						ValveData data = new ValveData();
 						data.location = obj;
@@ -211,7 +211,7 @@ public class TankUpdateProtocol
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.worldObj);
+			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
 
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -262,7 +262,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isAir(int x, int y, int z)
 	{
-		return pointer.worldObj.isAirBlock(x, y, z);
+		return pointer.getWorldObj().isAirBlock(x, y, z);
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isViableNode(int x, int y, int z)
 	{
-		if(pointer.worldObj.getBlockTileEntity(x, y, z) instanceof TileEntityDynamicTank)
+		if(pointer.getWorldObj().getTileEntity(x, y, z) instanceof TileEntityDynamicTank)
 		{
 			return true;
 		}
@@ -353,7 +353,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && pointer.worldObj.getBlockMetadata(x, y, z) == 9;
+		return pointer.getWorldObj().getBlockId(x, y, z) == Mekanism.basicBlockID && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
 	}
 
 	/**
@@ -382,7 +382,7 @@ public class TankUpdateProtocol
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.worldObj);
+				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
 
 				if(tileEntity.inventoryID != -1)
 				{
@@ -397,7 +397,7 @@ public class TankUpdateProtocol
 			{
 				if(Mekanism.dynamicInventories.get(idFound) != null)
 				{
-					cache = MekanismUtils.pullInventory(pointer.worldObj, idFound);
+					cache = MekanismUtils.pullInventory(pointer.getWorldObj(), idFound);
 				}
 			}
 			else {
@@ -414,7 +414,7 @@ public class TankUpdateProtocol
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.worldObj);
+				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
 
 				tileEntity.inventoryID = idFound;
 				tileEntity.structure = structureFound;

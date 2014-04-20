@@ -90,7 +90,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
+		toReturn.baseBlock = Blocks.waterStill;
 		toReturn.setTexture(fluid.getIcon());
 
 		final int stages = getStages(data.height);

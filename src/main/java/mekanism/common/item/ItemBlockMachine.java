@@ -37,6 +37,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -86,9 +87,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 {
 	public Block metaBlock;
 
-	public ItemBlockMachine(int id, Block block)
+	public ItemBlockMachine(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
 		setNoRepair();
@@ -178,12 +179,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				{
 					for(int zPos = z-1; zPos <= z+1; zPos++)
 					{
-						Block b = Block.blocksList[world.getBlockId(xPos, yPos, zPos)];
+						Block b = world.getBlock(xPos, yPos, zPos);
 
 						if(yPos > 255)
 							place = false;
 
-						if(b != null && b.blockID != 0 && !b.isBlockReplaceable(world, xPos, yPos, zPos))
+						if(!b.isAir(world, xPos, yPos, zPos) && !b.isReplaceable(world, xPos, yPos, zPos))
 							return false;
 					}
 				}
@@ -192,7 +193,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
 		{
-			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof IUpgradeManagement)
 			{
@@ -282,7 +283,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(tileEntity instanceof TileEntityFactory)
 			{
 				((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
-				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType().blockID);
+				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType());
 			}
 
 			if(tileEntity instanceof ISustainedTank)
@@ -408,7 +409,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 						setEnergy(itemstack, getEnergy(itemstack) + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 					}
-					else if(inv.getStackInSlot(54).itemID == Item.redstone.itemID && getEnergy(itemstack)+Mekanism.ENERGY_PER_REDSTONE <= getMaxEnergy(itemstack))
+					else if(inv.getStackInSlot(54).getItem() == Items.redstone && getEnergy(itemstack)+Mekanism.ENERGY_PER_REDSTONE <= getMaxEnergy(itemstack))
 					{
 						setEnergy(itemstack, getEnergy(itemstack) + Mekanism.ENERGY_PER_REDSTONE);
 						inv.getStackInSlot(54).stackSize--;

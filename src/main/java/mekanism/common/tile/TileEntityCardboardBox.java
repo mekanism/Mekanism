@@ -26,7 +26,7 @@ public class TileEntityCardboardBox extends TileEntity
 
 		if(storedData != null)
 		{
-			nbtTags.setCompoundTag("storedData", storedData.write(new NBTTagCompound()));
+			nbtTags.setTag("storedData", storedData.write(new NBTTagCompound()));
 		}
 	}
 

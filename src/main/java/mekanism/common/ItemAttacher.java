@@ -13,9 +13,9 @@ public final class ItemAttacher
 
 	static
 	{
-		attachable.add(new ItemStack(Block.lever));
-		attachable.add(new ItemStack(Block.torchRedstoneIdle));
-		attachable.add(new ItemStack(Block.torchWood));
+		attachable.add(new ItemStack(Blocks.lever));
+		attachable.add(new ItemStack(Blocks.torchRedstoneIdle));
+		attachable.add(new ItemStack(Blocks.torchWood));
 
 		for(TransmitterType type : TransmitterType.values())
 		{

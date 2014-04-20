@@ -42,7 +42,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
 			int type = 0;
 
-			if(obj.getBlockId(tileEntity.worldObj) == Mekanism.basicBlockID && obj.getMetadata(tileEntity.worldObj) == 7)
+			if(obj.getBlockId(tileEntity.getWorldObj()) == Mekanism.basicBlockID && obj.getMetadata(tileEntity.getWorldObj()) == 7)
 			{
 				type = 1;
 			}
@@ -80,7 +80,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.stone;
+		toReturn.baseBlock = Blocks.stone;
 		toReturn.setTexture(GasRegistry.getGas("oxygen").getIcon());
 
 		DisplayInteger display = DisplayInteger.createAndStart();

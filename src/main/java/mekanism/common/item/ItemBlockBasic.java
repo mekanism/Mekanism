@@ -10,7 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -69,7 +69,7 @@ public class ItemBlockBasic extends ItemBlock
 	}
 
 	@Override
-	public Icon getIconFromDamage(int i)
+	public IIcon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -146,7 +146,7 @@ public class ItemBlockBasic extends ItemBlock
 			{
 				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
 				{
-					TileEntityBin tileEntity = (TileEntityBin)world.getBlockTileEntity(x, y, z);
+					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
 					InventoryBin inv = new InventoryBin(stack);
 
 					if(inv.getItemType() != null)

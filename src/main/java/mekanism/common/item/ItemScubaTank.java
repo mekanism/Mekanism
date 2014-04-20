@@ -11,7 +11,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -206,7 +206,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setCompoundTag("stored", gasStack.write(new NBTTagCompound()));
+			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -233,5 +233,5 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 }

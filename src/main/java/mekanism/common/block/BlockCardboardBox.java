@@ -8,13 +8,14 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCardboardBox extends BlockContainer
 {
-	public Icon[] icons = new Icon[6];
+	public IIcon[] icons = new IIcon[6];
 
 	public BlockCardboardBox(int id)
 	{
@@ -34,7 +35,7 @@ public class BlockCardboardBox extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:CardboardBoxTop");
 		icons[1] = register.registerIcon("mekanism:CardboardBoxSide");
@@ -43,7 +44,7 @@ public class BlockCardboardBox extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta)
+	public IIcon getIcon(int side, int meta)
 	{
 		if(side == 0 || side == 1)
 		{
@@ -60,29 +61,29 @@ public class BlockCardboardBox extends BlockContainer
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			ItemStack itemStack = new ItemStack(Mekanism.CardboardBox);
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
 
 			if(tileEntity.storedData != null)
 			{
 				BlockData data = tileEntity.storedData;
 
-				if(Block.blocksList[data.id] != null)
+				if(Blocks.blocksList[data.id] != null)
 				{
-					data.meta = Block.blocksList[data.id].onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
+					data.meta = Blocks.blocksList[data.id].onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
 				}
 
 				world.setBlock(x, y, z, data.id, data.meta, 3);
 
-				if(data.tileTag != null && world.getBlockTileEntity(x, y, z) != null)
+				if(data.tileTag != null && world.getTileEntity(x, y, z) != null)
 				{
 					data.updateLocation(x, y, z);
-					world.getBlockTileEntity(x, y, z).readFromNBT(data.tileTag);
+					world.getTileEntity(x, y, z).readFromNBT(data.tileTag);
 				}
 
-				if(Block.blocksList[data.id] != null)
+				if(Blocks.blocksList[data.id] != null)
 				{
-					Block.blocksList[data.id].onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.id, 1, data.meta));
-					Block.blocksList[data.id].onPostBlockPlaced(world, x, y, z, data.meta);
+					Blocks.blocksList[data.id].onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.id, 1, data.meta));
+					Blocks.blocksList[data.id].onPostBlockPlaced(world, x, y, z, data.meta);
 				}
 
 				float motion = 0.7F;
@@ -129,7 +130,7 @@ public class BlockCardboardBox extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getBlockTileEntity(x, y, z);
+		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
 
 		ItemStack itemStack = new ItemStack(Mekanism.CardboardBox, 1, world.getBlockMetadata(x, y, z));
 
@@ -145,7 +146,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -206,7 +207,7 @@ public class BlockCardboardBox extends BlockContainer
 
 			if(tileTag != null)
 			{
-				nbtTags.setCompoundTag("tileTag", tileTag);
+				nbtTags.setTag("tileTag", tileTag);
 			}
 
 			return nbtTags;

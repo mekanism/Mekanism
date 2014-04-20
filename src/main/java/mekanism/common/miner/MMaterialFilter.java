@@ -17,7 +17,7 @@ public class MMaterialFilter extends MinerFilter
 	
 	public Material getMaterial()
 	{
-		return Block.blocksList[materialItem.itemID].blockMaterial;
+		return Blocks.blocksList[materialItem.itemID].getMaterial();
 	}
 
 	@Override

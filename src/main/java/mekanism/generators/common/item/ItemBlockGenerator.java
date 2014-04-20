@@ -16,11 +16,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -44,9 +46,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 {
 	public Block metaBlock;
 
-	public ItemBlockGenerator(int id, Block block)
+	public ItemBlockGenerator(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
 		setMaxStackSize(1);
@@ -59,7 +61,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public Icon getIconFromDamage(int i)
+	public IIcon getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -102,37 +104,45 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
 	{
 		boolean place = true;
-		int blockID = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			if(blockID != 0 && !Block.blocksList[blockID].isBlockReplaceable(world, x, y, z))
+			if(!block.isReplaceable(world, x, y, z))
 				return false;
 
+			outer:
 			for(int xPos=-1;xPos<=1;xPos++)
 			{
 				for(int zPos=-1;zPos<=1;zPos++)
 				{
-					if(world.getBlockId(x+xPos, y+2, z+zPos) != 0 || y+2 > 255)
+					if(!world.isAirBlock(x+xPos, y+2, z+zPos) || y+2 > 255)
+					{
 						place = false;
+						break outer;
+					}
 				}
 			}
 		}
 		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
 		{
-			if(blockID != 0 && !Block.blocksList[blockID].isBlockReplaceable(world, x, y, z))
+			if(!block.isReplaceable(world, x, y, z))
 				return false;
 
+			outer:
 			for(int yPos = y+1; yPos <= y+4; yPos++)
 			{
-				if(world.getBlockId(x, yPos, z) != 0 || yPos > 255)
+				if(!world.isAirBlock(x, yPos, z) || yPos > 255)
+				{
 					place = false;
+					break outer;
+				}
 			}
 		}
 
 		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
 		{
-			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getBlockTileEntity(x, y, z);
+			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
 			tileEntity.electricityStored = getEnergy(stack);
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
@@ -158,15 +168,15 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public int getChargedItemId(ItemStack itemStack)
+	public Item getChargedItem(ItemStack itemStack)
 	{
-		return itemID;
+		return this;
 	}
 
 	@Override
-	public int getEmptyItemId(ItemStack itemStack)
+	public Item getEmptyItem(ItemStack itemStack)
 	{
-		return itemID;
+		return this;
 	}
 
 	@Override
@@ -215,7 +225,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items");
+			return itemStack.stackTagCompound.getTagList("Items", 10);
 		}
 
 		return null;

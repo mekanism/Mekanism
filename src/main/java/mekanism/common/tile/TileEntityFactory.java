@@ -637,7 +637,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			nbtTags.setByte("config"+i, sideConfig[i]);
 		}
 
-		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 	}
 
 	@Override

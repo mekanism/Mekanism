@@ -37,12 +37,12 @@ public class GuiSalinationController extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 
-		fontRenderer.drawString(getStruct(), 50, 21, 0x00CD00);
-		fontRenderer.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
-		fontRenderer.drawString("Mult: " + getTempMult(), 50, 39, 0x00CD00);
-		fontRenderer.drawString("Max: " + getMaxTemp(), 50, 48, 0x00CD00);
+		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
+		fontRendererObj.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
+		fontRendererObj.drawString("Mult: " + getTempMult(), 50, 39, 0x00CD00);
+		fontRendererObj.drawString("Max: " + getMaxTemp(), 50, 48, 0x00CD00);
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{

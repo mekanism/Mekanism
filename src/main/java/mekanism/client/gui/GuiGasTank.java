@@ -37,13 +37,13 @@ public class GuiGasTank extends GuiMekanism
 
 		String capacityInfo = tileEntity.gasTank.getStored() + "/" + tileEntity.MAX_GAS;
 
-		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
-		fontRenderer.drawString(capacityInfo, 45, 40, 0x404040);
-		fontRenderer.drawString("Gas: " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(capacityInfo, 45, 40, 0x404040);
+		fontRendererObj.drawString("Gas: " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		String name = tileEntity.dumping ? "Dumping..." : MekanismUtils.localize("gui.idle");
-		fontRenderer.drawString(name, 156-fontRenderer.getStringWidth(name), 73, 0x404040);
+		fontRendererObj.drawString(name, 156-fontRendererObj.getStringWidth(name), 73, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

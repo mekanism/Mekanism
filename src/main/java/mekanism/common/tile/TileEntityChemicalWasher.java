@@ -337,9 +337,9 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 
-		nbtTags.setCompoundTag("leftTank", fluidTank.writeToNBT(new NBTTagCompound()));
-		nbtTags.setCompoundTag("rightTank", inputTank.write(new NBTTagCompound()));
-		nbtTags.setCompoundTag("centerTank", outputTank.write(new NBTTagCompound()));
+		nbtTags.setTag("leftTank", fluidTank.writeToNBT(new NBTTagCompound()));
+		nbtTags.setTag("rightTank", inputTank.write(new NBTTagCompound()));
+		nbtTags.setTag("centerTank", outputTank.write(new NBTTagCompound()));
 	}
 
 	@Override

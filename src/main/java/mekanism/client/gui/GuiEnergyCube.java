@@ -54,8 +54,8 @@ public class GuiEnergyCube extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRenderer.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

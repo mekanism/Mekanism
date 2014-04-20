@@ -77,7 +77,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
@@ -225,10 +225,10 @@ public class CommonProxy
 
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
+			MekanismAPI.removeBoxBlacklist(Blocks.mobSpawner.blockID, 0);
 		}
 		else {
-			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
+			MekanismAPI.addBoxBlacklist(Blocks.mobSpawner.blockID, 0);
 		}
 
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
@@ -312,7 +312,7 @@ public class CommonProxy
 	 */
 	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 		switch(ID)
 		{
@@ -433,10 +433,10 @@ public class CommonProxy
 	{
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.removeBoxBlacklist(Block.mobSpawner.blockID, 0);
+			MekanismAPI.removeBoxBlacklist(Blocks.mobSpawner.blockID, 0);
 		}
 		else {
-			MekanismAPI.addBoxBlacklist(Block.mobSpawner.blockID, 0);
+			MekanismAPI.addBoxBlacklist(Blocks.mobSpawner.blockID, 0);
 		}
 
 		System.out.println("[Mekanism] Received config from server.");

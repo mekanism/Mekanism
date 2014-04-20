@@ -34,8 +34,8 @@ public class GuiDictionary extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(MekanismUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		if(itemType != null)
 		{
@@ -45,12 +45,12 @@ public class GuiDictionary extends GuiMekanism
 
 				for(String name : oreDictNames)
 				{
-					fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + name, 9, currentY, 0x00CD00);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + name, 9, currentY, 0x00CD00);
 					currentY += 9;
 				}
 			}
 			else {
-				fontRenderer.drawString(MekanismUtils.localize("gui.dictionary.noKey"), 9, 57, 0x00CD00);
+				fontRendererObj.drawString(MekanismUtils.localize("gui.dictionary.noKey"), 9, 57, 0x00CD00);
 			}
 		}
 
@@ -58,7 +58,7 @@ public class GuiDictionary extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemType, 80, 23);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemType, 80, 23);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}

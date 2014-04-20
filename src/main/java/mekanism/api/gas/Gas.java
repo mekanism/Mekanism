@@ -1,7 +1,7 @@
 package mekanism.api.gas;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -19,7 +19,7 @@ public class Gas
 
 	private Fluid fluid;
 
-	private Icon icon;
+	private IIcon icon;
 
 	private boolean visible = true;
 
@@ -106,10 +106,10 @@ public class Gas
 	}
 
 	/**
-	 * Gets the Icon associated with this Gas.
-	 * @return associated Icon
+	 * Gets the IIcon associated with this Gas.
+	 * @return associated IIcon
 	 */
-	public Icon getIcon()
+	public IIcon getIcon()
 	{
 		if(from_fluid)
 		{
@@ -120,10 +120,10 @@ public class Gas
 
 	/**
 	 * Sets this gas's icon.
-	 * @param i - Icon to associate with this Gas
+	 * @param i - IIcon to associate with this Gas
 	 * @return this Gas object
 	 */
-	public Gas setIcon(Icon i)
+	public Gas setIcon(IIcon i)
 	{
 		icon = i;
 

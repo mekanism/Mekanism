@@ -12,10 +12,10 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
@@ -164,7 +164,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 				GasStack stack = new GasStack(getTransmitterNetwork().gasStored.getGas(), toSave);
 
 				lastWrite = stack;
-				nbtTags.setCompoundTag("cacheGas", stack.write(new NBTTagCompound()));
+				nbtTags.setTag("cacheGas", stack.write(new NBTTagCompound()));
 			}
 		}
 	}
@@ -175,20 +175,20 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 		return "mekanism:pressurized_tube";
 	}
 
-	public static void registerIcons(IconRegister register)
+	public static void registerIcons(IIconRegister register)
 	{
 		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
 		tubeIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
 	}
 
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return tubeIcons.getCenterIcon(0);
 	}
 
 	@Override
-	public Icon getSideIcon()
+	public IIcon getSideIcon()
 	{
 		return tubeIcons.getSideIcon(0);
 	}

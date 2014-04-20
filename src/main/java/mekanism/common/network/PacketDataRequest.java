@@ -47,9 +47,9 @@ public class PacketDataRequest implements IMekanismPacket
 
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(id);
 
-		if(worldServer != null && worldServer.getBlockTileEntity(x, y, z) instanceof ITileNetwork)
+		if(worldServer != null && worldServer.getTileEntity(x, y, z) instanceof ITileNetwork)
 		{
-			TileEntity tileEntity = worldServer.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = worldServer.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -66,7 +66,7 @@ public class PacketDataRequest implements IMekanismPacket
 				}
 			}
 
-			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(worldServer.getBlockTileEntity(x, y, z)), ((ITileNetwork)worldServer.getBlockTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
+			PacketHandler.sendPacket(Transmission.ALL_CLIENTS, new PacketTileEntity().setParams(Coord4D.get(worldServer.getTileEntity(x, y, z)), ((ITileNetwork)worldServer.getTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
 		}
 	}
 

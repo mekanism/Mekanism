@@ -69,7 +69,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public EntityBalloon(EntityLivingBase entity, EnumColor c)
 	{
-		this(entity.worldObj);
+		this(entity.getWorldObj());
 
 		latchedEntity = entity;
 		setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
@@ -84,7 +84,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		dataWatcher.updateObject(3, new Integer(0)); /* Latched X */
 		dataWatcher.updateObject(4, new Integer(0)); /* Latched Y */
 		dataWatcher.updateObject(5, new Integer(0)); /* Latched Z */
-		dataWatcher.updateObject(6, new Integer(entity.entityId)); /* Latched entity ID */
+		dataWatcher.updateObject(6, new Integer(entity.getEntityId())); /* Latched entity ID */
 	}
 
 	public EntityBalloon(World world, Coord4D obj, EnumColor c)
@@ -152,7 +152,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 				dataWatcher.updateObject(3, new Integer(latched != null ? latched.xCoord : 0)); /* Latched X */
 				dataWatcher.updateObject(4, new Integer(latched != null ? latched.yCoord : 0)); /* Latched Y */
 				dataWatcher.updateObject(5, new Integer(latched != null ? latched.zCoord : 0)); /* Latched Z */
-				dataWatcher.updateObject(6, new Integer(latchedEntity != null ? latchedEntity.entityId : -1)); /* Latched entity ID */
+				dataWatcher.updateObject(6, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
 			}
 		}
 
@@ -325,7 +325,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 		if(latched != null)
 		{
-			nbtTags.setCompoundTag("latched", latched.write(new NBTTagCompound()));
+			nbtTags.setTag("latched", latched.write(new NBTTagCompound()));
 		}
 
 		if(latchedEntity != null)
@@ -363,7 +363,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		else if(latchedEntity != null)
 		{
 			data.writeByte((byte)2);
-			data.writeInt(latchedEntity.entityId);
+			data.writeInt(latchedEntity.getEntityId());
 		}
 		else {
 			data.writeByte((byte)0);

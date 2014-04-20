@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
@@ -20,7 +20,7 @@ public class ConnectedTextureRenderer
 
 	public String iconTitle;
 
-	public Map<Integer, Icon> glassMap = new HashMap<Integer, Icon>();
+	public Map<Integer, IIcon> glassMap = new HashMap<Integer, IIcon>();
 
 	public ConnectedTextureRenderer(String title, int id, int meta)
 	{
@@ -30,7 +30,7 @@ public class ConnectedTextureRenderer
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register)
+	public void registerIcons(IIconRegister register)
 	{
 		glassMap.put(0, register.registerIcon("mekanism:" + iconTitle + "_13"));
 		glassMap.put(1, register.registerIcon("mekanism:" + iconTitle + "_20"));
@@ -82,7 +82,7 @@ public class ConnectedTextureRenderer
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int map = 0;
 

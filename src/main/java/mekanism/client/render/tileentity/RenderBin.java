@@ -48,12 +48,12 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
 
-			if(tileEntity.worldObj.isBlockSolidOnSide(obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
+			if(tileEntity.getWorldObj().isBlockSolidOnSide(obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
 			{
 				return;
 			}
 
-			doLight(tileEntity.worldObj, obj);
+			doLight(tileEntity.getWorldObj(), obj);
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
 
 			if(itemStack != null)

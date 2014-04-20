@@ -4,7 +4,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiGasGauge extends GuiGauge
@@ -25,7 +25,7 @@ public class GuiGasGauge extends GuiGauge
 	}
 
 	@Override
-	public Icon getIcon()
+	public IIcon getIcon()
 	{
 		return infoHandler.getTank().getGas().getGas().getIcon();
 	}

@@ -2,7 +2,7 @@ package mekanism.common.multipart;
 
 import mekanism.api.transmitters.TransmissionType;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 
 
 public enum TransmitterType
@@ -52,12 +52,12 @@ public enum TransmitterType
 		return transmissionType;
 	}
 
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return transmitterIcons.getCenterIcon(centerIndex);
 	}
 
-	public Icon getSideIcon()
+	public IIcon getSideIcon()
 	{
 		return transmitterIcons.getSideIcon(sideIndex);
 	}

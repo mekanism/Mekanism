@@ -54,7 +54,7 @@ public class GuiCredits extends GuiScreen
 
 	public void writeText(String text, int yAxis)
 	{
-		drawString(fontRenderer, text, width / 2 - 140, (height / 4 - 60) + 20 + yAxis, 0xa0a0a0);
+		drawString(fontRendererObj, text, width / 2 - 140, (height / 4 - 60) + 20 + yAxis, 0xa0a0a0);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class GuiCredits extends GuiScreen
 	public void drawScreen(int mouseX, int mouseY, float partialTick)
 	{
 		drawDefaultBackground();
-		drawCenteredString(fontRenderer, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
+		drawCenteredString(fontRendererObj, EnumColor.DARK_BLUE + "Mekanism" + EnumColor.GREY + " by aidancbrady", width / 2, (height / 4 - 60) + 20, 0xffffff);
 
 		if(Mekanism.latestVersionNumber != null && !Mekanism.latestVersionNumber.equals("null"))
 		{

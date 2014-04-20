@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -113,20 +114,20 @@ public class GuiMMaterialFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRenderer.drawString(MekanismUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
+		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.materialFilter"), 43, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter.details") + ":", 35, 32, 0x00CD00);
 
 		if(filter.materialItem != null)
 		{
-			fontRenderer.drawString(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00);
+			fontRendererObj.drawString(filter.materialItem.getDisplayName(), 35, 41, 0x00CD00);
 		}
 
 		if(filter.materialItem != null)
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), filter.materialItem, 12, 19);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.materialItem, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -210,7 +211,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 				{
 					if(stack.getItem() instanceof ItemBlock)
 					{
-						if(stack.itemID != Block.bedrock.blockID)
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
 						{
 							filter.materialItem = stack.copy();
 							filter.materialItem.stackSize = 1;

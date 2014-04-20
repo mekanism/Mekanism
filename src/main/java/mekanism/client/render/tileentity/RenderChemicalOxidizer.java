@@ -97,7 +97,7 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Block.waterStill;
+		toReturn.baseBlock = Blocks.waterStill;
 		toReturn.setTexture(gas.getIcon());
 
 		DisplayInteger display = DisplayInteger.createAndStart();

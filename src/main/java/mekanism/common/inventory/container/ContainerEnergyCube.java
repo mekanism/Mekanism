@@ -69,7 +69,7 @@ public class ContainerEnergyCube extends Container
 
 			if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotStack.itemID == Item.redstone.itemID)
+				if(slotStack.itemID == Items.redstone.itemID)
 				{
 					if(slotID != 1)
 					{

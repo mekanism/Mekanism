@@ -1,6 +1,6 @@
 package mekanism.common.multipart;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 
 public class PartRestrictiveTransporter extends PartLogisticalTransporter
 {
@@ -17,13 +17,13 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return transporterIcons.getCenterIcon(1);
 	}
 
 	@Override
-	public Icon getSideIcon()
+	public IIcon getSideIcon()
 	{
 		return transporterIcons.getSideIcon(1);
 	}

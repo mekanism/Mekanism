@@ -33,7 +33,7 @@ public class ThreadTankSparkle extends Thread
 		try {
 			if(Mekanism.dynamicTankEasterEgg)
 			{
-				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(8)+1) + ".ogg", pointer.worldObj, Coord4D.get(pointer));
+				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(8)+1) + ".ogg", pointer.getWorldObj(), Coord4D.get(pointer));
 			}
 
 			loop(pointer);
@@ -42,7 +42,7 @@ public class ThreadTankSparkle extends Thread
 
 	public void loop(TileEntityDynamicTank tileEntity)
 	{
-		World world = pointer.worldObj;
+		World world = pointer.getWorldObj();
 
 		for(int i = 0; i < 6; i++)
 		{
@@ -81,7 +81,7 @@ public class ThreadTankSparkle extends Thread
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.worldObj);
+			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.getWorldObj());
 
 			if(tile instanceof TileEntityDynamicTank && !iteratedNodes.contains(tile))
 			{

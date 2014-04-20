@@ -11,7 +11,7 @@ import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -40,12 +40,12 @@ public class BlockGasTank extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {}
+	public void registerIcons(IIconRegister register) {}
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getBlockTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int change = 3;
@@ -67,7 +67,7 @@ public class BlockGasTank extends BlockContainer
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -89,7 +89,7 @@ public class BlockGasTank extends BlockContainer
 			return true;
 		}
 
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
@@ -145,7 +145,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -222,7 +222,7 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getBlockTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(Mekanism.GasTank);
 
 		IGasItem storageTank = (IGasItem)itemStack.getItem();

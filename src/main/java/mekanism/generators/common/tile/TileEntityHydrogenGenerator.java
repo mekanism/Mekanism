@@ -222,7 +222,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setCompoundTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+		nbtTags.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
 	}
 
 	@Override

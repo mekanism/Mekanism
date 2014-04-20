@@ -73,7 +73,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 
 		if(transmitterType == 0)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof IGridTransmitter)
 			{
@@ -84,7 +84,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		{
 			double powerLevel = dataStream.readDouble();
 
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			if(tileEntity != null)
 			{
@@ -93,7 +93,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		}
 		else if(transmitterType == 2)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			Gas gasType = GasRegistry.getGas(dataStream.readInt());
 			int amount = dataStream.readInt();
@@ -120,7 +120,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 		}
 		else if(transmitterType == 3)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			int type = dataStream.readInt();
 			Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;

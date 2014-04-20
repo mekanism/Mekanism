@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -23,7 +23,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
-import codechicken.multipart.IconHitEffects;
+import codechicken.multipart.IIconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
@@ -139,13 +139,13 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	}
 
 	@Override
-	public Icon getBreakingIcon(Object subPart, int side)
+	public IIcon getBreakingIcon(Object subPart, int side)
 	{
 		return RenderGlowPanel.icon;
 	}
 
 	@Override
-	public Icon getBrokenIcon(int side)
+	public IIcon getBrokenIcon(int side)
 	{
 		return RenderGlowPanel.icon;
 	}
@@ -153,13 +153,13 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@Override
 	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
 	{
-		IconHitEffects.addHitEffects(this, hit, effectRenderer);
+		IIconHitEffects.addHitEffects(this, hit, effectRenderer);
 	}
 
 	@Override
 	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
 	{
-		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
+		IIconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
 
 	@Override

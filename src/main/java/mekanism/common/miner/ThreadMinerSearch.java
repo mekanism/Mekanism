@@ -62,21 +62,21 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 
-			if(!tileEntity.worldObj.getChunkProvider().chunkExists(x >> 4, z >> 4))
+			if(!tileEntity.getWorldObj().getChunkProvider().chunkExists(x >> 4, z >> 4))
 			{
 				continue;
 			}
 
 			TileEntity bte;
-			if ((bte = tileEntity.worldObj.getBlockTileEntity(x,  y,  z)) != null && bte instanceof IBoundingBlock) 
-			{
+			if ((bte = tileEntity.getWorldObj().getTileEntity(x, y, z)) != null && bte instanceof IBoundingBlock)
+		{
 				continue;
 			}
 
-			info.id = tileEntity.worldObj.getBlockId(x, y, z);
-			info.meta = tileEntity.worldObj.getBlockMetadata(x, y, z);
+			info.id = tileEntity.getWorldObj().getBlockId(x, y, z);
+			info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
 
-			if(info.id != 0 && info.id != Block.bedrock.blockID)
+			if(info.id != 0 && info.id != Blocks.bedrock.blockID)
 			{
 				boolean canFilter = false;
 

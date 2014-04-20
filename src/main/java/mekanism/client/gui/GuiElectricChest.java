@@ -96,9 +96,9 @@ public class GuiElectricChest extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(MekanismUtils.localize("tile.MachineBlock.ElectricChest.name"), 8, 6, 0x404040);
-		fontRenderer.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("tile.MachineBlock.ElectricChest.name"), 8, 6, 0x404040);
+		fontRendererObj.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
 		{

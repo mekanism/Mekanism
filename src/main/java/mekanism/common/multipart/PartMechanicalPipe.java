@@ -10,10 +10,10 @@ import mekanism.common.Tier;
 import mekanism.common.Tier.PipeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -184,7 +184,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 			{
 				FluidStack stack = new FluidStack(getTransmitterNetwork().fluidStored.getFluid(), toSave);
 				lastWrite = stack;
-				nbtTags.setCompoundTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
+				nbtTags.setTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
 			}
 		}
 
@@ -197,20 +197,20 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 		return "mekanism:mechanical_pipe_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(IconRegister register)
+	public static void registerIcons(IIconRegister register)
 	{
 		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipe", "MechanicalPipeActive"});
 		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeSide"});
 	}
 
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return pipeIcons.getCenterIcon(0);
 	}
 
 	@Override
-	public Icon getSideIcon()
+	public IIcon getSideIcon()
 	{
 		return pipeIcons.getSideIcon(0);
 	}

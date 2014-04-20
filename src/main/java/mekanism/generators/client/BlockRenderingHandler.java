@@ -4,6 +4,7 @@ import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.*;
@@ -31,7 +32,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		if(block.blockID == MekanismGenerators.generatorID)
+		if(block == MekanismGenerators.Generator)
 		{
 			if(metadata == GeneratorType.BIO_GENERATOR.meta)
 			{
@@ -92,7 +93,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(block.blockID == MekanismGenerators.generatorID)
+		if(block == MekanismGenerators.Generator)
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 
@@ -108,7 +109,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory()
+	public boolean shouldRender3DInInventory(int meta)
 	{
 		return true;
 	}

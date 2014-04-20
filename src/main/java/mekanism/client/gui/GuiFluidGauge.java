@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -25,7 +25,7 @@ public class GuiFluidGauge extends GuiGauge
 	}
 
 	@Override
-	public Icon getIcon()
+	public IIcon getIcon()
 	{
 		return infoHandler.getTank().getFluid().getFluid().getIcon();
 	}

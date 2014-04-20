@@ -34,7 +34,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(itemstack.isItemEqual(new ItemStack(Item.flint))) return new GasStack(GasRegistry.getGas("oxygen"), 10);
+		if(itemstack.isItemEqual(new ItemStack(Items.flint))) return new GasStack(GasRegistry.getGas("oxygen"), 10);
 		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen")) return new GasStack(GasRegistry.getGas("oxygen"), 1);
 

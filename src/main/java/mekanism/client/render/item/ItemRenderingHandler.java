@@ -156,7 +156,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemBlockBasic && item.getItemDamage() == 6)
 		{
-			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[Mekanism.basicBlockID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Blocks.blocksList[Mekanism.basicBlockID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
 			if(binRenderer == null || binRenderer.getFontRenderer() == null)
 			{
@@ -180,7 +180,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			{
 				GL11.glPushMatrix();
 
-				if(!(itemStack.getItem() instanceof ItemBlock) || Block.blocksList[itemStack.itemID].getRenderType() != 0)
+				if(!(itemStack.getItem() instanceof ItemBlock) || Blocks.blocksList[itemStack.itemID].getRenderType() != 0)
 				{
 					GL11.glRotatef(180, 0, 0, 1);
 					GL11.glTranslatef(-1.02F, -0.2F, 0);
@@ -435,11 +435,11 @@ public class ItemRenderingHandler implements IItemRenderer
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[item.itemID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
+				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Blocks.blocksList[item.itemID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
 			}
 			else if(item.getItem() instanceof ItemBlockBasic)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.blocksList[item.itemID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Blocks.blocksList[item.itemID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 			}
 		}
 	}

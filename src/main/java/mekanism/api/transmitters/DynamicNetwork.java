@@ -17,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements ITransmitterNetwork<A, N>, IClientTicker
@@ -75,7 +75,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 			if(aTransmitter instanceof TileEntity)
 			{
-				if(!((TileEntity)aTransmitter).worldObj.isRemote)
+				if(!((TileEntity)aTransmitter).getWorldObj().isRemote)
 				{
 					TransmitterNetworkRegistry.getInstance().registerNetwork(this);
 				}
@@ -203,7 +203,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 			for(Coord4D node : partNetwork)
 			{
-				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).worldObj);
+				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).getWorldObj());
 
 				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity)transmitter))
 				{
@@ -232,7 +232,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
-				TileEntity sideTile = Coord4D.get((TileEntity)splitPoint).getFromSide(side).getTileEntity(((TileEntity)splitPoint).worldObj);
+				TileEntity sideTile = Coord4D.get((TileEntity)splitPoint).getFromSide(side).getTileEntity(((TileEntity)splitPoint).getWorldObj());
 
 				if(sideTile != null)
 				{
@@ -246,7 +246,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && !dealtWith[count])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).worldObj, getTransmissionType(), Coord4D.get(connectedBlockA), Coord4D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).getWorldObj(), getTransmissionType(), Coord4D.get(connectedBlockA), Coord4D.get((TileEntity)splitPoint));
 					List<Coord4D> partNetwork = finder.exploreNetwork();
 
 					for(int check = count; check < connectedBlocks.length; check++)
@@ -271,7 +271,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 					for(Coord4D node : finder.iterated)
 					{
-						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).worldObj);
+						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).getWorldObj());
 
 						if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType()))
 						{

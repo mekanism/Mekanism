@@ -198,7 +198,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setCompoundTag("gasTank", gasTank.write(new NBTTagCompound()));
+		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 		nbtTags.setBoolean("dumping", dumping);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 	}

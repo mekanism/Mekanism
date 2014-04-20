@@ -266,15 +266,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		String prevMin = minField != null ? minField.getText() : "";
 		String prevMax = maxField != null ? maxField.getText() : "";
 
-		radiusField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 67, 26, 11);
+		radiusField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 67, 26, 11);
 		radiusField.setMaxStringLength(2);
 		radiusField.setText(prevRad);
 
-		minField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 92, 26, 11);
+		minField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 92, 26, 11);
 		minField.setMaxStringLength(3);
 		minField.setText(prevMin);
 
-		maxField = new GuiTextField(fontRenderer, guiWidth + 12, guiHeight + 117, 26, 11);
+		maxField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 117, 26, 11);
 		maxField.setMaxStringLength(3);
 		maxField.setText(prevMax);
 	}
@@ -296,19 +296,19 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRenderer.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
-		fontRenderer.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
-		fontRenderer.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
-		fontRenderer.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+		fontRendererObj.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
+		fontRendererObj.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
+		fontRendererObj.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
+		fontRendererObj.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
 
-		fontRenderer.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
+		fontRendererObj.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 
-		fontRenderer.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
+		fontRendererObj.drawString("Min: " + tileEntity.minY, 11, 83, 0x00CD00);
 
-		fontRenderer.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
+		fontRendererObj.drawString("Max: " + tileEntity.maxY, 11, 108, 0x00CD00);
 
 		for(int i = 0; i < 4; i++)
 		{
@@ -325,12 +325,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
 
-					fontRenderer.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MOreDictFilter)
 				{
@@ -346,13 +346,13 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(Exception e) {}
 					}
 
-					fontRenderer.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MMaterialFilter)
 				{
@@ -362,12 +362,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
 
-					fontRenderer.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
 				}
 			}
 		}

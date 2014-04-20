@@ -51,9 +51,9 @@ public class GuiFactory extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 48, 4, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
-		fontRenderer.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 104, (ySize - 93) + 2, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInvName(), 48, 4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
+		fontRendererObj.drawString(RecipeType.values()[tileEntity.recipeType].getName(), 104, (ySize - 93) + 2, 0x404040);
 
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{

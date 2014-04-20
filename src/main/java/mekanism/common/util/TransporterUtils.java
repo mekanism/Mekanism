@@ -37,7 +37,7 @@ public final class TransporterUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tile = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
+			TileEntity tile = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
 
 			if(tile instanceof ILogisticalTransporter)
 			{
@@ -136,7 +136,7 @@ public final class TransporterUtils
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().worldObj);
+			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
 
 			if(inventory instanceof IInventory && !(inventory instanceof IGridTransmitter))
 			{
@@ -199,18 +199,18 @@ public final class TransporterUtils
 
 		TransporterManager.remove(stack);
 
-		EntityItem entityItem = new EntityItem(tileEntity.getTile().worldObj, tileEntity.getTile().xCoord + pos[0], tileEntity.getTile().yCoord + pos[1], tileEntity.getTile().zCoord + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.getTile().getWorldObj(), tileEntity.getTile().xCoord + pos[0], tileEntity.getTile().yCoord + pos[1], tileEntity.getTile().zCoord + pos[2], stack.itemStack);
 
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
 		entityItem.motionZ = 0;
 
-		tileEntity.getTile().worldObj.spawnEntityInWorld(entityItem);
+		tileEntity.getTile().getWorldObj().spawnEntityInWorld(entityItem);
 	}
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().worldObj.provider.dimensionId).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
 		float itemFix = 0;

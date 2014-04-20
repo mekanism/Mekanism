@@ -1,20 +1,20 @@
 package mekanism.common.multipart;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 
 public class TransmitterIcons
 {
-	private Icon[] sideIcons;
-	private Icon[] centerIcons;
+	private IIcon[] sideIcons;
+	private IIcon[] centerIcons;
 
 	public TransmitterIcons(int numCentres, int numSides)
 	{
-		sideIcons = new Icon[numSides];
-		centerIcons = new Icon[numCentres];
+		sideIcons = new IIcon[numSides];
+		centerIcons = new IIcon[numCentres];
 	}
 
-	public void registerCenterIcons(IconRegister register, String[] filenames)
+	public void registerCenterIcons(IIconRegister register, String[] filenames)
 	{
 		for(int i = 0; i < centerIcons.length; i++)
 		{
@@ -22,7 +22,7 @@ public class TransmitterIcons
 		}
 	}
 
-	public void registerSideIcons(IconRegister register, String[] filenames)
+	public void registerSideIcons(IIconRegister register, String[] filenames)
 	{
 		for(int i = 0; i < sideIcons.length; i++)
 		{
@@ -30,12 +30,12 @@ public class TransmitterIcons
 		}
 	}
 
-	public Icon getSideIcon(int n)
+	public IIcon getSideIcon(int n)
 	{
 		return sideIcons[n];
 	}
 
-	public Icon getCenterIcon(int n)
+	public IIcon getCenterIcon(int n)
 	{
 		return centerIcons[n];
 	}

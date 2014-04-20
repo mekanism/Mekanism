@@ -156,12 +156,12 @@ public class GuiConfiguration extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.configuration"), 60, 5, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.configuration"), 60, 5, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
 
-		fontRenderer.drawString(MekanismUtils.localize("gui.input") + " (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);
-		fontRenderer.drawString(MekanismUtils.localize("gui.output"), 72, 68, 0x787878);
-		fontRenderer.drawString(MekanismUtils.localize("gui.slots"), 122, 81, 0x787878);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.input") + " (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.output"), 72, 68, 0x787878);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.slots"), 122, 81, 0x787878);
 
 		if(configurable.getEjector().getOutputColor() != null)
 		{
@@ -171,7 +171,7 @@ public class GuiConfiguration extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRenderer.renderIcon(80, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
+			itemRender.renderIcon(80, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
@@ -234,7 +234,7 @@ public class GuiConfiguration extends GuiMekanism
 
 		TileEntity tile = (TileEntity)configurable;
 
-		if(tile == null || mc.theWorld.getBlockTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) == null)
+		if(tile == null || mc.theWorld.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) == null)
 		{
 			mc.displayGuiScreen(null);
 		}
@@ -254,7 +254,7 @@ public class GuiConfiguration extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				int guiId = MachineType.get(tile.getBlockType().blockID, tile.getBlockMetadata()).guiId;
+				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
 				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
 				PacketHandler.sendPacket(Transmission.SERVER, new PacketSimpleGui().setParams(Coord4D.get(tile), guiId));
 			}

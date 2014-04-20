@@ -17,10 +17,10 @@ import mekanism.common.Tier;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -159,7 +159,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		return "mekanism:universal_cable_" + tier.name().toLowerCase();
 	}
 
-	public static void registerIcons(IconRegister register)
+	public static void registerIcons(IIconRegister register)
 	{
 		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
 				"UniversalCableElite", "UniversalCableUltimate"});
@@ -174,13 +174,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	public Icon getCenterIcon()
+	public IIcon getCenterIcon()
 	{
 		return cableIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public Icon getSideIcon()
+	public IIcon getSideIcon()
 	{
 		return cableIcons.getSideIcon(0);
 	}

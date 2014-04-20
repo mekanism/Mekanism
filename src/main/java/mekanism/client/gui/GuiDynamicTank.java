@@ -31,14 +31,14 @@ public class GuiDynamicTank extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRenderer.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-		fontRenderer.drawString(MekanismUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity/TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
-		fontRenderer.drawString(tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.getFluid().getName() + ":" : MekanismUtils.localize("gui.noFluid"), 53, 44, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity/TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.getFluid().getName() + ":" : MekanismUtils.localize("gui.noFluid"), 53, 44, 0x00CD00);
 
 		if(tileEntity.structure.fluidStored != null)
 		{
-			fontRenderer.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
+			fontRendererObj.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
 		}
 
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)

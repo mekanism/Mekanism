@@ -320,8 +320,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setInteger("operatingTicks", operatingTicks);
-		nbtTags.setCompoundTag("injectTank", injectTank.write(new NBTTagCompound()));
-		nbtTags.setCompoundTag("gasTank", outputTank.write(new NBTTagCompound()));
+		nbtTags.setTag("injectTank", injectTank.write(new NBTTagCompound()));
+		nbtTags.setTag("gasTank", outputTank.write(new NBTTagCompound()));
 	}
 
 	@Override

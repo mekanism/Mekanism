@@ -12,8 +12,9 @@ import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -79,7 +80,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		DisplayInteger[] displays = new DisplayInteger[stages];
 
 		Model3D model3D = new Model3D();
-		model3D.baseBlock = Block.waterStill;
+		model3D.baseBlock = Blocks.water;
 		model3D.setTexture(MekanismRenderer.energyIcon);
 
 		for(int i = 0; i < stages; i++)
