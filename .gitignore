@@ -1,7 +1,7 @@
 build
 output
-src
 .gradle
+.idea
 
 Mekanism*.jar
 MDK.zip
