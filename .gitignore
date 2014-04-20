@@ -2,6 +2,7 @@ build
 output
 .gradle
 .idea
+Mekanism.iml
 
 Mekanism*.jar
 MDK.zip
