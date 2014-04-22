@@ -9,8 +9,6 @@ import mekanism.common.block.BlockMachine.MachineType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import com.sun.javaws.progress.Progress;
-
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 {
 	public static Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<ItemStack, ItemStack>();
