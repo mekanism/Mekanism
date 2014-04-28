@@ -226,6 +226,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					miner.maxY = stack.stackTagCompound.getInteger("maxY");
 					miner.doEject = stack.stackTagCompound.getBoolean("doEject");
 					miner.doPull = stack.stackTagCompound.getBoolean("doPull");
+					miner.inverse = stack.stackTagCompound.getBoolean("inverse");
 					miner.silkTouch = stack.stackTagCompound.getBoolean("silkTouch");
 
 					if(stack.stackTagCompound.hasKey("replaceStack"))
