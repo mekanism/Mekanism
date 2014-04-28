@@ -920,6 +920,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 			itemStack.stackTagCompound.setBoolean("doEject", miner.doEject);
 			itemStack.stackTagCompound.setBoolean("doPull", miner.doPull);
 			itemStack.stackTagCompound.setBoolean("silkTouch", miner.silkTouch);
+			itemStack.stackTagCompound.setBoolean("inverse", miner.inverse);
 
 			if(miner.replaceStack != null)
 			{
