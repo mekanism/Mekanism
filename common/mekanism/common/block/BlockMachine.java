@@ -84,6 +84,8 @@ import net.minecraftforge.common.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -117,7 +119,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockMachine extends BlockContainer implements ISpecialBounds
+public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
 	public Icon[][] icons = new Icon[16][16];
 	public Random machineRand = new Random();
@@ -1229,5 +1231,18 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds
 	public boolean doDefaultBoundSetting(int metadata)
 	{
 		return false;
+	}
+
+	@Override
+	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
+		
+		TileEntity te = world.getBlockTileEntity(x, y, z);
+		
+		if(te != null && te instanceof IPeripheral)
+		{
+			return (IPeripheral) te;
+		}
+		
+		return null;
 	}
 }
