@@ -10,18 +10,16 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
 import mekanism.common.ILogisticalTransporter;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.transporter.Finder.FirstFinder;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,9 +31,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
 import buildcraft.api.transport.IPipeTile;
 import codechicken.lib.vec.Vector3;
 
@@ -649,54 +644,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		{
 			nbtTags.setTag("stacks", stacks);
 		}
-	}
-
-	@Override
-	public boolean isSolidOnSide(ForgeDirection side)
-	{
-		return true;
-	}
-
-	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
-	{
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
-	{
-		return null;
-	}
-
-	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-
-	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
-	{
-		return PipeUtils.EMPTY;
-	}
-
-	@Override
-	public IPipe getPipe()
-	{
-		return null;
 	}
 
 	@Override
