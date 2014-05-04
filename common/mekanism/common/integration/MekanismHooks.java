@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockMachine;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.event.FMLInterModComms;
+import dan200.computercraft.api.ComputerCraftAPI;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -36,6 +38,7 @@ public final class MekanismHooks
 	public boolean BasicComponentsLoaded = false;
 	public boolean BuildCraftLoaded = false;
 	public boolean TELoaded = false;
+	public boolean CCLoaded = false;
 
 	public boolean MetallurgyCoreLoaded = false;
 	public boolean MetallurgyBaseLoaded = false;
@@ -47,6 +50,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
 		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
+		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 
 		if(Loader.isModLoaded("Metallurgy3Core"))
 		{
@@ -133,6 +137,14 @@ public final class MekanismHooks
 		{
 			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
 		}
+		
+		if(CCLoaded)
+		{
+			try {
+				ComputerCraftAPI.registerPeripheralProvider((BlockMachine)Mekanism.MachineBlock);
+			} catch(Exception ex) {}
+		}
+		
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)
