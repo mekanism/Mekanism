@@ -282,7 +282,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		}
 		else if(this == Mekanism.ArmoredJetpack)
 		{
-			return new ArmorProperties(1, 0.8, 5);
+			return new ArmorProperties(1, 0.8, 115);
 		}
 
 		return new ArmorProperties(0, 0, 0);
