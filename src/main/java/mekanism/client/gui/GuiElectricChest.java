@@ -58,7 +58,7 @@ public class GuiElectricChest extends GuiMekanism
 
 		if(!isBlock)
 		{
-			mc.sndManager.playSoundFX("random.chestclosed", 1.0F, 1.0F);
+			mc.theWorld.playSoundEffect(tileEntity.xCoord + 0.5, tileEntity.yCoord + 0.5, tileEntity.zCoord + 0.5, "random.chestopen", 0.5f, mc.theWorld.rand.nextFloat() * 0.1F + 0.9F);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class GuiElectricChest extends GuiMekanism
 
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 
 				if(isBlock)
 				{

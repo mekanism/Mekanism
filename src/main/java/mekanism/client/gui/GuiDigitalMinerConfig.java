@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MItemStackFilter;
 import mekanism.common.miner.MMaterialFilter;
@@ -172,17 +172,17 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 						if(filter instanceof MItemStackFilter)
 						{
-							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	                        playClickSound();
 							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
-							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	                        playClickSound();
 							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
 						else if(filter instanceof MMaterialFilter)
 						{
-							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	                        playClickSound();
 							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i));
 						}
 					}
@@ -191,25 +191,25 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4));
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				setRadius();
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				setMinY();
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				setMaxY();
 			}
 

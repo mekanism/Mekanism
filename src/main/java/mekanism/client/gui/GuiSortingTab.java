@@ -3,12 +3,11 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -71,7 +70,7 @@ public class GuiSortingTab extends GuiElement
 				ArrayList data = new ArrayList();
 				data.add(0);
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 			}
 		}
 	}

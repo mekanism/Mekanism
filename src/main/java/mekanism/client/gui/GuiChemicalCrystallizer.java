@@ -16,6 +16,7 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.network.PacketTileEntity;
@@ -158,7 +159,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 				data.add(0);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				playClickSound();
 			}
 		}
 	}

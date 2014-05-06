@@ -38,7 +38,7 @@ public class GuiRobitMain extends GuiMekanism
 	private void toggleNameChange()
 	{
 		displayNameChange = !displayNameChange;
-		confirmName.drawButton = displayNameChange;
+		confirmName.visible = displayNameChange;
 		nameChangeField.setFocused(displayNameChange);
 	}
 
@@ -71,7 +71,7 @@ public class GuiRobitMain extends GuiMekanism
 
 		buttonList.clear();
 		buttonList.add(confirmName = new GuiButton(0, guiWidth + 58, guiHeight + 47, 60, 20, MekanismUtils.localize("gui.confirm")));
-		confirmName.drawButton = displayNameChange;
+		confirmName.visible = displayNameChange;
 
 		nameChangeField = new GuiTextField(fontRendererObj, guiWidth + 48, guiHeight + 21, 80, 12);
 		nameChangeField.setMaxStringLength(12);
@@ -266,51 +266,51 @@ public class GuiRobitMain extends GuiMekanism
 
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 1, robit.getEntityId()));
 				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 2, robit.getEntityId()));
 				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 3, robit.getEntityId()));
 				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 4, robit.getEntityId()));
 				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId()));
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				toggleNameChange();
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
 				mc.displayGuiScreen(null);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId()));
 			}
 		}

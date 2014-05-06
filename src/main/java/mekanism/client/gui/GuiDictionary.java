@@ -135,8 +135,8 @@ public class GuiDictionary extends GuiMekanism
 						itemType.stackSize = 1;
 
 						oreDictNames = MekanismUtils.getOreDictName(itemType);
-						mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-
+						playClickSound();
+						
 						return;
 					}
 				}
@@ -159,7 +159,7 @@ public class GuiDictionary extends GuiMekanism
 					oreDictNames = new ArrayList<String>();
 				}
 
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 			}
 		}
 

@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.IInvConfiguration;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
@@ -254,19 +254,19 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketSimpleGui(Coord4D.get(tile), guiId));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile)));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile)));
 			}
 		}
@@ -278,7 +278,7 @@ public class GuiConfiguration extends GuiMekanism
 
 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
-			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+            playClickSound();
 			Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button));
 		}
 
@@ -289,7 +289,7 @@ public class GuiConfiguration extends GuiMekanism
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i));
 			}
 		}
@@ -301,7 +301,7 @@ public class GuiConfiguration extends GuiMekanism
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i));
 			}
 		}

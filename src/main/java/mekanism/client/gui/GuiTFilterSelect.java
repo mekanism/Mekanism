@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -107,7 +107,7 @@ public class GuiTFilterSelect extends GuiMekanism
 			
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
 			}
 		}
