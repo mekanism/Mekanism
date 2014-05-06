@@ -1,5 +1,7 @@
 package mekanism.common.entity;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
@@ -69,7 +71,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 
 	public EntityBalloon(EntityLivingBase entity, EnumColor c)
 	{
-		this(entity.getWorldObj());
+		this(entity.worldObj);
 
 		latchedEntity = entity;
 		setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
@@ -343,7 +345,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public void writeSpawnData(ByteArrayDataOutput data)
+	public void writeSpawnData(ByteBuf data)
 	{
 		data.writeDouble(posX);
 		data.writeDouble(posY);
@@ -371,7 +373,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public void readSpawnData(ByteArrayDataInput data)
+	public void readSpawnData(ByteBuf data)
 	{
 		setPosition(data.readDouble(), data.readDouble(), data.readDouble());
 
@@ -410,7 +412,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	}
 
 	@Override
-	public boolean isInRangeToRenderVec3D(Vec3 par1Vec3)
+	public boolean isInRangeToRender3d(double p_145770_1_, double p_145770_3_, double p_145770_5_)
 	{
 		return true;
 	}

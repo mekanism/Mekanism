@@ -25,8 +25,8 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,6 +37,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.Constants;
 import cofh.api.energy.IEnergyContainerItem;
 
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
@@ -86,8 +87,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	{
 		super.applyEntityAttributes();
 
-		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setAttribute(0.3);
-		getEntityAttribute(SharedMonsterAttributes.maxHealth).setAttribute(1);
+		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(0.3);
+		getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1);
 	}
 
 	@Override
@@ -188,7 +189,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 				}
-				else if(inventory[27].itemID == Items.redstone.itemID && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(inventory[27].getItem() == Items.redstone && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
 					setEnergy(getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
 					inventory[27].stackSize--;
@@ -219,7 +220,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 							if(inventory[29].stackSize == 0)
 							{
-								inventory[29] = inventory[29].getItem().getContainerItemStack(inventory[29]);
+								inventory[29] = inventory[29].getItem().getContainerItem(inventory[29]);
 							}
 						}
 					}
@@ -384,7 +385,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			}
 		}
 		else {
-			entityplayer.openGui(Mekanism.instance, 21, worldObj, entityId, 0, 0);
+			entityplayer.openGui(Mekanism.instance, 21, worldObj, getEntityId(), 0, 0);
 		}
 
 		return false;
@@ -463,12 +464,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		homeLocation = Coord4D.read(nbtTags);
 
-		NBTTagList tagList = nbtTags.getTagList("Items");
+		NBTTagList tagList = nbtTags.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		inventory = new ItemStack[getSizeInventory()];
 
 		for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
+			NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.length)
@@ -632,15 +633,15 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return "Robit";
 	}
-
+	
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
-		return true;
+	    return true;
 	}
 
 	@Override
@@ -659,10 +660,10 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 	}
 
 	@Override
-	public void openChest() {}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
@@ -682,7 +683,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.tagAt(slots);
+			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.length)
@@ -711,7 +712,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return tagList;
 	}
 
-	@Override
 	public String getTranslatedEntityName()
 	{
 		return getName().isEmpty() ? "Robit" : getName();

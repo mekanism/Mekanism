@@ -203,7 +203,7 @@ public class BlockCardboardBox extends BlockContainer
 
 		public NBTTagCompound write(NBTTagCompound nbtTags)
 		{
-			nbtTags.setInteger("id", id);
+			nbtTags.setInteger("id", Block.getIdFromBlock(block));
 			nbtTags.setInteger("meta", meta);
 
 			if(tileTag != null)
@@ -218,7 +218,7 @@ public class BlockCardboardBox extends BlockContainer
 		{
 			BlockData data = new BlockData();
 
-			data.id = nbtTags.getInteger("id");
+			data.block = Block.getBlockById(nbtTags.getInteger("id"));
 			data.meta = nbtTags.getInteger("meta");
 
 			if(nbtTags.hasKey("tileTag"))
