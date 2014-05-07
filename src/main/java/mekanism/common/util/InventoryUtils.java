@@ -37,9 +37,9 @@ public final class InventoryUtils
 			{
 				adj = main.adjacentChestZNeg;
 			}
-			else if(main.adjacentChestZPosition != null)
+			else if(main.adjacentChestZPos != null)
 			{
-				adj = main.adjacentChestZPosition;
+				adj = main.adjacentChestZPos;
 			}
 
 			if(adj != null)

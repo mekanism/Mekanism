@@ -21,20 +21,21 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -61,7 +62,7 @@ public class MekanismRenderer
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		if(event.map.textureType == 0)
+		if(event.map.getTextureType() == 0)
 		{
 			for(EnumColor color : EnumColor.values())
 			{
@@ -204,10 +205,7 @@ public class MekanismRenderer
 			renderBlocks.renderFaceXPos(null, 0, 0, 0, object.getBlockTextureFromSide(5));
 		}
 		
-		if(Tessellator.instance.isDrawing)
-		{
-			Tessellator.instance.draw();
-		}
+		Tessellator.instance.draw();
 	}
 	
 	public static IIcon getColorIcon(EnumColor color)
@@ -312,7 +310,7 @@ public class MekanismRenderer
         GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
         GL11.glTranslatef(-0.9375F, -0.0625F, 0.0F);
         
-        RenderManager.instance.itemRender.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
+        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, maxU, minV, minU, maxV, icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
@@ -443,7 +441,7 @@ public class MekanismRenderer
     		{
     			if(obj instanceof TextureMap)
     			{
-    				if(((TextureMap)obj).textureType == type)
+    				if(((TextureMap)obj).getTextureType() == type)
     				{
     					return (TextureMap)obj;
     				}

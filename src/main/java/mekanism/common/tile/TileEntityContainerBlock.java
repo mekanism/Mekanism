@@ -38,7 +38,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
-				NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
+				NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
 				byte slotID = tagCompound.getByte("Slot");
 
 				if(slotID >= 0 && slotID < getSizeInventory())
@@ -146,7 +146,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".name");
 	}
@@ -158,13 +158,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void openChest() {}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return true;
 	}
@@ -205,7 +205,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 		for(int slots = 0; slots < nbtTags.tagCount(); slots++)
 		{
-			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.tagAt(slots);
+			NBTTagCompound tagCompound = (NBTTagCompound)nbtTags.getCompoundTagAt(slots);
 			byte slotID = tagCompound.getByte("Slot");
 
 			if(slotID >= 0 && slotID < inventory.length)

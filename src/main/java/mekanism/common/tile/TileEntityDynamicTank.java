@@ -172,7 +172,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 					if(!(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
 					{
-						worldObj.notifyBlockOfNeighborChange(obj.xCoord, obj.yCoord, obj.zCoord, getBlockType().blockID);
+						worldObj.notifyBlockOfNeighborChange(obj.xCoord, obj.yCoord, obj.zCoord, getBlockType());
 					}
 				}
 
@@ -254,7 +254,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						return;
 					}
 
-					ItemStack containerItem = structure.inventory[0].getItem().getContainerItemStack(structure.inventory[0]);
+					ItemStack containerItem = structure.inventory[0].getItem().getContainerItem(structure.inventory[0]);
 
 					boolean filled = false;
 

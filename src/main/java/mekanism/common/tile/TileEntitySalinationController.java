@@ -7,7 +7,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.common.IConfigurable;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
@@ -241,7 +241,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 						return;
 					}
 					
-					ItemStack containerItem = inventory[0].getItem().getContainerItemStack(inventory[0]);
+					ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
 					
 					boolean filled = false;
 					
@@ -378,13 +378,13 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		structured = scanTopLayer(startPoint);
 		height = structured ? height : 0;
 		
-		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 		
 		for(TileEntitySalinationTank tank : tankParts)
 		{
 			if(tank != this && tank instanceof TileEntitySalinationValve)
 			{
-				worldObj.notifyBlocksOfNeighborChange(tank.xCoord, tank.yCoord, tank.zCoord, tank.getBlockType().blockID);
+				worldObj.notifyBlocksOfNeighborChange(tank.xCoord, tank.yCoord, tank.zCoord, tank.getBlockType());
 			}
 		}
 		

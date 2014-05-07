@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
@@ -21,7 +20,6 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -32,14 +30,15 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl, IGasHandler, ITubeConnection
@@ -144,7 +143,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 		{
 			if(ticker == 1)
 			{
-				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 			}
 
 			if(updateDelay > 0)
@@ -191,7 +190,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						recipeType = toSet.ordinal();
 						gasTank.setGas(null);
 
-						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType().blockID);
+						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 
 						MekanismUtils.saveChunk(this);
 					}
@@ -326,9 +325,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			return stack != null ? stack.stackSize : 0;
 		}
 
-		public int id()
+		public Item item()
 		{
-			return stack != null ? stack.itemID : 0;
+			return stack != null ? stack.getItem() : null;
 		}
 
 		public static InvID get(int id, ItemStack[] inv)
@@ -443,7 +442,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 		if(slotID == 0)
 		{
-			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
 		}
 		else if(slotID == 1)
 		{

@@ -615,7 +615,7 @@ public final class MekanismUtils
 		TileEntity tile = (TileEntity)config;
 		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
+		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType());
 	}
 
 	/**
@@ -662,7 +662,7 @@ public final class MekanismUtils
 	 */
 	public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
 	{
-		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID);
+		world.setBlock(x, y, z, Mekanism.BoundingBlock);
 
 		if(!world.isRemote)
 		{
@@ -680,7 +680,7 @@ public final class MekanismUtils
 	 */
 	public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
 	{
-		world.setBlock(x, y, z, Mekanism.BoundingBlock.blockID, 1, 0);
+		world.setBlock(x, y, z, Mekanism.BoundingBlock, 1, 0);
 
 		if(!world.isRemote)
 		{
@@ -847,7 +847,7 @@ public final class MekanismUtils
 	 */
 	public static void openElectricChestGui(EntityPlayerMP player, TileEntityElectricChest tileEntity, IInventory inventory, boolean isBlock)
 	{
-		player.incrementWindowID();
+		player.getNextWindowId();
 		player.closeContainer();
 		int id = player.currentWindowId;
 

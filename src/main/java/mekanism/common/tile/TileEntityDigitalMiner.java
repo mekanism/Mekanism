@@ -502,9 +502,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
-		super.openChest();
+		super.openInventory();
 
 		if(!worldObj.isRemote)
 		{
@@ -545,7 +545,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+				filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -1011,7 +1011,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					}
 
 					MekanismUtils.makeAdvancedBoundingBlock(worldObj, x, y, z, Coord4D.get(this));
-					worldObj.notifyBlocksOfNeighborChange(x, y, z, Mekanism.BoundingBlock.blockID);
+					worldObj.notifyBlocksOfNeighborChange(x, y, z, Mekanism.BoundingBlock);
 				}
 			}
 		}
@@ -1349,7 +1349,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+				filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
