@@ -1,10 +1,10 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -121,14 +121,14 @@ public class GuiPasswordEnter extends GuiScreen
 		if(passwordField.getText() == null || passwordField.getText() == "")
 		{
 			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.fieldsEmpty");
-			mc.sndManager.playSoundFX("mekanism:etc.Error", 1.0F, 1.0F);
+			// TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Error", 1.0F, 1.0F);
 			ticker = 30;
 		}
 		else if(!getPassword().equals(passwordField.getText()))
 		{
 			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.invalid");
 			passwordField.setText("");
-			mc.sndManager.playSoundFX("mekanism:etc.Error", 1.0F, 1.0F);
+            // TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Error", 1.0F, 1.0F);
 			ticker = 30;
 		}
 		else {
@@ -142,7 +142,7 @@ public class GuiPasswordEnter extends GuiScreen
 				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, false));
 			}
 
-			mc.sndManager.playSoundFX("mekanism:etc.Success", 1.0F, 1.0F);
+			 // TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Success", 1.0F, 1.0F);
 		}
 	}
 

@@ -1,18 +1,22 @@
 package mekanism.client.gui;
 
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketPortableTeleport;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import sun.net.www.content.text.plain;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -99,25 +103,25 @@ public class GuiPortableTeleporter extends GuiScreen
 		{
 			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0)));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		}
 		else if(xAxis > 62 && xAxis < 76 && yAxis > 44 && yAxis < 58)
 		{
 			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1)));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		}
 		else if(xAxis > 101 && xAxis < 115 && yAxis > 44 && yAxis < 58)
 		{
 			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2)));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		}
 		else if(xAxis > 140 && xAxis < 154 && yAxis > 44 && yAxis < 58)
 		{
 			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3)));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+	        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 		}
 	}
 

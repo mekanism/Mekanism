@@ -3,11 +3,10 @@ package mekanism.client.gui;
 import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -73,7 +72,7 @@ public class GuiRedstoneControl extends GuiElement
 				RedstoneControl current = control.getControlType();
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
 
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
 			}
 		}

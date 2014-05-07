@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -67,7 +67,7 @@ public class GuiTeleporter extends GuiMekanism
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitOne = getIncrementedNumber(tileEntity.code.digitOne);
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+            playClickSound();
 		}
 		else if(xAxis > 62 && xAxis < 76 && yAxis > 44 && yAxis < 58)
 		{
@@ -76,7 +76,7 @@ public class GuiTeleporter extends GuiMekanism
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitTwo = getIncrementedNumber(tileEntity.code.digitTwo);
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+            playClickSound();
 		}
 		else if(xAxis > 101 && xAxis < 115 && yAxis > 44 && yAxis < 58)
 		{
@@ -85,7 +85,7 @@ public class GuiTeleporter extends GuiMekanism
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitThree = getIncrementedNumber(tileEntity.code.digitThree);
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+            playClickSound();
 		}
 		else if(xAxis > 140 && xAxis < 154 && yAxis > 44 && yAxis < 58)
 		{
@@ -94,7 +94,7 @@ public class GuiTeleporter extends GuiMekanism
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitFour = getIncrementedNumber(tileEntity.code.digitFour);
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+            playClickSound();
 		}
 	}
 

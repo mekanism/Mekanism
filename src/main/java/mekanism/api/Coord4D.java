@@ -1,5 +1,7 @@
 package mekanism.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
@@ -169,13 +171,18 @@ public class Coord4D
 
 	/**
 	 * Returns a new Coord4D from a tag compound.
-	 * @param nbtTags - tag compound to read from
+	 * @param data - tag compound to read from
 	 * @return the Coord4D from the tag compound
 	 */
-	public static Coord4D read(NBTTagCompound nbtTags)
+	public static Coord4D read(ByteBuf data)
 	{
-		return new Coord4D(nbtTags.getInteger("x"), nbtTags.getInteger("y"), nbtTags.getInteger("z"), nbtTags.getInteger("dimensionId"));
+		return new Coord4D(data.readInt(), data.readInt(), data.readInt(), data.readInt());
 	}
+	
+    public static Coord4D read(NBTTagCompound tag)
+    {
+        return new Coord4D(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"), tag.getInteger("id"));
+    }
 
 	/**
 	 * Returns a new Coord4D from a ByteArrayDataInput.

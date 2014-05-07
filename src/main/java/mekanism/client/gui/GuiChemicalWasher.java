@@ -5,7 +5,6 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
@@ -15,15 +14,13 @@ import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalWasher;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
@@ -123,7 +120,7 @@ public class GuiChemicalWasher extends GuiMekanism
 				data.add(0);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				playClickSound();
 			}
 		}
 	}

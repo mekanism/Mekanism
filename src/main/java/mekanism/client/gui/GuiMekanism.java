@@ -9,13 +9,15 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.SideData;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -185,5 +187,10 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	protected FontRenderer getFontRenderer()
 	{
 		return fontRendererObj;
+	}
+	
+	protected void playClickSound()
+	{
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 	}
 }

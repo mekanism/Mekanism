@@ -17,7 +17,7 @@ public class MekanismAPI
 	{
 		for(ItemInfo i : cardboardBoxIgnore)
 		{
-			if(i.block == item && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta))
+			if(i.block == Block.getBlockFromItem(item) && (i.meta == OreDictionary.WILDCARD_VALUE || i.meta == meta))
 			{
 				return false;
 			}

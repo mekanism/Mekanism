@@ -6,7 +6,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketLogisticalSorterGui;
@@ -289,13 +289,13 @@ public class GuiTOreDictFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				setOreDictKey();
 			}
 		}
@@ -307,7 +307,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+			// TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 
 			if(button == 0)
 			{

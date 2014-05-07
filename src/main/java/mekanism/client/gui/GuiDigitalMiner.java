@@ -8,7 +8,7 @@ import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketDigitalMinerGui;
@@ -293,7 +293,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 
 				ArrayList data = new ArrayList();
 				data.add(0);
@@ -303,7 +303,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 
 				ArrayList data = new ArrayList();
 				data.add(1);
@@ -313,7 +313,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 
 				ArrayList data = new ArrayList();
 				data.add(5);
@@ -323,7 +323,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 
 				ArrayList data = new ArrayList();
 				data.add(9);
@@ -371,7 +371,7 @@ public class GuiDigitalMiner extends GuiMekanism
 					Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
 				}
 
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 			}
 		}
 	}

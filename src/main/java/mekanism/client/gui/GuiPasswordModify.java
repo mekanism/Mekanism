@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.IElectricChest;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;

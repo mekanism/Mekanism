@@ -39,6 +39,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -713,7 +714,8 @@ public class BlockBasic extends Block
 		}
 
 		world.func_147479_m(x, y, z);
-		world.updateAllLightTypes(x, y, z);
+		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
+	    world.updateLightByType(EnumSkyBlock.Sky, x, y, z);
 
 		if(!world.isRemote && world.getTileEntity(x, y, z) != null)
 		{

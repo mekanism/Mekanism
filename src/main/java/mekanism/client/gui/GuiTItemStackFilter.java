@@ -295,7 +295,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0));
 			}
 
@@ -313,12 +313,12 @@ public class GuiTItemStackFilter extends GuiMekanism
 					filter.itemType = null;
 				}
 
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 			}
 
 			if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
 			{
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+                playClickSound();
 				filter.sizeMode = !filter.sizeMode;
 			}
 		}
@@ -330,7 +330,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+			// TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
 
 			if(button == 0)
 			{
