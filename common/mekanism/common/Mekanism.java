@@ -159,7 +159,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "6.0.3")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "6.0.4")
 @NetworkMod(channels = {"MEK"}, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Mekanism
 {
@@ -184,7 +184,7 @@ public class Mekanism
 	public static Configuration configuration;
 
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(6, 0, 3);
+	public static Version versionNumber = new Version(6, 0, 4);
 
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
