@@ -1,11 +1,19 @@
 build
 output
-src
 .gradle
+.idea
+*.iml
 
 Mekanism*.jar
 MDK.zip
+/run
+/gradle
+*.bat
+*.classpath
+*.project
+/.settings
 
 *.mtl
 *.blend1
 *.blend2
+/bin
