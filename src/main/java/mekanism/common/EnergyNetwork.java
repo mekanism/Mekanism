@@ -219,7 +219,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 						if(receiver != null)
 						{
-							float toSend = receiver.receiveEnergy(Type.PIPE, (float)(Math.min(receiver.powerRequest(), currentSending*Mekanism.TO_BC)), side.getOpposite());
+							double toSend = receiver.receiveEnergy(Type.PIPE, (float)(Math.min(receiver.powerRequest(), currentSending*Mekanism.TO_BC)), side.getOpposite());
 							sent += toSend*Mekanism.FROM_BC;
 						}
 					}

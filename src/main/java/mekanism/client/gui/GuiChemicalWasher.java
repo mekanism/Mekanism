@@ -87,7 +87,7 @@ public class GuiChemicalWasher extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInvName(), 45, 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 4, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

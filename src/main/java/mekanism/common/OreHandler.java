@@ -2,8 +2,7 @@ package mekanism.common;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderEnd;
@@ -25,7 +24,7 @@ public class OreHandler implements IWorldGenerator
 					int randPosX = (chunkX*16) + random.nextInt(16);
 					int randPosY = random.nextInt(60);
 					int randPosZ = (chunkZ*16) + random.nextInt(16);
-					new WorldGenMinable(Mekanism.oreBlockID, 0, 8, Blocks.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+					new WorldGenMinable(Mekanism.OreBlock, 0, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
 				}
 			}
 
@@ -36,7 +35,7 @@ public class OreHandler implements IWorldGenerator
 					int randPosX = (chunkX*16) + random.nextInt(16);
 					int randPosY = random.nextInt(60);
 					int randPosZ = (chunkZ*16) + random.nextInt(16);
-					new WorldGenMinable(Mekanism.oreBlockID, 1, 8, Blocks.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+					new WorldGenMinable(Mekanism.OreBlock, 1, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
 				}
 			}
 
@@ -47,7 +46,7 @@ public class OreHandler implements IWorldGenerator
 					int randPosX = (chunkX*16) + random.nextInt(16);
 					int randPosY = random.nextInt(60);
 					int randPosZ = (chunkZ*16) + random.nextInt(16);
-					new WorldGenMinable(Mekanism.oreBlockID, 2, 8, Blocks.stone.blockID).generate(world, random, randPosX, randPosY, randPosZ);
+					new WorldGenMinable(Mekanism.OreBlock, 2, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
 				}
 			}
 		}

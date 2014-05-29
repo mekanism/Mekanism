@@ -72,13 +72,13 @@ public class ItemBlockCardboardBox extends ItemBlock
 	{
 		if(!player.isSneaking() && !world.isAirBlock(x, y, z) && stack.getItemDamage() == 0)
 		{
-			int id = world.getBlockId(x, y, z);
+			Block block = world.getBlock(x, y, z);
 			int meta = world.getBlockMetadata(x, y, z);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(id, meta))
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(id, meta))//TODO
 			{
 				BlockData data = new BlockData();
-				data.id = id;
+				data.block = block;
 				data.meta = meta;
 
 				isMonitoring = true;
@@ -97,7 +97,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 					stack.stackSize--;
 				}
 
-				world.setBlock(x, y, z, Mekanism.cardboardBoxID, 1, 3);
+				world.setBlock(x, y, z, Mekanism.CardboardBox, 1, 3);
 
 				isMonitoring = false;
 

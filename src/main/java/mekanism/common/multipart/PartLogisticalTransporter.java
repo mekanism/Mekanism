@@ -613,7 +613,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				TransporterStack stack = TransporterStack.readFromNBT((NBTTagCompound)tagList.tagAt(i));
+				TransporterStack stack = TransporterStack.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i));
 
 				transit.add(stack);
 				TransporterManager.add(stack);

@@ -249,7 +249,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -487,7 +487,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 		if(!worldObj.isRemote)
 		{
@@ -608,7 +608,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+				filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 	}

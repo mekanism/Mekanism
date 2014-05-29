@@ -13,9 +13,9 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class MItemStackFilter extends MinerFilter
 {
-	private static List<Integer> metaIgnoreArray = ListUtils.asList(Blocks.planks.blockID, Blocks.ladder.blockID, Blocks.torchWood.blockID,
-			Blocks.furnaceBurning.blockID, Blocks.furnaceIdle.blockID, Blocks.dispenser.blockID, Blocks.pistonBase.blockID,
-			Blocks.pistonExtension.blockID, Blocks.pistonStickyBase.blockID, Blocks.pistonMoving.blockID);
+	private static List<Block> metaIgnoreArray = ListUtils.asList(Blocks.planks, Blocks.ladder, Blocks.torch,
+			Blocks.furnace, Blocks.dispenser, Blocks.piston,
+			Blocks.piston_extension, Blocks.piston_head);
 
 	public ItemStack itemType;
 

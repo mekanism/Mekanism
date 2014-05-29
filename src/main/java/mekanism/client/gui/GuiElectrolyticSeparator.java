@@ -99,8 +99,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			data.add((byte)0);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-
+			playClickSound();
 		}
 		else if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
@@ -108,15 +107,14 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			data.add((byte)1);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-
+			playClickSound();
 		}
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInvName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 
 		String name = tileEntity.dumpLeft ? "Dumping..." : tileEntity.leftTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.leftTank.getGas().getGas().getLocalizedName();
 		fontRendererObj.drawString(name, 21, 73, 0x404040);

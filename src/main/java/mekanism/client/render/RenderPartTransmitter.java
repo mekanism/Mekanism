@@ -165,7 +165,7 @@ public class RenderPartTransmitter implements IIconRegister
 		entityItem.hoverStart = 0;
 
 		entityItem.setPosition(transporter.x() + 0.5, transporter.y() + 0.5, transporter.z() + 0.5);
-		entityItem.getWorldObj() = transporter.world();
+		entityItem.worldObj = transporter.world();
 
 		for(TransporterStack stack : transporter.transit)
 		{
@@ -179,7 +179,7 @@ public class RenderPartTransmitter implements IIconRegister
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);
 
-				renderer.doRenderItem(entityItem, 0, 0, 0, 0, 0);
+				renderer.doRender(entityItem, 0, 0, 0, 0, 0);
 				GL11.glPopMatrix();
 
 				if(stack.color != null)

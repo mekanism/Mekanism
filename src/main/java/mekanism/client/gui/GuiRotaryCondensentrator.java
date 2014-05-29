@@ -95,7 +95,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInvName(), 26, 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 26, 4, 0x404040);
 		fontRendererObj.drawString(tileEntity.mode == 0 ? MekanismUtils.localize("gui.condensentrating") : MekanismUtils.localize("gui.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
 
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)

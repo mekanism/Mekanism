@@ -1236,7 +1236,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
 		
-		TileEntity te = world.getBlockTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(x, y, z);
 		
 		if(te != null && te instanceof IPeripheral)
 		{

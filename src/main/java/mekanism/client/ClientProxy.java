@@ -127,6 +127,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -134,11 +135,8 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -333,23 +331,23 @@ public class ClientProxy extends CommonProxy
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
 
-		MinecraftForgeClient.registerItemRenderer(Mekanism.energyCubeID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlockID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.machineBlock2ID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.gasTankID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.obsidianTNTID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.basicBlockID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ArmoredJetpack.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler.itemID, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GlowPanel.itemID, handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.EnergyCube), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.MachineBlock), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.MachineBlock2), handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie, handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.GasTank), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.ObsidianTNT), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.BasicBlock), handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.ArmoredJetpack, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.GlowPanel, handler);
 
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
@@ -485,11 +483,9 @@ public class ClientProxy extends CommonProxy
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);
 
-		NetworkRegistry.instance().registerConnectionHandler(new ClientConnectionHandler());
+		NetworkRegistry..registerConnectionHandler(new ClientConnectionHandler());
 
 		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());
-
-		GameRegistry.registerPlayerTracker(new ClientPlayerTracker());
 
 		HolidayManager.init();
 	}

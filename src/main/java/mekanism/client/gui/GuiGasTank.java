@@ -36,7 +36,7 @@ public class GuiGasTank extends GuiMekanism
 
 		String capacityInfo = tileEntity.gasTank.getStored() + "/" + tileEntity.MAX_GAS;
 
-		fontRendererObj.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
 		fontRendererObj.drawString(capacityInfo, 45, 40, 0x404040);
 		fontRendererObj.drawString("Gas: " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() : "None"), 45, 49, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
@@ -82,8 +82,7 @@ public class GuiGasTank extends GuiMekanism
 			data.add(0);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
-
+			playClickSound();
 		}
 	}
 }

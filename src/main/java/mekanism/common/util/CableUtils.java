@@ -332,7 +332,7 @@ public final class CableUtils
 			if(receiver != null)
 			{
 				double transferEnergy = Math.min(sendingEnergy, receiver.powerRequest()*Mekanism.FROM_BC);
-				float used = receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), side.getOpposite());
+				double used = receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), side.getOpposite());
 				sent += used*Mekanism.FROM_BC;
 			}
 		}

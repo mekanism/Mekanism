@@ -125,25 +125,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 
-		getInv().openChest();
+		getInv().openInventory();
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 
-		getInv().closeChest();
+		getInv().closeInventory();
 	}
 
 	@Override

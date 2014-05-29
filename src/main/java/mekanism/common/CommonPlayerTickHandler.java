@@ -1,7 +1,5 @@
 package mekanism.common;
 
-import java.util.EnumSet;
-
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
@@ -13,6 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetHandlerPlayServer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -136,7 +135,7 @@ public class CommonPlayerTickHandler
 
 			if(player instanceof EntityPlayerMP)
 			{
-				((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
+				MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 			}
 
 			jetpack.useGas(player.getEquipmentInSlot(3));

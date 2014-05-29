@@ -240,7 +240,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 						for(int i = 0; i < tagList.tagCount(); i++)
 						{
-							miner.filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+							miner.filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 						}
 					}
 				}
@@ -266,7 +266,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 						for(int i = 0; i < tagList.tagCount(); i++)
 						{
-							sorter.filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.tagAt(i)));
+							sorter.filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 						}
 					}
 				}

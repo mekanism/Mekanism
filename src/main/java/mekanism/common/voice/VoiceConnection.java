@@ -60,12 +60,12 @@ public class VoiceConnection extends Thread
 								if(!server.isDedicatedServer() && playerIP.equals("127.0.0.1") && !Mekanism.voiceManager.foundLocal)
 								{
 									Mekanism.voiceManager.foundLocal = true;
-									username = playerMP.username;
+									username = playerMP.getCommandSenderName();
 									break;
 								}
 								else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
 								{
-									username = playerMP.username;
+									username = playerMP.getCommandSenderName();
 									break;
 								}
 							}

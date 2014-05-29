@@ -1,6 +1,5 @@
 package mekanism.common.multipart;
 
-import codechicken.microblock.ISidedHollowConnect;
 import ic2.api.tile.IWrenchable;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import mekanism.common.IConfigurable;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
-import mekanism.common.Tier.CableTier;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.TransmitterType.Size;
 import net.minecraft.client.particle.EffectRenderer;
@@ -35,14 +33,14 @@ import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.raytracer.ExtendedMOP;
 import codechicken.lib.raytracer.IndexedCuboid6;
 import codechicken.lib.raytracer.RayTracer;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
-import codechicken.multipart.IIconHitEffects;
+import codechicken.microblock.ISidedHollowConnect;
+import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
@@ -323,13 +321,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
 	{
-		IIconHitEffects.addHitEffects(this, hit, effectRenderer);
+		IconHitEffects.addHitEffects(this, hit, effectRenderer);
 	}
 
 	@Override
 	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
 	{
-		IIconHitEffects.addDestroyEffects(this, effectRenderer, false);
+		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
 
 	public abstract boolean isValidAcceptor(TileEntity tile, ForgeDirection side);

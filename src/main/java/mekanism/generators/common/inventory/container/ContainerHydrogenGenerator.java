@@ -35,7 +35,7 @@ public class ContainerHydrogenGenerator extends Container
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
 
-		tileEntity.openChest();
+		tileEntity.openInventory();
 		tileEntity.open(inventory.player);
 	}
 
@@ -43,7 +43,7 @@ public class ContainerHydrogenGenerator extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		tileEntity.closeChest();
+		tileEntity.closeInventory();
 		tileEntity.close(entityplayer);
 	}
 

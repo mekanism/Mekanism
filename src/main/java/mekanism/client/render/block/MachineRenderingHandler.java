@@ -47,7 +47,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
 	{
-		if(block == null || renderer == null || MachineType.get(block.blockID, metadata) == null)
+		if(block == null || renderer == null || MachineType.get(block, metadata) == null)
 		{
 			return;
 		}
@@ -55,7 +55,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		MachineType type = MachineType.get(block.blockID, metadata);
+		MachineType type = MachineType.get(block, metadata);
 
 		if(type == MachineType.ELECTRIC_PUMP)
 		{
@@ -165,9 +165,9 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(MachineType.get(block.blockID, metadata) != null)
+		if(MachineType.get(block, metadata) != null)
 		{
-			if(!MachineType.get(block.blockID, metadata).hasModel)
+			if(!MachineType.get(block, metadata).hasModel)
 			{
 				renderer.renderStandardBlock(block, x, y, z);
 				renderer.setRenderBoundsFromBlock(block);
@@ -179,7 +179,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory()
+	public boolean shouldRender3DInInventory(int modelId)
 	{
 		return true;
 	}

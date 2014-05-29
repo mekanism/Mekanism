@@ -30,7 +30,6 @@ import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockPlastic;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemRobit;
@@ -52,7 +51,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -88,7 +86,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		if(item.itemID == Mekanism.WalkieTalkie.itemID)
+		if(item.getItem() == Mekanism.WalkieTalkie)
 		{
 			return type != ItemRenderType.INVENTORY;
 		}
@@ -156,9 +154,9 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemBlockBasic && item.getItemDamage() == 6)
 		{
-			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Blocks.blocksList[Mekanism.basicBlockID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Mekanism.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
-			if(binRenderer == null || binRenderer.getFontRenderer() == null)
+			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
 			{
 				return;
 			}
@@ -180,7 +178,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			{
 				GL11.glPushMatrix();
 
-				if(!(itemStack.getItem() instanceof ItemBlock) || Blocks.blocksList[itemStack.itemID].getRenderType() != 0)
+				if(!(itemStack.getItem() instanceof ItemBlock) || Block.getBlockFromItem(itemStack.getItem()).getRenderType() != 0)
 				{
 					GL11.glRotatef(180, 0, 0, 1);
 					GL11.glTranslatef(-1.02F, -0.2F, 0);
@@ -208,7 +206,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 				GL11.glDisable(GL11.GL_LIGHTING);
 
-				renderItem.renderItemAndEffectIntoGUI(binRenderer.getFontRenderer(), renderEngine, itemStack, 0, 0);
+				renderItem.renderItemAndEffectIntoGUI(binRenderer.func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
@@ -239,7 +237,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
 				GL11.glRotatef(-90, 1, 0, 0);
 
-				FontRenderer fontRenderer = binRenderer.getFontRenderer();
+				FontRenderer fontRenderer = binRenderer.func_147498_b();//getFontRenderer();
 
 				int requiredWidth = Math.max(fontRenderer.getStringWidth(amount), 1);
 				int lineHeight = fontRenderer.FONT_HEIGHT + 2;
@@ -273,7 +271,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				GL11.glPopMatrix();
 			}
 		}
-		else if(item.itemID == Mekanism.gasTankID)
+		else if(Block.getBlockFromItem(item.getItem()) == Mekanism.GasTank)
 		{
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -281,7 +279,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			gasTank.render(0.0625F);
 		}
-		else if(item.itemID == Mekanism.obsidianTNTID)
+		else if(Block.getBlockFromItem(item.getItem()) == Mekanism.ObsidianTNT)
 		{
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ObsidianTNT.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -435,11 +433,11 @@ public class ItemRenderingHandler implements IItemRenderer
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Blocks.blocksList[item.itemID], item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
+				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.getBlockFromItem(item.getItem()), item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
 			}
 			else if(item.getItem() instanceof ItemBlockBasic)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Blocks.blocksList[item.itemID], item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.getBlockFromItem(item.getItem()), item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 			}
 		}
 	}
