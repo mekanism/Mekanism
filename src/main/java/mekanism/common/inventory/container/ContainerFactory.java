@@ -96,7 +96,7 @@ public class ContainerFactory extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openChest();
+		tileEntity.openInventory();
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class ContainerFactory extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeChest();
+		tileEntity.closeInventory();
 	}
 
 	@Override

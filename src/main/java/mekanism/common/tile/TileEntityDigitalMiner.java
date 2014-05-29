@@ -15,7 +15,6 @@ import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -42,14 +41,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
@@ -172,10 +172,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							continue;
 						}
 
-						int id = coord.getBlockId(worldObj);
+						Block block = coord.getBlock(worldObj);
 						int meta = coord.getMetadata(worldObj);
 
-						if(id == 0)
+						if(block == Blocks.air)
 						{
 							toRemove.add(index);
 							next = index + 1;
@@ -186,7 +186,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 						for(MinerFilter filter : filters)
 						{
-							if(filter.canFilter(new ItemStack(id, 1, meta)))
+							if(filter.canFilter(new ItemStack(block, 1, meta)))
 							{
 								hasFilter = true;
 								break;
@@ -209,7 +209,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 							setReplace(coord);
 							toRemove.add(index);
 
-							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, id + (meta << 12));
+							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
 
 							delay = getDelay();
 						}
@@ -541,7 +541,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(nbtTags.hasKey("filters"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("filters");
+			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_ANY_NUMERIC);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
@@ -613,7 +613,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 				if(!doNull)
 				{
-					replaceStack = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+					replaceStack = new ItemStack(Block.getBlockById(dataStream.readInt()), 1, dataStream.readInt());
 				}
 				else {
 					replaceStack = null;
@@ -679,7 +679,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			if(dataStream.readBoolean())
 			{
-				replaceStack = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+				replaceStack = new ItemStack(Block.getBlockById(dataStream.readInt()), 1, dataStream.readInt());
 			}
 			else {
 				replaceStack = null;
@@ -713,7 +713,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			if(dataStream.readBoolean())
 			{
-				replaceStack = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+				replaceStack = new ItemStack(Block.getBlockById(dataStream.readInt()), 1, dataStream.readInt());
 			}
 			else {
 				replaceStack = null;
@@ -1139,7 +1139,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public String getType()
 	{
-		return getInvName();
+		return getInventoryName();
 	}
 
 	public String[] names = {"setRadius", "setMin", "setMax", "setReplace", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};

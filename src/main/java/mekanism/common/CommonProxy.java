@@ -71,15 +71,14 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySalinationController;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 
@@ -175,22 +174,6 @@ public class CommonProxy
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-		Mekanism.oreBlockID = Mekanism.configuration.getBlock("OreBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.basicBlockID = Mekanism.configuration.getBlock("BasicBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.basicBlock2ID = Mekanism.configuration.getBlock("BasicBlock2", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.machineBlockID = Mekanism.configuration.getBlock("MachineBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.machineBlock2ID = Mekanism.configuration.getBlock("MachineBlock2", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.cardboardBoxID = Mekanism.configuration.getBlock("CardboardBox", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.obsidianTNTID = Mekanism.configuration.getBlock("ObsidianTNT", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.energyCubeID = Mekanism.configuration.getBlock("EnergyCube", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.gasTankID = Mekanism.configuration.getBlock("GasTank", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.boundingBlockID = Mekanism.configuration.getBlock("BoundingBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.plasticID = Mekanism.configuration.getBlock("PlasticBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.slickPlasticID = Mekanism.configuration.getBlock("SlickPlasticBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.glowPlasticID = Mekanism.configuration.getBlock("GlowPlasticBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.reinforcedPlasticID = Mekanism.configuration.getBlock("ReinforcedPlasticBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.roadPlasticID = Mekanism.configuration.getBlock("RoadPlasticBlock", Mekanism.BLOCK_ID++).getInt();
-		Mekanism.plasticFenceID = Mekanism.configuration.getBlock("PlasticFenceBlock", Mekanism.BLOCK_ID++).getInt();
 
 		Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
 		Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);
@@ -225,10 +208,10 @@ public class CommonProxy
 
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.removeBoxBlacklist(Blocks.mobSpawner.blockID, 0);
+			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 		else {
-			MekanismAPI.addBoxBlacklist(Blocks.mobSpawner.blockID, 0);
+			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 
 		Mekanism.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
@@ -433,10 +416,10 @@ public class CommonProxy
 	{
 		if(Mekanism.cardboardSpawners)
 		{
-			MekanismAPI.removeBoxBlacklist(Blocks.mobSpawner.blockID, 0);
+			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 		else {
-			MekanismAPI.addBoxBlacklist(Blocks.mobSpawner.blockID, 0);
+			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 
 		System.out.println("[Mekanism] Received config from server.");

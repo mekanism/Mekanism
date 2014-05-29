@@ -5,30 +5,26 @@ import java.util.Collections;
 import mekanism.api.EnumColor;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.common.Mekanism;
-
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
-import codechicken.multipart.IIconHitEffects;
+import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIconHitEffects
 {
@@ -153,13 +149,13 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@Override
 	public void addHitEffects(MovingObjectPosition hit, EffectRenderer effectRenderer)
 	{
-		IIconHitEffects.addHitEffects(this, hit, effectRenderer);
+		IconHitEffects.addHitEffects(this, hit, effectRenderer);
 	}
 
 	@Override
 	public void addDestroyEffects(MovingObjectPosition mop, EffectRenderer effectRenderer)
 	{
-		IIconHitEffects.addDestroyEffects(this, effectRenderer, false);
+		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
 
 	@Override

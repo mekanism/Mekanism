@@ -42,7 +42,7 @@ public class ContainerRotaryCondensentrator extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openChest();
+		tileEntity.openInventory();
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ContainerRotaryCondensentrator extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeChest();
+		tileEntity.closeInventory();
 	}
 
 	@Override

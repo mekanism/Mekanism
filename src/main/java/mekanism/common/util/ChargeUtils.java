@@ -6,7 +6,7 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityElectricBlock;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import cofh.api.energy.IEnergyContainerItem;
 
@@ -45,7 +45,7 @@ public final class ChargeUtils
 
 				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
 			}
-			else if(storer.inventory[slotID].itemID == Items.redstone.itemID && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
+			else if(storer.inventory[slotID].getItem() == Items.redstone && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
 				storer.setEnergy(storer.getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
 				storer.inventory[slotID].stackSize--;
@@ -99,7 +99,7 @@ public final class ChargeUtils
 		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canSend(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
-				itemstack.itemID == Items.redstone.itemID;
+				itemstack.getItem() == Items.redstone;
 	}
 
 	/**

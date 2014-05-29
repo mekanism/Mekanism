@@ -43,14 +43,14 @@ public class InventoryElectricChest extends InventoryBasic
 	}
 
 	@Override
-	public void openChest()
+	public void openInventory()
 	{
 		read();
 		((IElectricChest)getStack().getItem()).setOpen(getStack(), true);
 	}
 
 	@Override
-	public void closeChest()
+	public void closeInventory()
 	{
 		write();
 		((IElectricChest)getStack().getItem()).setOpen(getStack(), false);
@@ -89,7 +89,7 @@ public class InventoryElectricChest extends InventoryBasic
 		{
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
-				NBTTagCompound tagCompound = (NBTTagCompound)tagList.tagAt(tagCount);
+				NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
 				byte slotID = tagCompound.getByte("Slot");
 
 				if(slotID >= 0 && slotID < getSizeInventory())

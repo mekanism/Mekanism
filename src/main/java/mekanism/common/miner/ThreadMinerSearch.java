@@ -9,7 +9,7 @@ import mekanism.api.ItemInfo;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -44,7 +44,7 @@ public class ThreadMinerSearch extends Thread
 		Coord4D coord = tileEntity.getStartingCoord();
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
-		ItemInfo info = new ItemInfo(0,0);
+		ItemInfo info = new ItemInfo(0, 0);
 
 		for(int i = 0; i < size; i++)
 		{
@@ -73,10 +73,10 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 
-			info.id = tileEntity.getWorldObj().getBlockId(x, y, z);
+			info.block = tileEntity.getWorldObj().getBlock(x, y, z);
 			info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
 
-			if(info.id != 0 && info.id != Blocks.bedrock.blockID)
+			if(info.block != null && info.block != Blocks.bedrock)
 			{
 				boolean canFilter = false;
 
@@ -85,7 +85,7 @@ public class ThreadMinerSearch extends Thread
 					canFilter = acceptedItems.get(info);
 				}
 				else {
-					ItemStack stack = new ItemStack(info.id, 1, info.meta);
+					ItemStack stack = new ItemStack(info.block, 1, info.meta);
 
 					if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
 					{

@@ -92,7 +92,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInvName(), 37, 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 37, 4, 0x404040);
 
 		if(tileEntity.inputTank.getGas() != null)
 		{

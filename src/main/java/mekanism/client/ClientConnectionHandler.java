@@ -47,5 +47,4 @@ public class ClientConnectionHandler
 			} catch(Exception e) {}
 		}
 	}
-
 }

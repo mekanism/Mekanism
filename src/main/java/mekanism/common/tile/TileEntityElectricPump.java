@@ -378,7 +378,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
+				recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 
@@ -388,7 +388,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
-				cleaningNodes.add(Coord4D.read((NBTTagCompound)tagList.tagAt(i)));
+				cleaningNodes.add(Coord4D.read((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 	}

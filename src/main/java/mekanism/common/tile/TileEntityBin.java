@@ -440,10 +440,10 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public void openChest() {}
+	public void openInventory() {}
 
 	@Override
-	public void closeChest() {}
+	public void closeInventory() {}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)

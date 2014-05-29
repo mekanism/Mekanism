@@ -22,7 +22,7 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		if(block.blockID == Mekanism.basicBlockID || block.blockID == Mekanism.basicBlock2ID)
+		if(block == Mekanism.BasicBlock || block == Mekanism.BasicBlock2)
 		{
 			MekanismRenderer.renderItem(renderer, metadata, block);
 		}
@@ -33,7 +33,7 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(block.blockID == Mekanism.basicBlockID || block.blockID == Mekanism.basicBlock2ID)
+		if(block == Mekanism.BasicBlock || block == Mekanism.BasicBlock2)
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 
@@ -47,14 +47,14 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 	}
 
 	@Override
-	public boolean shouldRender3DInInventory()
-	{
-		return true;
-	}
-
-	@Override
 	public int getRenderId()
 	{
 		return ClientProxy.BASIC_RENDER_ID;
+	}
+
+	@Override
+	public boolean shouldRender3DInInventory(int modelId)
+	{
+		return true;
 	}
 }

@@ -28,7 +28,6 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
-import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
@@ -47,6 +46,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -59,6 +59,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -704,8 +705,14 @@ public final class MekanismUtils
 
 		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
 		{
-			world.updateAllLightTypes(x, y, z);
+			updateAllLightTypes(world, x, y, z);
 		}
+	}
+	
+	public static void updateAllLightTypes(World world, int x, int y, int z)
+	{
+		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
+		world.updateLightByType(EnumSkyBlock.Sky, x, y, z);
 	}
 
 	/**
@@ -731,25 +738,25 @@ public final class MekanismUtils
 	 */
 	public static FluidStack getFluid(World world, int x, int y, int z)
 	{
-		int id = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(id == 0)
+		if(block == null)
 		{
 			return null;
 		}
 
-		if((id == Blocks.waterStill.blockID || id == Blocks.waterMoving.blockID) && meta == 0)
+		if(block == Blocks.water && meta == 0)
 		{
 			return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 		}
-		else if((id == Blocks.lavaStill.blockID || id == Blocks.lavaMoving.blockID) && meta == 0)
+		else if(block == Blocks.lava && meta == 0)
 		{
 			return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
 		}
-		else if(Blocks.blocksList[id] instanceof IFluidBlock)
+		else if(block instanceof IFluidBlock)
 		{
-			IFluidBlock fluid = (IFluidBlock)Blocks.blocksList[id];
+			IFluidBlock fluid = (IFluidBlock)block;
 
 			if(meta == 0)
 			{
@@ -770,26 +777,26 @@ public final class MekanismUtils
 	 */
 	public static int getFluidId(World world, int x, int y, int z)
 	{
-		int id = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(id == 0)
+		if(block == null)
 		{
 			return 0;
 		}
 
-		if(id == Blocks.waterMoving.blockID)
+		if(block == Blocks.water)
 		{
 			return FluidRegistry.WATER.getID();
 		}
-		else if(id == Blocks.lavaMoving.blockID)
+		else if(block == Blocks.lava)
 		{
 			return FluidRegistry.LAVA.getID();
 		}
 
 		for(Fluid fluid : FluidRegistry.getRegisteredFluids().values())
 		{
-			if(fluid.getBlockID() == id)
+			if(fluid.getBlock() == block)
 			{
 				return fluid.getID();
 			}
@@ -808,26 +815,24 @@ public final class MekanismUtils
 	 */
 	public static boolean isDeadFluid(World world, int x, int y, int z)
 	{
-		int id = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(id == 0)
+		if(block == null)
 		{
 			return false;
 		}
 
-		if((id == Blocks.waterStill.blockID || id == Blocks.waterMoving.blockID) && meta != 0)
+		if(block == Blocks.water && meta != 0)
 		{
 			return true;
 		}
-		else if((id == Blocks.lavaStill.blockID || id == Blocks.lavaMoving.blockID) && meta != 0)
+		else if(block == Blocks.lava && meta != 0)
 		{
 			return true;
 		}
-		else if(Blocks.blocksList[id] instanceof IFluidBlock)
+		else if(block instanceof IFluidBlock)
 		{
-			IFluidBlock fluid = (IFluidBlock)Blocks.blocksList[id];
-
 			if(meta != 0)
 			{
 				return true;
@@ -1109,7 +1114,7 @@ public final class MekanismUtils
 		Vec3 lookVec = player.getLook(1);
 		Vec3 endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
 
-		return world.rayTraceBlocks_do_do(headVec, endVec, true, false);
+		return world.rayTraceBlocks(headVec, endVec, true);
 	}
 
 	/**
@@ -1282,6 +1287,16 @@ public final class MekanismUtils
 		}
 		
 		return false;
+	}
+	
+	public static Block getBlock(ItemStack itemStack)
+	{
+		if(itemStack == null)
+		{
+			return null;
+		}
+		
+		return Block.getBlockFromItem(itemStack.getItem());
 	}
 
 	public static enum ResourceType

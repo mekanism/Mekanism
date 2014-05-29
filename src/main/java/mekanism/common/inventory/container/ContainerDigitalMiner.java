@@ -48,7 +48,7 @@ public class ContainerDigitalMiner extends Container
 		}
 
 		tileEntity.open(inventory.player);
-		tileEntity.openChest();
+		tileEntity.openInventory();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ContainerDigitalMiner extends Container
 		super.onContainerClosed(entityplayer);
 
 		tileEntity.close(entityplayer);
-		tileEntity.closeChest();
+		tileEntity.closeInventory();
 	}
 
 	@Override
