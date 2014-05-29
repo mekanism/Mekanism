@@ -1,15 +1,17 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataOutputStream;
 
 import mekanism.api.ItemInfo;
 import mekanism.api.MekanismAPI;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketBoxBlacklist extends MekanismPacket
 {
@@ -21,7 +23,7 @@ public class PacketBoxBlacklist extends MekanismPacket
 
 		for(int i = 0; i < amount; i++)
 		{
-			MekanismAPI.addBoxBlacklist(dataStream.readInt(), dataStream.readInt());
+			MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
 		}
 
 		System.out.println("[Mekanism] Received Cardboard Box blacklist entries from server (" + amount + " total)");
@@ -33,7 +35,7 @@ public class PacketBoxBlacklist extends MekanismPacket
 
 		for(ItemInfo info : MekanismAPI.getBoxIgnore())
 		{
-			dataStream.writeInt(info.id);
+			dataStream.writeInt(Block.getIdFromBlock(info.block));
 			dataStream.writeInt(info.meta);
 		}
 	}

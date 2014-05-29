@@ -13,9 +13,9 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import net.minecraft.item.Item;
+import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasHandler, ITubeConnection
@@ -35,7 +35,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		if(itemstack.isItemEqual(new ItemStack(Items.flint))) return new GasStack(GasRegistry.getGas("oxygen"), 10);
-		if(itemstack.itemID == Mekanism.GasTank.blockID && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+		if(Block.getBlockFromItem(itemstack.getItem()) == Mekanism.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen")) return new GasStack(GasRegistry.getGas("oxygen"), 1);
 
 		return null;

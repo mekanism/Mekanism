@@ -353,7 +353,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.getWorldObj().getBlockId(x, y, z) == Mekanism.basicBlockID && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
+		return pointer.getWorldObj().getBlock(x, y, z) == Mekanism.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
 	}
 
 	/**

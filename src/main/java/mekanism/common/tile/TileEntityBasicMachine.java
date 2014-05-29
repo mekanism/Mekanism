@@ -252,7 +252,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public String getType()
 	{
-		return getInvName();
+		return getInventoryName();
 	}
 
 	@Override

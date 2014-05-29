@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
 import mekanism.common.Teleporter;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
@@ -9,12 +10,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketPortableTeleport extends MekanismPacket
@@ -45,7 +47,7 @@ public class PacketPortableTeleport extends MekanismPacket
 						
 						if(player instanceof EntityPlayerMP)
 						{
-							((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
+							MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 						}
 						
 						if(world.provider.dimensionId != coords.dimensionId)

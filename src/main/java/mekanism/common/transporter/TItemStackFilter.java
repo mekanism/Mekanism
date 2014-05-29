@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import mekanism.common.transporter.Finder.ItemStackFinder;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -33,7 +35,7 @@ public class TItemStackFilter extends TransporterFilter
 			return false;
 		}
 
-		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.itemID == itemStack.itemID) && (!sizeMode || itemStack.stackSize >= min);
+		return (itemType.getHasSubtypes() ? itemType.isItemEqual(itemStack) : itemType.getItem() == itemStack.getItem()) && (!sizeMode || itemStack.stackSize >= min);
 	}
 
 	@Override
@@ -83,7 +85,7 @@ public class TItemStackFilter extends TransporterFilter
 		data.add(min);
 		data.add(max);
 
-		data.add(itemType.itemID);
+		data.add(MekanismUtils.getID(itemType));
 		data.add(itemType.stackSize);
 		data.add(itemType.getItemDamage());
 	}
@@ -97,7 +99,7 @@ public class TItemStackFilter extends TransporterFilter
 		min = dataStream.readInt();
 		max = dataStream.readInt();
 
-		itemType = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
 	@Override
@@ -105,7 +107,7 @@ public class TItemStackFilter extends TransporterFilter
 	{
 		int code = 1;
 		code = 31 * code + super.hashCode();
-		code = 31 * code + itemType.itemID;
+		code = 31 * code + MekanismUtils.getID(itemType);
 		code = 31 * code + itemType.stackSize;
 		code = 31 * code + itemType.getItemDamage();
 		code = 31 * code + (sizeMode ? 1 : 0);

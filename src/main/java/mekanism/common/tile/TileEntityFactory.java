@@ -677,7 +677,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public String getType()
 	{
-		return getInvName();
+		return getInventoryName();
 	}
 
 	@Override

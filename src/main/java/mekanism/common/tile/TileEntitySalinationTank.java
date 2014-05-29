@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 public class TileEntitySalinationTank extends TileEntityContainerBlock
 {
@@ -46,9 +46,9 @@ public class TileEntitySalinationTank extends TileEntityContainerBlock
 	}
 
 	@Override
-	public void onNeighborChange(int id)
+	public void onNeighborChange(Block block)
 	{
-		super.onNeighborChange(id);
+		super.onNeighborChange(block);
 
 		if(master != null)
 		{

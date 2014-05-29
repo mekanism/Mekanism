@@ -48,7 +48,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
 
-			if(tileEntity.getWorldObj().isBlockSolidOnSide(obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
+			if(tileEntity.getWorldObj().getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isSideSolid(tileEntity.getWorldObj(), obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
 			{
 				return;
 			}
@@ -89,7 +89,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 				GL11.glDisable(GL11.GL_LIGHTING);
 
-				renderItem.renderItemAndEffectIntoGUI(getFontRenderer(), renderEngine, itemStack, 0, 0);
+				renderItem.renderItemAndEffectIntoGUI(func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
@@ -104,7 +104,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 	private void doLight(World world, Coord4D obj)
 	{
-		if(world.isBlockOpaqueCube(obj.xCoord, obj.yCoord, obj.zCoord))
+		if(world.getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isOpaqueCube())
 		{
 			return;
 		}
@@ -156,7 +156,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 		GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
 		GL11.glRotatef(-90, 1, 0, 0);
 
-		FontRenderer fontRenderer = getFontRenderer();
+		FontRenderer fontRenderer = func_147498_b();//getFontRenderer();
 
 		int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;

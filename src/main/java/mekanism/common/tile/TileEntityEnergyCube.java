@@ -72,7 +72,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + ".name");
 	}
@@ -150,7 +150,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public String getType()
 	{
-		return getInvName();
+		return getInventoryName();
 	}
 
 	@Override

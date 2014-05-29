@@ -130,18 +130,6 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	public int getChargedItemId(ItemStack itemStack)
-	{
-		return itemID;
-	}
-
-	@Override
-	public int getEmptyItemId(ItemStack itemStack)
-	{
-		return itemID;
-	}
-
-	@Override
 	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;

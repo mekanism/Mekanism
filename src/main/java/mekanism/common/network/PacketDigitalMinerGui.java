@@ -135,7 +135,7 @@ public class PacketDigitalMinerGui extends MekanismPacket
 			container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 		}
 
-		playerMP.incrementWindowID();
+		playerMP.getNextWindowId();
 		int window = playerMP.currentWindowId;
 
 		if(t == MinerGuiPacket.SERVER)

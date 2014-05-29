@@ -11,6 +11,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -165,7 +166,7 @@ public interface IFactory
 		{
 			if(cacheTile == null)
 			{
-				MachineType type = MachineType.get(getStack().itemID, getStack().getItemDamage());
+				MachineType type = MachineType.get(Block.getBlockFromItem(getStack().getItem()), getStack().getItemDamage());
 				cacheTile = (TileEntityAdvancedElectricMachine)type.create();
 			}
 

@@ -22,7 +22,6 @@ import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -30,8 +29,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -45,7 +44,6 @@ import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.lighting.LazyLightMatrix;
 import codechicken.lib.lighting.LightMatrix;
 import codechicken.lib.lighting.LightModel;
 import codechicken.lib.lighting.LightModel.Light;
@@ -53,10 +51,8 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.CCRenderState.IVertexOperation;
 import codechicken.lib.render.ColourMultiplier;
-import codechicken.lib.render.uv.IVertexModifier;
-import codechicken.lib.render.uv.UVTransformation;
 import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TextureUtils.IIconRegister;
+import codechicken.lib.render.TextureUtils.IIconSelfRegister;
 import codechicken.lib.render.uv.UV;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
@@ -64,7 +60,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderPartTransmitter implements IIconRegister
+public class RenderPartTransmitter implements IIconSelfRegister
 {
 	public static RenderPartTransmitter INSTANCE;
 
@@ -246,7 +242,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 		GL11.glPushMatrix();
 		CCRenderState.reset();
-		CCRenderState.useNormals(true);
+		CCRenderState.useNormals = true;
 		CCRenderState.useModelColours(true);
 		CCRenderState.startDrawing(7);
 		GL11.glTranslated(pos.x, pos.y, pos.z);
@@ -354,7 +350,7 @@ public class RenderPartTransmitter implements IIconRegister
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.waterStill;
+		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(fluid.getIcon());
 
 		toReturn.setSideRender(side, false);
@@ -477,7 +473,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 		GL11.glPushMatrix();
 		CCRenderState.reset();
-		CCRenderState.useNormals(true);
+		CCRenderState.useNormals = true;
 		CCRenderState.useModelColours(true);
 		CCRenderState.startDrawing(7);
 		GL11.glTranslated(pos.x, pos.y, pos.z);
@@ -531,7 +527,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 		IIcon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
 
-		renderPart(renderIcon, getItemModel(side, type), 0,0,0, null, null);
+		renderPart(renderIcon, getItemModel(side, type), 0, 0, 0, null, null);
 	}
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
@@ -625,10 +621,10 @@ public class RenderPartTransmitter implements IIconRegister
 				icon = Items.gunpowder.getIcon(new ItemStack(Items.gunpowder), 0);
 				break;
 			case 1:
-				icon = Blocks.torchRedstoneActive.getIcon(0, 0);
+				icon = Blocks.redstone_torch.getIcon(0, 0);
 				break;
 			case 2:
-				icon = Blocks.torchRedstoneIdle.getIcon(0, 0);
+				icon = Blocks.redstone_torch.getIcon(0, 0);
 				break;
 		}
 
@@ -742,7 +738,7 @@ public class RenderPartTransmitter implements IIconRegister
 
 			if(olm != null)
 			{
-				lightMatrix = olm.lightMatrix();
+				lightMatrix = olm;
 			}
 		}
 

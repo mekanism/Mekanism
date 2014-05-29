@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.IActiveState;
 import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.TransporterManager;
@@ -17,6 +17,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -269,7 +270,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(getItemCount() > 0)
 		{
-			data.add(itemType.itemID);
+			data.add(MekanismUtils.getID(itemType));
 			data.add(itemType.getItemDamage());
 		}
 
@@ -286,7 +287,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientAmount > 0)
 		{
-			itemType = new ItemStack(dataStream.readInt(), 1, dataStream.readInt());
+			itemType = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
 		}
 		else {
 			itemType = null;
@@ -416,13 +417,13 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return MekanismUtils.localize("tile.BasicBlock.Bin.name");
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		return true;
 	}

@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import mekanism.api.MekanismAPI;
+import net.minecraft.block.Block;
 
 public final class BoxBlacklistParser
 {
@@ -70,7 +71,7 @@ public final class BoxBlacklistParser
 				System.err.println("[Mekanism] BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
 			}
 
-			MekanismAPI.addBoxBlacklist(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+			MekanismAPI.addBoxBlacklist(Block.getBlockFromName(split[0]), Integer.parseInt(split[1]));
 			entries++;
 		}
 

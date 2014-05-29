@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -130,9 +131,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	}
 	
 	@Override
-	public void onNeighborChange(int id)
+	public void onNeighborChange(Block block)
 	{
-		super.onNeighborChange(id);
+		super.onNeighborChange(block);
 		
 		refresh(false);
 	}

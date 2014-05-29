@@ -187,7 +187,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 							return;
 						}
 
-						ItemStack containerItem = inventory[2].getItem().getContainerItemStack(inventory[2]);
+						ItemStack containerItem = inventory[2].getItem().getContainerItem(inventory[2]);
 
 						boolean filled = false;
 

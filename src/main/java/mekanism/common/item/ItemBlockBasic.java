@@ -51,7 +51,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public int getItemStackLimit(ItemStack stack)
 	{
-		if(itemID == Mekanism.basicBlockID)
+		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
 		{
 			if(stack.getItemDamage() == 6)
 			{
@@ -78,7 +78,7 @@ public class ItemBlockBasic extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(itemID == Mekanism.basicBlockID && itemstack.getItemDamage() == 6)
+		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock && itemstack.getItemDamage() == 6)
 		{
 			InventoryBin inv = new InventoryBin(itemstack);
 
@@ -94,15 +94,15 @@ public class ItemBlockBasic extends ItemBlock
 	}
 
 	@Override
-	public boolean hasContainerItem()
+	public boolean hasContainerItem(ItemStack stack)
 	{
-		return true; //TODO forge PR
+		return stack.getItemDamage() == 6;
 	}
 
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
-		if(itemID == Mekanism.basicBlockID)
+		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
 		{
 			if(stack.getItemDamage() != 6)
 			{
@@ -119,9 +119,9 @@ public class ItemBlockBasic extends ItemBlock
 	}
 
 	@Override
-	public ItemStack getContainerItemStack(ItemStack stack)
+	public ItemStack getContainerItem(ItemStack stack)
 	{
-		if(itemID == Mekanism.basicBlockID)
+		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
 		{
 			if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 			{
@@ -142,7 +142,7 @@ public class ItemBlockBasic extends ItemBlock
 
 		if(place)
 		{
-			if(itemID == Mekanism.basicBlockID)
+			if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
 			{
 				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
 				{
@@ -167,7 +167,7 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		String name = "";
 
-		if(itemID == Mekanism.basicBlockID)
+		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
 		{
 			switch(itemstack.getItemDamage())
 			{
@@ -224,7 +224,7 @@ public class ItemBlockBasic extends ItemBlock
 					break;
 			}
 		}
-		else if(itemID == Mekanism.basicBlock2ID)
+		else if(Block.getBlockFromItem(this) == Mekanism.BasicBlock2)
 		{
 			switch(itemstack.getItemDamage())
 			{

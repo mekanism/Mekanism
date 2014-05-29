@@ -39,7 +39,7 @@ public class RobitAIFollow extends EntityAIBase
 	public RobitAIFollow(EntityRobit entityRobit, float speed, float min, float max)
 	{
 		theRobit = entityRobit;
-		theWorld = entityRobit.getWorldObj();
+		theWorld = entityRobit.worldObj;
 		moveSpeed = speed;
 		thePathfinder = entityRobit.getNavigator();
 		minDist = min;
@@ -56,7 +56,7 @@ public class RobitAIFollow extends EntityAIBase
 		{
 			return false;
 		}
-		else if(theRobit.getWorldObj().provider.dimensionId != player.worldObj.provider.dimensionId)
+		else if(theRobit.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
 		{
 			return false;
 		}
@@ -84,7 +84,7 @@ public class RobitAIFollow extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.getWorldObj().provider.dimensionId == theRobit.getWorldObj().provider.dimensionId;
+		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class RobitAIFollow extends EntityAIBase
 						{
 							for(int i1 = 0; i1 <= 4; ++i1)
 							{
-								if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(x + l, z - 1, y + i1) && !theWorld.isBlockNormalCube(x + l, z, y + i1) && !theWorld.isBlockNormalCube(x + l, z + 1, y + i1))
+								if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, x + l, z - 1, y + i1) && !theWorld.getBlock(x + l, z, y + i1).isNormalCube() && !theWorld.getBlock(x + l, z + 1, y + i1).isNormalCube())
 								{
 									theRobit.setLocationAndAngles((x + l) + 0.5F, z, (y + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 									thePathfinder.clearPathEntity();

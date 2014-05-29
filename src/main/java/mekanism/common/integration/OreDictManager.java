@@ -17,13 +17,11 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -39,7 +37,7 @@ public final class OreDictManager
 		{
 			if(ore.getHasSubtypes())
 			{
-				ItemStack wildStack = new ItemStack(ore.itemID, 1, OreDictionary.WILDCARD_VALUE);
+				ItemStack wildStack = new ItemStack(ore.getItem(), 1, OreDictionary.WILDCARD_VALUE);
 				
 				if(!Recipe.PRECISION_SAWMILL.containsRecipe(wildStack))
 				{
@@ -344,7 +342,7 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotRefinedGlowstone"))
 		{
-			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Items.glowstone));
+			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Items.glowstone_dust));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotNickel"))
@@ -364,11 +362,11 @@ public final class OreDictManager
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Mekanism.Dust.itemID, 8, MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
+			FurnaceRecipes.smelting().func_151394_a(new ItemStack(Mekanism.Dust, 8), MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().addSmelting(Mekanism.Dust.itemID, 9, MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
+			FurnaceRecipes.smelting().func_151394_a(new ItemStack(Mekanism.Dust, 9), MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
@@ -388,7 +386,7 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustIron"))
 		{
-			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.oreIron));
+			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.iron_ore));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotSteel"))
@@ -398,7 +396,7 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
-			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.oreGold));
+			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.gold_ore));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustLapisLazuli"))
@@ -495,7 +493,7 @@ public final class OreDictManager
 			{
 				for(int j = 0; j < 16; j++)
 				{
-					ItemStack log = new ItemStack(logEntry.itemID, 1, j);
+					ItemStack log = new ItemStack(logEntry.getItem(), 1, j);
 					tempCrafting.setInventorySlotContents(0, log);
 					ItemStack resultEntry = MekanismUtils.findMatchingRecipe(tempCrafting, null);
 

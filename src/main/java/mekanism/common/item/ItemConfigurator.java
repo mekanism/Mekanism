@@ -84,7 +84,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 
 					if(!player.isSneaking())
 					{
-						player.sendChatToPlayer(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
 						return true;
 					}
 					else {
@@ -139,7 +139,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 									}
 
 									slotStack.stackSize -= j;
-									EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.itemID, j, slotStack.getItemDamage()));
+									EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
 
 									if(slotStack.hasTagCompound())
 									{

@@ -40,7 +40,7 @@ public class RobitAIPickup extends EntityAIBase
 	public RobitAIPickup(EntityRobit entityRobit, float speed)
 	{
 		theRobit = entityRobit;
-		theWorld = entityRobit.getWorldObj();
+		theWorld = entityRobit.worldObj;
 		moveSpeed = speed;
 		thePathfinder = entityRobit.getNavigator();
 		setMutexBits(3);
@@ -58,10 +58,10 @@ public class RobitAIPickup extends EntityAIBase
 			return true;
 		}
 
-		List items = theRobit.getWorldObj().getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
+		List items = theRobit.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(theRobit.posX-10, theRobit.posY-10, theRobit.posZ-10, theRobit.posX+10, theRobit.posY+10, theRobit.posZ+10));
 		Iterator iter = items.iterator();
 		//Cached for slight performance
-		double closestDistance=-1;
+		double closestDistance = -1;
 
 		while(iter.hasNext())
 		{
@@ -95,7 +95,7 @@ public class RobitAIPickup extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.getWorldObj().provider.dimensionId == theRobit.getWorldObj().provider.dimensionId;
+		return !closest.isDead && !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(closest) > 100 && theRobit.getFollowing() && theRobit.getEnergy() > 0 && closest.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public class RobitAIPickup extends EntityAIBase
 					{
 						for(int i1 = 0; i1 <= 4; ++i1)
 						{
-							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(x + l, z - 1, y + i1) && !theWorld.isBlockNormalCube(x + l, z, y + i1) && !theWorld.isBlockNormalCube(x + l, z + 1, y + i1))
+							if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, x + l, z - 1, y + i1) && !theWorld.getBlock(x + l, z, y + i1).isNormalCube() && !theWorld.getBlock(x + l, z + 1, y + i1).isNormalCube())
 							{
 								theRobit.setLocationAndAngles((x + l) + 0.5F, z, (y + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 								thePathfinder.clearPathEntity();

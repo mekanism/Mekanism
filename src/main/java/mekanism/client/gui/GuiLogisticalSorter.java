@@ -161,17 +161,17 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 						if(filter instanceof TItemStackFilter)
 						{
-							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							playClickSound();
 							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i));
 						}
 						else if(filter instanceof TOreDictFilter)
 						{
-							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							playClickSound();
 							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i));
 						}
 						else if(filter instanceof TMaterialFilter)
 						{
-							mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+							playClickSound();
 							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i));
 						}
 					}
@@ -184,7 +184,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(1);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				playClickSound();
 			}
 
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
@@ -193,7 +193,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(2);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				playClickSound();
 			}
 		}
 
@@ -268,7 +268,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInvName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
 
 		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
 		fontRendererObj.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);

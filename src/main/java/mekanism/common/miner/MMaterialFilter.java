@@ -3,8 +3,10 @@ package mekanism.common.miner;
 import java.util.ArrayList;
 
 import mekanism.common.transporter.Finder.MaterialFinder;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +19,7 @@ public class MMaterialFilter extends MinerFilter
 	
 	public Material getMaterial()
 	{
-		return Blocks.blocksList[materialItem.itemID].getMaterial();
+		return Block.getBlockFromItem(materialItem.getItem()).getMaterial();
 	}
 
 	@Override
@@ -51,7 +53,7 @@ public class MMaterialFilter extends MinerFilter
 	{
 		data.add(2);
 
-		data.add(materialItem.itemID);
+		data.add(MekanismUtils.getID(materialItem));
 		data.add(materialItem.stackSize);
 		data.add(materialItem.getItemDamage());
 	}
@@ -59,14 +61,14 @@ public class MMaterialFilter extends MinerFilter
 	@Override
 	protected void read(ByteArrayDataInput dataStream)
 	{
-		materialItem = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + materialItem.itemID;
+		code = 31 * code + MekanismUtils.getID(materialItem);
 		code = 31 * code + materialItem.stackSize;
 		code = 31 * code + materialItem.getItemDamage();
 		return code;

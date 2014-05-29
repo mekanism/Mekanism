@@ -7,9 +7,9 @@ import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ContainerEnergyCube extends Container
@@ -69,7 +69,7 @@ public class ContainerEnergyCube extends Container
 
 			if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotStack.itemID == Items.redstone.itemID)
+				if(slotStack.getItem() == Items.redstone)
 				{
 					if(slotID != 1)
 					{

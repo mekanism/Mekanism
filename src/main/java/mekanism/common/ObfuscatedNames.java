@@ -13,5 +13,5 @@ public final class ObfuscatedNames
 	public static String[] GuiScreen_fontRenderer = new String[] {"fontRenderer", "field_73886_k", "o"};
 	public static String[] GuiContainer_guiLeft = new String[] {"guiLeft", "field_74198_m"};
 	public static String[] GuiContainer_guiTop = new String[] {"guiTop", "field_74197_n"};
-	public static String[] NetHandlerPlayServerd_floatingTickCount = new String[] {"floatingTickCount", "field_147365_f"};
+	public static String[] NetHandlerPlayServer_floatingTickCount = new String[] {"floatingTickCount", "field_147365_f"};
 }

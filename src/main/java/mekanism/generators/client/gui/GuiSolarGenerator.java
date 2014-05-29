@@ -56,7 +56,7 @@ public class GuiSolarGenerator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInvName(), !tileEntity.fullName.contains("Advanced") ? 45 : 30, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), !tileEntity.fullName.contains("Advanced") ? 45 : 30, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.solarGenerator.sun") + ": " + tileEntity.seesSun, 51, 35, 0x00CD00);

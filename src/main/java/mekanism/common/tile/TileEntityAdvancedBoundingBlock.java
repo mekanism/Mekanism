@@ -81,25 +81,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		if(getInv() == null)
 		{
 			return null;
 		}
 
-		return getInv().getInvName();
+		return getInv().getInventoryName();
 	}
 
 	@Override
-	public boolean isInvNameLocalized()
+	public boolean hasCustomInventoryName()
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().isInvNameLocalized();
+		return getInv().hasCustomInventoryName();
 	}
 
 	@Override

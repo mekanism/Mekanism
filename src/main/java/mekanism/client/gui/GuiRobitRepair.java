@@ -14,9 +14,11 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import org.apache.commons.io.Charsets;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -262,7 +264,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 			if(itemstack != null)
 			{
 				repairContainer.updateItemName(itemNameField.getText());
-				mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", itemNameField.getText().getBytes()));
+				mc.thePlayer.sendQueue.addToSendQueue(new C17PacketCustomPayload("MC|ItemName", itemNameField.getText().getBytes(Charsets.UTF_8)));
 			}
 		}
 	}

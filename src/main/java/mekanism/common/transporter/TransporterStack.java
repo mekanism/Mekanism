@@ -8,7 +8,9 @@ import mekanism.api.EnumColor;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterPathfinder.Destination;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -60,7 +62,7 @@ public class TransporterStack
 
 		getPrev(tileEntity).write(data);
 
-		data.add(itemStack.itemID);
+		data.add(MekanismUtils.getID(itemStack));
 		data.add(itemStack.stackSize);
 		data.add(itemStack.getItemDamage());
 	}
@@ -87,7 +89,7 @@ public class TransporterStack
 
 		clientPrev = Coord4D.read(dataStream);
 
-		itemStack = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		itemStack = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
 	public void write(NBTTagCompound nbtTags)

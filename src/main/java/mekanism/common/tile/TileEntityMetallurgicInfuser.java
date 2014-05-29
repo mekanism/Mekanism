@@ -220,7 +220,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 0)
 		{
-			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
 		}
 		else if(slotID == 2)
 		{
@@ -437,7 +437,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public String getType()
 	{
-		return getInvName();
+		return getInventoryName();
 	}
 
 	@Override

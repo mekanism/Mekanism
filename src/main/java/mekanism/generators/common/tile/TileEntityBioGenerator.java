@@ -62,9 +62,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.setFluid(bioFuelSlot.fluidStored+fluidToAdd);
 
-						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
+						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
 						{
-							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
+							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 						}
 						else {
 							inventory[0].stackSize--;
@@ -89,9 +89,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 					{
 						bioFuelSlot.fluidStored += fuel;
 
-						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
+						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
 						{
-							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
+							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 						}
 						else {
 							inventory[0].stackSize--;
@@ -180,7 +180,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 	public int getFuel(ItemStack itemstack)
 	{
-		return itemstack.itemID == Mekanism.BioFuel.itemID ? 200 : 0;
+		return itemstack.getItem() == Mekanism.BioFuel ? 200 : 0;
 	}
 
 	/**

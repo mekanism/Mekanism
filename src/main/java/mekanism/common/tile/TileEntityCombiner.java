@@ -10,9 +10,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 {
@@ -30,7 +30,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(itemstack.getItem() instanceof ItemBlock && itemstack.itemID == Blocks.cobblestone.blockID)
+		if(itemstack.getItem() instanceof ItemBlock && Block.getBlockFromItem(itemstack.getItem()) == Blocks.cobblestone)
 		{
 			return new GasStack(GasRegistry.getGas("liquidStone"), 200);
 		}
