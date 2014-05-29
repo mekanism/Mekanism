@@ -50,12 +50,12 @@ public final class StackUtils
 			return false;
 		}
 
-		return stack1.itemID != stack2.itemID || stack1.getItemDamage() != stack2.getItemDamage();
+		return stack1.getItem() != stack2.getItem() || stack1.getItemDamage() != stack2.getItemDamage();
 	}
 
 	public static boolean equalsWildcard(ItemStack wild, ItemStack check)
 	{
-		return wild.itemID == check.itemID && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
+		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)

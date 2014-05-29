@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
 import mekanism.client.model.ModelChemicalInfuser;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -12,8 +11,8 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -128,7 +127,7 @@ public class RenderChemicalInfuser extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.waterStill;
+		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(gas.getIcon());
 
 		DisplayInteger display = DisplayInteger.createAndStart();

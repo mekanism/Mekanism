@@ -12,18 +12,18 @@ import net.minecraft.world.World;
 
 public final class MinerUtils
 {
-	public static List<Integer> specialSilkIDs = ListUtils.asList(Blocks.ice.blockID);
+	public static List<Block> specialSilkIDs = ListUtils.asList(Blocks.ice);
 
 	public static List<ItemStack> getDrops(World world, Coord4D obj, boolean silk)
 	{
-		Block block = Blocks.blocksList[obj.getBlockId(world)];
+		Block block = obj.getBlock(world);
 
 		if(block == null)
 		{
 			return new ArrayList<ItemStack>();
 		}
 
-		if(block.isAirBlock(world, obj.xCoord, obj.yCoord, obj.zCoord))
+		if(block.isAir(world, obj.xCoord, obj.yCoord, obj.zCoord))
 		{
 			return new ArrayList<ItemStack>();
 		}
@@ -36,9 +36,9 @@ public final class MinerUtils
 		}
 		else {
 			List<ItemStack> ret = new ArrayList<ItemStack>();
-			ret.add(new ItemStack(block.blockID, 1, meta));
+			ret.add(new ItemStack(block, 1, meta));
 
-			if(specialSilkIDs.contains(block.blockID) || (block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0) != null && block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0).size() > 0))
+			if(specialSilkIDs.contains(block) || (block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0) != null && block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0).size() > 0))
 			{
 				return ret;
 			}

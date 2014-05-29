@@ -58,7 +58,7 @@ public class PacketSimpleGui extends MekanismPacket
 	public static void openServerGui(int id, EntityPlayerMP playerMP, World world, Coord4D obj)
 	{
 		playerMP.closeContainer();
-		playerMP.incrementWindowID();
+		playerMP.getNextWindowId();
 
 		int window = playerMP.currentWindowId;
 

@@ -334,9 +334,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.getWorldObj().provider.dimensionId != coord.dimensionId)
+		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
 		{
-			entity.getWorldObj().removeEntity(entity);
+			entity.worldObj.removeEntity(entity);
 			entity.isDead = false;
 
 			world.spawnEntityInWorld(entity);
@@ -400,7 +400,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		int energyCost = 1000;
 
-		if(entity.getWorldObj().provider.dimensionId != coords.dimensionId)
+		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}
@@ -428,7 +428,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlockId(x, y, z) == Mekanism.basicBlockID && worldObj.getBlockMetadata(x, y, z) == 7;
+		return worldObj.getBlock(x, y, z) == Mekanism.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
 
 	@Override
@@ -523,7 +523,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	@Override
 	public String getType()
 	{
-		return getInvName();
+		return getInventoryName();
 	}
 
 	@Override

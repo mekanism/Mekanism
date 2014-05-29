@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.common.multipart.TransmitterType;
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
 public final class ItemAttacher
@@ -14,8 +14,8 @@ public final class ItemAttacher
 	static
 	{
 		attachable.add(new ItemStack(Blocks.lever));
-		attachable.add(new ItemStack(Blocks.torchRedstoneIdle));
-		attachable.add(new ItemStack(Blocks.torchWood));
+		attachable.add(new ItemStack(Blocks.redstone_torch));
+		attachable.add(new ItemStack(Blocks.torch));
 
 		for(TransmitterType type : TransmitterType.values())
 		{

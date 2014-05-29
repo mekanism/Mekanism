@@ -84,7 +84,7 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 	{
 		if(slotID == 3)
 		{
-			return itemstack.itemID == Mekanism.SpeedUpgrade.itemID || itemstack.itemID == Mekanism.EnergyUpgrade.itemID;
+			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
 		}
 		else if(slotID == 0)
 		{

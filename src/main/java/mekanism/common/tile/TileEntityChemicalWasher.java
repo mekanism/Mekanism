@@ -181,7 +181,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 					return;
 				}
 
-				ItemStack containerItem = inventory[0].getItem().getContainerItemStack(inventory[0]);
+				ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
 
 				boolean filled = false;
 

@@ -3,12 +3,12 @@ package mekanism.common.transporter;
 import java.util.ArrayList;
 
 import mekanism.common.transporter.Finder.MaterialFinder;
-import mekanism.common.transporter.Finder.OreDictFinder;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,7 +22,7 @@ public class TMaterialFilter extends TransporterFilter
 	
 	public Material getMaterial()
 	{
-		return Blocks.blocksList[materialItem.itemID].getMaterial();
+		return Block.getBlockFromItem(materialItem.getItem()).getMaterial();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class TMaterialFilter extends TransporterFilter
 		
 		super.write(data);
 
-		data.add(materialItem.itemID);
+		data.add(MekanismUtils.getID(materialItem));
 		data.add(materialItem.stackSize);
 		data.add(materialItem.getItemDamage());
 	}
@@ -76,14 +76,14 @@ public class TMaterialFilter extends TransporterFilter
 	{
 		super.read(dataStream);
 		
-		materialItem = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + materialItem.itemID;
+		code = 31 * code + MekanismUtils.getID(materialItem);
 		code = 31 * code + materialItem.stackSize;
 		code = 31 * code + materialItem.getItemDamage();
 		return code;

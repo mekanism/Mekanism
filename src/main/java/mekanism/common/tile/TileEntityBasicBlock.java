@@ -90,7 +90,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		if(clientFacing != facing)
 		{
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}
 

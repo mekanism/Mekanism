@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.item.Item;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -20,8 +21,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler
 {
@@ -53,9 +54,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 					{
 						lavaTank.fill(fluid, true);
 
-						if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
+						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
 						{
-							inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
+							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 						}
 						else {
 							inventory[0].stackSize--;
@@ -78,9 +79,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 						{
 							lavaTank.fill(new FluidStack(FluidRegistry.LAVA, fuel), true);
 
-							if(inventory[0].getItem().getContainerItemStack(inventory[0]) != null)
+							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
 							{
-								inventory[0] = inventory[0].getItem().getContainerItemStack(inventory[0]);
+								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
 							}
 							else {
 								inventory[0].stackSize--;
@@ -172,27 +173,32 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		int boost = 0;
 
-		if(worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord+1, yCoord, zCoord) == 11)
+		if(isLava(xCoord+1, yCoord, zCoord))
 			boost+=5;
-		if(worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 10 || worldObj.getBlockId(xCoord-1, yCoord, zCoord) == 11)
+		if(isLava(xCoord-1, yCoord, zCoord))
 			boost+=5;
-		if(worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord+1, zCoord) == 11)
+		if(isLava(xCoord, yCoord+1, zCoord))
 			boost+=5;
-		if(worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 10 || worldObj.getBlockId(xCoord, yCoord-1, zCoord) == 11)
+		if(isLava(xCoord, yCoord-1, zCoord))
 			boost+=5;
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord+1) == 11)
+		if(isLava(xCoord, yCoord, zCoord+1))
 			boost+=5;
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 10 || worldObj.getBlockId(xCoord, yCoord, zCoord-1) == 11)
+		if(isLava(xCoord, yCoord, zCoord-1))
 			boost+=5;
 		if(worldObj.provider.dimensionId == -1)
 			boost+=100;
 
 		return boost;
 	}
+	
+	private boolean isLava(int x, int y, int z)
+	{
+		return worldObj.getBlock(x, y, z) == Blocks.lava;
+	}
 
 	public int getFuel(ItemStack itemstack)
 	{
-		if(itemstack.itemID == Items.bucketLava.itemID)
+		if(itemstack.getItem() == Items.lava_bucket)
 		{
 			return 1000;
 		}

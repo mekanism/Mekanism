@@ -52,7 +52,7 @@ public abstract class MekKeyHandler
 	}
 
 	@SubscribeEvent
-	public void onTick (ClientTickEvent event)
+	public void onTick(ClientTickEvent event)
 	{
 		if (event.side == Side.CLIENT)
 		{
@@ -64,7 +64,7 @@ public abstract class MekKeyHandler
 
 	}
 
-	public void keyTick (Type type, boolean tickEnd)
+	public void keyTick(Type type, boolean tickEnd)
 	{
 		for (int i = 0; i < keyBindings.length; i++)
 		{

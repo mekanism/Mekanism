@@ -97,7 +97,7 @@ public class Coord4D
 		{
 			return null;
 		}
-
+		
 		return world.getBlock(xCoord, yCoord, zCoord);
 	}
 

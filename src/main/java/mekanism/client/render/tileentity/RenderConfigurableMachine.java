@@ -11,6 +11,7 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -36,7 +37,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 	public RenderConfigurableMachine()
 	{
-		tileEntityRenderer = TileEntityRenderer.instance;
+		field_147501_a = TileEntityRendererDispatcher.instance;
 	}
 
 	@Override

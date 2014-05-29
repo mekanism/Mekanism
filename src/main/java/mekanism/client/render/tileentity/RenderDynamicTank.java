@@ -7,13 +7,12 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
+import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -117,7 +116,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.waterStill;
+		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(fluid.getIcon());
 
 		final int stages = getStages(data.height);
@@ -168,7 +167,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 
 		Model3D toReturn = new Model3D();
-		toReturn.baseBlock = Blocks.waterStill;
+		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(fluid.getFlowingIcon());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
@@ -279,17 +278,17 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 	private double getX(int x)
 	{
-		return x - TileEntityRenderer.staticPlayerX;
+		return x - TileEntityRendererDispatcher.staticPlayerX;
 	}
 
 	private double getY(int y)
 	{
-		return y - TileEntityRenderer.staticPlayerY;
+		return y - TileEntityRendererDispatcher.staticPlayerY;
 	}
 
 	private double getZ(int z)
 	{
-		return z - TileEntityRenderer.staticPlayerZ;
+		return z - TileEntityRendererDispatcher.staticPlayerZ;
 	}
 
 	public static class RenderData

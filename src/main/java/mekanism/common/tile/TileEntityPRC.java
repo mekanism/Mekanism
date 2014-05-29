@@ -324,7 +324,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	}
 
 	@Override
-	public String getInvName()
+	public String getInventoryName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".short.name");
 	}

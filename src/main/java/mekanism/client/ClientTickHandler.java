@@ -89,7 +89,6 @@ public class ClientTickHandler
 		}
 	}
 
-	@Override
 	public void tickStart()
 	{
 		if(!preloadedSounds && mc.sndManager.sndSystem != null && MekanismClient.enableSounds)

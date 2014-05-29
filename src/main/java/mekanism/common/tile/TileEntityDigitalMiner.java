@@ -36,6 +36,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -296,11 +297,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(stack != null)
 		{
-			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, replaceStack.itemID, replaceStack.getItemDamage(), 3);
+			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, Block.getBlockFromItem(replaceStack.getItem()), replaceStack.getItemDamage(), 3);
 
-			if(Blocks.blocksList[obj.getBlockId(worldObj)] != null && !Blocks.blocksList[obj.getBlockId(worldObj)].canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
+			if(obj.getBlock(worldObj) != null && !obj.getBlock(worldObj).canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
 			{
-				Blocks.blocksList[obj.getBlockId(worldObj)].dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
+				obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
 				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 			}
 		}
@@ -763,7 +764,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		if(replaceStack != null)
 		{
 			data.add(true);
-			data.add(replaceStack.itemID);
+			data.add(MekanismUtils.getID(replaceStack));
 			data.add(replaceStack.getItemDamage());
 		}
 		else {
@@ -831,7 +832,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		if(replaceStack != null)
 		{
 			data.add(true);
-			data.add(replaceStack.itemID);
+			data.add(MekanismUtils.getID(replaceStack));
 			data.add(replaceStack.getItemDamage());
 		}
 		else {

@@ -591,7 +591,7 @@ public final class MekanismUtils
 		TileEntity tile = (TileEntity)config;
 		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType().blockID);
+		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType());
 	}
 
 	/**
@@ -1245,19 +1245,19 @@ public final class MekanismUtils
 			}
 		}
 
-		if((dmgItems[0] == null) || (Items.itemsList[dmgItems[0].itemID] == null))
+		if((dmgItems[0] == null) || (dmgItems[0].getItem() == null))
 		{
 			return null;
 		}
 
-		if((dmgItems[1] != null) && (dmgItems[0].itemID == dmgItems[1].itemID) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && (Items.itemsList[dmgItems[0].itemID].isRepairable()))
+		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && dmgItems[0].getItem().isRepairable())
 		{
-			Item theItem = Items.itemsList[dmgItems[0].itemID];
+			Item theItem = dmgItems[0].getItem();
 			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamageForDisplay();
 			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
-			return new ItemStack(dmgItems[0].itemID, 1, solve);
+			return new ItemStack(dmgItems[0].getItem(), 1, solve);
 		}
 
 		for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList())
@@ -1289,14 +1289,14 @@ public final class MekanismUtils
 		return false;
 	}
 	
-	public static Block getBlock(ItemStack itemStack)
+	public static int getID(ItemStack itemStack)
 	{
 		if(itemStack == null)
 		{
-			return null;
+			return -1;
 		}
 		
-		return Block.getBlockFromItem(itemStack.getItem());
+		return Item.getIdFromItem(itemStack.getItem());
 	}
 
 	public static enum ResourceType

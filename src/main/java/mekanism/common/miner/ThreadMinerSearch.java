@@ -44,7 +44,7 @@ public class ThreadMinerSearch extends Thread
 		Coord4D coord = tileEntity.getStartingCoord();
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
-		ItemInfo info = new ItemInfo(0, 0);
+		ItemInfo info = new ItemInfo(null, 0);
 
 		for(int i = 0; i < size; i++)
 		{
@@ -68,8 +68,9 @@ public class ThreadMinerSearch extends Thread
 			}
 
 			TileEntity bte;
-			if ((bte = tileEntity.getWorldObj().getTileEntity(x, y, z)) != null && bte instanceof IBoundingBlock)
-		{
+			
+			if((bte = tileEntity.getWorldObj().getTileEntity(x, y, z)) != null && bte instanceof IBoundingBlock)
+			{
 				continue;
 			}
 

@@ -33,7 +33,7 @@ public class ItemBlockPlastic extends ItemBlock
 	}
 
 	@Override
-	public String getItemDisplayName(ItemStack stack)
+	public String getItemStackDisplayName(ItemStack stack)
 	{
 		EnumColor colour = EnumColor.DYES[stack.getItemDamage()&15];
 		String colourName;
@@ -45,7 +45,7 @@ public class ItemBlockPlastic extends ItemBlock
 			colourName = colour.getDyedName();
 		}
 
-		return colourName + " " + super.getItemDisplayName(stack);
+		return colourName + " " + super.getItemStackDisplayName(stack);
 	}
 
 	@SideOnly(Side.CLIENT)

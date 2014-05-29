@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.ListUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -34,7 +36,7 @@ public class MItemStackFilter extends MinerFilter
 			return false;
 		}
 
-		if(itemStack.itemID == itemType.itemID && metaIgnoreArray.contains(itemType.itemID))
+		if(itemStack.getItem() == itemType.getItem() && metaIgnoreArray.contains(Block.getBlockFromItem(itemType.getItem())))
 		{
 			return true;
 		}
@@ -62,7 +64,7 @@ public class MItemStackFilter extends MinerFilter
 	{
 		data.add(0);
 
-		data.add(itemType.itemID);
+		data.add(MekanismUtils.getID(itemType));
 		data.add(itemType.stackSize);
 		data.add(itemType.getItemDamage());
 	}
@@ -70,14 +72,14 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	protected void read(ByteArrayDataInput dataStream)
 	{
-		itemType = new ItemStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
 	@Override
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + itemType.itemID;
+		code = 31 * code + MekanismUtils.getID(itemType);
 		code = 31 * code + itemType.stackSize;
 		code = 31 * code + itemType.getItemDamage();
 		return code;

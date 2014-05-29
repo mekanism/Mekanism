@@ -345,18 +345,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public int getChargedItemId(ItemStack itemStack)
-	{
-		return itemID;
-	}
-
-	@Override
-	public int getEmptyItemId(ItemStack itemStack)
-	{
-		return itemID;
-	}
-
-	@Override
 	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
@@ -803,7 +791,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(itemStack), MachineType.get(itemStack.itemID, itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(itemStack), MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override

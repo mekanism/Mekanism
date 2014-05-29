@@ -50,42 +50,43 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 *         packets have been registered or if the registry already contains
 	 *         this packet
 	 */
-	public boolean registerPacket (Class<? extends MekanismPacket> clazz)
+	public boolean registerPacket(Class<? extends MekanismPacket> clazz)
 	{
-		if (this.packets.size() > 256)
+		if(packets.size() > 256)
 		{
 			// You should log here!!
 			return false;
 		}
 
-		if (this.packets.contains(clazz))
+		if(packets.contains(clazz))
 		{
 			// You should log here!!
 			return false;
 		}
 
-		if (this.isPostInitialised)
+		if(isPostInitialised)
 		{
 			// You should log here!!
 			return false;
 		}
 
-		this.packets.add(clazz);
+		packets.add(clazz);
 		return true;
 	}
 
 	// In line encoding of the packet, including discriminator setting
 	@Override
-	protected void encode (ChannelHandlerContext ctx, MekanismPacket msg, List<Object> out) throws Exception
+	protected void encode(ChannelHandlerContext ctx, MekanismPacket msg, List<Object> out) throws Exception
 	{
 		ByteBuf buffer = Unpooled.buffer();
 		Class<? extends MekanismPacket> clazz = msg.getClass();
-		if (!this.packets.contains(msg.getClass()))
+		
+		if(!packets.contains(msg.getClass()))
 		{
 			throw new NullPointerException("No Packet Registered for: " + msg.getClass().getCanonicalName());
 		}
 
-		byte discriminator = (byte) this.packets.indexOf(clazz);
+		byte discriminator =(byte) packets.indexOf(clazz);
 		buffer.writeByte(discriminator);
 		msg.encodeInto(ctx, buffer);
 		FMLProxyPacket proxyPacket = new FMLProxyPacket(buffer.copy(), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
@@ -94,12 +95,12 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 
 	// In line decoding and handling of the packet
 	@Override
-	protected void decode (ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception
+	protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception
 	{
 		ByteBuf payload = msg.payload();
 		byte discriminator = payload.readByte();
-		Class<? extends MekanismPacket> clazz = this.packets.get(discriminator);
-		if (clazz == null)
+		Class<? extends MekanismPacket> clazz = packets.get(discriminator);
+		if(clazz == null)
 		{
 			throw new NullPointerException("No packet registered for discriminator: " + discriminator);
 		}
@@ -108,33 +109,32 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 		pkt.decodeInto(ctx, payload.slice());
 
 		EntityPlayer player;
-		switch (FMLCommonHandler.instance().getEffectiveSide())
+		
+		switch(FMLCommonHandler.instance().getEffectiveSide())
 		{
 			case CLIENT:
-				player = this.getClientPlayer();
+				player = getClientPlayer();
 				pkt.handleClientSide(player);
 				break;
 
 			case SERVER:
 				INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-				player = ((NetHandlerPlayServer) netHandler).playerEntity;
+				player =((NetHandlerPlayServer) netHandler).playerEntity;
 				pkt.handleServerSide(player);
 				break;
-
-			default:
 		}
 
 		out.add(pkt);
 	}
 
 	// Method to call from FMLInitializationEvent
-	public void initalise ()
+	public void initalise()
 	{
-		this.channels = NetworkRegistry.INSTANCE.newChannel("Mekanism", this);
+		channels = NetworkRegistry.INSTANCE.newChannel("Mekanism", this);
 		registerPackets();
 	}
 
-	public void registerPackets ()
+	public void registerPackets()
 	{
 		//Packet registrations
 		registerPacket(PacketRobit.class);
@@ -168,22 +168,21 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	// Method to call from FMLPostInitializationEvent
 	// Ensures that packet discriminators are common between server and client
 	// by using logical sorting
-	public void postInitialise ()
+	public void postInitialise()
 	{
-		if (this.isPostInitialised)
+		if(isPostInitialised)
 		{
 			return;
 		}
 
-		this.isPostInitialised = true;
-		Collections.sort(this.packets, new Comparator<Class<? extends MekanismPacket>>()
-		{
-
+		isPostInitialised = true;
+		Collections.sort(packets, new Comparator<Class<? extends MekanismPacket>>() {
 			@Override
-			public int compare (Class<? extends MekanismPacket> clazz1, Class<? extends MekanismPacket> clazz2)
+			public int compare(Class<? extends MekanismPacket> clazz1, Class<? extends MekanismPacket> clazz2)
 			{
 				int com = String.CASE_INSENSITIVE_ORDER.compare(clazz1.getCanonicalName(), clazz2.getCanonicalName());
-				if (com == 0)
+				
+				if(com == 0)
 				{
 					com = clazz1.getCanonicalName().compareTo(clazz2.getCanonicalName());
 				}
@@ -194,7 +193,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	}
 
 	@SideOnly(Side.CLIENT)
-	private EntityPlayer getClientPlayer ()
+	private EntityPlayer getClientPlayer()
 	{
 		return Minecraft.getMinecraft().thePlayer;
 	}
@@ -208,10 +207,10 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 * @param message
 	 *            The message to send
 	 */
-	public void sendToAll (MekanismPacket message)
+	public void sendToAll(MekanismPacket message)
 	{
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-		this.channels.get(Side.SERVER).writeAndFlush(message);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+		channels.get(Side.SERVER).writeAndFlush(message);
 	}
 
 	/**
@@ -225,11 +224,11 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 * @param player
 	 *            The player to send it to
 	 */
-	public void sendTo (MekanismPacket message, EntityPlayerMP player)
+	public void sendTo(MekanismPacket message, EntityPlayerMP player)
 	{
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-		this.channels.get(Side.SERVER).writeAndFlush(message);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+		channels.get(Side.SERVER).writeAndFlush(message);
 	}
 
 	/**
@@ -245,11 +244,11 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 *            {@link cpw.mods.fml.common.network.NetworkRegistry.TargetPoint}
 	 *            around which to send
 	 */
-	public void sendToAllAround (MekanismPacket message, NetworkRegistry.TargetPoint point)
+	public void sendToAllAround(MekanismPacket message, NetworkRegistry.TargetPoint point)
 	{
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
-		this.channels.get(Side.SERVER).writeAndFlush(message);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
+		channels.get(Side.SERVER).writeAndFlush(message);
 	}
 
 	/**
@@ -263,11 +262,11 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 * @param dimensionId
 	 *            The dimension id to target
 	 */
-	public void sendToDimension (MekanismPacket message, int dimensionId)
+	public void sendToDimension(MekanismPacket message, int dimensionId)
 	{
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
-		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimensionId);
-		this.channels.get(Side.SERVER).writeAndFlush(message);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
+		channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimensionId);
+		channels.get(Side.SERVER).writeAndFlush(message);
 	}
 
 	/**
@@ -279,9 +278,9 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 * @param message
 	 *            The message to send
 	 */
-	public void sendToServer (MekanismPacket message)
+	public void sendToServer(MekanismPacket message)
 	{
-		this.channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-		this.channels.get(Side.CLIENT).writeAndFlush(message);
+		channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+		channels.get(Side.CLIENT).writeAndFlush(message);
 	}
 }
