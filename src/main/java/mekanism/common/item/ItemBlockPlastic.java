@@ -13,9 +13,9 @@ public class ItemBlockPlastic extends ItemBlock
 {
 	public Block metaBlock;
 
-	public ItemBlockPlastic(int id, Block block)
+	public ItemBlockPlastic(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
 	}

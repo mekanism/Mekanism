@@ -239,11 +239,7 @@ public class CommonProxy
 	/**
 	 * Set up and load the utilities this mod uses.
 	 */
-	public void loadUtilities()
-	{
-		TickRegistry.registerTickHandler(new CommonPlayerTickHandler(), Side.SERVER);
-		TickRegistry.registerTickHandler(new CommonWorldTickHandler(), Side.SERVER);
-	}
+	public void loadUtilities() {}
 
 	/**
 	 * Set up and load the sound handler.

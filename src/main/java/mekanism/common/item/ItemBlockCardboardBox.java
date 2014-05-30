@@ -10,6 +10,7 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,9 +29,9 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	public Block metaBlock;
 
-	public ItemBlockCardboardBox(int id, Block block)
+	public ItemBlockCardboardBox(Block block)
 	{
-		super(id);
+		super(block);
 		setMaxStackSize(1);
 		metaBlock = block;
 
@@ -45,7 +46,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 		if(getBlockData(itemstack) != null)
 		{
-			list.add("Block ID: " + getBlockData(itemstack).id);
+			list.add("Block: " + new ItemStack(getBlockData(itemstack).block, getBlockData(itemstack).meta).getDisplayName());
 			list.add("Metadata: " + getBlockData(itemstack).meta);
 
 			if(getBlockData(itemstack).tileTag != null)
@@ -75,7 +76,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 			Block block = world.getBlock(x, y, z);
 			int meta = world.getBlockMetadata(x, y, z);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(id, meta))//TODO
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta))//TODO
 			{
 				BlockData data = new BlockData();
 				data.block = block;

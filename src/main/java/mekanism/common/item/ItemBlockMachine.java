@@ -873,4 +873,16 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		return IC2ItemManager.getManager(this);
 	}
+	
+	@Override
+	public Item getChargedItem(ItemStack itemStack)
+	{
+		return this;
+	}
+
+	@Override
+	public Item getEmptyItem(ItemStack itemStack)
+	{
+		return this;
+	}
 }
