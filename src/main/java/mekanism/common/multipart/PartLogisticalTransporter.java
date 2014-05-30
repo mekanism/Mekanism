@@ -30,6 +30,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.transport.IPipeTile;
 import codechicken.lib.vec.Vector3;
@@ -609,7 +610,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 		if(nbtTags.hasKey("stacks"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("stacks");
+			NBTTagList tagList = nbtTags.getTagList("stacks", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{

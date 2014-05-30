@@ -126,7 +126,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 		if(itemNameField.textboxKeyTyped(c, i))
 		{
 			repairContainer.updateItemName(itemNameField.getText());
-			mc.thePlayer.sendQueue.addToSendQueue(new Packet250CustomPayload("MC|ItemName", itemNameField.getText().getBytes()));
+			mc.thePlayer.sendQueue.addToSendQueue(new C17PacketCustomPayload("MC|ItemName", itemNameField.getText().getBytes()));
 		}
 		else {
 			super.keyTyped(c, i);

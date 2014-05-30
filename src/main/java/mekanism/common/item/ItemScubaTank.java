@@ -16,6 +16,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -219,7 +220,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	}
 
 	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);

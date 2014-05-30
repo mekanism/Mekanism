@@ -8,6 +8,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityContainerBlock extends TileEntityBasicBlock implements ISidedInventory, ISustainedInventory
 {
@@ -33,7 +34,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 		if(handleInventory())
 		{
-			NBTTagList tagList = nbtTags.getTagList("Items");
+			NBTTagList tagList = nbtTags.getTagList("Items", NBT.TAG_COMPOUND);
 			inventory = new ItemStack[getSizeInventory()];
 
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)

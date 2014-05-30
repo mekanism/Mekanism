@@ -217,22 +217,6 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Sends a Packet3Chat packet to the defined player, with the defined message.
-	 * @param playerUsername - Player to send packet to.
-	 * @param msg - message sent to player.
-	 */
-	public static void sendChatMessageToPlayer(String playerUsername, String msg)
-	{
-		EntityPlayer player = FMLServerHandler.instance().getServer().getConfigurationManager().getPlayerForUsername(playerUsername);
-		Packet3Chat chatPacket = new Packet3Chat(msg);
-
-		if(player != null)
-		{
-			((EntityPlayerMP)player).playerNetServerHandler.sendPacketToPlayer(chatPacket);
-		}
-	}
-
-	/**
 	 * Returns the closest teleporter between a selection of one or two.
 	 */
 	public static Coord4D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)

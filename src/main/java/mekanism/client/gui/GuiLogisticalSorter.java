@@ -9,7 +9,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;

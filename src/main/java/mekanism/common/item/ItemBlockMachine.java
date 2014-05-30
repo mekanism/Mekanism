@@ -20,14 +20,20 @@ import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.tile.*;
+import mekanism.common.tile.TileEntityChemicalInfuser;
+import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -43,6 +49,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -236,7 +243,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 					if(stack.stackTagCompound.hasKey("filters"))
 					{
-						NBTTagList tagList = stack.stackTagCompound.getTagList("filters");
+						NBTTagList tagList = stack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
 
 						for(int i = 0; i < tagList.tagCount(); i++)
 						{
@@ -262,7 +269,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 					if(stack.stackTagCompound.hasKey("filters"))
 					{
-						NBTTagList tagList = stack.stackTagCompound.getTagList("filters");
+						NBTTagList tagList = stack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
 
 						for(int i = 0; i < tagList.tagCount(); i++)
 						{
@@ -577,8 +584,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				return null;
 			}
-
-			return itemStack.stackTagCompound.getTagList("Items");
+			
+			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_ANY_NUMERIC);
 		}
 
 		return null;

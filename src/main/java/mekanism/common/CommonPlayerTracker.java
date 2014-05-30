@@ -47,10 +47,15 @@ public class CommonPlayerTracker
 	@SubscribeEvent
 	public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event)
 	{
-		onPlayerChangedDimension(event.player);
+		Mekanism.jetpackOn.remove(event.player);
+
+		if(!event.player.worldObj.isRemote)
+		{
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), event.player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), event.player);
+		}
 	}
 
-	@Override
 	public void onPlayerChangedDimension(EntityPlayer player)
 	{
 		Mekanism.jetpackOn.remove(player);

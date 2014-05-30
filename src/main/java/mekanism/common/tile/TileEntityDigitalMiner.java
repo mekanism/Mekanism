@@ -542,7 +542,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(nbtTags.hasKey("filters"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_ANY_NUMERIC);
+			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
@@ -1346,7 +1346,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(nbtTags.hasKey("filters"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_ANY_NUMERIC);
+			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{

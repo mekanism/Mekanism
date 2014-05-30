@@ -32,13 +32,13 @@ public final class MinerUtils
 
 		if(!silk)
 		{
-			return block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0);
+			return block.getDrops(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0);
 		}
 		else {
 			List<ItemStack> ret = new ArrayList<ItemStack>();
 			ret.add(new ItemStack(block, 1, meta));
 
-			if(specialSilkIDs.contains(block) || (block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0) != null && block.getBlockDropped(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0).size() > 0))
+			if(specialSilkIDs.contains(block) || (block.getDrops(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0) != null && block.getDrops(world, obj.xCoord, obj.yCoord, obj.zCoord, meta, 0).size() > 0))
 			{
 				return ret;
 			}

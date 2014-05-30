@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -374,7 +375,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(nbtTags.hasKey("recurringNodes"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("recurringNodes");
+			NBTTagList tagList = nbtTags.getTagList("recurringNodes", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
@@ -384,7 +385,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(nbtTags.hasKey("cleaningNodes"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("cleaningNodes");
+			NBTTagList tagList = nbtTags.getTagList("cleaningNodes", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
