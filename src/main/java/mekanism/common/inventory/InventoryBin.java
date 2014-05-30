@@ -1,6 +1,8 @@
 package mekanism.common.inventory;
 
 import mekanism.common.item.ItemBlockBasic;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -139,7 +141,7 @@ public class InventoryBin
 			return null;
 		}
 
-		return new ItemStack(id, 1, meta);
+		return new ItemStack(Item.getItemById(id), 1, meta);
 	}
 
 	public void setItemType(ItemStack stack)
@@ -159,7 +161,7 @@ public class InventoryBin
 		ItemStack ret = stack.copy();
 		ret.stackSize = 1;
 
-		bin.stackTagCompound.setInteger("itemID", stack.itemID);
+		bin.stackTagCompound.setInteger("itemID", MekanismUtils.getID(stack));
 		bin.stackTagCompound.setInteger("itemMeta", stack.getItemDamage());
 	}
 }

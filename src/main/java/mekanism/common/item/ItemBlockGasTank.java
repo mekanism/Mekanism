@@ -32,9 +32,9 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	/** How fast this tank can transfer gas. */
 	public static final int TRANSFER_RATE = 16;
 
-	public ItemBlockGasTank(int id, Block block)
+	public ItemBlockGasTank(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
 		setMaxStackSize(1);

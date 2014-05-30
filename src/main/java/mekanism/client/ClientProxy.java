@@ -480,8 +480,6 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadUtilities();
 
-		TickRegistry.registerTickHandler(new RenderTickHandler(), Side.CLIENT);
-
 		NetworkRegistry.registerConnectionHandler(new ClientConnectionHandler());
 
 		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());

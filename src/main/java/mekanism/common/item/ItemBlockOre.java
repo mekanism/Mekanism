@@ -27,9 +27,9 @@ public class ItemBlockOre extends ItemBlock
 {
 	public Block metaBlock;
 
-	public ItemBlockOre(int id, Block block)
+	public ItemBlockOre(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
 	}

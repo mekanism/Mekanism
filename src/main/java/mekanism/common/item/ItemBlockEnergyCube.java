@@ -12,7 +12,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity;
@@ -20,11 +19,13 @@ import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import org.lwjgl.input.Keyboard;
 
@@ -36,9 +37,9 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 {
 	public Block metaBlock;
 
-	public ItemBlockEnergyCube(int id, Block block)
+	public ItemBlockEnergyCube(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setMaxStackSize(1);
 		setMaxDamage(100);
@@ -175,7 +176,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items");
+			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_ANY_NUMERIC);
 		}
 
 		return null;
@@ -292,5 +293,17 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
+	}
+
+	@Override
+	public Item getChargedItem(ItemStack itemStack)
+	{
+		return this;
+	}
+
+	@Override
+	public Item getEmptyItem(ItemStack itemStack)
+	{
+		return this;
 	}
 }

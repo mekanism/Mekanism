@@ -6,10 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX;
@@ -20,8 +19,8 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet41EntityEffect;
-import net.minecraft.network.packet.Packet9Respawn;
+import net.minecraft.network.play.server.S07PacketRespawn;
+import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
@@ -34,8 +33,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
@@ -298,7 +297,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			WorldServer oldWorld = server.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = server.worldServerForDimension(player.dimension);
-			player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 			oldWorld.removePlayerEntityDangerously(player);
 			player.isDead = false;
 
@@ -320,10 +319,10 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			while(iterator.hasNext())
 			{
 				PotionEffect potioneffect = (PotionEffect)iterator.next();
-				player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.getEntityId(), potioneffect));
+				player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
 			}
 
-			GameRegistry.onPlayerChangedDimension(player);
+			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
 		}
 		else {
 			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);

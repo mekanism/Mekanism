@@ -1197,7 +1197,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						}
 					}
 
-					replaceStack = new ItemStack(num, 1, meta);
+					replaceStack = new ItemStack(Item.getItemById(num), 1, meta);
 				}
 				else if(method == 4)
 				{
@@ -1215,7 +1215,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						}
 					}
 
-					filters.add(new MItemStackFilter(new ItemStack(num, 1, meta)));
+					filters.add(new MItemStackFilter(new ItemStack(Item.getItemById(num), 1, meta)));
 				}
 				else if(method == 5)
 				{
@@ -1227,7 +1227,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 						if(filter instanceof MItemStackFilter)
 						{
-							if(((MItemStackFilter)filter).itemType.itemID == num)
+							if(MekanismUtils.getID(((MItemStackFilter)filter).itemType) == num)
 							{
 								iter.remove();
 							}
@@ -1346,7 +1346,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(nbtTags.hasKey("filters"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("filters");
+			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_ANY_NUMERIC);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{

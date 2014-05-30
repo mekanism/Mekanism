@@ -41,9 +41,9 @@ public class ItemBlockBasic extends ItemBlock
 {
 	public Block metaBlock;
 
-	public ItemBlockBasic(int id, Block block)
+	public ItemBlockBasic(Block block)
 	{
-		super(id);
+		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
 	}
