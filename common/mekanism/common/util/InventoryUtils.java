@@ -197,7 +197,7 @@ public final class InventoryUtils
 
 					if(sidedInventory.getStackInSlot(slotID) != null && sidedInventory.getStackInSlot(slotID).stackSize > 0)
 					{
-						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
+						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
 						toSend.stackSize = 1;
 
 						if(sidedInventory.canExtractItem(slotID, toSend, side))
