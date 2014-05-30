@@ -176,7 +176,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_ANY_NUMERIC);
+			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		}
 
 		return null;

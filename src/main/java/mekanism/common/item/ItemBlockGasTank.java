@@ -13,12 +13,14 @@ import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import org.lwjgl.input.Keyboard;
 
@@ -157,7 +159,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public void getSubItems(int i, CreativeTabs tabs, List list)
+	public void getSubItems(Item item, CreativeTabs tabs, List list)
 	{
 		ItemStack empty = new ItemStack(this);
 		setGas(empty, null);
@@ -262,7 +264,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items");
+			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		}
 
 		return null;

@@ -53,6 +53,7 @@ import codechicken.lib.render.CCRenderState.IVertexOperation;
 import codechicken.lib.render.ColourMultiplier;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconSelfRegister;
+import codechicken.lib.render.uv.IconTransformation;
 import codechicken.lib.render.uv.UV;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
@@ -550,12 +551,12 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
 	{
-		cc.render(0, cc.verts.length, new Translation(x, y, z), new IIconTransformation(icon), new TransmitterTransformation(color, null));
+		cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new TransmitterTransformation(color, null));
 	}
 
 	public void renderTransparency(IIcon icon, CCModel cc, Colour colour)
 	{
-		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IIconTransformation(icon), new ColourMultiplier(colour));
+		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
 	}
 
 	public CCModel getItemModel(ForgeDirection side, TransmitterType type)

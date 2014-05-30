@@ -361,7 +361,7 @@ public class GuiDigitalMiner extends GuiMekanism
 					if(stack != null)
 					{
 						data.add(false);
-						data.add(toUse.itemID);
+						data.add(MekanismUtils.getID(toUse));
 						data.add(toUse.getItemDamage());
 					}
 					else {

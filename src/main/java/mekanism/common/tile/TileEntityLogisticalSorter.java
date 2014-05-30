@@ -10,7 +10,7 @@ import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.transporter.Finder.FirstFinder;
@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -245,7 +246,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(nbtTags.hasKey("filters"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("filters");
+			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
@@ -604,7 +605,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(nbtTags.hasKey("filters"))
 		{
-			NBTTagList tagList = nbtTags.getTagList("filters");
+			NBTTagList tagList = nbtTags.getTagList("filters", NBT.TAG_COMPOUND);
 
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
