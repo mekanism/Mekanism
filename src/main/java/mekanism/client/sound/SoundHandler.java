@@ -18,13 +18,15 @@ import mekanism.client.HolidayManager;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundCategory;
+import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import paulscode.sound.SoundSystem;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -59,7 +61,7 @@ public class SoundHandler
 	{
 		CodeSource src = getClass().getProtectionDomain().getCodeSource();
 		String corePath = src.getLocation().getFile().split("/mekanism/client")[0];
-		List<String> listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound");
+		List<String> listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds");
 
 		for(String s : listings)
 		{
@@ -68,9 +70,9 @@ public class SoundHandler
 				continue;
 			}
 
-			if(s.contains("/mekanism/sound/"))
+			if(s.contains("/mekanism/sounds/"))
 			{
-				s = s.split("/mekanism/sound/")[1];
+				s = s.split("/mekanism/sounds/")[1];
 			}
 
 			preloadSound(s);
@@ -78,13 +80,13 @@ public class SoundHandler
 
 		System.out.println("[Mekanism] Preloaded " + listings.size() + " object sounds.");
 
-		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/etc");
+		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/etc");
 
 		for(String s : listings)
 		{
-			if(s.contains("/mekanism/sound/etc/"))
+			if(s.contains("/mekanism/sounds/etc/"))
 			{
-				s = s.split("/mekanism/sound/etc/")[1];
+				s = s.split("/mekanism/sounds/etc/")[1];
 			}
 
 			mc.sndManager.addSound("mekanism:etc/" + s);
@@ -94,13 +96,13 @@ public class SoundHandler
 
 		if(MekanismClient.holidays)
 		{
-			listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sound/holiday");
+			listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/holiday");
 
 			for(String s : listings)
 			{
-				if(s.contains("/mekanism/sound/"))
+				if(s.contains("/mekanism/sounds/"))
 				{
-					s = s.split("/mekanism/sound/")[1];
+					s = s.split("/mekanism/sounds/")[1];
 				}
 
 				if(!s.contains("holiday"))
@@ -169,7 +171,7 @@ public class SoundHandler
 	private void preloadSound(String sound)
 	{
 		String id = "pre_" + sound;
-		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
+		URL url = getClass().getClassLoader().getResource("assets/mekanism/sounds/" + sound);
 
 		if(getSoundSystem() != null)
 		{
@@ -218,7 +220,7 @@ public class SoundHandler
 						}
 					}
 
-					masterVolume = FMLClientHandler.instance().getClient().gameSettings.soundVolume;
+					masterVolume = FMLClientHandler.instance().getClient().gameSettings.getSoundLevel(SoundCategory.MASTER);
 				}
 				else {
 					for(Sound sound : sounds.values())
@@ -305,7 +307,7 @@ public class SoundHandler
 	 */
 	public void quickPlay(String soundPath, World world, Coord4D object)
 	{
-		URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + soundPath);
+		URL url = getClass().getClassLoader().getResource("assets/mekanism/sounds/" + soundPath);
 
 		if(url == null)
 		{
