@@ -568,8 +568,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		{
 			return small_models.get(name);
 		}
-		else
-		{
+		else {
 			return large_models.get(name);
 		}
 	}

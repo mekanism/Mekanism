@@ -1,0 +1,10 @@
+{
+   "Beep": {"category": "master","sounds": [{"name": "Beep","stream": false}]},
+   "Click": {"category": "master","sounds": [{"name": "Click","stream": false}]},
+   "Ding": {"category": "master","sounds": [{"name": "Ding","stream": false}]},
+   "Error": {"category": "master","sounds": [{"name": "Error","stream": false}]},
+   "GasMask": {"category": "master","sounds": [{"name": "GasMask","stream": false}]},
+   "Hydraulic": {"category": "master","sounds": [{"name": "Hydraulic","stream": false}]},
+   "Pop": {"category": "master","sounds": [{"name": "Pop","stream": false}]},
+   "Success": {"category": "master","sounds": [{"name": "Success","stream": false}]}
+}

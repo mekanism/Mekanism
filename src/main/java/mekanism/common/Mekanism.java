@@ -1211,15 +1211,10 @@ public class Mekanism
 		//Load cached furnace recipes
 		TileEntityEnergizedSmelter.furnaceRecipes.clear();
 		
-		for(Map.Entry<List<Integer>, ItemStack> entry : FurnaceRecipes.smelting().getMetaSmeltingList().entrySet())
-		{
-			TileEntityEnergizedSmelter.furnaceRecipes.put(new ItemStack(entry.getKey().get(0), 1, entry.getKey().get(1)), entry.getValue());
-		}
-		
 		for(Object obj : FurnaceRecipes.smelting().getSmeltingList().entrySet())
 		{
-			Map.Entry<Integer, ItemStack> entry = (Map.Entry<Integer, ItemStack>)obj;
-			TileEntityEnergizedSmelter.furnaceRecipes.put(new ItemStack(entry.getKey(), 1, OreDictionary.WILDCARD_VALUE), entry.getValue());
+			Map.Entry<ItemStack, ItemStack> entry = (Map.Entry<ItemStack, ItemStack>)obj;
+			TileEntityEnergizedSmelter.furnaceRecipes.put(entry.getKey(), entry.getValue());
 		}
 		
 		event.registerServerCommand(new CommandMekanism());
