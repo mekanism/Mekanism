@@ -294,7 +294,7 @@ public final class OreDictManager
 		for(ItemStack ore : OreDictionary.getOres("oreYellorite"))
 		{
 			try {
-				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustYellorite").get(0), 2));
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustYellorium").get(0), 2));
 			} catch(Exception e) {}
 		}
 
