@@ -22,6 +22,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -147,7 +148,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
+					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -492,7 +493,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this), 50D);
+			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 		}
 	}
 

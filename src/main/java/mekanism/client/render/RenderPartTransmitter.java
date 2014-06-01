@@ -23,7 +23,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -44,17 +43,14 @@ import org.lwjgl.opengl.GL11;
 
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.lighting.LightMatrix;
 import codechicken.lib.lighting.LightModel;
 import codechicken.lib.lighting.LightModel.Light;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.CCRenderState.IVertexOperation;
 import codechicken.lib.render.ColourMultiplier;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconSelfRegister;
 import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.render.uv.UV;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
@@ -494,7 +490,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		GL11.glPopMatrix();
 	}
 
-	public void renderStatic(PartSidedPipe transmitter, LazyLightMatrix olm)
+	public void renderStatic(PartSidedPipe transmitter)
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
@@ -503,11 +499,11 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderSide(side, transmitter, olm);
+			renderSide(side, transmitter);
 		}
 	}
 
-	public void renderSide(ForgeDirection side, PartSidedPipe transmitter, LazyLightMatrix olm)
+	public void renderSide(ForgeDirection side, PartSidedPipe transmitter)
 	{
 		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		IIcon renderIcon = transmitter.getIconForSide(side);
@@ -519,7 +515,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			c = new ColourRGBA(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1);
 		}
 
-		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c, olm);
+		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
 	}
 
 	public void renderSide(ForgeDirection side, TransmitterType type)
@@ -528,7 +524,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		IIcon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
 
-		renderPart(renderIcon, getItemModel(side, type), 0, 0, 0, null, null);
+		renderPart(renderIcon, getItemModel(side, type), 0, 0, 0, null);
 	}
 
 	public void renderEnergySide(ForgeDirection side, PartUniversalCable cable)
@@ -549,14 +545,14 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
-	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color, LazyLightMatrix olm)
+	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color)
 	{
-		cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new TransmitterTransformation(color, null));
+		cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
 	}
 
-	public void renderTransparency(IIcon icon, CCModel cc, Colour colour)
+	public void renderTransparency(IIcon icon, CCModel cc, Colour color)
 	{
-		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour));
+		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
 	}
 
 	public CCModel getItemModel(ForgeDirection side, TransmitterType type)
@@ -722,44 +718,5 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		display.endList();
 
 		return display;
-	}
-
-	public static class TransmitterTransformation implements IVertexOperation
-	{
-		public ColourMultiplier colour;
-		public LightMatrix lightMatrix;
-
-		public TransmitterTransformation(Colour color, LightMatrix olm)
-		{
-			if(color != null)
-			{
-				colour = new ColourMultiplier(color);
-			}
-
-			if(olm != null)
-			{
-				lightMatrix = olm;
-			}
-		}
-
-		@Override
-		public void applyModifiers(CCModel m, Tessellator tess, Vector3 vec, UV uv, Vector3 normal, int i)
-		{
-			if(colour != null)
-			{
-				colour.applyModifiers(m, tess, vec, uv, normal, i);
-			}
-
-			if(lightMatrix != null)
-			{
-				lightMatrix.applyModifiers(m, tess, vec, uv, normal, i);
-			}
-		}
-
-		@Override
-		public boolean needsNormals()
-		{
-			return true;
-		}
 	}
 }

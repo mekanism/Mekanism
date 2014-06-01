@@ -842,10 +842,10 @@ public final class MekanismUtils
 
 		if(isBlock)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 0, id, true, Coord4D.get(tileEntity)), player);
+			Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, true, false, 0, id, null, Coord4D.get(tileEntity)), player);
 		}
 		else {
-			Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 0, id, false), player);
+			Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, false, false, 0, id, null, null), player);
 		}
 
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);

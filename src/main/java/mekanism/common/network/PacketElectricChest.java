@@ -36,50 +36,51 @@ public class PacketElectricChest extends MekanismPacket
 
 	public Coord4D obj;
 
-	public PacketElectricChest(ElectricChestPacketType type)//TODO I'm bored now.)
+	//This is a really messy implementation...
+	public PacketElectricChest(ElectricChestPacketType type, boolean b1, boolean b2, int i1, int i2, String s1, Coord4D c1)
 	{
 		activeType = type;
 
 		switch(activeType)
 		{
 			case LOCK:
-				locked = (Boolean)data[1];
-				isBlock = (Boolean)data[2];
+				locked = b1;
+				isBlock = b2;
 
 				if(isBlock)
 				{
-					obj = (Coord4D)data[3];
+					obj = c1;
 				}
 
 				break;
 			case PASSWORD:
-				password = (String)data[1];
-				isBlock = (Boolean)data[2];
+				password = s1;
+				isBlock = b1;
 
 				if(isBlock)
 				{
-					obj = (Coord4D)data[3];
+					obj = c1;
 				}
 
 				break;
 			case CLIENT_OPEN:
-				guiType = (Integer)data[1];
-				windowId = (Integer)data[2];
-				isBlock = (Boolean)data[3];
+				guiType = i1;
+				windowId = i2;
+				isBlock = b1;
 
 				if(isBlock)
 				{
-					obj = (Coord4D)data[4];
+					obj = c1;
 				}
 
 				break;
 			case SERVER_OPEN:
-				useEnergy = (Boolean)data[1];
-				isBlock = (Boolean)data[2];
+				useEnergy = b1;
+				isBlock = b2;
 
 				if(isBlock)
 				{
-					obj = (Coord4D)data[3];
+					obj = c1;
 				}
 
 				break;

@@ -43,8 +43,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	 * Register your packet with the pipeline. Discriminators are automatically
 	 * set.
 	 *
-	 * @param clazz
-	 *            the class to register
+	 * @param clazz the class to register
 	 *
 	 * @return whether registration was successful. Failure may occur if 256
 	 *         packets have been registered or if the registry already contains
@@ -100,6 +99,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 		ByteBuf payload = msg.payload();
 		byte discriminator = payload.readByte();
 		Class<? extends MekanismPacket> clazz = packets.get(discriminator);
+		
 		if(clazz == null)
 		{
 			throw new NullPointerException("No packet registered for discriminator: " + discriminator);
@@ -116,10 +116,9 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 				player = getClientPlayer();
 				pkt.handleClientSide(player);
 				break;
-
 			case SERVER:
 				INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-				player =((NetHandlerPlayServer) netHandler).playerEntity;
+				player = ((NetHandlerPlayServer)netHandler).playerEntity;
 				pkt.handleServerSide(player);
 				break;
 		}
@@ -162,7 +161,6 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 		registerPacket(PacketScubaTankData.class);
 		registerPacket(PacketConfigSync.class);
 		registerPacket(PacketBoxBlacklist.class);
-
 	}
 
 	// Method to call from FMLPostInitializationEvent

@@ -153,7 +153,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this), 40D);
+						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 					}
 				}
 			}
@@ -180,7 +180,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this), 40D);
+						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 					}
 				}
 			}

@@ -115,7 +115,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			{
 				if(Math.abs((float)waterTank.getFluidAmount()/waterTank.getCapacity()-prevScale) > 0.01)
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 					prevScale = (float)waterTank.getFluidAmount()/waterTank.getCapacity();
 				}
 			}
@@ -151,7 +151,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				
 				if(structured != prev)
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 				
 				if(structured)

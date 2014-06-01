@@ -33,6 +33,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.transport.IPipeTile;
+import buildcraft.api.transport.PipeWire;
 import codechicken.lib.vec.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -324,7 +325,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 			for(TransporterStack stack : remove)
 			{
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, true)), Coord4D.get(tile()), 50D);
+				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, true)), Coord4D.get(tile()).getTargetPoint(50D));
 				transit.remove(stack);
 				MekanismUtils.saveChunk(tile());
 			}
@@ -333,7 +334,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				if(transit.contains(stack))
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 				}
 			}
 
@@ -438,7 +439,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				transit.add(stack);
 				TransporterManager.add(stack);
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
+				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 				MekanismUtils.saveChunk(tile());
 			}
 
@@ -474,7 +475,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				transit.add(stack);
 				TransporterManager.add(stack);
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
+				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 				MekanismUtils.saveChunk(tile());
 			}
 
@@ -489,7 +490,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		stack.progress = 0;
 		transit.add(stack);
-		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()), 50D);
+		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 		MekanismUtils.saveChunk(tile());
 	}
 
@@ -679,7 +680,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		TransporterUtils.incrementColor(this);
 		refreshConnections();
 		tile().notifyPartChange(this);
-		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()), 50D);
+		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()).getTargetPoint(50D));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 
 		return true;
@@ -757,5 +758,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public int getCost()
 	{
 		return 1;
+	}
+
+	@Override
+	public boolean isWireActive(PipeWire wire) 
+	{
+		return false;
 	}
 }

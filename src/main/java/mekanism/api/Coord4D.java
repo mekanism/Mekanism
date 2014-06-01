@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -15,6 +14,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes
@@ -247,6 +248,16 @@ public class Coord4D
 	public boolean sideVisible(ForgeDirection side, IBlockAccess world)
 	{
 		return world.isAirBlock(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ);
+	}
+	
+	/**
+	 * Gets a TargetPoint with the defined range from this Coord4D with the appropriate coordinates and dimension ID.
+	 * @param range - the range the packet can be sent in of this Coord4D
+	 * @return TargetPoint relative to this Coord4D
+	 */
+	public TargetPoint getTargetPoint(double range)
+	{
+		return new TargetPoint(dimensionId, xCoord, yCoord, zCoord, range);
 	}
 
 	/**

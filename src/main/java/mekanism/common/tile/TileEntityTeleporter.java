@@ -131,7 +131,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 			if(shouldRender != prevShouldRender)
 			{
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 40D);
+				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 			}
 
 			prevShouldRender = shouldRender;
@@ -279,7 +279,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 				for(Coord4D coords : Mekanism.teleporters.get(code))
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords, 40D);
+					Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords.getTargetPoint(40D));
 				}
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));

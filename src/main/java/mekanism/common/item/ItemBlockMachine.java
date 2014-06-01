@@ -519,11 +519,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				if(!getAuthenticated(itemstack))
 				{
-					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, false), entityplayer);
+					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, false, false, 2, 0, null, null), (EntityPlayerMP)entityplayer);
 				}
 				else if(getLocked(itemstack) && getEnergy(itemstack) > 0)
 				{
-					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, false), entityplayer);
+					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, false, false, 1, 0, null, null), (EntityPlayerMP)entityplayer);
 				}
 				else {
 					InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);

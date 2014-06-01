@@ -34,6 +34,7 @@ import mekanism.common.util.MinerUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -260,7 +261,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getSmallPacket(new ArrayList())), player);
+					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getSmallPacket(new ArrayList())), (EntityPlayerMP)player);
 				}
 			}
 
@@ -511,7 +512,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		{
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
 			}
 		}
 	}
@@ -655,7 +656,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
 			}
 
 			return;
@@ -1277,7 +1278,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		for(EntityPlayer player : playersUsing)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), player);
+			Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
 		}
 
 		return null;
