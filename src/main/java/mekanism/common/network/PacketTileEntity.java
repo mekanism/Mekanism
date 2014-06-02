@@ -64,6 +64,7 @@ public class PacketTileEntity extends MekanismPacket
 		if(tileEntity instanceof ITileNetwork)
 		{
 			((ITileNetwork)tileEntity).handlePacketData(storedBuffer);
+			storedBuffer.release();
 		}
 	}
 }

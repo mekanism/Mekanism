@@ -1309,7 +1309,7 @@ public class Mekanism
 		new MultipartMekanism();
 
 		//Packet registrations
-		packetPipeline.initalise();
+		packetPipeline.initialize();
 
 		//Load proxy
 		proxy.registerRenderInformation();
@@ -1334,7 +1334,7 @@ public class Mekanism
 		
 		OreDictManager.init();
 
-		packetPipeline.postInitialise();
+		packetPipeline.postInitialize();
 		
 		logger.info("Hooking complete.");
 	}

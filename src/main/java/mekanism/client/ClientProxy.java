@@ -197,7 +197,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSound(Object obj)
 	{
-		if(MekanismClient.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
+		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
 			synchronized(MekanismClient.audioHandler.sounds)
 			{
@@ -209,7 +209,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unregisterSound(TileEntity tileEntity)
 	{
-		if(MekanismClient.enableSounds && Minecraft.getMinecraft().sndManager.sndSystem != null)
+		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
 			synchronized(MekanismClient.audioHandler.sounds)
 			{
@@ -234,7 +234,7 @@ public class ClientProxy extends CommonProxy
 				entityplayer.openContainer.windowId = windowId;
 			}
 			else {
-				FMLClientHandler.instance().getClient().sndManager.playSoundFX("random.chestopen", 1.0F, 1.0F);
+				SoundHandler.playSound("random.chestopen");
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
 				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)

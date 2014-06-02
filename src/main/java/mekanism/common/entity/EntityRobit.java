@@ -267,7 +267,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 						onItemPickup(item, item.getEntityItem().stackSize);
 						item.setDead();
 
-						SoundHandler.playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}
@@ -286,7 +286,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 							item.setDead();
 						}
 
-						SoundHandler.playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}

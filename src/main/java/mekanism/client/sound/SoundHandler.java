@@ -17,10 +17,12 @@ import mekanism.api.Coord4D;
 import mekanism.client.HolidayManager;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+import mekanism.common.ObfuscatedNames;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundCategory;
-import net.minecraft.client.gui.GuiOptions;
+import net.minecraft.client.audio.SoundManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -47,7 +49,7 @@ public class SoundHandler
 	/** The current base volume Minecraft is using. */
 	public float masterVolume = 0;
 
-	public Minecraft mc = Minecraft.getMinecraft();
+	public static Minecraft mc = Minecraft.getMinecraft();
 
 	/**
 	 * SoundHandler -- a class that handles all Sounds used by Mekanism.
@@ -82,7 +84,7 @@ public class SoundHandler
 
 		System.out.println("[Mekanism] Preloaded " + listings.size() + " object sounds.");
 
-		listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/etc");
+		/*listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/etc");
 
 		for(String s : listings)
 		{
@@ -94,7 +96,7 @@ public class SoundHandler
 			mc.sndManager.addSound("mekanism:etc/" + s);
 		}
 
-		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");
+		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");*/
 
 		if(MekanismClient.holidays)
 		{
@@ -322,12 +324,17 @@ public class SoundHandler
 
 	public static SoundSystem getSoundSystem()
 	{
-		return Minecraft.getMinecraft().sndManager.sndSystem;
+		try {
+			SoundManager manager = (SoundManager)MekanismUtils.getPrivateValue(mc.getSoundHandler(), SoundManager.class, ObfuscatedNames.SoundHandler_sndManager);
+			return (SoundSystem)MekanismUtils.getPrivateValue(manager, SoundSystem.class, ObfuscatedNames.SoundManager_sndSystem);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public static void playSound(String sound)
 	{
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(sound), 1.0F));
+        mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(sound), 1.0F));
 	}
 
 	@SubscribeEvent

@@ -92,7 +92,7 @@ public class ClientTickHandler
 
 	public void tickStart()
 	{
-		if(!preloadedSounds && mc.sndManager.sndSystem != null && MekanismClient.enableSounds)
+		if(!preloadedSounds && MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
 			new Thread(new Runnable() {
 				@Override

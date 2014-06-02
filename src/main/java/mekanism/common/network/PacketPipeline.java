@@ -137,7 +137,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	}
 
 	// Method to call from FMLInitializationEvent
-	public void initalise()
+	public void initialize()
 	{
 		channels = NetworkRegistry.INSTANCE.newChannel("Mekanism", this);
 		registerPackets();
@@ -176,7 +176,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	// Method to call from FMLPostInitializationEvent
 	// Ensures that packet discriminators are common between server and client
 	// by using logical sorting
-	public void postInitialise()
+	public void postInitialize()
 	{
 		if(isPostInitialised)
 		{
