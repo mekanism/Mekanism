@@ -19,7 +19,6 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;

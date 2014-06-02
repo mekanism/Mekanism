@@ -1,7 +1,6 @@
 package mekanism.client.render.entity;
 
 import mekanism.client.model.ModelObsidianTNT;
-import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -9,7 +8,6 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.src.FMLRenderAccessLibrary;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;

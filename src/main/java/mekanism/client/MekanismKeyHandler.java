@@ -1,7 +1,5 @@
 package mekanism.client;
 
-import java.util.EnumSet;
-
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;

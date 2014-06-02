@@ -2,7 +2,6 @@ package mekanism.tools.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 
 public class ItemMekanismShovel extends ItemMekanismTool

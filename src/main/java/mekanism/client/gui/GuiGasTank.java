@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.network.PacketTileEntity;
@@ -82,7 +83,7 @@ public class GuiGasTank extends GuiMekanism
 			data.add(0);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			playClickSound();
+			SoundHandler.playSound("gui.button.press");
 		}
 	}
 }

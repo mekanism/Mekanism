@@ -12,6 +12,7 @@ import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.network.PacketTileEntity;
@@ -129,7 +130,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				data.add(0);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				playClickSound();
+				SoundHandler.playSound("gui.button.press");
 			}
 			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
 			{
@@ -137,7 +138,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				data.add(1);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				playClickSound();
+				SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

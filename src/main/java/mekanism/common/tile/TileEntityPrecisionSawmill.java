@@ -9,8 +9,6 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-import net.minecraft.util.ResourceLocation;
-
 public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 {
 	public TileEntityPrecisionSawmill()

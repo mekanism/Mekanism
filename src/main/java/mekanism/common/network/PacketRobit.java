@@ -6,9 +6,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class PacketRobit extends MekanismPacket
 {

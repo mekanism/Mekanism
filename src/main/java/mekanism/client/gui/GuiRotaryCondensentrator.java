@@ -10,6 +10,7 @@ import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.network.PacketTileEntity;
@@ -154,7 +155,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 				data.add(0);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

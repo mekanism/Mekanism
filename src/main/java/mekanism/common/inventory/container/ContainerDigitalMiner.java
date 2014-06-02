@@ -1,15 +1,13 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.inventory.slot.SlotElectricChest;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 

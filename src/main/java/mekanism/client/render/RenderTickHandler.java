@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;

@@ -3,7 +3,6 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -16,10 +15,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class PacketConfigurationUpdate extends MekanismPacket
 {

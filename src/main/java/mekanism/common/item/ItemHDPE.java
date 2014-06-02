@@ -3,7 +3,6 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

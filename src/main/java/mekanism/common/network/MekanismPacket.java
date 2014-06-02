@@ -1,12 +1,8 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
-import com.google.common.io.ByteArrayDataInput;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 
 /**
  * AbstractPacket class. Should be the parent of all packets wishing to use the

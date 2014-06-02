@@ -1,17 +1,31 @@
 package mekanism.generators.client;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.generators.client.gui.*;
-import mekanism.generators.client.render.*;
+import mekanism.generators.client.gui.GuiBioGenerator;
+import mekanism.generators.client.gui.GuiHeatGenerator;
+import mekanism.generators.client.gui.GuiHydrogenGenerator;
+import mekanism.generators.client.gui.GuiSolarGenerator;
+import mekanism.generators.client.gui.GuiWindTurbine;
+import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
+import mekanism.generators.client.render.RenderBioGenerator;
+import mekanism.generators.client.render.RenderHeatGenerator;
+import mekanism.generators.client.render.RenderHydrogenGenerator;
+import mekanism.generators.client.render.RenderSolarGenerator;
+import mekanism.generators.client.render.RenderWindTurbine;
 import mekanism.generators.common.GeneratorsCommonProxy;
-import mekanism.generators.common.tile.*;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GeneratorsClientProxy extends GeneratorsCommonProxy

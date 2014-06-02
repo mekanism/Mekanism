@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import mekanism.api.EnumColor;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

@@ -1,11 +1,11 @@
 package mekanism.client.gui;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -13,7 +13,6 @@ import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -119,7 +118,7 @@ public class GuiElectricChest extends GuiMekanism
 
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 88 && yAxis <= 106)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 
 				if(isBlock)
 				{

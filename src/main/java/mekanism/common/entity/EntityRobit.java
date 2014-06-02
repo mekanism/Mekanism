@@ -10,6 +10,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.RobitAIFollow;
@@ -266,7 +267,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 						onItemPickup(item, item.getEntityItem().stackSize);
 						item.setDead();
 
-						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						SoundHandler.playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}
@@ -285,7 +286,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 							item.setDead();
 						}
 
-						playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+						SoundHandler.playSound("random.pop", 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
 
 						break;
 					}

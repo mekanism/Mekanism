@@ -1,6 +1,8 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -13,11 +15,6 @@ import mekanism.common.transporter.TransporterFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketNewFilter extends MekanismPacket

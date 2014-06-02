@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui;
@@ -67,7 +68,7 @@ public class GuiConfigurationTab extends GuiElement
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 			{
 				Mekanism.packetPipeline.sendToServer(new PacketSimpleGui(Coord4D.get(tileEntity), 9));
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

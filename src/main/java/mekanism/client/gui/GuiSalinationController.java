@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSalinationController;
 import mekanism.common.network.PacketTileEntity;
@@ -156,7 +157,7 @@ public class GuiSalinationController extends GuiMekanism
 				data.add(0);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

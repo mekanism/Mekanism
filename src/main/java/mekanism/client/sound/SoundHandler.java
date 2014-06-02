@@ -18,9 +18,11 @@ import mekanism.client.HolidayManager;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundCategory;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -321,6 +323,11 @@ public class SoundHandler
 	public static SoundSystem getSoundSystem()
 	{
 		return Minecraft.getMinecraft().sndManager.sndSystem;
+	}
+	
+	public static void playSound(String sound)
+	{
+        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(sound), 1.0F));
 	}
 
 	@SubscribeEvent

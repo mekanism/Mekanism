@@ -5,7 +5,6 @@ import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketKey;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;

@@ -1,63 +1,22 @@
 package mekanism.client.render;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.client.model.ModelTransporterBox;
-import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.PartDiversionTransporter;
 import mekanism.common.multipart.PartGlowPanel;
-import mekanism.common.multipart.PartLogisticalTransporter;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartPressurizedTube;
-import mekanism.common.multipart.PartSidedPipe;
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
-import mekanism.common.multipart.PartTransmitter;
-import mekanism.common.multipart.PartUniversalCable;
-import mekanism.common.multipart.TransmitterType;
-import mekanism.common.multipart.TransmitterType.Size;
-import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import org.lwjgl.opengl.GL11;
-
 import codechicken.lib.colour.Colour;
 import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.lighting.LightMatrix;
 import codechicken.lib.lighting.LightModel;
-import codechicken.lib.lighting.LightModel.Light;
 import codechicken.lib.render.CCModel;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.ColourMultiplier;
 import codechicken.lib.render.TextureUtils;
 import codechicken.lib.render.TextureUtils.IIconSelfRegister;
-import codechicken.lib.render.uv.UV;
 import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.Rotation;
-import codechicken.lib.vec.Transformation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
 

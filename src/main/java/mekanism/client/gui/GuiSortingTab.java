@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFactory;
@@ -70,7 +71,7 @@ public class GuiSortingTab extends GuiElement
 				ArrayList data = new ArrayList();
 				data.add(0);
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

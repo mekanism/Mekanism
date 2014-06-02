@@ -3,7 +3,6 @@ package mekanism.tools.item;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemStack;
 
 public class ItemMekanismAxe extends ItemMekanismTool

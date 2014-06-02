@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui;
@@ -161,17 +162,17 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 						if(filter instanceof TItemStackFilter)
 						{
-							playClickSound();
+							SoundHandler.playSound("gui.button.press");
 							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof TOreDictFilter)
 						{
-							playClickSound();
+							SoundHandler.playSound("gui.button.press");
 							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof TMaterialFilter)
 						{
-							playClickSound();
+							SoundHandler.playSound("gui.button.press");
 							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
 					}
@@ -184,7 +185,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(1);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				playClickSound();
+				SoundHandler.playSound("gui.button.press");
 			}
 
 			if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
@@ -193,7 +194,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				data.add(2);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				playClickSound();
+				SoundHandler.playSound("gui.button.press");
 			}
 		}
 
@@ -209,7 +210,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			data.add(button);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+			SoundHandler.playSound("mekanism:etc.Ding");
 		}
 	}
 

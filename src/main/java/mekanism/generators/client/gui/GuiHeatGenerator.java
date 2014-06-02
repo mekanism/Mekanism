@@ -3,13 +3,10 @@ package mekanism.generators.client.gui;
 import java.util.List;
 
 import mekanism.api.ListUtils;
-import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.GuiGasGauge;
-import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiGauge.Type;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiPowerBar;
@@ -23,8 +20,8 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
-
 import net.minecraftforge.fluids.FluidTank;
+
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;

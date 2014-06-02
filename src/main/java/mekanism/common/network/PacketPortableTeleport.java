@@ -1,5 +1,7 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
@@ -12,11 +14,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketPortableTeleport extends MekanismPacket

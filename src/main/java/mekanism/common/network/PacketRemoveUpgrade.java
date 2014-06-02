@@ -1,7 +1,7 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.Coord4D;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
@@ -9,11 +9,6 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketRemoveUpgrade extends MekanismPacket
 {

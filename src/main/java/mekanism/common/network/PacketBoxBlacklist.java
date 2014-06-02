@@ -2,16 +2,10 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.io.DataOutputStream;
-
 import mekanism.api.ItemInfo;
 import mekanism.api.MekanismAPI;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class PacketBoxBlacklist extends MekanismPacket
 {

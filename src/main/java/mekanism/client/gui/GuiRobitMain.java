@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.network.PacketRobit;
@@ -266,51 +266,51 @@ public class GuiRobitMain extends GuiMekanism
 
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 1, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 2, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 23, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 3, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 4, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 152 && xAxis <= 170 && yAxis >= 54 && yAxis <= 72)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId(), 0, null));
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 54 && yAxis <= 72)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				toggleNameChange();
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 16 && yAxis <= 34)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId(), 0, null));
 				mc.displayGuiScreen(null);
 			}
 			else if(xAxis >= 6 && xAxis <= 24 && yAxis >= 35 && yAxis <= 53)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId(), 0, null));
 			}
 		}

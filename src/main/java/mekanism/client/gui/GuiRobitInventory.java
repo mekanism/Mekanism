@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.network.PacketRobit;
@@ -103,29 +103,29 @@ public class GuiRobitInventory extends GuiMekanism
 
 			if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 0, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 21, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 30 && yAxis <= 48)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 1, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 22, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 50 && yAxis <= 68)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 70 && yAxis <= 88)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 3, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 24, mc.theWorld, robit.getEntityId(), 0, 0);
 			}
 			else if(xAxis >= 179 && xAxis <= 197 && yAxis >= 90 && yAxis <= 108)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRobit(RobitPacketType.GUI, 4, robit.getEntityId(), null));
 				mc.thePlayer.openGui(Mekanism.instance, 25, mc.theWorld, robit.getEntityId(), 0, 0);
 			}

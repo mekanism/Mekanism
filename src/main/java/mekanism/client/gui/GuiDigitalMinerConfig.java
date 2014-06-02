@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MItemStackFilter;
@@ -172,17 +173,17 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 						if(filter instanceof MItemStackFilter)
 						{
-	                        playClickSound();
+	                        SoundHandler.playSound("gui.button.press");
 							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
-	                        playClickSound();
+	                        SoundHandler.playSound("gui.button.press");
 							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MMaterialFilter)
 						{
-	                        playClickSound();
+	                        SoundHandler.playSound("gui.button.press");
 							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
 					}
@@ -191,25 +192,25 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				setRadius();
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 92 && yAxis <= 103)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				setMinY();
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 117 && yAxis <= 128)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				setMaxY();
 			}
 
@@ -219,7 +220,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				data.add(10);
 
 				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-				mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
+				SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

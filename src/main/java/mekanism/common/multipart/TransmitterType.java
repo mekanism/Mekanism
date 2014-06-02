@@ -1,7 +1,6 @@
 package mekanism.common.multipart;
 
 import mekanism.api.transmitters.TransmissionType;
-
 import net.minecraft.util.IIcon;
 
 

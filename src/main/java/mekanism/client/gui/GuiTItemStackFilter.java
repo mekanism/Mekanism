@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter;
@@ -295,7 +296,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		{
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
@@ -313,12 +314,12 @@ public class GuiTItemStackFilter extends GuiMekanism
 					filter.itemType = null;
 				}
 
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 
 			if(xAxis >= 128 && xAxis <= 139 && yAxis >= 44 && yAxis <= 55)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				filter.sizeMode = !filter.sizeMode;
 			}
 		}

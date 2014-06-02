@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -135,7 +136,7 @@ public class GuiDictionary extends GuiMekanism
 						itemType.stackSize = 1;
 
 						oreDictNames = MekanismUtils.getOreDictName(itemType);
-						playClickSound();
+						SoundHandler.playSound("gui.button.press");
 						
 						return;
 					}
@@ -159,7 +160,7 @@ public class GuiDictionary extends GuiMekanism
 					oreDictNames = new ArrayList<String>();
 				}
 
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 

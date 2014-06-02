@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketRemoveUpgrade;
@@ -80,13 +81,13 @@ public class GuiUpgradeManagement extends GuiElement
 		{
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), (byte)0));
 			}
 
 			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tileEntity), (byte)1));
 			}
 

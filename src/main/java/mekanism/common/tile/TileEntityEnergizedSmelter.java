@@ -7,7 +7,6 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 {

@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
@@ -271,7 +272,7 @@ public class ClientTickHandler
 							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
 							item.setChannel(stack, newChan);
 							Mekanism.packetPipeline.sendToServer(new PacketWalkieTalkieState(newChan));
-							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+							SoundHandler.playSound("mekanism:etc.Ding");
 							lastTickUpdate = true;
 						}
 					}
@@ -289,7 +290,7 @@ public class ClientTickHandler
 						{
 							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
 							Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.MODE, null, false));
-							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
+							SoundHandler.playSound("mekanism:etc.Hydraulic");
 							lastTickUpdate = true;
 						}
 					}
@@ -307,7 +308,7 @@ public class ClientTickHandler
 						{
 							((ItemScubaTank)scubaTank.getItem()).toggleFlowing(scubaTank);
 							Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.MODE, null, false));
-							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
+							SoundHandler.playSound("mekanism:etc.Hydraulic");
 							lastTickUpdate = true;
 						}
 					}

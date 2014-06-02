@@ -13,8 +13,8 @@ import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
@@ -99,7 +99,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			data.add((byte)0);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			playClickSound();
+			SoundHandler.playSound("gui.button.press");
 		}
 		else if(xAxis > 160 && xAxis < 169 && yAxis > 73 && yAxis < 82)
 		{
@@ -107,7 +107,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			data.add((byte)1);
 
 			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
-			playClickSound();
+			SoundHandler.playSound("gui.button.press");
 		}
 	}
 

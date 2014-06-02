@@ -14,9 +14,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class PacketElectricChest extends MekanismPacket
 {

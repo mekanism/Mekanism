@@ -1,16 +1,27 @@
 package mekanism.generators.common.block;
 
-import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
+import java.util.Random;
+
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.*;
+import mekanism.common.IActiveState;
+import mekanism.common.IBoundingBlock;
+import mekanism.common.ISpecialBounds;
+import mekanism.common.ISustainedInventory;
+import mekanism.common.ISustainedTank;
+import mekanism.common.ItemAttacher;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.*;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -27,9 +38,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import java.util.List;
-import java.util.Random;
+import buildcraft.api.tools.IToolWrench;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple generator block IDs.

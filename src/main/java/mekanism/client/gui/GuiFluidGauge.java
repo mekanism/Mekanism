@@ -1,8 +1,6 @@
 package mekanism.client.gui;
 
 import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;

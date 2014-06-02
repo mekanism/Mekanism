@@ -1,13 +1,22 @@
 package mekanism.generators.common;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mekanism.common.Mekanism;
-import mekanism.generators.common.inventory.container.*;
-import mekanism.generators.common.tile.*;
+import mekanism.generators.common.inventory.container.ContainerBioGenerator;
+import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
+import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
+import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
+import mekanism.generators.common.inventory.container.ContainerWindTurbine;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * Common proxy for the Mekanism Generators module.

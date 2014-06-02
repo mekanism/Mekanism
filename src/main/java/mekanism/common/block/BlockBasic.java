@@ -11,7 +11,6 @@ import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.TankUpdateProtocol;

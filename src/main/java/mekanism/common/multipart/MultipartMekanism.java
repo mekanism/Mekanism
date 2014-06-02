@@ -1,7 +1,6 @@
 package mekanism.common.multipart;
 
 import mekanism.common.Tier;
-
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;

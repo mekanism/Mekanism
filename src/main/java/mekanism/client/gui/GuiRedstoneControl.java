@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
@@ -72,7 +73,7 @@ public class GuiRedstoneControl extends GuiElement
 				RedstoneControl current = control.getControlType();
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
 
-				playClickSound();
+				SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
 			}
 		}

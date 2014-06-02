@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntitySalinationController;
 import net.minecraft.entity.player.EntityPlayer;

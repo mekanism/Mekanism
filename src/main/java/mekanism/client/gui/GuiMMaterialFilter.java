@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.miner.MMaterialFilter;
@@ -198,7 +199,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
 			}
 
@@ -222,7 +223,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 					filter.materialItem = null;
 				}
 
-                playClickSound();
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

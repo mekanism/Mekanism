@@ -11,9 +11,9 @@ import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
+
 import org.lwjgl.opengl.GL11;
 
 public class GuiPRC extends GuiMekanism
