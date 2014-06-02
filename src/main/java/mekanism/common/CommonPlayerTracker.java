@@ -6,6 +6,7 @@ import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -23,10 +24,10 @@ public class CommonPlayerTracker
 	{
 		if(!player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketConfigSync(), player);
-			Mekanism.packetPipeline.sendTo(new PacketBoxBlacklist(), player);
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), player);
+			Mekanism.packetPipeline.sendTo(new PacketConfigSync(), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketBoxBlacklist(), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), (EntityPlayerMP)player);
 
 			Mekanism.logger.info((String) "Sent config to '" + player.getDisplayName() + ".'");
 		}
@@ -51,8 +52,8 @@ public class CommonPlayerTracker
 
 		if(!event.player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), event.player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), event.player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), (EntityPlayerMP)event.player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), (EntityPlayerMP)event.player);
 		}
 	}
 
@@ -62,8 +63,8 @@ public class CommonPlayerTracker
 
 		if(!player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), (EntityPlayerMP)player);
 		}
 	}
 }

@@ -1,5 +1,8 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataOutputStream;
 import java.util.ArrayList;
 
@@ -11,13 +14,12 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketConfigurationUpdate extends MekanismPacket
 {
@@ -89,7 +91,7 @@ public class PacketConfigurationUpdate extends MekanismPacket
 					((IInvConfiguration)tile).getConfiguration()[configIndex] = 0;
 				}
 
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), coord4D, 50D);
+				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), coord4D.getTargetPoint(50D));
 			}
 			else if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{
@@ -135,7 +137,7 @@ public class PacketConfigurationUpdate extends MekanismPacket
 
 			for(EntityPlayer p : ((TileEntityBasicBlock)config).playersUsing)
 			{
-				Mekanism.packetPipeline.sendTo(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), p);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
 			}
 		}
 	}

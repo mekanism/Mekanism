@@ -47,14 +47,14 @@ public class CommonPlayerTickHandler
 						if(item.getStatus(itemstack) != 2)
 						{
 							item.setStatus(itemstack, 2);
-							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(2), player);
+							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(2), (EntityPlayerMP)player);
 						}
 					}
 					else {
 						if(item.getStatus(itemstack) != 1)
 						{
 							item.setStatus(itemstack, 1);
-							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(1), player);
+							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(1), (EntityPlayerMP)player);
 						}
 					}
 					return;
@@ -64,7 +64,7 @@ public class CommonPlayerTickHandler
 					if(item.getStatus(itemstack) != 3)
 					{
 						item.setStatus(itemstack, 3);
-						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(3), player);
+						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(3), (EntityPlayerMP)player);
 					}
 					return;
 				}
@@ -72,7 +72,7 @@ public class CommonPlayerTickHandler
 					if(item.getStatus(itemstack) != 4)
 					{
 						item.setStatus(itemstack, 4);
-						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), player);
+						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), (EntityPlayerMP)player);
 					}
 					return;
 				}
@@ -81,7 +81,7 @@ public class CommonPlayerTickHandler
 				if(item.getStatus(itemstack) != 4)
 				{
 					item.setStatus(itemstack, 4);
-					Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), player);
+					Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), (EntityPlayerMP)player);
 				}
 				return;
 			}

@@ -58,7 +58,7 @@ public class PacketPortableTeleport extends MekanismPacket
 						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 						
 						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-						Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords, 40D);
+						Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords.getTargetPoint(40D));
 					} catch(Exception e) {}
 				}
 			}

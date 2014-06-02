@@ -14,13 +14,13 @@ import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -289,7 +289,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), player);
+				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
 			}
 
 			return;

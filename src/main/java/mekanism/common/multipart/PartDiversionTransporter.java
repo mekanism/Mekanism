@@ -121,7 +121,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		refreshConnections();
 		tile().notifyPartChange(this);
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()), 50D);
+		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()).getTargetPoint(50D));
 
 		return true;
 	}
