@@ -1,6 +1,7 @@
 package mekanism.common.multipart;
 
 import ic2.api.tile.IWrenchable;
+import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,9 +48,6 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -525,7 +523,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception {}
+	public void handlePacketData(ByteBuf dataStream) throws Exception {}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)

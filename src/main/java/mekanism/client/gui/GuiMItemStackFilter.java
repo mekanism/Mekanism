@@ -92,7 +92,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 					Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
 			else if(filter.itemType == null)
 			{
@@ -102,8 +102,8 @@ public class GuiMItemStackFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter));
-			Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+			Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 		}
 	}
 
@@ -199,7 +199,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
                 playClickSound();
-				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0));
+				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
 			}
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)

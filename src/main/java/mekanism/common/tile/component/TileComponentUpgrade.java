@@ -1,15 +1,14 @@
 package mekanism.common.tile.component;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.ITileComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TileComponentUpgrade implements ITileComponent
 {
@@ -111,7 +110,7 @@ public class TileComponentUpgrade implements ITileComponent
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream)
+	public void read(ByteBuf dataStream)
 	{
 		speedMultiplier = dataStream.readInt();
 		energyMultiplier = dataStream.readInt();

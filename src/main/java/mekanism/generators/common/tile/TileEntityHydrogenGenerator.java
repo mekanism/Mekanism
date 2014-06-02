@@ -1,5 +1,7 @@
 package mekanism.generators.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.gas.FuelHandler;
@@ -18,11 +20,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class TileEntityHydrogenGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection
 {
@@ -181,9 +180,10 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
 		fuelTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
 		generationRate = dataStream.readDouble();
 	}

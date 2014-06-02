@@ -1,28 +1,25 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tank.SynchronizedTankData;
-import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
+import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -356,7 +353,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
 

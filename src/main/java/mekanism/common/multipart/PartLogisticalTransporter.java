@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,9 +37,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.api.transport.PipeWire;
 import codechicken.lib.vec.Vector3;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -506,7 +505,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		int type = dataStream.readInt();
 

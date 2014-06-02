@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import ic2.api.tile.IWrenchable;
+import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,7 +12,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.ITileComponent;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.MekanismUtils;
@@ -21,8 +21,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork
 {
@@ -82,7 +80,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		facing = dataStream.readInt();
 		redstone = dataStream.readBoolean();

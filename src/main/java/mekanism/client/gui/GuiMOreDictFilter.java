@@ -145,7 +145,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter));
+			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
 			Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 		}
 	}

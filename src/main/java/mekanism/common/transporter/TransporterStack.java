@@ -1,5 +1,7 @@
 package mekanism.common.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TransporterStack
 {
@@ -67,7 +67,7 @@ public class TransporterStack
 		data.add(itemStack.getItemDamage());
 	}
 
-	public void read(ByteArrayDataInput dataStream)
+	public void read(ByteBuf dataStream)
 	{
 		int c = dataStream.readInt();
 
@@ -138,7 +138,7 @@ public class TransporterStack
 		return stack;
 	}
 
-	public static TransporterStack readFromPacket(ByteArrayDataInput dataStream)
+	public static TransporterStack readFromPacket(ByteBuf dataStream)
 	{
 		TransporterStack stack = new TransporterStack();
 		stack.read(dataStream);

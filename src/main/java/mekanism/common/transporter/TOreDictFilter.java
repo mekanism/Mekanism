@@ -1,17 +1,16 @@
 package mekanism.common.transporter;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.netty.buffer.ByteBuf;
 
+import java.util.ArrayList;
+
+import mekanism.common.PacketHandler;
 import mekanism.common.transporter.Finder.OreDictFinder;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TOreDictFilter extends TransporterFilter
 {
@@ -62,11 +61,11 @@ public class TOreDictFilter extends TransporterFilter
 	}
 
 	@Override
-	protected void read(ByteArrayDataInput dataStream)
+	protected void read(ByteBuf dataStream)
 	{
 		super.read(dataStream);
 
-		oreDictName = dataStream.readUTF();
+		oreDictName = PacketHandler.readString(dataStream);
 	}
 
 	@Override

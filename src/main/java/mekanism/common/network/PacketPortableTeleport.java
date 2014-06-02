@@ -22,9 +22,28 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class PacketPortableTeleport extends MekanismPacket
 {
 	@Override
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception 
+	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
+	{
+
+	}
+
+	@Override
+	public void handleClientSide(EntityPlayer player)
+	{
+
+	}
+
+	@Override
+	public void handleServerSide(EntityPlayer player)
 	{
 		ItemStack itemstack = player.getCurrentEquippedItem();
+		World world = player.worldObj;
 		
 		if(itemstack != null && itemstack.getItem() instanceof ItemPortableTeleporter)
 		{
@@ -63,29 +82,5 @@ public class PacketPortableTeleport extends MekanismPacket
 				}
 			}
 		}
-	}
-
-	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
-	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
 	}
 }

@@ -24,7 +24,7 @@ public abstract class MekanismPacket
 	 * @param ctx - channel context
 	 * @param buffer - the buffer to encode into
 	 */
-	public abstract void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer);
+	public abstract void write(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception;
 
 	/**
 	 * Decode the packet data from the ByteBuf stream. Complex data sets may
@@ -34,7 +34,7 @@ public abstract class MekanismPacket
 	 * @param ctx - channel context
 	 * @param buffer - the buffer to decode from
 	 */
-	public abstract void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer);
+	public abstract void read(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception;
 
 	/**
 	 * Handle a packet on the client side. Note this occurs after decoding has
@@ -42,7 +42,7 @@ public abstract class MekanismPacket
 	 *
 	 * @param player - the player reference
 	 */
-	public abstract void handleClientSide(EntityPlayer player);
+	public abstract void handleClientSide(EntityPlayer player) throws Exception;
 
 	/**
 	 * Handle a packet on the server side. Note this occurs after decoding has
@@ -50,5 +50,5 @@ public abstract class MekanismPacket
 	 *
 	 * @param player - the player reference
 	 */
-	public abstract void handleServerSide(EntityPlayer player);
+	public abstract void handleServerSide(EntityPlayer player) throws Exception;
 }

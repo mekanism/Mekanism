@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,6 +11,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX;
@@ -26,11 +29,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -453,7 +452,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		if(!worldObj.isRemote)
 		{
@@ -490,7 +489,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 		super.handlePacketData(dataStream);
 
-		status = dataStream.readUTF().trim();
+		status = PacketHandler.readString(dataStream).trim();
 		code.digitOne = dataStream.readInt();
 		code.digitTwo = dataStream.readInt();
 		code.digitThree = dataStream.readInt();

@@ -138,7 +138,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 					Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
 			else {
 				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
@@ -147,8 +147,8 @@ public class GuiTOreDictFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter));
-			Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+			Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 		}
 	}
 
@@ -290,7 +290,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
                 playClickSound();
-				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0));
+				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)

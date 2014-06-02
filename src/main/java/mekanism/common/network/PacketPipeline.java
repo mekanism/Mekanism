@@ -34,16 +34,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 @ChannelHandler.Sharable
 public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, MekanismPacket>
 {
-
 	private EnumMap<Side, FMLEmbeddedChannel> channels;
+	
 	private LinkedList<Class<? extends MekanismPacket>> packets = new LinkedList<Class<? extends MekanismPacket>>();
+	
 	private boolean isPostInitialised = false;
 
 	/**
 	 * Register your packet with the pipeline. Discriminators are automatically
 	 * set.
 	 *
-	 * @param clazz the class to register
+	 * @param clazz - the class to register
 	 *
 	 * @return whether registration was successful. Failure may occur if 256
 	 *         packets have been registered or if the registry already contains
@@ -70,6 +71,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 		}
 
 		packets.add(clazz);
+		
 		return true;
 	}
 
@@ -85,9 +87,9 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 			throw new NullPointerException("No Packet Registered for: " + msg.getClass().getCanonicalName());
 		}
 
-		byte discriminator =(byte) packets.indexOf(clazz);
+		byte discriminator = (byte)packets.indexOf(clazz);
 		buffer.writeByte(discriminator);
-		msg.encodeInto(ctx, buffer);
+		msg.write(ctx, buffer);
 		FMLProxyPacket proxyPacket = new FMLProxyPacket(buffer.copy(), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
 		out.add(proxyPacket);
 	}
@@ -106,7 +108,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 		}
 
 		MekanismPacket pkt = clazz.newInstance();
-		pkt.decodeInto(ctx, payload.slice());
+		pkt.read(ctx, payload.slice());
 
 		EntityPlayer player;
 		
@@ -115,11 +117,13 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 			case CLIENT:
 				player = getClientPlayer();
 				pkt.handleClientSide(player);
+				
 				break;
 			case SERVER:
 				INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
 				player = ((NetHandlerPlayServer)netHandler).playerEntity;
 				pkt.handleServerSide(player);
+				
 				break;
 		}
 

@@ -1,8 +1,8 @@
 package mekanism.common;
 
-import java.util.ArrayList;
+import io.netty.buffer.ByteBuf;
 
-import com.google.common.io.ByteArrayDataInput;
+import java.util.ArrayList;
 
 /**
  * Internal interface used for blocks that send data between clients and the server
@@ -12,13 +12,13 @@ import com.google.common.io.ByteArrayDataInput;
 public interface ITileNetwork
 {
 	/**
-	 * Receive and manage a data input.
+	 * Receive and manage a packet's data.
 	 * @param network
 	 * @param packet
 	 * @param player
 	 * @param dataStream
 	 */
-	public void handlePacketData(ByteArrayDataInput dataStream) throws Exception;
+	public void handlePacketData(ByteBuf dataStream) throws Exception;
 
 	/**
 	 * Gets an ArrayList of data this tile entity keeps synchronized with the client.

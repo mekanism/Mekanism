@@ -742,10 +742,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					}
 					else if(!electricChest.authenticated)
 					{
-						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 2, 0, true, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
 					}
 					else {
-						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, 1, 0, true, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
 					}
 
 					return true;

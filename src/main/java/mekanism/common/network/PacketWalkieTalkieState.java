@@ -38,13 +38,13 @@ public class PacketWalkieTalkieState extends MekanismPacket
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
 	{
 
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
 	{
 
 	}

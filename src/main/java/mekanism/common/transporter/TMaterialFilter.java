@@ -1,5 +1,7 @@
 package mekanism.common.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.transporter.Finder.MaterialFinder;
@@ -13,8 +15,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TMaterialFilter extends TransporterFilter
 {
@@ -72,7 +72,7 @@ public class TMaterialFilter extends TransporterFilter
 	}
 
 	@Override
-	protected void read(ByteArrayDataInput dataStream)
+	protected void read(ByteBuf dataStream)
 	{
 		super.read(dataStream);
 		

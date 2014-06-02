@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -13,8 +15,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
 {
@@ -55,10 +55,10 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-
+		
 		modes[0] = dataStream.readInt();
 		modes[1] = dataStream.readInt();
 		modes[2] = dataStream.readInt();

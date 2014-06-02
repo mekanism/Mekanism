@@ -1,10 +1,12 @@
 package mekanism.common.tile.component;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.EnumColor;
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.common.IEjector;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.ILogisticalTransporter;
@@ -20,8 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TileComponentEjector implements ITileComponent, IEjector
 {
@@ -235,7 +235,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 
 	@Override
-	public void read(ByteArrayDataInput dataStream)
+	public void read(ByteBuf dataStream)
 	{
 		ejecting = dataStream.readBoolean();
 		strictInput = dataStream.readBoolean();

@@ -1,15 +1,14 @@
 package mekanism.common.tile;
 
-import java.util.ArrayList;
+import io.netty.buffer.ByteBuf;
 
-import com.google.common.io.ByteArrayDataInput;
+import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
-
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -82,7 +81,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	public void onNoPower() {}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		mainX = dataStream.readInt();
 		mainY = dataStream.readInt();

@@ -1,17 +1,8 @@
 package mekanism.common;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
-import java.util.List;
-
-import mekanism.api.Coord4D;
-import mekanism.common.network.IMekanismPacket;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 
 
 /**
@@ -74,14 +65,14 @@ public class PacketHandler //implements IPacketHandler
 		{
 			packets.add(packetClass);
 		}
-	}
+	}*/
 
 	/**
 	 * Encodes an Object[] of data into a DataOutputStream.
 	 * @param dataValues - an Object[] of data to encode
 	 * @param output - the output stream to write to
-	 *
-	public static void encode(Object[] dataValues, DataOutputStream output)
+	 */
+	public static void encode(Object[] dataValues, ByteBuf output)
 	{
 		try {
 			for(Object data : dataValues)
@@ -104,7 +95,7 @@ public class PacketHandler //implements IPacketHandler
 				}
 				else if(data instanceof String)
 				{
-					output.writeUTF((String)data);
+					writeString(output, (String)data);
 				}
 				else if(data instanceof Byte)
 				{
@@ -134,8 +125,19 @@ public class PacketHandler //implements IPacketHandler
 			e.printStackTrace();
 		}
 	}
-
-	/**
+	
+	public static void writeString(ByteBuf output, String s)
+	{
+		output.writeInt(s.getBytes().length);
+		output.writeBytes(s.getBytes());
+	}
+	
+	public static String readString(ByteBuf input)
+	{
+		return new String(input.readBytes(input.readInt()).array());
+	}
+	
+	/*/**
 	 * Sends a packet with the defined type of transmission.
 	 * @param trans - the type of transmission to use with this packet
 	 * @param packetType - the object representing this packet, both registered and properly using write()

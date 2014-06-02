@@ -1,5 +1,7 @@
 package mekanism.common.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
@@ -8,8 +10,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public abstract class TransporterFilter
 {
@@ -46,7 +46,7 @@ public abstract class TransporterFilter
 		}
 	}
 
-	protected void read(ByteArrayDataInput dataStream)
+	protected void read(ByteBuf dataStream)
 	{
 		int c = dataStream.readInt();
 
@@ -83,7 +83,7 @@ public abstract class TransporterFilter
 		return filter;
 	}
 
-	public static TransporterFilter readFromPacket(ByteArrayDataInput dataStream)
+	public static TransporterFilter readFromPacket(ByteBuf dataStream)
 	{
 		int type = dataStream.readInt();
 

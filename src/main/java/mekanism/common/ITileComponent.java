@@ -1,8 +1,8 @@
 package mekanism.common;
 
-import java.util.ArrayList;
+import io.netty.buffer.ByteBuf;
 
-import com.google.common.io.ByteArrayDataInput;
+import java.util.ArrayList;
 
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -12,7 +12,7 @@ public interface ITileComponent
 
 	public void read(NBTTagCompound nbtTags);
 
-	public void read(ByteArrayDataInput dataStream);
+	public void read(ByteBuf dataStream);
 
 	public void write(NBTTagCompound nbtTags);
 

@@ -1,10 +1,13 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.network.PacketTileEntity;
@@ -15,11 +18,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPeripheral, IRedstoneControl
@@ -65,7 +65,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 		if(newScale != prevScale)
 		{
-			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this), 50D);
+			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 		}
 
 		prevScale = newScale;
@@ -191,9 +191,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = EnergyCubeTier.getFromName(dataStream.readUTF());
+		tier = EnergyCubeTier.getFromName(PacketHandler.readString(dataStream));
 
 		super.handlePacketData(dataStream);
 

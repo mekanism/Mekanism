@@ -62,7 +62,45 @@ public class PacketEditFilter extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
+
+		dataStream.writeInt(coord4D.dimensionId);
+
+		dataStream.writeByte(type);
+
+		dataStream.writeBoolean(delete);
+
+		ArrayList data = new ArrayList();
+
+		if(type == 0)
+		{
+			tFilter.write(data);
+
+			if(!delete)
+			{
+				tEdited.write(data);
+			}
+		}
+		else if(type == 1)
+		{
+			mFilter.write(data);
+
+			if(!delete)
+			{
+				mEdited.write(data);
+			}
+		}
+
+		PacketHandler.encode(data.toArray(), dataStream);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
@@ -139,55 +177,6 @@ public class PacketEditFilter extends MekanismPacket
 				}
 			}
 		}
-	}
-
-	@Override
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-
-		dataStream.writeInt(coord4D.dimensionId);
-
-		dataStream.writeByte(type);
-
-		dataStream.writeBoolean(delete);
-
-		ArrayList data = new ArrayList();
-
-		if(type == 0)
-		{
-			tFilter.write(data);
-
-			if(!delete)
-			{
-				tEdited.write(data);
-			}
-		}
-		else if(type == 1)
-		{
-			mFilter.write(data);
-
-			if(!delete)
-			{
-				mEdited.write(data);
-			}
-		}
-
-		PacketHandler.encode(data.toArray(), dataStream);
-	}
-
-	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

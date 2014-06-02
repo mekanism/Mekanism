@@ -1,14 +1,15 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
+import mekanism.common.PacketHandler;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class TileEntityElectricChest extends TileEntityElectricBlock
 {
@@ -97,21 +98,24 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
 		authenticated = dataStream.readBoolean();
 		locked = dataStream.readBoolean();
-		password = dataStream.readUTF();
+		password = PacketHandler.readString(dataStream);
 	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(authenticated);
 		data.add(locked);
 		data.add(password);
+		
 		return data;
 	}
 

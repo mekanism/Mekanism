@@ -1,5 +1,7 @@
 package mekanism.common.miner;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.common.transporter.Finder.MaterialFinder;
@@ -10,8 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class MMaterialFilter extends MinerFilter
 {
@@ -59,7 +59,7 @@ public class MMaterialFilter extends MinerFilter
 	}
 
 	@Override
-	protected void read(ByteArrayDataInput dataStream)
+	protected void read(ByteBuf dataStream)
 	{
 		materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}

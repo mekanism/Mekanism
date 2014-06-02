@@ -119,7 +119,7 @@ public class GuiDigitalMiner extends GuiMekanism
 		}
 		else if(guibutton.id == 2)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0));
+			Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 		}
 	}
 

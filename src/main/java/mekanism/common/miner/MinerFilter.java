@@ -1,11 +1,11 @@
 package mekanism.common.miner;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public abstract class MinerFilter
 {
@@ -17,7 +17,7 @@ public abstract class MinerFilter
 
 	public abstract void write(ArrayList data);
 
-	protected abstract void read(ByteArrayDataInput dataStream);
+	protected abstract void read(ByteBuf dataStream);
 
 	public static MinerFilter readFromNBT(NBTTagCompound nbtTags)
 	{
@@ -43,7 +43,7 @@ public abstract class MinerFilter
 		return filter;
 	}
 
-	public static MinerFilter readFromPacket(ByteArrayDataInput dataStream)
+	public static MinerFilter readFromPacket(ByteBuf dataStream)
 	{
 		int type = dataStream.readInt();
 

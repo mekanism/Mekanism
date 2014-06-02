@@ -1,13 +1,14 @@
 package mekanism.common.miner;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
+import mekanism.common.PacketHandler;
 import mekanism.common.transporter.Finder.OreDictFinder;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class MOreDictFilter extends MinerFilter
 {
@@ -47,9 +48,9 @@ public class MOreDictFilter extends MinerFilter
 	}
 
 	@Override
-	protected void read(ByteArrayDataInput dataStream)
+	protected void read(ByteBuf dataStream)
 	{
-		oreDictName = dataStream.readUTF();
+		oreDictName = PacketHandler.readString(dataStream);
 	}
 
 	@Override

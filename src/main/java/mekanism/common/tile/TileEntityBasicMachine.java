@@ -1,18 +1,19 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
-import mekanism.common.IInvConfiguration;
 import mekanism.common.IEjector;
 import mekanism.common.IElectricMachine;
+import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -20,9 +21,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -159,7 +157,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public void handlePacketData(ByteArrayDataInput dataStream)
+	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
 

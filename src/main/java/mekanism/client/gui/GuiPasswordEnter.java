@@ -135,11 +135,11 @@ public class GuiPasswordEnter extends GuiScreen
 			if(isBlock)
 			{
 				tileEntity.setEnergy(tileEntity.getEnergy() - 100);
-				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, true, Coord4D.get(tileEntity)));
+				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, true, 0, 0, null, Coord4D.get(tileEntity)));
 			}
 			else {
 				((IEnergizedItem)itemStack.getItem()).setEnergy(itemStack, ((IEnergizedItem)itemStack.getItem()).getEnergy(itemStack) - 100);
-				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, false));
+				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, true, false, 0, 0, null, null));
 			}
 
 			 // TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Success", 1.0F, 1.0F);
