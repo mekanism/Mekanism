@@ -20,7 +20,7 @@ buildscript {
 repositories {
     ivy {
         name 'CB FS'
-        artifactPattern "http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.4/[module]-dev%20[revision].[ext]"
+        artifactPattern "http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.7.2/[module]-dev%20[revision].[ext]"
     }
     maven {
         name 'ForgeFS'
