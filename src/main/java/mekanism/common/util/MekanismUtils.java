@@ -270,15 +270,6 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Sends the defined message to all players.
-	 * @param msg - message to send
-	 */
-	public static void sendChatMessageToAllPlayers(String msg)
-	{
-		PacketDispatcher.sendPacketToAllPlayers(new Packet3Chat(msg));
-	}
-
-	/**
 	 * Checks if the mod doesn't need an update.
 	 * @return if mod doesn't need an update
 	 */

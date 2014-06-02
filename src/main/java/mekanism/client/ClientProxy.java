@@ -480,10 +480,6 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadUtilities();
 
-		NetworkRegistry.registerConnectionHandler(new ClientConnectionHandler());
-
-		KeyBindingRegistry.registerKeyBinding(new MekanismKeyHandler());
-
 		HolidayManager.init();
 	}
 

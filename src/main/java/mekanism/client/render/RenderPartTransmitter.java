@@ -142,11 +142,13 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderItem(TransmitterType type)
 	{
 		CCRenderState.reset();
-		CCRenderState.startDrawing(7);
+		CCRenderState.startDrawing();
+		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			renderSide(side, type);
 		}
+		
 		CCRenderState.draw();
 	}
 
@@ -240,8 +242,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		GL11.glPushMatrix();
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
-		CCRenderState.useModelColours(true);
-		CCRenderState.startDrawing(7);
+		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -306,7 +307,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 				}
 				else if(pipe.getConnectionType(side) != ConnectionType.NONE) {
 					GL11.glCullFace(GL11.GL_FRONT);
-					CCRenderState.startDrawing(7);
+					CCRenderState.startDrawing();
 					renderFluidInOut(side, pipe);
 					CCRenderState.draw();
 					GL11.glCullFace(GL11.GL_BACK);
@@ -471,8 +472,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		GL11.glPushMatrix();
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
-		CCRenderState.useModelColours(true);
-		CCRenderState.startDrawing(7);
+		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
@@ -494,7 +494,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
-		CCRenderState.useModelColours(true);
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)

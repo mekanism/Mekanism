@@ -17,17 +17,16 @@ public class ClientConnectionHandler
 	{
 		if(event.isLocal)
 		{
-			connectionOpened();
+			localConnection();
 		}
-		else
-		{
+		else {
 			//TODO this is probably wrong
-			connectionOpened(event.manager.getSocketAddress().toString());
+			remoteConnection(event.manager.getSocketAddress().toString());
 		}
 	}
 
 	/* Remote */
-	public void connectionOpened(String server)
+	public void remoteConnection(String server)
 	{
 		if(Mekanism.voiceServerEnabled)
 		{
@@ -38,7 +37,7 @@ public class ClientConnectionHandler
 	}
 
 	/* Integrated */
-	public void connectionOpened()
+	public void localConnection()
 	{
 		if(Mekanism.voiceServerEnabled)
 		{

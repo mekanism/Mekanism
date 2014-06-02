@@ -315,7 +315,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 	{
 		if(!temperatureSet)
 		{
-			biomeTemp = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature();
+			biomeTemp = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature(xCoord, yCoord, zCoord);
 			temperatureSet = true;
 		}
 		

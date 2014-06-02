@@ -26,12 +26,12 @@ public abstract class MekKeyHandler
 	 * @param keyBindings
 	 * @param repeatings
 	 */
-	public MekKeyHandler(KeyBinding[] keyBindings, boolean[] repeatings)
+	public MekKeyHandler(KeyBinding[] bindings, boolean[] rep)
 	{
 		assert keyBindings.length == repeatings.length : "You need to pass two arrays of identical length";
-		this.keyBindings = keyBindings;
-		this.repeatings = repeatings;
-		this.keyDown = new boolean[keyBindings.length];
+		keyBindings = bindings;
+		repeatings = rep;
+		keyDown = new boolean[keyBindings.length];
 	}
 
 	/**
@@ -40,48 +40,52 @@ public abstract class MekKeyHandler
 	 *
 	 * @param keyBindings
 	 */
-	public MekKeyHandler(KeyBinding[] keyBindings)
+	public MekKeyHandler(KeyBinding[] bindings)
 	{
-		this.keyBindings = keyBindings;
-		this.isDummy = true;
+		keyBindings = bindings;
+		isDummy = true;
 	}
 
 	public KeyBinding[] getKeyBindings ()
 	{
-		return this.keyBindings;
+		return keyBindings;
 	}
 
 	@SubscribeEvent
 	public void onTick(ClientTickEvent event)
 	{
-		if (event.side == Side.CLIENT)
+		if(event.side == Side.CLIENT)
 		{
-			if (event.phase == Phase.START)
+			if(event.phase == Phase.START)
+			{
 				keyTick(event.type, false);
-			else if (event.phase == Phase.END)
+			}
+			else if(event.phase == Phase.END)
+			{
 				keyTick(event.type, true);
+			}
 		}
-
 	}
 
 	public void keyTick(Type type, boolean tickEnd)
 	{
-		for (int i = 0; i < keyBindings.length; i++)
+		for(int i = 0; i < keyBindings.length; i++)
 		{
 			KeyBinding keyBinding = keyBindings[i];
 			int keyCode = keyBinding.getKeyCode();
 			boolean state = (keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode));
-			if (state != keyDown[i] || (state && repeatings[i]))
+			
+			if(state != keyDown[i] || (state && repeatings[i]))
 			{
-				if (state)
+				if(state)
 				{
 					keyDown(type, keyBinding, tickEnd, state != keyDown[i]);
 				}
-				else
-				{
+				else {
 					keyUp(type, keyBinding, tickEnd);
 				}
-				if (tickEnd)
+				
+				if(tickEnd)
 				{
 					keyDown[i] = state;
 				}
@@ -103,7 +107,7 @@ public abstract class MekKeyHandler
 	 * @param isRepeat
 	 * is it a repeat key event
 	 */
-	public abstract void keyDown (Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat);
+	public abstract void keyDown(Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat);
 
 	/**
 	 * Fired once when the key changes state from down to up
@@ -115,6 +119,6 @@ public abstract class MekKeyHandler
 	 * @param tickEnd
 	 * was it an end or start tick which fired the key
 	 */
-	public abstract void keyUp (Type types, KeyBinding kb, boolean tickEnd);
+	public abstract void keyUp(Type types, KeyBinding kb, boolean tickEnd);
 
 }
