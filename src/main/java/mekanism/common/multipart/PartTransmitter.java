@@ -3,7 +3,6 @@ package mekanism.common.multipart;
 import java.util.HashSet;
 import java.util.Set;
 
-import codechicken.multipart.*;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -11,12 +10,12 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.IConfigurable;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import codechicken.multipart.TileMultipart;
 
 public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends PartSidedPipe implements IGridTransmitter<N>, IConfigurable
 {

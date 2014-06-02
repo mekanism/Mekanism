@@ -13,7 +13,63 @@ import io.netty.channel.ChannelHandlerContext;
 
 public class PacketConfigSync extends MekanismPacket
 {
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream) throws Exception
+	{
+		dataStream.writeBoolean(Mekanism.osmiumGenerationEnabled);
+		dataStream.writeBoolean(Mekanism.copperGenerationEnabled);
+		dataStream.writeBoolean(Mekanism.tinGenerationEnabled);
+		dataStream.writeBoolean(Mekanism.disableBCSteelCrafting);
+		dataStream.writeBoolean(Mekanism.disableBCBronzeCrafting);
+		dataStream.writeBoolean(Mekanism.updateNotifications);
+		dataStream.writeBoolean(Mekanism.controlCircuitOreDict);
+		dataStream.writeBoolean(Mekanism.logPackets);
+		dataStream.writeBoolean(Mekanism.dynamicTankEasterEgg);
+		dataStream.writeBoolean(Mekanism.voiceServerEnabled);
+		dataStream.writeBoolean(Mekanism.forceBuildcraft);
+		dataStream.writeBoolean(Mekanism.cardboardSpawners);
+		dataStream.writeInt(Mekanism.obsidianTNTDelay);
+		dataStream.writeInt(Mekanism.obsidianTNTBlastRadius);
+		dataStream.writeInt(Mekanism.UPDATE_DELAY);
+		dataStream.writeInt(Mekanism.osmiumGenerationAmount);
+		dataStream.writeInt(Mekanism.copperGenerationAmount);
+		dataStream.writeInt(Mekanism.tinGenerationAmount);
+		dataStream.writeDouble(Mekanism.FROM_IC2);
+		dataStream.writeDouble(Mekanism.TO_IC2);
+		dataStream.writeDouble(Mekanism.FROM_BC);
+		dataStream.writeDouble(Mekanism.TO_BC);
+		dataStream.writeDouble(Mekanism.FROM_H2);
+		dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
+		dataStream.writeInt(Mekanism.VOICE_PORT);
+		dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
+
+		dataStream.writeDouble(Mekanism.enrichmentChamberUsage);
+		dataStream.writeDouble(Mekanism.osmiumCompressorUsage);
+		dataStream.writeDouble(Mekanism.combinerUsage);
+		dataStream.writeDouble(Mekanism.crusherUsage);
+		dataStream.writeDouble(Mekanism.factoryUsage);
+		dataStream.writeDouble(Mekanism.metallurgicInfuserUsage);
+		dataStream.writeDouble(Mekanism.purificationChamberUsage);
+		dataStream.writeDouble(Mekanism.energizedSmelterUsage);
+		dataStream.writeDouble(Mekanism.digitalMinerUsage);
+		dataStream.writeDouble(Mekanism.rotaryCondensentratorUsage);
+		dataStream.writeDouble(Mekanism.oxidationChamberUsage);
+		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
+		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
+		dataStream.writeDouble(Mekanism.precisionSawmillUsage);
+		dataStream.writeDouble(Mekanism.chemicalDissolutionChamberUsage);
+		dataStream.writeDouble(Mekanism.chemicalWasherUsage);
+		dataStream.writeDouble(Mekanism.chemicalCrystallizerUsage);
+		dataStream.writeDouble(Mekanism.seismicVibratorUsage);
+
+		for(IModule module : Mekanism.modulesLoaded)
+		{
+			module.writeConfig(dataStream);
+		}
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream) throws Exception
 	{
 		Mekanism.osmiumGenerationEnabled = dataStream.readBoolean();
 		Mekanism.copperGenerationEnabled = dataStream.readBoolean();
@@ -70,72 +126,6 @@ public class PacketConfigSync extends MekanismPacket
 		}
 
 		Mekanism.proxy.onConfigSync();
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeBoolean(Mekanism.osmiumGenerationEnabled);
-		dataStream.writeBoolean(Mekanism.copperGenerationEnabled);
-		dataStream.writeBoolean(Mekanism.tinGenerationEnabled);
-		dataStream.writeBoolean(Mekanism.disableBCSteelCrafting);
-		dataStream.writeBoolean(Mekanism.disableBCBronzeCrafting);
-		dataStream.writeBoolean(Mekanism.updateNotifications);
-		dataStream.writeBoolean(Mekanism.controlCircuitOreDict);
-		dataStream.writeBoolean(Mekanism.logPackets);
-		dataStream.writeBoolean(Mekanism.dynamicTankEasterEgg);
-		dataStream.writeBoolean(Mekanism.voiceServerEnabled);
-		dataStream.writeBoolean(Mekanism.forceBuildcraft);
-		dataStream.writeBoolean(Mekanism.cardboardSpawners);
-		dataStream.writeInt(Mekanism.obsidianTNTDelay);
-		dataStream.writeInt(Mekanism.obsidianTNTBlastRadius);
-		dataStream.writeInt(Mekanism.UPDATE_DELAY);
-		dataStream.writeInt(Mekanism.osmiumGenerationAmount);
-		dataStream.writeInt(Mekanism.copperGenerationAmount);
-		dataStream.writeInt(Mekanism.tinGenerationAmount);
-		dataStream.writeDouble(Mekanism.FROM_IC2);
-		dataStream.writeDouble(Mekanism.TO_IC2);
-		dataStream.writeDouble(Mekanism.FROM_BC);
-		dataStream.writeDouble(Mekanism.TO_BC);
-		dataStream.writeDouble(Mekanism.FROM_H2);
-		dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
-		dataStream.writeInt(Mekanism.VOICE_PORT);
-		dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
-
-		dataStream.writeDouble(Mekanism.enrichmentChamberUsage);
-		dataStream.writeDouble(Mekanism.osmiumCompressorUsage);
-		dataStream.writeDouble(Mekanism.combinerUsage);
-		dataStream.writeDouble(Mekanism.crusherUsage);
-		dataStream.writeDouble(Mekanism.factoryUsage);
-		dataStream.writeDouble(Mekanism.metallurgicInfuserUsage);
-		dataStream.writeDouble(Mekanism.purificationChamberUsage);
-		dataStream.writeDouble(Mekanism.energizedSmelterUsage);
-		dataStream.writeDouble(Mekanism.digitalMinerUsage);
-		dataStream.writeDouble(Mekanism.rotaryCondensentratorUsage);
-		dataStream.writeDouble(Mekanism.oxidationChamberUsage);
-		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
-		dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
-		dataStream.writeDouble(Mekanism.precisionSawmillUsage);
-		dataStream.writeDouble(Mekanism.chemicalDissolutionChamberUsage);
-		dataStream.writeDouble(Mekanism.chemicalWasherUsage);
-		dataStream.writeDouble(Mekanism.chemicalCrystallizerUsage);
-		dataStream.writeDouble(Mekanism.seismicVibratorUsage);
-
-		for(IModule module : Mekanism.modulesLoaded)
-		{
-			module.writeConfig(dataStream);
-		}
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

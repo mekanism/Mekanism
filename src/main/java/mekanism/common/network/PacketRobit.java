@@ -1,15 +1,14 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketRobit extends MekanismPacket
 {
@@ -46,84 +45,8 @@ public class PacketRobit extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
-	{
-		int subType = dataStream.readInt();
-
-		if(subType == 0)
-		{
-			int type = dataStream.readInt();
-			int id = dataStream.readInt();
-
-			if(type == 0)
-			{
-				player.openGui(Mekanism.instance, 21, world, id, 0, 0);
-			}
-			else if(type == 1)
-			{
-				player.openGui(Mekanism.instance, 22, world, id, 0, 0);
-			}
-			else if(type == 2)
-			{
-				player.openGui(Mekanism.instance, 23, world, id, 0, 0);
-			}
-			else if(type == 3)
-			{
-				player.openGui(Mekanism.instance, 24, world, id, 0, 0);
-			}
-			else if(type == 4)
-			{
-				player.openGui(Mekanism.instance, 25, world, id, 0, 0);
-			}
-		}
-		else if(subType == 1)
-		{
-			int id = dataStream.readInt();
-
-			EntityRobit robit = (EntityRobit)world.getEntityByID(id);
-
-			if(robit != null)
-			{
-				robit.setFollowing(!robit.getFollowing());
-			}
-		}
-		else if(subType == 2)
-		{
-			String name = dataStream.readUTF();
-			int id = dataStream.readInt();
-
-			EntityRobit robit = (EntityRobit)world.getEntityByID(id);
-
-			if(robit != null)
-			{
-				robit.setName(name);
-			}
-		}
-		else if(subType == 3)
-		{
-			int id = dataStream.readInt();
-
-			EntityRobit robit = (EntityRobit)world.getEntityByID(id);
-
-			if(robit != null)
-			{
-				robit.goHome();
-			}
-		}
-		else if(subType == 4)
-		{
-			int id = dataStream.readInt();
-
-			EntityRobit robit = (EntityRobit)world.getEntityByID(id);
-
-			if(robit != null)
-			{
-				robit.setDropPickup(!robit.getDropPickup());
-			}
-		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		dataStream.writeInt(activeType.ordinal());
 
@@ -137,7 +60,7 @@ public class PacketRobit extends MekanismPacket
 				dataStream.writeInt(entityId);
 				break;
 			case NAME:
-				dataStream.writeUTF(name);
+				PacketHandler.writeString(dataStream, name);
 				dataStream.writeInt(entityId);
 				break;
 			case GO_HOME:
@@ -150,15 +73,81 @@ public class PacketRobit extends MekanismPacket
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
+		int subType = dataStream.readInt();
 
-	}
+		if(subType == 0)
+		{
+			int type = dataStream.readInt();
+			int id = dataStream.readInt();
 
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
+			if(type == 0)
+			{
+				player.openGui(Mekanism.instance, 21, player.worldObj, id, 0, 0);
+			}
+			else if(type == 1)
+			{
+				player.openGui(Mekanism.instance, 22, player.worldObj, id, 0, 0);
+			}
+			else if(type == 2)
+			{
+				player.openGui(Mekanism.instance, 23, player.worldObj, id, 0, 0);
+			}
+			else if(type == 3)
+			{
+				player.openGui(Mekanism.instance, 24, player.worldObj, id, 0, 0);
+			}
+			else if(type == 4)
+			{
+				player.openGui(Mekanism.instance, 25, player.worldObj, id, 0, 0);
+			}
+		}
+		else if(subType == 1)
+		{
+			int id = dataStream.readInt();
 
+			EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(id);
+
+			if(robit != null)
+			{
+				robit.setFollowing(!robit.getFollowing());
+			}
+		}
+		else if(subType == 2)
+		{
+			String name = PacketHandler.readString(dataStream);
+			int id = dataStream.readInt();
+
+			EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(id);
+
+			if(robit != null)
+			{
+				robit.setName(name);
+			}
+		}
+		else if(subType == 3)
+		{
+			int id = dataStream.readInt();
+
+			EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(id);
+
+			if(robit != null)
+			{
+				robit.goHome();
+			}
+		}
+		else if(subType == 4)
+		{
+			int id = dataStream.readInt();
+
+			EntityRobit robit = (EntityRobit)player.worldObj.getEntityByID(id);
+
+			if(robit != null)
+			{
+				robit.setDropPickup(!robit.getDropPickup());
+			}
+		}
 	}
 
 	@Override

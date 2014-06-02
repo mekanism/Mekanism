@@ -1,9 +1,6 @@
 package mekanism.tools.common;
 
-import java.io.DataOutputStream;
-
-import com.google.common.io.ByteArrayDataInput;
-
+import io.netty.buffer.ByteBuf;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -18,15 +15,14 @@ import mekanism.tools.item.ItemMekanismSword;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.EnumHelper;
-import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -808,8 +804,8 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public void writeConfig(DataOutputStream dataStream) {}
+	public void writeConfig(ByteBuf dataStream) {}
 
 	@Override
-	public void readConfig(ByteArrayDataInput dataStream) {}
+	public void readConfig(ByteBuf dataStream) {}
 }

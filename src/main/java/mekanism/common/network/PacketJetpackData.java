@@ -1,16 +1,15 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.DataOutputStream;
 
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketJetpackData extends MekanismPacket
 {
@@ -30,7 +29,29 @@ public class PacketJetpackData extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(packetType.ordinal());
+
+		if(packetType == JetpackPacket.UPDATE)
+		{
+			PacketHandler.writeString(dataStream, username);
+			dataStream.writeBoolean(value);
+		}
+		else if(packetType == JetpackPacket.FULL)
+		{
+			dataStream.writeInt(Mekanism.jetpackOn.size());
+
+			for(String username : Mekanism.jetpackOn)
+			{
+				PacketHandler.writeString(dataStream, username);
+			}
+		}
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		packetType = JetpackPacket.values()[dataStream.readInt()];
 
@@ -42,12 +63,12 @@ public class PacketJetpackData extends MekanismPacket
 
 			for(int i = 0; i < amount; i++)
 			{
-				Mekanism.jetpackOn.add(dataStream.readUTF());
+				Mekanism.jetpackOn.add(PacketHandler.readString(dataStream));
 			}
 		}
 		else if(packetType == JetpackPacket.UPDATE)
 		{
-			String username = dataStream.readUTF();
+			String username = PacketHandler.readString(dataStream);
 			boolean value = dataStream.readBoolean();
 
 			if(value)
@@ -58,9 +79,9 @@ public class PacketJetpackData extends MekanismPacket
 				Mekanism.jetpackOn.remove(username);
 			}
 
-			if(!world.isRemote)
+			if(!player.worldObj.isRemote)
 			{
-				Mekanism.packetPipeline.sendToDimension(new PacketJetpackData(JetpackPacket.UPDATE, username, value), world.provider.dimensionId);
+				Mekanism.packetPipeline.sendToDimension(new PacketJetpackData(JetpackPacket.UPDATE, username, value), player.worldObj.provider.dimensionId);
 			}
 		}
 		else if(packetType == JetpackPacket.MODE)
@@ -72,38 +93,6 @@ public class PacketJetpackData extends MekanismPacket
 				((ItemJetpack)stack.getItem()).incrementMode(stack);
 			}
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(packetType.ordinal());
-
-		if(packetType == JetpackPacket.UPDATE)
-		{
-			dataStream.writeUTF(username);
-			dataStream.writeBoolean(value);
-		}
-		else if(packetType == JetpackPacket.FULL)
-		{
-			dataStream.writeInt(Mekanism.jetpackOn.size());
-
-			for(String username : Mekanism.jetpackOn)
-			{
-				dataStream.writeUTF(username);
-			}
-		}
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

@@ -1,11 +1,12 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -16,8 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketElectricChest extends MekanismPacket
 {
@@ -87,7 +86,67 @@ public class PacketElectricChest extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(activeType.ordinal());
+
+		switch(activeType)
+		{
+			case LOCK:
+				dataStream.writeBoolean(locked);
+				dataStream.writeBoolean(isBlock);
+
+				if(isBlock)
+				{
+					dataStream.writeInt(obj.xCoord);
+					dataStream.writeInt(obj.yCoord);
+					dataStream.writeInt(obj.zCoord);
+				}
+
+				break;
+			case PASSWORD:
+				PacketHandler.writeString(dataStream, password);
+				dataStream.writeBoolean(isBlock);
+
+				if(isBlock)
+				{
+					dataStream.writeInt(obj.xCoord);
+					dataStream.writeInt(obj.yCoord);
+					dataStream.writeInt(obj.zCoord);
+				}
+
+				break;
+			case CLIENT_OPEN:
+				dataStream.writeInt(guiType);
+				dataStream.writeInt(windowId);
+				dataStream.writeBoolean(isBlock);
+
+				if(isBlock)
+				{
+					dataStream.writeInt(obj.xCoord);
+					dataStream.writeInt(obj.yCoord);
+					dataStream.writeInt(obj.zCoord);
+				}
+
+				break;
+			case SERVER_OPEN:
+				dataStream.writeBoolean(useEnergy);
+				dataStream.writeBoolean(isBlock);
+
+				if(isBlock)
+				{
+					dataStream.writeInt(obj.xCoord);
+					dataStream.writeInt(obj.yCoord);
+					dataStream.writeInt(obj.zCoord);
+				}
+
+				break;
+		}
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		ElectricChestPacketType packetType = ElectricChestPacketType.values()[dataStream.readInt()];
 
@@ -103,7 +162,7 @@ public class PacketElectricChest extends MekanismPacket
 					int y = dataStream.readInt();
 					int z = dataStream.readInt();
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)player.worldObj.getTileEntity(x, y, z);
 
 					if(energy)
 					{
@@ -158,7 +217,7 @@ public class PacketElectricChest extends MekanismPacket
 		else if(packetType == ElectricChestPacketType.PASSWORD)
 		{
 			try {
-				String pass = dataStream.readUTF();
+				String pass = PacketHandler.readString(dataStream);
 				boolean block = dataStream.readBoolean();
 
 				if(block)
@@ -167,7 +226,7 @@ public class PacketElectricChest extends MekanismPacket
 					int y = dataStream.readInt();
 					int z = dataStream.readInt();
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)player.worldObj.getTileEntity(x, y, z);
 					tileEntity.password = pass;
 					tileEntity.authenticated = true;
 				}
@@ -197,7 +256,7 @@ public class PacketElectricChest extends MekanismPacket
 					int y = dataStream.readInt();
 					int z = dataStream.readInt();
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)player.worldObj.getTileEntity(x, y, z);
 					tileEntity.locked = lock;
 				}
 				else {
@@ -213,76 +272,6 @@ public class PacketElectricChest extends MekanismPacket
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(activeType.ordinal());
-
-		switch(activeType)
-		{
-			case LOCK:
-				dataStream.writeBoolean(locked);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-			case PASSWORD:
-				dataStream.writeUTF(password);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-			case CLIENT_OPEN:
-				dataStream.writeInt(guiType);
-				dataStream.writeInt(windowId);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-			case SERVER_OPEN:
-				dataStream.writeBoolean(useEnergy);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-		}
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

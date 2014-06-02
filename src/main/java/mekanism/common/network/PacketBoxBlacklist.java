@@ -15,21 +15,8 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class PacketBoxBlacklist extends MekanismPacket
 {
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
-	{
-		MekanismAPI.getBoxIgnore().clear();
-
-		int amount = dataStream.readInt();
-
-		for(int i = 0; i < amount; i++)
-		{
-			MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
-		}
-
-		System.out.println("[Mekanism] Received Cardboard Box blacklist entries from server (" + amount + " total)");
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		dataStream.writeInt(MekanismAPI.getBoxIgnore().size());
 
@@ -41,15 +28,18 @@ public class PacketBoxBlacklist extends MekanismPacket
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
+		MekanismAPI.getBoxIgnore().clear();
 
-	}
+		int amount = dataStream.readInt();
 
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
+		for(int i = 0; i < amount; i++)
+		{
+			MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
+		}
 
+		System.out.println("[Mekanism] Received Cardboard Box blacklist entries from server (" + amount + " total)");
 	}
 
 	@Override

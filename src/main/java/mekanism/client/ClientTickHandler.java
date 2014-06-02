@@ -288,7 +288,7 @@ public class ClientTickHandler
 						if(!lastTickUpdate)
 						{
 							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
-							Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.MODE));
+							Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.MODE, null, false));
 							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}
@@ -306,7 +306,7 @@ public class ClientTickHandler
 						if(!lastTickUpdate)
 						{
 							((ItemScubaTank)scubaTank.getItem()).toggleFlowing(scubaTank);
-							Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.MODE));
+							Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.MODE, null, false));
 							Minecraft.getMinecraft().sndManager.playSoundFX("mekanism:etc.Hydraulic", 1.0F, 1.0F);
 							lastTickUpdate = true;
 						}

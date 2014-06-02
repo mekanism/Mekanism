@@ -20,7 +20,16 @@ public class PacketPortalFX extends MekanismPacket
 		coord4D = coord;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		Random random = new Random();
 
@@ -30,28 +39,9 @@ public class PacketPortalFX extends MekanismPacket
 
 		for(int i = 0; i < 50; i++)
 		{
-			world.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-			world.spawnParticle("portal", x + random.nextFloat(), y + 1 + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle("portal", x + random.nextFloat(), y + 1 + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

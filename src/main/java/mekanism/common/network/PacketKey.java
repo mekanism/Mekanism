@@ -1,14 +1,9 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
-import mekanism.common.Mekanism;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import mekanism.common.Mekanism;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketKey extends MekanismPacket
 {
@@ -21,7 +16,15 @@ public class PacketKey extends MekanismPacket
 		add = a;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(key);
+		dataStream.writeBoolean(add);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		key = dataStream.readInt();
 		add = dataStream.readBoolean();
@@ -33,24 +36,6 @@ public class PacketKey extends MekanismPacket
 		else {
 			Mekanism.keyMap.remove(player, key);
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(key);
-		dataStream.writeBoolean(add);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

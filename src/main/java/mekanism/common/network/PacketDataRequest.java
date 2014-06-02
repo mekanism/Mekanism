@@ -27,8 +27,19 @@ public class PacketDataRequest extends MekanismPacket
 	{
 		coord4D = coord;
 	}
+	
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+		dataStream.writeInt(coord4D.dimensionId);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		int x = dataStream.readInt();
 		int y = dataStream.readInt();
@@ -59,27 +70,6 @@ public class PacketDataRequest extends MekanismPacket
 
 			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(worldServer.getTileEntity(x, y, z)), ((ITileNetwork) worldServer.getTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-
-		dataStream.writeInt(coord4D.dimensionId);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

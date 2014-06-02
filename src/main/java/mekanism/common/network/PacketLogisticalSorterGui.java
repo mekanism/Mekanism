@@ -61,54 +61,6 @@ public class PacketLogisticalSorterGui extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
-	{
-		packetType = SorterGuiPacket.values()[dataStream.readInt()];
-
-		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-
-		guiType = dataStream.readInt();
-
-		if(packetType == SorterGuiPacket.CLIENT || packetType == SorterGuiPacket.CLIENT_INDEX)
-		{
-			windowId = dataStream.readInt();
-		}
-
-		if(packetType == SorterGuiPacket.SERVER_INDEX || packetType == SorterGuiPacket.CLIENT_INDEX)
-		{
-			index = dataStream.readInt();
-		}
-
-		if(!world.isRemote)
-		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
-
-			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
-			{
-				openServerGui(packetType, guiType, worldServer, (EntityPlayerMP)player, object3D, index);
-			}
-		}
-		else {
-			if(object3D.getTileEntity(world) instanceof TileEntityLogisticalSorter)
-			{
-				try {
-					if(packetType == SorterGuiPacket.CLIENT)
-					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
-					}
-					else if(packetType == SorterGuiPacket.CLIENT_INDEX)
-					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
-					}
-
-					player.openContainer.windowId = windowId;
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 	public static void openServerGui(SorterGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i)
 	{
 		Container container = null;
@@ -192,7 +144,8 @@ public class PacketLogisticalSorterGui extends MekanismPacket
 		return null;
 	}
 
-	public void write(DataOutputStream dataStream) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		dataStream.writeInt(packetType.ordinal());
 
@@ -216,15 +169,52 @@ public class PacketLogisticalSorterGui extends MekanismPacket
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
+		packetType = SorterGuiPacket.values()[dataStream.readInt()];
 
-	}
+		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
+		guiType = dataStream.readInt();
 
+		if(packetType == SorterGuiPacket.CLIENT || packetType == SorterGuiPacket.CLIENT_INDEX)
+		{
+			windowId = dataStream.readInt();
+		}
+
+		if(packetType == SorterGuiPacket.SERVER_INDEX || packetType == SorterGuiPacket.CLIENT_INDEX)
+		{
+			index = dataStream.readInt();
+		}
+
+		if(!player.worldObj.isRemote)
+		{
+			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
+
+			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityLogisticalSorter)
+			{
+				openServerGui(packetType, guiType, worldServer, (EntityPlayerMP)player, object3D, index);
+			}
+		}
+		else {
+			if(object3D.getTileEntity(player.worldObj) instanceof TileEntityLogisticalSorter)
+			{
+				try {
+					if(packetType == SorterGuiPacket.CLIENT)
+					{
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, player.worldObj, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
+					}
+					else if(packetType == SorterGuiPacket.CLIENT_INDEX)
+					{
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, player.worldObj, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
+					}
+
+					player.openContainer.windowId = windowId;
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override

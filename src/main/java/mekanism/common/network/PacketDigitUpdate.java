@@ -22,7 +22,15 @@ public class PacketDigitUpdate extends MekanismPacket
 		digit = dig;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(index);
+		dataStream.writeInt(digit);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		int index = dataStream.readInt();
 		int digit = dataStream.readInt();
@@ -34,24 +42,6 @@ public class PacketDigitUpdate extends MekanismPacket
 			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
 			item.setDigit(currentStack, index, digit);
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(index);
-		dataStream.writeInt(digit);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

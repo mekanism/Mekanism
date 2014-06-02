@@ -106,24 +106,30 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 		{
 			throw new NullPointerException("No packet registered for discriminator: " + discriminator);
 		}
-
-		MekanismPacket pkt = clazz.newInstance();
-		pkt.read(ctx, payload.slice());
-
-		EntityPlayer player;
+		
+		EntityPlayer player = null;
 		
 		switch(FMLCommonHandler.instance().getEffectiveSide())
 		{
 			case CLIENT:
 				player = getClientPlayer();
-				pkt.handleClientSide(player);
-				
 				break;
 			case SERVER:
 				INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
 				player = ((NetHandlerPlayServer)netHandler).playerEntity;
+				break;
+		}
+
+		MekanismPacket pkt = clazz.newInstance();
+		pkt.read(ctx, player, payload.slice());
+		
+		switch(FMLCommonHandler.instance().getEffectiveSide())
+		{
+			case CLIENT:
+				pkt.handleClientSide(player);
+				break;
+			case SERVER:
 				pkt.handleServerSide(player);
-				
 				break;
 		}
 

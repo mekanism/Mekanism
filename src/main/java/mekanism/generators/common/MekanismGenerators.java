@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
-import java.io.DataOutputStream;
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 
 import mekanism.api.gas.FuelHandler;
@@ -22,10 +23,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-
 import buildcraft.api.fuels.IronEngineFuel;
-import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -161,7 +159,7 @@ public class MekanismGenerators implements IModule
 	}
 	
 	@Override
-	public void writeConfig(DataOutputStream dataStream) throws IOException
+	public void writeConfig(ByteBuf dataStream) throws IOException
 	{
 		dataStream.writeDouble(advancedSolarGeneration);
 		dataStream.writeDouble(bioGeneration);
@@ -171,7 +169,7 @@ public class MekanismGenerators implements IModule
 	}
 
 	@Override
-	public void readConfig(ByteArrayDataInput dataStream) throws IOException
+	public void readConfig(ByteBuf dataStream) throws IOException
 	{
 		advancedSolarGeneration = dataStream.readDouble();
 		bioGeneration = dataStream.readDouble();

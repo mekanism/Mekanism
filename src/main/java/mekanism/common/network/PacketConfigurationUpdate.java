@@ -57,13 +57,41 @@ public class PacketConfigurationUpdate extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(packetType.ordinal());
+
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
+
+		dataStream.writeInt(coord4D.dimensionId);
+
+		if(packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT)
+		{
+			dataStream.writeInt(clickType);
+		}
+
+		if(packetType == ConfigurationPacket.SIDE_DATA)
+		{
+			dataStream.writeInt(configIndex);
+		}
+
+		if(packetType == ConfigurationPacket.INPUT_COLOR)
+		{
+			dataStream.writeInt(inputSide);
+		}
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		packetType = ConfigurationPacket.values()[dataStream.readInt()];
 
 		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-		TileEntity tile = coord4D.getTileEntity(world);
+		TileEntity tile = coord4D.getTileEntity(player.worldObj);
 
 		if(tile instanceof IInvConfiguration)
 		{
@@ -140,43 +168,6 @@ public class PacketConfigurationUpdate extends MekanismPacket
 				Mekanism.packetPipeline.sendTo(new PacketTileEntity(coord4D, ((ITileNetwork) tile).getNetworkedData(new ArrayList())), (EntityPlayerMP)p);
 			}
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(packetType.ordinal());
-
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-
-		dataStream.writeInt(coord4D.dimensionId);
-
-		if(packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT)
-		{
-			dataStream.writeInt(clickType);
-		}
-
-		if(packetType == ConfigurationPacket.SIDE_DATA)
-		{
-			dataStream.writeInt(configIndex);
-		}
-
-		if(packetType == ConfigurationPacket.INPUT_COLOR)
-		{
-			dataStream.writeInt(inputSide);
-		}
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{	
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

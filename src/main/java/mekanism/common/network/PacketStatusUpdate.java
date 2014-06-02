@@ -1,15 +1,10 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import mekanism.common.item.ItemPortableTeleporter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketStatusUpdate extends MekanismPacket
 {
@@ -20,7 +15,14 @@ public class PacketStatusUpdate extends MekanismPacket
 		status = state;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(status);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		ItemStack currentStack = player.getCurrentEquippedItem();
 
@@ -29,23 +31,6 @@ public class PacketStatusUpdate extends MekanismPacket
 			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
 			item.setStatus(currentStack, dataStream.readInt());
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(status);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

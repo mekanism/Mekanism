@@ -1,15 +1,10 @@
 package mekanism.common.network;
 
-import java.io.DataOutputStream;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import mekanism.common.item.ItemElectricBow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import com.google.common.io.ByteArrayDataInput;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 public class PacketElectricBowState extends MekanismPacket
 {
@@ -20,7 +15,14 @@ public class PacketElectricBowState extends MekanismPacket
 		fireMode = state;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeBoolean(fireMode);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		boolean state = dataStream.readBoolean();
 
@@ -30,23 +32,6 @@ public class PacketElectricBowState extends MekanismPacket
 		{
 			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, state);
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeBoolean(fireMode);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

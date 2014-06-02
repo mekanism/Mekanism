@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.common.PacketHandler;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityGasTank;

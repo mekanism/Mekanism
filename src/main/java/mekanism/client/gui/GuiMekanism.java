@@ -103,7 +103,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY)
 	{
-		return isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);
+		return func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);//isPointInRegion
 	}
 
 	@Override

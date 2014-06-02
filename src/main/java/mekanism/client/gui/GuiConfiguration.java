@@ -261,13 +261,13 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
                 playClickSound();
-				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile)));
+				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
 			{
                 playClickSound();
-				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile)));
+				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0));
 			}
 		}
 
@@ -279,7 +279,7 @@ public class GuiConfiguration extends GuiMekanism
 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
             playClickSound();
-			Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button));
+			Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0));
 		}
 
 		for(int i = 0; i < slotPosMap.size(); i++)

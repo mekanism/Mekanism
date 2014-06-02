@@ -64,54 +64,6 @@ public class PacketDigitalMinerGui extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
-	{
-		packetType = MinerGuiPacket.values()[dataStream.readInt()];
-
-		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-
-		guiType = dataStream.readInt();
-
-		if(packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX)
-		{
-			windowId = dataStream.readInt();
-		}
-
-		if(packetType == MinerGuiPacket.SERVER_INDEX || packetType == MinerGuiPacket.CLIENT_INDEX)
-		{
-			index = dataStream.readInt();
-		}
-
-		if(!world.isRemote)
-		{
-			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
-
-			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
-			{
-				openServerGui(packetType, guiType, worldServer, (EntityPlayerMP)player, object3D, index);
-			}
-		}
-		else {
-			if(object3D.getTileEntity(world) instanceof TileEntityDigitalMiner)
-			{
-				try {
-					if(packetType == MinerGuiPacket.CLIENT)
-					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
-					}
-					else if(packetType == MinerGuiPacket.CLIENT_INDEX)
-					{
-						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, world, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
-					}
-
-					player.openContainer.windowId = windowId;
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
 	public static void openServerGui(MinerGuiPacket t, int guiType, World world, EntityPlayerMP playerMP, Coord4D obj, int i)
 	{
 		Container container = null;
@@ -213,7 +165,8 @@ public class PacketDigitalMinerGui extends MekanismPacket
 		return null;
 	}
 
-	public void write(DataOutputStream dataStream) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		dataStream.writeInt(packetType.ordinal());
 
@@ -237,15 +190,52 @@ public class PacketDigitalMinerGui extends MekanismPacket
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
+		packetType = MinerGuiPacket.values()[dataStream.readInt()];
 
-	}
+		object3D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
+		guiType = dataStream.readInt();
 
+		if(packetType == MinerGuiPacket.CLIENT || packetType == MinerGuiPacket.CLIENT_INDEX)
+		{
+			windowId = dataStream.readInt();
+		}
+
+		if(packetType == MinerGuiPacket.SERVER_INDEX || packetType == MinerGuiPacket.CLIENT_INDEX)
+		{
+			index = dataStream.readInt();
+		}
+
+		if(!player.worldObj.isRemote)
+		{
+			World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(object3D.dimensionId);
+
+			if(worldServer != null && object3D.getTileEntity(worldServer) instanceof TileEntityDigitalMiner)
+			{
+				openServerGui(packetType, guiType, worldServer, (EntityPlayerMP)player, object3D, index);
+			}
+		}
+		else {
+			if(object3D.getTileEntity(player.worldObj) instanceof TileEntityDigitalMiner)
+			{
+				try {
+					if(packetType == MinerGuiPacket.CLIENT)
+					{
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, player.worldObj, object3D.xCoord, object3D.yCoord, object3D.zCoord, -1));
+					}
+					else if(packetType == MinerGuiPacket.CLIENT_INDEX)
+					{
+						FMLCommonHandler.instance().showGuiScreen(getGui(packetType, guiType, player, player.worldObj, object3D.xCoord, object3D.yCoord, object3D.zCoord, index));
+					}
+
+					player.openContainer.windowId = windowId;
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override

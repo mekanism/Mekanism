@@ -36,7 +36,7 @@ public class PacketTileEntity extends MekanismPacket
 	}
 
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf dataStream) throws Exception
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream) throws Exception
 	{
 		int x = dataStream.readInt();
 		int y = dataStream.readInt();

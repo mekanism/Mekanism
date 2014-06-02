@@ -24,20 +24,8 @@ public class PacketRedstoneControl extends MekanismPacket
 		value = control;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
-	{
-		Coord4D obj = Coord4D.read(dataStream);
-		RedstoneControl control = RedstoneControl.values()[dataStream.readInt()];
-
-		TileEntity tileEntity = obj.getTileEntity(world);
-
-		if(tileEntity instanceof IRedstoneControl)
-		{
-			((IRedstoneControl)tileEntity).setControlType(control);
-		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		dataStream.writeInt(coord4D.xCoord);
 		dataStream.writeInt(coord4D.yCoord);
@@ -48,15 +36,17 @@ public class PacketRedstoneControl extends MekanismPacket
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
+		Coord4D obj = Coord4D.read(dataStream);
+		RedstoneControl control = RedstoneControl.values()[dataStream.readInt()];
 
-	}
+		TileEntity tileEntity = obj.getTileEntity(player.worldObj);
 
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
+		if(tileEntity instanceof IRedstoneControl)
+		{
+			((IRedstoneControl)tileEntity).setControlType(control);
+		}
 	}
 
 	@Override

@@ -12,9 +12,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.io.ByteArrayDataInput;
-
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 /**
@@ -175,22 +172,17 @@ public class Coord4D
 	 * @param data - tag compound to read from
 	 * @return the Coord4D from the tag compound
 	 */
-	public static Coord4D read(ByteBuf data)
-	{
-		return new Coord4D(data.readInt(), data.readInt(), data.readInt(), data.readInt());
-	}
-	
     public static Coord4D read(NBTTagCompound tag)
     {
         return new Coord4D(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"), tag.getInteger("id"));
     }
 
 	/**
-	 * Returns a new Coord4D from a ByteArrayDataInput.
+	 * Returns a new Coord4D from a ByteBuf.
 	 * @param dataStream - data input to read from
 	 * @return the Coord4D from the data input
 	 */
-	public static Coord4D read(ByteArrayDataInput dataStream)
+	public static Coord4D read(ByteBuf dataStream)
 	{
 		return new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	}

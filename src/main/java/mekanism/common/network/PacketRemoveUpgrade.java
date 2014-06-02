@@ -27,7 +27,18 @@ public class PacketRemoveUpgrade extends MekanismPacket
 		upgradeType = type;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	{
+		dataStream.writeInt(coord4D.xCoord);
+		dataStream.writeInt(coord4D.yCoord);
+		dataStream.writeInt(coord4D.zCoord);
+
+		dataStream.writeByte(upgradeType);
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		int x = dataStream.readInt();
 		int y = dataStream.readInt();
@@ -35,7 +46,7 @@ public class PacketRemoveUpgrade extends MekanismPacket
 
 		byte type = dataStream.readByte();
 
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof IUpgradeManagement && tileEntity instanceof TileEntityBasicBlock)
 		{
@@ -62,27 +73,6 @@ public class PacketRemoveUpgrade extends MekanismPacket
 				}
 			}
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-
-		dataStream.writeByte(upgradeType);
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override

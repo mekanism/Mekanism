@@ -15,49 +15,37 @@ public class PacketWalkieTalkieState extends MekanismPacket
 {
 	public int channel;
 
-	public PacketWalkieTalkieState(Object... data)
+	public PacketWalkieTalkieState(int chan)
 	{
-		channel = (Integer)data[0];
+		channel = chan;
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
-	{
-		int chan = dataStream.readInt();
-
-		ItemStack itemstack = player.getCurrentEquippedItem();
-
-		if(itemstack != null && itemstack.getItem() instanceof ItemWalkieTalkie)
-		{
-			((ItemWalkieTalkie)itemstack.getItem()).setChannel(itemstack, chan);
-		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
 		dataStream.writeInt(channel);
 	}
 
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
+		channel = dataStream.readInt();
 	}
 
 	@Override
 	public void handleClientSide(EntityPlayer player)
 	{
-
+		
 	}
 
 	@Override
 	public void handleServerSide(EntityPlayer player)
 	{
+		ItemStack itemstack = player.getCurrentEquippedItem();
 
+		if(itemstack != null && itemstack.getItem() instanceof ItemWalkieTalkie)
+		{
+			((ItemWalkieTalkie)itemstack.getItem()).setChannel(itemstack, channel);
+		}
 	}
 }

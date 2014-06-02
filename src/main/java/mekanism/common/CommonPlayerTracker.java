@@ -26,8 +26,8 @@ public class CommonPlayerTracker
 		{
 			Mekanism.packetPipeline.sendTo(new PacketConfigSync(), (EntityPlayerMP)player);
 			Mekanism.packetPipeline.sendTo(new PacketBoxBlacklist(), (EntityPlayerMP)player);
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), (EntityPlayerMP)player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL, null, false), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)player);
 
 			Mekanism.logger.info((String) "Sent config to '" + player.getDisplayName() + ".'");
 		}
@@ -52,8 +52,8 @@ public class CommonPlayerTracker
 
 		if(!event.player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), (EntityPlayerMP)event.player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), (EntityPlayerMP)event.player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
 		}
 	}
 
@@ -63,8 +63,8 @@ public class CommonPlayerTracker
 
 		if(!player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL), (EntityPlayerMP)player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL, null, false), (EntityPlayerMP)player);
+			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)player);
 		}
 	}
 }

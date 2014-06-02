@@ -72,7 +72,7 @@ public class PacketNewFilter extends MekanismPacket
 	}
 
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
 	{
 		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		type = dataStream.readByte();

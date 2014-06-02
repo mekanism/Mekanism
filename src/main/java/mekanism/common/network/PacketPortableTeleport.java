@@ -28,7 +28,7 @@ public class PacketPortableTeleport extends MekanismPacket
 	}
 
 	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf buffer)
 	{
 
 	}

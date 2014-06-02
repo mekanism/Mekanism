@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import java.io.DataOutputStream;
 
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
@@ -17,6 +18,8 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -55,37 +58,66 @@ public class PacketTransmitterUpdate extends MekanismPacket
 		}
 	}
 
-	public void read(ByteArrayDataInput dataStream, EntityPlayer player, World world) throws Exception
+	@Override
+	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{
-		int transmitterType = dataStream.readInt();
+		dataStream.writeInt(packetType.ordinal());
+
+		dataStream.writeInt(tileEntity.xCoord);
+		dataStream.writeInt(tileEntity.yCoord);
+		dataStream.writeInt(tileEntity.zCoord);
+		dataStream.writeInt(tileEntity.getWorldObj().provider.dimensionId);
+
+		switch(packetType)
+		{
+			case ENERGY:
+				dataStream.writeDouble(power);
+				break;
+			case GAS:
+				dataStream.writeInt(gasStack != null ? gasStack.getGas().getID() : -1);
+				dataStream.writeInt(gasStack != null ? gasStack.amount : 0);
+				dataStream.writeBoolean(didGasTransfer);
+				break;
+			case FLUID:
+				dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
+				dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
+				dataStream.writeBoolean(didFluidTransfer);
+				break;
+		}
+	}
+
+	@Override
+	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
+	{
+		packetType = PacketType.values()[dataStream.readInt()];
 
 		int x = dataStream.readInt();
 		int y = dataStream.readInt();
 		int z = dataStream.readInt();
-
-		if(transmitterType == 0)
+		
+		if(packetType == PacketType.UPDATE)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
 
 			if(tileEntity instanceof IGridTransmitter)
 			{
 				((IGridTransmitter)tileEntity).refreshTransmitterNetwork();
 			}
 		}
-		else if(transmitterType == 1)
+		else if(packetType == PacketType.ENERGY)
 		{
 			double powerLevel = dataStream.readDouble();
 
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
 
 			if(tileEntity != null)
 			{
 				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = powerLevel;
 			}
 		}
-		else if(transmitterType == 2)
+		else if(packetType == PacketType.GAS)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
 
 			Gas gasType = GasRegistry.getGas(dataStream.readInt());
 			int amount = dataStream.readInt();
@@ -110,9 +142,9 @@ public class PacketTransmitterUpdate extends MekanismPacket
 				net.didTransfer = didGasTransfer;
 			}
 		}
-		else if(transmitterType == 3)
+		else if(packetType == PacketType.FLUID)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = player.worldObj.getTileEntity(x, y, z);
 
 			int type = dataStream.readInt();
 			Fluid fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
@@ -139,44 +171,6 @@ public class PacketTransmitterUpdate extends MekanismPacket
 				net.fluidScale = net.getScale();
 			}
 		}
-	}
-
-	public void write(DataOutputStream dataStream) throws Exception
-	{
-		dataStream.writeInt(packetType.ordinal());
-
-		dataStream.writeInt(tileEntity.xCoord);
-		dataStream.writeInt(tileEntity.yCoord);
-		dataStream.writeInt(tileEntity.zCoord);
-
-		switch(packetType)
-		{
-			case ENERGY:
-				dataStream.writeDouble(power);
-				break;
-			case GAS:
-				dataStream.writeInt(gasStack != null ? gasStack.getGas().getID() : -1);
-				dataStream.writeInt(gasStack != null ? gasStack.amount : 0);
-				dataStream.writeBoolean(didGasTransfer);
-				break;
-			case FLUID:
-				dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
-				dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
-				dataStream.writeBoolean(didFluidTransfer);
-				break;
-		}
-	}
-
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, ByteBuf buffer)
-	{
-
 	}
 
 	@Override
