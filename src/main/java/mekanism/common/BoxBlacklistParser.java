@@ -68,7 +68,7 @@ public final class BoxBlacklistParser
 
 			if(split.length != 2 || !isInteger(split[0]) || !isInteger(split[1]))
 			{
-				System.err.println("[Mekanism] BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
+				Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
 			}
 
 			MekanismAPI.addBoxBlacklist(Block.getBlockFromName(split[0]), Integer.parseInt(split[1]));
@@ -77,7 +77,7 @@ public final class BoxBlacklistParser
 
 		reader.close();
 
-		System.out.println("[Mekanism] Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
+		Mekanism.logger.info("Finished loading Cardboard Box blacklist (loaded " + entries + " entries)");
 	}
 
 	private static void writeExamples() throws IOException

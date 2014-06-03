@@ -38,7 +38,7 @@ public final class Tier
 				}
 			}
 
-			System.out.println("[Mekanism] Invalid tier identifier when retrieving with name.");
+			Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
 			return BASIC;
 		}
 
@@ -76,7 +76,7 @@ public final class Tier
 				}
 			}
 
-			System.out.println("[Mekanism] Invalid tier identifier when retrieving with name.");
+			Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
 			return BASIC;
 		}
 

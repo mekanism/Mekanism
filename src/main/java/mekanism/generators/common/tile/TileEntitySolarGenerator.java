@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -161,7 +162,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			case 4:
 				return new Object[] {seesSun};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
 		}
 	}

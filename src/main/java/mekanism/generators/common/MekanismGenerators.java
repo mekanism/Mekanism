@@ -96,7 +96,7 @@ public class MekanismGenerators implements IModule
 		addRecipes();
 		
 		//Finalization
-		Mekanism.logger.info("[MekanismGenerators] Loaded module.");
+		Mekanism.logger.info("Loaded MekanismGenerators module.");
 	}
 	
 	public void addRecipes()

@@ -4,6 +4,7 @@ import java.net.URL;
 
 import mekanism.api.Pos3D;
 import mekanism.client.MekanismClient;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 
@@ -47,7 +48,7 @@ public abstract class Sound
 
 			if(url == null)
 			{
-				System.out.println("[Mekanism] Invalid sound file: " + sound);
+				Mekanism.logger.error("Invalid sound file: " + sound);
 			}
 
 			if(SoundHandler.getSoundSystem() != null)

@@ -89,13 +89,13 @@ public class ThreadClientUpdate extends Thread
 
 			hasUpdated = true;
 			GuiCredits.updateInfo("Update installed, reboot Minecraft for changes.");
-			System.out.println("[Mekanism] Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
+			Mekanism.logger.info("Successfully updated to latest version (" + Mekanism.latestVersionNumber + ").");
 
 			finalize();
 		} catch(Throwable t) {
 			GuiCredits.updateInfo(EnumColor.DARK_RED + "Error updating.");
 			hasUpdated = true;
-			System.err.println("[Mekanism] Error while finishing update thread: " + t.getMessage());
+			Mekanism.logger.error("Error while finishing update thread: " + t.getMessage());
 			t.printStackTrace();
 		}
 	}
@@ -196,7 +196,7 @@ public class ThreadClientUpdate extends Thread
 			}
 		}
 
-		System.out.println("[Mekanism] Preparing to update...");
+		Mekanism.logger.info("Preparing to update...");
 	}
 
 	private static URL createURL()

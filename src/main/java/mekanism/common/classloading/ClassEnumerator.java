@@ -8,6 +8,8 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import mekanism.common.Mekanism;
+
 public class ClassEnumerator
 {
 	private static Class<?> loadClass(String className)
@@ -106,7 +108,7 @@ public class ClassEnumerator
 				processDir(new File(resource.getPath()), pkgname, classes);
 			}
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while loading classes in package " + pkg);
+			Mekanism.logger.error("Error while loading classes in package " + pkg);
 			e.printStackTrace();
 		}
 

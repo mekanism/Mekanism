@@ -156,7 +156,7 @@ public class MekanismTools implements IModule
 		addRecipes();
 		
 		//Finalization
-		Mekanism.logger.info("[MekanismTools] Loaded module.");
+		Mekanism.logger.info("Loaded MekanismTools module.");
 	}
 	
 	public void addRecipes()

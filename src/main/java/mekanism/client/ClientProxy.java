@@ -351,7 +351,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
 
-		System.out.println("[Mekanism] Render registrations complete.");
+		Mekanism.logger.info("Render registrations complete.");
 	}
 
 	@Override

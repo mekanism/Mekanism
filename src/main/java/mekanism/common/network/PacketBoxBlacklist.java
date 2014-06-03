@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.ItemInfo;
 import mekanism.api.MekanismAPI;
+import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -33,7 +34,7 @@ public class PacketBoxBlacklist extends MekanismPacket
 			MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
 		}
 
-		System.out.println("[Mekanism] Received Cardboard Box blacklist entries from server (" + amount + " total)");
+		Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " total)");
 	}
 
 	@Override

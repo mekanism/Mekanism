@@ -78,16 +78,16 @@ public class VoiceConnection extends Thread
 
 				if(username == null)
 				{
-					System.out.println("[Mekanism] VoiceServer: Unable to trace connection's IP address.");
+					Mekanism.logger.error("VoiceServer: Unable to trace connection's IP address.");
 					kill();
 					return;
 				}
 				else {
-					System.out.println("[Mekanism] VoiceServer: Traced IP in " + retryCount + " attempts.");
+					Mekanism.logger.info("VoiceServer: Traced IP in " + retryCount + " attempts.");
 				}
 			}
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while starting server-based connection.");
+			Mekanism.logger.error("VoiceServer: Error while starting server-based connection.");
 			e.printStackTrace();
 			open = false;
 		}
@@ -131,7 +131,7 @@ public class VoiceConnection extends Thread
 
 			Mekanism.voiceManager.connections.remove(this);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while stopping server-based connection.");
+			Mekanism.logger.error("VoiceServer: Error while stopping server-based connection.");
 			e.printStackTrace();
 		}
 	}
@@ -149,7 +149,7 @@ public class VoiceConnection extends Thread
 
 			output.flush();
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while sending data to player.");
+			Mekanism.logger.error("VoiceServer: Error while sending data to player.");
 			e.printStackTrace();
 		}
 	}

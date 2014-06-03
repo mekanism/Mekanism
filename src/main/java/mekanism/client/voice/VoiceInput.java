@@ -6,6 +6,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 
 import mekanism.client.MekanismKeyHandler;
+import mekanism.common.Mekanism;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -81,7 +82,7 @@ public class VoiceInput extends Thread
 
 			audioInput.close();
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while running client input thread.");
+			Mekanism.logger.error("VoiceServer: Error while running client input thread.");
 			e.printStackTrace();
 		}
 	}

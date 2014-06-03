@@ -26,7 +26,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addEnrichmentChamberRecipe", ItemStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -42,7 +42,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addOsmiumCompressorRecipe", ItemStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -58,7 +58,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addCombinerRecipe", ItemStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -74,7 +74,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addCrusherRecipe", ItemStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -90,7 +90,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addPurificationChamberRecipe", ItemStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -106,7 +106,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addChemicalOxidizerRecipe", ItemStack.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -122,7 +122,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addChemicalInfuserRecipe", ChemicalPair.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -138,7 +138,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addPrecisionSawmillRecipe", ItemStack.class, ChanceOutput.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -154,7 +154,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addChemicalInjectionChamberRecipe", AdvancedInput.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -170,7 +170,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, ChemicalPair.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -186,7 +186,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addChemicalDissolutionChamberRecipe", ItemStack.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -202,7 +202,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addChemicalWasherRecipe", GasStack.class, GasStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -218,7 +218,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addChemicalCrystallizerRecipe", GasStack.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 
@@ -234,7 +234,7 @@ public final class RecipeHelper
 			Method m = recipeClass.getMethod("addMetallurgicInfuserRecipe", InfusionInput.class, ItemStack.class);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while adding recipe: " + e.getMessage());
+			System.err.println("Error while adding recipe: " + e.getMessage());
 		}
 	}
 }

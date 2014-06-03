@@ -562,7 +562,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			try {
 				return tileEntityClass.newInstance();
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Unable to indirectly create tile entity.");
+				Mekanism.logger.error("Unable to indirectly create tile entity.");
 				e.printStackTrace();
 				return null;
 			}

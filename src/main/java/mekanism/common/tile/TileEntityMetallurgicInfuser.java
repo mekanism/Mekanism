@@ -467,7 +467,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			case 7:
 				return new Object[] {MAX_INFUSE-infuseStored};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
 		}
 	}

@@ -70,6 +70,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 			case 5:
 				return new GuiWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
 		}
+		
 		return null;
 	}
 }

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -277,7 +278,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			case 5:
 				return new Object[] {lavaTank.getCapacity()-(lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0)};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
 		}
 	}

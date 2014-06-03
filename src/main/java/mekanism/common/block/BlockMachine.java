@@ -1195,7 +1195,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			try {
 				return tileEntityClass.newInstance();
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Unable to indirectly create tile entity.");
+				Mekanism.logger.error("Unable to indirectly create tile entity.");
 				e.printStackTrace();
 				return null;
 			}

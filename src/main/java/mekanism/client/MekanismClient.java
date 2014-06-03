@@ -64,6 +64,6 @@ public class MekanismClient extends Mekanism
 
 		Mekanism.proxy.loadConfiguration();
 
-		System.out.println("[Mekanism] Reloaded config.");
+		Mekanism.logger.info("Reloaded config.");
 	}
 }

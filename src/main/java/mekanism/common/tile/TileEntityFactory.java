@@ -733,7 +733,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 			case 5:
 				return new Object[] {getMaxEnergy()-getEnergy()};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
 		}
 	}

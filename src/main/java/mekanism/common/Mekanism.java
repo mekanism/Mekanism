@@ -161,7 +161,7 @@ public class Mekanism
 	public static final PacketPipeline packetPipeline = new PacketPipeline();
 
 	/** Mekanism logger instance */
-	public static Logger logger = LogManager.getLogger("");
+	public static Logger logger = LogManager.getLogger("Mekanism");
 	
 	/** Mekanism proxy instance */
 	@SidedProxy(clientSide = "mekanism.client.ClientProxy", serverSide = "mekanism.common.CommonProxy")
@@ -1278,7 +1278,7 @@ public class Mekanism
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
 		
 		//Initialization notification
-		logger.info("[Mekanism] Version " + versionNumber + " initializing...");
+		logger.info("Version " + versionNumber + " initializing...");
 		
 		//Get data from server.
 		new ThreadGetData();

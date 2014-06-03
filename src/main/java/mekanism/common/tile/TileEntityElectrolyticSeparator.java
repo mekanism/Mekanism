@@ -536,7 +536,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			case 9:
 				return new Object[] {rightTank.getNeeded()};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
 		}
 	}

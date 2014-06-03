@@ -173,7 +173,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 			case 3:
 				return new Object[] {(getMaxEnergy()-getEnergy())};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
 		}
 	}

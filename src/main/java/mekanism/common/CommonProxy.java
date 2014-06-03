@@ -417,6 +417,6 @@ public class CommonProxy
 			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 
-		System.out.println("[Mekanism] Received config from server.");
+		Mekanism.logger.info("Received config from server.");
 	}
 }

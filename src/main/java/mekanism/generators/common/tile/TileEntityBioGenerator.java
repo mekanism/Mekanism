@@ -249,7 +249,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			case 5:
 				return new Object[] {bioFuelSlot.MAX_FLUID-bioFuelSlot.fluidStored};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
 		}
 	}

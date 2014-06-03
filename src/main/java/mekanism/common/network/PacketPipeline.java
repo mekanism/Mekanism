@@ -139,7 +139,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 	// Method to call from FMLInitializationEvent
 	public void initialize()
 	{
-		channels = NetworkRegistry.INSTANCE.newChannel("Mekanism", this);
+		channels = NetworkRegistry.INSTANCE.newChannel("MEK", this);
 		registerPackets();
 	}
 

@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IBoundingBlock;
+import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -74,7 +75,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			case 4:
 				return new Object[] {getMultiplier()};
 			default:
-				System.err.println("[Mekanism] Attempted to call unknown method with computer ID " + computer.getID());
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return null;
 		}
 	}

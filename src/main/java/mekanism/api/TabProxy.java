@@ -35,7 +35,7 @@ public final class TabProxy
 
 			return preferred;
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error retrieving Mekanism creative tab.");
+			System.err.println("Error retrieving Mekanism creative tab.");
 			return preferred;
 		}
 	}

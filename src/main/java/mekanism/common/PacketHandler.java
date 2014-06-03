@@ -29,7 +29,7 @@ public class PacketHandler //implements IPacketHandler
 
 				if(packets.get(packetIndex) == null)
 				{
-					System.err.println("[Mekanism] Received unknown packet identifier '" + packetIndex + ".' Ignorning!");
+					Mekanism.logger.error("Received unknown packet identifier '" + packetIndex + ".' Ignorning!");
 					return;
 				}
 
@@ -37,18 +37,18 @@ public class PacketHandler //implements IPacketHandler
 
 				if(packetType == null)
 				{
-					System.err.println("[Mekanism] Unable to create instance of packet type '" + packetIndex + ".' Ignoring!");
+					Mekanism.logger.error("Unable to create instance of packet type '" + packetIndex + ".' Ignoring!");
 					return;
 				}
 
 				try {
 					packetType.read(dataStream, entityplayer, entityplayer.worldObj);
 				} catch(Exception e) {
-					System.err.println("[Mekanism] Error while reading '" + packetType.getName() + "' packet.");
+					Mekanism.logger.error("Error while reading '" + packetType.getName() + "' packet.");
 					e.printStackTrace();
 				}
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Error while handling packet.");
+				Mekanism.logger.error("Error while handling packet.");
 				e.printStackTrace();
 			}
 		}
@@ -121,7 +121,7 @@ public class PacketHandler //implements IPacketHandler
 				}
 			}
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while encoding packet data.");
+			Mekanism.logger.error("Error while encoding packet data.");
 			e.printStackTrace();
 		}
 	}
@@ -147,13 +147,13 @@ public class PacketHandler //implements IPacketHandler
 	{
 		if(packetType == null)
 		{
-			System.err.println("[Mekanism] Attempted to send null packet, ignoring!");
+			Mekanism.logger.error("Attempted to send null packet, ignoring!");
 			return;
 		}
 
 		if(!packets.contains(packetType.getClass()))
 		{
-			System.err.println("[Mekanism] Attempted to send unregistered packet '" + packetType.getName() + ",' ignoring!");
+			Mekanism.logger.error("Attempted to send unregistered packet '" + packetType.getName() + ",' ignoring!");
 			return;
 		}
 
@@ -164,7 +164,7 @@ public class PacketHandler //implements IPacketHandler
 			data.writeInt(packets.indexOf(packetType.getClass()));
 			packetType.write(data);
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error while encoding packet data.");
+			Mekanism.logger.error("Error while encoding packet data.");
 			e.printStackTrace();
 		}
 
@@ -209,19 +209,19 @@ public class PacketHandler //implements IPacketHandler
 			switch(trans)
 			{
 				case SERVER:
-					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to server.");
+					Mekanism.logger.info("Sent '" + packetType.getName() + "' packet to server.");
 					break;
 				case ALL_CLIENTS:
-					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to all clients.");
+					Mekanism.logger.info("Sent '" + packetType.getName() + "' packet to all clients.");
 					break;
 				case CLIENTS_RANGE:
-					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in a " + (Double)transParams[1] + " block range.");
+					Mekanism.logger.info("Sent '" + packetType.getName() + "' packet to clients in a " + (Double)transParams[1] + " block range.");
 					break;
 				case CLIENTS_DIM:
-					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in dimension ID " + (Integer)transParams[0] + ".");
+					Mekanism.logger.info("Sent '" + packetType.getName() + "' packet to clients in dimension ID " + (Integer)transParams[0] + ".");
 					break;
 				case SINGLE_CLIENT:
-					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to " + ((EntityPlayer)transParams[0]).username);
+					Mekanism.logger.info("Sent '" + packetType.getName() + "' packet to " + ((EntityPlayer)transParams[0]).username);
 					break;
 			}
 		}

@@ -113,7 +113,7 @@ public final class MekanismHooks
 
 			Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
 
-			System.out.println("[Mekanism] Hooked into IC2 successfully.");
+			Mekanism.logger.info("Hooked into IC2 successfully.");
 		}
 
 		if(BasicComponentsLoaded)
@@ -130,12 +130,12 @@ public final class MekanismHooks
 				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
 			}
 
-			System.out.println("[Mekanism] Hooked into BasicComponents successfully.");
+			Mekanism.logger.info("Hooked into BasicComponents successfully.");
 		}
 
 		if(BuildCraftLoaded)
 		{
-			System.out.println("[Mekanism] Hooked into BuildCraft successfully.");
+			Mekanism.logger.info("Hooked into BuildCraft successfully.");
 		}
 		
 		if(CCLoaded)
@@ -177,7 +177,7 @@ public final class MekanismHooks
 				throw new Exception("not instanceof ItemStack");
 			}
 		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to retrieve BuildCraft item " + name + ".");
+			Mekanism.logger.error("Unable to retrieve BuildCraft item " + name + ".");
 			return null;
 		}
 	}
@@ -201,7 +201,7 @@ public final class MekanismHooks
 				throw new Exception("not instanceof ItemStack");
 			}
 		} catch(Exception e) {
-			System.out.println("[Mekanism] Unable to retrieve Basic Components item " + name + ".");
+			Mekanism.logger.error("Unable to retrieve Basic Components item " + name + ".");
 			return null;
 		}
 	}

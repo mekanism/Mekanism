@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
@@ -25,7 +26,7 @@ public final class HolidayManager
 			holidays.add(new NewYear());
 		}
 
-		System.out.println("[Mekanism] Initialized HolidayManager.");
+		Mekanism.logger.info("Initialized HolidayManager.");
 	}
 
 	public static void check()

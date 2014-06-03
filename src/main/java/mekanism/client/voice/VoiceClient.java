@@ -38,7 +38,7 @@ public class VoiceClient extends Thread
 	@Override
 	public void run()
 	{
-		System.out.println("[Mekanism] VoiceServer: Starting client connection...");
+		Mekanism.logger.info("VoiceServer: Starting client connection...");
 
 		try {
 			socket = new Socket(ip, Mekanism.VOICE_PORT);
@@ -50,18 +50,18 @@ public class VoiceClient extends Thread
 			(outputThread = new VoiceOutput(this)).start();
 			(inputThread = new VoiceInput(this)).start();
 
-			System.out.println("[Mekanism] VoiceServer: Successfully connected to server.");
+			Mekanism.logger.info("VoiceServer: Successfully connected to server.");
 		} catch(ConnectException e) {
-			System.err.println("[Mekanism] VoiceServer: Server's VoiceServer is disabled.");
+			Mekanism.logger.error("VoiceServer: Server's VoiceServer is disabled.");
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while starting client connection.");
+			Mekanism.logger.error("VoiceServer: Error while starting client connection.");
 			e.printStackTrace();
 		}
 	}
 
 	public void disconnect()
 	{
-		System.out.println("[Mekanism] VoiceServer: Stopping client connection...");
+		Mekanism.logger.info("VoiceServer: Stopping client connection...");
 
 		try {
 			try {
@@ -97,7 +97,7 @@ public class VoiceClient extends Thread
 
 			running = false;
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while stopping client connection.");
+			Mekanism.logger.error("VoiceServer: Error while stopping client connection.");
 			e.printStackTrace();
 		}
 	}

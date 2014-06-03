@@ -127,7 +127,7 @@ public final class MekanismUtils
 					}
 				}
 				else {
-					System.out.println("[Mekanism] Minecraft is in offline mode, could not check for updates.");
+					Mekanism.logger.info("Minecraft is in offline mode, could not check for updates.");
 				}
 			}
 		} catch(Exception e) {}
@@ -196,7 +196,7 @@ public final class MekanismUtils
 		} catch(Exception e) {
 			result.clear();
 			result.add("null");
-			System.err.println("[Mekanism] An error occured while connecting to URL '" + urlToRead + ".'");
+			Mekanism.logger.error("An error occured while connecting to URL '" + urlToRead + ".'");
 		}
 
 		return result;

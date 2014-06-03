@@ -58,7 +58,7 @@ public class SoundHandler
 	{
 		MinecraftForge.EVENT_BUS.register(this);
 
-		System.out.println("[Mekanism] Successfully set up SoundHandler.");
+		Mekanism.logger.info("Successfully set up SoundHandler.");
 	}
 
 	public void preloadSounds()
@@ -82,7 +82,7 @@ public class SoundHandler
 			preloadSound(s);
 		}
 
-		System.out.println("[Mekanism] Preloaded " + listings.size() + " object sounds.");
+		Mekanism.logger.info("Preloaded " + listings.size() + " object sounds.");
 
 		/*listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/etc");
 
@@ -96,7 +96,7 @@ public class SoundHandler
 			mc.sndManager.addSound("mekanism:etc/" + s);
 		}
 
-		System.out.println("[Mekanism] Initialized " + listings.size() + " sound effects.");*/
+		Mekanism.logger.info("Initialized " + listings.size() + " sound effects.");*/
 
 		if(MekanismClient.holidays)
 		{
@@ -315,7 +315,7 @@ public class SoundHandler
 
 		if(url == null)
 		{
-			System.out.println("[Mekanism] Invalid sound file: " + soundPath);
+			Mekanism.logger.info("Invalid sound file: " + soundPath);
 		}
 
 		String s = getSoundSystem().quickPlay(false, url, soundPath, false, object.xCoord, object.yCoord, object.zCoord, 0, 16F);

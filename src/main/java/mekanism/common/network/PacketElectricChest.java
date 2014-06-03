@@ -183,7 +183,7 @@ public class PacketElectricChest extends MekanismPacket
 					}
 				}
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Error while handling electric chest open packet.");
+				Mekanism.logger.error("Error while handling electric chest open packet.");
 				e.printStackTrace();
 			}
 		}
@@ -207,7 +207,7 @@ public class PacketElectricChest extends MekanismPacket
 
 				Mekanism.proxy.openElectricChest(player, type, id, block, x, y, z);
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Error while handling electric chest open packet.");
+				Mekanism.logger.error("Error while handling electric chest open packet.");
 				e.printStackTrace();
 			}
 		}
@@ -237,7 +237,7 @@ public class PacketElectricChest extends MekanismPacket
 					}
 				}
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Error while handling electric chest password packet.");
+				Mekanism.logger.error("Error while handling electric chest password packet.");
 				e.printStackTrace();
 			}
 		}
@@ -265,7 +265,7 @@ public class PacketElectricChest extends MekanismPacket
 					}
 				}
 			} catch(Exception e) {
-				System.err.println("[Mekanism] Error while handling electric chest password packet.");
+				Mekanism.logger.error("Error while handling electric chest password packet.");
 				e.printStackTrace();
 			}
 		}

@@ -64,7 +64,7 @@ public final class ItemRetriever
 				return null;
 			}
 		} catch(Exception e) {
-			System.err.println("[Mekanism] Error retrieving item with identifier '" + identifier + "': " + e.getMessage());
+			System.err.println("Error retrieving item with identifier '" + identifier + "': " + e.getMessage());
 			return null;
 		}
 	}

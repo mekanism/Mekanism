@@ -22,7 +22,7 @@ public class VoiceServerManager
 
 	public void start()
 	{
-		System.out.println("[Mekanism] VoiceServer: Starting up server...");
+		Mekanism.logger.info("VoiceServer: Starting up server...");
 
 		try {
 			running = true;
@@ -34,7 +34,7 @@ public class VoiceServerManager
 	public void stop()
 	{
 		try {
-			System.out.println("[Mekanism] VoiceServer: Shutting down server...");
+			Mekanism.logger.info("VoiceServer: Shutting down server...");
 
 			try {
 				listenThread.interrupt();
@@ -47,7 +47,7 @@ public class VoiceServerManager
 				serverSocket = null;
 			} catch(Exception e) {}
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while shutting down server.");
+			Mekanism.logger.error("VoiceServer: Error while shutting down server.");
 			e.printStackTrace();
 		}
 
@@ -98,11 +98,11 @@ public class VoiceServerManager
 					connection.start();
 					connections.add(connection);
 
-					System.out.println("[Mekanism] VoiceServer: Accepted new connection.");
+					Mekanism.logger.info("VoiceServer: Accepted new connection.");
 				} catch(SocketException e) {
 				} catch(NullPointerException e) {
 				} catch(Exception e) {
-					System.err.println("[Mekanism] VoiceServer: Error while accepting connection.");
+					Mekanism.logger.error("VoiceServer: Error while accepting connection.");
 					e.printStackTrace();
 				}
 			}

@@ -4,6 +4,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
+import mekanism.common.Mekanism;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,7 +45,7 @@ public class VoiceOutput extends Thread
 				} catch(Exception e) {}
 			}
 		} catch(Exception e) {
-			System.err.println("[Mekanism] VoiceServer: Error while running client output thread.");
+			Mekanism.logger.error("VoiceServer: Error while running client output thread.");
 			e.printStackTrace();
 		}
 	}
