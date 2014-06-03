@@ -125,6 +125,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -728,6 +730,7 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.stonebrick, 1, 0), new ItemStack(Blocks.stonebrick, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.stonebrick, 1, 1), new ItemStack(Blocks.stonebrick, 1, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.quartz_ore), new ItemStack(Items.quartz, 2));
+		
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockSlickHDPE, 1, i));
@@ -867,6 +870,10 @@ public class Mekanism
 
 		//Fuel Gases
 		FuelHandler.addGas(GasRegistry.getGas("hydrogen"), 1, FROM_H2);
+		
+		//RecipeSorter registrations
+		RecipeSorter.register("mekanism", MekanismRecipe.class, Category.SHAPED, "");
+		RecipeSorter.register("bin", BinRecipe.class, Category.SHAPELESS, "");
 	}
 	
 	/**
@@ -973,22 +980,22 @@ public class Mekanism
 	public void addBlocks()
 	{
 		//Declarations
-		BasicBlock = new BlockBasic();
-		BasicBlock2 = new BlockBasic();
-		MachineBlock = new BlockMachine();
-		MachineBlock2 = new BlockMachine();
-		OreBlock = new BlockOre();
-		EnergyCube = new BlockEnergyCube();
-		ObsidianTNT = new BlockObsidianTNT().setCreativeTab(tabMekanism);
-		BoundingBlock = (BlockBounding) new BlockBounding();
-		GasTank = new BlockGasTank();
-		CardboardBox = new BlockCardboardBox();
-		BlockHDPE = new BlockPlastic();
-		BlockSlickHDPE = new BlockPlastic();
-		BlockGlowHDPE = new BlockPlastic();
-		BlockReinforcedHDPE = new BlockPlastic();
-		BlockRoadHDPE = new BlockPlastic();
-		BlockHDPEFence = new BlockPlasticFence();
+		BasicBlock = new BlockBasic().setBlockName("BasicBlock");
+		BasicBlock2 = new BlockBasic().setBlockName("BasicBlock2");
+		MachineBlock = new BlockMachine().setBlockName("MachineBlock");
+		MachineBlock2 = new BlockMachine().setBlockName("MachineBlock2");
+		OreBlock = new BlockOre().setBlockName("OreBlock");
+		EnergyCube = new BlockEnergyCube().setBlockName("EnergyCube");
+		ObsidianTNT = new BlockObsidianTNT().setBlockName("ObsidianTNT").setCreativeTab(tabMekanism);
+		BoundingBlock = (BlockBounding)new BlockBounding().setBlockName("BoundingBlock");
+		GasTank = new BlockGasTank().setBlockName("GasTank");
+		CardboardBox = new BlockCardboardBox().setBlockName("CardboardBox");
+		BlockHDPE = new BlockPlastic().setBlockName("PlasticBlock");
+		BlockSlickHDPE = new BlockPlastic().setBlockName("SlickPlasticBlock");
+		BlockGlowHDPE = new BlockPlastic().setBlockName("GlowPlasticBlock");
+		BlockReinforcedHDPE = new BlockPlastic().setBlockName("ReinforcedPlasticBlock");
+		BlockRoadHDPE = new BlockPlastic().setBlockName("RoadPlasticBlock");
+		BlockHDPEFence = new BlockPlasticFence().setBlockName("PlasticFence");
 
 		//Registrations
 		GameRegistry.registerBlock(BasicBlock, ItemBlockBasic.class, "BasicBlock");
