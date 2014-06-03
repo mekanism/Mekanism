@@ -44,7 +44,7 @@ public abstract class Sound
 			identifier = id;
 			objRef = obj;
 
-			URL url = getClass().getClassLoader().getResource("assets/mekanism/sound/" + sound);
+			URL url = getClass().getClassLoader().getResource("assets/mekanism/sounds/" + sound);
 
 			if(url == null)
 			{
@@ -150,8 +150,7 @@ public abstract class Sound
 			try {
 				float multiplier = getMultiplier();
 				float volume = 0;
-				float masterVolume = MekanismClient.audioHandler.masterVolume;
-
+				float masterVolume = MekanismClient.audioHandler.getMasterVolume();
 				double distance = mc.thePlayer.getDistance(getLocation().xPos, getLocation().yPos, getLocation().zPos);
 				volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
 				volume *= Math.max(0, Math.min(1, MekanismClient.baseSoundVolume));

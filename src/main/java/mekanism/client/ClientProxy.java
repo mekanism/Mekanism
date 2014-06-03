@@ -46,6 +46,7 @@ import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
@@ -131,7 +132,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -478,10 +478,12 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void loadUtilities()
 	{
-		super.loadUtilities();
-		
 		FMLCommonHandler.instance().bus().register(new ClientConnectionHandler());
 		FMLCommonHandler.instance().bus().register(new ClientPlayerTracker());
+		FMLCommonHandler.instance().bus().register(new ClientTickHandler());
+		FMLCommonHandler.instance().bus().register(new RenderTickHandler());
+		
+		new MekanismKeyHandler();
 
 		HolidayManager.init();
 	}

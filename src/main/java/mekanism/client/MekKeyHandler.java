@@ -51,22 +51,6 @@ public abstract class MekKeyHandler
 		return keyBindings;
 	}
 
-	@SubscribeEvent
-	public void onTick(ClientTickEvent event)
-	{
-		if(event.side == Side.CLIENT)
-		{
-			if(event.phase == Phase.START)
-			{
-				keyTick(event.type, false);
-			}
-			else if(event.phase == Phase.END)
-			{
-				keyTick(event.type, true);
-			}
-		}
-	}
-
 	public void keyTick(Type type, boolean tickEnd)
 	{
 		for(int i = 0; i < keyBindings.length; i++)

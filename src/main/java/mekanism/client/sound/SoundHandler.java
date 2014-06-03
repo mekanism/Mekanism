@@ -46,9 +46,6 @@ public class SoundHandler
 	/** All the sound references in the Minecraft game. */
 	public Map<Object, Sound> sounds = Collections.synchronizedMap(new HashMap<Object, Sound>());
 
-	/** The current base volume Minecraft is using. */
-	public float masterVolume = 0;
-
 	public static Minecraft mc = Minecraft.getMinecraft();
 
 	/**
@@ -83,20 +80,6 @@ public class SoundHandler
 		}
 
 		Mekanism.logger.info("Preloaded " + listings.size() + " object sounds.");
-
-		/*listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/etc");
-
-		for(String s : listings)
-		{
-			if(s.contains("/mekanism/sounds/etc/"))
-			{
-				s = s.split("/mekanism/sounds/etc/")[1];
-			}
-
-			mc.sndManager.addSound("mekanism:etc/" + s);
-		}
-
-		Mekanism.logger.info("Initialized " + listings.size() + " sound effects.");*/
 
 		if(MekanismClient.holidays)
 		{
@@ -223,8 +206,6 @@ public class SoundHandler
 							sound.updateVolume();
 						}
 					}
-
-					masterVolume = FMLClientHandler.instance().getClient().gameSettings.getSoundLevel(SoundCategory.MASTER);
 				}
 				else {
 					for(Sound sound : sounds.values())
@@ -319,16 +300,38 @@ public class SoundHandler
 		}
 
 		String s = getSoundSystem().quickPlay(false, url, soundPath, false, object.xCoord, object.yCoord, object.zCoord, 0, 16F);
-		getSoundSystem().setVolume(s, masterVolume);
+		getSoundSystem().setVolume(s, getMasterVolume());
+	}
+	
+	public float getMasterVolume()
+	{
+		return FMLClientHandler.instance().getClient().gameSettings.getSoundLevel(SoundCategory.MASTER);
 	}
 
 	public static SoundSystem getSoundSystem()
 	{
 		try {
-			SoundManager manager = (SoundManager)MekanismUtils.getPrivateValue(mc.getSoundHandler(), SoundManager.class, ObfuscatedNames.SoundHandler_sndManager);
-			return (SoundSystem)MekanismUtils.getPrivateValue(manager, SoundSystem.class, ObfuscatedNames.SoundManager_sndSystem);
+			return (SoundSystem)MekanismUtils.getPrivateValue(getSoundManager(), SoundManager.class, ObfuscatedNames.SoundManager_sndSystem);
 		} catch(Exception e) {
 			return null;
+		}
+	}
+	
+	public static SoundManager getSoundManager()
+	{
+		try {
+			return (SoundManager)MekanismUtils.getPrivateValue(mc.getSoundHandler(), net.minecraft.client.audio.SoundHandler.class, ObfuscatedNames.SoundHandler_sndManager);
+		} catch(Exception e) {
+			return null;
+		}
+	}
+	
+	public static boolean isSystemLoaded()
+	{
+		try {
+			return (Boolean)MekanismUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, new String[] {"loaded"});
+		} catch(Exception e) {
+			return false;
 		}
 	}
 	

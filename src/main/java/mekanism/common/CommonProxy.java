@@ -78,6 +78,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
@@ -238,7 +239,10 @@ public class CommonProxy
 	/**
 	 * Set up and load the utilities this mod uses.
 	 */
-	public void loadUtilities() {}
+	public void loadUtilities() 
+	{
+		FMLCommonHandler.instance().bus().register(new CommonWorldTickHandler());
+	}
 
 	/**
 	 * Set up and load the sound handler.
