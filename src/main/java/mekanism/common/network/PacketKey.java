@@ -9,6 +9,8 @@ public class PacketKey extends MekanismPacket
 {
 	public int key;
 	public boolean add;
+	
+	public PacketKey() {}
 
 	public PacketKey(int k, boolean a)
 	{

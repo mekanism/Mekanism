@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 public class PacketConfiguratorState extends MekanismPacket
 {
 	public byte state;
+	
+	public PacketConfiguratorState() {}
 
 	public PacketConfiguratorState(byte s)
 	{

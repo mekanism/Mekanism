@@ -28,6 +28,8 @@ public class PacketTransmitterUpdate extends MekanismPacket
 
 	public FluidStack fluidStack;
 	public boolean didFluidTransfer;
+	
+	public PacketTransmitterUpdate() {}
 
 	public PacketTransmitterUpdate(PacketType type, TileEntity tile, Object... data)
 	{

@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketBoxBlacklist extends MekanismPacket
 {
+	public PacketBoxBlacklist() {}
+	
 	@Override
 	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
 	{

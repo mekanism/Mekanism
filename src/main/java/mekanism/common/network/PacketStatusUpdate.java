@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 public class PacketStatusUpdate extends MekanismPacket
 {
 	public int status;
+	
+	public PacketStatusUpdate() {}
 
 	public PacketStatusUpdate(int state)
 	{

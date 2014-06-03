@@ -31,6 +31,8 @@ public class PacketElectricChest extends MekanismPacket
 	public boolean useEnergy;
 
 	public Coord4D obj;
+	
+	public PacketElectricChest() {}
 
 	//This is a really messy implementation...
 	public PacketElectricChest(ElectricChestPacketType type, boolean b1, boolean b2, int i1, int i2, String s1, Coord4D c1)

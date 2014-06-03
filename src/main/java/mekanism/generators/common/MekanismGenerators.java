@@ -67,6 +67,7 @@ public class MekanismGenerators implements IModule
 		for(String s : IronEngineFuel.fuels.keySet())
 		{
 			Fluid f = FluidRegistry.getFluid(s);
+			
 			if(!(f == null || GasRegistry.containsGas(s)))
 			{
 				GasRegistry.register(new Gas(f));
@@ -130,7 +131,7 @@ public class MekanismGenerators implements IModule
 	public void addBlocks()
 	{
 		//Declarations
-		Generator = new BlockGenerator();
+		Generator = new BlockGenerator().setBlockName("Generator");
 		
 		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
 	}

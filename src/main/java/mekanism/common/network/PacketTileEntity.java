@@ -18,6 +18,8 @@ public class PacketTileEntity extends MekanismPacket
 	public ArrayList parameters;
 	
 	public ByteBuf storedBuffer = null;
+	
+	public PacketTileEntity() {}
 
 	public PacketTileEntity(Coord4D coord, ArrayList params)
 	{
@@ -31,6 +33,7 @@ public class PacketTileEntity extends MekanismPacket
 		dataStream.writeInt(coord4D.xCoord);
 		dataStream.writeInt(coord4D.yCoord);
 		dataStream.writeInt(coord4D.zCoord);
+		dataStream.writeInt(coord4D.dimensionId);
 
 		PacketHandler.encode(new Object[] {parameters}, dataStream);
 	}
@@ -38,9 +41,7 @@ public class PacketTileEntity extends MekanismPacket
 	@Override
 	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream) throws Exception
 	{
-		int x = dataStream.readInt();
-		int y = dataStream.readInt();
-		int z = dataStream.readInt();
+		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 		
 		storedBuffer = dataStream.copy();
 	}

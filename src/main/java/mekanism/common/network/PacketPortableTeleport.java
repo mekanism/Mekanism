@@ -18,6 +18,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketPortableTeleport extends MekanismPacket
 {
+	public PacketPortableTeleport() {}
+	
 	@Override
 	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
 	{

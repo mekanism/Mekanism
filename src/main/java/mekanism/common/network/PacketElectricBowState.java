@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 public class PacketElectricBowState extends MekanismPacket
 {
 	public boolean fireMode;
+	
+	public PacketElectricBowState() {}
 
 	public PacketElectricBowState(boolean state)
 	{

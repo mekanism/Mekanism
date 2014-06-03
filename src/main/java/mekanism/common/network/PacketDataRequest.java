@@ -19,6 +19,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 public class PacketDataRequest extends MekanismPacket
 {
 	public Coord4D coord4D;
+	
+	public PacketDataRequest() {}
 
 	public PacketDataRequest(Coord4D coord)
 	{

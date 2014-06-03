@@ -28,6 +28,8 @@ public class PacketConfigurationUpdate extends MekanismPacket
 	public int clickType;
 
 	public ConfigurationPacket packetType;
+	
+	public PacketConfigurationUpdate() {}
 
 	public PacketConfigurationUpdate(ConfigurationPacket type, Coord4D coord, int click, int extra)
 	{

@@ -20,7 +20,7 @@ public class ItemProxy extends Item
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
-		return getSavedItem(stack) != null ? getSavedItem(stack) : getDead();
+		return getSavedItem(stack);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class ItemProxy extends Item
 	@Override
 	public boolean hasContainerItem(ItemStack itemStack)
 	{
-		return true; //TODO forge PR -- Is this sorted now? -unpairedbracket
+		return getSavedItem(itemStack) != null;
 	}
 
 	public void setSavedItem(ItemStack stack, ItemStack save)
@@ -66,15 +66,6 @@ public class ItemProxy extends Item
 		}
 
 		return null;
-	}
-
-	public static ItemStack getDead()
-	{
-		ItemStack stack = new ItemStack(Mekanism.ItemProxy);
-		stack.stackSize = 0;
-		stack.setItemDamage(2);
-
-		return stack;
 	}
 
 	@Override

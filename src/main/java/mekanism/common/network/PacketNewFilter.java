@@ -26,6 +26,8 @@ public class PacketNewFilter extends MekanismPacket
 	public MinerFilter mFilter;
 
 	public byte type = -1;
+	
+	public PacketNewFilter() {}
 
 	public PacketNewFilter(Coord4D coord, Object filter)
 	{

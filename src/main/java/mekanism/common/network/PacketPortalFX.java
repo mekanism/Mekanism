@@ -12,6 +12,8 @@ public class PacketPortalFX extends MekanismPacket
 {
 	public Coord4D coord4D;
 
+	public PacketPortalFX() {}
+	
 	public PacketPortalFX(Coord4D coord)
 	{
 		coord4D = coord;

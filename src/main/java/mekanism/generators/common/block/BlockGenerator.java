@@ -378,7 +378,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public Item getItemDropped(int i, Random random, int j)
 	{
-		//TODO ????
 		return null;
 	}
 

@@ -14,6 +14,8 @@ public class PacketScubaTankData extends MekanismPacket
 
 	public String username;
 	public boolean value;
+	
+	public PacketScubaTankData() {}
 
 	public PacketScubaTankData(ScubaTankPacket type, String name, boolean state)
 	{

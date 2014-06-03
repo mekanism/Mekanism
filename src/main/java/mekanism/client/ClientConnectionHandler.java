@@ -15,35 +15,26 @@ public class ClientConnectionHandler
 	@SubscribeEvent
 	public void onConnection(ClientConnectedToServerEvent event)
 	{
-		if(event.isLocal)
-		{
-			localConnection();
-		}
-		else {
-			//TODO this is probably wrong
-			remoteConnection(event.manager.getSocketAddress().toString());
-		}
-	}
-
-	/* Remote */
-	public void remoteConnection(String server)
-	{
 		if(Mekanism.voiceServerEnabled)
 		{
-			try {
-				MekanismClient.voiceClient = new VoiceClient(server);
-			} catch(Exception e) {}
-		}
-	}
-
-	/* Integrated */
-	public void localConnection()
-	{
-		if(Mekanism.voiceServerEnabled)
-		{
-			try {
-				MekanismClient.voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress());
-			} catch(Exception e) {}
+			if(event.isLocal)
+			{
+				try {
+					MekanismClient.voiceClient = new VoiceClient(InetAddress.getLocalHost().getHostAddress());
+				} catch(Exception e) {
+					Mekanism.logger.error("Unable to establish VoiceClient on local connection.");
+					e.printStackTrace();
+				}
+			}
+			else {
+				try {
+					MekanismClient.voiceClient = new VoiceClient(event.manager.getSocketAddress().toString());
+				} catch(Exception e) {
+					Mekanism.logger.error("Unable to establish VoiceClient on remote connection.");
+					e.printStackTrace();
+				}
+				//TODO this is probably wrong
+			}
 		}
 	}
 }

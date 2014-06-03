@@ -96,7 +96,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return stack.getItemDamage() == 6;
+		return stack.getItemDamage() == 6 && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("newCount");
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class ItemBlockBasic extends ItemBlock
 		{
 			if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 			{
-				return ItemProxy.getDead();
+				return null;
 			}
 		}
 

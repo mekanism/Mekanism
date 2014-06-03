@@ -15,6 +15,8 @@ public class PacketRobit extends MekanismPacket
 	public int entityId;
 
 	public String name;
+	
+	public PacketRobit() {}
 
 	public PacketRobit(RobitPacketType type, int i1, int i2, String s)
 	{

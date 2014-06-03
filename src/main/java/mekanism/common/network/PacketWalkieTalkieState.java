@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 public class PacketWalkieTalkieState extends MekanismPacket
 {
 	public int channel;
+	
+	public PacketWalkieTalkieState() {}
 
 	public PacketWalkieTalkieState(int chan)
 	{

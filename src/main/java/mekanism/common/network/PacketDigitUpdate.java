@@ -10,6 +10,8 @@ public class PacketDigitUpdate extends MekanismPacket
 {
 	public int index;
 	public int digit;
+	
+	public PacketDigitUpdate() {}
 
 	public PacketDigitUpdate(int ind, int dig)
 	{

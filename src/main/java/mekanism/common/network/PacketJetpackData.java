@@ -14,6 +14,8 @@ public class PacketJetpackData extends MekanismPacket
 
 	public String username;
 	public boolean value;
+	
+	public PacketJetpackData() {}
 
 	public PacketJetpackData(JetpackPacket type, String name, boolean state)
 	{

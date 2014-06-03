@@ -8,6 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketConfigSync extends MekanismPacket
 {
+	public PacketConfigSync() {}
+	
 	@Override
 	public void write(ChannelHandlerContext ctx, ByteBuf dataStream) throws Exception
 	{

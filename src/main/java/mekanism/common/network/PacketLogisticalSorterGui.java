@@ -33,6 +33,8 @@ public class PacketLogisticalSorterGui extends MekanismPacket
 	public int windowId = -1;
 
 	public int index = -1;
+	
+	public PacketLogisticalSorterGui() {}
 
 	public PacketLogisticalSorterGui(SorterGuiPacket type, Coord4D coord, int guiId, int extra, int extra2)
 	{

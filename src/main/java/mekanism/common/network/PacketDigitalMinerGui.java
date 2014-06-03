@@ -38,6 +38,8 @@ public class PacketDigitalMinerGui extends MekanismPacket
 	public int windowId = -1;
 
 	public int index = -1;
+	
+	public PacketDigitalMinerGui() {}
 
 	public PacketDigitalMinerGui(MinerGuiPacket type, Coord4D coord, int guiID, int extra, int extra2)
 	{

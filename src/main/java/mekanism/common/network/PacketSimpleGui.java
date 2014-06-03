@@ -18,6 +18,8 @@ public class PacketSimpleGui extends MekanismPacket
 	public Coord4D coord4D;
 
 	public int guiId;
+	
+	public PacketSimpleGui() {}
 
 	public PacketSimpleGui(Coord4D coord, int gui)
 	{

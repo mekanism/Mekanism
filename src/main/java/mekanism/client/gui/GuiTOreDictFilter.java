@@ -308,7 +308,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
 		{
-			// TODO Not sure how to play custom sounds mc.sndManager.playSoundFX("mekanism:etc.Ding", 1.0F, 1.0F);
+			SoundHandler.playSound("mekanism:etc.Ding");
 
 			if(button == 0)
 			{

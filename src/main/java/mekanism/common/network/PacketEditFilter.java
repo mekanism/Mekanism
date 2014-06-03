@@ -30,6 +30,8 @@ public class PacketEditFilter extends MekanismPacket
 	public byte type = -1;
 
 	public boolean delete;
+	
+	public PacketEditFilter() {}
 
 	public PacketEditFilter(Coord4D coord, boolean deletion, Object filter, Object edited)
 	{

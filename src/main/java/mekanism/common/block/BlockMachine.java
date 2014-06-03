@@ -795,6 +795,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		return false;
 	}
+	
+	@Override
+	public Item getItemDropped(int i, Random random, int j)
+	{
+		return null;
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -834,13 +840,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 
 		return world.setBlockToAir(x, y, z);
-	}
-
-	@Override
-	public Item getItemDropped(int i, Random random, int j)
-	{
-		//TODO ???
-		return null;
 	}
 
 	@Override

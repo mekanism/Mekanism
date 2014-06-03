@@ -12,6 +12,8 @@ public class PacketRedstoneControl extends MekanismPacket
 {
 	public Coord4D coord4D;
 	public RedstoneControl value;
+	
+	public PacketRedstoneControl() {}
 
 	public PacketRedstoneControl(Coord4D coord, RedstoneControl control)
 	{

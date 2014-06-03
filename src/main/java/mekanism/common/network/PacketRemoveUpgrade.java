@@ -15,6 +15,8 @@ public class PacketRemoveUpgrade extends MekanismPacket
 	public Coord4D coord4D;
 
 	public byte upgradeType;
+	
+	public PacketRemoveUpgrade() {}
 
 	public PacketRemoveUpgrade(Coord4D coord, byte type)
 	{

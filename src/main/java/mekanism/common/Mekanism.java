@@ -136,6 +136,7 @@ import org.apache.logging.log4j.Logger;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -1224,7 +1225,6 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		//logger.setParent(FMLLog.getLogger());
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration
@@ -1278,11 +1278,11 @@ public class Mekanism
 		//Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreHandler(), 1);
 		
-		//Register player tracker
-		MinecraftForge.EVENT_BUS.register(new CommonPlayerTracker());
-		
 		//Register the mod's GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
+		
+		//Register player tracker
+		FMLCommonHandler.instance().bus().register(new CommonPlayerTracker());
 		
 		//Initialization notification
 		logger.info("Version " + versionNumber + " initializing...");
