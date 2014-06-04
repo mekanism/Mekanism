@@ -57,7 +57,7 @@ public class VoiceConnection extends Thread
 								EntityPlayerMP playerMP = (EntityPlayerMP)obj;
 								String playerIP = playerMP.getPlayerIP();
 
-								if(!server.isDedicatedServer() && playerIP.equals("127.0.0.1") && !Mekanism.voiceManager.foundLocal)
+								if(!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.foundLocal)
 								{
 									Mekanism.voiceManager.foundLocal = true;
 									username = playerMP.getCommandSenderName();
