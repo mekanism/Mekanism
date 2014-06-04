@@ -544,11 +544,11 @@ public class MekanismTools implements IModule
 		BronzeShovel = new ItemMekanismShovel(toolBRONZE).setUnlocalizedName("BronzeShovel");
 		BronzeHoe = new ItemMekanismHoe(toolBRONZE).setUnlocalizedName("BronzeHoe");
 		BronzeSword = new ItemMekanismSword(toolBRONZE).setUnlocalizedName("BronzeSword");
-		//TODO wat do?
-		//MinecraftForge.setToolClass(BronzePaxel, "paxel", toolBRONZE2.getHarvestLevel());
-		//MinecraftForge.setToolClass(BronzePickaxe, "pickaxe", toolBRONZE.getHarvestLevel());
-		//MinecraftForge.setToolClass(BronzeAxe, "axe", toolBRONZE.getHarvestLevel());
-		//MinecraftForge.setToolClass(BronzeShovel, "shovel", toolBRONZE.getHarvestLevel());
+		
+		BronzePaxel.setHarvestLevel("paxel", toolBRONZE2.getHarvestLevel());
+		BronzePickaxe.setHarvestLevel("pickaxe", toolBRONZE.getHarvestLevel());
+		BronzeAxe.setHarvestLevel("axe", toolBRONZE.getHarvestLevel());
+		BronzeShovel.setHarvestLevel("shovel", toolBRONZE.getHarvestLevel());
 		
 		//Osmium
 		OsmiumHelmet = (new ItemMekanismArmor(armorOSMIUM, Mekanism.proxy.getArmorIndex("osmium"), 0)).setUnlocalizedName("OsmiumHelmet");
@@ -562,10 +562,10 @@ public class MekanismTools implements IModule
 		OsmiumHoe = new ItemMekanismHoe(toolOSMIUM).setUnlocalizedName("OsmiumHoe");
 		OsmiumSword = new ItemMekanismSword(toolOSMIUM).setUnlocalizedName("OsmiumSword");
 		
-		//MinecraftForge.setToolClass(OsmiumPaxel, "paxel", toolOSMIUM2.getHarvestLevel());
-		//MinecraftForge.setToolClass(OsmiumPickaxe, "pickaxe", toolOSMIUM.getHarvestLevel());
-		//MinecraftForge.setToolClass(OsmiumAxe, "axe", toolOSMIUM.getHarvestLevel());
-		//MinecraftForge.setToolClass(OsmiumShovel, "shovel", toolOSMIUM.getHarvestLevel());
+		OsmiumPaxel.setHarvestLevel("paxel", toolOSMIUM2.getHarvestLevel());
+		OsmiumPickaxe.setHarvestLevel("pickaxe", toolOSMIUM.getHarvestLevel());
+		OsmiumAxe.setHarvestLevel("axe", toolOSMIUM.getHarvestLevel());
+		OsmiumShovel.setHarvestLevel("shovel", toolOSMIUM.getHarvestLevel());
 		
 		//Obsidian
 		ObsidianHelmet = (new ItemMekanismArmor(armorOBSIDIAN, Mekanism.proxy.getArmorIndex("obsidian"), 0)).setUnlocalizedName("ObsidianHelmet");
@@ -579,44 +579,44 @@ public class MekanismTools implements IModule
 		ObsidianHoe = new ItemMekanismHoe(toolOBSIDIAN).setUnlocalizedName("ObsidianHoe");
 		ObsidianSword = new ItemMekanismSword(toolOBSIDIAN).setUnlocalizedName("ObsidianSword");
 		
-		//MinecraftForge.setToolClass(ObsidianPaxel, "paxel", toolOBSIDIAN2.getHarvestLevel());
-		//MinecraftForge.setToolClass(ObsidianPickaxe, "pickaxe", toolOBSIDIAN.getHarvestLevel());
-		//MinecraftForge.setToolClass(ObsidianAxe, "axe", toolOBSIDIAN.getHarvestLevel());
-		//MinecraftForge.setToolClass(ObsidianShovel, "shovel", toolOBSIDIAN.getHarvestLevel());
+		ObsidianPaxel.setHarvestLevel("paxel", toolOBSIDIAN2.getHarvestLevel());
+		ObsidianPickaxe.setHarvestLevel("pickaxe", toolOBSIDIAN.getHarvestLevel());
+		ObsidianAxe.setHarvestLevel("axe", toolOBSIDIAN.getHarvestLevel());
+		ObsidianShovel.setHarvestLevel("shovel", toolOBSIDIAN.getHarvestLevel());
 		
 		//Lazuli
+		LazuliHelmet = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 0)).setUnlocalizedName("LazuliHelmet");
+		LazuliChestplate = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setUnlocalizedName("LazuliChestplate");
+		LazuliLeggings = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setUnlocalizedName("LazuliLeggings");
+		LazuliBoots = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setUnlocalizedName("LazuliBoots");
 		LazuliPaxel = new ItemMekanismPaxel(toolLAZULI2).setUnlocalizedName("LazuliPaxel");
 		LazuliPickaxe = new ItemMekanismPickaxe(toolLAZULI).setUnlocalizedName("LazuliPickaxe");
 		LazuliAxe = new ItemMekanismAxe(toolLAZULI).setUnlocalizedName("LazuliAxe");
 		LazuliShovel = new ItemMekanismShovel(toolLAZULI).setUnlocalizedName("LazuliShovel");
 		LazuliHoe = new ItemMekanismHoe(toolLAZULI).setUnlocalizedName("LazuliHoe");
 		LazuliSword = new ItemMekanismSword(toolLAZULI).setUnlocalizedName("LazuliSword");
-		LazuliHelmet = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 0)).setUnlocalizedName("LazuliHelmet");
-		LazuliChestplate = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 1)).setUnlocalizedName("LazuliChestplate");
-		LazuliLeggings = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 2)).setUnlocalizedName("LazuliLeggings");
-		LazuliBoots = (new ItemMekanismArmor(armorLAZULI, Mekanism.proxy.getArmorIndex("lazuli"), 3)).setUnlocalizedName("LazuliBoots");
 		
-		//MinecraftForge.setToolClass(LazuliPaxel, "paxel", toolLAZULI2.getHarvestLevel());
-		//MinecraftForge.setToolClass(LazuliPickaxe, "pickaxe", toolLAZULI.getHarvestLevel());
-		//MinecraftForge.setToolClass(LazuliAxe, "axe", toolLAZULI.getHarvestLevel());
-		//MinecraftForge.setToolClass(LazuliShovel, "shovel", toolLAZULI.getHarvestLevel());
+		LazuliPaxel.setHarvestLevel("paxel", toolLAZULI2.getHarvestLevel());
+		LazuliPickaxe.setHarvestLevel("pickaxe", toolLAZULI.getHarvestLevel());
+		LazuliAxe.setHarvestLevel("axe", toolLAZULI.getHarvestLevel());
+		LazuliShovel.setHarvestLevel("shovel", toolLAZULI.getHarvestLevel());
 		
 		//Glowstone
+		GlowstoneHelmet = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 0).setUnlocalizedName("GlowstoneHelmet");
+		GlowstoneChestplate = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 1).setUnlocalizedName("GlowstoneChestplate");
+		GlowstoneLeggings = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setUnlocalizedName("GlowstoneLeggings");
+		GlowstoneBoots = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setUnlocalizedName("GlowstoneBoots");
 		GlowstonePaxel = new ItemMekanismPaxel(toolGLOWSTONE2).setUnlocalizedName("GlowstonePaxel");
 		GlowstonePickaxe = new ItemMekanismPickaxe(toolGLOWSTONE).setUnlocalizedName("GlowstonePickaxe");
 		GlowstoneAxe = new ItemMekanismAxe(toolGLOWSTONE).setUnlocalizedName("GlowstoneAxe");
 		GlowstoneShovel = new ItemMekanismShovel(toolGLOWSTONE).setUnlocalizedName("GlowstoneShovel");
 		GlowstoneHoe = new ItemMekanismHoe(toolGLOWSTONE).setUnlocalizedName("GlowstoneHoe");
 		GlowstoneSword = new ItemMekanismSword(toolGLOWSTONE).setUnlocalizedName("GlowstoneSword");
-		GlowstoneHelmet = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 0).setUnlocalizedName("GlowstoneHelmet");
-		GlowstoneChestplate = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 1).setUnlocalizedName("GlowstoneChestplate");
-		GlowstoneLeggings = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 2).setUnlocalizedName("GlowstoneLeggings");
-		GlowstoneBoots = new ItemMekanismArmor(armorGLOWSTONE, Mekanism.proxy.getArmorIndex("glowstone"), 3).setUnlocalizedName("GlowstoneBoots");
 		
-		//MinecraftForge.setToolClass(GlowstonePaxel, "paxel", toolGLOWSTONE2.getHarvestLevel());
-		//MinecraftForge.setToolClass(GlowstonePickaxe, "pickaxe", toolGLOWSTONE.getHarvestLevel());
-		//MinecraftForge.setToolClass(GlowstoneAxe, "axe", toolGLOWSTONE.getHarvestLevel());
-		//MinecraftForge.setToolClass(GlowstoneShovel, "shovel", toolGLOWSTONE.getHarvestLevel());
+		GlowstonePaxel.setHarvestLevel("paxel", toolGLOWSTONE2.getHarvestLevel());
+		GlowstonePickaxe.setHarvestLevel("pickaxe", toolGLOWSTONE.getHarvestLevel());
+		GlowstoneAxe.setHarvestLevel("axe", toolGLOWSTONE.getHarvestLevel());
+		GlowstoneShovel.setHarvestLevel("shovel", toolGLOWSTONE.getHarvestLevel());
 		
 		//Base Paxels
 		WoodPaxel = new ItemMekanismPaxel(ToolMaterial.WOOD).setUnlocalizedName("WoodPaxel");
@@ -625,28 +625,28 @@ public class MekanismTools implements IModule
 		DiamondPaxel = new ItemMekanismPaxel(ToolMaterial.EMERALD).setUnlocalizedName("DiamondPaxel");
 		GoldPaxel = new ItemMekanismPaxel(ToolMaterial.GOLD).setUnlocalizedName("GoldPaxel");
 		
-		//MinecraftForge.setToolClass(WoodPaxel, "paxel", ToolMaterial.WOOD.getHarvestLevel());
-		//MinecraftForge.setToolClass(StonePaxel, "paxel", ToolMaterial.STONE.getHarvestLevel());
-		//MinecraftForge.setToolClass(IronPaxel, "paxel", ToolMaterial.IRON.getHarvestLevel());
-		//MinecraftForge.setToolClass(DiamondPaxel, "paxel", ToolMaterial.EMERALD.getHarvestLevel());
-		//MinecraftForge.setToolClass(GoldPaxel, "paxel", ToolMaterial.GOLD.getHarvestLevel());
+		WoodPaxel.setHarvestLevel("paxel", ToolMaterial.WOOD.getHarvestLevel());
+		StonePaxel.setHarvestLevel("paxel", ToolMaterial.STONE.getHarvestLevel());
+		IronPaxel.setHarvestLevel("paxel", ToolMaterial.IRON.getHarvestLevel());
+		DiamondPaxel.setHarvestLevel("paxel", ToolMaterial.EMERALD.getHarvestLevel());
+		GoldPaxel.setHarvestLevel("paxel", ToolMaterial.GOLD.getHarvestLevel());
 		
 		//Steel
+		SteelHelmet = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 0).setUnlocalizedName("SteelHelmet");
+		SteelChestplate = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setUnlocalizedName("SteelChestplate");
+		SteelLeggings = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setUnlocalizedName("SteelLeggings");
+		SteelBoots = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setUnlocalizedName("SteelBoots");
 		SteelPaxel = new ItemMekanismPaxel(toolSTEEL2).setUnlocalizedName("SteelPaxel");
 		SteelPickaxe = new ItemMekanismPickaxe(toolSTEEL).setUnlocalizedName("SteelPickaxe");
 		SteelAxe = new ItemMekanismAxe(toolSTEEL).setUnlocalizedName("SteelAxe");
 		SteelShovel = new ItemMekanismShovel(toolSTEEL).setUnlocalizedName("SteelShovel");
 		SteelHoe = new ItemMekanismHoe(toolSTEEL).setUnlocalizedName("SteelHoe");
 		SteelSword = new ItemMekanismSword(toolSTEEL).setUnlocalizedName("SteelSword");
-		SteelHelmet = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 0).setUnlocalizedName("SteelHelmet");
-		SteelChestplate = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setUnlocalizedName("SteelChestplate");
-		SteelLeggings = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 2).setUnlocalizedName("SteelLeggings");
-		SteelBoots = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 3).setUnlocalizedName("SteelBoots");
 		
-		//MinecraftForge.setToolClass(SteelPaxel, "paxel", toolSTEEL2.getHarvestLevel());
-		//MinecraftForge.setToolClass(SteelPickaxe, "pickaxe", toolSTEEL.getHarvestLevel());
-		//MinecraftForge.setToolClass(SteelAxe, "axe", toolSTEEL.getHarvestLevel());
-		//MinecraftForge.setToolClass(SteelShovel, "shovel", toolSTEEL.getHarvestLevel());
+		SteelPaxel.setHarvestLevel("paxel", toolSTEEL2.getHarvestLevel());
+		SteelPickaxe.setHarvestLevel("pickaxe", toolSTEEL.getHarvestLevel());
+		SteelAxe.setHarvestLevel("axe", toolSTEEL.getHarvestLevel());
+		SteelShovel.setHarvestLevel("shovel", toolSTEEL.getHarvestLevel());
 		
 		Mekanism.configuration.save();
 		
