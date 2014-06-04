@@ -35,6 +35,11 @@ item.FreeRunners.name=Freiläufer
 item.ArmoredJetpack.name=Panzer-Jetpack
 item.FilterCard.name=Filterkarte
 item.SeismicReader.name=Seismisches Lesegerät
+item.HDPEPellet.name=HDPE-Pellet
+item.HDPERod.name=HDPE-Stange
+item.HDPESheet.name=HDPE-Bogen
+item.PlaStick.name=PlaStick
+item.Substrate.name=Substrat
 
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
@@ -93,6 +98,17 @@ tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemische Auflösungskammer
 tile.MachineBlock2.ChemicalWasher.name=Chemische Waschanlage
 tile.MachineBlock2.ChemicalCrystallizer.name=Chemischer Kristallisierer
 tile.MachineBlock2.SeismicVibrator.name=Seismischer Vibrator
+tile.MachineBlock2.PressurizedReactionChamber.name=Druckreaktionskammer
+tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+
+//Plastic
+tile.PlasticBlock.name=Plastikblock
+tile.SlickPlasticBlock.name=Glatter Plastikblock
+tile.GlowPlasticBlock.name=Schimmernder Plastikblock
+tile.ReinforcedPlasticBlock.name=Verstärkter Plastikblock
+tile.RoadPlasticBlock.name=Plastikstraße
+
+tile.PlasticFence.name=Plastikbarriere
 
 //Infuse types
 infuse.carbon=Kohlenstoff
@@ -118,6 +134,9 @@ item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimatives Mechanisches R
 item.MultipartTransmitter.LogisticalTransporter.name=Logistischer Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiver Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Diversionstransporter
+
+//Glow Panel
+item.GlowPanel.name=Leuchtplatte
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Basisenergiewürfel
@@ -198,6 +217,7 @@ gas.sulfuricAcid=Schwefelsäure
 gas.hydrogenChloride=Chlorwasserstoff
 gas.liquidOsmium=Flüssiges Osmium
 gas.liquidStone=Flüssiges Gestein
+gas.ethene=Ethylen
 
 gas.iron=Eisenschlamm
 gas.gold=Goldschlamm
@@ -217,6 +237,10 @@ gas.cleanSilver=Sauberer Silberschlamm
 gas.cleanObsidian=Sauberer Obsidianschlamm
 gas.cleanLead=Sauberer Bleischlamm
 
+//BC Fuel Gases
+gas.fuel=Verdampftes Benzin
+gas.oil=Verdampftes Öl
+
 //Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
 fluid.oxygen=Flüssiger Sauerstoff
@@ -226,6 +250,7 @@ fluid.sulfurTrioxideGas=Flüssiges Schwefeltrioxid
 fluid.sulfuricAcid=Flüssige Schwefelsäure
 fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
 fluid.brine=Salzwasser
+fluid.ethene=Flüssigethylen
 
 //OreGas names
 oregas.iron=Eisenerz
@@ -444,6 +469,26 @@ color.red=Rot
 color.pink=Pink
 color.yellow=Gelb
 color.white=Weiß
+
+//Dyes
+dye.black=Schwarz
+dye.darkBlue=Blau
+dye.brown=Braun
+dye.darkGreen=Grün
+dye.darkAqua=Türkis
+dye.darkRed=Dunkelrot
+dye.purple=Violett
+dye.orange=Orange
+dye.grey=Hellgrau
+dye.darkGrey=Grau
+dye.indigo=Hellblau
+dye.brightGreen=Hellgrün
+dye.aqua=Cyan
+dye.red=Rot
+dye.brightPink=Pink
+dye.pink=Magentafarben
+dye.yellow=Gelb
+dye.white=Weiß
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
