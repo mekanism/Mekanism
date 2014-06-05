@@ -33,7 +33,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "6.1.0", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "7.0.0", dependencies = "required-after:Mekanism")
 public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
@@ -43,7 +43,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(6, 0, 4);
+	public static Version versionNumber = new Version(7, 0, 0);
 	
 	//Items
 	public static Item SolarPanel;
@@ -74,7 +74,7 @@ public class MekanismGenerators implements IModule
 			}
 		}
 
-		IronEngineFuel.addFuel("ethene", (int)(240 * Mekanism.TO_BC), 40* FluidContainerRegistry.BUCKET_VOLUME);
+		IronEngineFuel.addFuel("ethene", (float)(240*Mekanism.TO_BC), 40*FluidContainerRegistry.BUCKET_VOLUME);
 	}
 	
 	@EventHandler

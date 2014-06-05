@@ -157,7 +157,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "6.1.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
@@ -184,7 +184,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(6, 0, 4);
+	public static Version versionNumber = new Version(7, 0, 0);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
@@ -758,6 +758,7 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.stonebrick, 1, 3), new ItemStack(Blocks.stonebrick, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Items.flint, 4), new ItemStack(Items.gunpowder));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.sandstone), new ItemStack(Blocks.sand, 2));
+        
 		//BioFuel Crusher Recipes
 		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.tallgrass), new ItemStack(BioFuel, 4));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.reeds), new ItemStack(BioFuel, 2));
@@ -769,6 +770,7 @@ public class Mekanism
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.bread), new ItemStack(BioFuel, 4));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.potato), new ItemStack(BioFuel, 4));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.carrot), new ItemStack(BioFuel, 4));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.rotten_flesh), new ItemStack(BioFuel, 2));
 
 		//Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.obsidian), new ItemStack(Clump, 3, 6));
@@ -799,12 +801,9 @@ public class Mekanism
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("REDSTONE"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(EnrichedAlloy));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Blocks.dirt)), new ItemStack(Blocks.mycelium));
-        
-        if(InfuseRegistry.contains("BIO"))
-        {
-	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone)), new ItemStack(Blocks.mossy_cobblestone));
-	        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.stonebrick, 1, 0)), new ItemStack(Blocks.stonebrick, 1, 1));
-        }
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone)), new ItemStack(Blocks.mossy_cobblestone));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.stonebrick, 1, 0)), new ItemStack(Blocks.stonebrick, 1, 1));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.sand)), new ItemStack(Blocks.dirt));
         
         //Chemical Infuser Recipes
         RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));

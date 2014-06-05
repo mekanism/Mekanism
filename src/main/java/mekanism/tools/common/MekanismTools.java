@@ -30,14 +30,14 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "6.1.0", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "7.0.0", dependencies = "required-after:Mekanism")
 public class MekanismTools implements IModule
 {
 	@Instance("MekanismTools")
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(6, 0, 4);
+	public static Version versionNumber = new Version(7, 0, 0);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;

@@ -61,7 +61,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 			CableUtils.emit(this);
 		}
 		
-		int newScale = getScaledEnergyLevel(100);
+		int newScale = getScaledEnergyLevel(20);
 
 		if(newScale != prevScale)
 		{
