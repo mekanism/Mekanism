@@ -414,8 +414,10 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			GL11.glTranslated(-0.5, -0.5, -0.5);
 			GL11.glDisable(GL11.GL_CULL_FACE);
+			MekanismRenderer.blendOn();
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
 			GL11.glEnable(GL11.GL_CULL_FACE);
+			MekanismRenderer.blendOff();
 		}
 		else if(item.getItem() instanceof ItemGlowPanel)
 		{

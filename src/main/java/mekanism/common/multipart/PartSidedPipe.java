@@ -303,6 +303,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			return getTransmitter().getSize().centerSize+1;
 		}
+		
 		return 0;
 	}
 
@@ -352,6 +353,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		testingSide = side;
 		boolean unblocked = tile().canReplacePart(this, this);
 		testingSide = null;
+		
 		return unblocked;
 	}
 

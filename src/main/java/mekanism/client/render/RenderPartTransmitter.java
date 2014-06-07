@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.PartDiversionTransporter;
 import mekanism.common.multipart.PartLogisticalTransporter;
@@ -23,6 +24,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -546,12 +548,24 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color)
 	{
-		cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
+		if(color != null)
+		{
+			cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
+		}
+		else {
+			cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon));
+		}
 	}
 
 	public void renderTransparency(IIcon icon, CCModel cc, Colour color)
 	{
-		cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
+		if(color != null)
+		{
+			cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
+		}
+		else {
+			cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon));
+		}
 	}
 
 	public CCModel getItemModel(ForgeDirection side, TransmitterType type)

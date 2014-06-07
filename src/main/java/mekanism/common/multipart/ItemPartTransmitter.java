@@ -112,27 +112,27 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
 					break;
 				}
-				case 4: case 9: case 10: case 11:
+				case 4: case 5: case 6: case 7:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");
 					break;
 				}
-				case 5:
+				case 8:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "O " + EnumColor.GREY + "(Oxygen)");
 					list.add("- " + EnumColor.PURPLE + "H " + EnumColor.GREY + "(Hydrogen)");
 					break;
 				}
-				case 6:
+				case 9:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "Items (universal)");
 					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
 					break;
 				}
-				case 7:
+				case 10:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "Items (universal)");
@@ -140,7 +140,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
 					break;
 				}
-				case 8:
+				case 11:
 				{
 					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
 					list.add("- " + EnumColor.PURPLE + "Items (universal)");

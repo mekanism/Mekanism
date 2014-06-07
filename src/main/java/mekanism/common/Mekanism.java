@@ -933,6 +933,7 @@ public class Mekanism
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		
 		//Registrations
+		GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
 		GameRegistry.registerItem(Dust, "Dust");
 		GameRegistry.registerItem(Ingot, "Ingot");
