@@ -14,6 +14,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +29,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
+	
+	protected AxisAlignedBB packetRange = null;
 
 	protected int ticksSinceCreate = 0;
 	
@@ -53,6 +56,65 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public boolean isFirst(IGridTransmitter<N> transmitter)
 	{
 		return transmitters.iterator().next().equals(transmitter);
+	}
+	
+	public AxisAlignedBB getPacketRange()
+	{
+		if(packetRange == null)
+		{
+			return genPacketRange();
+		}
+		
+		return packetRange;
+	}
+	
+	public int getDimension()
+	{
+		if(getSize() == 0)
+		{
+			return 0;
+		}
+		
+		return transmitters.iterator().next().getLocation().dimensionId;
+	}
+	
+	protected AxisAlignedBB genPacketRange()
+	{
+		if(getSize() == 0)
+		{
+			deregister();
+			return null;
+		}
+		
+		Coord4D initCoord = transmitters.iterator().next().getLocation();
+		
+		int minX = initCoord.xCoord;
+		int minY = initCoord.yCoord;
+		int minZ = initCoord.zCoord;
+		int maxX = initCoord.xCoord;
+		int maxY = initCoord.yCoord;
+		int maxZ = initCoord.zCoord;
+		
+		for(IGridTransmitter transmitter : transmitters)
+		{
+			Coord4D coord = transmitter.getLocation();
+			
+			if(coord.xCoord < minX) minX = coord.xCoord;
+			if(coord.yCoord < minY) minY = coord.yCoord;
+			if(coord.zCoord < minZ) minZ = coord.zCoord;
+			if(coord.xCoord > maxX) maxX = coord.xCoord;
+			if(coord.yCoord > maxY) maxY = coord.yCoord;
+			if(coord.zCoord > maxZ) maxZ = coord.zCoord;
+		}
+		
+		minX -= 40;
+		minY -= 40;
+		minZ -= 40;
+		maxX += 40;
+		maxY += 40;
+		maxZ += 40;
+		
+		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
 	@Override

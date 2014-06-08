@@ -216,6 +216,12 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			Mekanism.packetPipeline.sendToDimension(new PacketTransmitterUpdate(PacketType.UPDATE, tile()), world().provider.dimensionId);
 		}
 	}
+	
+	@Override
+	public Coord4D getLocation()
+	{
+		return Coord4D.get(tile());
+	}
 
 	@Override
 	public void chunkLoad() {}
