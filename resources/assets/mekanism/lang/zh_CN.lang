@@ -415,17 +415,3 @@ item.SteelHelmet.name=钢头盔
 item.SteelChestplate.name=钢胸甲
 item.SteelLeggings.name=钢护腿
 item.SteelBoots.name=钢靴子
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=特斯拉线圈
-tile.Multimeter.name=万用表
-tile.ElectromagneticContractor.name=电磁承接口
-tile.Battery.name=模块电池
-
-//General text
-text.contractor.success=已成功链接契约人
-text.tesla.success=已成功链接特斯拉
