@@ -12,8 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
 item.AtomicCore.name=Atomic Core
 item.ElectricBow.name=Electric Bow
-item.BoundingBlock.name=Bounding Block
-item.StorageTank.name=Storage Tank
 item.ControlCircuit.name=Control Circuit
 item.EnrichedIron.name=Enriched Iron
 item.CompressedCarbon.name=Compressed Carbon
@@ -307,6 +305,7 @@ gui.teleporter.linksCapacity=Links > 2
 gui.teleporter.noLink=No link found
 
 gui.robit=Robit
+entity.Robit.name=Robit
 gui.robit.smelting=Robit Smelting
 gui.robit.inventory=Robit Inventory
 gui.robit.crafting=Robit Crafting
