@@ -214,16 +214,3 @@ item.SteelAxe.name=Hache en Acier
 item.SteelShovel.name=Pelle en Acier
 item.SteelHoe.name=Houe en Acier
 item.SteelSword.name=Epée en Acier
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=Bobine Tesla
-tile.Multimeter.name=Multimètre
-tile.ElectromagneticContractor.name=Contracteur Electromagnétique
-tile.Battery.name=Batterie Modulaire
-
-//Items
-item.Linker.name=Lieur Electrostatique
