@@ -30,9 +30,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
 {
 	public static final int MAX_BRINE = 10000;
-	
 	public static final int MAX_SOLARS = 4;
 	public static final int WARMUP = 10000;
+	public static final double WATER_USAGE = 40;
 
 	public FluidTank waterTank = new FluidTank(0);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
@@ -92,14 +92,14 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				int brineNeeded = brineTank.getCapacity()-brineTank.getFluidAmount();
 				int waterStored = waterTank.getFluidAmount();
 				
-				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*100);
+				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*WATER_USAGE);
 				
 				if(partialWater >= 1)
 				{
 					int waterInt = (int)Math.floor(partialWater);
 					waterTank.drain(waterInt, true);
 					partialWater %= 1;
-					partialBrine += ((double)waterInt)/100D;
+					partialBrine += ((double)waterInt)/WATER_USAGE;
 				}
 				
 				if(partialBrine >= 1)
