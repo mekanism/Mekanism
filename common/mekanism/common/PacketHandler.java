@@ -14,6 +14,7 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -212,7 +213,7 @@ public class PacketHandler implements IPacketHandler
 		{
 			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
 			{
-				if(cuboid.isVecInside(player.getPosition(1.0F)))
+				if(cuboid.isVecInside(Vec3.createVectorHelper(player.posX, player.posY, player.posZ)))
 				{
 					player.playerNetServerHandler.sendPacketToPlayer(packet);
 				}
