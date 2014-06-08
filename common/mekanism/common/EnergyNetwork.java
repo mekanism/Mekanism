@@ -18,6 +18,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
@@ -315,6 +316,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 		possibleAcceptors.clear();
 		acceptorDirections.clear();
+		packetRange = null;
 
 		while(it.hasNext())
 		{

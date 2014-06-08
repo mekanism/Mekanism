@@ -54,7 +54,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 		{
 			isActive = false;
 
-			List<EntityLiving> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
+			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
 
 			for(EntityLivingBase entity : entities)
 			{

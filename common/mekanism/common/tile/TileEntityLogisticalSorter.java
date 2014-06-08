@@ -85,9 +85,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				{
 					IInventory inventory = (IInventory)back;
 
-					InvStack inInventory = null;
-					boolean hasFilter = false;
-					EnumColor filterColor = color;
+					boolean sentItems = false;
 					int min = 0;
 
 					for(TransporterFilter filter : filters)
@@ -98,10 +96,6 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 						{
 							if(filter.canFilter(invStack.getStack()))
 							{
-								filterColor = filter.color;
-								hasFilter = true;
-								inInventory = invStack;
-
 								if(filter instanceof TItemStackFilter)
 								{
 									TItemStackFilter itemFilter = (TItemStackFilter)filter;
@@ -112,57 +106,35 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 									}
 								}
 
+								ItemStack used = emitItemToTransporter(front, invStack, filter.color, min);
+
+								if(used != null)
+								{
+									invStack.use(used.stackSize);
+									inventory.onInventoryChanged();
+									setActive(true);
+									sentItems = true;
+								}
+
 								break;
 							}
 						}
 					}
 
-					if(!hasFilter && autoEject)
+					if(!sentItems && autoEject)
 					{
-						inInventory = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), new FirstFinder());
-					}
+						InvStack invStack = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), new FirstFinder());
 
-					if(inInventory != null && inInventory.getStack() != null)
-					{
-						ItemStack used = null;
-
-						if(front instanceof ILogisticalTransporter)
+						if(invStack != null && invStack.getStack() != null)
 						{
-							ILogisticalTransporter transporter = (ILogisticalTransporter)front;
+							ItemStack used = emitItemToTransporter(front, invStack, null, 0);
 
-							if(!roundRobin)
+							if(used != null)
 							{
-								ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
-
-								if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-								{
-									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-								}
+								invStack.use(used.stackSize);
+								inventory.onInventoryChanged();
+								setActive(true);
 							}
-							else {
-								ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
-
-								if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-								{
-									used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-								}
-							}
-						}
-						else if(front instanceof IInventory)
-						{
-							ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
-
-							if(TransporterManager.didEmit(inInventory.getStack(), rejects))
-							{
-								used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-							}
-						}
-
-						if(used != null)
-						{
-							inInventory.use(used.stackSize);
-							inventory.onInventoryChanged();
-							setActive(true);
 						}
 					}
 
@@ -178,6 +150,48 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				}
 			}
 		}
+	}
+
+	/*
+	 * Returns used
+	 */
+	public ItemStack emitItemToTransporter(TileEntity front, InvStack inInventory, EnumColor filterColor, int min)
+	{
+		ItemStack used = null;
+
+		if(front instanceof ILogisticalTransporter)
+		{
+			ILogisticalTransporter transporter = (ILogisticalTransporter)front;
+
+			if(!roundRobin)
+			{
+				ItemStack rejects = TransporterUtils.insert(this, transporter, inInventory.getStack(), filterColor, true, min);
+
+				if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+				{
+					used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+				}
+			}
+			else {
+				ItemStack rejects = TransporterUtils.insertRR(this, transporter, inInventory.getStack(), filterColor, true, min);
+
+				if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+				{
+					used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+				}
+			}
+		}
+		else if(front instanceof IInventory)
+		{
+			ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
+
+			if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+			{
+				used = TransporterManager.getToUse(inInventory.getStack(), rejects);
+			}
+		}
+
+		return used;
 	}
 
 	@Override

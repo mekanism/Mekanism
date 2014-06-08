@@ -49,7 +49,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 
-			if(data.location != null && data.height > 0 && tileEntity.structure.fluidStored.getFluid() != null)
+			if(data.location != null && data.height >= 3 && tileEntity.structure.fluidStored.getFluid() != null)
 			{
 				push();
 

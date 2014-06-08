@@ -73,14 +73,14 @@ public class PacketTransmitterUpdate implements IMekanismPacket
 
 		if(transmitterType == 0)
 		{
-			IGridTransmitter transmitter = (IGridTransmitter)world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-			if(transmitter != null)
+			if(tileEntity instanceof IGridTransmitter)
 			{
-				transmitter.refreshTransmitterNetwork();
+				((IGridTransmitter)tileEntity).refreshTransmitterNetwork();
 			}
 		}
-		if(transmitterType == 1)
+		else if(transmitterType == 1)
 		{
 			double powerLevel = dataStream.readDouble();
 

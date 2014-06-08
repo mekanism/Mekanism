@@ -239,7 +239,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 		if(!worldObj.isRemote)
 		{
-			int newScale = getScaledEnergyLevel(100);
+			int newScale = getScaledEnergyLevel(20);
 
 			if(newScale != prevScale)
 			{

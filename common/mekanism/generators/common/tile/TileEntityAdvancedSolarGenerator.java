@@ -13,7 +13,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
-		super("AdvancedSolarGenerator", 200000, 360, MekanismGenerators.advancedSolarGeneration*2);
+		super("AdvancedSolarGenerator", 200000, MekanismGenerators.advancedSolarGeneration*2);
 		GENERATION_RATE = MekanismGenerators.advancedSolarGeneration;
 	}
 

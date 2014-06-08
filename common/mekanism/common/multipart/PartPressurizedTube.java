@@ -149,7 +149,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	{
 		super.save(nbtTags);
 
-		if(getTransmitterNetwork().gasStored != null)
+		if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0 && getTransmitterNetwork(false).gasStored != null)
 		{
 			int remain = getTransmitterNetwork().gasStored.amount%getTransmitterNetwork().transmitters.size();
 			int toSave = getTransmitterNetwork().gasStored.amount/getTransmitterNetwork().transmitters.size();

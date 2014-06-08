@@ -34,10 +34,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		inventory = new ItemStack[1];
 	}
 
-	public TileEntitySolarGenerator(String name, double maxEnergy, double output, double generation)
+	public TileEntitySolarGenerator(String name, double maxEnergy, double output)
 	{
 		super(name, maxEnergy, output);
-		GENERATION_RATE = generation;
 		inventory = new ItemStack[1];
 	}
 

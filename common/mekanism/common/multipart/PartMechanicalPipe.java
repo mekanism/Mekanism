@@ -160,7 +160,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	{
 		super.save(nbtTags);
 
-		if(getTransmitterNetwork().fluidStored != null)
+		if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0 && getTransmitterNetwork(false).fluidStored != null)
 		{
 			int remain = getTransmitterNetwork().fluidStored.amount%getTransmitterNetwork().transmitters.size();
 			int toSave = getTransmitterNetwork().fluidStored.amount/getTransmitterNetwork().transmitters.size();

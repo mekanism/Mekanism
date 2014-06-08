@@ -10,7 +10,10 @@ import mekanism.common.network.IMekanismPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.AxisAlignedBB;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -187,6 +190,9 @@ public class PacketHandler implements IPacketHandler
 				Coord4D obj = (Coord4D)transParams[0];
 				PacketDispatcher.sendPacketToAllAround(obj.xCoord, obj.yCoord, obj.zCoord, (Double)transParams[1], obj.dimensionId, packet);
 				break;
+			case CLIENTS_CUBOID:
+				sendToCuboid(packet, (AxisAlignedBB)transParams[0], (Integer)transParams[1]);
+				break;
 			case CLIENTS_DIM:
 				PacketDispatcher.sendPacketToAllInDimension(packet, (Integer)transParams[0]);
 				break;
@@ -196,6 +202,22 @@ public class PacketHandler implements IPacketHandler
 		}
 
 		log(trans, packetType, transParams);
+	}
+	
+	private static void sendToCuboid(Packet packet, AxisAlignedBB cuboid, int dimId)
+	{
+		MinecraftServer server = MinecraftServer.getServer();
+		
+		if(server != null && cuboid != null)
+		{
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			{
+				if(cuboid.isVecInside(player.getPosition(1.0F)))
+				{
+					player.playerNetServerHandler.sendPacketToPlayer(packet);
+				}
+			}
+		}
 	}
 
 	/**
@@ -219,6 +241,9 @@ public class PacketHandler implements IPacketHandler
 				case CLIENTS_RANGE:
 					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in a " + (Double)transParams[1] + " block range.");
 					break;
+				case CLIENTS_CUBOID:
+					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients within the cuboid " + ((AxisAlignedBB)transParams[0]).toString());
+					break;
 				case CLIENTS_DIM:
 					System.out.println("[Mekanism] Sent '" + packetType.getName() + "' packet to clients in dimension ID " + (Integer)transParams[0] + ".");
 					break;
@@ -239,6 +264,9 @@ public class PacketHandler implements IPacketHandler
 
 		/** 2 parameters - Object3D representing the location of the transmission, and a double of the distance this packet can be sent in. */
 		CLIENTS_RANGE(2),
+		
+		/** 2 parameter - AxisAlignedBB representing the area where the packet will be sent, and an int of the dimensionId the cuboid is in. */
+		CLIENTS_CUBOID(2),
 
 		/** 1 parameter - int representing the dimension ID to send this packet to. */
 		CLIENTS_DIM(1),

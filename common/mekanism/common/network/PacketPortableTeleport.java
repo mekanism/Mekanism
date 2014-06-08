@@ -54,6 +54,11 @@ public class PacketPortableTeleport implements IMekanismPacket
 					teleporter.teleDelay = 5;
 
 					item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
+					
+					if(player instanceof EntityPlayerMP)
+					{
+						((EntityPlayerMP)player).playerNetServerHandler.ticksForFloatKick = 0;
+					}
 
 					if(world.provider.dimensionId != coords.dimensionId)
 					{

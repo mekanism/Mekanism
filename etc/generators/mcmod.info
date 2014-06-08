@@ -3,7 +3,7 @@
   "modid": "MekanismGenerators",
   "name": "MekanismGenerators",
   "description": "Generators module of Mekanism.",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "mcversion": "1.6.4",
   "updateUrl": "",
   "authors": [
