@@ -12,8 +12,6 @@ item.Robit.name=机器人
 item.AtomicDisassembler.name=原子分解机
 item.AtomicCore.name=原子核
 item.ElectricBow.name=电动弓
-item.BoundingBlock.name=绑定方块
-item.StorageTank.name=储罐
 item.ControlCircuit.name=控制元件
 item.EnrichedIron.name=富集铁
 item.CompressedCarbon.name=压缩碳
@@ -30,6 +28,9 @@ item.ElectrolyticCore.name=电解核心
 
 //Gas Tank
 tile.GasTank.GasTank.name=燃气储罐
+
+//Bounding Block
+tile.BoundingBlock.name=绑定方块
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=锇方块
@@ -210,6 +211,7 @@ gui.teleporter.linksCapacity=链接数 > 2
 gui.teleporter.noLink=未发现链接
 
 gui.robit=机器人
+entity.Robit.name=机器人
 gui.robit.smelting=机器人熔炼中
 gui.robit.inventory=机器人物品栏
 gui.robit.crafting=机器人制造中
@@ -415,17 +417,3 @@ item.SteelHelmet.name=钢头盔
 item.SteelChestplate.name=钢胸甲
 item.SteelLeggings.name=钢护腿
 item.SteelBoots.name=钢靴子
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=特斯拉线圈
-tile.Multimeter.name=万用表
-tile.ElectromagneticContractor.name=电磁承接口
-tile.Battery.name=模块电池
-
-//General text
-text.contractor.success=已成功链接契约人
-text.tesla.success=已成功链接特斯拉
