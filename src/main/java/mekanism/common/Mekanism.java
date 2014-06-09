@@ -577,6 +577,12 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(FilterCard), new Object[] {
 			" A ", "ACA", " A ", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('C'), "circuitBasic"
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(SeismicReader.getUnchargedItem(), new Object[] {
+			"SLS", "STS", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 9), new Object[] {
+			"TLT", "CIC", "TTT", Character.valueOf('T'), "ingotTin", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('C'), "circuitBasic"
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
@@ -669,22 +675,18 @@ public class Mekanism
 					new ItemStack(Balloon, 1, j), new ItemStack(Items.dye, 1, i)
 				}));
 
-				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
 				}));
-
-				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockSlickHDPE, 4, i), new Object[] {
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockSlickHDPE, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
 				}));
-
-				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockGlowHDPE, 4, i), new Object[] {
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockGlowHDPE, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockGlowHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
 				}));
-
-				CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockReinforcedHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
 				}));
-
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(GlowPanel, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
 				}));
@@ -693,12 +695,10 @@ public class Mekanism
 			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(BlockGlowHDPE, 3, i), new Object[] {
 				new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(Items.glowstone_dust)
 			}));
-
-			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
 				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(Dust, 1, 2)
 			}));
-
-			CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(new ItemStack(BlockRoadHDPE, 3, i), new Object[] {
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockRoadHDPE, 3, i), new Object[] {
 				"SSS", "PPP", "SSS", Character.valueOf('S'), Blocks.sand, Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, i)
 			}));
         }
@@ -862,7 +862,7 @@ public class Mekanism
 			{
 				if(fuel.isItemEqual(new ItemStack(BasicBlock, 1, 3)))
 				{
-					return 200 * 8 * 9; // 1 item (200) * 8 items (1 charcoal) * 9 (9 in a block)
+					return 200*8*9;
 				}
 				
 				return 0;
