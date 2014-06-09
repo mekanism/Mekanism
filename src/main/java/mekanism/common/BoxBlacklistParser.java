@@ -66,12 +66,21 @@ public final class BoxBlacklistParser
 
 			String[] split = readingLine.split(":");
 
-			if(split.length != 2 || !isInteger(split[0]) || !isInteger(split[1]))
+			if(split.length != 2 || !isInteger(split[1]))
 			{
 				Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
+				continue;
+			}
+			
+			Block block = Block.getBlockFromName(split[0].trim());
+			
+			if(block == null)
+			{
+				Mekanism.logger.error("BoxBlacklist.txt: Couldn't find specified block on line " + line);
+				continue;
 			}
 
-			MekanismAPI.addBoxBlacklist(Block.getBlockFromName(split[0]), Integer.parseInt(split[1]));
+			MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[1]));
 			entries++;
 		}
 
@@ -87,10 +96,10 @@ public final class BoxBlacklistParser
 		writer.append("# Use this file to tell Mekanism which blocks should not be picked up by a cardboard box.");
 		writer.newLine();
 
-		writer.append("# Proper syntax is \"ID:META\". Example (for stone):");
+		writer.append("# Proper syntax is \"NAME:META\". Example (for stone):");
 		writer.newLine();
 
-		writer.append("# 1:0");
+		writer.append("# stone:0");
 
 		writer.flush();
 		writer.close();
