@@ -107,7 +107,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			for(String s : names)
 			{
-				if(s.contains("ore"))
+				if(s.startsWith("ore") || s.equals("logWood"))
 				{
 					isOre = true;
 				}
