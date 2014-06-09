@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +25,7 @@ public class ItemElectricBow extends ItemEnergized
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add(EnumColor.PINK + "Fire Mode: " + EnumColor.GREY + (getFireState(itemstack) ? "ON" : "OFF"));
+		list.add(EnumColor.PINK + MekanismUtils.localize("tooltip.fireMode") + ": " + EnumColor.GREY + (getFireState(itemstack) ? "ON" : "OFF"));
 	}
 
 	@Override

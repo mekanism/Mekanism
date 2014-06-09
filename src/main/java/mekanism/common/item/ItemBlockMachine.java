@@ -11,6 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
+import mekanism.client.MekanismKeyHandler;
 import mekanism.common.IElectricChest;
 import mekanism.common.IFactory;
 import mekanism.common.IInvConfiguration;
@@ -127,25 +128,25 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add("Hold " + EnumColor.AQUA + EnumColor.INDIGO + "shift" + EnumColor.GREY + " for more details.");
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " and " + EnumColor.AQUA + "M" + EnumColor.GREY + " for a description.");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " and " + EnumColor.AQUA + Keyboard.getKeyName(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
 		}
 		else if(!Keyboard.isKeyDown(Keyboard.KEY_M))
 		{
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
-				list.add(EnumColor.INDIGO + "Recipe Type: " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
 			}
 
 			if(type == MachineType.ELECTRIC_CHEST)
 			{
-				list.add(EnumColor.INDIGO + "Authenticated: " + EnumColor.GREY + getAuthenticated(itemstack));
-				list.add(EnumColor.INDIGO + "Locked: " + EnumColor.GREY + getLocked(itemstack));
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.auth") + ": " + EnumColor.GREY + getAuthenticated(itemstack));
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.locked") + ": " + EnumColor.GREY + getLocked(itemstack));
 			}
 
 			if(type != MachineType.LOGISTICAL_SORTER)
 			{
-				list.add(EnumColor.BRIGHT_GREEN + "Stored Energy: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
+				list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
 			}
 
 			if(hasTank(itemstack))
@@ -158,13 +159,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(supportsUpgrades(itemstack))
 			{
-				list.add(EnumColor.PURPLE + "Energy: " + EnumColor.GREY + "x" + (getEnergyMultiplier(itemstack)+1));
-				list.add(EnumColor.PURPLE + "Speed: " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
+				list.add(EnumColor.PURPLE + MekanismUtils.localize("tooltip.upgrade.energy") + ": " + EnumColor.GREY + "x" + (getEnergyMultiplier(itemstack)+1));
+				list.add(EnumColor.PURPLE + MekanismUtils.localize("tooltip.upgrade.speed") + ": " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
 			}
 
 			if(type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER)
 			{
-				list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+				list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
 		}
 		else {
