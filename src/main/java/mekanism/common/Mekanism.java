@@ -1351,7 +1351,7 @@ public class Mekanism
 	public void onEnergyTransferred(EnergyTransferEvent event)
 	{
 		try {
-			packetPipeline.sendToAll(new PacketTransmitterUpdate(PacketType.ENERGY, (TileEntity)event.energyNetwork.transmitters.iterator().next(), event.power));
+			packetPipeline.sendToCuboid(new PacketTransmitterUpdate(PacketType.ENERGY, (TileEntity)event.energyNetwork.transmitters.iterator().next(), event.power), event.energyNetwork.getPacketRange(), event.energyNetwork.getDimension());
 		} catch(Exception e) {}
 	}
 	
@@ -1359,7 +1359,7 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		try {
-			packetPipeline.sendToAll(new PacketTransmitterUpdate(PacketType.GAS, (TileEntity)event.gasNetwork.transmitters.iterator().next(), event.transferType, event.didTransfer));
+			packetPipeline.sendToCuboid(new PacketTransmitterUpdate(PacketType.GAS, (TileEntity)event.gasNetwork.transmitters.iterator().next(), event.transferType, event.didTransfer), event.gasNetwork.getPacketRange(), event.gasNetwork.getDimension());
 		} catch(Exception e) {}
 	}
 	
@@ -1367,7 +1367,7 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			packetPipeline.sendToAll(new PacketTransmitterUpdate(PacketType.FLUID, (TileEntity)event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.didTransfer));
+			packetPipeline.sendToCuboid(new PacketTransmitterUpdate(PacketType.FLUID, (TileEntity)event.fluidNetwork.transmitters.iterator().next(), event.fluidType, event.didTransfer), event.fluidNetwork.getPacketRange(), event.fluidNetwork.getDimension());
 		} catch(Exception e) {}
 	}
 	

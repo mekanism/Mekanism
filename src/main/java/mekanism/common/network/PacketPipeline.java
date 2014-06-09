@@ -17,6 +17,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
@@ -208,12 +211,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 
 	/**
 	 * Send this message to everyone.
-	 * <p/>
-	 * Adapted from CPW's code in
-	 * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
-	 *
-	 * @param message
-	 *            The message to send
+	 * @param message - the message to send
 	 */
 	public void sendToAll(MekanismPacket message)
 	{
@@ -223,14 +221,8 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 
 	/**
 	 * Send this message to the specified player.
-	 * <p/>
-	 * Adapted from CPW's code in
-	 * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
-	 *
-	 * @param message
-	 *            The message to send
-	 * @param player
-	 *            The player to send it to
+	 * @param message - the message to send
+	 * @param player - the player to send it to
 	 */
 	public void sendTo(MekanismPacket message, EntityPlayerMP player)
 	{
@@ -241,16 +233,9 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 
 	/**
 	 * Send this message to everyone within a certain range of a point.
-	 * <p/>
-	 * Adapted from CPW's code in
-	 * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
 	 *
-	 * @param message
-	 *            The message to send
-	 * @param point
-	 *            The
-	 *            {@link cpw.mods.fml.common.network.NetworkRegistry.TargetPoint}
-	 *            around which to send
+	 * @param message - the message to send
+	 * @param point - the TargetPoint around which to send
 	 */
 	public void sendToAllAround(MekanismPacket message, NetworkRegistry.TargetPoint point)
 	{
@@ -261,14 +246,8 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 
 	/**
 	 * Send this message to everyone within the supplied dimension.
-	 * <p/>
-	 * Adapted from CPW's code in
-	 * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
-	 *
-	 * @param message
-	 *            The message to send
-	 * @param dimensionId
-	 *            The dimension id to target
+	 * @param message - the message to send
+	 * @param dimensionId - the dimension id to target
 	 */
 	public void sendToDimension(MekanismPacket message, int dimensionId)
 	{
@@ -279,16 +258,33 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Mekani
 
 	/**
 	 * Send this message to the server.
-	 * <p/>
-	 * Adapted from CPW's code in
-	 * cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
-	 *
-	 * @param message
-	 *            The message to send
+	 * @param message - the message to send
 	 */
 	public void sendToServer(MekanismPacket message)
 	{
 		channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
 		channels.get(Side.CLIENT).writeAndFlush(message);
+	}
+	
+	/**
+	 * Send this message to all players within a defined AABB cuboid.
+	 * @param message - the message to send
+	 * @param cuboid - the AABB cuboid to send the packet in
+	 * @param dimId - the dimension the cuboid is in
+	 */
+	public void sendToCuboid(MekanismPacket message, AxisAlignedBB cuboid, int dimId)
+	{
+		MinecraftServer server = MinecraftServer.getServer();
+
+		if(server != null && cuboid != null)
+		{
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			{
+				if(cuboid.isVecInside(Vec3.createVectorHelper(player.posX, player.posY, player.posZ)))
+				{
+					sendTo(message, player);
+				}
+			}
+		}
 	}
 }
