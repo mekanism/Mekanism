@@ -12,8 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Desintegrador Atômico
 item.AtomicCore.name=Núcleo Atômico
 item.ElectricBow.name=Arco Elétrico
-item.BoundingBlock.name=Delimitadora de Bloco
-item.StorageTank.name=Tanque de Armazenamento
 item.ControlCircuit.name=Circuito de Controle
 item.EnrichedIron.name=Ferro Enriquecido 
 item.CompressedCarbon.name=Carbono Compactado
@@ -23,7 +21,7 @@ item.Configurator.name=Configurador
 item.NetworkReader.name=Leitor de Rede
 item.WalkieTalkie.name=Rádio Transmissor
 item.Jetpack.name=Jetpack
-item.ScubaTank.name=Tanque de Mergulho
+item.ScubaTank.name=Tanque de Mergulho
 item.GasMask.name=Máscara de Gás
 item.Dictionary.name=Dicionário
 item.ElectrolyticCore.name=Núcleo Eletrolítico
@@ -32,13 +30,16 @@ item.Sawdust.name=Serragem
 item.Salt.name=Sal
 item.BrineBucket.name=Balde de Salmoura
 item.FreeRunners.name=Corredores
-item.ArmoredJetpack.name=Jetpack Blindado
+item.ArmoredJetpack.name=Jetpack Blindado
 
 //Gas Tank
 tile.GasTank.GasTank.name=Tanque de Gás
 
 //Cardboard Box
 tile.CardboardBox.name=Caixa de Papelão
+
+//Bounding Block
+tile.BoundingBlock.name=Delimitadora de Bloco
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Bloco de Ósmio
@@ -307,6 +308,7 @@ gui.teleporter.linksCapacity=Conexões > 2
 gui.teleporter.noLink=Nenhuma conexão localizada
 
 gui.robit=Robit
+entity.Robit.name=Robit
 gui.robit.smelting=Fundição Robit
 gui.robit.inventory=Inventário Robit
 gui.robit.crafting=Criação Robit
