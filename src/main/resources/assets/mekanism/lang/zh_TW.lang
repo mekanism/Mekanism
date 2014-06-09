@@ -12,8 +12,6 @@ item.Robit.name=機器人
 item.AtomicDisassembler.name=原子分解機
 item.AtomicCore.name=原子核
 item.ElectricBow.name=電動弓
-item.BoundingBlock.name=綁定方塊
-item.StorageTank.name=儲存罐
 item.ControlCircuit.name=控制元件
 item.EnrichedIron.name=富集鐵
 item.CompressedCarbon.name=壓縮碳
@@ -39,6 +37,9 @@ tile.GasTank.GasTank.name=氣體鋼瓶
 
 //Cardboard Box
 tile.CardboardBox.name=紙箱
+
+//Bounding Block
+tile.BoundingBlock.name=綁定方塊
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=鋨方塊
@@ -307,6 +308,7 @@ gui.teleporter.linksCapacity=鏈接數 > 2
 gui.teleporter.noLink=未發現鏈接
 
 gui.robit=機器人
+entity.Robit.name=機器人
 gui.robit.smelting=機器人熔煉中
 gui.robit.inventory=機器人物品欄
 gui.robit.crafting=機器人合成製造中

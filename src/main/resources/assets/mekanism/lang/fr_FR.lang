@@ -12,9 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Désassembleur Atomique
 item.AtomicCore.name=Noyau Atomique
 item.ElectricBow.name=Arc Electrique
-item.BoundingBlock.name=Bloc de Limite
-tile.GasTank.name=Réservoir de Gaz
-item.StorageTank.name=Réservoir de Stockage
 item.ControlCircuit.name=Circuit de Contrôle
 item.EnrichedIron.name=Fer Enrichi
 item.CompressedCarbon.name=Carbonne Compressé
@@ -25,6 +22,12 @@ item.NetworkReader.name=Analyseur de Réseaux
 item.ManganeseAlloy.name=Alliage de Manganèse
 item.WalkieTalkie.name=Talkie-Walkie
 item.ElectrolyticCore.name=Noyau Electrolytique
+
+//Gas Tank
+tile.GasTank.GasTank.name=Réservoir de Gaz
+
+//Bounding Block
+tile.BoundingBlock.name=Bloc de Limite
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Bloc d'Osmium
@@ -214,16 +217,3 @@ item.SteelAxe.name=Hache en Acier
 item.SteelShovel.name=Pelle en Acier
 item.SteelHoe.name=Houe en Acier
 item.SteelSword.name=Epée en Acier
-
-//*********//
-//INDUCTION//
-//*********//
-
-//Blocks
-tile.Tesla.name=Bobine Tesla
-tile.Multimeter.name=Multimètre
-tile.ElectromagneticContractor.name=Contracteur Electromagnétique
-tile.Battery.name=Batterie Modulaire
-
-//Items
-item.Linker.name=Lieur Electrostatique
