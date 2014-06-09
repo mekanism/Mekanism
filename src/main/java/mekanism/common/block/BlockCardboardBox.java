@@ -66,10 +66,15 @@ public class BlockCardboardBox extends BlockContainer
 			if(tileEntity.storedData != null)
 			{
 				BlockData data = tileEntity.storedData;
+				
+				if(!data.block.canPlaceBlockAt(world, x, y, z))
+				{
+					return true;
+				}
 
 				if(data.block != null)
 				{
-					data.meta =data.block.onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
+					data.meta = data.block.onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
 				}
 
 				world.setBlock(x, y, z, data.block, data.meta, 3);

@@ -793,7 +793,7 @@ public class Mekanism
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence), new ChanceOutput(new ItemStack(Items.stick, 3)));
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence_gate), new ChanceOutput(new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1));
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.noteblock), new ChanceOutput(new ItemStack(Blocks.planks, 8), new ItemStack(Items.redstone, 1), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.unlit_redstone_torch), new ChanceOutput(new ItemStack(Items.stick, 1), new ItemStack(Items.redstone), 1));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.redstone_torch), new ChanceOutput(new ItemStack(Items.stick, 1), new ItemStack(Items.redstone), 1));
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.crafting_table), new ChanceOutput(new ItemStack(Blocks.planks, 4)));
 		
         //Metallurgic Infuser Recipes

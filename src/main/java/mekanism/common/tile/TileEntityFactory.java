@@ -20,6 +20,7 @@ import mekanism.common.IEjector;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.IUpgradeManagement;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -182,9 +183,15 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 					else if(recipeTicks == RECIPE_TICKS_REQUIRED)
 					{
 						recipeTicks = 0;
+						
+						ItemStack returnStack = getMachineStack();
+						IUpgradeManagement mgmt = (IUpgradeManagement)inventory[2].getItem();
+						
+						((IUpgradeManagement)returnStack.getItem()).setEnergyMultiplier(mgmt.getEnergyMultiplier(inventory[2]), returnStack);
+						((IUpgradeManagement)returnStack.getItem()).setSpeedMultiplier(mgmt.getSpeedMultiplier(inventory[2]), returnStack);
 
 						inventory[2] = null;
-						inventory[3] = getMachineStack();
+						inventory[3] = returnStack;
 
 						recipeType = toSet.ordinal();
 						gasTank.setGas(null);
