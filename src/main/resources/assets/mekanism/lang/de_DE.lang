@@ -12,8 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomar-Disassembler
 item.AtomicCore.name=Atomar-Kern
 item.ElectricBow.name=Elektrischer Bogen
-item.BoundingBlock.name=Begrenzungsblock
-item.StorageTank.name=Speichertank
 item.ControlCircuit.name=Kontrollschaltkreis
 item.EnrichedIron.name=Angereichertes Eisen
 item.CompressedCarbon.name=Komprimierter Kohlenstoff
@@ -46,6 +44,9 @@ tile.GasTank.GasTank.name=Gastank
 
 //Cardboard Box
 tile.CardboardBox.name=Pappkarton
+
+//Bounding Block
+tile.BoundingBlock.name=Begrenzungsblock
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmiumblock
@@ -352,6 +353,7 @@ gui.teleporter.linksCapacity=Links > 2
 gui.teleporter.noLink=Keinen Link gefunden
 
 gui.robit=Robit
+entity.Robit.name=Robit
 gui.robit.smelting=Robit-Schmelzen
 gui.robit.inventory=Robit-Inventar
 gui.robit.crafting=Robit-Werkbank
