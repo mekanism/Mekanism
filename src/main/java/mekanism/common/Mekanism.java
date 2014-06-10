@@ -127,7 +127,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import org.apache.logging.log4j.LogManager;
@@ -1285,6 +1284,7 @@ public class Mekanism
 		
 		//Register player tracker
 		FMLCommonHandler.instance().bus().register(new CommonPlayerTracker());
+		FMLCommonHandler.instance().bus().register(new CommonPlayerTickHandler());
 		
 		//Initialization notification
 		logger.info("Version " + versionNumber + " initializing...");

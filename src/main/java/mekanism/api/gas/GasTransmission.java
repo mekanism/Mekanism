@@ -100,26 +100,6 @@ public final class GasTransmission
 	}
 
 	/**
-	 * Emits a defined gas to the network.
-	 * @param type - gas type to send
-	 * @param amount - amount of gas to send
-	 * @param sender - the sender of the gas
-	 * @param facing - side the sender is outputting from
-	 * @return gas sent
-	 */
-	public static int emitGasToNetwork(GasStack stack, TileEntity sender, ForgeDirection facing)
-	{
-		TileEntity pointer = Coord4D.get(sender).getFromSide(facing).getTileEntity(sender.getWorldObj());
-
-		if(TransmissionType.checkTransmissionType(pointer, TransmissionType.GAS, sender))
-		{
-			return ((IGridTransmitter<GasNetwork>)pointer).getTransmitterNetwork().emit(stack);
-		}
-
-		return 0;
-	}
-
-	/**
 	 * Removes a specified amount of gas from an IGasItem.
 	 * @param itemStack - ItemStack of the IGasItem
 	 * @param type - type of gas to remove from the IGasItem, null if it doesn't matter

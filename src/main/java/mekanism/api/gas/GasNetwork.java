@@ -13,6 +13,7 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.Mekanism;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -214,6 +215,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
+			Mekanism.logger.info(gasStored);
 			prevTransferAmount = 0;
 
 			if(transferDelay == 0)

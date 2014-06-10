@@ -13,7 +13,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.client.gui.GuiProgress.ProgressBar;
@@ -45,7 +44,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 {
 	public FluidTank inputFluidTank = new FluidTank(10000);
 	public GasTank inputGasTank = new GasTank(10000);
-
+	
 	public GasTank outputGasTank = new GasTank(10000);
 
 	public TileEntityPRC()
@@ -112,7 +111,6 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 			if(outputGasTank.getGas() != null)
 			{
 				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
-				outputGasTank.draw(GasTransmission.emitGasToNetwork(toSend, this, MekanismUtils.getLeft(facing)), true);
 
 				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
 

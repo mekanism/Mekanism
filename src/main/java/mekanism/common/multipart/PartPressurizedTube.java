@@ -2,12 +2,15 @@ package mekanism.common.multipart;
 
 import java.util.Set;
 
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTransmission;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +21,7 @@ import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PartPressurizedTube extends PartTransmitter<GasNetwork>
+public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements IGasHandler
 {
 	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 1);
 
@@ -252,5 +255,34 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork>
 	public int getCapacity()
 	{
 		return 256;
+	}
+
+	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack) 
+	{
+		if(getConnectionType(side) == ConnectionType.NORMAL)
+		{
+			return getTransmitterNetwork().emit(stack);
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount) 
+	{
+		return null;
+	}
+
+	@Override
+	public boolean canReceiveGas(ForgeDirection side, Gas type) 
+	{
+		return getConnectionType(side) == ConnectionType.NORMAL;
+	}
+
+	@Override
+	public boolean canDrawGas(ForgeDirection side, Gas type)
+	{
+		return false;
 	}
 }

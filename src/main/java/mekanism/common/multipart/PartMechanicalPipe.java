@@ -254,7 +254,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(this.getConnectionType(from) == ConnectionType.NORMAL)
+		if(getConnectionType(from) == ConnectionType.NORMAL)
 		{
 			return getTransmitterNetwork().emit(resource, doFill);
 		}
@@ -277,13 +277,13 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return getConnectionType(from) == ConnectionType.NORMAL;
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return false;
 	}
 
 	@Override

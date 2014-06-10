@@ -9,6 +9,7 @@ import java.util.Set;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -27,6 +28,7 @@ public class TransmitterNetworkRegistry
 			loaderRegistered = true;
 
 			MinecraftForge.EVENT_BUS.register(new NetworkLoader());
+			FMLCommonHandler.instance().bus().register(INSTANCE);
 		}
 	}
 

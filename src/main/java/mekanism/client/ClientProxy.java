@@ -478,6 +478,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void loadUtilities()
 	{
+		super.loadUtilities();
+		
 		FMLCommonHandler.instance().bus().register(new ClientConnectionHandler());
 		FMLCommonHandler.instance().bus().register(new ClientPlayerTracker());
 		FMLCommonHandler.instance().bus().register(new ClientTickHandler());
