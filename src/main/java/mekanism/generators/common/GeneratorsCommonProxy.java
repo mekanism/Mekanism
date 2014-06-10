@@ -3,13 +3,13 @@ package mekanism.generators.common;
 import mekanism.common.Mekanism;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
-import mekanism.generators.common.inventory.container.ContainerHydrogenGenerator;
+import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerWindTurbine;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +34,7 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator");
 		GameRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator");
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
-		GameRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator");
+		GameRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator");
 		GameRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine");
 	}
 
@@ -49,11 +49,11 @@ public class GeneratorsCommonProxy
 	public void loadConfiguration()
 	{
 		Mekanism.configuration.load();
-		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 400D).getDouble(400D);
-		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 250D).getDouble(250D);
+		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble(300D);
+		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble(350D);
 		MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
 		MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
-		MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 100D).getDouble(100D);
+		MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 60D).getDouble(60D);
 		Mekanism.configuration.save();
 	}
 
@@ -93,7 +93,7 @@ public class GeneratorsCommonProxy
 			case 1:
 				return new ContainerSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
 			case 3:
-				return new ContainerHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
+				return new ContainerGasGenerator(player.inventory, (TileEntityGasGenerator)tileEntity);
 			case 4:
 				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
 			case 5:

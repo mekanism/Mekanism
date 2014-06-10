@@ -28,10 +28,12 @@ public class FuelHandler
 		if(gas.hasFluid())
 		{
 			Fuel bcFuel = IronEngineFuel.getFuelForFluid(gas.getFluid());
+			
 			if(bcFuel != null)
 			{
 				FuelGas fuel = new FuelGas(bcFuel);
 				fuels.put(gas.getName(), fuel);
+				
 				return fuel;
 			}
 		}

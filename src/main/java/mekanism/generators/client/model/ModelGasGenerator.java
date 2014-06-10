@@ -6,7 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelHydrogenGenerator extends ModelBase
+public class ModelGasGenerator extends ModelBase
 {
 	ModelRenderer A;
 	ModelRenderer B;
@@ -28,7 +28,7 @@ public class ModelHydrogenGenerator extends ModelBase
 	ModelRenderer R;
 	ModelRenderer S;
 
-	public ModelHydrogenGenerator()
+	public ModelGasGenerator()
 	{
 		textureWidth = 128;
 		textureHeight = 128;

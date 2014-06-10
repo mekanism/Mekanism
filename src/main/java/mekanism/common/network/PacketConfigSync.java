@@ -49,6 +49,7 @@ public class PacketConfigSync extends MekanismPacket
 		dataStream.writeDouble(Mekanism.purificationChamberUsage);
 		dataStream.writeDouble(Mekanism.energizedSmelterUsage);
 		dataStream.writeDouble(Mekanism.digitalMinerUsage);
+		dataStream.writeDouble(Mekanism.electricPumpUsage);
 		dataStream.writeDouble(Mekanism.rotaryCondensentratorUsage);
 		dataStream.writeDouble(Mekanism.oxidationChamberUsage);
 		dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
@@ -107,6 +108,7 @@ public class PacketConfigSync extends MekanismPacket
 		Mekanism.purificationChamberUsage = dataStream.readDouble();
 		Mekanism.energizedSmelterUsage = dataStream.readDouble();
 		Mekanism.digitalMinerUsage = dataStream.readDouble();
+		Mekanism.electricPumpUsage = dataStream.readDouble();
 		Mekanism.rotaryCondensentratorUsage = dataStream.readDouble();
 		Mekanism.oxidationChamberUsage = dataStream.readDouble();
 		Mekanism.chemicalInfuserUsage = dataStream.readDouble();

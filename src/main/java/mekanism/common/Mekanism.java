@@ -328,6 +328,7 @@ public class Mekanism
 	public static double purificationChamberUsage;
 	public static double energizedSmelterUsage;
 	public static double digitalMinerUsage;
+	public static double electricPumpUsage;
 	public static double rotaryCondensentratorUsage;
 	public static double oxidationChamberUsage;
 	public static double chemicalInfuserUsage;

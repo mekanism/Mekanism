@@ -6,7 +6,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.client.model.ModelHeatGenerator;
-import mekanism.generators.client.model.ModelHydrogenGenerator;
+import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.client.model.ModelWindTurbine;
 import mekanism.generators.common.MekanismGenerators;
@@ -29,7 +29,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelSolarGenerator solarGenerator = new ModelSolarGenerator();
 	public ModelBioGenerator bioGenerator = new ModelBioGenerator();
 	public ModelHeatGenerator heatGenerator = new ModelHeatGenerator();
-	public ModelHydrogenGenerator hydrogenGenerator = new ModelHydrogenGenerator();
+	public ModelGasGenerator hydrogenGenerator = new ModelGasGenerator();
 	public ModelWindTurbine windTurbine = new ModelWindTurbine();
 
 	@Override
@@ -72,12 +72,12 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
 				heatGenerator.render(0.0625F);
 			}
-			else if(metadata == GeneratorType.HYDROGEN_GENERATOR.meta)
+			else if(metadata == GeneratorType.GAS_GENERATOR.meta)
 			{
 				GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
 				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
 				GL11.glTranslated(0.0F, -1.0F, 0.0F);
-				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
+				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 				hydrogenGenerator.render(0.0625F);
 			}
 			else if(metadata == GeneratorType.WIND_TURBINE.meta)
@@ -88,7 +88,8 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 				Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "WindTurbine.png"));
 				windTurbine.render(0.018F, 0);
 			}
-			else if(metadata != 2) {
+			else if(metadata != 2) 
+			{
 				MekanismRenderer.renderItem(renderer, metadata, block);
 			}
 		}

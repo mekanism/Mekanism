@@ -58,19 +58,13 @@ public class GuiSlot extends GuiElement
 	}
 
 	@Override
-	public void renderForeground(int xAxis, int yAxis)
-	{
-	}
+	public void renderForeground(int xAxis, int yAxis) {}
 
 	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button)
-	{
-	}
+	public void preMouseClicked(int xAxis, int yAxis, int button) {}
 
 	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button)
-	{
-	}
+	public void mouseClicked(int xAxis, int yAxis, int button) {}
 
 	public enum SlotType
 	{

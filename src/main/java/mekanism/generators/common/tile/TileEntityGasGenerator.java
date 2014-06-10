@@ -23,7 +23,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityHydrogenGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection
+public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection
 {
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 18000;
@@ -34,9 +34,9 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	public int burnTicks = 0;
 	public double generationRate = 0;
 
-	public TileEntityHydrogenGenerator()
+	public TileEntityGasGenerator()
 	{
-		super("HydrogenGenerator", Mekanism.FROM_H2*100, Mekanism.FROM_H2*2);
+		super("GasGenerator", Mekanism.FROM_H2*100, Mekanism.FROM_H2*2);
 		inventory = new ItemStack[2];
 		fuelTank = new GasTank(MAX_GAS);
 	}
@@ -53,6 +53,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 			if(inventory[0] != null && fuelTank.getStored() < MAX_GAS)
 			{
 				Gas gasType = null;
+				
 				if(fuelTank.getGas() != null)
 				{
 					gasType = fuelTank.getGas().getGas();
@@ -61,9 +62,10 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				{
 					gasType = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]).getGas();
 				}
-				if(gasType != null)
+				
+				if(gasType != null && FuelHandler.getFuel(gasType) != null)
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, MAX_GAS-fuelTank.getStored());
+					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
 					fuelTank.receive(removed, true);
 				}
 			}
@@ -80,10 +82,14 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 				else if(fuelTank.getStored() > 0)
 				{
 					FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
-					burnTicks = fuel.burnTicks - 1;
-					generationRate = fuel.energyPerTick;
-					fuelTank.draw(1, true);
-					setEnergy(electricityStored + generationRate);
+					
+					if(fuel != null)
+					{
+						burnTicks = fuel.burnTicks - 1;
+						generationRate = fuel.energyPerTick;
+						fuelTank.draw(1, true);
+						setEnergy(getEnergy() + generationRate);
+					}
 				}
 				else {
 					burnTicks = 0;
@@ -117,8 +123,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		if(slotID == 0)
 		{
 			return itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
-					(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("hydrogen") ||
-					((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("ethene"));
+					FuelHandler.getFuel((((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -137,15 +142,15 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
+		return getEnergy() < getMaxEnergy() && fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
 	}
 
 	/**
-	 * Gets the scaled hydrogen level for the GUI.
+	 * Gets the scaled gas level for the GUI.
 	 * @param i - multiplier
 	 * @return
 	 */
-	public int getScaledHydrogenLevel(int i)
+	public int getScaledGasLevel(int i)
 	{
 		return fuelTank.getStored()*i / MAX_GAS;
 	}
@@ -153,7 +158,7 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	@Override
 	public String[] getMethodNames()
 	{
-		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getHydrogen", "getHydrogenNeeded"};
+		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
 	}
 
 	@Override
@@ -162,13 +167,13 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 		switch(method)
 		{
 			case 0:
-				return new Object[] {electricityStored};
+				return new Object[] {getEnergy()};
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {getMaxEnergy()};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {getMaxEnergy()-getEnergy()};
 			case 4:
 				return new Object[] {fuelTank.getStored()};
 			case 5:
@@ -184,7 +189,14 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	{
 		super.handlePacketData(dataStream);
 		
-		fuelTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
+		if(dataStream.readBoolean())
+		{
+			fuelTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+		}
+		else {
+			fuelTank.setGas(null);
+		}
+		
 		generationRate = dataStream.readDouble();
 	}
 
@@ -192,9 +204,19 @@ public class TileEntityHydrogenGenerator extends TileEntityGenerator implements 
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		data.add(fuelTank.getGas() == null ? 0 : fuelTank.getGas().getGas().getID());
-		data.add(fuelTank.getStored());
+		
+		if(fuelTank.getGas() != null)
+		{
+			data.add(true);
+			data.add(fuelTank.getGas().getGas().getID());
+			data.add(fuelTank.getStored());
+		}
+		else {
+			data.add(false);
+		}
+		
 		data.add(generationRate);
+		
 		return data;
 	}
 

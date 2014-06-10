@@ -4,18 +4,18 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerHydrogenGenerator extends Container
+public class ContainerGasGenerator extends Container
 {
-	private TileEntityHydrogenGenerator tileEntity;
+	private TileEntityGasGenerator tileEntity;
 
-	public ContainerHydrogenGenerator(InventoryPlayer inventory, TileEntityHydrogenGenerator tentity)
+	public ContainerGasGenerator(InventoryPlayer inventory, TileEntityGasGenerator tentity)
 	{
 		tileEntity = tentity;
 		addSlotToContainer(new Slot(tentity, 0, 17, 35));

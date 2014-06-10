@@ -2,8 +2,8 @@ package mekanism.generators.client.render;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.client.model.ModelHydrogenGenerator;
-import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.client.model.ModelGasGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
@@ -13,21 +13,21 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderHydrogenGenerator extends TileEntitySpecialRenderer
+public class RenderGasGenerator extends TileEntitySpecialRenderer
 {
-	private ModelHydrogenGenerator model = new ModelHydrogenGenerator();
+	private ModelGasGenerator model = new ModelGasGenerator();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityHydrogenGenerator)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityGasGenerator)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityHydrogenGenerator tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityGasGenerator tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HydrogenGenerator.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 
 		switch(tileEntity.facing)
 		{

@@ -102,7 +102,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{
-			if(getEnergy() >= 100 && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= 10000))
+			if(getEnergy() >= Mekanism.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= 10000))
 			{
 				if(suck(true))
 				{
@@ -150,7 +150,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - 100);
+						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
 						recurringNodes.add(wrapper.clone());
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -169,7 +169,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - 100);
+						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -187,7 +187,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(electricityStored - 100);
+						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -208,7 +208,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						{
 							if(take)
 							{
-								setEnergy(electricityStored - 100);
+								setEnergy(getEnergy() - Mekanism.electricPumpUsage);
 								recurringNodes.add(side);
 								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);

@@ -2,20 +2,20 @@ package mekanism.generators.client;
 
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
-import mekanism.generators.client.gui.GuiHydrogenGenerator;
+import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiWindTurbine;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderHeatGenerator;
-import mekanism.generators.client.render.RenderHydrogenGenerator;
+import mekanism.generators.client.render.RenderGasGenerator;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderWindTurbine;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import mekanism.generators.common.tile.TileEntityHydrogenGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.client.gui.GuiScreen;
@@ -39,7 +39,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntitySolarGenerator.class, "SolarGenerator", new RenderSolarGenerator());
 		ClientRegistry.registerTileEntity(TileEntityBioGenerator.class, "BioGenerator", new RenderBioGenerator());
 		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
-		ClientRegistry.registerTileEntity(TileEntityHydrogenGenerator.class, "HydrogenGenerator", new RenderHydrogenGenerator());
+		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
 		ClientRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine", new RenderWindTurbine());
 	}
 
@@ -64,7 +64,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 			case 1:
 				return new GuiSolarGenerator(player.inventory, (TileEntitySolarGenerator)tileEntity);
 			case 3:
-				return new GuiHydrogenGenerator(player.inventory, (TileEntityHydrogenGenerator)tileEntity);
+				return new GuiGasGenerator(player.inventory, (TileEntityGasGenerator)tileEntity);
 			case 4:
 				return new GuiBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
 			case 5:

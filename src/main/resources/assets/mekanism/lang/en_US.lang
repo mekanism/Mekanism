@@ -493,7 +493,7 @@ tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide info
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the the power of the !nsun to produce energy.
-tooltip.HydrogenGenerator=A generator that harnesses the molecular !npower of hydrogen to produce energy.
+tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
 tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
 tooltip.WindTurbine=A generator that uses the strength of the wind !n to produce energy, with greater efficiency !nat higher levels.
@@ -571,7 +571,7 @@ infuse.bio=Biomass
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
 tile.Generator.SolarGenerator.name=Solar Generator
-tile.Generator.HydrogenGenerator.name=Gas-Burning Generator
+tile.Generator.GasGenerator.name=Gas-Burning Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
