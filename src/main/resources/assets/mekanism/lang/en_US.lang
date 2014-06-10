@@ -489,14 +489,14 @@ tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based i
 tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
-tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !of the world.
+tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
-tooltip.SolarGenerator=A generator that uses the the power of the !nsun to produce energy.
+tooltip.SolarGenerator=A generator that uses the power of the !nsun to produce energy.
 tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
 tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
-tooltip.WindTurbine=A generator that uses the strength of the wind !n to produce energy, with greater efficiency !nat higher levels.
+tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
