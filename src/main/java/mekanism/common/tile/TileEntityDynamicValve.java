@@ -33,7 +33,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.dynamicTank.structure != null)
+		if(fluidTank.dynamicTank.structure != null && fluidTank.dynamicTank.structure.fluidStored != null)
 		{
 			if(resource.getFluid() == fluidTank.dynamicTank.structure.fluidStored.getFluid())
 			{

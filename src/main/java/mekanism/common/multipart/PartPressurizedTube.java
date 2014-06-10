@@ -260,7 +260,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack) 
 	{
-		if(getConnectionType(side) == ConnectionType.NORMAL)
+		if(getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL)
 		{
 			return getTransmitterNetwork().emit(stack);
 		}
@@ -277,7 +277,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type) 
 	{
-		return getConnectionType(side) == ConnectionType.NORMAL;
+		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
 	}
 
 	@Override
