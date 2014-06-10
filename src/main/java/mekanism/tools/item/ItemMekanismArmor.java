@@ -4,12 +4,14 @@ import java.util.List;
 
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
+import mekanism.common.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
@@ -40,6 +42,42 @@ public class ItemMekanismArmor extends ItemArmor
 	{
 		return "mekanism:armor/" + getArmorMaterial().name().toLowerCase() + "_" + type + ".png";
 	}
+	
+	@Override
+    public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
+    {
+        return StackUtils.equalsWildcard(getRepairStack(), stack2) ? true : super.getIsRepairable(stack1, stack2);
+    }
+	
+    private ItemStack getRepairStack()
+    {
+    	if(getArmorMaterial() == MekanismTools.armorOBSIDIAN)
+    	{
+    		return new ItemStack(Mekanism.Ingot, 1, 0);
+    	}
+    	else if(getArmorMaterial() == MekanismTools.armorLAZULI)
+    	{
+    		return new ItemStack(Items.dye, 1, 4);
+    	}
+    	else if(getArmorMaterial() == MekanismTools.armorOSMIUM)
+    	{
+    		return new ItemStack(Mekanism.Ingot, 1, 1);
+    	}
+    	else if(getArmorMaterial() == MekanismTools.armorBRONZE)
+    	{
+    		return new ItemStack(Mekanism.Ingot, 1, 2);
+    	}
+    	else if(getArmorMaterial() == MekanismTools.armorGLOWSTONE)
+    	{
+    		return new ItemStack(Mekanism.Ingot, 1, 3);
+    	}
+    	else if(getArmorMaterial() == MekanismTools.armorSTEEL)
+    	{
+    		return new ItemStack(Mekanism.Ingot, 1, 4);
+    	}
+    	
+    	return new ItemStack(getArmorMaterial().func_151685_b());
+    }
 
 	@Override
 	@SideOnly(Side.CLIENT)

@@ -13,12 +13,11 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Gasses. By default this is server-only, but if ticked on
@@ -215,7 +214,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			Mekanism.logger.info(gasStored);
 			prevTransferAmount = 0;
 
 			if(transferDelay == 0)

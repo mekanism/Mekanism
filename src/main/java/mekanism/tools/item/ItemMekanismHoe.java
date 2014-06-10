@@ -3,6 +3,7 @@ package mekanism.tools.item;
 import java.util.List;
 
 import mekanism.common.item.ItemMekanism;
+import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +28,12 @@ public class ItemMekanismHoe extends ItemMekanism
 		setMaxDamage(enumtoolmaterial.getMaxUses());
 		setCreativeTab(CreativeTabs.tabTools);
 	}
+	
+	@Override
+    public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
+    {
+        return StackUtils.equalsWildcard(ItemMekanismTool.getRepairStack(toolMaterial), stack2) ? true : super.getIsRepairable(stack1, stack2);
+    }
 
 	@Override
 	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float entityX, float entityY, float entityZ)
