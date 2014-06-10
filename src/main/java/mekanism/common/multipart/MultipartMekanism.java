@@ -34,7 +34,6 @@ public class MultipartMekanism implements IPartFactory
 		MultipartGenerator.registerPassThroughInterface("mekanism.common.ITileNetwork");
 		MultipartGenerator.registerPassThroughInterface("ic2.api.tile.IWrenchable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IBlockableConnection");
-		MultipartGenerator.registerPassThroughInterface("net.minecraftforge.fluids.IFluidHandler");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.gas.IGasHandler");
 	}
 

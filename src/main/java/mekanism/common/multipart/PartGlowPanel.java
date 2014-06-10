@@ -37,8 +37,9 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	{
 		Cuboid6 cuboid = new Cuboid6(0.25, 0, 0.25, 0.75, 0.125, 0.75);
 		Translation fromOrigin = new Translation(Vector3.center);
-		Translation toOrigin = (Translation) fromOrigin.inverse();
-		for(int i=0; i < 6; i++)
+		Translation toOrigin = (Translation)fromOrigin.inverse();
+		
+		for(int i = 0; i < 6; i++)
 		{
 			bounds[i] = cuboid.copy().apply(toOrigin).apply(Rotation.sideRotations[i]).apply(fromOrigin);
 		}

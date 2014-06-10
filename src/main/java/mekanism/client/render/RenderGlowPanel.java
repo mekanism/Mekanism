@@ -3,6 +3,7 @@ package mekanism.client.render;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.multipart.PartGlowPanel;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -72,9 +73,8 @@ public class RenderGlowPanel implements IIconSelfRegister
 
 		Colour colour = new ColourRGBA(panel.colour.getColor(0), panel.colour.getColor(1), panel.colour.getColor(2), 1);
 		int side = panel.side.ordinal();
-
-		frameModels[side].render(0, frameModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), null);
-
+		
+		frameModels[side].render(0, frameModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon));
 		lightModels[side].render(0, lightModels[side].verts.length, new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
 	}
 
@@ -87,11 +87,13 @@ public class RenderGlowPanel implements IIconSelfRegister
 
 		Colour colour = new ColourRGBA(c.getColor(0), c.getColor(1), c.getColor(2), 1);
 		Colour white = new ColourRGBA(1.0, 1.0, 1.0, 1.0);
-		for(int i=4;i<5;i++){
-
-		frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(white.rgba()));
-		lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
+		
+		for(int i = 4; i < 5; i++)
+		{
+			frameModels[i].render(0, frameModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(white.rgba()));
+			lightModels[i].render(0, lightModels[i].verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
 		}
+		
 		CCRenderState.draw();
 	}
 

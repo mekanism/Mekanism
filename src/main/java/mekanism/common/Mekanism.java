@@ -974,6 +974,7 @@ public class Mekanism
 		GameRegistry.registerItem(Substrate, "Substrate");
 		GameRegistry.registerItem(Polyethene, "Polyethene");
 		GameRegistry.registerItem(BioFuel, "BioFuel");
+		GameRegistry.registerItem(GlowPanel, "GlowPanel");
 	}
 	
 	/**
