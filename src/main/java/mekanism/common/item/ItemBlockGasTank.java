@@ -10,6 +10,8 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -86,18 +88,18 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		if(gasStack == null)
 		{
-			list.add("No gas stored.");
+			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
 		}
 		else {
-			list.add("Stored " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for more details.");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
 		}
 		else {
-			list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+			list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 		}
 	}
 

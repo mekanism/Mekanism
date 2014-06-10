@@ -49,8 +49,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
-		list.add("Mode: " + EnumColor.INDIGO + (getMode(itemstack) == 0 ? "normal" : "vein"));
-		list.add("Efficiency: " + EnumColor.INDIGO + getEfficiency(itemstack));
+		list.add(MekanismUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
+		list.add(MekanismUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + getEfficiency(itemstack));
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			toggleMode(itemstack);
-			entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Mode toggled to " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
 		}
 
 		return itemstack;
@@ -286,15 +286,15 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		switch(mode)
 		{
 			case 0:
-				return "normal";
+				return MekanismUtils.localize("tooltip.disassembler.normal");
 			case 1:
-				return "slow";
+				return MekanismUtils.localize("tooltip.disassembler.slow");
 			case 2:
-				return "fast";
+				return MekanismUtils.localize("tooltip.disassembler.fast");
 			case 3:
-				return "vein";
+				return MekanismUtils.localize("tooltip.disassembler.vein");
 			case 4:
-				return "off";
+				return MekanismUtils.localize("tooltip.disassembler.off");
 		}
 
 		return null;

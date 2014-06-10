@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -25,8 +26,8 @@ public class ItemWalkieTalkie extends ItemMekanism
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
-		list.add(getOn(itemstack) ? EnumColor.DARK_GREEN + "On" : EnumColor.DARK_RED + "Off");
-		list.add(EnumColor.DARK_AQUA + "Channel: " + EnumColor.GREY + getChannel(itemstack));
+		list.add((getOn(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + MekanismUtils.localize("gui." + (getOn(itemstack) ? "on" : "off")));
+		list.add(EnumColor.DARK_AQUA + MekanismUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
 	}
 
 	@Override

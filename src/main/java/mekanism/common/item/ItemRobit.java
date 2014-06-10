@@ -7,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -34,8 +35,8 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
-		list.add(EnumColor.INDIGO + "Name: " + EnumColor.GREY + getName(itemstack));
-		list.add(EnumColor.AQUA + "Inventory: " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+		list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.name") + ": " + EnumColor.GREY + getName(itemstack));
+		list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + (getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 	}
 
 	@Override

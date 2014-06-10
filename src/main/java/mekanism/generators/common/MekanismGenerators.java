@@ -51,9 +51,6 @@ public class MekanismGenerators implements IModule
 	//Blocks
 	public static Block Generator;
 	
-	//Block IDs
-	public static int generatorID;
-	
 	//Generation Configuration
 	public static double advancedSolarGeneration;
 	public static double bioGeneration;

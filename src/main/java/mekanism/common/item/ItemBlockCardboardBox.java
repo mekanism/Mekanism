@@ -7,6 +7,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,16 +44,16 @@ public class ItemBlockCardboardBox extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(EnumColor.INDIGO + "Block data: " + (getBlockData(itemstack) != null ? "Yes" : "No"));
+		list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.blockData") + ": " + LangUtils.transYesNo(getBlockData(itemstack) != null));
 
 		if(getBlockData(itemstack) != null)
 		{
-			list.add("Block: " + new ItemStack(getBlockData(itemstack).block, getBlockData(itemstack).meta).getDisplayName());
-			list.add("Metadata: " + getBlockData(itemstack).meta);
+			list.add(MekanismUtils.localize("tooltip.block") + ": " + new ItemStack(getBlockData(itemstack).block, getBlockData(itemstack).meta).getDisplayName());
+			list.add(MekanismUtils.localize("tooltip.meta") + ": " + getBlockData(itemstack).meta);
 
 			if(getBlockData(itemstack).tileTag != null)
 			{
-				list.add("Tile: " + getBlockData(itemstack).tileTag.getString("id"));
+				list.add(MekanismUtils.localize("tooltip.tile") + ": " + getBlockData(itemstack).tileTag.getString("id"));
 			}
 		}
 	}

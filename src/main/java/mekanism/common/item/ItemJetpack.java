@@ -51,13 +51,13 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 		if(gasStack == null)
 		{
-			list.add("No gas stored.");
+			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
 		}
 		else {
-			list.add("Stored " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
-		list.add(EnumColor.GREY + "Mode: " + EnumColor.GREY + getMode(itemstack).getName());
+		list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 
 	@Override

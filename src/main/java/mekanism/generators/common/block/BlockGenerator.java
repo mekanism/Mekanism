@@ -566,6 +566,16 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 				return null;
 			}
 		}
+		
+		public String getDescription()
+		{
+			return MekanismUtils.localize("tooltip." + name);
+		}
+		
+		public ItemStack getStack()
+		{
+			return new ItemStack(MekanismGenerators.Generator, 1, meta);
+		}
 
 		@Override
 		public String toString()

@@ -89,23 +89,23 @@ public class ItemPartTransmitter extends JItemMultiPart
 		{
 			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.ENERGY)
 			{
-				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
 			}
 
 			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.FLUID)
 			{
-				list.add(EnumColor.INDIGO + "Capacity: " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipeCapacity + "mB/t");
-				list.add(EnumColor.INDIGO + "Pump Rate: " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipePullAmount + "mB/t");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipeCapacity + "mB/t");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipePullAmount + "mB/t");
 			}
 
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
 		}
 		else {
 			switch(itemstack.getItemDamage())
 			{
 				case 0: case 1: case 2: case 3:
 				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
+					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 					list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
@@ -114,38 +114,37 @@ public class ItemPartTransmitter extends JItemMultiPart
 				}
 				case 4: case 5: case 6: case 7:
 				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-					list.add("- " + EnumColor.PURPLE + "mB " + EnumColor.GREY + "(FluidRegistry)");
+					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
 					break;
 				}
 				case 8:
 				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-					list.add("- " + EnumColor.PURPLE + "O " + EnumColor.GREY + "(Oxygen)");
-					list.add("- " + EnumColor.PURPLE + "H " + EnumColor.GREY + "(Hydrogen)");
+					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.gasses") + " (Mekanism)");
 					break;
 				}
 				case 9:
 				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-					list.add("- " + EnumColor.PURPLE + "Items (universal)");
-					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
+					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
 					break;
 				}
 				case 10:
 				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-					list.add("- " + EnumColor.PURPLE + "Items (universal)");
-					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
-					list.add("- " + EnumColor.DARK_RED + "Only used if no other paths available");
+					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.DARK_RED + MekanismUtils.localize("tooltip.restrictiveDesc"));
 					break;
 				}
 				case 11:
 				{
-					list.add(EnumColor.DARK_GREY + "Capable of transferring:");
-					list.add("- " + EnumColor.PURPLE + "Items (universal)");
-					list.add("- " + EnumColor.PURPLE + "Blocks (universal)");
-					list.add("- " + EnumColor.DARK_RED + "Controllable by redstone");
+					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.DARK_RED + MekanismUtils.localize("tooltip.diversionDesc"));
 					break;
 				}
 			}
