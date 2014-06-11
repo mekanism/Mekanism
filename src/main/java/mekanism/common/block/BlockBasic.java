@@ -12,7 +12,7 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.InventoryBin;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
@@ -420,7 +420,7 @@ public class BlockBasic extends Block
 
 					if(!manageInventory(entityplayer, tileEntity))
 					{
-						Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+						Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 						entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 					}
 					else {

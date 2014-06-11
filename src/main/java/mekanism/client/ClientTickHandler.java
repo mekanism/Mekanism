@@ -23,13 +23,13 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.network.PacketConfiguratorState;
-import mekanism.common.network.PacketElectricBowState;
-import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketJetpackData.JetpackPacket;
-import mekanism.common.network.PacketScubaTankData;
-import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
-import mekanism.common.network.PacketWalkieTalkieState;
+import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
+import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage.JetpackPacket;
+import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage.ScubaTankPacket;
+import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
@@ -234,7 +234,7 @@ public class ClientTickHandler
 						if(!lastTickUpdate)
 						{
 							item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
-							Mekanism.packetPipeline.sendToServer(new PacketConfiguratorState(item.getState(stack)));
+							Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(item.getState(stack)));
 							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
 							lastTickUpdate = true;
 						}
@@ -252,7 +252,7 @@ public class ClientTickHandler
 						if(!lastTickUpdate)
 						{
 							item.setFireState(stack, !item.getFireState(stack));
-							Mekanism.packetPipeline.sendToServer(new PacketElectricBowState(item.getFireState(stack)));
+							Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(item.getFireState(stack)));
 							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
 							lastTickUpdate = true;
 						}
@@ -271,7 +271,7 @@ public class ClientTickHandler
 						{
 							int newChan = item.getChannel(stack) < 9 ? item.getChannel(stack)+1 : 1;
 							item.setChannel(stack, newChan);
-							Mekanism.packetPipeline.sendToServer(new PacketWalkieTalkieState(newChan));
+							Mekanism.packetHandler.sendToServer(new WalkieTalkieStateMessage(newChan));
 							SoundHandler.playSound("mekanism:etc.Ding");
 							lastTickUpdate = true;
 						}
@@ -289,7 +289,7 @@ public class ClientTickHandler
 						if(!lastTickUpdate)
 						{
 							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
-							Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.MODE, null, false));
+							Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.MODE, null, false));
 							SoundHandler.playSound("mekanism:etc.Hydraulic");
 							lastTickUpdate = true;
 						}
@@ -307,7 +307,7 @@ public class ClientTickHandler
 						if(!lastTickUpdate)
 						{
 							((ItemScubaTank)scubaTank.getItem()).toggleFlowing(scubaTank);
-							Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.MODE, null, false));
+							Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.MODE, null, false));
 							SoundHandler.playSound("mekanism:etc.Hydraulic");
 							lastTickUpdate = true;
 						}
@@ -342,7 +342,7 @@ public class ClientTickHandler
 					Mekanism.jetpackOn.remove(mc.thePlayer.getCommandSenderName());
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketJetpackData(JetpackPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isJetpackOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isJetpackOn(mc.thePlayer)));
 			}
 
 			if(Mekanism.gasmaskOn.contains(mc.thePlayer.getCommandSenderName()) != isGasMaskOn(mc.thePlayer))
@@ -355,7 +355,7 @@ public class ClientTickHandler
 					Mekanism.gasmaskOn.remove(mc.thePlayer.getCommandSenderName());
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketScubaTankData(ScubaTankPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isGasMaskOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isGasMaskOn(mc.thePlayer)));
 			}
 
 			if(MekanismClient.audioHandler != null)

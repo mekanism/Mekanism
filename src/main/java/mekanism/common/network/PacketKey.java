@@ -1,54 +1,54 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mekanism.common.Mekanism;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.PacketHandler;
+import mekanism.common.network.PacketKey.KeyMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketKey extends MekanismPacket
+public class PacketKey implements IMessageHandler<KeyMessage, IMessage>
 {
-	public int key;
-	public boolean add;
-	
-	public PacketKey() {}
-
-	public PacketKey(int k, boolean a)
-	{
-		key = k;
-		add = a;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(KeyMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(key);
-		dataStream.writeBoolean(add);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		key = dataStream.readInt();
-		add = dataStream.readBoolean();
-
-		if(add)
+		if(message.add)
 		{
-			Mekanism.keyMap.add(player, key);
+			Mekanism.keyMap.add(PacketHandler.getPlayer(context), message.key);
 		}
 		else {
-			Mekanism.keyMap.remove(player, key);
+			Mekanism.keyMap.remove(PacketHandler.getPlayer(context), message.key);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class KeyMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public int key;
+		public boolean add;
+		
+		public KeyMessage() {}
+	
+		public KeyMessage(int k, boolean a)
+		{
+			key = k;
+			add = a;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(key);
+			dataStream.writeBoolean(add);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			key = dataStream.readInt();
+			add = dataStream.readBoolean();
+		}
 	}
 }

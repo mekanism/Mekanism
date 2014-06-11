@@ -4,8 +4,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -162,13 +162,13 @@ public class GuiPasswordModify extends GuiScreen
 		else {
 			if(isBlock)
 			{
-				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.PASSWORD, true, false, 0, 0, confirmPasswordField.getText(), Coord4D.get(tileEntity)));
-				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, true, 0, 0, null, Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToServer(new ElectricChestMessage(ElectricChestPacketType.PASSWORD, true, false, 0, 0, confirmPasswordField.getText(), Coord4D.get(tileEntity)));
+				Mekanism.packetHandler.sendToServer(new ElectricChestMessage(ElectricChestPacketType.SERVER_OPEN, false, true, 0, 0, null, Coord4D.get(tileEntity)));
 			}
 			else {
 				((IElectricChest)itemStack.getItem()).setPassword(itemStack, confirmPasswordField.getText());
-				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.PASSWORD, false, false, 0, 0, confirmPasswordField.getText(), null));
-				Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.SERVER_OPEN, false, false, 0, 0, null, null));
+				Mekanism.packetHandler.sendToServer(new ElectricChestMessage(ElectricChestPacketType.PASSWORD, false, false, 0, 0, confirmPasswordField.getText(), null));
+				Mekanism.packetHandler.sendToServer(new ElectricChestMessage(ElectricChestPacketType.SERVER_OPEN, false, false, 0, 0, null, null));
 			}
 		}
 	}

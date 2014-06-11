@@ -5,7 +5,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketRedstoneControl;
+import mekanism.common.network.PacketRedstoneControl.RedstoneControlMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
@@ -74,7 +74,7 @@ public class GuiRedstoneControl extends GuiElement
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
 
 				SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
+				Mekanism.packetHandler.sendToServer(new RedstoneControlMessage(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));
 			}
 		}
 	}

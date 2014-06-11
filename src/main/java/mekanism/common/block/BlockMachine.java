@@ -20,10 +20,10 @@ import mekanism.common.IUpgradeManagement;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.miner.MinerFilter;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityChargepad;
@@ -741,10 +741,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					}
 					else if(!electricChest.authenticated)
 					{
-						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+						Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
 					}
 					else {
-						Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+						Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
 					}
 
 					return true;
@@ -753,7 +753,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
 			{
 				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
-				PacketLogisticalSorterGui.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
+				LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
 				return true;
 			}
 			else {

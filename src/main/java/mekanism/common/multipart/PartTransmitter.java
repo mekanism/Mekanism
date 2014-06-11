@@ -11,8 +11,8 @@ import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.IConfigurable;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTransmitterUpdate;
-import mekanism.common.network.PacketTransmitterUpdate.PacketType;
+import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
+import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage.PacketType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.multipart.TileMultipart;
@@ -202,7 +202,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			Mekanism.packetPipeline.sendToDimension(new PacketTransmitterUpdate(PacketType.UPDATE, tile()), world().provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
 		}
 	}
 
@@ -213,7 +213,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			Mekanism.packetPipeline.sendToDimension(new PacketTransmitterUpdate(PacketType.UPDATE, tile()), world().provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
 		}
 	}
 	

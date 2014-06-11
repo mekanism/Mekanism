@@ -1,48 +1,50 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemWalkieTalkie;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketWalkieTalkieState extends MekanismPacket
+public class PacketWalkieTalkieState implements IMessageHandler<WalkieTalkieStateMessage, IMessage>
 {
-	public int channel;
-	
-	public PacketWalkieTalkieState() {}
-
-	public PacketWalkieTalkieState(int chan)
-	{
-		channel = chan;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(WalkieTalkieStateMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(channel);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		channel = dataStream.readInt();
-	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
-	{
+		ItemStack itemstack = PacketHandler.getPlayer(context).getCurrentEquippedItem();
 		
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-		ItemStack itemstack = player.getCurrentEquippedItem();
-
 		if(itemstack != null && itemstack.getItem() instanceof ItemWalkieTalkie)
 		{
-			((ItemWalkieTalkie)itemstack.getItem()).setChannel(itemstack, channel);
+			((ItemWalkieTalkie)itemstack.getItem()).setChannel(itemstack, message.channel);
+		}
+		
+		return null;
+	}
+	
+	public static class WalkieTalkieStateMessage implements IMessage
+	{
+		public int channel;
+		
+		public WalkieTalkieStateMessage() {}
+	
+		public WalkieTalkieStateMessage(int chan)
+		{
+			channel = chan;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(channel);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			channel = dataStream.readInt();
 		}
 	}
 }

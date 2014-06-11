@@ -6,10 +6,10 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.network.PacketEditFilter;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
-import mekanism.common.network.PacketNewFilter;
+import mekanism.common.network.PacketEditFilter.EditFilterMessage;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
+import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TMaterialFilter;
 import mekanism.common.util.MekanismUtils;
@@ -90,13 +90,13 @@ public class GuiTMaterialFilter extends GuiMekanism
 			{
 				if(isNew)
 				{
-					Mekanism.packetPipeline.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+					Mekanism.packetHandler.sendToServer(new NewFilterMessage(Coord4D.get(tileEntity), filter));
 				}
 				else {
-					Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+					Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
 			else if(filter.materialItem == null)
 			{
@@ -106,8 +106,8 @@ public class GuiTMaterialFilter extends GuiMekanism
 		}
 		else if(guibutton.id == 1)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
-			Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+			Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
+			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 		}
 	}
 
@@ -228,7 +228,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
+				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)

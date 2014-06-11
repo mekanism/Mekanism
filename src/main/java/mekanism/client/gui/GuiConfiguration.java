@@ -12,9 +12,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.network.PacketConfigurationUpdate;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
-import mekanism.common.network.PacketSimpleGui;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
+import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage.ConfigurationPacket;
+import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -256,19 +256,19 @@ public class GuiConfiguration extends GuiMekanism
 			{
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketSimpleGui(Coord4D.get(tile), guiId));
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0));
 			}
 		}
 
@@ -280,7 +280,7 @@ public class GuiConfiguration extends GuiMekanism
 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
             SoundHandler.playSound("gui.button.press");
-			Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0));
+			Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0));
 		}
 
 		for(int i = 0; i < slotPosMap.size(); i++)
@@ -291,7 +291,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i));
 			}
 		}
 
@@ -303,7 +303,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i));
 			}
 		}
 	}

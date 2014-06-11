@@ -1,57 +1,59 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.common.PacketHandler;
+import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPortalFX extends MekanismPacket
+public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage>
 {
-	public Coord4D coord4D;
-
-	public PacketPortalFX() {}
-	
-	public PacketPortalFX(Coord4D coord)
-	{
-		coord4D = coord;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(PortalFXMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
+		EntityPlayer player = PacketHandler.getPlayer(context);
+		
 		Random random = new Random();
-
-		int x = dataStream.readInt();
-		int y = dataStream.readInt();
-		int z = dataStream.readInt();
 
 		for(int i = 0; i < 50; i++)
 		{
-			player.worldObj.spawnParticle("portal", x + random.nextFloat(), y + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-			player.worldObj.spawnParticle("portal", x + random.nextFloat(), y + 1 + random.nextFloat(), z + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle("portal", message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle("portal", message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class PortalFXMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public Coord4D coord4D;
+	
+		public PortalFXMessage() {}
+		
+		public PortalFXMessage(Coord4D coord)
+		{
+			coord4D = coord;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(coord4D.xCoord);
+			dataStream.writeInt(coord4D.yCoord);
+			dataStream.writeInt(coord4D.zCoord);
+			dataStream.writeInt(coord4D.dimensionId);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		}
 	}
 }

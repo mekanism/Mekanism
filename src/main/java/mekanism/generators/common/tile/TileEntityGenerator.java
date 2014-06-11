@@ -10,7 +10,7 @@ import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -87,7 +87,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					clientActive = isActive;
-					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 
@@ -146,7 +146,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			updateDelay = Mekanism.UPDATE_DELAY;
 			clientActive = active;

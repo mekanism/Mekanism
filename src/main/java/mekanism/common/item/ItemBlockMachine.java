@@ -25,8 +25,8 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.miner.MinerFilter;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -521,11 +521,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				if(!getAuthenticated(itemstack))
 				{
-					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, false, false, 2, 0, null, null), (EntityPlayerMP)entityplayer);
+					Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, false, false, 2, 0, null, null), (EntityPlayerMP)entityplayer);
 				}
 				else if(getLocked(itemstack) && getEnergy(itemstack) > 0)
 				{
-					Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, false, false, 1, 0, null, null), (EntityPlayerMP)entityplayer);
+					Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, false, false, 1, 0, null, null), (EntityPlayerMP)entityplayer);
 				}
 				else {
 					InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);

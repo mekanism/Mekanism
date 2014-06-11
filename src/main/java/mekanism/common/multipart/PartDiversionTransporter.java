@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -121,7 +121,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		refreshConnections();
 		tile().notifyPartChange(this);
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
-		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()).getTargetPoint(50D));
+		Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()).getTargetPoint(50D));
 
 		return true;
 	}

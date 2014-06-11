@@ -1,89 +1,40 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage.JetpackPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketJetpackData extends MekanismPacket
+public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IMessage>
 {
-	public JetpackPacket packetType;
-
-	public String username;
-	public boolean value;
-	
-	public PacketJetpackData() {}
-
-	public PacketJetpackData(JetpackPacket type, String name, boolean state)
-	{
-		packetType = type;
-
-		if(packetType == JetpackPacket.UPDATE)
-		{
-			username = name;
-			value = state;
-		}
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(JetpackDataMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(packetType.ordinal());
-
-		if(packetType == JetpackPacket.UPDATE)
+		EntityPlayer player = PacketHandler.getPlayer(context);
+		
+		if(message.packetType == JetpackPacket.UPDATE)
 		{
-			PacketHandler.writeString(dataStream, username);
-			dataStream.writeBoolean(value);
-		}
-		else if(packetType == JetpackPacket.FULL)
-		{
-			dataStream.writeInt(Mekanism.jetpackOn.size());
-
-			for(String username : Mekanism.jetpackOn)
+			if(message.value)
 			{
-				PacketHandler.writeString(dataStream, username);
-			}
-		}
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		packetType = JetpackPacket.values()[dataStream.readInt()];
-
-		if(packetType == JetpackPacket.FULL)
-		{
-			Mekanism.jetpackOn.clear();
-
-			int amount = dataStream.readInt();
-
-			for(int i = 0; i < amount; i++)
-			{
-				Mekanism.jetpackOn.add(PacketHandler.readString(dataStream));
-			}
-		}
-		else if(packetType == JetpackPacket.UPDATE)
-		{
-			String username = PacketHandler.readString(dataStream);
-			boolean value = dataStream.readBoolean();
-
-			if(value)
-			{
-				Mekanism.jetpackOn.add(username);
+				Mekanism.jetpackOn.add(message.username);
 			}
 			else {
-				Mekanism.jetpackOn.remove(username);
+				Mekanism.jetpackOn.remove(message.username);
 			}
 
 			if(!player.worldObj.isRemote)
 			{
-				Mekanism.packetPipeline.sendToDimension(new PacketJetpackData(JetpackPacket.UPDATE, username, value), player.worldObj.provider.dimensionId);
+				Mekanism.packetHandler.sendToDimension(new JetpackDataMessage(JetpackPacket.UPDATE, message.username, message.value), player.worldObj.provider.dimensionId);
 			}
 		}
-		else if(packetType == JetpackPacket.MODE)
+		else if(message.packetType == JetpackPacket.MODE)
 		{
 			ItemStack stack = player.getEquipmentInSlot(3);
 
@@ -92,24 +43,79 @@ public class PacketJetpackData extends MekanismPacket
 				((ItemJetpack)stack.getItem()).incrementMode(stack);
 			}
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class JetpackDataMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
-	}
-
-	public static enum JetpackPacket
-	{
-		UPDATE,
-		FULL,
-		MODE;
+		public JetpackPacket packetType;
+	
+		public String username;
+		public boolean value;
+		
+		public JetpackDataMessage() {}
+	
+		public JetpackDataMessage(JetpackPacket type, String name, boolean state)
+		{
+			packetType = type;
+	
+			if(packetType == JetpackPacket.UPDATE)
+			{
+				username = name;
+				value = state;
+			}
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(packetType.ordinal());
+	
+			if(packetType == JetpackPacket.UPDATE)
+			{
+				PacketHandler.writeString(dataStream, username);
+				dataStream.writeBoolean(value);
+			}
+			else if(packetType == JetpackPacket.FULL)
+			{
+				dataStream.writeInt(Mekanism.jetpackOn.size());
+	
+				for(String username : Mekanism.jetpackOn)
+				{
+					PacketHandler.writeString(dataStream, username);
+				}
+			}
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			packetType = JetpackPacket.values()[dataStream.readInt()];
+	
+			if(packetType == JetpackPacket.FULL)
+			{
+				Mekanism.jetpackOn.clear();
+	
+				int amount = dataStream.readInt();
+	
+				for(int i = 0; i < amount; i++)
+				{
+					Mekanism.jetpackOn.add(PacketHandler.readString(dataStream));
+				}
+			}
+			else if(packetType == JetpackPacket.UPDATE)
+			{
+				username = PacketHandler.readString(dataStream);
+				value = dataStream.readBoolean();
+			}
+		}
+	
+		public static enum JetpackPacket
+		{
+			UPDATE,
+			FULL,
+			MODE;
+		}
 	}
 }

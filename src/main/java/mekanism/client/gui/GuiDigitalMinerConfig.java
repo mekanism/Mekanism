@@ -15,9 +15,9 @@ import mekanism.common.miner.MItemStackFilter;
 import mekanism.common.miner.MMaterialFilter;
 import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.miner.MinerFilter;
-import mekanism.common.network.PacketDigitalMinerGui;
-import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
+import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage.MinerGuiPacket;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -174,17 +174,17 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						if(filter instanceof MItemStackFilter)
 						{
 	                        SoundHandler.playSound("gui.button.press");
-							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
+							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MOreDictFilter)
 						{
 	                        SoundHandler.playSound("gui.button.press");
-							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
+							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof MMaterialFilter)
 						{
 	                        SoundHandler.playSound("gui.button.press");
-							Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
+							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
 					}
 				}
@@ -193,7 +193,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
+				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
 			}
 
 			if(xAxis >= 39 && xAxis <= 50 && yAxis >= 67 && yAxis <= 78)
@@ -219,7 +219,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(10);
 
-				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound("gui.button.press");
 			}
 		}
@@ -286,7 +286,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDigitalMinerGui(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 5, 0, 0));
+			Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 5, 0, 0));
 		}
 	}
 
@@ -507,7 +507,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(6);
 			data.add(toUse);
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
 			radiusField.setText("");
 		}
@@ -523,7 +523,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(7);
 			data.add(toUse);
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
 			minField.setText("");
 		}
@@ -539,7 +539,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 			data.add(8);
 			data.add(toUse);
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
 			maxField.setText("");
 		}

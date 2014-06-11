@@ -17,7 +17,7 @@ import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -155,7 +155,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 
-				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound("gui.button.press");
 			}
 		}

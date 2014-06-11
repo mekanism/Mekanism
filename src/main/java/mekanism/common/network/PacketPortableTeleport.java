@@ -1,12 +1,14 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.network.PacketPortableTeleport.PortableTeleportMessage;
+import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,32 +17,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPortableTeleport extends MekanismPacket
+public class PacketPortableTeleport implements IMessageHandler<PortableTeleportMessage, IMessage>
 {
-	public PacketPortableTeleport() {}
-	
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf buffer)
+	public IMessage onMessage(PortableTeleportMessage message, MessageContext context) 
 	{
-
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf buffer)
-	{
-
-	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
-	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
+		EntityPlayer player = PacketHandler.getPlayer(context);
 		ItemStack itemstack = player.getCurrentEquippedItem();
 		World world = player.worldObj;
 		
@@ -76,10 +62,29 @@ public class PacketPortableTeleport extends MekanismPacket
 						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 						
 						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-						Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords.getTargetPoint(40D));
+						Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
 					} catch(Exception e) {}
 				}
 			}
+		}
+		
+		return null;
+	}
+	
+	public static class PortableTeleportMessage implements IMessage
+	{
+		public PortableTeleportMessage() {}
+		
+		@Override
+		public void toBytes(ByteBuf buffer)
+		{
+	
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf buffer)
+		{
+	
 		}
 	}
 }

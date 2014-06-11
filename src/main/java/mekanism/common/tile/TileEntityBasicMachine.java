@@ -15,7 +15,7 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
@@ -115,7 +115,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 		}
@@ -240,7 +240,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			updateDelay = 10;
 			clientActive = active;

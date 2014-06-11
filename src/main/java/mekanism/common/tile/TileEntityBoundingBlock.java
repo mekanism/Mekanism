@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -29,7 +29,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 			mainY = y;
 			mainZ = z;
 
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 		}
 	}
 
@@ -40,7 +40,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 
 		if(worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDataRequest(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
 		}
 	}
 
@@ -71,7 +71,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				}
 
 				prevPower = power;
-				Mekanism.packetPipeline.sendToDimension(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.getWorldObj().provider.dimensionId);
+				Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.getWorldObj().provider.dimensionId);
 			}
 		}
 	}

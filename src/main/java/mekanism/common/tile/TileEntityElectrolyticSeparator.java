@@ -17,7 +17,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.ChargeUtils;
@@ -150,7 +150,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+						Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 					}
 				}
 			}
@@ -176,7 +176,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+						Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 					}
 				}
 			}

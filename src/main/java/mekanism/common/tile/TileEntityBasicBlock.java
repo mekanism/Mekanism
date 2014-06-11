@@ -12,8 +12,8 @@ import mekanism.api.Coord4D;
 import mekanism.common.ITileComponent;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,7 +61,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -119,7 +119,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		if(worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDataRequest(Coord4D.get(this)));
+			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
 		}
 	}
 
@@ -178,7 +178,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		if(facing != clientFacing)
 		{
-			Mekanism.packetPipeline.sendToDimension(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}
@@ -226,7 +226,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			if(redstone != power)
 			{
 				redstone = power;
-				Mekanism.packetPipeline.sendToDimension(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+				Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
 			}
 		}
 	}

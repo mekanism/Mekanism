@@ -14,8 +14,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.network.PacketPortalFX;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketPortalFX.PortalFXMessage;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -130,7 +130,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 			if(shouldRender != prevShouldRender)
 			{
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 			}
 
 			prevShouldRender = shouldRender;
@@ -278,7 +278,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 				for(Coord4D coords : Mekanism.teleporters.get(code))
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketPortalFX(coords), coords.getTargetPoint(40D));
+					Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
 				}
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));

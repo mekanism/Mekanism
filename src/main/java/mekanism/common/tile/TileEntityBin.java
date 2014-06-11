@@ -10,7 +10,7 @@ import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -380,7 +380,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(!worldObj.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 			prevCount = getItemCount();
 			sortStacks();
 		}
@@ -492,7 +492,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientActive != active)
 		{
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			clientActive = active;
 		}

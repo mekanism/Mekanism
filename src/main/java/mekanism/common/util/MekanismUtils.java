@@ -35,8 +35,8 @@ import mekanism.common.Version;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
 import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -831,10 +831,10 @@ public final class MekanismUtils
 
 		if(isBlock)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, true, false, 0, id, null, Coord4D.get(tileEntity)), player);
+			Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 0, id, null, Coord4D.get(tileEntity)), player);
 		}
 		else {
-			Mekanism.packetPipeline.sendTo(new PacketElectricChest(ElectricChestPacketType.CLIENT_OPEN, false, false, 0, id, null, null), player);
+			Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, false, false, 0, id, null, null), player);
 		}
 
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);

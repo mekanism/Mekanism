@@ -10,7 +10,7 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.EnergyCubeTier;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -65,7 +65,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 		if(newScale != prevScale)
 		{
-			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+			Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 		}
 
 		prevScale = newScale;

@@ -15,7 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -106,7 +106,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(suck(true))
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
 				clean(true);

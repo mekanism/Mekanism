@@ -1,55 +1,55 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemPortableTeleporter;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.network.PacketDigitUpdate.DigitUpdateMessage;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketDigitUpdate extends MekanismPacket
+public class PacketDigitUpdate implements IMessageHandler<DigitUpdateMessage, IMessage>
 {
-	public int index;
-	public int digit;
-	
-	public PacketDigitUpdate() {}
-
-	public PacketDigitUpdate(int ind, int dig)
-	{
-		index = ind;
-		digit = dig;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(DigitUpdateMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(index);
-		dataStream.writeInt(digit);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		int index = dataStream.readInt();
-		int digit = dataStream.readInt();
-
-		ItemStack currentStack = player.getCurrentEquippedItem();
+		ItemStack currentStack = PacketHandler.getPlayer(context).getCurrentEquippedItem();
 
 		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
-			item.setDigit(currentStack, index, digit);
+			item.setDigit(currentStack, message.index, message.digit);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class DigitUpdateMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public int index;
+		public int digit;
+		
+		public DigitUpdateMessage() {}
+	
+		public DigitUpdateMessage(int ind, int dig)
+		{
+			index = ind;
+			digit = dig;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(index);
+			dataStream.writeInt(digit);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			index = dataStream.readInt();
+			digit = dataStream.readInt();
+		}
 	}
 }

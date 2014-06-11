@@ -1,50 +1,50 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemConfigurator;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketConfiguratorState extends MekanismPacket
+public class PacketConfiguratorState implements IMessageHandler<ConfiguratorStateMessage, IMessage>
 {
-	public byte state;
-	
-	public PacketConfiguratorState() {}
-
-	public PacketConfiguratorState(byte s)
-	{
-		state = s;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(ConfiguratorStateMessage message, MessageContext context) 
 	{
-		dataStream.writeByte(state);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		byte state = dataStream.readByte();
-
-		ItemStack itemstack = player.getCurrentEquippedItem();
-
+		ItemStack itemstack = PacketHandler.getPlayer(context).getCurrentEquippedItem();
+		
 		if(itemstack != null && itemstack.getItem() instanceof ItemConfigurator)
 		{
-			((ItemConfigurator)itemstack.getItem()).setState(itemstack, (byte)state);
+			((ItemConfigurator)itemstack.getItem()).setState(itemstack, (byte)message.state);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class ConfiguratorStateMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public byte state;
+		
+		public ConfiguratorStateMessage() {}
+	
+		public ConfiguratorStateMessage(byte s)
+		{
+			state = s;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeByte(state);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			state = dataStream.readByte();
+		}
 	}
 }

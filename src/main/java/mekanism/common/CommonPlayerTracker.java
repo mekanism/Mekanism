@@ -1,11 +1,11 @@
 package mekanism.common;
 
-import mekanism.common.network.PacketBoxBlacklist;
-import mekanism.common.network.PacketConfigSync;
-import mekanism.common.network.PacketJetpackData;
-import mekanism.common.network.PacketJetpackData.JetpackPacket;
-import mekanism.common.network.PacketScubaTankData;
-import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
+import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
+import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
+import mekanism.common.network.PacketJetpackData.JetpackDataMessage.JetpackPacket;
+import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
+import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage.ScubaTankPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -25,10 +25,10 @@ public class CommonPlayerTracker
 	{
 		if(!event.player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketConfigSync(), (EntityPlayerMP)event.player);
-			Mekanism.packetPipeline.sendTo(new PacketBoxBlacklist(), (EntityPlayerMP)event.player);
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new ConfigSyncMessage(), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new BoxBlacklistMessage(), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
 
 			Mekanism.logger.info("Sent config to '" + event.player.getDisplayName() + ".'");
 		}
@@ -48,8 +48,8 @@ public class CommonPlayerTracker
 
 		if(!event.player.worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendTo(new PacketJetpackData(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
-			Mekanism.packetPipeline.sendTo(new PacketScubaTankData(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new JetpackDataMessage(JetpackPacket.FULL, null, false), (EntityPlayerMP)event.player);
+			Mekanism.packetHandler.sendTo(new ScubaTankDataMessage(ScubaTankPacket.FULL, null, false), (EntityPlayerMP)event.player);
 		}
 	}
 }

@@ -8,7 +8,7 @@ import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerTeleporter;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -66,7 +66,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(0);
 			data.add(getIncrementedNumber(tileEntity.code.digitOne));
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitOne = getIncrementedNumber(tileEntity.code.digitOne);
             SoundHandler.playSound("gui.button.press");
 		}
@@ -75,7 +75,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(1);
 			data.add(getIncrementedNumber(tileEntity.code.digitTwo));
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitTwo = getIncrementedNumber(tileEntity.code.digitTwo);
             SoundHandler.playSound("gui.button.press");
 		}
@@ -84,7 +84,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(2);
 			data.add(getIncrementedNumber(tileEntity.code.digitThree));
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitThree = getIncrementedNumber(tileEntity.code.digitThree);
             SoundHandler.playSound("gui.button.press");
 		}
@@ -93,7 +93,7 @@ public class GuiTeleporter extends GuiMekanism
 			data.add(3);
 			data.add(getIncrementedNumber(tileEntity.code.digitFour));
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			tileEntity.code.digitFour = getIncrementedNumber(tileEntity.code.digitFour);
             SoundHandler.playSound("gui.button.press");
 		}

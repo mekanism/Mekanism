@@ -1,71 +1,72 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.PacketHandler;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.tileentity.TileEntity;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketTileEntity extends MekanismPacket
+public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMessage>
 {
-	public Coord4D coord4D;
-
-	public ArrayList parameters;
-	
-	public ByteBuf storedBuffer = null;
-	
-	public PacketTileEntity() {}
-
-	public PacketTileEntity(Coord4D coord, ArrayList params)
-	{
-		coord4D = coord;
-		parameters = params;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream) throws Exception
+	public IMessage onMessage(TileEntityMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-		dataStream.writeInt(coord4D.dimensionId);
-
-		PacketHandler.encode(new Object[] {parameters}, dataStream);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream) throws Exception
-	{
-		coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-		
-		storedBuffer = dataStream.copy();
-	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player) throws Exception
-	{
-		TileEntity tileEntity = coord4D.getTileEntity(player.worldObj);
+		TileEntity tileEntity = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
 		
 		if(tileEntity instanceof ITileNetwork)
 		{
-			((ITileNetwork)tileEntity).handlePacketData(storedBuffer);
+			try {
+				((ITileNetwork)tileEntity).handlePacketData(message.storedBuffer);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			message.storedBuffer.release();
 		}
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player) throws Exception
-	{
-		TileEntity tileEntity = coord4D.getTileEntity(player.worldObj);
 		
-		if(tileEntity instanceof ITileNetwork)
+		return null;
+	}
+	
+	public static class TileEntityMessage implements IMessage
+	{
+		public Coord4D coord4D;
+	
+		public ArrayList parameters;
+		
+		public ByteBuf storedBuffer = null;
+		
+		public TileEntityMessage() {}
+	
+		public TileEntityMessage(Coord4D coord, ArrayList params)
 		{
-			((ITileNetwork)tileEntity).handlePacketData(storedBuffer);
-			storedBuffer.release();
+			coord4D = coord;
+			parameters = params;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(coord4D.xCoord);
+			dataStream.writeInt(coord4D.yCoord);
+			dataStream.writeInt(coord4D.zCoord);
+			dataStream.writeInt(coord4D.dimensionId);
+	
+			PacketHandler.encode(new Object[] {parameters}, dataStream);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			
+			storedBuffer = dataStream.copy();
 		}
 	}
 }

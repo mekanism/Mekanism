@@ -14,7 +14,7 @@ import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.integration.IC2ItemManager;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -91,7 +91,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 			if(!world.isRemote)
 			{
-				Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+				Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
 			}
 		}
 

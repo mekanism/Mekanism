@@ -12,9 +12,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.network.PacketLogisticalSorterGui;
-import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.transporter.TMaterialFilter;
@@ -163,17 +163,17 @@ public class GuiLogisticalSorter extends GuiMekanism
 						if(filter instanceof TItemStackFilter)
 						{
 							SoundHandler.playSound("gui.button.press");
-							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
+							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 1, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof TOreDictFilter)
 						{
 							SoundHandler.playSound("gui.button.press");
-							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
+							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 2, getFilterIndex()+i, 0));
 						}
 						else if(filter instanceof TMaterialFilter)
 						{
 							SoundHandler.playSound("gui.button.press");
-							Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
+							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
 					}
 				}
@@ -184,7 +184,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(1);
 
-				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound("gui.button.press");
 			}
 
@@ -193,7 +193,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(2);
 
-				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound("gui.button.press");
 			}
 		}
@@ -209,7 +209,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 			data.add(0);
 			data.add(button);
 
-			Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 			SoundHandler.playSound("mekanism:etc.Ding");
 		}
 	}
@@ -259,7 +259,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketLogisticalSorterGui(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
+			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 4, 0, 0));
 		}
 	}
 

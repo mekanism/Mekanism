@@ -5,7 +5,7 @@ import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketKey;
+import mekanism.common.network.PacketKey.KeyMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -36,7 +36,7 @@ public class MekanismClient extends Mekanism
 
 		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketKey(type, down));
+			Mekanism.packetHandler.sendToServer(new KeyMessage(type, down));
 			keyMap.update(Minecraft.getMinecraft().thePlayer, type, down);
 		}
 	}

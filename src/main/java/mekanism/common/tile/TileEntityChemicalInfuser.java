@@ -18,7 +18,7 @@ import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -86,7 +86,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 				}
 			}
 
@@ -182,7 +182,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 			for(EntityPlayer player : playersUsing)
 			{
-				Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
 			}
 
 			return;
@@ -334,7 +334,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			updateDelay = 10;
 			clientActive = active;

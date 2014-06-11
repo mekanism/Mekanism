@@ -6,7 +6,7 @@ import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.network.PacketStatusUpdate;
+import mekanism.common.network.PacketStatusUpdate.StatusUpdateMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -47,14 +47,14 @@ public class CommonPlayerTickHandler
 						if(item.getStatus(itemstack) != 2)
 						{
 							item.setStatus(itemstack, 2);
-							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(2), (EntityPlayerMP)player);
+							Mekanism.packetHandler.sendTo(new StatusUpdateMessage(2), (EntityPlayerMP)player);
 						}
 					}
 					else {
 						if(item.getStatus(itemstack) != 1)
 						{
 							item.setStatus(itemstack, 1);
-							Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(1), (EntityPlayerMP)player);
+							Mekanism.packetHandler.sendTo(new StatusUpdateMessage(1), (EntityPlayerMP)player);
 						}
 					}
 					return;
@@ -64,7 +64,7 @@ public class CommonPlayerTickHandler
 					if(item.getStatus(itemstack) != 3)
 					{
 						item.setStatus(itemstack, 3);
-						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(3), (EntityPlayerMP)player);
+						Mekanism.packetHandler.sendTo(new StatusUpdateMessage(3), (EntityPlayerMP)player);
 					}
 					return;
 				}
@@ -72,7 +72,7 @@ public class CommonPlayerTickHandler
 					if(item.getStatus(itemstack) != 4)
 					{
 						item.setStatus(itemstack, 4);
-						Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), (EntityPlayerMP)player);
+						Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
 					}
 					return;
 				}
@@ -81,7 +81,7 @@ public class CommonPlayerTickHandler
 				if(item.getStatus(itemstack) != 4)
 				{
 					item.setStatus(itemstack, 4);
-					Mekanism.packetPipeline.sendTo(new PacketStatusUpdate(4), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
 				}
 				return;
 			}

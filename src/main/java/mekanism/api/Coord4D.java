@@ -125,6 +125,18 @@ public class Coord4D
 		data.add(zCoord);
 		data.add(dimensionId);
 	}
+	
+	/**
+	 * Writes this Coord4D's data to a ByteBuf for packet transfer.
+	 * @param dataStream - the ByteBuf to add the data to
+	 */
+	public void write(ByteBuf dataStream)
+	{
+		dataStream.writeInt(xCoord);
+		dataStream.writeInt(yCoord);
+		dataStream.writeInt(zCoord);
+		dataStream.writeInt(dimensionId);
+	}
 
 	/**
 	 * Translates this Coord4D by the defined x, y, and z values.

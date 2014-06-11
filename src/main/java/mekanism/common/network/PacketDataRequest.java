@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
 
@@ -10,47 +9,30 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
+import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketDataRequest extends MekanismPacket
+public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IMessage>
 {
-	public Coord4D coord4D;
-	
-	public PacketDataRequest() {}
-
-	public PacketDataRequest(Coord4D coord)
-	{
-		coord4D = coord;
-	}
-	
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(DataRequestMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(coord4D.xCoord);
-		dataStream.writeInt(coord4D.yCoord);
-		dataStream.writeInt(coord4D.zCoord);
-
-		dataStream.writeInt(coord4D.dimensionId);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		int x = dataStream.readInt();
-		int y = dataStream.readInt();
-		int z = dataStream.readInt();
-
-		int id = dataStream.readInt();
-
-		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(id);
-
-		if(worldServer != null && worldServer.getTileEntity(x, y, z) instanceof ITileNetwork)
+		EntityPlayer player = PacketHandler.getPlayer(context);
+		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
+		
+		if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof ITileNetwork)
 		{
-			TileEntity tileEntity = worldServer.getTileEntity(x, y, z);
+			TileEntity tileEntity = message.coord4D.getTileEntity(worldServer);
 
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -67,19 +49,37 @@ public class PacketDataRequest extends MekanismPacket
 				}
 			}
 
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(worldServer.getTileEntity(x, y, z)), ((ITileNetwork) worldServer.getTileEntity(x, y, z)).getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), ((ITileNetwork)tileEntity).getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class DataRequestMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public Coord4D coord4D;
+		
+		public DataRequestMessage() {}
+	
+		public DataRequestMessage(Coord4D coord)
+		{
+			coord4D = coord;
+		}
+		
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(coord4D.xCoord);
+			dataStream.writeInt(coord4D.yCoord);
+			dataStream.writeInt(coord4D.zCoord);
+	
+			dataStream.writeInt(coord4D.dimensionId);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+		}
 	}
 }

@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.network.PacketDigitUpdate;
-import mekanism.common.network.PacketPortableTeleport;
+import mekanism.common.network.PacketDigitUpdate.DigitUpdateMessage;
+import mekanism.common.network.PacketPortableTeleport.PortableTeleportMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -83,7 +83,7 @@ public class GuiPortableTeleporter extends GuiScreen
 	{
 		if(guibutton.id == 0)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketPortableTeleport());
+			Mekanism.packetHandler.sendToServer(new PortableTeleportMessage());
 			mc.setIngameFocus();
 		}
 	}
@@ -98,25 +98,25 @@ public class GuiPortableTeleporter extends GuiScreen
 
 		if(xAxis > 23 && xAxis < 37 && yAxis > 44 && yAxis < 58)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0))));
+			Mekanism.packetHandler.sendToServer(new DigitUpdateMessage(0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 0, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 0)));
 			SoundHandler.playSound("gui.button.press");
 		}
 		else if(xAxis > 62 && xAxis < 76 && yAxis > 44 && yAxis < 58)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1))));
+			Mekanism.packetHandler.sendToServer(new DigitUpdateMessage(1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 1, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 1)));
 	        SoundHandler.playSound("gui.button.press");
 		}
 		else if(xAxis > 101 && xAxis < 115 && yAxis > 44 && yAxis < 58)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2))));
+			Mekanism.packetHandler.sendToServer(new DigitUpdateMessage(2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 2, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 2)));
 			SoundHandler.playSound("gui.button.press");
 		}
 		else if(xAxis > 140 && xAxis < 154 && yAxis > 44 && yAxis < 58)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDigitUpdate(3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3))));
+			Mekanism.packetHandler.sendToServer(new DigitUpdateMessage(3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3))));
 			((ItemPortableTeleporter)itemStack.getItem()).setDigit(itemStack, 3, getIncrementedNumber(((ItemPortableTeleporter)itemStack.getItem()).getDigit(itemStack, 3)));
 			SoundHandler.playSound("gui.button.press");
 		}

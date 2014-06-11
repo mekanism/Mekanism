@@ -1,53 +1,53 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.ItemInfo;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
+import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketBoxBlacklist extends MekanismPacket
+public class PacketBoxBlacklist implements IMessageHandler<BoxBlacklistMessage, IMessage>
 {
-	public PacketBoxBlacklist() {}
+	@Override
+	public IMessage onMessage(BoxBlacklistMessage message, MessageContext context) 
+	{
+		return null;
+	}
+	   
+	public static class BoxBlacklistMessage implements IMessage
+	{
+		public BoxBlacklistMessage() {}
+		
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(MekanismAPI.getBoxIgnore().size());
 	
-	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
-	{
-		dataStream.writeInt(MekanismAPI.getBoxIgnore().size());
-
-		for(ItemInfo info : MekanismAPI.getBoxIgnore())
-		{
-			dataStream.writeInt(Block.getIdFromBlock(info.block));
-			dataStream.writeInt(info.meta);
+			for(ItemInfo info : MekanismAPI.getBoxIgnore())
+			{
+				dataStream.writeInt(Block.getIdFromBlock(info.block));
+				dataStream.writeInt(info.meta);
+			}
 		}
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		MekanismAPI.getBoxIgnore().clear();
-
-		int amount = dataStream.readInt();
-
-		for(int i = 0; i < amount; i++)
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
 		{
-			MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
+			MekanismAPI.getBoxIgnore().clear();
+	
+			int amount = dataStream.readInt();
+	
+			for(int i = 0; i < amount; i++)
+			{
+				MekanismAPI.addBoxBlacklist(Block.getBlockById(dataStream.readInt()), dataStream.readInt());
+			}
+	
+			Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " total)");
 		}
-
-		Mekanism.logger.info("Received Cardboard Box blacklist entries from server (" + amount + " total)");
-	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
-	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
 	}
 }

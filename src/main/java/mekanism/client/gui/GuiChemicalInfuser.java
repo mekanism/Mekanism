@@ -16,6 +16,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -129,7 +130,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(0);
 
-				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound("gui.button.press");
 			}
 			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
@@ -137,7 +138,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				ArrayList data = new ArrayList();
 				data.add(1);
 
-				Mekanism.packetPipeline.sendToServer(new PacketTileEntity(Coord4D.get(tileEntity), data));
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				SoundHandler.playSound("gui.button.press");
 			}
 		}

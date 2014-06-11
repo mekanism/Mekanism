@@ -13,8 +13,8 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketDataRequest;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterManager;
@@ -324,7 +324,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 			for(TransporterStack stack : remove)
 			{
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, true)), Coord4D.get(tile()).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getSyncPacket(stack, true)), Coord4D.get(tile()).getTargetPoint(50D));
 				transit.remove(stack);
 				MekanismUtils.saveChunk(tile());
 			}
@@ -333,7 +333,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				if(transit.contains(stack))
 				{
-					Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 				}
 			}
 
@@ -438,7 +438,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				transit.add(stack);
 				TransporterManager.add(stack);
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 				MekanismUtils.saveChunk(tile());
 			}
 
@@ -474,7 +474,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				transit.add(stack);
 				TransporterManager.add(stack);
-				Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 				MekanismUtils.saveChunk(tile());
 			}
 
@@ -489,7 +489,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		stack.progress = 0;
 		transit.add(stack);
-		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
+		Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getSyncPacket(stack, false)), Coord4D.get(tile()).getTargetPoint(50D));
 		MekanismUtils.saveChunk(tile());
 	}
 
@@ -500,7 +500,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 		if(world().isRemote)
 		{
-			Mekanism.packetPipeline.sendToServer(new PacketDataRequest(Coord4D.get(tile())));
+			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(tile())));
 		}
 	}
 
@@ -679,7 +679,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		TransporterUtils.incrementColor(this);
 		refreshConnections();
 		tile().notifyPartChange(this);
-		Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()).getTargetPoint(50D));
+		Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), Coord4D.get(tile()).getTargetPoint(50D));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 
 		return true;

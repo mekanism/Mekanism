@@ -14,7 +14,7 @@ import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.Finder.FirstFinder;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TItemStackFilter;
@@ -148,7 +148,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			{
 				for(EntityPlayer player : playersUsing)
 				{
-					Mekanism.packetPipeline.sendTo(new PacketTileEntity(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -493,7 +493,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!worldObj.isRemote)
 		{
-			Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+			Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 		}
 	}
 
@@ -516,7 +516,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(clientActive != active)
 		{
-			Mekanism.packetPipeline.sendToAll(new PacketTileEntity(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
 			if(active)
 			{

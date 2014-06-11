@@ -1,50 +1,50 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemElectricBow;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketElectricBowState extends MekanismPacket
+public class PacketElectricBowState implements IMessageHandler<ElectricBowStateMessage, IMessage>
 {
-	public boolean fireMode;
-	
-	public PacketElectricBowState() {}
-
-	public PacketElectricBowState(boolean state)
-	{
-		fireMode = state;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(ElectricBowStateMessage message, MessageContext context) 
 	{
-		dataStream.writeBoolean(fireMode);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		boolean state = dataStream.readBoolean();
-
-		ItemStack itemstack = player.getCurrentEquippedItem();
-
+		ItemStack itemstack = PacketHandler.getPlayer(context).getCurrentEquippedItem();
+		
 		if(itemstack != null && itemstack.getItem() instanceof ItemElectricBow)
 		{
-			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, state);
+			((ItemElectricBow)itemstack.getItem()).setFireState(itemstack, message.fireMode);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class ElectricBowStateMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public boolean fireMode;
+		
+		public ElectricBowStateMessage() {}
+	
+		public ElectricBowStateMessage(boolean state)
+		{
+			fireMode = state;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeBoolean(fireMode);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			fireMode = dataStream.readBoolean();
+		}
 	}
 }

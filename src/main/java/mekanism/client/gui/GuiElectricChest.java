@@ -7,8 +7,8 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerElectricChest;
-import mekanism.common.network.PacketElectricChest;
-import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -122,10 +122,10 @@ public class GuiElectricChest extends GuiMekanism
 
 				if(isBlock)
 				{
-					Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), true, 0, 0, null, Coord4D.get(tileEntity)));
+					Mekanism.packetHandler.sendToServer(new ElectricChestMessage(ElectricChestPacketType.LOCK, !getLocked(), true, 0, 0, null, Coord4D.get(tileEntity)));
 				}
 				else {
-					Mekanism.packetPipeline.sendToServer(new PacketElectricChest(ElectricChestPacketType.LOCK, !getLocked(), false, 0, 0, null, null));
+					Mekanism.packetHandler.sendToServer(new ElectricChestMessage(ElectricChestPacketType.LOCK, !getLocked(), false, 0, 0, null, null));
 
 					ItemStack stack = mc.thePlayer.getCurrentEquippedItem();
 					((IElectricChest)stack.getItem()).setLocked(stack, !getLocked());

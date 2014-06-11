@@ -1,49 +1,51 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemPortableTeleporter;
-import net.minecraft.entity.player.EntityPlayer;
+import mekanism.common.network.PacketStatusUpdate.StatusUpdateMessage;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketStatusUpdate extends MekanismPacket
+public class PacketStatusUpdate implements IMessageHandler<StatusUpdateMessage, IMessage>
 {
-	public int status;
-	
-	public PacketStatusUpdate() {}
-
-	public PacketStatusUpdate(int state)
-	{
-		status = state;
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(StatusUpdateMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(status);
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		ItemStack currentStack = player.getCurrentEquippedItem();
-
+		ItemStack currentStack = PacketHandler.getPlayer(context).getCurrentEquippedItem();
+		
 		if(currentStack != null && currentStack.getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)currentStack.getItem();
-			item.setStatus(currentStack, dataStream.readInt());
+			item.setStatus(currentStack, message.status);
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class StatusUpdateMessage implements IMessage
 	{
-
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
-
+		public int status;
+		
+		public StatusUpdateMessage() {}
+	
+		public StatusUpdateMessage(int state)
+		{
+			status = state;
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(status);
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			status = dataStream.readInt();
+		}
 	}
 }

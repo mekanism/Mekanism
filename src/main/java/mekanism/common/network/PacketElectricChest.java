@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IElectricChest;
@@ -9,161 +8,32 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketElectricChest extends MekanismPacket
+public class PacketElectricChest implements IMessageHandler<ElectricChestMessage, IMessage>
 {
-	public ElectricChestPacketType activeType;
-
-	public boolean isBlock;
-
-	public boolean locked;
-
-	public String password;
-
-	public int guiType;
-	public int windowId;
-
-	public boolean useEnergy;
-
-	public Coord4D obj;
-	
-	public PacketElectricChest() {}
-
-	//This is a really messy implementation...
-	public PacketElectricChest(ElectricChestPacketType type, boolean b1, boolean b2, int i1, int i2, String s1, Coord4D c1)
-	{
-		activeType = type;
-
-		switch(activeType)
-		{
-			case LOCK:
-				locked = b1;
-				isBlock = b2;
-
-				if(isBlock)
-				{
-					obj = c1;
-				}
-
-				break;
-			case PASSWORD:
-				password = s1;
-				isBlock = b1;
-
-				if(isBlock)
-				{
-					obj = c1;
-				}
-
-				break;
-			case CLIENT_OPEN:
-				guiType = i1;
-				windowId = i2;
-				isBlock = b1;
-
-				if(isBlock)
-				{
-					obj = c1;
-				}
-
-				break;
-			case SERVER_OPEN:
-				useEnergy = b1;
-				isBlock = b2;
-
-				if(isBlock)
-				{
-					obj = c1;
-				}
-
-				break;
-		}
-	}
-
 	@Override
-	public void write(ChannelHandlerContext ctx, ByteBuf dataStream)
+	public IMessage onMessage(ElectricChestMessage message, MessageContext context) 
 	{
-		dataStream.writeInt(activeType.ordinal());
-
-		switch(activeType)
-		{
-			case LOCK:
-				dataStream.writeBoolean(locked);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-			case PASSWORD:
-				PacketHandler.writeString(dataStream, password);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-			case CLIENT_OPEN:
-				dataStream.writeInt(guiType);
-				dataStream.writeInt(windowId);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-			case SERVER_OPEN:
-				dataStream.writeBoolean(useEnergy);
-				dataStream.writeBoolean(isBlock);
-
-				if(isBlock)
-				{
-					dataStream.writeInt(obj.xCoord);
-					dataStream.writeInt(obj.yCoord);
-					dataStream.writeInt(obj.zCoord);
-				}
-
-				break;
-		}
-	}
-
-	@Override
-	public void read(ChannelHandlerContext ctx, EntityPlayer player, ByteBuf dataStream)
-	{
-		ElectricChestPacketType packetType = ElectricChestPacketType.values()[dataStream.readInt()];
-
-		if(packetType == ElectricChestPacketType.SERVER_OPEN)
+		EntityPlayer player = PacketHandler.getPlayer(context);
+		
+		if(message.packetType == ElectricChestPacketType.SERVER_OPEN)
 		{
 			try {
-				boolean energy = dataStream.readBoolean();
-				boolean block = dataStream.readBoolean();
-
-				if(block)
+				if(message.isBlock)
 				{
-					int x = dataStream.readInt();
-					int y = dataStream.readInt();
-					int z = dataStream.readInt();
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)message.coord4D.getTileEntity(player.worldObj);
 
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)player.worldObj.getTileEntity(x, y, z);
-
-					if(energy)
+					if(message.useEnergy)
 					{
 						tileEntity.setEnergy(tileEntity.getEnergy() - 100);
 					}
@@ -175,7 +45,7 @@ public class PacketElectricChest extends MekanismPacket
 
 					if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 					{
-						if(energy)
+						if(message.useEnergy)
 						{
 							((IEnergizedItem)stack.getItem()).setEnergy(stack, ((IEnergizedItem)stack.getItem()).getEnergy(stack) - 100);
 						}
@@ -189,44 +59,26 @@ public class PacketElectricChest extends MekanismPacket
 				e.printStackTrace();
 			}
 		}
-		else if(packetType == ElectricChestPacketType.CLIENT_OPEN)
+		else if(message.packetType == ElectricChestPacketType.CLIENT_OPEN)
 		{
 			try {
-				int type = dataStream.readInt();
-				int id = dataStream.readInt();
-				boolean block = dataStream.readBoolean();
+				int x = message.coord4D != null ? message.coord4D.xCoord : 0;
+				int y = message.coord4D != null ? message.coord4D.yCoord : 0;
+				int z = message.coord4D != null ? message.coord4D.zCoord : 0;
 
-				int x = 0;
-				int y = 0;
-				int z = 0;
-
-				if(block)
-				{
-					x = dataStream.readInt();
-					y = dataStream.readInt();
-					z = dataStream.readInt();
-				}
-
-				Mekanism.proxy.openElectricChest(player, type, id, block, x, y, z);
+				Mekanism.proxy.openElectricChest(player, message.guiType, message.windowId, message.isBlock, x, y, z);
 			} catch(Exception e) {
 				Mekanism.logger.error("Error while handling electric chest open packet.");
 				e.printStackTrace();
 			}
 		}
-		else if(packetType == ElectricChestPacketType.PASSWORD)
+		else if(message.packetType == ElectricChestPacketType.PASSWORD)
 		{
 			try {
-				String pass = PacketHandler.readString(dataStream);
-				boolean block = dataStream.readBoolean();
-
-				if(block)
+				if(message.isBlock)
 				{
-					int x = dataStream.readInt();
-					int y = dataStream.readInt();
-					int z = dataStream.readInt();
-
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)player.worldObj.getTileEntity(x, y, z);
-					tileEntity.password = pass;
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)message.coord4D.getTileEntity(player.worldObj);
+					tileEntity.password = message.password;
 					tileEntity.authenticated = true;
 				}
 				else {
@@ -234,7 +86,7 @@ public class PacketElectricChest extends MekanismPacket
 
 					if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 					{
-						((IElectricChest)stack.getItem()).setPassword(stack, pass);
+						((IElectricChest)stack.getItem()).setPassword(stack, message.password);
 						((IElectricChest)stack.getItem()).setAuthenticated(stack, true);
 					}
 				}
@@ -243,27 +95,20 @@ public class PacketElectricChest extends MekanismPacket
 				e.printStackTrace();
 			}
 		}
-		else if(packetType == ElectricChestPacketType.LOCK)
+		else if(message.packetType == ElectricChestPacketType.LOCK)
 		{
 			try {
-				boolean lock = dataStream.readBoolean();
-				boolean block = dataStream.readBoolean();
-
-				if(block)
+				if(message.isBlock)
 				{
-					int x = dataStream.readInt();
-					int y = dataStream.readInt();
-					int z = dataStream.readInt();
-
-					TileEntityElectricChest tileEntity = (TileEntityElectricChest)player.worldObj.getTileEntity(x, y, z);
-					tileEntity.locked = lock;
+					TileEntityElectricChest tileEntity = (TileEntityElectricChest)message.coord4D.getTileEntity(player.worldObj);
+					tileEntity.locked = message.locked;
 				}
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();
 
 					if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
 					{
-						((IElectricChest)stack.getItem()).setLocked(stack, lock);
+						((IElectricChest)stack.getItem()).setLocked(stack, message.locked);
 					}
 				}
 			} catch(Exception e) {
@@ -271,25 +116,197 @@ public class PacketElectricChest extends MekanismPacket
 				e.printStackTrace();
 			}
 		}
+		
+		return null;
 	}
-
-	@Override
-	public void handleClientSide(EntityPlayer player)
+	
+	public static class ElectricChestMessage implements IMessage
 	{
+		public ElectricChestPacketType packetType;
+	
+		public boolean isBlock;
+	
+		public boolean locked;
+	
+		public String password;
+	
+		public int guiType;
+		public int windowId;
+	
+		public boolean useEnergy;
+	
+		public Coord4D coord4D;
+		
+		public ElectricChestMessage() {}
+	
+		//This is a really messy implementation...
+		public ElectricChestMessage(ElectricChestPacketType type, boolean b1, boolean b2, int i1, int i2, String s1, Coord4D c1)
+		{
+			packetType = type;
+	
+			switch(packetType)
+			{
+				case LOCK:
+					locked = b1;
+					isBlock = b2;
+	
+					if(isBlock)
+					{
+						coord4D = c1;
+					}
+	
+					break;
+				case PASSWORD:
+					password = s1;
+					isBlock = b1;
+	
+					if(isBlock)
+					{
+						coord4D = c1;
+					}
+	
+					break;
+				case CLIENT_OPEN:
+					guiType = i1;
+					windowId = i2;
+					isBlock = b1;
+	
+					if(isBlock)
+					{
+						coord4D = c1;
+					}
+	
+					break;
+				case SERVER_OPEN:
+					useEnergy = b1;
+					isBlock = b2;
+	
+					if(isBlock)
+					{
+						coord4D = c1;
+					}
+	
+					break;
+			}
+		}
+	
+		@Override
+		public void toBytes(ByteBuf dataStream)
+		{
+			dataStream.writeInt(packetType.ordinal());
+	
+			switch(packetType)
+			{
+				case LOCK:
+					dataStream.writeBoolean(locked);
+					dataStream.writeBoolean(isBlock);
+	
+					if(isBlock)
+					{
+						dataStream.writeInt(coord4D.xCoord);
+						dataStream.writeInt(coord4D.yCoord);
+						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.dimensionId);
+					}
+	
+					break;
+				case PASSWORD:
+					PacketHandler.writeString(dataStream, password);
+					dataStream.writeBoolean(isBlock);
+	
+					if(isBlock)
+					{
+						dataStream.writeInt(coord4D.xCoord);
+						dataStream.writeInt(coord4D.yCoord);
+						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.dimensionId);
+					}
+	
+					break;
+				case CLIENT_OPEN:
+					dataStream.writeInt(guiType);
+					dataStream.writeInt(windowId);
+					dataStream.writeBoolean(isBlock);
+	
+					if(isBlock)
+					{
+						dataStream.writeInt(coord4D.xCoord);
+						dataStream.writeInt(coord4D.yCoord);
+						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.dimensionId);
+					}
+	
+					break;
+				case SERVER_OPEN:
+					dataStream.writeBoolean(useEnergy);
+					dataStream.writeBoolean(isBlock);
+	
+					if(isBlock)
+					{
+						dataStream.writeInt(coord4D.xCoord);
+						dataStream.writeInt(coord4D.yCoord);
+						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.dimensionId);
+					}
+	
+					break;
+			}
+		}
+	
+		@Override
+		public void fromBytes(ByteBuf dataStream)
+		{
+			packetType = ElectricChestPacketType.values()[dataStream.readInt()];
+	
+			if(packetType == ElectricChestPacketType.SERVER_OPEN)
+			{
+				useEnergy = dataStream.readBoolean();
+				isBlock = dataStream.readBoolean();
 
-	}
+				if(isBlock)
+				{
+					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				}
+			}
+			else if(packetType == ElectricChestPacketType.CLIENT_OPEN)
+			{
+				guiType = dataStream.readInt();
+				windowId = dataStream.readInt();
+				isBlock = dataStream.readBoolean();
 
-	@Override
-	public void handleServerSide(EntityPlayer player)
-	{
+				if(isBlock)
+				{
+					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				}
+			}
+			else if(packetType == ElectricChestPacketType.PASSWORD)
+			{
+				password = PacketHandler.readString(dataStream);
+				isBlock = dataStream.readBoolean();
 
-	}
+				if(isBlock)
+				{
+					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				}
+			}
+			else if(packetType == ElectricChestPacketType.LOCK)
+			{
+				locked = dataStream.readBoolean();
+				isBlock = dataStream.readBoolean();
 
-	public static enum ElectricChestPacketType
-	{
-		LOCK,
-		PASSWORD,
-		CLIENT_OPEN,
-		SERVER_OPEN
+				if(isBlock)
+				{
+					coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+				}
+			}
+		}
+	
+		public static enum ElectricChestPacketType
+		{
+			LOCK,
+			PASSWORD,
+			CLIENT_OPEN,
+			SERVER_OPEN
+		}
 	}
 }

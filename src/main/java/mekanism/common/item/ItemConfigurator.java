@@ -9,7 +9,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.IConfigurable;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
@@ -97,7 +97,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 							if(config instanceof TileEntityBasicBlock)
 							{
 								TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-								Mekanism.packetPipeline.sendToAllAround(new PacketTileEntity(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Coord4D.get(tileEntity).getTargetPoint(50D));
+								Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Coord4D.get(tileEntity).getTargetPoint(50D));
 							}
 
 							return true;
