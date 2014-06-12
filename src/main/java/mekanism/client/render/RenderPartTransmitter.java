@@ -7,7 +7,6 @@ import mekanism.api.Coord4D;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Mekanism;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.PartDiversionTransporter;
 import mekanism.common.multipart.PartLogisticalTransporter;
@@ -92,20 +91,18 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		small_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_small.obj"), 7, null);
 
-		for(CCModel c : small_models.values())
+		for(Map.Entry<String, CCModel> e : small_models.entrySet())
 		{
-			c.apply(new Translation(.5, .5, .5));
-			c.computeLighting(LightModel.standardLightModel);
-			c.shrinkUVs(0.0005);
+			e.setValue(e.getValue().twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
+			e.getValue().computeLighting(LightModel.standardLightModel);
 		}
 
 		large_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_large.obj"), 7, null);
 
-		for(CCModel c : large_models.values())
+		for(Map.Entry<String, CCModel> e : large_models.entrySet())
 		{
-			c.apply(new Translation(.5, .5, .5));
-			c.computeLighting(LightModel.standardLightModel);
-			c.shrinkUVs(0.0005);
+			e.setValue(e.getValue().twoFacedCopy().apply(new Translation(Vector3.center)).shrinkUVs(0.0005));
+			e.getValue().computeLighting(LightModel.standardLightModel);
 		}
 
 		contents_models = CCModel.parseObjModels(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"), 7, null);
@@ -118,7 +115,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		for(CCModel c : contents_models.values())
 		{
-			c.apply(new Translation(.5, .5, .5));
+			c.apply(new Translation(Vector3.center));
 			c.computeLighting(interiorLightModel);
 			c.shrinkUVs(0.0005);
 		}
@@ -306,7 +303,8 @@ public class RenderPartTransmitter implements IIconSelfRegister
 						}
 					}
 				}
-				else if(pipe.getConnectionType(side) != ConnectionType.NONE) {
+				else if(pipe.getConnectionType(side) != ConnectionType.NONE) 
+				{
 					GL11.glCullFace(GL11.GL_FRONT);
 					CCRenderState.startDrawing();
 					renderFluidInOut(side, pipe);
@@ -493,7 +491,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderStatic(PartSidedPipe transmitter)
 	{
-		TextureUtils.bindAtlas(0);
 		CCRenderState.reset();
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
@@ -549,10 +546,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		if(color != null)
 		{
-			cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
+			cc.render(new Translation(x, y, z), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
 		}
 		else {
-			cc.render(0, cc.verts.length, new Translation(x, y, z), new IconTransformation(icon));
+			cc.render(new Translation(x, y, z), new IconTransformation(icon));
 		}
 	}
 
@@ -560,10 +557,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		if(color != null)
 		{
-			cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon), new ColourMultiplier(color.rgba()));
+			cc.render(new IconTransformation(icon), new ColourMultiplier(color.rgba()));
 		}
 		else {
-			cc.render(0, cc.verts.length, new Translation(0, 0, 0), new IconTransformation(icon));
+			cc.render(new IconTransformation(icon));
 		}
 	}
 

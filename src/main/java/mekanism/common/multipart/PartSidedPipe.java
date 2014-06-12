@@ -314,9 +314,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		if(pass == 1)
 		{
 			RenderPartTransmitter.getInstance().renderStatic(this);
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 
 	@Override

@@ -208,6 +208,26 @@ public class MekanismRenderer
 		Tessellator.instance.draw();
 	}
 	
+	public static void color(EnumColor color)
+	{
+		color(color, 1.0F);
+	}
+	
+	public static void color(EnumColor color, float alpha)
+	{
+		color(color, alpha, 1.0F);
+	}
+	
+	public static void color(EnumColor color, float alpha, float multiplier)
+	{
+		GL11.glColor4f(color.getColor(0)*multiplier, color.getColor(1)*multiplier, color.getColor(2)*multiplier, alpha);
+	}
+	
+	public static void resetColor()
+	{
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	}
+	
 	public static IIcon getColorIcon(EnumColor color)
 	{
 		return colors[color.ordinal()];

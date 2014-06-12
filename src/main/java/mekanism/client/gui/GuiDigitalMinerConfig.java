@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
@@ -407,16 +409,19 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 				if(filter instanceof MItemStackFilter)
 				{
-					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
+					MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
 				}
 				else if(filter instanceof MOreDictFilter)
 				{
-					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 195, 96, 29);
+					MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
 				}
 				else if(filter instanceof MMaterialFilter)
 				{
-					drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 224, 96, 29);
+					MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
 				}
+				
+				drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
+				MekanismRenderer.resetColor();
 			}
 		}
 

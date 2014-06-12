@@ -111,12 +111,13 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@SideOnly(Side.CLIENT)
 	public boolean renderStatic(Vector3 pos, int pass)
 	{
-		if(pass == 1)
+		if(pass == 0)
 		{
 			RenderGlowPanel.getInstance().renderStatic(this);
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 
 	@Override
