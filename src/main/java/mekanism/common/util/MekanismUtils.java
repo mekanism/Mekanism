@@ -102,7 +102,7 @@ public final class MekanismUtils
 					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
 					{
 						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " Using outdated version on one or more modules."));
+						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + MekanismUtils.localize("update.outdated") + "."));
 
 						if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
 						{
@@ -114,15 +114,15 @@ public final class MekanismUtils
 							entityplayer.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
 						}
 
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " Consider updating to version " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " New features: " + EnumColor.INDIGO + Mekanism.recentNews));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " Visit " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " to download."));
+						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + MekanismUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
+						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + MekanismUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
+						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + MekanismUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "aidancbrady.com/mekanism" + EnumColor.GREY + " " + MekanismUtils.localize("update.toDownload") + "."));
 						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 						return true;
 					}
 					else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
 					{
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Using developer build " + EnumColor.DARK_GREY + Mekanism.versionNumber));
+						entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
 						return true;
 					}
 				}

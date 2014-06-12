@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
@@ -16,8 +17,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MekanismKeyHandler extends MekKeyHandler
 {
 	public static final String keybindCategory = "key.mekanism.category";
-	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism Mode Switch", Keyboard.KEY_M, keybindCategory);
-	public static KeyBinding voiceKey = new KeyBinding("Mekanism Voice", Keyboard.KEY_U, keybindCategory);
+	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + MekanismUtils.localize("key.mode"), Keyboard.KEY_M, keybindCategory);
+	public static KeyBinding voiceKey = new KeyBinding("Mekanism " + MekanismUtils.localize("key.voice"), Keyboard.KEY_U, keybindCategory);
 
 	public MekanismKeyHandler()
 	{

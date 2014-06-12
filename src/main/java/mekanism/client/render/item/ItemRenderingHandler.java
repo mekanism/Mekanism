@@ -385,6 +385,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemAtomicDisassembler)
 		{
+			GL11.glPushMatrix();
 			GL11.glScalef(1.4F, 1.4F, 1.4F);
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 
@@ -409,6 +410,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "AtomicDisassembler.png"));
 			atomicDisassembler.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemPartTransmitter)
 		{

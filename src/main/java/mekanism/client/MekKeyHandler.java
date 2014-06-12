@@ -104,5 +104,4 @@ public abstract class MekKeyHandler
 	 * was it an end or start tick which fired the key
 	 */
 	public abstract void keyUp(Type types, KeyBinding kb, boolean tickEnd);
-
 }

@@ -195,7 +195,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 				if(!world.isRemote && player.isSneaking())
 				{
 					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
-					player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Set link to block " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", dimension " + EnumColor.INDIGO + obj.dimensionId));
+					player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.setLink") + " " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", " + MekanismUtils.localize("tooltip.configurator.dim") + " " + EnumColor.INDIGO + obj.dimensionId));
 					setLink(stack, obj);
 
 					return true;
