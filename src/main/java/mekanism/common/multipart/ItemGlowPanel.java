@@ -37,7 +37,14 @@ public class ItemGlowPanel extends JItemMultiPart
 		EnumColor col = EnumColor.DYES[item.getItemDamage()];
 		ForgeDirection orientation = getSideFromVector3(vHit.subtract(Vector3.center));
 		
-		return new PartGlowPanel(col, orientation);
+		BlockCoord pos1 = pos.copy().inset(orientation.getOpposite().ordinal());
+		
+		if(world.isSideSolid(pos1.x, pos1.y, pos1.z, orientation.getOpposite()))
+		{
+			return new PartGlowPanel(col, orientation);
+		}
+		
+		return null;
 	}
 
 	public ForgeDirection getSideFromVector3(Vector3 vector)

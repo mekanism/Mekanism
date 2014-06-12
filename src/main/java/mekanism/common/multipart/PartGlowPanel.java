@@ -2,6 +2,7 @@ package mekanism.common.multipart;
 
 import java.util.Collections;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.common.Mekanism;
@@ -23,6 +24,7 @@ import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
 import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -77,6 +79,18 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	public void setOrientation(ForgeDirection newSide)
 	{
 		side = newSide;
+	}
+	
+	@Override
+	public void onNeighborChanged()
+	{
+		Coord4D adj = Coord4D.get(tile()).getFromSide(side);
+		
+		if(!world().isRemote && !world().isSideSolid(adj.xCoord, adj.yCoord, adj.zCoord, side.getOpposite()))
+		{
+			TileMultipart.dropItem(new ItemStack(Mekanism.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
+			tile().remPart(this);
+		}
 	}
 
 	@Override
