@@ -406,6 +406,9 @@ gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
 gui.digitalMiner.inverse=Inverse mode
 
+//Recipe names
+recipe.mekanismShaped=Shaped Crafting
+
 //Item and block tooltip text
 tooltip.configurator.modify=Modify
 tooltip.configurator.empty=Empty

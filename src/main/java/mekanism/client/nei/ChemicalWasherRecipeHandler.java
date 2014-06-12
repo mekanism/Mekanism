@@ -1,64 +1,72 @@
 package mekanism.client.nei;
 
-import static codechicken.core.gui.GuiDraw.changeTexture;
-import static codechicken.core.gui.GuiDraw.drawString;
-import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
+import mekanism.api.ChemicalPair;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiRotaryCondensentrator;
+import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.core.gui.GuiDraw;
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
+public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
 	public static int xOffset = 5;
-	public static int yOffset = 12;
+	public static int yOffset = 3;
 
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("nei.rotaryCondensentrator");
+		return MekanismUtils.localize("tile.MachineBlock2.ChemicalWasher.name");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "rotarycondensentrator";
+		return "chemicalwasher";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiRotaryCondensentrator.png";
+		return "mekanism:gui/nei/GuiChemicalWasher.png";
 	}
 
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiRotaryCondensentrator.class;
+		return GuiChemicalWasher.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.rotarycondensentrator";
+		return "mekanism.chemicalwasher";
+	}
+
+	public Set<Entry<GasStack, GasStack>> getRecipes()
+	{
+		return Recipe.CHEMICAL_WASHER.get().entrySet();
 	}
 
 	@Override
@@ -66,7 +74,7 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 71);
+		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 70);
 	}
 
 	@Override
@@ -74,25 +82,19 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 
-		if(recipe.type)
+		drawTexturedModalRect(61-xOffset, 39-yOffset, 176, 63, 55, 8);
+
+		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, new FluidStack(FluidRegistry.WATER, 1), null);
+
+		if(recipe.outputStack != null)
 		{
-			drawTexturedModalRect(64-xOffset, 39-yOffset, 176, 123, 48, 8);
-		}
-		else {
-			drawTexturedModalRect(64-xOffset, 39-yOffset, 176, 115, 48, 8);
+			displayGauge(58, 27-xOffset, 14-yOffset, 176, 4, 58, null, recipe.inputStack);
 		}
 
-		if(recipe.gasStack != null)
+		if(recipe.inputStack != null)
 		{
-			displayGauge(58, 26-xOffset, 14-yOffset, 176, 40, 58, null, recipe.gasStack);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, recipe.outputStack);
 		}
-
-		if(recipe.fluidStack != null)
-		{
-			displayGauge(58, 134-xOffset, 14-yOffset, 176, 40, 58, recipe.fluidStack, null);
-		}
-
-		drawString(recipe.type ? MekanismUtils.localize("gui.condensentrating") : MekanismUtils.localize("gui.decondensentrating"), 6-xOffset, 74-yOffset, 0x404040, false);
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(64-xOffset, 39-yOffset, 48, 8), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(61-xOffset, 39-yOffset, 55, 8), getRecipeId(), new Object[0]));
 	}
 
 	@Override
@@ -114,32 +116,19 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Gas gas : GasRegistry.getRegisteredGasses())
+			for(Map.Entry irecipe : getRecipes())
 			{
-				if(gas.hasFluid())
-				{
-					arecipes.add(new CachedIORecipe(new GasStack(gas, 1), new FluidStack(gas.getFluid(), 1), true));
-					arecipes.add(new CachedIORecipe(new GasStack(gas, 1), new FluidStack(gas.getFluid(), 1), false));
-				}
+				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			GasStack gas = (GasStack)results[0];
-
-			if(gas.getGas().hasFluid())
+			for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(new GasStack(gas.getGas(), 1), new FluidStack(gas.getGas().getFluid(), 1), false));
-			}
-		}
-		else if(outputId.equals("fluid") && results.length == 1 && results[0] instanceof FluidStack)
-		{
-			FluidStack fluid = (FluidStack)results[0];
-			Gas gas = GasRegistry.getGas(fluid.getFluid());
-
-			if(gas != null)
-			{
-				arecipes.add(new CachedIORecipe(new GasStack(gas, 1), new FluidStack(fluid.getFluid(), 1), true));
+				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
+				{
+					arecipes.add(new CachedIORecipe(irecipe));
+				}
 			}
 		}
 		else {
@@ -150,23 +139,24 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(String inputId, Object... ingredients)
 	{
-		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
+		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			GasStack gas = (GasStack)ingredients[0];
-
-			if(gas.getGas().hasFluid())
+			if(((FluidStack)ingredients[0]).getFluid() == FluidRegistry.WATER)
 			{
-				arecipes.add(new CachedIORecipe(new GasStack(gas.getGas(), 1), new FluidStack(gas.getGas().getFluid(), 1), true));
+				for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
+				{
+					arecipes.add(new CachedIORecipe(irecipe));
+				}
 			}
 		}
-		else if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
+		else if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			FluidStack fluid = (FluidStack)ingredients[0];
-			Gas gas = GasRegistry.getGas(fluid.getFluid());
-
-			if(gas != null)
+			for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(new GasStack(gas, 1), new FluidStack(fluid.getFluid(), 1), false));
+				if(irecipe.getKey().isGasEqual((GasStack)ingredients[0]))
+				{
+					arecipes.add(new CachedIORecipe(irecipe));
+				}
 			}
 		}
 		else {
@@ -182,13 +172,17 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).gasStack.getGas().getLocalizedName());
+			currenttip.add(FluidRegistry.WATER.getLocalizedName());
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidStack.getFluid().getLocalizedName());
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).inputStack.getGas().getLocalizedName());
+		}
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		{
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -205,13 +199,17 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).gasStack;
+			fluid = new FluidStack(FluidRegistry.WATER, 1);
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidStack;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
+		}
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		{
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
 
 		if(gas != null)
@@ -263,13 +261,17 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+18 && yAxis <= 72+18)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).gasStack;
+			fluid = new FluidStack(FluidRegistry.WATER, 1);
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+18 && yAxis <= 72+18)
+		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidStack;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
+		}
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		{
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
 
 		if(gas != null)
@@ -324,11 +326,8 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public GasStack gasStack;
-		public FluidStack fluidStack;
-
-		/* true = condensentrating, false = decondensentrating */
-		public boolean type;
+		public GasStack inputStack;
+		public GasStack outputStack;
 
 		@Override
 		public PositionedStack getResult()
@@ -336,11 +335,15 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(GasStack gas, FluidStack fluid, boolean b)
+		public CachedIORecipe(GasStack input, GasStack output)
 		{
-			gasStack = gas;
-			fluidStack = fluid;
-			type = b;
+			inputStack = input;
+			outputStack = output;
+		}
+
+		public CachedIORecipe(Map.Entry recipe)
+		{
+			this((GasStack)recipe.getKey(), (GasStack)recipe.getValue());
 		}
 	}
 }

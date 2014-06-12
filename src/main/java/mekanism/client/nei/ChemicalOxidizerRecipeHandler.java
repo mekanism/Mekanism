@@ -1,7 +1,7 @@
 package mekanism.client.nei;
 
-import static codechicken.core.gui.GuiDraw.changeTexture;
-import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -10,65 +10,62 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiChemicalDissolutionChamber;
+import mekanism.client.gui.GuiChemicalOxidizer;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.core.gui.GuiDraw;
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIClientConfig;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
+public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
 	public static int xOffset = 5;
-	public static int yOffset = 3;
+	public static int yOffset = 12;
 
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("gui.chemicalDissolutionChamber.short");
+		return MekanismUtils.localize("tile.MachineBlock2.ChemicalOxidizer.name");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "chemicaldissolutionchamber";
+		return "chemicaloxidizer";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiChemicalDissolutionChamber.png";
+		return "mekanism:gui/GuiChemicalOxidizer.png";
 	}
 
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiChemicalDissolutionChamber.class;
+		return GuiChemicalOxidizer.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.chemicaldissolutionchamber";
+		return "mekanism.chemicaloxidizer";
 	}
 
 	public Set<Entry<ItemStack, GasStack>> getRecipes()
 	{
-		return Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get().entrySet();
+		return Recipe.CHEMICAL_OXIDIZER.get().entrySet();
 	}
 
 	@Override
@@ -76,7 +73,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 79);
+		drawTexturedModalRect(0, 0, xOffset, yOffset, 147, 62);
 	}
 
 	@Override
@@ -86,8 +83,6 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 
 		float f = ticksPassed % 20 / 20.0F;
 		drawProgressBar(64-xOffset, 40-yOffset, 176, 63, 48, 8, f, 0);
-
-		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
 
 		if(gas != null)
 		{
@@ -142,11 +137,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
-		{
-			currenttip.add(GasRegistry.getGas("sulfuricAcid").getLocalizedName());
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
 		}
@@ -162,19 +153,10 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		GasStack stack = null;
+		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		{
+			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
-		{
-			stack = new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
-		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
-		}
-
-		if(stack != null)
-		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
 			{
 				if(doGasLookup(stack, false))
@@ -202,19 +184,10 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		GasStack stack = null;
+		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		{
+			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
-		{
-			stack = new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
-		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
-		}
-
-		if(stack != null)
-		{
 			if(button == 0)
 			{
 				if(doGasLookup(stack, false))
@@ -237,7 +210,7 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	@Override
 	public int recipiesPerPage()
 	{
-		return 1;
+		return 2;
 	}
 
 	@Override

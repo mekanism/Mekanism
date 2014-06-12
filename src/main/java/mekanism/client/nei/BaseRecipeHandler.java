@@ -1,19 +1,19 @@
 package mekanism.client.nei;
 
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+import static codechicken.lib.gui.GuiDraw.gui;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static codechicken.core.gui.GuiDraw.changeTexture;
-import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
-import static codechicken.core.gui.GuiDraw.gui;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
@@ -141,20 +141,27 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements
 		return false;
 	}
 
+	@Override
 	public void drawTexturedRect(int x, int y, int u, int v, int w, int h)
 	{
 		drawTexturedModalRect(x, y, u, v, w, h);
 	}
 
-	public void drawTexturedRectFromIcon(int x, int y, Icon icon, int w, int h)
+	@Override
+	public void drawTexturedRectFromIcon(int x, int y, IIcon icon, int w, int h)
 	{
 		gui.drawTexturedModelRectFromIcon(x, y, icon, w, h);
 	}
 
+	@Override
 	public void displayTooltip(String s, int xAxis, int yAxis) {}
 
+	@Override
 	public void displayTooltips(List<String> list, int xAxis, int yAxis) {}
 
-	public FontRenderer getFont() { return null; }
-
+	@Override
+	public FontRenderer getFont() 
+	{ 
+		return null; 
+	}
 }

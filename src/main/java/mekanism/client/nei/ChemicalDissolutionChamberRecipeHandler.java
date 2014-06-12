@@ -1,7 +1,7 @@
 package mekanism.client.nei;
 
-import static codechicken.core.gui.GuiDraw.changeTexture;
-import static codechicken.core.gui.GuiDraw.drawTexturedModalRect;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -10,25 +10,27 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.ChemicalPair;
+import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiChemicalWasher;
+import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.core.gui.GuiDraw;
+import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIClientConfig;
+import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
+public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
@@ -38,35 +40,35 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalWasher.name");
+		return MekanismUtils.localize("gui.chemicalDissolutionChamber.short");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "chemicalwasher";
+		return "chemicaldissolutionchamber";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiChemicalWasher.png";
+		return "mekanism:gui/nei/GuiChemicalDissolutionChamber.png";
 	}
 
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiChemicalWasher.class;
+		return GuiChemicalDissolutionChamber.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.chemicalwasher";
+		return "mekanism.chemicaldissolutionchamber";
 	}
 
-	public Set<Entry<GasStack, GasStack>> getRecipes()
+	public Set<Entry<ItemStack, GasStack>> getRecipes()
 	{
-		return Recipe.CHEMICAL_WASHER.get().entrySet();
+		return Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get().entrySet();
 	}
 
 	@Override
@@ -74,26 +76,22 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 70);
+		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 79);
 	}
 
 	@Override
 	public void drawExtras(int i)
 	{
-		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
+		GasStack gas = ((CachedIORecipe)arecipes.get(i)).outputStack;
 
-		drawTexturedModalRect(61-xOffset, 39-yOffset, 176, 63, 55, 8);
+		float f = ticksPassed % 20 / 20.0F;
+		drawProgressBar(64-xOffset, 40-yOffset, 176, 63, 48, 8, f, 0);
 
-		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, new FluidStack(FluidRegistry.WATER, 1), null);
+		displayGauge(58, 6-xOffset, 5-yOffset, 176, 4, 58, null, new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
 
-		if(recipe.outputStack != null)
+		if(gas != null)
 		{
-			displayGauge(58, 27-xOffset, 14-yOffset, 176, 4, 58, null, recipe.inputStack);
-		}
-
-		if(recipe.inputStack != null)
-		{
-			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, recipe.outputStack);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, gas);
 		}
 	}
 
@@ -108,7 +106,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(61-xOffset, 39-yOffset, 55, 8), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(64-xOffset, 40-yOffset, 48, 8), getRecipeId(), new Object[0]));
 	}
 
 	@Override
@@ -123,7 +121,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
+			for(Map.Entry<ItemStack, GasStack> irecipe : getRecipes())
 			{
 				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
 				{
@@ -137,34 +135,6 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
-	public void loadUsageRecipes(String inputId, Object... ingredients)
-	{
-		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
-		{
-			if(((FluidStack)ingredients[0]).getFluid() == FluidRegistry.WATER)
-			{
-				for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
-				{
-					arecipes.add(new CachedIORecipe(irecipe));
-				}
-			}
-		}
-		else if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
-		{
-			for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
-			{
-				if(irecipe.getKey().isGasEqual((GasStack)ingredients[0]))
-				{
-					arecipes.add(new CachedIORecipe(irecipe));
-				}
-			}
-		}
-		else {
-			super.loadUsageRecipes(inputId, ingredients);
-		}
-	}
-
-	@Override
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
@@ -174,13 +144,9 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			currenttip.add(FluidRegistry.WATER.getLocalizedName());
+			currenttip.add(GasRegistry.getGas("sulfuricAcid").getLocalizedName());
 		}
-		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
-		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).inputStack.getGas().getLocalizedName());
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
 		}
@@ -196,51 +162,29 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		GasStack gas = null;
-		FluidStack fluid = null;
+		GasStack stack = null;
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			fluid = new FluidStack(FluidRegistry.WATER, 1);
+			stack = new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 		}
-		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
-		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
+			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
 
-		if(gas != null)
+		if(stack != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
 			{
-				if(doGasLookup(gas, false))
+				if(doGasLookup(stack, false))
 				{
 					return true;
 				}
 			}
 			else if(keyCode == NEIClientConfig.getKeyBinding("gui.usage"))
 			{
-				if(doGasLookup(gas, true))
-				{
-					return true;
-				}
-			}
-		}
-		else if(fluid != null)
-		{
-			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
-			{
-				if(doFluidLookup(fluid, false))
-				{
-					return true;
-				}
-			}
-			else if(keyCode == NEIClientConfig.getKeyBinding("gui.usage"))
-			{
-				if(doFluidLookup(fluid, true))
+				if(doGasLookup(stack, true))
 				{
 					return true;
 				}
@@ -258,51 +202,29 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		GasStack gas = null;
-		FluidStack fluid = null;
+		GasStack stack = null;
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			fluid = new FluidStack(FluidRegistry.WATER, 1);
+			stack = new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 		}
-		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
-		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
+			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
 
-		if(gas != null)
+		if(stack != null)
 		{
 			if(button == 0)
 			{
-				if(doGasLookup(gas, false))
+				if(doGasLookup(stack, false))
 				{
 					return true;
 				}
 			}
 			else if(button == 1)
 			{
-				if(doGasLookup(gas, true))
-				{
-					return true;
-				}
-			}
-		}
-		else if(fluid != null)
-		{
-			if(button == 0)
-			{
-				if(doFluidLookup(fluid, false))
-				{
-					return true;
-				}
-			}
-			else if(button == 1)
-			{
-				if(doFluidLookup(fluid, true))
+				if(doGasLookup(stack, true))
 				{
 					return true;
 				}
@@ -319,6 +241,18 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	}
 
 	@Override
+	public void loadUsageRecipes(ItemStack ingredient)
+	{
+		for(Map.Entry irecipe : getRecipes())
+		{
+			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			{
+				arecipes.add(new CachedIORecipe(irecipe));
+			}
+		}
+	}
+
+	@Override
 	public void addGuiElements()
 	{
 
@@ -326,8 +260,14 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public GasStack inputStack;
+		public PositionedStack inputStack;
 		public GasStack outputStack;
+
+		@Override
+		public PositionedStack getIngredient()
+		{
+			return inputStack;
+		}
 
 		@Override
 		public PositionedStack getResult()
@@ -335,15 +275,15 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(GasStack input, GasStack output)
+		public CachedIORecipe(ItemStack input, GasStack output)
 		{
-			inputStack = input;
+			inputStack = new PositionedStack(input, 26-xOffset, 36-yOffset);
 			outputStack = output;
 		}
 
 		public CachedIORecipe(Map.Entry recipe)
 		{
-			this((GasStack)recipe.getKey(), (GasStack)recipe.getValue());
+			this((ItemStack)recipe.getKey(), (GasStack)recipe.getValue());
 		}
 	}
 }

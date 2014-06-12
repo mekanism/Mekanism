@@ -17,6 +17,7 @@ import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSalinationController;
 import mekanism.common.Mekanism;
+import net.minecraft.item.ItemStack;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 
@@ -93,8 +94,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 
-		API.hideItem(Mekanism.boundingBlockID);
-		API.hideItem(Mekanism.ItemProxy.itemID);
+		API.hideItem(new ItemStack(Mekanism.BoundingBlock));
+		API.hideItem(new ItemStack(Mekanism.ItemProxy));
 	}
 
 	@Override

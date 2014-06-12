@@ -10,7 +10,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandler
@@ -50,7 +50,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	{
 		if(gasType == GasRegistry.getGas("oxygen"))
 		{
-			return ListUtils.asList(new ItemStack(Item.flint), MekanismUtils.getFullGasTank(GasRegistry.getGas("oxygen")));
+			return ListUtils.asList(new ItemStack(Items.flint), MekanismUtils.getFullGasTank(GasRegistry.getGas("oxygen")));
 		}
 
 		return new ArrayList<ItemStack>();

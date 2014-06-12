@@ -9,6 +9,7 @@ import mekanism.common.IEnergyCube;
 import mekanism.common.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.MekanismRecipe;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -20,7 +21,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Shaped Mekanism Crafting";
+		return "Mekanism " + MekanismUtils.localize("recipe.mekanismShaped");
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 			return true;
 		}
 
-		if(stack1.itemID != stack2.itemID)
+		if(stack1.getItem() != stack2.getItem())
 		{
 			return false;
 		}
