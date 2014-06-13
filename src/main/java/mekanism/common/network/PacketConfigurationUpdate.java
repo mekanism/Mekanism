@@ -10,7 +10,6 @@ import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
-import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage.ConfigurationPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
@@ -188,10 +187,10 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 				inputSide = dataStream.readInt();
 			}
 		}
+	}
 	
-		public static enum ConfigurationPacket
-		{
-			EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR, STRICT_INPUT
-		}
+	public static enum ConfigurationPacket
+	{
+		EJECT, SIDE_DATA, EJECT_COLOR, INPUT_COLOR, STRICT_INPUT
 	}
 }

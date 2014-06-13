@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketRobit.RobitMessage;
-import mekanism.common.network.PacketRobit.RobitMessage.RobitPacketType;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -173,14 +172,14 @@ public class PacketRobit implements IMessageHandler<RobitMessage, IMessage>
 				entityId = dataStream.readInt();
 			}
 		}
+	}
 	
-		public static enum RobitPacketType
-		{
-			GUI,
-			FOLLOW,
-			NAME,
-			GO_HOME,
-			DROP_PICKUP;
-		}
+	public static enum RobitPacketType
+	{
+		GUI,
+		FOLLOW,
+		NAME,
+		GO_HOME,
+		DROP_PICKUP;
 	}
 }

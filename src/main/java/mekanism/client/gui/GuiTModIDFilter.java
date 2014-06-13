@@ -11,13 +11,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TModIDFilter;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +29,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

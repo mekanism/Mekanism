@@ -13,7 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.miner.ThreadMinerSearch.State;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
-import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage.MinerGuiPacket;
+import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;

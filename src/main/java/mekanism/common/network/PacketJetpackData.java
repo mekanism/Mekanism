@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
-import mekanism.common.network.PacketJetpackData.JetpackDataMessage.JetpackPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -110,12 +109,12 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 				value = dataStream.readBoolean();
 			}
 		}
+	}
 	
-		public static enum JetpackPacket
-		{
-			UPDATE,
-			FULL,
-			MODE;
-		}
+	public static enum JetpackPacket
+	{
+		UPDATE,
+		FULL,
+		MODE;
 	}
 }

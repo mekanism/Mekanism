@@ -13,7 +13,6 @@ import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.client.gui.GuiScreen;
@@ -237,10 +236,10 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 				index = dataStream.readInt();
 			}
 		}
+	}
 	
-		public static enum SorterGuiPacket
-		{
-			SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
-		}
+	public static enum SorterGuiPacket
+	{
+		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
 	}
 }

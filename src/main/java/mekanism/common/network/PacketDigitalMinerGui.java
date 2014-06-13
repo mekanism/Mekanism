@@ -18,7 +18,6 @@ import mekanism.common.inventory.container.ContainerDigitalMiner;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
-import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
@@ -261,10 +260,10 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 				index = dataStream.readInt();
 			}
 		}
+	}
 	
-		public static enum MinerGuiPacket
-		{
-			SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
-		}
+	public static enum MinerGuiPacket
+	{
+		SERVER, CLIENT, SERVER_INDEX, CLIENT_INDEX
 	}
 }

@@ -7,7 +7,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

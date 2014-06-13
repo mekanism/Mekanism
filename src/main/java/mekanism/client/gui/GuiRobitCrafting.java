@@ -4,7 +4,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.network.PacketRobit.RobitMessage;
-import mekanism.common.network.PacketRobit.RobitMessage.RobitPacketType;
+import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;

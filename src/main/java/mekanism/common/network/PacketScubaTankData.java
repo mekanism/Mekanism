@@ -5,7 +5,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
-import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage.ScubaTankPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -110,12 +109,12 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 				value = dataStream.readBoolean();
 			}
 		}
+	}
 	
-		public static enum ScubaTankPacket
-		{
-			UPDATE,
-			FULL,
-			MODE;
-		}
+	public static enum ScubaTankPacket
+	{
+		UPDATE,
+		FULL,
+		MODE;
 	}
 }

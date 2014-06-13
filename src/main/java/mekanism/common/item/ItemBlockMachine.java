@@ -26,7 +26,7 @@ import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.TileEntityDigitalMiner;

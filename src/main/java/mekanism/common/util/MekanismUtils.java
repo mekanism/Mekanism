@@ -36,7 +36,7 @@ import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;

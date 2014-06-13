@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TMaterialFilter;

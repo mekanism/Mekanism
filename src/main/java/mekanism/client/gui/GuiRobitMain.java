@@ -5,7 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.network.PacketRobit.RobitMessage;
-import mekanism.common.network.PacketRobit.RobitMessage.RobitPacketType;
+import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;

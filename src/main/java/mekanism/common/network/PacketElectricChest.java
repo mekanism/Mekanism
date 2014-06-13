@@ -9,7 +9,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
-import mekanism.common.network.PacketElectricChest.ElectricChestMessage.ElectricChestPacketType;
+import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -300,13 +300,13 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				}
 			}
 		}
+	}
 	
-		public static enum ElectricChestPacketType
-		{
-			LOCK,
-			PASSWORD,
-			CLIENT_OPEN,
-			SERVER_OPEN
-		}
+	public static enum ElectricChestPacketType
+	{
+		LOCK,
+		PASSWORD,
+		CLIENT_OPEN,
+		SERVER_OPEN
 	}
 }

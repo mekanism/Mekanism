@@ -14,7 +14,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
-import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
+import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TItemStackFilter;

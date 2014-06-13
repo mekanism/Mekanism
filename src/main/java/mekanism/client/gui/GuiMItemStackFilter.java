@@ -7,7 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.miner.MItemStackFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
-import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage.MinerGuiPacket;
+import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;

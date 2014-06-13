@@ -11,7 +11,6 @@ import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage.PacketType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
@@ -189,13 +188,13 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 				}
 			}
 		}
+	}
 	
-		public static enum PacketType
-		{
-			UPDATE,
-			ENERGY,
-			GAS,
-			FLUID
-		}
+	public static enum PacketType
+	{
+		UPDATE,
+		ENERGY,
+		GAS,
+		FLUID
 	}
 }
