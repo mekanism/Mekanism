@@ -17,6 +17,17 @@ buildscript {
     }
 }
 
+repositories {
+    maven {
+        name 'CB Maven FS'
+        artifactPattern "http://chickenbones.net/maven/"
+    }
+    maven {
+        name 'ForgeFS'
+        url 'http://files.minecraftforge.net/maven'
+     }
+}
+
 apply plugin: 'forge'
 
 // Define properties file
