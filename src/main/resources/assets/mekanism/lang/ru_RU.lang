@@ -263,6 +263,18 @@ oregas.silver=Серебряная руда
 oregas.obsidian=Обсидиановая руда
 oregas.lead=Свинцовая руда
 
+//Update handler text
+update.consider=Подумайте о обновлении до версии
+update.newFeatures=Нововведения
+update.visit=Посетите
+update.toDownload=чтобы скачать
+update.devBuild=Используется сборка разработчиков
+update.outdated=Используется устаревшая версия одного или нескольких модулей
+
+//Key description text
+key.mode=Переключить режим
+key.voice=Голос
+
 //Gui text
 gui.removeSpeedUpgrade=Удалить улучшение скорости
 gui.removeEnergyUpgrade=Удалить улучшение энергии
@@ -272,7 +284,7 @@ gui.power=Энергия
 gui.confirm=Подтвердить
 gui.open=Открыть
 gui.allOK=Всё ОК
-gui.none=Нету
+gui.none=Нет
 gui.new=Новый
 gui.edit=Редактировать
 gui.save=Сохранить
@@ -302,12 +314,14 @@ gui.idle=Простой
 gui.data=Данные
 gui.newFilter=Новый фильтр
 gui.energy=Энергия
+gui.gas=Газ
+gui.dumping=Дамп
 
 gui.chemicalInfuser.short=Хим. зарядник
 gui.chemicalDissolutionChamber.short=Хим. камера растворения
 
-gui.dictionary.noKey=No key.
-gui.dictionary.key=Key
+gui.dictionary.noKey=Нет ключа.
+gui.dictionary.key=Ключ
 
 gui.configuration=Конфигурация
 gui.configuration.strictInput=Строгий ввод
@@ -331,9 +345,9 @@ gui.seismicReader.reading=Считывание
 
 gui.filterSelect.title=Создать новый фильтр
 
-gui.oredictFilter=OreDict фильтр
-gui.oredictFilter.noKey=No key entered
-gui.oredictFilter.sameKey=Same key
+gui.oredictFilter=Фильтр по OreDic
+gui.oredictFilter.noKey=Нет введённых ключей
+gui.oredictFilter.sameKey=Одинаковый ключ
 
 gui.itemFilter=Предметный фильтр
 gui.itemFilter.noItem=Нет предмета
@@ -354,14 +368,17 @@ gui.teleporter.noLink=Соединение не найдено
 
 gui.robit=«Робит»
 entity.Robit.name=«Робит»
-gui.robit.smelting=Плавка «Робита»
-gui.robit.inventory=Инвентарь «Робита»
-gui.robit.crafting=Создание «Робита»
+gui.robit.smelting=«Робит»: Плавка
+gui.robit.inventory=«Робит»: Инвентарь
+gui.robit.crafting=«Робит»: Создание
 gui.robit.greeting=Привет, Я
-gui.robit.toggleFollow=Переключить на режим 'слежения'
+gui.robit.toggleFollow=Переключить на режим 'преследования'
 gui.robit.rename=Переименовать этого «Робита»
 gui.robit.teleport=Вернуться домой
 gui.robit.togglePickup=Переключить на режим 'сбор добычи'
+gui.robit.following=Преследование
+gui.robit.dropPickup=Сбор добычи
+gui.robit.owner=Владелец
 
 gui.password.setPassword=Установить пароль
 gui.password.enterPassword=Ввести пароль
@@ -389,6 +406,9 @@ gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Работа
 gui.digitalMiner.inverse="Обратный" режим
 
+//Recipe names
+recipe.mekanismShaped=Форменное создание
+
 //Item and block tooltip text
 tooltip.configurator.modify=Модифицируемый
 tooltip.configurator.empty=Пусто
@@ -403,6 +423,52 @@ tooltip.configurator.noLink=Нет соединения
 tooltip.configurator.linkMsg=Связан с
 tooltip.configurator.dim=измерение
 
+tooltip.upgrade.speed=Скорость
+tooltip.upgrade.energy=Энергия
+
+tooltip.inventory=Инвентарь
+tooltip.storedEnergy=Накопленная энергия
+tooltip.auth=Проверенный
+tooltip.locked=Закрытый
+tooltip.recipeType=Тип рецепта
+tooltip.hold=Зажмите
+tooltip.forDesc=для описания
+tooltip.forDetails=для деталей
+tooltip.fireMode=Режим огня
+tooltip.capacity=Ёмкость
+tooltip.pumpRate=Скорость откачки
+tooltip.items=Предметы
+tooltip.blocks=Блоки
+tooltip.universal=любые
+tooltip.fluids=Жидкости
+tooltip.gasses=Газы
+tooltip.capableTrans=Подходит для передачи
+tooltip.restrictiveDesc=Используется только, если нет других доступных путей
+tooltip.diversionDesc=Контролируется красным камнем
+tooltip.noGas=Нет газа
+tooltip.stored=Хранится:
+tooltip.channel=Канал
+tooltip.mode=Режим
+tooltip.efficiency=Эффективность
+tooltip.modeToggle=Режим изменён на
+tooltip.flowing=Текущий
+tooltip.yes=да
+tooltip.no=нет
+tooltip.name=Имя
+tooltip.blockData=Данные блока
+tooltip.block=Блок
+tooltip.meta=Метаданные
+tooltip.tile=Tile
+tooltip.keysFound=Ключ(и) найдены
+tooltip.noKey=Нет ключа
+tooltip.hp=Прочность
+
+tooltip.disassembler.normal=обычный
+tooltip.disassembler.slow=медленный
+tooltip.disassembler.fast=быстрый
+tooltip.disassembler.vein=жила
+tooltip.disassembler.off=откл.
+ 
 tooltip.filterCard.got=Получены данные фильтра из %s
 tooltip.filterCard.set=Введены данные фильтра типа %s
 tooltip.filterCard.unequal=Неравные форматы данных фильтров
@@ -418,30 +484,37 @@ tooltip.jetpack.disabled=Отключен
 tooltip.seismicReader.needsEnergy=Недостаточно энергии, чтобы интерпретировать вибрацию
 tooltip.seismicReader.noVibrations=Не удаётся обнаружить вибрации
 
-tooltip.EnrichmentChamber=Простая машина, используется для обогащения руд в !nдва их пыльных аналога, а также выполнять !nмножество других операций.
-tooltip.OsmiumCompressor=Довольно продвинутая машина, используется для сжатия !nосмия в различные пыли для создания их слитковых аналогов.
-tooltip.Combiner=Машина, используемая для объединения пыли и булыжника, чтобы !nформировать свои рудные аналоги.
-tooltip.Crusher=Машина, используемая для дробления слитков !nв их пыльные аналоги, !nа также выполнять множество других операций.
+tooltip.EnrichmentChamber=Простой механизм, используется для обогащения руд в !nдва их пыльных аналога, а также выполнять !nмножество других операций.
+tooltip.OsmiumCompressor=Довольно продвинутый механизм, используется для сжатия !nосмия в различные пыли для создания их слитковых аналогов.
+tooltip.Combiner=Механизм, используемый для объединения пыли и булыжника, чтобы !nформировать свои рудные аналоги.
+tooltip.Crusher=Механизм, используемый для дробления слитков !nв их пыльные аналоги, !nа также выполнять множество других операций.
 tooltip.DigitalMiner=Высоко продвинутый, основанный на фильтре, авто-шатёр, !nкоторый может добывать любой блок, !nкоторый вы скажите в пределах 32 блоков (макс).
 tooltip.BasicFactory=Самый низкий уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных операций !nодновременно.
 tooltip.AdvancedFactory=Средний уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных !nопераций одновременно.
 tooltip.EliteFactory=Самый высокий уровень из линии фабрик, который может !nбыть использован для обработки нескольких машинных !nопераций одновременно.
-tooltip.MetallurgicInfuser=Машина, используемая для "вливания" различных материалов !nв металлы (как правило), чтобы создать металлические сплавы !nи другие соединения.
-tooltip.PurificationChamber=Продвинутая машина, способная перерабатывать !nруды в три глыбы, выступающие в качестве начальной !nстадии 300% переработки руды.
-tooltip.EnergizedSmelter=Простая машина, которая служит в качестве основной !nMekanism-печи, которая работает от энергии.
-tooltip.Teleporter=Машина, способная телепортировать игроков в различные !nместа, определённые другим телепортером.
+tooltip.MetallurgicInfuser=Механизм, используемый для "вливания" различных материалов !nв металлы (как правило), чтобы создать металлические сплавы !nи другие соединения.
+tooltip.PurificationChamber=Продвинутый механизм, способный перерабатывать !nруды в три глыбы, выступающие в качестве начальной !nстадии 300% переработки руды.
+tooltip.EnergizedSmelter=Простой механизм, который служит в качестве основной !nMekanism-печи, которая работает от энергии.
+tooltip.Teleporter=Механизм, способный телепортировать игроков в различные !nместа, определённые другим телепортером.
 tooltip.ElectricPump=Продвинутая помпа, способная выкачать целое !nозеро лавы.
 tooltip.ElectricChest=Переносной 54-слотовый сундук, !nкоторый использует энергию, чтобы закрывать !nсебя от других с помощью защиты паролем.
 tooltip.Chargepad=Универсальная зарядная панель, !nкоторая может заряжать любой заряжаемый предмет !nиз любой модификации.
 tooltip.LogisticalSorter=Основанная на фильтре продвинутая сортировочная машина, !nкоторая может автоматически извлекать !nуказанные предметы наружу и в соседние инвентари, !nа также в логистические транспортеры.
-tooltip.RotaryCondensentrator=Машина, способная конвертировать газы в !nжидкость и наоборот.
-tooltip.ChemicalInjectionChamber=Элитная машина, способная перерабатывать руды в !nчетыре осколка, выступающие в качестве начальной !nстадии 400% переработки руды.
-tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
-tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
-tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
-tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
-tooltip.ChemicalCrystalizer=An ultimate machine used to crystalize !npurified ore slurry into ore crystals.
-tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !of the world.
+tooltip.RotaryCondensentrator=Механизм, способный конвертировать газы в !nжидкость и наоборот.
+tooltip.ChemicalInjectionChamber=Элитный механизм, способный перерабатывать руды в !nчетыре осколка, выступающие в качестве начальной !nстадии 400% переработки руды.
+tooltip.ElectrolyticSeparator=Механизм, который использует процесс !nэлектролиза для разделения на части !nгаза в два других газа.
+tooltip.PrecisionSawmill=Этот механизм используется для обработки древесины и других !nпредметов на основе дерева, а также !nдля получения опилков.
+tooltip.ChemicalDissolutionChamber=Максимальный механизм используется для !nхимического растворения всех примесей !nруды, оставляя необработанный расплав.
+tooltip.ChemicalWasher=Максимальный механизм, который очищает необработанные !nрасплавленные руды и подготавливает их для кристаллизации.
+tooltip.ChemicalCrystalizer=Максимальный механизм, который используется для кристаллизации !nочищенной расплавленной руды в кристаллы.
+tooltip.SeismicVibrator=Механизм, который использует сейсмические колебания, чтобы !nпредоставить информацию о различных слоях мира.
+
+tooltip.HeatGenerator=Генератор, который использует тепло лавы или !nдругие горючие ресурсы для производства энергии.
+tooltip.SolarGenerator=Генератор, который использует энергию !nсолнца для производства энергии.
+tooltip.GasGenerator=Генератор, который использует молекулы !nразличных газов для производства энергии.
+tooltip.BioGenerator=Генератор, который сжигает органические материалы !nмира для производства энергии.
+tooltip.AdvancedSolarGenerator=Продвинутый генератор, который напрямую !nпоглощает солнечные лучи, с небольшой потерей !nдля производства энергии.
+tooltip.WindTurbine=Генератор, который использует силу ветра !nдля производства энергии, с большей эффективностью !nна большой высоте.
 
 tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. Он как известно !nимеет множество применений в !nпроизводстве машин.
 tooltip.CopperOre=Общий проводящий материал, который может быть использован !nв производстве проводов. Имеет способность выдерживать!nвысокие теплоты это делает его необходимым для !nсовременного оборудования.
@@ -516,7 +589,7 @@ infuse.bio=Биомасса
 //Generators
 tile.Generator.HeatGenerator.name=Тепловой генератор
 tile.Generator.SolarGenerator.name=Солнечный генератор
-tile.Generator.HydrogenGenerator.name=Водородный генератор
+tile.Generator.GasGenerator.name=Газовый генератор
 tile.Generator.BioGenerator.name=Био-генератор
 tile.Generator.AdvancedSolarGenerator.name=Продвинутый солнечный генератор
 tile.Generator.WindTurbine.name=Ветровая турбина
