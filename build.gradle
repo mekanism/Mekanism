@@ -20,7 +20,7 @@ buildscript {
 repositories {
     maven {
         name 'CB Maven FS'
-        artifactPattern "http://chickenbones.net/maven/"
+        url "http://chickenbones.net/maven/"
     }
     maven {
         name 'ForgeFS'
