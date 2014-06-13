@@ -43,7 +43,7 @@ configFile.withReader {
 dependencies {
     compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
     compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
-    //compile name: 'NotEnoughItems', version: "${config.NEI_version}", type: 'jar'
+    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
 }
 
 version = "${config.mod_version}.${System.env.BUILD_NUMBER}"
