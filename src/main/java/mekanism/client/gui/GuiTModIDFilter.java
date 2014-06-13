@@ -5,16 +5,18 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerFilter;
-import mekanism.common.miner.MOreDictFilter;
-import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
-import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
+import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage.SorterGuiPacket;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
-import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.transporter.TModIDFilter;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -25,22 +27,24 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiMOreDictFilter extends GuiMekanism
+public class GuiTModIDFilter extends GuiMekanism
 {
-	public TileEntityDigitalMiner tileEntity;
+	public TileEntityLogisticalSorter tileEntity;
 
 	public boolean isNew = false;
 
-	public MOreDictFilter origFilter;
+	public TModIDFilter origFilter;
 
-	public MOreDictFilter filter = new MOreDictFilter();
+	public TModIDFilter filter = new TModIDFilter();
 
-	private GuiTextField oreDictText;
+	private GuiTextField modIDText;
 
 	public ItemStack renderStack;
 
@@ -54,18 +58,18 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 	public String status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.allOK");
 
-	public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
+	public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
-		origFilter = (MOreDictFilter)tileEntity.filters.get(index);
-		filter = ((MOreDictFilter)tentity.filters.get(index)).clone();
+		origFilter = (TModIDFilter)tileEntity.filters.get(index);
+		filter = ((TModIDFilter)tentity.filters.get(index)).clone();
 
-		updateStackList(filter.oreDictName);
+		updateStackList(filter.modID);
 	}
 
-	public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
+	public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
 		super(new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
@@ -90,28 +94,28 @@ public class GuiMOreDictFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		oreDictText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
-		oreDictText.setMaxStringLength(12);
-		oreDictText.setFocused(true);
+		modIDText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
+		modIDText.setMaxStringLength(12);
+		modIDText.setFocused(true);
 	}
 
 	@Override
 	public void keyTyped(char c, int i)
 	{
-		if(!oreDictText.isFocused() || i == Keyboard.KEY_ESCAPE)
+		if(!modIDText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
 			super.keyTyped(c, i);
 		}
 
-		if(oreDictText.isFocused() && i == Keyboard.KEY_RETURN)
+		if(modIDText.isFocused() && i == Keyboard.KEY_RETURN)
 		{
-			setOreDictKey();
+			setModID();
 			return;
 		}
 
 		if(Character.isLetter(c) || Character.isDigit(c) || c == '*' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
-			oreDictText.textboxKeyTyped(c, i);
+			modIDText.textboxKeyTyped(c, i);
 		}
 	}
 
@@ -122,12 +126,12 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			if(!oreDictText.getText().isEmpty())
+			if(!modIDText.getText().isEmpty())
 			{
-				setOreDictKey();
+				setModID();
 			}
 
-			if(filter.oreDictName != null && !filter.oreDictName.isEmpty())
+			if(filter.modID != null && !filter.modID.isEmpty())
 			{
 				if(isNew)
 				{
@@ -137,17 +141,17 @@ public class GuiMOreDictFilter extends GuiMekanism
 					Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), false, origFilter, filter));
 				}
 
-				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
 			else {
-				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
+				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.modIDFilter.noKey");
 				ticker = 20;
 			}
 		}
 		else if(guibutton.id == 1)
 		{
 			Mekanism.packetHandler.sendToServer(new EditFilterMessage(Coord4D.get(tileEntity), true, origFilter, null));
-			Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
+			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 		}
 	}
 
@@ -157,9 +161,9 @@ public class GuiMOreDictFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
+		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.modIDFilter"), 43, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.key") + ": " + filter.oreDictName, 35, 32, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.id") + ": " + filter.modID, 35, 32, 0x00CD00);
 
 		if(renderStack != null)
 		{
@@ -172,6 +176,31 @@ public class GuiMOreDictFilter extends GuiMekanism
 			} catch(Exception e) {}
 		}
 
+		if(filter.color != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glColor4f(1, 1, 1, 1);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
+		{
+			if(filter.color != null)
+			{
+				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
+			}
+		}
+
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
@@ -180,7 +209,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 	{
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiMOreDictFilter.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTModIDFilter.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
@@ -205,7 +234,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
 
-		oreDictText.drawTextBox();
+		modIDText.drawTextBox();
 	}
 
 	@Override
@@ -213,7 +242,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 	{
 		super.updateScreen();
 
-		oreDictText.updateCursorCounter();
+		modIDText.updateCursorCounter();
 
 		if(ticker > 0)
 		{
@@ -254,28 +283,51 @@ public class GuiMOreDictFilter extends GuiMekanism
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
-		oreDictText.mouseClicked(mouseX, mouseY, button);
+		modIDText.mouseClicked(mouseX, mouseY, button);
+
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
 
 		if(button == 0)
 		{
-			int xAxis = (mouseX - (width - xSize) / 2);
-			int yAxis = (mouseY - (height - ySize) / 2);
-
 			if(xAxis >= 5 && xAxis <= 16 && yAxis >= 5 && yAxis <= 16)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
+				Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 4 : 0, 0, 0));
 			}
 
 			if(xAxis >= 131 && xAxis <= 143 && yAxis >= 47 && yAxis <= 59)
 			{
                 SoundHandler.playSound("gui.button.press");
-				setOreDictKey();
+				setModID();
+			}
+		}
+
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
+		{
+			button = 2;
+		}
+
+		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 44 && yAxis <= 60)
+		{
+			SoundHandler.playSound("mekanism:etc.Ding");
+
+			if(button == 0)
+			{
+				filter.color = TransporterUtils.increment(filter.color);
+			}
+			else if(button == 1)
+			{
+				filter.color = TransporterUtils.decrement(filter.color);
+			}
+			else if(button == 2)
+			{
+				filter.color = null;
 			}
 		}
 	}
 
-	private void updateStackList(String oreName)
+	private void updateStackList(String modName)
 	{
 		if(iterStacks == null)
 		{
@@ -285,46 +337,40 @@ public class GuiMOreDictFilter extends GuiMekanism
 			iterStacks.clear();
 		}
 
-		List<String> keys = new ArrayList<String>();
-
-		for(String s : OreDictionary.getOreNames())
-		{
-			if(oreName.equals(s) || oreName.equals("*"))
-			{
-				keys.add(s);
-			}
-			else if(oreName.endsWith("*") && !oreName.startsWith("*"))
-			{
-				if(s.startsWith(oreName.substring(0, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && !oreName.endsWith("*"))
-			{
-				if(s.endsWith(oreName.substring(1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && oreName.endsWith("*"))
-			{
-				if(s.contains(oreName.substring(1, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-		}
-
-		for(String key : keys)
+		for(String key : OreDictionary.getOreNames())
 		{
 			for(ItemStack stack : OreDictionary.getOres(key))
 			{
 				ItemStack toAdd = stack.copy();
+				String s = MekanismUtils.getMod(toAdd);
 
 				if(!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
 				{
-					iterStacks.add(stack.copy());
+					if(modName.equals(s) || modName.equals("*"))
+					{
+						iterStacks.add(stack.copy());
+					}
+					else if(modName.endsWith("*") && !modName.startsWith("*"))
+					{
+						if(s.startsWith(modName.substring(0, modName.length()-1)))
+						{
+							iterStacks.add(stack.copy());
+						}
+					}
+					else if(modName.startsWith("*") && !modName.endsWith("*"))
+					{
+						if(s.endsWith(modName.substring(1)))
+						{
+							iterStacks.add(stack.copy());
+						}
+					}
+					else if(modName.startsWith("*") && modName.endsWith("*"))
+					{
+						if(s.contains(modName.substring(1, modName.length()-1)))
+						{
+							iterStacks.add(stack.copy());
+						}
+					}
 				}
 			}
 		}
@@ -333,24 +379,24 @@ public class GuiMOreDictFilter extends GuiMekanism
 		stackIndex = -1;
 	}
 
-	private void setOreDictKey()
+	private void setModID()
 	{
-		String oreName = oreDictText.getText();
+		String modName = modIDText.getText();
 
-		if(oreName == null || oreName.isEmpty())
+		if(modName == null || modName.isEmpty())
 		{
-			status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.noKey");
+			status = EnumColor.DARK_RED + MekanismUtils.localize("gui.modIDFilter.noID");
 			return;
 		}
-		else if(oreName.equals(filter.oreDictName))
+		else if(modName.equals(filter.modID))
 		{
-			status = EnumColor.DARK_RED + MekanismUtils.localize("gui.oredictFilter.sameKey");
+			status = EnumColor.DARK_RED + MekanismUtils.localize("gui.modIDFilter.sameID");
 			return;
 		}
 
-		updateStackList(oreName);
+		updateStackList(modName);
 
-		filter.oreDictName = oreName;
-		oreDictText.setText("");
+		filter.modID = modName;
+		modIDText.setText("");
 	}
 }

@@ -6,6 +6,7 @@ import mekanism.client.gui.GuiLogisticalSorter;
 import mekanism.client.gui.GuiTFilterSelect;
 import mekanism.client.gui.GuiTItemStackFilter;
 import mekanism.client.gui.GuiTMaterialFilter;
+import mekanism.client.gui.GuiTModIDFilter;
 import mekanism.client.gui.GuiTOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -116,7 +117,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 			{
 				container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
 			}
-			else if(guiType == 1 || guiType == 2 || guiType == 3)
+			else if(guiType == 1 || guiType == 2 || guiType == 3 || guiType == 5)
 			{
 				container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 			}
@@ -164,6 +165,10 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 					{
 						return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 					}
+					else if(type == 5)
+					{
+						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+					}
 				}
 				else if(packetType == SorterGuiPacket.CLIENT_INDEX)
 				{
@@ -178,6 +183,10 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 					else if(type == 3)
 					{
 						return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
+					}
+					else if(type == 5)
+					{
+						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
 					}
 				}
 			}

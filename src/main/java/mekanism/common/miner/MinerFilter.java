@@ -37,6 +37,10 @@ public abstract class MinerFilter
 		{
 			filter = new MMaterialFilter();
 		}
+		else if(type == 3)
+		{
+			filter = new MModIDFilter();
+		}
 
 		filter.read(nbtTags);
 
@@ -60,6 +64,10 @@ public abstract class MinerFilter
 		else if(type == 2)
 		{
 			filter = new MMaterialFilter();
+		}
+		else if(type == 3)
+		{
+			filter = new MModIDFilter();
 		}
 
 		filter.read(dataStream);

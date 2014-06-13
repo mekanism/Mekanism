@@ -161,7 +161,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRendererObj.drawString("Key: " + filter.oreDictName, 35, 32, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.key") + ": " + filter.oreDictName, 35, 32, 0x00CD00);
 
 		if(renderStack != null)
 		{

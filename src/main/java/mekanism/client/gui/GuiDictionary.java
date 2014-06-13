@@ -46,7 +46,7 @@ public class GuiDictionary extends GuiMekanism
 
 				for(String name : oreDictNames)
 				{
-					fontRendererObj.drawString(MekanismUtils.localize("gui.dictionary.key") + ": " + name, 9, currentY, 0x00CD00);
+					fontRendererObj.drawString(MekanismUtils.localize("gui.key") + ": " + name, 9, currentY, 0x00CD00);
 					currentY += 9;
 				}
 			}

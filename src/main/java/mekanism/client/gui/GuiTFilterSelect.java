@@ -41,6 +41,7 @@ public class GuiTFilterSelect extends GuiMekanism
 		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, MekanismUtils.localize("gui.itemstack")));
 		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, MekanismUtils.localize("gui.oredict")));
 		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, MekanismUtils.localize("gui.material")));
+		buttonList.add(new GuiButton(3, guiWidth + 24, guiHeight + 92, 128, 20, MekanismUtils.localize("gui.modID")));
 	}
 	
 	@Override
@@ -59,6 +60,10 @@ public class GuiTFilterSelect extends GuiMekanism
 		else if(guibutton.id == 2)
 		{
 			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 3, 0, 0));
+		}
+		else if(guibutton.id == 3)
+		{
+			Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER, Coord4D.get(tileEntity), 5, 0, 0));
 		}
 	}
 	

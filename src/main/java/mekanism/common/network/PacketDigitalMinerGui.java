@@ -10,6 +10,7 @@ import mekanism.client.gui.GuiDigitalMinerConfig;
 import mekanism.client.gui.GuiMFilterSelect;
 import mekanism.client.gui.GuiMItemStackFilter;
 import mekanism.client.gui.GuiMMaterialFilter;
+import mekanism.client.gui.GuiMModIDFilter;
 import mekanism.client.gui.GuiMOreDictFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -126,7 +127,7 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 			{
 				container = new ContainerNull(playerMP, (TileEntityContainerBlock)obj.getTileEntity(world));
 			}
-			else if(guiType == 1 || guiType == 2 || guiType == 3)
+			else if(guiType == 1 || guiType == 2 || guiType == 3 || guiType == 6)
 			{
 				container = new ContainerFilter(playerMP.inventory, (TileEntityContainerBlock)obj.getTileEntity(world));
 			}
@@ -188,6 +189,10 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 					{
 						return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
 					}
+					else if(type == 6)
+					{
+						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+					}
 				}
 				else if(packetType == MinerGuiPacket.CLIENT_INDEX)
 				{
@@ -202,6 +207,10 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 					else if(type == 3)
 					{
 						return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
+					}
+					else if(type == 6)
+					{
+						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
 					}
 				}
 			}

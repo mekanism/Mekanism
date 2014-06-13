@@ -69,6 +69,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameData;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1260,6 +1262,16 @@ public final class MekanismUtils
 		}
 		
 		return false;
+	}
+	
+	public static String getMod(ItemStack stack)
+	{
+		try {
+			ModContainer mod = GameData.findModOwner(GameData.getItemRegistry().getNameForObject(stack.getItem()));
+			return mod == null ? "Minecraft" : mod.getName();
+		} catch(Exception e) {
+			return "null";
+		}
 	}
 	
 	public static int getID(ItemStack itemStack)

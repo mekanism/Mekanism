@@ -110,4 +110,53 @@ public abstract class Finder
 			return Block.getBlockFromItem(stack.getItem()).getMaterial() == materialType;
 		}
 	}
+	
+	public static class ModIDFinder extends Finder
+	{
+		public String modID;
+		
+		public ModIDFinder(String mod)
+		{
+			modID = mod;
+		}
+		
+		@Override
+		public boolean modifies(ItemStack stack)
+		{
+			if(stack == null || !(stack.getItem() instanceof ItemBlock))
+			{
+				return false;
+			}
+			
+			String id = MekanismUtils.getMod(stack);
+			
+			if(modID.equals(id) || modID.equals("*"))
+			{
+				return true;
+			}
+			else if(modID.endsWith("*") && !modID.startsWith("*"))
+			{
+				if(id.startsWith(modID.substring(0, modID.length()-1)))
+				{
+					return true;
+				}
+			}
+			else if(modID.startsWith("*") && !modID.endsWith("*"))
+			{
+				if(id.endsWith(modID.substring(1)))
+				{
+					return true;
+				}
+			}
+			else if(modID.startsWith("*") && modID.endsWith("*"))
+			{
+				if(id.contains(modID.substring(1, modID.length()-1)))
+				{
+					return true;
+				}
+			}
+			
+			return false;
+		}
+	}
 }

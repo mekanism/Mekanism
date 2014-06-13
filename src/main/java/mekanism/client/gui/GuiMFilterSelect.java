@@ -39,9 +39,10 @@ public class GuiMFilterSelect extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, "ItemStack"));
-		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, "OreDict"));
-		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, "Material"));
+		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, MekanismUtils.localize("gui.itemstack")));
+		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, MekanismUtils.localize("gui.oredict")));
+		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, MekanismUtils.localize("gui.material")));
+		buttonList.add(new GuiButton(3, guiWidth + 24, guiHeight + 92, 128, 20, MekanismUtils.localize("gui.modID")));
 	}
 	
 	@Override
@@ -60,6 +61,10 @@ public class GuiMFilterSelect extends GuiMekanism
 		else if(guibutton.id == 2)
 		{
 			Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 3, 0, 0));
+		}
+		else if(guibutton.id == 3)
+		{
+			Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 6, 0, 0));
 		}
 	}
 	

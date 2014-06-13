@@ -77,6 +77,10 @@ public abstract class TransporterFilter
 		{
 			filter = new TMaterialFilter();
 		}
+		else if(type == 3)
+		{
+			filter = new TModIDFilter();
+		}
 
 		filter.read(nbtTags);
 
@@ -100,6 +104,10 @@ public abstract class TransporterFilter
 		else if(type == 2)
 		{
 			filter = new TMaterialFilter();
+		}
+		else if(type == 3)
+		{
+			filter = new TModIDFilter();
 		}
 
 		filter.read(dataStream);
