@@ -153,6 +153,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 		public CachedIORecipe(ItemStack itemstack, ItemStack itemstack1)
 		{
 			super();
+			
 			input = new PositionedStack(itemstack, 40, 12);
 			output = new PositionedStack(itemstack1, 100, 30);
 		}

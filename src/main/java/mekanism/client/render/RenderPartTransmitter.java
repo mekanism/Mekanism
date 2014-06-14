@@ -492,6 +492,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderStatic(PartSidedPipe transmitter)
 	{
 		CCRenderState.reset();
+		CCRenderState.hasColour = true;
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)

@@ -3,7 +3,6 @@ package mekanism.api;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.util.StackUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -122,5 +121,19 @@ public class PressurizedReactants
 	{
 		return new PressurizedReactants(theSolid.copy(), theFluid.copy(), theGas.copy());
 	}
-
+	
+	public ItemStack getSolid()
+	{
+		return theSolid;
+	}
+	
+	public FluidStack getFluid()
+	{
+		return theFluid;
+	}
+	
+	public GasStack getGas()
+	{
+		return theGas;
+	}
 }

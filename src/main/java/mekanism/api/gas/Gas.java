@@ -115,6 +115,7 @@ public class Gas
 		{
 			return this.getFluid().getIcon();
 		}
+		
 		return icon;
 	}
 
@@ -131,7 +132,9 @@ public class Gas
 		{
 			fluid.setIcons(getIcon());
 		}
+		
 		from_fluid = false;
+		
 		return this;
 	}
 
@@ -202,8 +205,7 @@ public class Gas
 				fluid = new Fluid(getName()).setGaseous(true);
 				FluidRegistry.registerFluid(fluid);
 			}
-			else
-			{
+			else {
 				fluid = FluidRegistry.getFluid(getName());
 			}
 		}

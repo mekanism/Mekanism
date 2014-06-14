@@ -12,6 +12,7 @@ import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
+import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
@@ -76,6 +77,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 
 		API.registerRecipeHandler(new ChemicalCrystallizerRecipeHandler());
 		API.registerUsageHandler(new ChemicalCrystallizerRecipeHandler());
+		
+		API.registerRecipeHandler(new PRCRecipeHandler());
+		API.registerUsageHandler(new PRCRecipeHandler());
 
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
@@ -93,6 +97,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiPRC.class, PRCRecipeHandler.xOffset, PRCRecipeHandler.yOffset);
 
 		API.hideItem(new ItemStack(Mekanism.BoundingBlock));
 		API.hideItem(new ItemStack(Mekanism.ItemProxy));

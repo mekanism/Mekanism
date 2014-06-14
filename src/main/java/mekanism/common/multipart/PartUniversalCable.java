@@ -210,7 +210,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 1 && MekanismClient.fancyUniversalCableRender)
+		if(pass == 0 && MekanismClient.fancyUniversalCableRender)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

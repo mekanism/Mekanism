@@ -245,7 +245,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 1)
+		if(pass == 0)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

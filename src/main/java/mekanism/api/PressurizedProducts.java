@@ -7,9 +7,7 @@ import net.minecraft.item.ItemStack;
 
 public class PressurizedProducts
 {
-
 	private ItemStack itemOutput;
-
 	private GasStack gasOutput;
 
 	public PressurizedProducts(ItemStack item, GasStack gas)
@@ -49,5 +47,4 @@ public class PressurizedProducts
 	{
 		return new PressurizedProducts(itemOutput.copy(), gasOutput.copy());
 	}
-
 }
