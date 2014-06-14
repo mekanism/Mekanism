@@ -5,7 +5,6 @@ import java.util.Map;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -53,11 +52,5 @@ public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachin
 	public boolean isValidGas(Gas gas)
 	{
 		return false;
-	}
-
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.RED;
 	}
 }

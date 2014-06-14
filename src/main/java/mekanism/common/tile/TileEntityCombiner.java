@@ -43,10 +43,4 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 	{
 		return false;
 	}
-
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.STONE;
-	}
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiCombiner;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Blocks;
@@ -41,6 +42,12 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	public String getGuiTexture()
 	{
 		return "mekanism:gui/GuiCombiner.png";
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.STONE;
 	}
 
 	@Override

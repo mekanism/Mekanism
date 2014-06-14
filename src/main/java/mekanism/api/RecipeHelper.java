@@ -207,7 +207,7 @@ public final class RecipeHelper
 	}
 
 	/**
-	 * Add a Electrolytic Separator recipe.
+	 * Add a Chemical Crystallizer recipe.
 	 * @param input - input GasStack
 	 * @param output - output ItemStack
 	 */
@@ -232,6 +232,24 @@ public final class RecipeHelper
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
 			Method m = recipeClass.getMethod("addMetallurgicInfuserRecipe", InfusionInput.class, ItemStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Pressurized Reaction Chamber recipe.
+	 * @param input - input PressurizedReactants
+	 * @param output - output PressurizedProducts
+	 * @param extraEnergy - extra energy needed by the recipe
+	 * @param ticks - amount of ticks it takes for this recipe to complete
+	 */
+	public static void addPRCRecipe(PressurizedReactants input, PressurizedProducts output, double extraEnergy, int ticks)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
+			Method m = recipeClass.getMethod("addPRCRecipe", PressurizedReactants.class, PressurizedProducts.class, Double.TYPE, Integer.TYPE);
 			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("Error while adding recipe: " + e.getMessage());

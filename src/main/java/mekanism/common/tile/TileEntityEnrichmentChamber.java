@@ -25,10 +25,4 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 	{
 		return 0.3F;
 	}
-
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.BLUE;
-	}
 }

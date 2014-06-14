@@ -10,6 +10,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.ChanceOutput;
+import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.GuiPowerBar;
+import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.GuiProgress;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.GuiSlot;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -26,10 +37,30 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract Set<Entry<ItemStack, ChanceOutput>> getRecipes();
 	
+	public abstract ProgressBar getProgressType();
+	
 	@Override
 	public void addGuiElements()
 	{
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 52).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 111, 30));
 		
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public double getLevel()
+			{
+				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
+			}
+		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
+			}
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 77, 37));
 	}
 
 	@Override
@@ -38,17 +69,17 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(12, 0, 28, 5, 144, 68);
+		
+		for(GuiElement e : guiElements)
+		{
+			e.renderBackground(0, 0, -16, -5);
+		}
 	}
 
 	@Override
 	public void drawExtras(int i)
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
-
-		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
-		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
-		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(149, 12, 176, 7, 4, 52, f, 3);
 
 		if(recipe.output.hasSecondary())
 		{
@@ -103,7 +134,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/GuiAdvancedMachine.png";
+		return "mekanism:gui/GuiBasicMachine.png";
 	}
 
 	@Override

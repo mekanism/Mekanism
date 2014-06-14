@@ -13,8 +13,18 @@ import java.util.Set;
 import mekanism.api.AdvancedInput;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.GuiPowerBar;
+import mekanism.client.gui.GuiProgress;
+import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.GuiSlot;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -37,10 +47,31 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract List<ItemStack> getFuelStacks(Gas gasType);
 	
+	public abstract ProgressBar getProgressType();
+	
 	@Override
 	public void addGuiElements()
 	{
-
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 30, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 52));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 111, 30));
+		
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public double getLevel()
+			{
+				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
+			}
+		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
+			}
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 77, 37));
 	}
 
 	@Override
@@ -49,6 +80,11 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(12, 0, 28, 5, 144, 68);
+		
+		for(GuiElement e : guiElements)
+		{
+			e.renderBackground(0, 0, -16, -5);
+		}
 	}
 
 	@Override
@@ -56,12 +92,9 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 
-		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0;
-		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
-
-		if(recipe.input.gasType != null)
+		if(recipe.input.gasType != null && ticksPassed >= 20)
 		{
-			int displayInt = ticksPassed < 20 ? ticksPassed*12 / 20 : 12;
+			int displayInt = ticksPassed < 40 ? (ticksPassed-20)*12 / 20 : 12;
 			displayGauge(45, 32 + 12 - displayInt, 6, displayInt, new GasStack(recipe.input.gasType, 1));
 		}
 	}

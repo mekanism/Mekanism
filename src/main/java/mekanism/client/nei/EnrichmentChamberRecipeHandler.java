@@ -3,6 +3,7 @@ package mekanism.client.nei;
 import java.util.Set;
 
 import mekanism.client.gui.GuiEnrichmentChamber;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 
@@ -24,6 +25,12 @@ public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 	public String getOverlayIdentifier()
 	{
 		return "chamber";
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.BLUE;
 	}
 
 	@Override

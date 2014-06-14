@@ -4,6 +4,7 @@ import java.util.Set;
 
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiSlot;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -27,6 +28,12 @@ public class CrusherRecipeHandler extends MachineRecipeHandler
 	public String getOverlayIdentifier()
 	{
 		return "crusher";
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.CRUSH;
 	}
 
 	@Override

@@ -27,10 +27,4 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 	{
 		return 0.7F;
 	}
-
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.PURPLE;
-	}
 }

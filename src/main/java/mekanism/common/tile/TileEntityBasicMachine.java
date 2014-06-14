@@ -84,8 +84,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		isActive = false;
 	}
 
-	public abstract ProgressBar getProgressType();
-
 	@Override
 	public void onUpdate()
 	{

@@ -16,6 +16,10 @@ import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class GuiPRC extends GuiMekanism
 {
 	public TileEntityPRC tileEntity;
@@ -60,7 +64,7 @@ public class GuiPRC extends GuiMekanism
 			{
 				return tileEntity.getScaledProgress();
 			}
-		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 75, 37));
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 75, 37));
 	}
 
 	@Override
@@ -90,4 +94,8 @@ public class GuiPRC extends GuiMekanism
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.MEDIUM;
+	}
 }

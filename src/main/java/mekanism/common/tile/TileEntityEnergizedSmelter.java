@@ -22,10 +22,4 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 	{
 		return furnaceRecipes;
 	}
-
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.GREEN;
-	}
 }

@@ -10,7 +10,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiProgress;
+import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot;
@@ -18,7 +20,6 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -35,6 +36,8 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract Set<Entry<ItemStack, ItemStack>> getRecipes();
 
+	public abstract ProgressBar getProgressType();
+
 	@Override
 	public void addGuiElements()
 	{
@@ -42,6 +45,13 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 52).with(SlotOverlay.POWER));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 111, 30));
 
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public double getLevel()
+			{
+				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
+			}
+		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -49,7 +59,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
 			}
-		}, ProgressBar.BLUE, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 77, 37));
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 77, 37));
 	}
 
 	@Override
@@ -63,15 +73,6 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 		{
 			e.renderBackground(0, 0, -16, -5);
 		}
-	}
-
-	@Override
-	public void drawExtras(int i)
-	{
-		float f = ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
-		drawProgressBar(63, 34, 176, 0, 24, 7, f, 0);
-		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(149, 12, 176, 7, 4, 52, f, 3);
 	}
 
 	@Override

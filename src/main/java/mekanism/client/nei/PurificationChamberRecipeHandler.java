@@ -7,6 +7,7 @@ import java.util.Set;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,12 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	public Set getRecipes()
 	{
 		return Recipe.PURIFICATION_CHAMBER.get().entrySet();
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.RED;
 	}
 
 	@Override

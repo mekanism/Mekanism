@@ -3,6 +3,7 @@ package mekanism.client.nei;
 import java.util.Set;
 
 import mekanism.client.gui.GuiPrecisionSawmill;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 
@@ -30,6 +31,12 @@ public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 	public Set getRecipes()
 	{
 		return Recipe.PRECISION_SAWMILL.get().entrySet();
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.PURPLE;
 	}
 
 	@Override

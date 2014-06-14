@@ -8,6 +8,7 @@ import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -66,6 +67,12 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 		}
 
 		return new ArrayList<ItemStack>();
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.YELLOW;
 	}
 
 	@Override

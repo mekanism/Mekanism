@@ -174,10 +174,11 @@ public final class RecipeHandler
 	}
 
 	/**
-	 * Add a Pressurized Reaction Chamber recipe
+	 * Add a Pressurized Reaction Chamber recipe.
 	 * @param input - input PressurizedReactants
 	 * @param output - output PressurizedProducts
 	 * @param extraEnergy - extra energy needed by the recipe
+	 * @param ticks - amount of ticks it takes for this recipe to complete
 	 */
 	public static void addPRCRecipe(PressurizedReactants input, PressurizedProducts output, double extraEnergy, int ticks)
 	{

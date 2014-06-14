@@ -82,10 +82,4 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		return gas == GasRegistry.getGas("oxygen");
 	}
-
-	@Override
-	public ProgressBar getProgressType()
-	{
-		return ProgressBar.RED;
-	}
 }

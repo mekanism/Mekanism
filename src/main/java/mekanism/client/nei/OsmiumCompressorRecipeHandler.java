@@ -6,6 +6,7 @@ import java.util.Set;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiOsmiumCompressor;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -35,6 +36,12 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	public Set getRecipes()
 	{
 		return Recipe.OSMIUM_COMPRESSOR.get().entrySet();
+	}
+	
+	@Override
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.RED;
 	}
 
 	@Override

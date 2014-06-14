@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -51,7 +52,12 @@ public class GuiChanceMachine extends GuiMekanism
 			{
 				return tileEntity.getScaledProgress();
 			}
-		}, tileEntity.getProgressType(), this, tileEntity.guiLocation, 77, 37));
+		}, getProgressType(), this, tileEntity.guiLocation, 77, 37));
+	}
+	
+	public ProgressBar getProgressType()
+	{
+		return ProgressBar.BLUE;
 	}
 
 	@Override

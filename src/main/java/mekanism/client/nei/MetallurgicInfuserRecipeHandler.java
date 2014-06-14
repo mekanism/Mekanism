@@ -15,9 +15,19 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.api.infuse.InfusionOutput;
+import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiMetallurgicInfuser;
+import mekanism.client.gui.GuiPowerBar;
+import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.GuiProgress;
+import mekanism.client.gui.GuiSlot;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -29,6 +39,30 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
+	
+	@Override
+	public void addGuiElements()
+	{
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 16, 34));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 50, 42));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 108, 42));
+
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public double getLevel()
+			{
+				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
+			}
+		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+			@Override
+			public double getProgress()
+			{
+				return ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
+			}
+		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 70, 46));
+	}
 
 	@Override
 	public String getRecipeName()
@@ -85,6 +119,11 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(0, 0, 5, 15, 166, 56);
+		
+		for(GuiElement e : guiElements)
+		{
+			e.renderBackground(0, 0, -5, -15);
+		}
 	}
 
 	@Override
@@ -92,14 +131,8 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		InfuseType type = ((CachedIORecipe)arecipes.get(i)).infusionType;
 
-		float f = ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
-		drawProgressBar(67, 32, 176, 52, 32, 8, f, 0);
-
-		f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
+		float f = ticksPassed >= 20 && ticksPassed < 40 ? (ticksPassed - 20) % 20 / 20.0F : 1.0F;
 		if(ticksPassed < 20) f = 0.0F;
-
-		f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(160, 2, 176, 0, 4, 52, f, 3);
 
 		changeTexture(type.texture);
 		drawProgressBar(2, 2, type.texX, type.texY, 4, 52, f, 3);
@@ -162,12 +195,6 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
 			}
 		}
-	}
-
-	@Override
-	public void addGuiElements()
-	{
-
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
