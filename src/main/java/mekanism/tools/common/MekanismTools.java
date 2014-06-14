@@ -618,19 +618,6 @@ public class MekanismTools implements IModule
 		GlowstoneAxe.setHarvestLevel("axe", toolGLOWSTONE.getHarvestLevel());
 		GlowstoneShovel.setHarvestLevel("shovel", toolGLOWSTONE.getHarvestLevel());
 		
-		//Base Paxels
-		WoodPaxel = new ItemMekanismPaxel(ToolMaterial.WOOD).setUnlocalizedName("WoodPaxel");
-		StonePaxel = new ItemMekanismPaxel(ToolMaterial.STONE).setUnlocalizedName("StonePaxel");
-		IronPaxel = new ItemMekanismPaxel(ToolMaterial.IRON).setUnlocalizedName("IronPaxel");
-		DiamondPaxel = new ItemMekanismPaxel(ToolMaterial.EMERALD).setUnlocalizedName("DiamondPaxel");
-		GoldPaxel = new ItemMekanismPaxel(ToolMaterial.GOLD).setUnlocalizedName("GoldPaxel");
-		
-		WoodPaxel.setHarvestLevel("paxel", ToolMaterial.WOOD.getHarvestLevel());
-		StonePaxel.setHarvestLevel("paxel", ToolMaterial.STONE.getHarvestLevel());
-		IronPaxel.setHarvestLevel("paxel", ToolMaterial.IRON.getHarvestLevel());
-		DiamondPaxel.setHarvestLevel("paxel", ToolMaterial.EMERALD.getHarvestLevel());
-		GoldPaxel.setHarvestLevel("paxel", ToolMaterial.GOLD.getHarvestLevel());
-		
 		//Steel
 		SteelHelmet = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 0).setUnlocalizedName("SteelHelmet");
 		SteelChestplate = new ItemMekanismArmor(armorSTEEL, Mekanism.proxy.getArmorIndex("steel"), 1).setUnlocalizedName("SteelChestplate");
@@ -647,6 +634,19 @@ public class MekanismTools implements IModule
 		SteelPickaxe.setHarvestLevel("pickaxe", toolSTEEL.getHarvestLevel());
 		SteelAxe.setHarvestLevel("axe", toolSTEEL.getHarvestLevel());
 		SteelShovel.setHarvestLevel("shovel", toolSTEEL.getHarvestLevel());
+		
+		//Base Paxels
+		WoodPaxel = new ItemMekanismPaxel(ToolMaterial.WOOD).setUnlocalizedName("WoodPaxel");
+		StonePaxel = new ItemMekanismPaxel(ToolMaterial.STONE).setUnlocalizedName("StonePaxel");
+		IronPaxel = new ItemMekanismPaxel(ToolMaterial.IRON).setUnlocalizedName("IronPaxel");
+		DiamondPaxel = new ItemMekanismPaxel(ToolMaterial.EMERALD).setUnlocalizedName("DiamondPaxel");
+		GoldPaxel = new ItemMekanismPaxel(ToolMaterial.GOLD).setUnlocalizedName("GoldPaxel");
+		
+		WoodPaxel.setHarvestLevel("paxel", ToolMaterial.WOOD.getHarvestLevel());
+		StonePaxel.setHarvestLevel("paxel", ToolMaterial.STONE.getHarvestLevel());
+		IronPaxel.setHarvestLevel("paxel", ToolMaterial.IRON.getHarvestLevel());
+		DiamondPaxel.setHarvestLevel("paxel", ToolMaterial.EMERALD.getHarvestLevel());
+		GoldPaxel.setHarvestLevel("paxel", ToolMaterial.GOLD.getHarvestLevel());
 		
 		Mekanism.configuration.save();
 		

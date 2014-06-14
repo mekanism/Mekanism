@@ -655,39 +655,39 @@ public class Mekanism
 		for(int i = 0; i < EnumColor.DYES.length-1; i++)
 		{
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
-				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
+				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, i), new Object[] {
-				"PSP", "SDS", "GSG", Character.valueOf('P'), Blocks.glass_pane, Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), new ItemStack(Items.dye, 1, i), Character.valueOf('G'), Items.glowstone_dust
+				"PSP", "SDS", "GSG", Character.valueOf('P'), Blocks.glass_pane, Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName, Character.valueOf('G'), Items.glowstone_dust
 			}));
 		}
 
 		for(int i = 0; i < EnumColor.DYES.length; i++)
         {
 			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 2, i), new Object[] {
-				Items.leather, Items.string, new ItemStack(Items.dye, 1, i)
+				Items.leather, Items.string, "dye" + EnumColor.DYES[i].dyeName
 			}));
 
 			for(int j = 0; j < EnumColor.DYES.length; j++)
 			{
 				CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(Balloon, 1, i), new Object[] {
-					new ItemStack(Balloon, 1, j), new ItemStack(Items.dye, 1, i)
+					new ItemStack(Balloon, 1, j), "dye" + EnumColor.DYES[i].dyeName
 				}));
 
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockSlickHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockGlowHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockGlowHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockGlowHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockReinforcedHDPE, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(BlockReinforcedHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(GlowPanel, 1, j), Character.valueOf('D'), new ItemStack(Items.dye, 1, i)
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(GlowPanel, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 			}
 
