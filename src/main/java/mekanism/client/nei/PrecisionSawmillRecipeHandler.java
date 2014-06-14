@@ -7,7 +7,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 
 public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
-{
+{	
 	@Override
 	public String getRecipeName()
 	{
@@ -30,12 +30,6 @@ public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 	public Set getRecipes()
 	{
 		return Recipe.PRECISION_SAWMILL.get().entrySet();
-	}
-
-	@Override
-	public String getGuiTexture()
-	{
-		return "mekanism:gui/GuiPrecisionSawmill.png";
 	}
 
 	@Override

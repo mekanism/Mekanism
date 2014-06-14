@@ -40,12 +40,6 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	}
 
 	@Override
-	public String getGuiTexture()
-	{
-		return "mekanism:gui/GuiPurificationChamber.png";
-	}
-
-	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
 		if(gasType == GasRegistry.getGas("oxygen"))

@@ -31,12 +31,14 @@ public class GuiProgress extends GuiElement
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
+		
 		if(handler.isActive())
 		{
 			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
 			int displayInt = (int)(handler.getProgress() * (type.width-2*innerOffsetX));
 			guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
 		}
+		
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
 

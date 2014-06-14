@@ -58,6 +58,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(12, 0, 28, 5, 144, 68);
+		
 		for(GuiElement e : guiElements)
 		{
 			e.renderBackground(0, 0, -16, -5);

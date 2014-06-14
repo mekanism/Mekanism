@@ -36,6 +36,12 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	public abstract Set<Entry<AdvancedInput, ItemStack>> getRecipes();
 
 	public abstract List<ItemStack> getFuelStacks(Gas gasType);
+	
+	@Override
+	public void addGuiElements()
+	{
+
+	}
 
 	@Override
 	public void drawBackground(int i)
@@ -98,6 +104,12 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
 			}
 		}
+	}
+	
+	@Override
+	public String getGuiTexture()
+	{
+		return "mekanism:gui/GuiAdvancedMachine.png";
 	}
 
 	@Override
@@ -219,12 +231,6 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 		}
 
 		return super.mouseClicked(gui, button, recipe);
-	}
-
-	@Override
-	public void addGuiElements()
-	{
-
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe

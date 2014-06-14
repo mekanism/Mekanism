@@ -1,8 +1,8 @@
 package mekanism.client.nei;
 
 import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 import static codechicken.lib.gui.GuiDraw.drawString;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Rectangle;
 import java.util.Map;
@@ -18,13 +18,19 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
+public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
 	public abstract String getRecipeId();
 
 	public abstract Set<Entry<ItemStack, ChanceOutput>> getRecipes();
+	
+	@Override
+	public void addGuiElements()
+	{
+		
+	}
 
 	@Override
 	public void drawBackground(int i)
@@ -92,6 +98,12 @@ public abstract class ChanceMachineRecipeHandler extends TemplateRecipeHandler
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
+	}
+	
+	@Override
+	public String getGuiTexture()
+	{
+		return "mekanism:gui/GuiAdvancedMachine.png";
 	}
 
 	@Override

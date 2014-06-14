@@ -38,12 +38,6 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 
 	@Override
-	public String getGuiTexture()
-	{
-		return "mekanism:gui/GuiCompressor.png";
-	}
-
-	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
 		return ListUtils.asList(new ItemStack(Mekanism.Ingot, 1, 1));
