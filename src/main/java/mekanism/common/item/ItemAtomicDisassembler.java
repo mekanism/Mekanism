@@ -22,8 +22,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
 import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -33,6 +35,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	public ItemAtomicDisassembler()
 	{
 		super(1000000);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -68,10 +71,35 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return false;
 	}
 
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent event)
+	{
+		ItemStack itemstack = event.entityPlayer.getCurrentEquippedItem();
+
+		if (!event.world.isRemote && event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && itemstack.getItem() == this)
+		{
+			Block block = event.world.getBlock(event.x, event.y, event.z);
+			int meta = event.world.getBlockMetadata(event.x, event.y, event.z);
+			ItemStack stack = new ItemStack(block, 1, meta);
+
+			List<String> names = MekanismUtils.getOreDictName(stack);
+			boolean isLogWood = names.contains("logWood");
+
+			if(getMode(itemstack) == 3 && isLogWood && !event.entityPlayer.capabilities.isCreativeMode)
+			{
+				Set<Coord4D> found = new Finder(event.world, stack, new Coord4D(event.x, event.y, event.z, event.world.provider.dimensionId)).calc();
+				setVeinSize(itemstack, found.size());
+			}
+			else {
+				setVeinSize(itemstack, 1);
+			}
+		}
+	}
+
 	@Override
 	public float getDigSpeed(ItemStack itemstack, Block block, int meta)
 	{
-		return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) : 1F;
+		return getEnergy(itemstack) != 0 ? getEfficiency(itemstack) / (float) getVeinSize(itemstack) : 1F;
 	}
 
 	@Override
@@ -308,6 +336,26 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		}
 
 		itemStack.stackTagCompound.setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
+	}
+
+	public int getVeinSize(ItemStack itemStack)
+	{
+		if(itemStack.stackTagCompound == null || !itemStack.stackTagCompound.hasKey("veinSize"))
+		{
+			return 1;
+		}
+
+		return itemStack.stackTagCompound.getInteger("veinSize");
+	}
+
+	public void setVeinSize(ItemStack itemStack, int size)
+	{
+		if(itemStack.stackTagCompound == null)
+		{
+			itemStack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemStack.stackTagCompound.setInteger("veinSize", size);
 	}
 
 	@Override
