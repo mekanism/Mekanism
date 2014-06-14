@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -8,6 +7,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -22,7 +22,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -327,57 +326,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 	private void updateStackList(String oreName)
 	{
-		if(iterStacks == null)
-		{
-			iterStacks = new ArrayList<ItemStack>();
-		}
-		else {
-			iterStacks.clear();
-		}
-
-		List<String> keys = new ArrayList<String>();
-
-		for(String s : OreDictionary.getOreNames())
-		{
-			if(oreName.equals(s) || oreName.equals("*"))
-			{
-				keys.add(s);
-			}
-			else if(oreName.endsWith("*") && !oreName.startsWith("*"))
-			{
-				if(s.startsWith(oreName.substring(0, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && !oreName.endsWith("*"))
-			{
-				if(s.endsWith(oreName.substring(1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && oreName.endsWith("*"))
-			{
-				if(s.contains(oreName.substring(1, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-		}
-
-		for(String key : keys)
-		{
-			for(ItemStack stack : OreDictionary.getOres(key))
-			{
-				ItemStack toAdd = stack.copy();
-
-				if(!iterStacks.contains(stack))
-				{
-					iterStacks.add(stack.copy());
-				}
-			}
-		}
+		iterStacks = OreDictCache.getOreDictStacks(oreName, false);
 
 		stackSwitch = 0;
 		stackIndex = -1;

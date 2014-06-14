@@ -12,9 +12,11 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.miner.MItemStackFilter;
 import mekanism.common.miner.MMaterialFilter;
+import mekanism.common.miner.MModIDFilter;
 import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
@@ -26,9 +28,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -48,6 +48,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	public int stackSwitch = 0;
 
 	public Map<MOreDictFilter, StackData> oreDictStacks = new HashMap<MOreDictFilter, StackData>();
+	public Map<MModIDFilter, StackData> modIDStacks = new HashMap<MModIDFilter, StackData>();
 
 	public float scroll;
 
@@ -108,6 +109,23 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
 				}
 			}
+			
+			for(Map.Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet())
+			{
+				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0)
+				{
+					if(entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size()-1)
+					{
+						entry.getValue().stackIndex = 0;
+					}
+					else if(entry.getValue().stackIndex < entry.getValue().iterStacks.size()-1)
+					{
+						entry.getValue().stackIndex++;
+					}
+
+					entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
+				}
+			}
 
 			stackSwitch = 20;
 		}
@@ -119,25 +137,45 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					entry.getValue().renderStack = null;
 				}
 			}
+			
+			for(Map.Entry<MModIDFilter, StackData> entry : modIDStacks.entrySet())
+			{
+				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
+				{
+					entry.getValue().renderStack = null;
+				}
+			}
 		}
 
-		Set<MOreDictFilter> filtersVisible = new HashSet<MOreDictFilter>();
+		Set<MOreDictFilter> oreDictFilters = new HashSet<MOreDictFilter>();
+		Set<MModIDFilter> modIDFilters = new HashSet<MModIDFilter>();
 
 		for(int i = 0; i < 4; i++)
 		{
 			if(tileEntity.filters.get(getFilterIndex()+i) instanceof MOreDictFilter)
 			{
-				filtersVisible.add((MOreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
+				oreDictFilters.add((MOreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
+			}
+			else if(tileEntity.filters.get(getFilterIndex()+i) instanceof MModIDFilter)
+			{
+				modIDFilters.add((MModIDFilter)tileEntity.filters.get(getFilterIndex()+i));
 			}
 		}
 
 		for(MinerFilter filter : tileEntity.filters)
 		{
-			if(filter instanceof MOreDictFilter && !filtersVisible.contains(filter))
+			if(filter instanceof MOreDictFilter && !oreDictFilters.contains(filter))
 			{
 				if(oreDictStacks.containsKey(filter))
 				{
 					oreDictStacks.remove(filter);
+				}
+			}
+			else if(filter instanceof MModIDFilter && !modIDFilters.contains(filter))
+			{
+				if(modIDStacks.containsKey(filter))
+				{
+					modIDStacks.remove(filter);
 				}
 			}
 		}
@@ -301,9 +339,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 
 		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRendererObj.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
-		fontRendererObj.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
-		fontRendererObj.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
+		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
+		
 		fontRendererObj.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
 
 		fontRendererObj.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
@@ -371,6 +408,28 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
 				}
+				else if(filter instanceof MModIDFilter)
+				{
+					MModIDFilter modFilter = (MModIDFilter)filter;
+
+					if(!modIDStacks.containsKey(modFilter))
+					{
+						updateStackList(modFilter);
+					}
+
+					if(modIDStacks.get(filter).renderStack != null)
+					{
+						try {
+							GL11.glPushMatrix();
+							GL11.glEnable(GL11.GL_LIGHTING);
+							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							GL11.glDisable(GL11.GL_LIGHTING);
+							GL11.glPopMatrix();
+						} catch(Exception e) {}
+					}
+
+					fontRendererObj.drawString(MekanismUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+				}
 			}
 		}
 
@@ -418,6 +477,10 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				else if(filter instanceof MMaterialFilter)
 				{
 					MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
+				}
+				else if(filter instanceof MModIDFilter)
+				{
+					MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
 				}
 				
 				drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
@@ -550,113 +613,32 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		}
 	}
 
-	public ArrayList getItemStackFilters()
-	{
-		ArrayList list = new ArrayList();
-
-		for(MinerFilter filter : tileEntity.filters)
-		{
-			if(filter instanceof MItemStackFilter)
-			{
-				list.add(filter);
-			}
-		}
-
-		return list;
-	}
-
-	public ArrayList getOreDictFilters()
-	{
-		ArrayList list = new ArrayList();
-
-		for(MinerFilter filter : tileEntity.filters)
-		{
-			if(filter instanceof MOreDictFilter)
-			{
-				list.add(filter);
-			}
-		}
-
-		return list;
-	}
-	
-	public ArrayList getMaterialFilters()
-	{
-		ArrayList list = new ArrayList();
-
-		for(MinerFilter filter : tileEntity.filters)
-		{
-			if(filter instanceof MMaterialFilter)
-			{
-				list.add(filter);
-			}
-		}
-
-		return list;
-	}
-
 	private void updateStackList(MOreDictFilter filter)
 	{
 		if(!oreDictStacks.containsKey(filter))
 		{
 			oreDictStacks.put(filter, new StackData());
 		}
-
-		if(oreDictStacks.get(filter).iterStacks == null)
-		{
-			oreDictStacks.get(filter).iterStacks = new ArrayList<ItemStack>();
-		}
-		else {
-			oreDictStacks.get(filter).iterStacks.clear();
-		}
-
-		List<String> keys = new ArrayList<String>();
-
-		for(String s : OreDictionary.getOreNames())
-		{
-			if(filter.oreDictName.equals(s) || filter.oreDictName.equals("*"))
-			{
-				keys.add(s);
-			}
-			else if(filter.oreDictName.endsWith("*") && !filter.oreDictName.startsWith("*"))
-			{
-				if(s.startsWith(filter.oreDictName.substring(0, filter.oreDictName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(filter.oreDictName.startsWith("*") && !filter.oreDictName.endsWith("*"))
-			{
-				if(s.endsWith(filter.oreDictName.substring(1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(filter.oreDictName.startsWith("*") && filter.oreDictName.endsWith("*"))
-			{
-				if(s.contains(filter.oreDictName.substring(1, filter.oreDictName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-		}
-
-		for(String key : keys)
-		{
-			for(ItemStack stack : OreDictionary.getOres(key))
-			{
-				ItemStack toAdd = stack.copy();
-
-				if(!oreDictStacks.get(filter).iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
-				{
-					oreDictStacks.get(filter).iterStacks.add(stack.copy());
-				}
-			}
-		}
+		
+		oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.oreDictName, true);
 
 		stackSwitch = 0;
 		updateScreen();
 		oreDictStacks.get(filter).stackIndex = -1;
+	}
+	
+	private void updateStackList(MModIDFilter filter)
+	{
+		if(!modIDStacks.containsKey(filter))
+		{
+			modIDStacks.put(filter, new StackData());
+		}
+		
+		modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.modID, true);
+
+		stackSwitch = 0;
+		updateScreen();
+		modIDStacks.get(filter).stackIndex = -1;
 	}
 
 	public static class StackData

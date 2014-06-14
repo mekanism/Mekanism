@@ -12,6 +12,7 @@ import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
@@ -19,6 +20,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TItemStackFilter;
 import mekanism.common.transporter.TMaterialFilter;
+import mekanism.common.transporter.TModIDFilter;
 import mekanism.common.transporter.TOreDictFilter;
 import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +28,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -47,6 +48,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 	public int stackSwitch = 0;
 
 	public Map<TOreDictFilter, StackData> oreDictStacks = new HashMap<TOreDictFilter, StackData>();
+	public Map<TModIDFilter, StackData> modIDStacks = new HashMap<TModIDFilter, StackData>();
 
 	public float scroll;
 
@@ -100,6 +102,23 @@ public class GuiLogisticalSorter extends GuiMekanism
 					entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
 				}
 			}
+			
+			for(Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet())
+			{
+				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() > 0)
+				{
+					if(entry.getValue().stackIndex == -1 || entry.getValue().stackIndex == entry.getValue().iterStacks.size()-1)
+					{
+						entry.getValue().stackIndex = 0;
+					}
+					else if(entry.getValue().stackIndex < entry.getValue().iterStacks.size()-1)
+					{
+						entry.getValue().stackIndex++;
+					}
+
+					entry.getValue().renderStack = entry.getValue().iterStacks.get(entry.getValue().stackIndex);
+				}
+			}
 
 			stackSwitch = 20;
 		}
@@ -111,25 +130,45 @@ public class GuiLogisticalSorter extends GuiMekanism
 					entry.getValue().renderStack = null;
 				}
 			}
+			
+			for(Map.Entry<TModIDFilter, StackData> entry : modIDStacks.entrySet())
+			{
+				if(entry.getValue().iterStacks != null && entry.getValue().iterStacks.size() == 0)
+				{
+					entry.getValue().renderStack = null;
+				}
+			}
 		}
 
-		Set<TOreDictFilter> filtersVisible = new HashSet<TOreDictFilter>();
+		Set<TOreDictFilter> oreDictFilters = new HashSet<TOreDictFilter>();
+		Set<TModIDFilter> modIDFilters = new HashSet<TModIDFilter>();
 
 		for(int i = 0; i < 4; i++)
 		{
 			if(tileEntity.filters.get(getFilterIndex()+i) instanceof TOreDictFilter)
 			{
-				filtersVisible.add((TOreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
+				oreDictFilters.add((TOreDictFilter)tileEntity.filters.get(getFilterIndex()+i));
+			}
+			else if(tileEntity.filters.get(getFilterIndex()+i) instanceof TModIDFilter)
+			{
+				modIDFilters.add((TModIDFilter)tileEntity.filters.get(getFilterIndex()+i));
 			}
 		}
 
 		for(TransporterFilter filter : tileEntity.filters)
 		{
-			if(filter instanceof TOreDictFilter && !filtersVisible.contains(filter))
+			if(filter instanceof TOreDictFilter && !oreDictFilters.contains(filter))
 			{
 				if(oreDictStacks.containsKey(filter))
 				{
 					oreDictStacks.remove(filter);
+				}
+			}
+			else if(filter instanceof TModIDFilter && !modIDFilters.contains(filter))
+			{
+				if(modIDStacks.containsKey(filter))
+				{
+					modIDStacks.remove(filter);
 				}
 			}
 		}
@@ -273,9 +312,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
 
 		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
-		fontRendererObj.drawString("IS: " + getItemStackFilters().size(), 11, 28, 0x00CD00);
-		fontRendererObj.drawString("OD: " + getOreDictFilters().size(), 11, 37, 0x00CD00);
-		fontRendererObj.drawString("M: " + getMaterialFilters().size(), 11, 46, 0x00CD00);
+		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 
 		fontRendererObj.drawString("RR:", 12, 74, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
@@ -345,6 +382,29 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+				}
+				else if(filter instanceof TModIDFilter)
+				{
+					TModIDFilter modFilter = (TModIDFilter)filter;
+
+					if(!modIDStacks.containsKey(modFilter))
+					{
+						updateStackList(modFilter);
+					}
+
+					if(modIDStacks.get(filter).renderStack != null)
+					{
+						try {
+							GL11.glPushMatrix();
+							GL11.glEnable(GL11.GL_LIGHTING);
+							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							GL11.glDisable(GL11.GL_LIGHTING);
+							GL11.glPopMatrix();
+						} catch(Exception e) {}
+					}
+
+					fontRendererObj.drawString(MekanismUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
 					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 			}
@@ -425,6 +485,10 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
 				}
+				else if(filter instanceof TModIDFilter)
+				{
+					MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
+				}
 				
 				drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
 				MekanismRenderer.resetColor();
@@ -448,113 +512,32 @@ public class GuiLogisticalSorter extends GuiMekanism
 		}
 	}
 
-	public ArrayList getItemStackFilters()
-	{
-		ArrayList list = new ArrayList();
-
-		for(TransporterFilter filter : tileEntity.filters)
-		{
-			if(filter instanceof TItemStackFilter)
-			{
-				list.add(filter);
-			}
-		}
-
-		return list;
-	}
-
-	public ArrayList getOreDictFilters()
-	{
-		ArrayList list = new ArrayList();
-
-		for(TransporterFilter filter : tileEntity.filters)
-		{
-			if(filter instanceof TOreDictFilter)
-			{
-				list.add(filter);
-			}
-		}
-
-		return list;
-	}
-	
-	public ArrayList getMaterialFilters()
-	{
-		ArrayList list = new ArrayList();
-
-		for(TransporterFilter filter : tileEntity.filters)
-		{
-			if(filter instanceof TMaterialFilter)
-			{
-				list.add(filter);
-			}
-		}
-
-		return list;
-	}
-
 	private void updateStackList(TOreDictFilter filter)
 	{
 		if(!oreDictStacks.containsKey(filter))
 		{
 			oreDictStacks.put(filter, new StackData());
 		}
-
-		if(oreDictStacks.get(filter).iterStacks == null)
-		{
-			oreDictStacks.get(filter).iterStacks = new ArrayList<ItemStack>();
-		}
-		else {
-			oreDictStacks.get(filter).iterStacks.clear();
-		}
-
-		List<String> keys = new ArrayList<String>();
-
-		for(String s : OreDictionary.getOreNames())
-		{
-			if(filter.oreDictName.equals(s) || filter.oreDictName.equals("*"))
-			{
-				keys.add(s);
-			}
-			else if(filter.oreDictName.endsWith("*") && !filter.oreDictName.startsWith("*"))
-			{
-				if(s.startsWith(filter.oreDictName.substring(0, filter.oreDictName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(filter.oreDictName.startsWith("*") && !filter.oreDictName.endsWith("*"))
-			{
-				if(s.endsWith(filter.oreDictName.substring(1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(filter.oreDictName.startsWith("*") && filter.oreDictName.endsWith("*"))
-			{
-				if(s.contains(filter.oreDictName.substring(1, filter.oreDictName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-		}
-
-		for(String key : keys)
-		{
-			for(ItemStack stack : OreDictionary.getOres(key))
-			{
-				ItemStack toAdd = stack.copy();
-
-				if(!oreDictStacks.get(filter).iterStacks.contains(stack))
-				{
-					oreDictStacks.get(filter).iterStacks.add(stack.copy());
-				}
-			}
-		}
+		
+		oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.oreDictName, false);
 
 		stackSwitch = 0;
 		updateScreen();
 		oreDictStacks.get(filter).stackIndex = -1;
+	}
+	
+	private void updateStackList(TModIDFilter filter)
+	{
+		if(!modIDStacks.containsKey(filter))
+		{
+			modIDStacks.put(filter, new StackData());
+		}
+		
+		modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.modID, false);
+
+		stackSwitch = 0;
+		updateScreen();
+		modIDStacks.get(filter).stackIndex = -1;
 	}
 
 	public static class StackData

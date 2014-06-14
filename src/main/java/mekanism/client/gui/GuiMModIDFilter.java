@@ -1,12 +1,12 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.miner.MModIDFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
@@ -19,9 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -277,51 +275,7 @@ public class GuiMModIDFilter extends GuiMekanism
 
 	private void updateStackList(String modName)
 	{
-		if(iterStacks == null)
-		{
-			iterStacks = new ArrayList<ItemStack>();
-		}
-		else {
-			iterStacks.clear();
-		}
-
-		for(String key : OreDictionary.getOreNames())
-		{
-			for(ItemStack stack : OreDictionary.getOres(key))
-			{
-				ItemStack toAdd = stack.copy();
-				String s = MekanismUtils.getMod(toAdd);
-
-				if(!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
-				{
-					if(modName.equals(s) || modName.equals("*"))
-					{
-						iterStacks.add(stack.copy());
-					}
-					else if(modName.endsWith("*") && !modName.startsWith("*"))
-					{
-						if(s.startsWith(modName.substring(0, modName.length()-1)))
-						{
-							iterStacks.add(stack.copy());
-						}
-					}
-					else if(modName.startsWith("*") && !modName.endsWith("*"))
-					{
-						if(s.endsWith(modName.substring(1)))
-						{
-							iterStacks.add(stack.copy());
-						}
-					}
-					else if(modName.startsWith("*") && modName.endsWith("*"))
-					{
-						if(s.contains(modName.substring(1, modName.length()-1)))
-						{
-							iterStacks.add(stack.copy());
-						}
-					}
-				}
-			}
-		}
+		iterStacks = OreDictCache.getModIDStacks(modName, true);
 
 		stackSwitch = 0;
 		stackIndex = -1;

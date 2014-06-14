@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.miner.MOreDictFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
@@ -277,57 +278,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 	private void updateStackList(String oreName)
 	{
-		if(iterStacks == null)
-		{
-			iterStacks = new ArrayList<ItemStack>();
-		}
-		else {
-			iterStacks.clear();
-		}
-
-		List<String> keys = new ArrayList<String>();
-
-		for(String s : OreDictionary.getOreNames())
-		{
-			if(oreName.equals(s) || oreName.equals("*"))
-			{
-				keys.add(s);
-			}
-			else if(oreName.endsWith("*") && !oreName.startsWith("*"))
-			{
-				if(s.startsWith(oreName.substring(0, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && !oreName.endsWith("*"))
-			{
-				if(s.endsWith(oreName.substring(1)))
-				{
-					keys.add(s);
-				}
-			}
-			else if(oreName.startsWith("*") && oreName.endsWith("*"))
-			{
-				if(s.contains(oreName.substring(1, oreName.length()-1)))
-				{
-					keys.add(s);
-				}
-			}
-		}
-
-		for(String key : keys)
-		{
-			for(ItemStack stack : OreDictionary.getOres(key))
-			{
-				ItemStack toAdd = stack.copy();
-
-				if(!iterStacks.contains(stack) && toAdd.getItem() instanceof ItemBlock)
-				{
-					iterStacks.add(stack.copy());
-				}
-			}
-		}
+		iterStacks = OreDictCache.getOreDictStacks(oreName, true);
 
 		stackSwitch = 0;
 		stackIndex = -1;
