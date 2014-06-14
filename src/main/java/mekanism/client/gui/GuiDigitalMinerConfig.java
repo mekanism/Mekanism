@@ -226,6 +226,11 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	                        SoundHandler.playSound("gui.button.press");
 							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
+						else if(filter instanceof MModIDFilter)
+						{
+	                        SoundHandler.playSound("gui.button.press");
+							Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 6, getFilterIndex()+i, 0));
+						}
 					}
 				}
 			}

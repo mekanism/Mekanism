@@ -215,6 +215,11 @@ public class GuiLogisticalSorter extends GuiMekanism
 							SoundHandler.playSound("gui.button.press");
 							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 3, getFilterIndex()+i, 0));
 						}
+						else if(filter instanceof TModIDFilter)
+						{
+							SoundHandler.playSound("gui.button.press");
+							Mekanism.packetHandler.sendToServer(new LogisticalSorterGuiMessage(SorterGuiPacket.SERVER_INDEX, Coord4D.get(tileEntity), 5, getFilterIndex()+i, 0));
+						}
 					}
 				}
 			}
