@@ -6,7 +6,7 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ItemInfo;
-import mekanism.common.IBoundingBlock;
+import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Blocks;
@@ -67,9 +67,9 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 
-			TileEntity bte;
+			TileEntity tile = tileEntity.getWorldObj().getTileEntity(x, y, z);
 			
-			if((bte = tileEntity.getWorldObj().getTileEntity(x, y, z)) != null && bte instanceof IBoundingBlock)
+			if(tile instanceof TileEntityBoundingBlock)
 			{
 				continue;
 			}

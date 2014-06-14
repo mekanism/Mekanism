@@ -258,7 +258,7 @@ public class PacketHandler
 		{
 			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
 			{
-				if(cuboid.isVecInside(Vec3.createVectorHelper(player.posX, player.posY, player.posZ)))
+				if(player.dimension == dimId && cuboid.isVecInside(Vec3.createVectorHelper(player.posX, player.posY, player.posZ)))
 				{
 					sendTo(message, player);
 				}
