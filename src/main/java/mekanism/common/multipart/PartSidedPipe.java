@@ -1,6 +1,5 @@
 package mekanism.common.multipart;
 
-import ic2.api.tile.IWrenchable;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ import codechicken.multipart.TSlottedPart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, ISidedHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, IWrenchable
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, ISidedHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -645,39 +644,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		else {
 			return connectionTypes[side.ordinal()] == ConnectionType.NORMAL || connectionTypes[side.ordinal()] == ConnectionType.PUSH;
 		}
-	}
-
-	@Override
-	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
-	{
-		return false;
-	}
-
-	@Override
-	public short getFacing()
-	{
-		return 0;
-	}
-
-	@Override
-	public void setFacing(short facing) {}
-
-	@Override
-	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
-	{
-		return true;
-	}
-
-	@Override
-	public float getWrenchDropRate()
-	{
-		return 1.0F;
-	}
-
-	@Override
-	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
-	{
-		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmitter().ordinal());
 	}
 
 	public static enum ConnectionType
