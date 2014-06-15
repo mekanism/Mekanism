@@ -55,7 +55,7 @@ public abstract class GuiGauge<T> extends GuiElement
 	
 	public void renderScale(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
-		if(getIcon() == null || getScaledLevel() == 0)
+		if(getScaledLevel() == 0 || getIcon() == null)
 		{
 			return;
 		}
