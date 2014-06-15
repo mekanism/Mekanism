@@ -13,8 +13,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
+import codechicken.microblock.HollowMicroblock;
 import codechicken.multipart.JItemMultiPart;
 import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,6 +47,11 @@ public class ItemGlowPanel extends JItemMultiPart
 			return new PartGlowPanel(col, orientation);
 		}
 		
+		if(world.getTileEntity(pos.x, pos.y, pos.z) instanceof TileMultipart && ((TileMultipart) world.getTileEntity(pos.x, pos.y, pos.z)).partMap(orientation.ordinal()) instanceof HollowMicroblock)
+		{
+			return new PartGlowPanel(col, orientation);
+		}
+
 		return null;
 	}
 

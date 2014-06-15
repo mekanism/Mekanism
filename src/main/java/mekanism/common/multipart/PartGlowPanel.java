@@ -18,6 +18,7 @@ import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
+import codechicken.microblock.HollowMicroblock;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JCuboidPart;
 import codechicken.multipart.JIconHitEffects;
@@ -84,9 +85,17 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@Override
 	public void onNeighborChanged()
 	{
-		Coord4D adj = Coord4D.get(tile()).getFromSide(side);
-		
-		if(!world().isRemote && !world().isSideSolid(adj.xCoord, adj.yCoord, adj.zCoord, side.getOpposite()))
+		if(!world().isRemote && !canStay())
+		{
+			TileMultipart.dropItem(new ItemStack(Mekanism.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
+			tile().remPart(this);
+		}
+	}
+
+	@Override
+	public void onPartChanged(TMultiPart other)
+	{
+		if(!world().isRemote && !canStay())
 		{
 			TileMultipart.dropItem(new ItemStack(Mekanism.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
 			tile().remPart(this);
@@ -192,5 +201,11 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	public boolean doesTick()
 	{
 		return false;
+	}
+
+	public boolean canStay()
+	{
+		Coord4D adj = Coord4D.get(tile()).getFromSide(side);
+		return world().isSideSolid(adj.xCoord, adj.yCoord, adj.zCoord, side.getOpposite()) || tile().partMap(side.ordinal()) instanceof HollowMicroblock;
 	}
 }
