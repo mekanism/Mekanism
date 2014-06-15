@@ -1,11 +1,14 @@
 package cofh.api.block;
 
+import cofh.api.tileentity.ITileDebug;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
- * Implement this interface on blocks which have some debug method which can be activated via a tool or other means.
+ * Implement this interface on blocks which have some debug method which can be activated via a tool or other means. If the block contains Tile Entities, then
+ * it is recommended that this function serve as a passthrough for {@link ITileDebug}.
  * 
  * @author King Lemming
  * 
@@ -28,6 +31,6 @@ public interface IBlockDebug {
 	 * @param player
 	 *            Player doing the debugging.
 	 */
-	public void debugBlock(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player);
+	void debugBlock(IBlockAccess world, int x, int y, int z, ForgeDirection side, EntityPlayer player);
 
 }

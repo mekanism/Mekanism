@@ -219,14 +219,14 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from)
+	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().canInterface(from);
+		return getInv().canConnectEnergy(from);
 	}
 
 	@Override

@@ -150,7 +150,7 @@ public final class CableUtils
 	{
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
 				(tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(tileEntity, side.getOpposite())) ||
-				(tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canInterface(side.getOpposite())) ||
+				(tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canConnectEnergy(side.getOpposite())) ||
 				(tileEntity instanceof IPowerEmitter && ((IPowerEmitter)tileEntity).canEmitPowerFrom(side.getOpposite()));
 	}
 
@@ -202,7 +202,7 @@ public final class CableUtils
 		}
 		else if(tileEntity instanceof IEnergyHandler)
 		{
-			if(((IEnergyHandler)tileEntity).canInterface(side.getOpposite()))
+			if(((IEnergyHandler)tileEntity).canConnectEnergy(side.getOpposite()))
 			{
 				return true;
 			}
@@ -309,7 +309,7 @@ public final class CableUtils
 		{
 			IEnergyHandler handler = (IEnergyHandler)tileEntity;
 
-			if(handler.canInterface(side.getOpposite()))
+			if(handler.canConnectEnergy(side.getOpposite()))
 			{
 				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(sendingEnergy*Mekanism.TO_TE), false);
 				sent += used*Mekanism.FROM_TE;

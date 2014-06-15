@@ -258,7 +258,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from)
+	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}

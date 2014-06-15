@@ -269,7 +269,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	public boolean canInterface(ForgeDirection from)
+	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return true;
 	}

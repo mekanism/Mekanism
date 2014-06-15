@@ -267,7 +267,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			{
 				IEnergyHandler handler = (IEnergyHandler)acceptor;
 
-				if(handler.canInterface(side.getOpposite()))
+				if(handler.canConnectEnergy(side.getOpposite()))
 				{
 					if(handler.getMaxEnergyStored(side.getOpposite()) - handler.getEnergyStored(side.getOpposite()) > 0 || handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
 					{
