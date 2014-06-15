@@ -1152,7 +1152,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.MachineBlock2, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, false),
 		CHEMICAL_WASHER(Mekanism.MachineBlock2, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, false),
 		CHEMICAL_CRYSTALLIZER(Mekanism.MachineBlock2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, false),
-		SEISMIC_VIBRATOR(Mekanism.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, false, false),
+		SEISMIC_VIBRATOR(Mekanism.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, false),
 		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, false, false);
 
 		public Block typeBlock;

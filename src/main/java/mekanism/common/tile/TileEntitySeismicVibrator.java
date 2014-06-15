@@ -23,6 +23,8 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	
 	public int updateDelay;
 	
+	public float clientPiston;
+	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
 	public TileEntitySeismicVibrator()
@@ -63,7 +65,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			
 			ChargeUtils.discharge(0, this);
 			
-			if(MekanismUtils.canFunction(this) && getEnergy() > Mekanism.seismicVibratorUsage)
+			if(MekanismUtils.canFunction(this) && getEnergy() >= Mekanism.seismicVibratorUsage)
 			{
 				setActive(true);
 				setEnergy(getEnergy()-Mekanism.seismicVibratorUsage);

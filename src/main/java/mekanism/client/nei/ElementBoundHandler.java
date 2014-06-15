@@ -15,8 +15,6 @@ public class ElementBoundHandler extends INEIGuiAdapter
 		{
 			GuiMekanism guiMek = (GuiMekanism)gui;
 			
-			System.out.println(x + " " + y + " " + width + " " + height + " " + guiMek.getXPos() + " " + guiMek.getYPos());
-			
 			Rectangle4i rect = new Rectangle4i(x, y, width, height);
 			
 			for(GuiElement element : guiMek.guiElements)
