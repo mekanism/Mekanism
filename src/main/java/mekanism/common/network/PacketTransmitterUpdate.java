@@ -40,7 +40,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity != null)
+			if(tileEntity instanceof IGridTransmitter)
 			{
 				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = message.power;
 			}
@@ -49,7 +49,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity != null)
+			if(tileEntity instanceof IGridTransmitter)
 			{
 				GasNetwork net = ((IGridTransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
 
@@ -66,7 +66,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity != null)
+			if(tileEntity instanceof IGridTransmitter)
 			{
 				FluidNetwork net = ((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
 
