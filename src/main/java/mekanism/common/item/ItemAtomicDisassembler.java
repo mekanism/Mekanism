@@ -348,7 +348,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 			{
 				Coord4D coord = pointer.getFromSide(side);
 
-				if(coord.exists(world) && checkID(coord.getBlock(world)) && coord.getMetadata(world) == stack.getItemDamage())
+				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getMetadata(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getMetadata(world) % 4 == stack.getItemDamage() % 4)))
 				{
 					loop(coord);
 				}
