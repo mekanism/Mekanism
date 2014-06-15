@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -23,6 +24,12 @@ public class GuiSortingTab extends GuiElement
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSortingTab.png"), gui, def);
 
 		tileEntity = tile;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth - 26, guiHeight + 34, 26, 35);
 	}
 
 	@Override

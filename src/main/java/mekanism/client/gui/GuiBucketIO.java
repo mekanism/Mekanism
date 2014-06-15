@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +13,12 @@ public class GuiBucketIO extends GuiElement
 	public GuiBucketIO(IGuiWrapper gui, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiBucket.png"), gui, def);
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth - 26, guiHeight + 4, 26, 57);
 	}
 
 	@Override

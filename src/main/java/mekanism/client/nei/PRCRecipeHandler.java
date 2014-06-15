@@ -14,6 +14,9 @@ import mekanism.api.PressurizedReactants;
 import mekanism.api.PressurizedRecipe;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.GuiFluidGauge;
+import mekanism.client.gui.GuiGasGauge;
+import mekanism.client.gui.GuiGauge;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
@@ -23,7 +26,6 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
-import mekanism.client.nei.RotaryCondensentratorRecipeHandler.CachedIORecipe;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -45,15 +47,23 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 	
+	public GuiFluidGauge fluidInput;
+	public GuiGasGauge gasInput;
+	public GuiGasGauge gasOutput;
+	
 	public static int xOffset = 5;
-	public static int yOffset = 3;
+	public static int yOffset = 11;
 	
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 53, 34));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 140, 18).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 115, 34));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 53, 34));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 140, 18).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 115, 34));
+		
+		guiElements.add(fluidInput = GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 5, 10));
+		guiElements.add(gasInput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 28, 10));
+		guiElements.add(gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png"), 140, 40));
 
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -61,7 +71,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -69,7 +79,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
 			}
-		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 75, 37));
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 75, 37));
 	}
 	
 	public ProgressBar getProgressType()
@@ -87,18 +97,18 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 80);
+		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 68);
 		
 		for(GuiElement e : guiElements)
 		{
-			e.renderBackground(0, 0, xOffset, yOffset);
+			e.renderBackground(0, 0, -xOffset, -yOffset);
 		}
 	}
 	
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(70, 34, 36, 10), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(75-xOffset, 37-yOffset, 36, 10), getRecipeId(), new Object[0]));
 	}
 	
 	@Override
@@ -111,7 +121,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName() 
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.PressurizedReactionChamber.name");
+		return MekanismUtils.localize("tile.MachineBlock2.PressurizedReactionChamber.short.name");
 	}
 	
 	@Override
@@ -129,7 +139,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public int recipiesPerPage()
 	{
-		return 1;
+		return 2;
 	}
 	
 	public String getRecipeId()
@@ -140,30 +150,30 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getGuiTexture() 
 	{
-		return "nei/GuiPRC.png";
+		return "mekanism:gui/nei/GuiPRC.png";
 	}
 	
 	@Override
 	public void drawExtras(int i)
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
-
-		drawTexturedModalRect(47-xOffset, 39-yOffset, 176, 71, 28, 8);
-		drawTexturedModalRect(101-xOffset, 39-yOffset, 176, 63, 28, 8);
 		
 		if(recipe.pressurizedRecipe.reactants.getFluid() != null)
 		{
-			displayGauge(58, 26-xOffset, 14-yOffset, 176, 4, 58, recipe.pressurizedRecipe.reactants.getFluid(), null);
+			fluidInput.setDummyType(recipe.pressurizedRecipe.reactants.getFluid().getFluid());
+			fluidInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
 		if(recipe.pressurizedRecipe.reactants.getGas() != null)
 		{
-			displayGauge(58, 26-xOffset, 14-yOffset, 176, 4, 58, null, recipe.pressurizedRecipe.reactants.getGas());
+			gasInput.setDummyType(recipe.pressurizedRecipe.reactants.getGas().getGas());
+			gasInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
 		if(recipe.pressurizedRecipe.products.getGasOutput() != null)
 		{
-			displayGauge(58, 80-xOffset, 5-yOffset, 176, 4, 58, null, recipe.pressurizedRecipe.products.getGasOutput());
+			gasOutput.setDummyType(recipe.pressurizedRecipe.products.getGasOutput().getGas());
+			gasOutput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 	}
 	
@@ -252,15 +262,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5+13 && yAxis <= 63+13)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+13 && yAxis <= 69+13)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid().getFluid().getLocalizedName());
 		}
-		else if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 29 && xAxis <= 45 && yAxis >= 11+13 && yAxis <= 69+13)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas().getGas().getLocalizedName());
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 141 && xAxis <= 157 && yAxis >= 41+13 && yAxis <= 69+13)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput().getGas().getLocalizedName());
 		}
@@ -279,15 +289,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 
-		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5+13 && yAxis <= 63+13)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+13 && yAxis <= 69+13)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
 		}
-		else if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 29 && xAxis <= 45 && yAxis >= 11+13 && yAxis <= 69+13)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 141 && xAxis <= 157 && yAxis >= 41+13 && yAxis <= 69+13)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
 		}
@@ -341,15 +351,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 
-		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5+13 && yAxis <= 63+13)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+13 && yAxis <= 69+13)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
 		}
-		else if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 29 && xAxis <= 45 && yAxis >= 11+13 && yAxis <= 69+13)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
 		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
+		else if(xAxis >= 141 && xAxis <= 157 && yAxis >= 41+13 && yAxis <= 69+13)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
 		}
@@ -417,8 +427,8 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 			
 			pressurizedRecipe = recipe;
 			
-			input = new PositionedStack(recipe.reactants.getSolid(), 54, 35);
-			output = new PositionedStack(recipe.products.getItemOutput(), 116, 35);
+			input = new PositionedStack(recipe.reactants.getSolid(), 54-xOffset, 35-yOffset);
+			output = new PositionedStack(recipe.products.getItemOutput(), 116-xOffset, 35-yOffset);
 		}
 
 		public CachedIORecipe(Map.Entry recipe)

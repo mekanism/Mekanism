@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -51,6 +52,12 @@ public class GuiPowerBar extends GuiElement
 		handler = h;
 		xLocation = x;
 		yLocation = y;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
 	
 	public static abstract class IPowerInfoHandler

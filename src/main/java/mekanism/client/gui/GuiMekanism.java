@@ -180,6 +180,21 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		return fontRendererObj;
 	}
+	
+	public void handleMouse(Slot slot, int slotIndex, int button, int modifier)
+	{
+		handleMouseClick(slot, slotIndex, button, modifier);
+	}
+	
+	public int getXPos()
+	{
+		return (width - xSize) / 2;
+	}
+	
+	public int getYPos()
+	{
+		return (height - ySize) / 2;
+	}
 
 	protected FontRenderer getFontRenderer()
 	{

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
+import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -65,6 +66,8 @@ public abstract class GuiElement
 	{
 		return guiObj.getFont();
 	}
+	
+	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 
 	public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);
 

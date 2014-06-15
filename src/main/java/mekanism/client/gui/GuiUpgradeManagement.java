@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.IUpgradeTile;
@@ -19,6 +20,12 @@ public class GuiUpgradeManagement extends GuiElement
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeManagement.png"), gui, def);
 
 		tileEntity = tile;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 63);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.IRedstoneControl;
@@ -20,6 +21,12 @@ public class GuiRedstoneControl extends GuiElement
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRedstoneControl.png"), gui, def);
 
 		tileEntity = tile;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth + 176, guiHeight + 138, 26, 26);
 	}
 
 	@Override

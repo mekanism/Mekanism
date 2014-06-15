@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -15,6 +16,12 @@ public class GuiEnergyGauge extends GuiGauge
 		super(type, gui, def, x, y);
 
 		infoHandler = handler;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
 	}
 
 	@Override

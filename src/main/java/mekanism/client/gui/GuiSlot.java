@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +36,12 @@ public class GuiSlot extends GuiElement
 	{
 		this.overlay = overlay;
 		return this;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.item.ItemStack;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import codechicken.nei.guihook.GuiContainerManager;
 
 public class NEIMekanismConfig implements IConfigureNEI
 {
@@ -98,6 +99,10 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPRC.class, PRCRecipeHandler.xOffset, PRCRecipeHandler.yOffset);
+		
+		GuiContainerManager.addSlotClickHandler(new MekanismSlotClickHandler());
+		
+		API.registerNEIGuiHandler(new ElementBoundHandler());
 
 		API.hideItem(new ItemStack(Mekanism.BoundingBlock));
 		API.hideItem(new ItemStack(Mekanism.ItemProxy));

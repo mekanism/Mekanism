@@ -42,9 +42,9 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 52).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 111, 30));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 52).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 111, 30));
 		
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -52,7 +52,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -60,7 +60,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
 			}
-		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 77, 37));
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 77, 37));
 	}
 
 	@Override

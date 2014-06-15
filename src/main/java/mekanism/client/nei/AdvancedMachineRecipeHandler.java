@@ -15,8 +15,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiProgress;
 import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.GuiProgress;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot;
@@ -52,10 +52,10 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 30, 34).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 55, 52));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 111, 30));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 16));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 30, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 52));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 111, 30));
 		
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -63,7 +63,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -71,7 +71,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
 			}
-		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 77, 37));
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 77, 37));
 	}
 
 	@Override

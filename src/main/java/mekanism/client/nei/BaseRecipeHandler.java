@@ -113,6 +113,11 @@ public abstract class BaseRecipeHandler extends TemplateRecipeHandler implements
 		changeTexture(MekanismRenderer.getBlocksTexture());
 		gui.drawTexturedModelRectFromIcon(xPos, yPos, gas.getGas().getIcon(), sizeX, sizeY);
 	}
+	
+	public String stripTexture()
+	{
+		return getGuiTexture().replace("mekanism:gui/", "");
+	}
 
 	/*
 	 * true = usage, false = recipe

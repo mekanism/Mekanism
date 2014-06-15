@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.List;
 
+import codechicken.lib.vec.Rectangle4i;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -18,6 +19,12 @@ public class GuiEnergyInfo extends GuiElement
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
 
 		infoHandler = handler;
+	}
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
 	}
 
 	public static interface IInfoHandler

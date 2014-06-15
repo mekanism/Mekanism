@@ -20,9 +20,9 @@ import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -43,10 +43,10 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 16, 34));
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 50, 42));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 142, 34).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 108, 42));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 16, 34));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 50, 42));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 108, 42));
 
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -54,14 +54,14 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 164, 15));
+		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler() {
 			@Override
 			public double getProgress()
 			{
 				return ticksPassed >= 40 ? (ticksPassed - 40) % 20 / 20.0F : 0.0F;
 			}
-		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, getGuiTexture()), 70, 46));
+		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 70, 46));
 	}
 
 	@Override
