@@ -16,12 +16,7 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 	@Override
 	public float getDigSpeed(ItemStack stack, Block block, int meta)
 	{
-		if(ForgeHooks.isToolEffective(stack, block, meta))
-		{
-			return efficiencyOnProperMaterial;
-		}
-
-		return getDigSpeed(stack, block, meta);
+		return block != Blocks.bedrock ? efficiencyOnProperMaterial : 1.0F;
 	}
 
 	@Override

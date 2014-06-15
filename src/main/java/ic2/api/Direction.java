@@ -54,11 +54,23 @@ public enum Direction {
 	 * @param tileEntity tile entity to check
 	 * @return Adjacent tile entity or null if none exists
 	 */
-	public TileEntity applyToTileEntity(TileEntity tileEntity) {
-		int coords[] = { tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord };
+	public TileEntity applyToTileEntity(TileEntity te) {
+		return applyTo(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+	}
+
+	/**
+	 * Get the tile entity next to a position following this direction.
+	 *
+	 * @param world World to check
+	 * @param x X coordinate to check from
+	 * @param y Y coordinate to check from
+	 * @param z Z coordinate to check from
+	 * @return Adjacent tile entity or null if none exists
+	 */
+	public TileEntity applyTo(World world, int x, int y, int z) {
+		int coords[] = { x, y, z };
 
 		coords[dir/2] += getSign();
-		World world = tileEntity.getWorldObj();
 
 		if (world != null && world.blockExists(coords[0], coords[1], coords[2])) {
 			try {
@@ -67,6 +79,7 @@ public enum Direction {
 				throw new RuntimeException("error getting TileEntity at dim "+world.provider.dimensionId+" "+coords[0]+"/"+coords[1]+"/"+coords[2]);
 			}
 		}
+
 		return null;
 	}
 
