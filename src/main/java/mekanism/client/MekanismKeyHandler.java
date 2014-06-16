@@ -5,6 +5,7 @@ import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -16,13 +17,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler
 {
-	public static final String keybindCategory = "key.mekanism.category";
+	public static final String keybindCategory = "Mekanism";
 	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + MekanismUtils.localize("key.mode"), Keyboard.KEY_M, keybindCategory);
 	public static KeyBinding voiceKey = new KeyBinding("Mekanism " + MekanismUtils.localize("key.voice"), Keyboard.KEY_U, keybindCategory);
 
 	public MekanismKeyHandler()
 	{
 		super(new KeyBinding[] {modeSwitchKey, voiceKey}, new boolean[] {false, false});
+		
+		ClientRegistry.registerKeyBinding(modeSwitchKey);
+		ClientRegistry.registerKeyBinding(voiceKey);
 		
 		FMLCommonHandler.instance().bus().register(this);
 	}
