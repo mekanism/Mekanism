@@ -7,6 +7,7 @@ import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketKey.KeyMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Keyboard;
@@ -30,9 +31,9 @@ public class MekanismClient extends Mekanism
 
 	public static long ticksPassed = 0;
 
-	public static void updateKey(int key, int type)
+	public static void updateKey(KeyBinding key, int type)
 	{
-		boolean down = Minecraft.getMinecraft().currentScreen == null ? Keyboard.isKeyDown(key) : false;
+		boolean down = Minecraft.getMinecraft().currentScreen == null ? key.getIsKeyPressed() : false;
 
 		if(down != keyMap.has(Minecraft.getMinecraft().thePlayer, type))
 		{

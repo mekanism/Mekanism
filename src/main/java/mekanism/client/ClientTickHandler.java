@@ -385,8 +385,8 @@ public class ClientTickHandler
 
 			if(mc.thePlayer.getEquipmentInSlot(3) != null && mc.thePlayer.getEquipmentInSlot(3).getItem() instanceof ItemJetpack)
 			{
-				MekanismClient.updateKey(mc.gameSettings.keyBindJump.getKeyCode(), KeySync.ASCEND);
-				MekanismClient.updateKey(mc.gameSettings.keyBindSneak.getKeyCode(), KeySync.DESCEND);
+				MekanismClient.updateKey(mc.gameSettings.keyBindJump, KeySync.ASCEND);
+				MekanismClient.updateKey(mc.gameSettings.keyBindSneak, KeySync.DESCEND);
 			}
 
 			if(isJetpackOn(mc.thePlayer))
@@ -400,7 +400,7 @@ public class ClientTickHandler
 				}
 				else if(jetpack.getMode(mc.thePlayer.getEquipmentInSlot(3)) == JetpackMode.HOVER)
 				{
-					if((!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) || (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) || mc.currentScreen != null)
+					if((!mc.gameSettings.keyBindJump.getIsKeyPressed() && !mc.gameSettings.keyBindSneak.getIsKeyPressed()) || (mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.gameSettings.keyBindSneak.getIsKeyPressed()) || mc.currentScreen != null)
 					{
 						if(mc.thePlayer.motionY > 0)
 						{
@@ -412,11 +412,11 @@ public class ClientTickHandler
 						}
 					}
 					else {
-						if(Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) && mc.currentScreen == null)
+						if(mc.gameSettings.keyBindJump.getIsKeyPressed() && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.min(mc.thePlayer.motionY + 0.15D, 0.2D);
 						}
-						else if(Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && mc.currentScreen == null)
+						else if(mc.gameSettings.keyBindSneak.getIsKeyPressed() && mc.currentScreen == null)
 						{
 							mc.thePlayer.motionY = Math.max(mc.thePlayer.motionY - 0.15D, -0.2D);
 						}
@@ -467,7 +467,7 @@ public class ClientTickHandler
 
 				if(jetpack.getGas(stack) != null)
 				{
-					if((Keyboard.isKeyDown(Keyboard.KEY_SPACE) && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
+					if((mc.gameSettings.keyBindJump.getIsKeyPressed() && jetpack.getMode(stack) == JetpackMode.NORMAL) && mc.currentScreen == null)
 					{
 						return true;
 					}
