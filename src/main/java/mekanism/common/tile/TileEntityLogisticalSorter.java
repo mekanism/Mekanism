@@ -129,7 +129,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 						
 						if(invStack != null && invStack.getStack() != null)
 						{
-							ItemStack used = emitItemToTransporter(front, invStack, null, 0);
+							ItemStack used = emitItemToTransporter(front, invStack, color, 0);
 							
 							if(used != null)
 							{
