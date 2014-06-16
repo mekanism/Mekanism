@@ -30,6 +30,7 @@ public class GuiPRC extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPRC.png")));
+		guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
 			@Override
 			public FluidTank getTank()

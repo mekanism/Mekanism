@@ -25,6 +25,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -112,13 +113,13 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 			{
 				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), outputGasTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing), outputGasTank.getGas().getGas()))
 					{
-						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
+						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing), toSend), true);
 					}
 				}
 			}
@@ -341,70 +342,106 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		return inputFluidTank.fill(resource, doFill);
+		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return inputFluidTank.fill(resource, doFill);
+		}
+		
+		return 0;
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(inputFluidTank.getFluid() != null && inputFluidTank.getFluid().isFluidEqual(resource))
+		if(from == ForgeDirection.getOrientation(facing).getOpposite() && inputFluidTank.getFluid() != null && inputFluidTank.getFluid().isFluidEqual(resource))
 		{
 			return inputFluidTank.drain(resource.amount, doDrain);
 		}
+		
 		return null;
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		return inputFluidTank.drain(maxDrain, doDrain);
+		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return inputFluidTank.drain(maxDrain, doDrain);
+		}
+		
+		return null;
 	}
 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
+		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return inputFluidTank.getFluid() != null && inputFluidTank.getFluid().getFluid() == fluid;
+		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return inputFluidTank.getFluid() != null && inputFluidTank.getFluid().getFluid() == fluid;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return new FluidTankInfo[] {new FluidTankInfo(inputFluidTank)};
+		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		{
+			return new FluidTankInfo[] {new FluidTankInfo(inputFluidTank)};
+		}
+		
+		return PipeUtils.EMPTY;
 	}
 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
-		return inputGasTank.receive(stack, true);
+		if(side == MekanismUtils.getLeft(facing))
+		{
+			return inputGasTank.receive(stack, true);
+		}
+		
+		return 0;
 	}
 
 	@Override
 	public GasStack drawGas(ForgeDirection side, int amount)
 	{
-		return outputGasTank.draw(amount, true);
+		if(side == MekanismUtils.getRight(facing))
+		{
+			return outputGasTank.draw(amount, true);
+		}
+		
+		return null;
 	}
 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return inputGasTank.getGas() == null || inputGasTank.getGas().getGas() == type;
+		return side == MekanismUtils.getLeft(facing) && (inputGasTank.getGas() == null || inputGasTank.getGas().getGas() == type);
 	}
 
 	@Override
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
-		return outputGasTank.getGas() != null && outputGasTank.getGas().getGas() == type;
+		return side == MekanismUtils.getRight(facing) && outputGasTank.getGas() != null && outputGasTank.getGas().getGas() == type;
 	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return true;
+		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
 	}
 }

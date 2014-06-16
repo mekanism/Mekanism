@@ -178,8 +178,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
 			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
-			icons[10][0] = register.registerIcon("mekanism:SteelCasing");
-			icons[10][1] = register.registerIcon("mekanism:PressurizedReactionChamber");
 		}
 	}
 
@@ -455,16 +453,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[meta][0];
 				}
 			}
-			else if(meta == 10)
-			{
-				if(side == 3)
-				{
-					return icons[meta][1];
-				}
-				else {
-					return icons[meta][0];
-				}
-			}
 		}
 
 		return null;
@@ -599,16 +587,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				}
 			}
 			else if(metadata == 9)
-			{
-				if(side == tileEntity.facing)
-				{
-					return icons[metadata][1];
-				}
-				else {
-					return icons[metadata][0];
-				}
-			}
-			else if(metadata == 10)
 			{
 				if(side == tileEntity.facing)
 				{
@@ -1153,7 +1131,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		CHEMICAL_WASHER(Mekanism.MachineBlock2, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, false),
 		CHEMICAL_CRYSTALLIZER(Mekanism.MachineBlock2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, false),
 		SEISMIC_VIBRATOR(Mekanism.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, false),
-		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, false, false);
+		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, false);
 
 		public Block typeBlock;
 		public int meta;

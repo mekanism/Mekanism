@@ -12,6 +12,7 @@ import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelElectrolyticSeparator;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
+import mekanism.client.model.ModelPressurizedReactionChamber;
 import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
@@ -45,6 +46,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelChemicalWasher chemicalWasher = new ModelChemicalWasher();
 	public ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
 	public ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
+	public ModelPressurizedReactionChamber pressurizedReactionChamber = new ModelPressurizedReactionChamber();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -162,6 +164,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
 			seismicVibrator.render(0.0625F);
+		}
+		else if(type == MachineType.PRESSURIZED_REACTION_CHAMBER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedReactionChamber.png"));
+			pressurizedReactionChamber.render(0.0625F);
 		}
 		else {
 			MekanismRenderer.renderItem(renderer, metadata, block);

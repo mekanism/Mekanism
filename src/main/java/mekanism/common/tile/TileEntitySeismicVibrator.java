@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.common.IActiveState;
@@ -14,6 +15,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl
 {
@@ -160,7 +162,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	@Override
 	public boolean renderUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
@@ -179,6 +181,12 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	public RedstoneControl getControlType()
 	{
 		return controlType;
+	}
+	
+	@Override
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.of(ForgeDirection.UP);
 	}
 
 	@Override
