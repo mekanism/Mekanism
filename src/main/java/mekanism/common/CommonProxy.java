@@ -3,6 +3,7 @@ package mekanism.common;
 import java.io.File;
 
 import mekanism.api.MekanismAPI;
+import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -203,6 +204,28 @@ public class CommonProxy
 		Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
 		Mekanism.maxUpgradeMultiplier = Math.max(1, Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10).getInt());
+		
+		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J").getString();
+
+		if(s != null)
+		{
+			if(s.trim().equalsIgnoreCase("j") || s.trim().equalsIgnoreCase("joules"))
+			{
+				Mekanism.activeType = EnergyType.J;
+			}
+			else if(s.trim().equalsIgnoreCase("rf") || s.trim().equalsIgnoreCase("te") || s.trim().equalsIgnoreCase("thermal expansion"))
+			{
+				Mekanism.activeType = EnergyType.RF;
+			}
+			else if(s.trim().equalsIgnoreCase("eu") || s.trim().equalsIgnoreCase("ic2"))
+			{
+				Mekanism.activeType = EnergyType.EU;
+			}
+			else if(s.trim().equalsIgnoreCase("mj") || s.trim().equalsIgnoreCase("bc") || s.trim().equalsIgnoreCase("buildcraft"))
+			{
+				Mekanism.activeType = EnergyType.MJ;
+			}
+		}
 
 		Mekanism.TO_TE = Mekanism.TO_BC*10;
 		Mekanism.FROM_TE = Mekanism.FROM_BC/10;

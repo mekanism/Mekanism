@@ -165,29 +165,6 @@ public class ClientProxy extends CommonProxy
 		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
 		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
 		MekanismClient.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
-
-		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J").getString();
-
-		if(s != null)
-		{
-			if(s.trim().equalsIgnoreCase("j") || s.trim().equalsIgnoreCase("joules"))
-			{
-				Mekanism.activeType = EnergyType.J;
-			}
-			else if(s.trim().equalsIgnoreCase("rf") || s.trim().equalsIgnoreCase("te") || s.trim().equalsIgnoreCase("thermal expansion"))
-			{
-				Mekanism.activeType = EnergyType.RF;
-			}
-			else if(s.trim().equalsIgnoreCase("eu") || s.trim().equalsIgnoreCase("ic2"))
-			{
-				Mekanism.activeType = EnergyType.EU;
-			}
-			else if(s.trim().equalsIgnoreCase("mj") || s.trim().equalsIgnoreCase("bc") || s.trim().equalsIgnoreCase("buildcraft"))
-			{
-				Mekanism.activeType = EnergyType.MJ;
-			}
-		}
-
 		Mekanism.configuration.save();
 	}
 

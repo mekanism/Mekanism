@@ -579,7 +579,11 @@ public class Mekanism
 			"SLS", "STS", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 9), new Object[] {
-			"TLT", "CIC", "TTT", Character.valueOf('T'), "ingotTin", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('C'), "circuitBasic"
+			"TLT", "CIC", "TTT", Character.valueOf('T'), "ingotTin", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('C'), "circuitBasic", Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 10), new Object[] {
+			"TET", "CIC", "GFG", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), "circuitBasic", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), 
+			Character.valueOf('I'), new ItemStack(MachineBlock, 1, 0), Character.valueOf('F'), new ItemStack(BasicBlock, 1, 9)
 		}));
 
 		for(RecipeType type : RecipeType.values())

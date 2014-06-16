@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
+import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
@@ -49,6 +50,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
 			dataStream.writeInt(Mekanism.VOICE_PORT);
 			dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
+			dataStream.writeInt(Mekanism.activeType.ordinal());
 	
 			dataStream.writeDouble(Mekanism.enrichmentChamberUsage);
 			dataStream.writeDouble(Mekanism.osmiumCompressorUsage);
@@ -109,6 +111,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			Mekanism.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			Mekanism.VOICE_PORT = dataStream.readInt();
 			Mekanism.maxUpgradeMultiplier = dataStream.readInt();
+			Mekanism.activeType = EnergyType.values()[dataStream.readInt()];
 	
 			Mekanism.TO_TE = Mekanism.TO_BC*10;
 			Mekanism.FROM_TE = Mekanism.FROM_BC/10;
