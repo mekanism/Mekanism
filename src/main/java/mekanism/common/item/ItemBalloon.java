@@ -7,14 +7,18 @@ import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -24,6 +28,7 @@ public class ItemBalloon extends ItemMekanism
 	{
 		super();
 		setHasSubtypes(true);
+		BlockDispenser.dispenseBehaviorRegistry.putObject(this, new DispenserBehavior());
 	}
 
 	public EnumColor getColor(ItemStack stack)
@@ -155,4 +160,46 @@ public class ItemBalloon extends ItemMekanism
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister register) {}
+	
+	public class DispenserBehavior extends BehaviorDefaultDispenseItem
+	{
+		@Override
+		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
+		{
+			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
+			ForgeDirection side = ForgeDirection.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+			
+			Pos3D pos = new Pos3D(coord);
+			
+			switch(side)
+			{
+				case DOWN:
+					pos.translate(0, -2.5, 0);
+					break;
+				case UP:
+					pos.translate(0, 0, 0);
+					break;
+				case NORTH:
+					pos.translate(0, -1, -0.5);
+					break;
+				case SOUTH:
+					pos.translate(0, -1, 0.5);
+					break;
+				case WEST:
+					pos.translate(-0.5, -1, 0);
+					break;
+				case EAST:
+					pos.translate(0.5, -1, 0);
+					break;
+			}
+			
+			if(!source.getWorld().isRemote)
+			{
+				source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), pos.xPos, pos.yPos, pos.zPos, getColor(stack)));
+			}
+			
+			stack.stackSize--;
+			return stack;
+		}
+	}
 }

@@ -49,6 +49,7 @@ public class TransporterStack
 		}
 
 		data.add(progress);
+		originalLocation.write(data);
 		data.add(pathType.ordinal());
 
 		if(pathToTarget.indexOf(Coord4D.get(tileEntity.getTile())) > 0)
@@ -80,6 +81,7 @@ public class TransporterStack
 		}
 
 		progress = dataStream.readInt();
+		originalLocation = Coord4D.read(dataStream);
 		pathType = Path.values()[dataStream.readInt()];
 
 		if(dataStream.readBoolean())

@@ -26,6 +26,13 @@ public class Pos3D
 		yPos = y;
 		zPos = z;
 	}
+	
+	public Pos3D(Coord4D coord)
+	{
+		xPos = coord.xCoord;
+		yPos = coord.yCoord;
+		zPos = coord.zCoord;
+	}
 
 	/**
 	 * Creates a Pos3D with an entity's posX, posY, and posZ values.

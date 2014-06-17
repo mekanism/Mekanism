@@ -57,6 +57,7 @@ public abstract class GuiGauge<T> extends GuiElement
 	{
 		if(getScaledLevel() == 0 || getIcon() == null)
 		{
+			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, width, 0, width, height);
 			return;
 		}
 		

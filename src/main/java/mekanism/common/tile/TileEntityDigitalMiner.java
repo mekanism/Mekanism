@@ -176,7 +176,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						Block block = coord.getBlock(worldObj);
 						int meta = coord.getMetadata(worldObj);
 
-						if(block == Blocks.air)
+						if(block == null || coord.isAirBlock(worldObj))
 						{
 							toRemove.add(index);
 							next = index + 1;

@@ -39,7 +39,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
 	public PartMechanicalPipe(Tier.PipeTier pipeTier)
 	{
-		this.tier = pipeTier;
+		tier = pipeTier;
 	}
 
 	@Override
