@@ -721,11 +721,11 @@ public final class MekanismUtils
 			return null;
 		}
 
-		if(block == Blocks.water && meta == 0)
+		if((block == Blocks.water || block == Blocks.flowing_water) && meta == 0)
 		{
 			return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
 		}
-		else if(block == Blocks.lava && meta == 0)
+		else if((block == Blocks.lava || block == Blocks.flowing_lava) && meta == 0)
 		{
 			return new FluidStack(FluidRegistry.LAVA, FluidContainerRegistry.BUCKET_VOLUME);
 		}
@@ -760,11 +760,11 @@ public final class MekanismUtils
 			return 0;
 		}
 
-		if(block == Blocks.water)
+		if(block == Blocks.water || block == Blocks.flowing_water)
 		{
 			return FluidRegistry.WATER.getID();
 		}
-		else if(block == Blocks.lava)
+		else if(block == Blocks.lava || block == Blocks.flowing_lava)
 		{
 			return FluidRegistry.LAVA.getID();
 		}
@@ -798,11 +798,11 @@ public final class MekanismUtils
 			return false;
 		}
 
-		if(block == Blocks.water && meta != 0)
+		if((block == Blocks.water || block == Blocks.flowing_water) && meta != 0)
 		{
 			return true;
 		}
-		else if(block == Blocks.lava && meta != 0)
+		else if((block == Blocks.lava || block == Blocks.flowing_lava) && meta != 0)
 		{
 			return true;
 		}

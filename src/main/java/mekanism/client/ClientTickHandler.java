@@ -15,6 +15,8 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemFreeRunners;
@@ -27,6 +29,7 @@ import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
+import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
@@ -38,9 +41,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StringUtils;
-
-import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -259,6 +259,27 @@ public class ClientTickHandler
 					}
 					else {
 						lastTickUpdate = false;
+					}
+				}
+				else if(mc.thePlayer.isSneaking() && StackUtils.getItem(mc.thePlayer.getCurrentEquippedItem()) instanceof ItemBlockMachine)
+				{
+					ItemBlockMachine item = (ItemBlockMachine)mc.thePlayer.getCurrentEquippedItem().getItem();
+
+					if(MachineType.get(mc.thePlayer.getCurrentEquippedItem()) == MachineType.PORTABLE_TANK)
+					{
+						if(MekanismKeyHandler.modeSwitchKey.getIsKeyPressed())
+						{
+							if(!lastTickUpdate)
+							{
+								item.setBucketMode(stack, !item.getBucketMode(stack));
+								Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(item.getBucketMode(stack)));
+								mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Bucket Mode: " + (item.getBucketMode(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
+								lastTickUpdate = true;
+							}
+						}
+						else {
+							lastTickUpdate = false;
+						}
 					}
 				}
 				else if(mc.thePlayer.isSneaking() && StackUtils.getItem(mc.thePlayer.getCurrentEquippedItem()) instanceof ItemWalkieTalkie)

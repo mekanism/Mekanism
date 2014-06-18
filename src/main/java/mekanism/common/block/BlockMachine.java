@@ -67,6 +67,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -80,6 +81,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -250,7 +253,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
@@ -709,7 +712,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(tileEntity != null)
 		{
-			if(metadata == MachineType.ELECTRIC_CHEST.meta)
+			MachineType type = MachineType.get(this, metadata);
+			
+			if(type == MachineType.ELECTRIC_CHEST)
 			{
 				TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
 
@@ -730,16 +735,28 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return true;
 				}
 			}
-			else if(metadata == MachineType.LOGISTICAL_SORTER.meta)
+			else if(type == MachineType.PORTABLE_TANK)
+			{
+				if(!entityplayer.isSneaking())
+				{
+					manageInventory(entityplayer, (TileEntityPortableTank)tileEntity);
+				}
+				else {
+					entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+				}
+				
+				return true;
+			}
+			else if(type == MachineType.LOGISTICAL_SORTER)
 			{
 				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
 				LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
 				return true;
 			}
 			else {
-				if(!entityplayer.isSneaking() && MachineType.get(this, metadata).guiId != -1)
+				if(!entityplayer.isSneaking() && type.guiId != -1)
 				{
-					entityplayer.openGui(Mekanism.instance, MachineType.get(this, metadata).guiId, world, x, y, z);
+					entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
 					return true;
 				}
 			}
@@ -821,6 +838,105 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 
 		return world.setBlockToAir(x, y, z);
+	}
+	
+	private boolean manageInventory(EntityPlayer player, TileEntityPortableTank tileEntity)
+	{
+		ItemStack itemStack = player.getCurrentEquippedItem();
+
+		if(itemStack != null)
+		{
+			if(FluidContainerRegistry.isEmptyContainer(itemStack))
+			{
+				if(tileEntity.fluidTank.getFluid() != null && tileEntity.fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+				{
+					ItemStack filled = FluidContainerRegistry.fillFluidContainer(tileEntity.fluidTank.getFluid(), itemStack);
+
+					if(filled != null)
+					{
+						if(player.capabilities.isCreativeMode)
+						{
+							tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
+
+							return true;
+						}
+
+						if(itemStack.stackSize > 1)
+						{
+							for(int i = 0; i < player.inventory.mainInventory.length; i++)
+							{
+								if(player.inventory.mainInventory[i] == null)
+								{
+									player.inventory.mainInventory[i] = filled;
+									itemStack.stackSize--;
+
+									tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
+
+									return true;
+								}
+								else if(player.inventory.mainInventory[i].isItemEqual(filled))
+								{
+									if(filled.getMaxStackSize() > player.inventory.mainInventory[i].stackSize)
+									{
+										player.inventory.mainInventory[i].stackSize++;
+										itemStack.stackSize--;
+
+										tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
+
+										return true;
+									}
+								}
+							}
+						}
+						else if(itemStack.stackSize == 1)
+						{
+							player.setCurrentItemOrArmor(0, filled);
+
+							tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
+
+							return true;
+						}
+					}
+				}
+			}
+			else if(FluidContainerRegistry.isFilledContainer(itemStack))
+			{
+				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
+				int max = tileEntity.fluidTank.getCapacity();
+
+				if(tileEntity.fluidTank.getFluid() == null || (tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid) && (tileEntity.fluidTank.getFluid().amount+itemFluid.amount <= max)))
+				{
+					if(FluidContainerRegistry.isBucket(itemStack))
+					{
+						tileEntity.fluidTank.fill(itemFluid, true);
+
+						if(!player.capabilities.isCreativeMode)
+						{
+							player.setCurrentItemOrArmor(0, new ItemStack(Items.bucket));
+						}
+
+						return true;
+					}
+					else {
+						if(!player.capabilities.isCreativeMode)
+						{
+							itemStack.stackSize--;
+						}
+
+						if(itemStack.stackSize == 0)
+						{
+							player.setCurrentItemOrArmor(0, null);
+						}
+						
+						tileEntity.fluidTank.fill(itemFluid, true);
+
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -1102,7 +1218,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(!world.isRemote)
 		{
-			((TileEntityElectricBlock)tileEntity).register();
+			if(tileEntity instanceof TileEntityElectricBlock)
+			{
+				((TileEntityElectricBlock)tileEntity).register();
+			}
 		}
 	}
 

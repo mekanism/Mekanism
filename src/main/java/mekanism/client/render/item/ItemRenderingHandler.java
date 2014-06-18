@@ -21,7 +21,7 @@ import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
-import mekanism.common.IElectricChest;
+import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.common.IEnergyCube;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -40,6 +40,7 @@ import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -58,6 +59,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 
 import org.lwjgl.opengl.GL11;
 
@@ -84,6 +86,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
+	private final RenderPortableTank portableTankRenderer = (RenderPortableTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityPortableTank.class);
 	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
 
 	@Override
@@ -306,7 +309,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(MachineType.get(item) == MachineType.ELECTRIC_CHEST)
 		{
-			IElectricChest chest = (IElectricChest)item.getItem();
+			ItemBlockMachine chest = (ItemBlockMachine)item.getItem();
 
 			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 			GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
@@ -314,11 +317,6 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glScalef(1.0F, -1F, -1F);
 
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
-
-			float lidangle = chest.getPrevLidAngle(item) + (chest.getLidAngle(item) - chest.getPrevLidAngle(item)) * MekanismRenderer.getPartialTick();
-			lidangle = 1.0F - lidangle;
-			lidangle = 1.0F - lidangle * lidangle * lidangle;
-			electricChest.chestLid.rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
 
 			electricChest.renderAll();
 		}
@@ -439,11 +437,12 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(MachineType.get(item) == MachineType.PORTABLE_TANK)
 		{
-			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
-			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PortableTank.png"));
-			portableTank.render(0.0625F);
+			
+			ItemBlockMachine itemMachine = (ItemBlockMachine)item.getItem();
+			Fluid fluid = itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).getFluid() : null;
+			portableTankRenderer.render(fluid, itemMachine.getPrevScale(item), false, -0.5, -0.5, -0.5);
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

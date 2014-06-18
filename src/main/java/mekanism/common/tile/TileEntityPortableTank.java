@@ -30,9 +30,15 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 
 	public boolean clientActive;
 	
-	public FluidTank fluidTank = new FluidTank(14000);
+	public static final int MAX_FLUID = 14000;
+	
+	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
 	
 	public int updateDelay;
+	
+	public int prevAmount;
+	
+	public float prevScale;
 	
 	public TileEntityPortableTank() 
 	{
@@ -62,8 +68,32 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 				}
 			}
+			
+			float targetScale = (float)(fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0)/fluidTank.getCapacity();
+
+			if(Math.abs(prevScale - targetScale) > 0.01)
+			{
+				prevScale = (9*prevScale + targetScale)/10;
+			}
 		}
 		else {
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
+				}
+			}
+			
+			if(fluidTank.getFluidAmount() != prevAmount)
+			{
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
+			}
+			
+			prevAmount = fluidTank.getFluidAmount();
+			
 			if(inventory[0] != null)
 			{
 				manageInventory();

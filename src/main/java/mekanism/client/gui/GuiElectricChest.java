@@ -51,17 +51,6 @@ public class GuiElectricChest extends GuiMekanism
 	}
 
 	@Override
-	public void onGuiClosed()
-	{
-		super.onGuiClosed();
-
-		if(!isBlock)
-		{
-			mc.theWorld.playSoundEffect(tileEntity.xCoord + 0.5, tileEntity.yCoord + 0.5, tileEntity.zCoord + 0.5, "random.chestopen", 0.5f, mc.theWorld.rand.nextFloat() * 0.1F + 0.9F);
-		}
-	}
-
-	@Override
 	public void initGui()
 	{
 		super.initGui();

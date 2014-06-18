@@ -64,32 +64,4 @@ public interface IElectricChest
 	 * @return open value
 	 */
 	public boolean getOpen(ItemStack itemStack);
-
-	/**
-	 * Sets the 'lidAngle' value of this electric chest to a new value.
-	 * @param itemStack - electric chest ItemStack
-	 * @param lidAngle - new value
-	 */
-	public void setLidAngle(ItemStack itemStack, float lidAngle);
-
-	/**
-	 * Retrieves the 'lidAngle' value of this electric chest.
-	 * @param itemStack - electric chest ItemStack
-	 * @return lidAngle value
-	 */
-	public float getLidAngle(ItemStack itemStack);
-
-	/**
-	 * Sets the 'prevLidAngle' value of this electric chest to a new value.
-	 * @param itemStack - electric chest ItemStack
-	 * @param prevLidAngle - new value
-	 */
-	public void setPrevLidAngle(ItemStack itemStack, float prevLidAngle);
-
-	/**
-	 * Retrieves the 'prevLidAngle' value of this electric chest.
-	 * @param itemStack - electric chest ItemStack
-	 * @return prevLidAngle value
-	 */
-	public float getPrevLidAngle(ItemStack itemStack);
 }

@@ -216,7 +216,6 @@ public class ClientProxy extends CommonProxy
 				entityplayer.openContainer.windowId = windowId;
 			}
 			else {
-				SoundHandler.playSound("random.chestopen");
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
 				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)

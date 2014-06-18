@@ -101,6 +101,7 @@ tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PortableTank.name=Portable Tank
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
