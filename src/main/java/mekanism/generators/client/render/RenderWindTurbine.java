@@ -39,7 +39,7 @@ public class RenderWindTurbine extends TileEntitySpecialRenderer
 		if(!Mekanism.proxy.isPaused() &&
 				tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
 		{
-			tileEntity.angle = (tileEntity.angle+((int)tileEntity.getMultiplier())) % 360;
+			tileEntity.angle = (tileEntity.angle+((int)(tileEntity.getMultiplier() * partialTick))) % 360;
 		}
 
 		model.render(0.0625F, tileEntity.angle);
