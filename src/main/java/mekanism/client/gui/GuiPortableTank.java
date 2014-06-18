@@ -24,7 +24,6 @@ public class GuiPortableTank extends GuiMekanism
 	{
 		super(new ContainerPortableTank(inventory, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTank.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
 		{
 			@Override
@@ -32,9 +31,9 @@ public class GuiPortableTank extends GuiMekanism
 			{
 				return tileEntity.fluidTank;
 			}
-		}, GuiFluidGauge.Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTank.png"), 55, 18));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTank.png"), 16, 34).with(SlotOverlay.INPUT));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTank.png"), 142, 34).with(SlotOverlay.OUTPUT));
+		}, GuiFluidGauge.Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 55, 18));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 145, 19).with(SlotOverlay.INPUT));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 145, 50).with(SlotOverlay.OUTPUT));
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class GuiPortableTank extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTank.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
