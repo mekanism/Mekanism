@@ -145,7 +145,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.locked") + ": " + EnumColor.GREY + LangUtils.transYesNo(getLocked(itemstack)));
 			}
 
-			if(type != MachineType.LOGISTICAL_SORTER)
+			if(type.isElectric)
 			{
 				list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
 			}
@@ -777,7 +777,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.stackTagCompound == null || !MachineType.get(itemStack).isElectric)
 		{
 			return 0;
 		}
@@ -788,6 +788,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
+		if(!MachineType.get(itemStack).isElectric)
+		{
+			return;
+		}
+		
 		if(itemStack.stackTagCompound == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
@@ -812,7 +817,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public boolean canReceive(ItemStack itemStack)
 	{
-		return true;
+		return MachineType.get(itemStack).isElectric;
 	}
 
 	@Override

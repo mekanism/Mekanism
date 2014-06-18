@@ -13,6 +13,7 @@ import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelObsidianTNT;
+import mekanism.client.model.ModelPortableTank;
 import mekanism.client.model.ModelRobit;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.render.MekanismRenderer;
@@ -79,6 +80,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelScubaTank scubaTank = new ModelScubaTank();
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
+	public ModelPortableTank portableTank = new ModelPortableTank();
 
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
@@ -434,6 +436,14 @@ public class ItemRenderingHandler implements IItemRenderer
 			RenderGlowPanel.getInstance().renderItem(item.getItemDamage());
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glPopAttrib();
+		}
+		else if(MachineType.get(item) == MachineType.PORTABLE_TANK)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PortableTank.png"));
+			portableTank.render(0.0625F);
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

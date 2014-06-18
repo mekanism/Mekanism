@@ -6,7 +6,7 @@ import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.IConfigurable;
+import mekanism.api.IConfigurable;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

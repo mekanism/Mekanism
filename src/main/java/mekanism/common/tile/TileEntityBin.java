@@ -5,8 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IConfigurable;
 import mekanism.common.IActiveState;
-import mekanism.common.IConfigurable;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemBlockBasic;

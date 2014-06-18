@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IConfigurable;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.IConfigurable;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;

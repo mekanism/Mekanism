@@ -36,11 +36,11 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedTank, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
 {
-	public GasTank gasTank = new GasTank(MAX_GAS);
+	public GasTank gasTank = new GasTank(MAX_FLUID);
 
-	public FluidTank fluidTank;
+	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
 
-	public static final int MAX_GAS = 10000;
+	public static final int MAX_FLUID = 10000;
 
 	public int updateDelay;
 
@@ -63,7 +63,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public TileEntityRotaryCondensentrator()
 	{
 		super("RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
-		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[5];
 	}
 
@@ -139,7 +138,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < 10000 && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
 					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), 1), true);
@@ -179,7 +178,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				{
 					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[2]);
 
-					if((fluidTank.getFluid() == null && itemFluid.amount <= 10000) || fluidTank.getFluid().amount+itemFluid.amount <= 10000)
+					if((fluidTank.getFluid() == null && itemFluid.amount <= MAX_FLUID) || fluidTank.getFluid().amount+itemFluid.amount <= MAX_FLUID)
 					{
 						if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
 						{
@@ -225,7 +224,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_GAS && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
 					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), 1), true);
@@ -393,12 +392,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public int getScaledFluidLevel(int i)
 	{
-		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
+		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / MAX_FLUID : 0;
 	}
 
 	public int getScaledGasLevel(int i)
 	{
-		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_GAS : 0;
+		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_FLUID : 0;
 	}
 
 	@Override

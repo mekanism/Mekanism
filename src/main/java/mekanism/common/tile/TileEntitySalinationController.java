@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IConfigurable;
 import mekanism.api.ISalinationSolar;
-import mekanism.common.IConfigurable;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tank.TankUpdateProtocol;

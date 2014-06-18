@@ -353,22 +353,12 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(from == ForgeDirection.getOrientation(facing).getOpposite() && inputFluidTank.getFluid() != null && inputFluidTank.getFluid().isFluidEqual(resource))
-		{
-			return inputFluidTank.drain(resource.amount, doDrain);
-		}
-		
 		return null;
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(from == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return inputFluidTank.drain(maxDrain, doDrain);
-		}
-		
 		return null;
 	}
 
@@ -386,11 +376,6 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		if(from == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return inputFluidTank.getFluid() != null && inputFluidTank.getFluid().getFluid() == fluid;
-		}
-		
 		return false;
 	}
 
