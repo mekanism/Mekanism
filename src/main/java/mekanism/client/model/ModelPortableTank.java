@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import cpw.mods.fml.relauncher.Side;
@@ -94,10 +95,13 @@ public class ModelPortableTank extends ModelBase
 		PoleBR.render(size);
 		PoleRF.render(size);
 		Top.render(size);
+		
+		MekanismRenderer.blendOn();
 		FrontGlass.render(size);
 		BackGlass.render(size);
 		RightGlass.render(size);
 		LeftGlass.render(size);
+		MekanismRenderer.blendOff();
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

@@ -350,8 +350,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 
-		if (networkChanged) {
-			this.updateCapacity();
+		if(networkChanged) 
+		{
+			updateCapacity();
 		}
 
 		needsUpdate = true;

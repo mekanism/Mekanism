@@ -43,7 +43,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 	
 	public void render(Fluid fluid, float fluidScale, boolean active, double x, double y, double z)
 	{
-		if(fluidScale > 0)
+		if(fluid != null && fluidScale > 0)
 		{
 			push();
 			
@@ -80,7 +80,6 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 	private void pop()
 	{
 		GL11.glPopAttrib();
-		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
@@ -91,7 +90,6 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		MekanismRenderer.glowOn();
 		MekanismRenderer.blendOn();
 	}
 	
