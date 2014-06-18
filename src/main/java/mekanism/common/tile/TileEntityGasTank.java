@@ -108,7 +108,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			return itemstack.getItem() instanceof IGasItem && (gasTank.getGas() == null || ((IGasItem)itemstack.getItem()).canProvideGas(itemstack, gasTank.getGas().getGas()));
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override

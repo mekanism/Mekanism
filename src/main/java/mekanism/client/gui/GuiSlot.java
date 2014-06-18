@@ -103,7 +103,9 @@ public class GuiSlot extends GuiElement
 	{
 		MINUS(18, 18, 0, 18),
 		PLUS(18, 18, 18, 18),
-		POWER(18, 18, 36, 18);
+		POWER(18, 18, 36, 18),
+		INPUT(18, 18, 54, 18),
+		OUTPUT(18, 18, 72, 18);
 
 		public int width;
 		public int height;

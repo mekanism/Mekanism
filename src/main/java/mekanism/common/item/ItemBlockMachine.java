@@ -95,6 +95,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:6: Chemical Dissolution Chamber
  * 1:7: Chemical Washer
  * 1:8: Chemical Crystallizer
+ * 1:9: Seismic Vibrator
+ * 1:10: Pressurized Reaction Chamber
+ * 1:11: Portable Tank
  * @author AidanBrady
  *
  */
@@ -151,6 +154,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.auth") + ": " + EnumColor.GREY + LangUtils.transYesNo(getAuthenticated(itemstack)));
 				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.locked") + ": " + EnumColor.GREY + LangUtils.transYesNo(getLocked(itemstack)));
 			}
+			
+			if(type == MachineType.PORTABLE_TANK)
+			{
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.portableTank.bucketMode") + ": " + EnumColor.GREY + LangUtils.transYesNo(getBucketMode(itemstack)));
+			}
 
 			if(type.isElectric)
 			{
@@ -180,6 +188,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			list.addAll(MekanismUtils.splitLines(type.getDescription()));
 		}
 	}
+	
+	@Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+		MachineType type = MachineType.get(stack);
+		
+		if(type == MachineType.PORTABLE_TANK && getBucketMode(stack))
+		{
+			return false;
+		}
+		
+		return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
+    }
 
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
@@ -448,7 +469,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		}
 		else if(type == MachineType.PORTABLE_TANK)
 		{
-			if(world.isRemote)
+			if(world != null && !world.isRemote)
 			{
 				float targetScale = (float)(getFluidStack(itemstack) != null ? getFluidStack(itemstack).amount : 0)/TileEntityPortableTank.MAX_FLUID;
 	

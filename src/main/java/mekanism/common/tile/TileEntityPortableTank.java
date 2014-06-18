@@ -6,10 +6,12 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.IActiveState;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -204,6 +206,48 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	{
+		if(slotID == 1)
+		{
+			return (itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) == null);
+		}
+		else if(slotID == 0)
+		{
+			return (itemstack.getItem() instanceof IGasItem && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+					((IGasItem)itemstack.getItem()).getGas(itemstack).amount == ((IGasItem)itemstack.getItem()).getMaxGas(itemstack));
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return FluidContainerRegistry.isContainer(itemstack);
+		}
+
+		return false;
+	}
+
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		if(side == 0)
+		{
+			return new int[] {1};
+		}
+		else if(side == 1)
+		{
+			return new int[] {0};
+		}
+		
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override

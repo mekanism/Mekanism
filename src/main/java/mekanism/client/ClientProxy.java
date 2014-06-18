@@ -30,6 +30,7 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
+import mekanism.client.gui.GuiPortableTank;
 import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
@@ -445,6 +446,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:
 				return new GuiPRC(player.inventory, (TileEntityPRC)tileEntity);
+			case 41:
+				return new GuiPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
 		}
 
 		return null;

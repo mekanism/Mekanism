@@ -471,6 +471,8 @@ tooltip.keysFound=Key(s) found
 tooltip.noKey=No key
 tooltip.hp=HP
 
+tooltip.portableTank.bucketMode=Bucket Mode
+
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=slow
 tooltip.disassembler.fast=fast
@@ -516,6 +518,8 @@ tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically diss
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
 tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
+tooltip.PressurizedReactionChamber=An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.
+tooltip.PortableTank=A handy, portable tank that lets you carry 14 !nbuckets of fluid wherever you !nplease. Also doubles as a bucket!
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the !nsun to produce energy.

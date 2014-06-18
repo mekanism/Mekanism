@@ -25,6 +25,7 @@ import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerPRC;
+import mekanism.common.inventory.container.ContainerPortableTank;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.inventory.container.ContainerRobitInventory;
 import mekanism.common.inventory.container.ContainerRobitMain;
@@ -412,6 +413,8 @@ public class CommonProxy
 				return new ContainerSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
 			case 40:
 				return new ContainerPRC(player.inventory, (TileEntityPRC)tileEntity);
+			case 41:
+				return new ContainerPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
 		}
 
 		return null;
