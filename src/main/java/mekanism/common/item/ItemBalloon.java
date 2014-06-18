@@ -168,34 +168,62 @@ public class ItemBalloon extends ItemMekanism
 		{
 			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
 			ForgeDirection side = ForgeDirection.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+
+			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.getFromSide(side).getBoundingBox());
+			boolean latched = false;
 			
-			Pos3D pos = new Pos3D(coord);
-			
-			switch(side)
+			for(EntityLivingBase entity : entities)
 			{
-				case DOWN:
-					pos.translate(0, -2.5, 0);
-					break;
-				case UP:
-					pos.translate(0, 0, 0);
-					break;
-				case NORTH:
-					pos.translate(0, -1, -0.5);
-					break;
-				case SOUTH:
-					pos.translate(0, -1, 0.5);
-					break;
-				case WEST:
-					pos.translate(-0.5, -1, 0);
-					break;
-				case EAST:
-					pos.translate(0.5, -1, 0);
-					break;
+				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
+
+				List<EntityBalloon> balloonsNear = source.getWorld().getEntitiesWithinAABB(EntityBalloon.class, bound);
+				boolean hasBalloon = false;
+				
+				for(EntityBalloon balloon : balloonsNear)
+				{
+					if(balloon.latchedEntity == entity)
+					{
+						hasBalloon = true;
+					}
+				}
+				
+				if(!hasBalloon)
+				{
+					source.getWorld().spawnEntityInWorld(new EntityBalloon(entity, getColor(stack)));
+					latched = true;
+				}
 			}
 			
-			if(!source.getWorld().isRemote)
+			if(!latched)
 			{
-				source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), pos.xPos, pos.yPos, pos.zPos, getColor(stack)));
+				Pos3D pos = new Pos3D(coord);
+				
+				switch(side)
+				{
+					case DOWN:
+						pos.translate(0, -2.5, 0);
+						break;
+					case UP:
+						pos.translate(0, 0, 0);
+						break;
+					case NORTH:
+						pos.translate(0, -1, -0.5);
+						break;
+					case SOUTH:
+						pos.translate(0, -1, 0.5);
+						break;
+					case WEST:
+						pos.translate(-0.5, -1, 0);
+						break;
+					case EAST:
+						pos.translate(0.5, -1, 0);
+						break;
+				}
+				
+				if(!source.getWorld().isRemote)
+				{
+					source.getWorld().spawnEntityInWorld(new EntityBalloon(source.getWorld(), pos.xPos, pos.yPos, pos.zPos, getColor(stack)));
+				}
 			}
 			
 			stack.stackSize--;

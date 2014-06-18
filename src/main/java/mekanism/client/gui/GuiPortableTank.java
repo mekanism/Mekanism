@@ -31,15 +31,15 @@ public class GuiPortableTank extends GuiMekanism
 			{
 				return tileEntity.fluidTank;
 			}
-		}, GuiFluidGauge.Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 55, 18));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 145, 19).with(SlotOverlay.INPUT));
+		}, GuiFluidGauge.Type.WIDE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 48, 18));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 145, 18).with(SlotOverlay.INPUT));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 145, 50).with(SlotOverlay.OUTPUT));
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 47, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

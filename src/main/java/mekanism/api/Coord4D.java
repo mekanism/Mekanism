@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -311,6 +312,15 @@ public class Coord4D
 	public boolean isAirBlock(IBlockAccess world)
 	{
 		return world.isAirBlock(xCoord, yCoord, zCoord);
+	}
+	
+	/**
+	 * Gets a bounding box that contains the area this Coord4D would take up in a world.
+	 * @return this Coord4D's bounding box
+	 */
+	public AxisAlignedBB getBoundingBox()
+	{
+		return AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+1, zCoord+1);
 	}
 
 	@Override

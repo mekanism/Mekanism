@@ -737,7 +737,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			}
 			else if(type == MachineType.PORTABLE_TANK)
 			{
-				if(!entityplayer.isSneaking())
+				if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
 				{
 					manageInventory(entityplayer, (TileEntityPortableTank)tileEntity);
 				}
@@ -1176,11 +1176,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		MachineType type = MachineType.get(this, world.getBlockMetadata(x, y, z));
 
-		if(metadata == MachineType.CHARGEPAD.meta)
+		if(type == MachineType.CHARGEPAD)
 		{
 			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
+		}
+		else if(type == MachineType.PORTABLE_TANK)
+		{
+			setBlockBounds(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
 		}
 		else {
 			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
@@ -1201,14 +1205,18 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		MachineType type = MachineType.get(this, world.getBlockMetadata(x, y, z));
 
-		if(metadata != MachineType.CHARGEPAD.meta)
+		if(type == MachineType.CHARGEPAD)
 		{
-			return true;
+			return false;
+		}
+		else if(type == MachineType.PORTABLE_TANK)
+		{
+			return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override

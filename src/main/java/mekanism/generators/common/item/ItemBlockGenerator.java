@@ -119,12 +119,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
 			if(!block.isReplaceable(world, x, y, z))
+			{
 				return false;
+			}
 
 			outer:
-			for(int xPos=-1;xPos<=1;xPos++)
+			for(int xPos = -1; xPos <= 1; xPos++)
 			{
-				for(int zPos=-1;zPos<=1;zPos++)
+				for(int zPos =- 1; zPos <= 1; zPos++)
 				{
 					if(!world.isAirBlock(x+xPos, y+2, z+zPos) || y+2 > 255)
 					{
@@ -137,7 +139,9 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
 		{
 			if(!block.isReplaceable(world, x, y, z))
+			{
 				return false;
+			}
 
 			outer:
 			for(int yPos = y+1; yPos <= y+4; yPos++)

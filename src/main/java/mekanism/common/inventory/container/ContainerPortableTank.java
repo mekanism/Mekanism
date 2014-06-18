@@ -16,7 +16,7 @@ public class ContainerPortableTank extends Container
 	public ContainerPortableTank(InventoryPlayer inventory, TileEntityPortableTank tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, 146, 20));
+		addSlotToContainer(new Slot(tentity, 0, 146, 19));
 		addSlotToContainer(new SlotOutput(tentity, 1, 146, 51));
 		int slotX;
 

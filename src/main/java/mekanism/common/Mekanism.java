@@ -585,6 +585,9 @@ public class Mekanism
 			"TET", "CIC", "GFG", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), EnrichedAlloy, Character.valueOf('C'), "circuitBasic", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), 
 			Character.valueOf('I'), new ItemStack(MachineBlock, 1, 0), Character.valueOf('F'), new ItemStack(BasicBlock, 1, 9)
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 11), new Object[] {
+			"III", "GCG", "III", Character.valueOf('I'), "ingotIron", Character.valueOf('G'), Blocks.glass, Character.valueOf('C'), "circuitBasic"
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{
