@@ -20,7 +20,7 @@ public final class OreDictCache
 
 	public static List<String> getOreDictName(ItemStack check)
 	{
-		if (check == null || check.getItem() == null)
+		if(check == null || check.getItem() == null)
 		{
 			return new ArrayList<String>();
 		}

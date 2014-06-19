@@ -232,13 +232,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 		}
-		else if(type == MachineType.PORTABLE_TANK)
-		{
-			if(getBucketMode(stack))
-			{
-				return false;
-			}
-		}
 
 		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
 		{
