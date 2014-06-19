@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelSeismicVibrator;
+import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -28,7 +29,7 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SeismicVibrator" + (tileEntity.isActive ? "On" : "") + ".png"));
 
 		switch(tileEntity.facing)
 		{
@@ -38,20 +39,23 @@ public class RenderSeismicVibrator extends TileEntitySpecialRenderer
 			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 		
-		float rate = 0.01F;
-		
-		if(!tileEntity.getActive() && tileEntity.clientPiston > 0)
+		if(!Mekanism.proxy.isPaused())
 		{
-			if(tileEntity.clientPiston < 1)
-			{
-				tileEntity.clientPiston = 1 + (1-tileEntity.clientPiston);
-			}
+			float rate = 0.01F;
 			
-			tileEntity.clientPiston = Math.min(2, tileEntity.clientPiston+rate)%2;
-		}
-		else if(tileEntity.getActive())
-		{
-			tileEntity.clientPiston = Math.min(2, tileEntity.clientPiston+rate)%2;
+			if(!tileEntity.getActive() && tileEntity.clientPiston > 0)
+			{
+				if(tileEntity.clientPiston < 1)
+				{
+					tileEntity.clientPiston = 1 + (1-tileEntity.clientPiston);
+				}
+				
+				tileEntity.clientPiston = Math.min(2, tileEntity.clientPiston+rate)%2;
+			}
+			else if(tileEntity.getActive())
+			{
+				tileEntity.clientPiston = Math.min(2, tileEntity.clientPiston+rate)%2;
+			}
 		}
 		
 		float actualRate = tileEntity.clientPiston < 1 ? tileEntity.clientPiston : 2-tileEntity.clientPiston;

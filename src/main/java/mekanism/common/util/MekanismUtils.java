@@ -159,12 +159,14 @@ public final class MekanismUtils
 		return "null";
 	}
 
+	/**
+	 * Updates the donator list by retrieving the most recent information from a foreign document.
+	 */
 	public static void updateDonators()
 	{
 		Mekanism.donators.clear();
-		List<String> text = getHTML("http://dl.dropbox.com/u/90411166/Donators/Mekanism.txt");
 
-		for(String s : text)
+		for(String s : getHTML("http://dl.dropbox.com/u/90411166/Donators/Mekanism.txt"))
 		{
 			Mekanism.donators.add(s);
 		}

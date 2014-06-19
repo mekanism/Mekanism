@@ -150,7 +150,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
- * Mekanism - the mod that doesn't have a category.
+ * Mekanism - a Minecraft mod
  * @author AidanBrady
  *
  */
@@ -339,7 +339,7 @@ public class Mekanism
 	public static double fluidicPlenisherUsage;
 
 	/**
-	 * Adds all in-game crafting and smelting recipes.
+	 * Adds all in-game crafting, smelting and machine recipes.
 	 */
 	public void addRecipes()
 	{

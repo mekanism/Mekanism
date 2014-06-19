@@ -24,7 +24,17 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 
 		if(block == Mekanism.BasicBlock || block == Mekanism.BasicBlock2)
 		{
+			if(block == Mekanism.BasicBlock && metadata == 10)
+			{
+				MekanismRenderer.blendOn();
+			}
+			
 			MekanismRenderer.renderItem(renderer, metadata, block);
+			
+			if(block == Mekanism.BasicBlock && metadata == 10)
+			{
+				MekanismRenderer.blendOff();
+			}
 		}
 
 		GL11.glPopMatrix();

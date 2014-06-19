@@ -23,10 +23,10 @@ public class ConnectedTextureRenderer
 
 	public Map<Integer, IIcon> glassMap = new HashMap<Integer, IIcon>();
 
-	public ConnectedTextureRenderer(String title, Block block, int meta)
+	public ConnectedTextureRenderer(String title, Block b, int meta)
 	{
 		iconTitle = title;
-		this.block = block;
+		block = b;
 		metadata = meta;
 	}
 
@@ -111,10 +111,10 @@ public class ConnectedTextureRenderer
 
 	private boolean canConnect(IBlockAccess access, Coord4D obj, int side, int face)
 	{
-		Coord4D block = obj.getFromSide(ForgeDirection.getOrientation(side));
-		Coord4D blockabove = obj.getFromSide(ForgeDirection.getOrientation(face));
+		Coord4D coord = obj.getFromSide(ForgeDirection.getOrientation(side));
+		Coord4D coordAbove = obj.getFromSide(ForgeDirection.getOrientation(face));
 
-		return (block.getBlock(access) == this.block && block.getMetadata(access) == metadata) && (blockabove.getBlock(access) != this.block || blockabove.getMetadata(access) != metadata);
+		return (coord.getBlock(access) == block && coord.getMetadata(access) == metadata) && (coordAbove.getBlock(access) != block || coordAbove.getMetadata(access) != metadata);
 	}
 
 	@SideOnly(Side.CLIENT)
