@@ -572,7 +572,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
     public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, int x, int y, int z)
     {
-        if(getFluidStack(itemstack) == null)
+        if(getFluidStack(itemstack) == null || !getFluidStack(itemstack).getFluid().canBePlacedInWorld())
         {
             return false;
         }
@@ -600,7 +600,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
                         world.func_147480_a(x, y, z, true);
                     }
                     
-                    world.setBlock(x, y, z, getFluidStack(itemstack).getFluid().getBlock(), 0, 3);
+                    world.setBlock(x, y, z, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()), 0, 3);
                 }
 
                 return true;

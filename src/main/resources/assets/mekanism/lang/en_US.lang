@@ -321,6 +321,7 @@ gui.dumping=Dumping
 gui.modID=Mod ID
 gui.key=Key
 gui.id=ID
+gui.finished=Finished
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber

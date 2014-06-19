@@ -82,7 +82,7 @@ public class ContainerFluidicPlenisher extends Container
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isEmptyContainer(slotStack))
+			else if(FluidContainerRegistry.isFilledContainer(slotStack))
 			{
 				if(slotID != 0)
 				{

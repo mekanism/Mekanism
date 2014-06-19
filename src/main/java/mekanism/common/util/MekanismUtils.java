@@ -816,6 +816,30 @@ public final class MekanismUtils
 
 		return false;
 	}
+	
+	/**
+	 * Gets the flowing block type from a Forge-based fluid. Incorporates the MC system of fliuds as well.
+	 * @param fluid - the fluid type
+	 * @return the block corresponding to the given fluid
+	 */
+	public static Block getFlowingBlock(Fluid fluid)
+	{
+		if(fluid == null)
+		{
+			return null;
+		}
+		else if(fluid == FluidRegistry.WATER)
+		{
+			return Blocks.flowing_water;
+		}
+		else if(fluid == FluidRegistry.LAVA)
+		{
+			return Blocks.flowing_lava;
+		}
+		else {
+			return fluid.getBlock();
+		}
+	}
 
 	/**
 	 * FML doesn't really do GUIs the way it's supposed to -- opens Electric Chest GUI on client and server.
