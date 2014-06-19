@@ -8,11 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -295,7 +297,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		FluidStack fluidToSend = (FluidStack)data[0];
 		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
 
-		for(IFluidHandler acceptor : possibleAcceptors)
+		for(IFluidHandler acceptor : possibleAcceptors.values())
 		{
 			if(acceptorDirections.get(acceptor) == null)
 			{
@@ -317,9 +319,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		Set<IGridTransmitter<FluidNetwork>> iterPipes = (Set<IGridTransmitter<FluidNetwork>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
 		boolean networkChanged = false;
-		
-		possibleAcceptors.clear();
-		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
@@ -336,24 +335,28 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			}
 		}
 
-		for(IGridTransmitter<FluidNetwork> transmitter : iterPipes)
+		if(networkChanged) 
 		{
-			IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)transmitter);
-
-			for(IFluidHandler acceptor : acceptors)
-			{
-				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
-
-				if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
-				{
-					possibleAcceptors.add(acceptor);
-					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
-				}
-			}
-		}
-
-		if(networkChanged) {
 			updateCapacity();
+		}
+	}
+	
+	@Override
+	public synchronized void refresh(IGridTransmitter<FluidNetwork> transmitter)
+	{
+		IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)transmitter);
+		
+		clearAround(transmitter);
+
+		for(IFluidHandler acceptor : acceptors)
+		{
+			ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+
+			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
+			{
+				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
+				acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+			}
 		}
 	}
 

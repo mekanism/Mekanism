@@ -16,16 +16,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
 
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements ITransmitterNetwork<A, N>, IClientTicker
 {
 	public LinkedHashSet<IGridTransmitter<N>> transmitters = new LinkedHashSet<IGridTransmitter<N>>();
 
-	public HashSet<A> possibleAcceptors = new HashSet<A>();
+	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
 	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
@@ -46,6 +46,16 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	protected abstract ITransmitterNetwork<A, N> create(Collection<IGridTransmitter<N>> collection);
 
 	protected abstract ITransmitterNetwork<A, N> create(Set<N> networks);
+	
+	protected void clearAround(IGridTransmitter<N> transmitter)
+	{
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			Coord4D coord = Coord4D.get((TileEntity)transmitter).getFromSide(side);
+			possibleAcceptors.remove(coord);
+			acceptorDirections.remove(coord.getTileEntity(transmitter.getWorld()));
+		}
+	}
 
 	public void addAllTransmitters(Set<IGridTransmitter<N>> newTransmitters)
 	{
@@ -56,6 +66,20 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public boolean isFirst(IGridTransmitter<N> transmitter)
 	{
 		return transmitters.iterator().next().equals(transmitter);
+	}
+	
+	@Override
+	public void fullRefresh()
+	{
+		possibleAcceptors.clear();
+		acceptorDirections.clear();
+		
+		for(IGridTransmitter<N> transmitter : transmitters)
+		{
+			refresh(transmitter);
+		}
+		
+		refresh();
 	}
 	
 	public AxisAlignedBB getPacketRange()
@@ -183,10 +207,13 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
      * Override this if things can have variable capacity along the network.
      * @return An 'average' value of capacity. Calculate it how you will.
      */
-	protected synchronized void updateMeanCapacity() {
-		if (transmitters.size() > 0) {
+	protected synchronized void updateMeanCapacity() 
+	{
+		if(transmitters.size() > 0) 
+		{
 			meanCapacity = transmitters.iterator().next().getCapacity();
-		} else {
+		} 
+		else {
 			meanCapacity = 0;
 		}
 	}
@@ -275,7 +302,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			}
 
 			ITransmitterNetwork<A, N> newNetwork = create(newTransporters);
-			newNetwork.refresh();
+			newNetwork.fullRefresh();
 			newNetwork.setFixed(true);
 			deregister();
 		}
@@ -354,7 +381,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				for(ITransmitterNetwork<A, N> network : newNetworks)
 				{
-					network.refresh();
+					network.fullRefresh();
 				}
 			}
 

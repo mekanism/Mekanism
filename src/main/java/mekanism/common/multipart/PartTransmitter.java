@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.multipart.TileMultipart;
 
@@ -54,6 +55,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			}
 		}
 
+		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh(this);
 		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh();
 	}
 
@@ -221,6 +223,12 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	public Coord4D getLocation()
 	{
 		return Coord4D.get(tile());
+	}
+	
+	@Override
+	public World getWorld()
+	{
+		return world();
 	}
 
 	@Override

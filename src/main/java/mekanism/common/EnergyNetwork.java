@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -240,9 +241,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			return toReturn;
 		}
 
-		Set<TileEntity> copy = (Set<TileEntity>)possibleAcceptors.clone();
-
-		for(TileEntity acceptor : copy)
+		for(TileEntity acceptor : possibleAcceptors.values())
 		{
 			ForgeDirection side = acceptorDirections.get(acceptor);
 
@@ -315,9 +314,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
 		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
 		boolean networkChanged = false;
-		
-		possibleAcceptors.clear();
-		acceptorDirections.clear();
 
 		while(it.hasNext())
 		{
@@ -334,28 +330,31 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 
-		for(IGridTransmitter<EnergyNetwork> transmitter : iterCables)
-		{
-			TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)transmitter);
-
-			for(TileEntity acceptor : acceptors)
-			{
-				ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
-
-				if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
-				{
-					possibleAcceptors.add(acceptor);
-					acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
-				}
-			}
-		}
-
 		if(networkChanged) 
 		{
 			updateCapacity();
 		}
 
 		needsUpdate = true;
+	}
+	
+	@Override
+	public synchronized void refresh(IGridTransmitter<EnergyNetwork> transmitter)
+	{
+		TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)transmitter);
+		
+		clearAround(transmitter);
+
+		for(TileEntity acceptor : acceptors)
+		{
+			ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+
+			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
+			{
+				possibleAcceptors.put(Coord4D.get(acceptor), acceptor);
+				acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+			}
+		}
 	}
 
 	@Override

@@ -22,6 +22,10 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	public void removeTransmitter(IGridTransmitter<N> transmitter);
 
 	public void refresh();
+	
+	public void fullRefresh();
+	
+	public void refresh(IGridTransmitter<N> transmitter);
 
 	public void split(IGridTransmitter<N> splitPoint);
 

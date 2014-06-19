@@ -2,6 +2,7 @@ package mekanism.api.transmitters;
 
 import mekanism.api.Coord4D;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITransmitter
@@ -63,4 +64,6 @@ public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITrans
 	public int getCapacity();
 	
 	public Coord4D getLocation();
+	
+	public World getWorld();
 }
