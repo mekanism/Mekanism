@@ -135,7 +135,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 			if(fluid.getIcon() != null)
 			{
 				toReturn.minX = 0.3125 + .01;
-				toReturn.minY = 0.0625 + ((float)i/(float)stages)*0.875 + .01;
+				toReturn.minY = 0.0625 + ((float)i/(float)stages)*0.875;
 				toReturn.minZ = 0.3125 + .01;
 
 				toReturn.maxX = 0.6875 - .01;

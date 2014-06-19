@@ -230,6 +230,23 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		}
 	}
 	
+	private int pushUp(FluidStack fluid)
+	{
+		Coord4D up = Coord4D.get(this).getFromSide(ForgeDirection.UP);
+		
+		if(up.getTileEntity(worldObj) instanceof IFluidHandler)
+		{
+			IFluidHandler handler = (IFluidHandler)up.getTileEntity(worldObj);
+			
+			if(handler.canFill(ForgeDirection.DOWN, fluid.getFluid()))
+			{
+				return handler.fill(ForgeDirection.DOWN, fluid, true);
+			}
+		}
+		
+		return 0;
+	}
+	
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{
@@ -409,7 +426,12 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			int filled = fluidTank.fill(resource, doFill);
 			
-			if(filled > 0)
+			if(filled < resource.amount && !isActive)
+			{
+				filled += pushUp(new FluidStack(resource.getFluid(), resource.amount-filled));
+			}
+			
+			if(filled > 0 && from == ForgeDirection.UP)
 			{
 				valve = 20;
 				valveFluid = resource.getFluid();
@@ -446,7 +468,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) 
 	{
-		return from == ForgeDirection.UP && (fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid);
+		return (from == ForgeDirection.UP || from == ForgeDirection.DOWN) && (fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid);
 	}
 
 	@Override
