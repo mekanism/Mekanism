@@ -21,6 +21,7 @@ import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.inventory.container.ContainerFilter;
+import mekanism.common.inventory.container.ContainerFluidicPlenisher;
 import mekanism.common.inventory.container.ContainerGasTank;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
@@ -61,6 +62,7 @@ import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
@@ -132,6 +134,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator");
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
 		GameRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank");
+		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
 	}
 
 	/**
@@ -261,6 +264,7 @@ public class CommonProxy
 		Mekanism.chemicalCrystallizerUsage = Mekanism.configuration.get("usage", "ChemicalCrystallizerUsage", 400D).getDouble(400D);
 		Mekanism.seismicVibratorUsage = Mekanism.configuration.get("usage", "SeismicVibratorUsage", 50D).getDouble(50D);
 		Mekanism.pressurizedReactionBaseUsage = Mekanism.configuration.get("usage", "PressurizedReactionBaseUsage", 5D).getDouble(5D);
+		Mekanism.fluidicPlenisherUsage = Mekanism.configuration.get("usage", "FluidicPlenisherUsage", 100D).getDouble(100D);
 		Mekanism.configuration.save();
 	}
 
@@ -415,6 +419,8 @@ public class CommonProxy
 				return new ContainerPRC(player.inventory, (TileEntityPRC)tileEntity);
 			case 41:
 				return new ContainerPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
+			case 42:
+				return new ContainerFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 		}
 
 		return null;

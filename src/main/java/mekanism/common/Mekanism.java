@@ -336,6 +336,7 @@ public class Mekanism
 	public static double chemicalCrystallizerUsage;
 	public static double seismicVibratorUsage;
 	public static double pressurizedReactionBaseUsage;
+	public static double fluidicPlenisherUsage;
 
 	/**
 	 * Adds all in-game crafting and smelting recipes.

@@ -47,6 +47,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
 	public ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
 	public ModelPressurizedReactionChamber pressurizedReactionChamber = new ModelPressurizedReactionChamber();
+	public ModelElectricPump fluidicPlenisher = new ModelElectricPump();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -172,6 +173,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.0F, -1.06F, 0.05F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PressurizedReactionChamber.png"));
 			pressurizedReactionChamber.render(0.0625F);
+		}
+		else if(type == MachineType.FLUIDIC_PLENISHER)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
+			fluidicPlenisher.render(0.0560F);
 		}
 		else {
 			MekanismRenderer.renderItem(renderer, metadata, block);

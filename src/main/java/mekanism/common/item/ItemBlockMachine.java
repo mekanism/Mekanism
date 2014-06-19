@@ -822,7 +822,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		MachineType type = MachineType.get((ItemStack)data[0]);
 		
 		return type == MachineType.ELECTRIC_PUMP || type == MachineType.ROTARY_CONDENSENTRATOR
-				|| type == MachineType.PORTABLE_TANK;
+				|| type == MachineType.PORTABLE_TANK || type == MachineType.FLUIDIC_PLENISHER;
 	}
 
 	@Override

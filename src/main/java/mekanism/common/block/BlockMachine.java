@@ -45,6 +45,7 @@ import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -1262,7 +1263,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		CHEMICAL_CRYSTALLIZER(Mekanism.MachineBlock2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, true, false),
 		SEISMIC_VIBRATOR(Mekanism.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, true, false),
 		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
-		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false);
+		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
+		FLUIDIC_PLENISHER(Mekanism.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false);
 
 		public Block typeBlock;
 		public int meta;

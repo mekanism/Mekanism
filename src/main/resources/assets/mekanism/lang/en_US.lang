@@ -102,6 +102,7 @@ tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.PortableTank.name=Portable Tank
+tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -430,6 +431,7 @@ tooltip.configurator.noLink=No link
 tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
 tooltip.configurator.setLink=Set link to block
+tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
 
 tooltip.upgrade.speed=Speed
 tooltip.upgrade.energy=Energy
@@ -521,6 +523,7 @@ tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified 
 tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
 tooltip.PressurizedReactionChamber=An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.
 tooltip.PortableTank=A handy, portable tank that lets you carry 14 !nbuckets of fluid wherever you !nplease. Also doubles as a bucket!
+tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the !nsun to produce energy.

@@ -71,6 +71,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(Mekanism.chemicalWasherUsage);
 			dataStream.writeDouble(Mekanism.chemicalCrystallizerUsage);
 			dataStream.writeDouble(Mekanism.seismicVibratorUsage);
+			dataStream.writeDouble(Mekanism.fluidicPlenisherUsage);
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)
@@ -135,6 +136,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			Mekanism.chemicalWasherUsage = dataStream.readDouble();
 			Mekanism.chemicalCrystallizerUsage = dataStream.readDouble();
 			Mekanism.seismicVibratorUsage = dataStream.readDouble();
+			Mekanism.fluidicPlenisherUsage = dataStream.readDouble();
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)

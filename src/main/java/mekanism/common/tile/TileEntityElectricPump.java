@@ -37,7 +37,7 @@ import net.minecraftforge.fluids.IFluidHandler;
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable
 {
 	/** This pump's tank */
-	public FluidTank fluidTank;
+	public FluidTank fluidTank = new FluidTank(10000);
 
 	/** The nodes that have full sources near them or in them */
 	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
@@ -48,52 +48,54 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
-		fluidTank = new FluidTank(10000);
 		inventory = new ItemStack[3];
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		ChargeUtils.discharge(2, this);
-
-		if(inventory[0] != null)
+		if(!worldObj.isRemote)
 		{
-			if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
+			ChargeUtils.discharge(2, this);
+	
+			if(inventory[0] != null)
 			{
-				if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
+				if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
-					ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
-
-					if(tempStack != null)
+					if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
 					{
-						if(inventory[1] == null)
+						ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
+	
+						if(tempStack != null)
 						{
-							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-
-							inventory[1] = tempStack;
-							inventory[0].stackSize--;
-
-							if(inventory[0].stackSize <= 0)
+							if(inventory[1] == null)
 							{
-								inventory[0] = null;
+								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+	
+								inventory[1] = tempStack;
+								inventory[0].stackSize--;
+	
+								if(inventory[0].stackSize <= 0)
+								{
+									inventory[0] = null;
+								}
+	
+								markDirty();
 							}
-
-							markDirty();
-						}
-						else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
-						{
-							fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-
-							inventory[1].stackSize++;
-							inventory[0].stackSize--;
-
-							if(inventory[0].stackSize <= 0)
+							else if(tempStack.isItemEqual(inventory[1]) && tempStack.getMaxStackSize() > inventory[1].stackSize)
 							{
-								inventory[0] = null;
+								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+	
+								inventory[1].stackSize++;
+								inventory[0].stackSize--;
+	
+								if(inventory[0].stackSize <= 0)
+								{
+									inventory[0] = null;
+								}
+	
+								markDirty();
 							}
-
-							markDirty();
 						}
 					}
 				}

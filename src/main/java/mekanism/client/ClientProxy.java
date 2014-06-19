@@ -24,6 +24,7 @@ import mekanism.client.gui.GuiEnergizedSmelter;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
+import mekanism.client.gui.GuiFluidicPlenisher;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
@@ -68,6 +69,7 @@ import mekanism.client.render.tileentity.RenderElectricChest;
 import mekanism.client.render.tileentity.RenderElectricPump;
 import mekanism.client.render.tileentity.RenderElectrolyticSeparator;
 import mekanism.client.render.tileentity.RenderEnergyCube;
+import mekanism.client.render.tileentity.RenderFluidicPlenisher;
 import mekanism.client.render.tileentity.RenderGasTank;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
@@ -115,6 +117,7 @@ import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
+import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
@@ -297,6 +300,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntitySeismicVibrator.class, "SeismicVibrator", new RenderSeismicVibrator());
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderPressurizedReactionChamber());
 		ClientRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank", new RenderPortableTank());
+		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
 	}
 
 	@Override
@@ -448,6 +452,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiPRC(player.inventory, (TileEntityPRC)tileEntity);
 			case 41:
 				return new GuiPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
+			case 42:
+				return new GuiFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 		}
 
 		return null;
