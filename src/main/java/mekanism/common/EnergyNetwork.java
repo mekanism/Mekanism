@@ -319,7 +319,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		{
 			IGridTransmitter<EnergyNetwork> conductor = (IGridTransmitter<EnergyNetwork>)it.next();
 
-			if(conductor == null || ((TileEntity)conductor).isInvalid())
+			if(conductor == null || conductor.getTile().isInvalid())
 			{
 				it.remove();
 				transmitters.remove(conductor);
@@ -341,7 +341,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	@Override
 	public synchronized void refresh(IGridTransmitter<EnergyNetwork> transmitter)
 	{
-		TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors((TileEntity)transmitter);
+		TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors(transmitter.getTile());
 		
 		clearAround(transmitter);
 

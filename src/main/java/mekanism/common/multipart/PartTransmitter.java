@@ -14,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.multipart.TileMultipart;
 
@@ -226,9 +225,9 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	}
 	
 	@Override
-	public World getWorld()
+	public TileEntity getTile()
 	{
-		return world();
+		return tile();
 	}
 
 	@Override

@@ -589,6 +589,9 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 11), new Object[] {
 			"III", "GCG", "III", Character.valueOf('I'), "ingotIron", Character.valueOf('G'), Blocks.glass, Character.valueOf('C'), "circuitBasic"
 		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 12), new Object[] {
+			"TTT", "CPC", "TTT", Character.valueOf('P'), new ItemStack(MachineBlock, 1, 12), Character.valueOf('T'), "ingotTin", Character.valueOf('C'), "circuitBasic"
+		}));
 
 		for(RecipeType type : RecipeType.values())
 		{

@@ -14,7 +14,6 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -324,7 +323,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			IGridTransmitter<FluidNetwork> conductor = (IGridTransmitter<FluidNetwork>)it.next();
 
-			if(conductor == null || ((TileEntity)conductor).isInvalid())
+			if(conductor == null || conductor.getTile().isInvalid())
 			{
 				it.remove();
 				networkChanged = true;
@@ -344,7 +343,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public synchronized void refresh(IGridTransmitter<FluidNetwork> transmitter)
 	{
-		IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors((TileEntity)transmitter);
+		IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors(transmitter.getTile());
 		
 		clearAround(transmitter);
 

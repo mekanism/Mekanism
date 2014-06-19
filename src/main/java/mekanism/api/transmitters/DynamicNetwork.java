@@ -51,9 +51,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			Coord4D coord = Coord4D.get((TileEntity)transmitter).getFromSide(side);
+			Coord4D coord = Coord4D.get(transmitter.getTile()).getFromSide(side);
 			possibleAcceptors.remove(coord);
-			acceptorDirections.remove(coord.getTileEntity(transmitter.getWorld()));
+			acceptorDirections.remove(coord.getTileEntity(transmitter.getTile().getWorldObj()));
 		}
 	}
 

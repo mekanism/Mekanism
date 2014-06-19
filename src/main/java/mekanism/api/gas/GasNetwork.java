@@ -310,7 +310,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		{
 			IGridTransmitter<GasNetwork> conductor = (IGridTransmitter<GasNetwork>)it.next();
 
-			if(conductor == null || ((TileEntity)conductor).isInvalid())
+			if(conductor == null || conductor.getTile().isInvalid())
 			{
 				it.remove();
 				networkChanged = true;
@@ -330,7 +330,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	@Override
 	public synchronized void refresh(IGridTransmitter<GasNetwork> transmitter)
 	{
-		IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors((TileEntity)transmitter);
+		IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors(transmitter.getTile());
 		
 		clearAround(transmitter);
 
