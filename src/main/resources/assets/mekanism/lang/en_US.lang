@@ -470,6 +470,7 @@ tooltip.tile=Tile
 tooltip.keysFound=Key(s) found
 tooltip.noKey=No key
 tooltip.hp=HP
+tooltip.configureState=Configure State
 
 tooltip.portableTank.bucketMode=Bucket Mode
 

@@ -24,6 +24,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderPortableTank extends TileEntitySpecialRenderer
 {
 	private static Map<Fluid, DisplayInteger[]> cachedCenterFluids = new HashMap<Fluid, DisplayInteger[]>();
+	private static Map<Fluid, DisplayInteger[]> cachedValveFluids = new HashMap<Fluid, DisplayInteger[]>();
 	
 	private static int stages = 1400;
 	
@@ -38,10 +39,10 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 	private void renderAModelAt(TileEntityPortableTank tileEntity, double x, double y, double z, float partialTick)
 	{
 		Fluid fluid = tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid() : null;
-		render(fluid, tileEntity.prevScale, tileEntity.isActive, x, y, z);
+		render(fluid, tileEntity.prevScale, tileEntity.isActive, tileEntity.valve > 0 ? tileEntity.valveFluid : null, x, y, z);
 	}
 	
-	public void render(Fluid fluid, float fluidScale, boolean active, double x, double y, double z)
+	public void render(Fluid fluid, float fluidScale, boolean active, Fluid valveFluid, double x, double y, double z)
 	{
 		if(fluid != null && fluidScale > 0)
 		{
@@ -63,6 +64,24 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 				displayList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
 			}
 	
+			MekanismRenderer.glowOff();
+			
+			pop();
+		}
+		
+		if(valveFluid != null && !valveFluid.isGaseous())
+		{
+			push();
+			
+			bindTexture(MekanismRenderer.getBlocksTexture());
+			GL11.glTranslated(x, y, z);
+			
+			MekanismRenderer.glowOn(valveFluid.getLuminosity());
+			
+			DisplayInteger[] valveList = getValveRender(valveFluid);
+			
+			valveList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
+			
 			MekanismRenderer.glowOff();
 			
 			pop();
@@ -91,6 +110,47 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		MekanismRenderer.blendOn();
+	}
+	
+	private DisplayInteger[] getValveRender(Fluid fluid)
+	{
+		if(cachedValveFluids.containsKey(fluid))
+		{
+			return cachedValveFluids.get(fluid);
+		}
+
+		Model3D toReturn = new Model3D();
+		toReturn.baseBlock = Blocks.water;
+		toReturn.setTexture(fluid.getFlowingIcon());
+		
+		DisplayInteger[] displays = new DisplayInteger[stages];
+		cachedValveFluids.put(fluid, displays);
+
+		MekanismRenderer.colorFluid(fluid);
+
+		for(int i = 0; i < stages; i++)
+		{
+			displays[i] = DisplayInteger.createAndStart();
+
+			if(fluid.getIcon() != null)
+			{
+				toReturn.minX = 0.3125 + .01;
+				toReturn.minY = 0.0625 + ((float)i/(float)stages)*0.875 + .01;
+				toReturn.minZ = 0.3125 + .01;
+
+				toReturn.maxX = 0.6875 - .01;
+				toReturn.maxY = 0.9375 - .01;
+				toReturn.maxZ = 0.6875 - .01;
+
+				MekanismRenderer.renderObject(toReturn);
+			}
+
+			GL11.glEndList();
+		}
+
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+		return displays;
 	}
 	
 	private DisplayInteger[] getListAndRender(Fluid fluid)

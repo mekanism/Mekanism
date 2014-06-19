@@ -442,7 +442,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			
 			ItemBlockMachine itemMachine = (ItemBlockMachine)item.getItem();
 			Fluid fluid = itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).getFluid() : null;
-			portableTankRenderer.render(fluid, itemMachine.getPrevScale(item), false, -0.5, -0.5, -0.5);
+			portableTankRenderer.render(fluid, itemMachine.getPrevScale(item), false, null, -0.5, -0.5, -0.5);
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)

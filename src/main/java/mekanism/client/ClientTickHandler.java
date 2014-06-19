@@ -33,6 +33,7 @@ import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
@@ -235,7 +236,7 @@ public class ClientTickHandler
 						{
 							item.setState(stack, (byte)(item.getState(stack) < 3 ? item.getState(stack)+1 : 0));
 							Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(item.getState(stack)));
-							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Configure State: " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
+							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configureState") + ": " + item.getColor(item.getState(stack)) + item.getStateDisplay(item.getState(stack))));
 							lastTickUpdate = true;
 						}
 					}
@@ -253,7 +254,7 @@ public class ClientTickHandler
 						{
 							item.setFireState(stack, !item.getFireState(stack));
 							Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(item.getFireState(stack)));
-							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Fire Mode: " + (item.getFireState(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
+							mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.fireMode") + ": " + (item.getFireState(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transYesNo(item.getFireState(stack))));
 							lastTickUpdate = true;
 						}
 					}
@@ -273,7 +274,7 @@ public class ClientTickHandler
 							{
 								item.setBucketMode(stack, !item.getBucketMode(stack));
 								Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(item.getBucketMode(stack)));
-								mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + "Bucket Mode: " + (item.getBucketMode(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
+								mc.thePlayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.portableTank.bucketMode") + ": " + (item.getBucketMode(stack) ? (EnumColor.DARK_GREEN + "ON") : (EnumColor.DARK_RED + "OFF"))));
 								lastTickUpdate = true;
 							}
 						}

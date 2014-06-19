@@ -21,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -39,6 +40,9 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	public int updateDelay;
 	
 	public int prevAmount;
+	
+	public int valve;
+	public Fluid valveFluid;
 	
 	public float prevScale;
 	
@@ -79,19 +83,32 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			}
 		}
 		else {
+			boolean needsPacket = false;
+			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
+					needsPacket = true;
+				}
+			}
+			
+			if(valve > 0)
+			{
+				valve--;
+				
+				if(valve == 0)
+				{
+					valveFluid = null;
+					needsPacket = true;
 				}
 			}
 			
 			if(fluidTank.getFluidAmount() != prevAmount)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
+				needsPacket = true;
 			}
 			
 			prevAmount = fluidTank.getFluidAmount();
@@ -104,6 +121,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			if(isActive)
 			{
 				activeEmit();
+			}
+			
+			if(needsPacket)
+			{
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
 			}
 		}
 	}
@@ -282,6 +304,15 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		super.handlePacketData(dataStream);
 
 		clientActive = dataStream.readBoolean();
+		valve = dataStream.readInt();
+		
+		if(valve > 0)
+		{
+			valveFluid = FluidRegistry.getFluid(dataStream.readInt());
+		}
+		else {
+			valveFluid = null;
+		}
 		
 		if(dataStream.readInt() == 1)
 		{
@@ -305,6 +336,12 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		super.getNetworkedData(data);
 
 		data.add(isActive);
+		data.add(valve);
+		
+		if(valve > 0)
+		{
+			data.add(valveFluid.getID());
+		}
 		
 		if(fluidTank.getFluid() != null)
 		{
@@ -370,7 +407,15 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(resource != null && canFill(from, resource.getFluid()))
 		{
-			return fluidTank.fill(resource, doFill);
+			int filled = fluidTank.fill(resource, doFill);
+			
+			if(filled > 0)
+			{
+				valve = 20;
+				valveFluid = resource.getFluid();
+			}
+			
+			return filled;
 		}
 		
 		return 0;
