@@ -20,6 +20,11 @@ public final class OreDictCache
 
 	public static List<String> getOreDictName(ItemStack check)
 	{
+		if (check == null || check.getItem() == null)
+		{
+			return new ArrayList<String>();
+		}
+
 		ItemInfo info = ItemInfo.get(check);
 
 		if(cachedKeys.get(info) != null)
