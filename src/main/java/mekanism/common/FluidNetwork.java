@@ -97,7 +97,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		updateCapacity();
 
-		refresh();
+		fullRefresh();
 		register();
 	}
 
@@ -368,7 +368,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			networks.add(this);
 			networks.add(network);
 			FluidNetwork newNetwork = create(networks);
-			newNetwork.refresh();
+			newNetwork.fullRefresh();
 		}
 	}
 

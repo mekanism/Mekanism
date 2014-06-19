@@ -79,7 +79,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 
-		refresh();
+		fullRefresh();
 		register();
 	}
 
@@ -366,7 +366,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			networks.add(this);
 			networks.add(network);
 			EnergyNetwork newNetwork = create(networks);
-			newNetwork.refresh();
+			newNetwork.fullRefresh();
 		}
 	}
 

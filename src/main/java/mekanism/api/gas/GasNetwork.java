@@ -98,7 +98,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		gasScale = getScale();
 
 		updateCapacity();
-		refresh();
+		fullRefresh();
 		register();
 	}
 
@@ -355,7 +355,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			networks.add(this);
 			networks.add(network);
 			GasNetwork newNetwork = create(networks);
-			newNetwork.refresh();
+			newNetwork.fullRefresh();
 		}
 	}
 
