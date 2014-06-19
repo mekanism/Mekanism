@@ -263,15 +263,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11-10 && yAxis <= 69-10)
+		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid().getFluid().getLocalizedName());
 		}
-		else if(xAxis >= 29 && xAxis <= 45 && yAxis >= 11-10 && yAxis <= 69-10)
+		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas().getGas().getLocalizedName());
 		}
-		else if(xAxis >= 141 && xAxis <= 157 && yAxis >= 41-10 && yAxis <= 69-10)
+		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput().getGas().getLocalizedName());
 		}
@@ -291,15 +291,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11-10 && yAxis <= 69-10)
+		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
 		}
-		else if(xAxis >= 29 && xAxis <= 45 && yAxis >= 11-10 && yAxis <= 69-10)
+		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
 		}
-		else if(xAxis >= 141 && xAxis <= 157 && yAxis >= 41-10 && yAxis <= 69-10)
+		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
 		}
@@ -354,15 +354,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		GasStack gas = null;
 		FluidStack fluid = null;
 
-		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11-10 && yAxis <= 69-10)
+		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
 			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
 		}
-		else if(xAxis >= 29 && xAxis <= 45 && yAxis >= 11-10 && yAxis <= 69-10)
+		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
 		}
-		else if(xAxis >= 141 && xAxis <= 157 && yAxis >= 41-10 && yAxis <= 69-10)
+		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
 			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
 		}
