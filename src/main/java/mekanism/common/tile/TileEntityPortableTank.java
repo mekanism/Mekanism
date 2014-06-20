@@ -468,6 +468,16 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) 
 	{
+		if(from == ForgeDirection.UP)
+		{
+			TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj);
+			
+			if(!(tile instanceof TileEntityPortableTank))
+			{
+				return false;
+			}
+		}
+		
 		return (from == ForgeDirection.UP || from == ForgeDirection.DOWN) && (fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid);
 	}
 
