@@ -202,7 +202,7 @@ public class PacketHandler
 				Object minecraftInstance = field.get(nm);
 				return (EntityPlayer) minecraftInstance.getClass().getDeclaredField("thePlayer").get(minecraftInstance);
 			} catch(Exception e) {e.printStackTrace();}
-		} else {
+		} else if(context.side.isServer()) {
 			return context.getServerHandler().playerEntity;
 		}
 		return null;
