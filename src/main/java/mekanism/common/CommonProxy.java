@@ -80,6 +80,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
@@ -458,5 +460,17 @@ public class CommonProxy
 		}
 
 		Mekanism.logger.info("Received config from server.");
+	}
+	
+	public EntityPlayer getPlayerFromNetHandler(INetHandler handler)
+	{
+		if (handler instanceof NetHandlerPlayServer)
+		{
+			return ((NetHandlerPlayServer) handler).playerEntity;
+		}
+		else
+		{
+			return null;
+		}
 	}
 }

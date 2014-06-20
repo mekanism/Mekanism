@@ -61,9 +61,11 @@ import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
@@ -192,20 +194,11 @@ public class PacketHandler
 		return new String(input.readBytes(input.readInt()).array());
 	}
 	
+	
+	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
-		if(context.side.isClient()) {
-			try {
-				INetHandler nm = context.getClientHandler();
-				Field field = nm.getClass().getDeclaredField("gameController");
-				field.setAccessible(true);
-				Object minecraftInstance = field.get(nm);
-				return (EntityPlayer) minecraftInstance.getClass().getDeclaredField("thePlayer").get(minecraftInstance);
-			} catch(Exception e) {e.printStackTrace();}
-		} else if(context.side.isServer()) {
-			return context.getServerHandler().playerEntity;
-		}
-		return null;
+		return Mekanism.proxy.getPlayerFromNetHandler(context.netHandler);
 	}
 	
 	/**
