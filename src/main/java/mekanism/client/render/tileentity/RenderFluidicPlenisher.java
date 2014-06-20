@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.client.model.ModelElectricPump;
+import mekanism.client.model.ModelFluidicPlenisher;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderFluidicPlenisher extends TileEntitySpecialRenderer
 {
-	private ModelElectricPump model = new ModelElectricPump();
+	private ModelFluidicPlenisher model = new ModelFluidicPlenisher();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -28,7 +28,7 @@ public class RenderFluidicPlenisher extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidicPlenisher.png"));
 
 		switch(tileEntity.facing)
 		{
