@@ -32,30 +32,15 @@ public final class OreDictCache
 			return cachedKeys.get(info);
 		}
 
-		List<Integer> idsFound = new ArrayList<Integer>();
-		HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
-		oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)oreStacks.clone();
+		List ret = new ArrayList();
 
-		for(Map.Entry<Integer, ArrayList<ItemStack>> entry : oreStacks.entrySet())
-		{
-			for(ItemStack stack : entry.getValue())
-			{
-				if(StackUtils.equalsWildcard(stack, check))
-				{
-					idsFound.add(entry.getKey());
-					break;
-				}
-			}
-		}
+	    int[] ids = OreDictionary.getOreIDs(check);
 
-		List<String> ret = new ArrayList<String>();
+	    for(Integer id : ids) {
+	    	ret.add(OreDictionary.getOreName(id.intValue()));
+	    }
 
-		for(Integer id : idsFound)
-		{
-			ret.add(OreDictionary.getOreName(id));
-		}
-
-		cachedKeys.put(info, ret);
+	    cachedKeys.put(info, ret);
 
 		return ret;
 	}
