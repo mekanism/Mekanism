@@ -101,6 +101,8 @@ tile.MachineBlock2.ChemicalCrystalizer.name=Химический кристал�
 tile.MachineBlock2.SeismicVibrator.name=Сейсмический вибромеханизм
 tile.MachineBlock2.PressurizedReactionChamber.name=Камера реакции под давлением
 tile.MachineBlock2.PressurizedReactionChamber.short.name=КРПД
+tile.MachineBlock2.PortableTank.name=Переносной резервуар
+tile.MachineBlock2.FluidicPlenisher.name=Жидкостный снабжатель
 
 //Plastic
 tile.PlasticBlock.name=Пластиковый блок
@@ -316,12 +318,15 @@ gui.newFilter=Новый фильтр
 gui.energy=Энергия
 gui.gas=Газ
 gui.dumping=Дамп
+gui.modID=ID мода
+gui.key=Ключ
+gui.id=ID
+gui.finished=Готово
 
 gui.chemicalInfuser.short=Хим. зарядник
 gui.chemicalDissolutionChamber.short=Хим. камера растворения
 
 gui.dictionary.noKey=Нет ключа.
-gui.dictionary.key=Ключ
 
 gui.configuration=Конфигурация
 gui.configuration.strictInput=Строгий ввод
@@ -348,6 +353,10 @@ gui.filterSelect.title=Создать новый фильтр
 gui.oredictFilter=Фильтр по OreDic
 gui.oredictFilter.noKey=Нет введённых ключей
 gui.oredictFilter.sameKey=Одинаковый ключ
+
+gui.modIDFilter=Фильтр по ID мода
+gui.modIDFilter.noID=Нет введённых ID
+gui.modIDFilter.sameID=Одинаковый ID
 
 gui.itemFilter=Предметный фильтр
 gui.itemFilter.noItem=Нет предмета
@@ -407,7 +416,7 @@ gui.digitalMiner.running=Работа
 gui.digitalMiner.inverse="Обратный" режим
 
 //Recipe names
-recipe.mekanismShaped=Форменное создание
+recipe.mekanismShaped=Форменное
 
 //Item and block tooltip text
 tooltip.configurator.modify=Модифицируемый
@@ -422,6 +431,8 @@ tooltip.configurator.unauth=Этот сундук закрыт
 tooltip.configurator.noLink=Нет соединения
 tooltip.configurator.linkMsg=Связан с
 tooltip.configurator.dim=измерение
+tooltip.configurator.setLink=Set link to block
+tooltip.configurator.plenisherReset=Сбросить расчёт жидкостного снабжателя
 
 tooltip.upgrade.speed=Скорость
 tooltip.upgrade.energy=Энергия
@@ -462,6 +473,9 @@ tooltip.tile=Tile
 tooltip.keysFound=Ключ(и) найдены
 tooltip.noKey=Нет ключа
 tooltip.hp=Прочность
+tooltip.configureState=Configure State
+
+tooltip.portableTank.bucketMode=Режим ведра
 
 tooltip.disassembler.normal=обычный
 tooltip.disassembler.slow=медленный
@@ -508,6 +522,9 @@ tooltip.ChemicalDissolutionChamber=Максимальный механизм и�
 tooltip.ChemicalWasher=Максимальный механизм, который очищает необработанные !nрасплавленные руды и подготавливает их для кристаллизации.
 tooltip.ChemicalCrystalizer=Максимальный механизм, который используется для кристаллизации !nочищенной расплавленной руды в кристаллы.
 tooltip.SeismicVibrator=Механизм, который использует сейсмические колебания, чтобы !nпредоставить информацию о различных слоях мира.
+tooltip.PressurizedReactionChamber=Продвинутый механизм, который обрабатывает твёрдые, жидкие и газообразные смеси и создаёт как газообразный, так и твёрдый продукт.
+tooltip.PortableTank=Удобный, переносной резервуар, который позволяет переносить 14 !nвёдер жидкости, где бы Вы !nне были. Также служит в качестве ведра!
+tooltip.FluidicPlenisher=Механизм, который способен создавать целые !nозёра, заполняя неровности жидкостями.
 
 tooltip.HeatGenerator=Генератор, который использует тепло лавы или !nдругие горючие ресурсы для производства энергии.
 tooltip.SolarGenerator=Генератор, который использует энергию !nсолнца для производства энергии.
