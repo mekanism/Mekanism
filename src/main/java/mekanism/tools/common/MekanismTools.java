@@ -1,6 +1,9 @@
 package mekanism.tools.common;
 
 import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
+
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -21,18 +24,21 @@ import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "MekanismTools", name = "MekanismTools", version = "7.0.0", dependencies = "required-after:Mekanism")
 public class MekanismTools implements IModule
 {
+	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
+	public static ToolsCommonProxy proxy;
+	
 	@Instance("MekanismTools")
 	public static MekanismTools instance;
 	
@@ -140,6 +146,7 @@ public class MekanismTools implements IModule
 	public static Item SteelLeggings;
 	public static Item SteelBoots;
 	
+	//Tools Configuration
 	public static double armourSpawnRate;
 
 	@EventHandler
@@ -150,6 +157,9 @@ public class MekanismTools implements IModule
 		
 		//Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
 		MinecraftForge.EVENT_BUS.register(this);
+		
+		//Load the proxy
+		proxy.loadConfiguration();
 		
 		//Load this module
 		addItems();
@@ -531,8 +541,6 @@ public class MekanismTools implements IModule
 				, Mekanism.configuration.get("armor-balance", "steel-enchantability", 50).getInt()
 		);
 
-		armourSpawnRate = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "mob-armour-spawn-rate", 0.03).getDouble(0.03);
-
 		//Bronze
 		BronzeHelmet = (new ItemMekanismArmor(armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 0)).setUnlocalizedName("BronzeHelmet");
 		BronzeChestplate = (new ItemMekanismArmor(armorBRONZE, Mekanism.proxy.getArmorIndex("bronze"), 1)).setUnlocalizedName("BronzeChestplate");
@@ -804,8 +812,14 @@ public class MekanismTools implements IModule
 	}
 
 	@Override
-	public void writeConfig(ByteBuf dataStream) {}
+	public void writeConfig(ByteBuf dataStream) throws IOException
+	{
+		dataStream.writeDouble(armourSpawnRate);
+	}
 
 	@Override
-	public void readConfig(ByteBuf dataStream) {}
+	public void readConfig(ByteBuf dataStream) throws IOException
+	{
+		armourSpawnRate = dataStream.readDouble();
+	}
 }
