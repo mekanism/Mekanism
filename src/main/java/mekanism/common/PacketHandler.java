@@ -194,8 +194,6 @@ public class PacketHandler
 		return new String(input.readBytes(input.readInt()).array());
 	}
 	
-	
-	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayerFromNetHandler(context.netHandler);
