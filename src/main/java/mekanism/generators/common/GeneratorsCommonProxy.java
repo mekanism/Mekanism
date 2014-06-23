@@ -99,6 +99,7 @@ public class GeneratorsCommonProxy
 			case 5:
 				return new ContainerWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
 		}
+		
 		return null;
 	}
 }

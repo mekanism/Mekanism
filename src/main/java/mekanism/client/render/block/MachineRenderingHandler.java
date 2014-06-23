@@ -10,6 +10,7 @@ import mekanism.client.model.ModelChemicalWasher;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.model.ModelElectricPump;
 import mekanism.client.model.ModelElectrolyticSeparator;
+import mekanism.client.model.ModelFluidicPlenisher;
 import mekanism.client.model.ModelLogisticalSorter;
 import mekanism.client.model.ModelMetallurgicInfuser;
 import mekanism.client.model.ModelPressurizedReactionChamber;
@@ -47,7 +48,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();
 	public ModelSeismicVibrator seismicVibrator = new ModelSeismicVibrator();
 	public ModelPressurizedReactionChamber pressurizedReactionChamber = new ModelPressurizedReactionChamber();
-	public ModelElectricPump fluidicPlenisher = new ModelElectricPump();
+	public ModelFluidicPlenisher fluidicPlenisher = new ModelFluidicPlenisher();
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -179,7 +180,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidicPlenisher.png"));
 			fluidicPlenisher.render(0.0560F);
 		}
 		else {
