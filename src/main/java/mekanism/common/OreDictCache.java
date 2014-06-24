@@ -31,7 +31,7 @@ public final class OreDictCache
 		{
 			return cachedKeys.get(info);
 		}
-
+/*
 		List<Integer> idsFound = new ArrayList<Integer>();
 		HashMap<Integer, ArrayList<ItemStack>> oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)MekanismUtils.getPrivateValue(null, OreDictionary.class, new String[] {"oreStacks"});
 		oreStacks = (HashMap<Integer, ArrayList<ItemStack>>)oreStacks.clone();
@@ -47,6 +47,8 @@ public final class OreDictCache
 				}
 			}
 		}
+*/
+		int[] idsFound = OreDictionary.getOreIDs(check);
 
 		List<String> ret = new ArrayList<String>();
 
