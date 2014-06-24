@@ -2,6 +2,9 @@ package mekanism.common;
 
 import io.netty.buffer.ByteBuf;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +61,12 @@ import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -189,13 +196,7 @@ public class PacketHandler
 	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
-		if(context.side.isClient())
-		{
-			return Minecraft.getMinecraft().thePlayer;
-		}
-		else {
-			return context.getServerHandler().playerEntity;
-		}
+		return Mekanism.proxy.getPlayerFromNetHandler(context.netHandler);
 	}
 	
 	/**

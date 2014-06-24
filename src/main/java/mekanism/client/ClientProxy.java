@@ -136,6 +136,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -554,6 +556,19 @@ public class ClientProxy extends CommonProxy
 		if(Mekanism.voiceServerEnabled && MekanismClient.voiceClient != null)
 		{
 			MekanismClient.voiceClient.start();
+		}
+	}
+	
+	@Override
+	public EntityPlayer getPlayerFromNetHandler(INetHandler handler)
+	{
+		if (handler instanceof NetHandlerPlayServer)
+		{
+			return ((NetHandlerPlayServer) handler).playerEntity;
+		}
+		else
+		{
+			return Minecraft.getMinecraft().thePlayer;
 		}
 	}
 }
