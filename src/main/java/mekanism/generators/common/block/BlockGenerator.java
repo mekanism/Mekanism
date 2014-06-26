@@ -39,6 +39,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
+
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -302,7 +304,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
-			if(entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
+			if(Loader.isModLoaded("BuildCraftAPI|tools") && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
 			{
 				if(entityplayer.isSneaking())
 				{

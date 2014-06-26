@@ -31,6 +31,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
+
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -151,7 +153,7 @@ public class BlockEnergyCube extends BlockContainer
 			{
 				Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-				if(tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+				if(Loader.isModLoaded("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
 				{
 					if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 					{

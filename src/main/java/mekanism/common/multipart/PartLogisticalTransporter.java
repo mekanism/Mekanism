@@ -37,9 +37,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.api.transport.PipeWire;
 import codechicken.lib.vec.Vector3;
+
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
 {
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
@@ -760,7 +764,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
-	public boolean isWireActive(PipeWire wire) 
+	@Method(modid = "BuildCraftAPI|transport")
+	public boolean isWireActive(PipeWire wire)
 	{
 		return false;
 	}

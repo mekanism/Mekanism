@@ -24,6 +24,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import buildcraft.api.fuels.IronEngineFuel;
+
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -61,17 +63,20 @@ public class MekanismGenerators implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		for(String s : IronEngineFuel.fuels.keySet())
+		if(Loader.isModLoaded("BuildCraftAPI|fuels"))
 		{
-			Fluid f = FluidRegistry.getFluid(s);
-			
-			if(!(f == null || GasRegistry.containsGas(s)))
+			for(String s : IronEngineFuel.fuels.keySet())
 			{
-				GasRegistry.register(new Gas(f));
-			}
-		}
+				Fluid f = FluidRegistry.getFluid(s);
 
-		IronEngineFuel.addFuel("ethene", (float)(240*Mekanism.TO_BC), 40*FluidContainerRegistry.BUCKET_VOLUME);
+				if(!(f == null || GasRegistry.containsGas(s)))
+				{
+					GasRegistry.register(new Gas(f));
+				}
+			}
+
+			IronEngineFuel.addFuel("ethene", (float) (240 * Mekanism.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
+		}
 	}
 	
 	@EventHandler

@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergyTile;
 import mekanism.api.Coord4D;
 import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -15,6 +14,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
+
 import buildcraft.api.power.IPowerReceptor;
 import buildcraft.api.power.PowerHandler;
 import buildcraft.api.power.PowerHandler.PowerReceiver;
@@ -23,7 +26,12 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
+@InterfaceList({
+		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),
+		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2API", striprefs = true),
+		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy")
+})
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
 {
 	@Override
 	public int getSizeInventory()
@@ -186,6 +194,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		if(getInv() == null)
@@ -197,6 +206,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "CoFHAPI|energy")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getInv() == null)
@@ -208,6 +218,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "CoFHAPI|energy")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
@@ -219,6 +230,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "CoFHAPI|energy")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -230,6 +242,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "CoFHAPI|energy")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -241,6 +254,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "CoFHAPI|energy")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -285,6 +299,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|power")
 	public PowerReceiver getPowerReceiver(ForgeDirection side)
 	{
 		if(getInv() == null)
@@ -296,6 +311,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|power")
 	public void doWork(PowerHandler workProvider)
 	{
 		if(getInv() == null)
@@ -307,6 +323,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|power")
 	public World getWorld()
 	{
 		if(getInv() == null)
@@ -340,6 +357,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public double demandedEnergyUnits()
 	{
 		if(getInv() == null)
@@ -351,6 +369,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
 	{
 		if(getInv() == null)
@@ -362,6 +381,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getMaxSafeInput()
 	{
 		if(getInv() == null)

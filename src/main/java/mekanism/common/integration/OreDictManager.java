@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
+import cpw.mods.fml.common.Optional.Method;
 
 public final class OreDictManager
 {
@@ -348,9 +349,9 @@ public final class OreDictManager
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Mekanism.Ingot, 1, 2), MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			
-			if(Mekanism.hooks.IC2Loaded)
+			if(Mekanism.hooks.IC2APILoaded)
 			{
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+				addIC2BronzeRecipe();
 			}
 		} catch(Exception e) {}
 		
@@ -456,6 +457,13 @@ public final class OreDictManager
 
 	}
 	
+	@Method(modid = "IC2API")
+	public static void addIC2BronzeRecipe()
+	{
+		Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+	}
+
+
 	/**
 	 * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Taken from CofhCore.
 	 */

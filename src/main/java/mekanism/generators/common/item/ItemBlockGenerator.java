@@ -31,6 +31,10 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
+
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -45,6 +49,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
+
+@InterfaceList({
+		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
+		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
+})
 public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, ISustainedInventory, ISustainedTank, IEnergyContainerItem
 {
 	public Block metaBlock;
@@ -176,36 +185,42 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return canSend(itemStack);
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getChargedItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTier(ItemStack itemStack)
 	{
 		return 4;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
@@ -397,6 +412,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
