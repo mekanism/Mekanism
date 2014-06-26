@@ -137,7 +137,7 @@ public final class CableUtils
 		{
 			TileEntity outputter = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
-			if(isOutputter(tileEntity, orientation))
+			if(isOutputter(outputter, orientation))
 			{
 				outputters[orientation.ordinal()] = outputter;
 			}
@@ -149,7 +149,7 @@ public final class CableUtils
 	public static boolean isOutputter(TileEntity tileEntity, ForgeDirection side)
 	{
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
-				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(tileEntity, side.getOpposite())) ||
+				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canConnectEnergy(side.getOpposite())) ||
 				(MekanismUtils.useBuildCraft() && tileEntity instanceof IPowerEmitter && ((IPowerEmitter)tileEntity).canEmitPowerFrom(side.getOpposite()));
 	}

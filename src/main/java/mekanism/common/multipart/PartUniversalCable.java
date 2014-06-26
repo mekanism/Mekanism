@@ -95,13 +95,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 				List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
 				if(!sides.isEmpty())
 				{
-					TileEntity[] connectedAcceptors = CableUtils.getConnectedEnergyAcceptors(tile());
+					TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
 
 					for(ForgeDirection side : sides)
 					{
-						if(connectedAcceptors[side.ordinal()] != null)
+						if(connectedOutputters[side.ordinal()] != null)
 						{
-							TileEntity acceptor = connectedAcceptors[side.ordinal()];
+							TileEntity acceptor = connectedOutputters[side.ordinal()];
 
 							if(acceptor instanceof IEnergySource)
 							{
