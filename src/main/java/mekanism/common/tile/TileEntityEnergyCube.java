@@ -37,8 +37,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 	/**
 	 * A block used to store and transfer electricity.
-	 * @param energy - maximum energy this block can hold.
-	 * @param i - output per tick this block can handle.
 	 */
 	public TileEntityEnergyCube()
 	{

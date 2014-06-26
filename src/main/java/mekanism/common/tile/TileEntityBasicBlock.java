@@ -175,7 +175,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	@Method(modid = "IC2API")
 	public void setFacing(short direction)
 	{
 		if(canSetFacing(direction))

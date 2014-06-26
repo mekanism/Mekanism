@@ -49,7 +49,10 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super(name, maxEnergy);
 
-		powerHandler.configure(0, 0, 0, 0);
+		if(MekanismUtils.useBuildCraft())
+		{
+			powerHandler.configure(0, 0, 0, 0);
+		}
 
 		output = out;
 		isActive = false;

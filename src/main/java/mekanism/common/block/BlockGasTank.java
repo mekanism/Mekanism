@@ -23,7 +23,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import buildcraft.api.tools.IToolWrench;
 
-import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -98,7 +98,7 @@ public class BlockGasTank extends BlockContainer
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(Loader.isModLoaded("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
 			{
 				if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 				{

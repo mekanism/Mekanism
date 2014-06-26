@@ -13,6 +13,8 @@ import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -32,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
 
-import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -153,7 +155,7 @@ public class BlockEnergyCube extends BlockContainer
 			{
 				Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-				if(Loader.isModLoaded("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
 				{
 					if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 					{
@@ -229,7 +231,8 @@ public class BlockEnergyCube extends BlockContainer
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
-		return new TileEntityEnergyCube();
+		TileEntityEnergyCube tile = new TileEntityEnergyCube();
+		return tile;
 	}
 
 	@Override
@@ -273,7 +276,7 @@ public class BlockEnergyCube extends BlockContainer
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-		if(!world.isRemote)
+		if(!world.isRemote && MekanismUtils.useIC2())
 		{
 			((TileEntityElectricBlock)tileEntity).register();
 		}

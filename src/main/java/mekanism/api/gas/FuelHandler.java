@@ -3,12 +3,10 @@ package mekanism.api.gas;
 import java.util.HashMap;
 
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
 
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.common.ModAPIManager;
 
 import buildcraft.api.fuels.IronEngineFuel;
 import buildcraft.api.fuels.IronEngineFuel.Fuel;
@@ -29,7 +27,7 @@ public class FuelHandler
 			return fuels.get(gas.getName());
 		}
 
-		if(Loader.isModLoaded("BuildCraftAPI|fuel") && gas.hasFluid())
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuel") && gas.hasFluid())
 		{
 			Fuel bcFuel = IronEngineFuel.getFuelForFluid(gas.getFluid());
 			

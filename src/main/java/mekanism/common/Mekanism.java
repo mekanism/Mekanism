@@ -1434,7 +1434,7 @@ public class Mekanism
 				{
 					TileEntity tileEntity = (TileEntity)obj;
 	
-					if(tileEntity instanceof TileEntityElectricBlock)
+					if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
 					{
 						((TileEntityElectricBlock)tileEntity).register();
 					}

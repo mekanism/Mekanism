@@ -1,6 +1,6 @@
 package mekanism.common.multipart;
 
-//import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergySource;
 
 import java.util.List;
 import java.util.Set;
@@ -92,7 +92,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 				cacheEnergy = 0;
 			}
 
-			/*if(MekanismUtils.useIC2())
+			if(MekanismUtils.useIC2())
 			{
 				List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
 				if(!sides.isEmpty())
@@ -119,7 +119,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 						}
 					}
 				}
-			}*/
+			}
 		}
 
 		super.update();

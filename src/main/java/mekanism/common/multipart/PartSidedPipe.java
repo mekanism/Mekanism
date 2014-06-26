@@ -48,7 +48,7 @@ import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
 
-import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -423,7 +423,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return false;
 		}
 
-		if(Loader.isModLoaded("BuildCraftAPI|tools") && item.getItem() instanceof IToolWrench && !(item.getItem() instanceof ItemConfigurator) && player.isSneaking())
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && item.getItem() instanceof IToolWrench && !(item.getItem() instanceof ItemConfigurator) && player.isSneaking())
 		{
 			if(!world().isRemote)
 			{

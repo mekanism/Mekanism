@@ -86,7 +86,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import buildcraft.api.tools.IToolWrench;
 
-import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -659,7 +659,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(Loader.isModLoaded("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
 			{
 				if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
 				{
@@ -1229,7 +1229,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(!world.isRemote)
 		{
-			if(tileEntity instanceof TileEntityElectricBlock)
+			if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
 			{
 				((TileEntityElectricBlock)tileEntity).register();
 			}

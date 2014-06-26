@@ -22,7 +22,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
@@ -62,7 +61,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
 
-		if(Loader.isModLoaded("BuildCraftAPI|power"))
+		if(MekanismUtils.useBuildCraft())
 		{
 			powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
 			powerHandler.configurePowerPerdition(0, 0);
@@ -70,9 +69,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 	}
 
+	@Method(modid = "IC2API")
 	public void register()
 	{
-		if(!worldObj.isRemote && Loader.isModLoaded("IC2API"))
+		if(!worldObj.isRemote)
 		{
 			if(!Mekanism.ic2Registered.contains(Coord4D.get(this)))
 			{
@@ -81,10 +81,11 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			}
 		}
 	}
-	
+
+	@Method(modid = "IC2API")
 	public void deregister()
 	{
-		if(!worldObj.isRemote && Loader.isModLoaded("IC2API"))
+		if(!worldObj.isRemote)
 		{
 			if(Mekanism.ic2Registered.contains(Coord4D.get(this)))
 			{
@@ -154,6 +155,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void onChunkUnload()
 	{
+		if(MekanismUtils.useIC2())
 		deregister();
 
 		super.onChunkUnload();
@@ -163,7 +165,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void invalidate()
 	{
 		super.invalidate();
-		
+
+		if(MekanismUtils.useIC2())
 		deregister();
 	}
 
@@ -198,7 +201,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	protected void reconfigure()
 	{
-		if(Loader.isModLoaded("BuildCraftAPI|power"))
+		if(MekanismUtils.useBuildCraft())
 		{
 			powerHandler.configure(1, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
 		}

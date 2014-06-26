@@ -40,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
 
-import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -304,7 +304,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
-			if(Loader.isModLoaded("BuildCraftAPI|tools") && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
+			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
 			{
 				if(entityplayer.isSneaking())
 				{
@@ -502,7 +502,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 		if(!world.isRemote)
 		{
-			if(tileEntity != null)
+			if(tileEntity != null && MekanismUtils.useIC2())
 			{
 				((TileEntityElectricBlock)tileEntity).register();
 			}
