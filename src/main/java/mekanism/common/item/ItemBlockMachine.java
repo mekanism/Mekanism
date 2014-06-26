@@ -65,6 +65,10 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
+
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -101,6 +105,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
+@InterfaceList({
+		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
+		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
+})
 public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem
 {
 	public Block metaBlock;
@@ -385,24 +393,28 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return false;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTier(ItemStack itemStack)
 	{
 		return 4;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
@@ -425,7 +437,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					{
 						setEnergy(itemstack, getEnergy(itemstack) + EnergizedItemManager.discharge(inv.getStackInSlot(54), getMaxEnergy(itemstack) - getEnergy(itemstack)));
 					}
-					else if(Mekanism.hooks.IC2Loaded && inv.getStackInSlot(54).getItem() instanceof IElectricItem)
+					else if(MekanismUtils.useIC2() && inv.getStackInSlot(54).getItem() instanceof IElectricItem)
 					{
 						IElectricItem item = (IElectricItem)inv.getStackInSlot(54).getItem();
 
@@ -435,7 +447,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 							setEnergy(itemstack, getEnergy(itemstack) + gain);
 						}
 					}
-					else if(inv.getStackInSlot(54).getItem() instanceof IEnergyContainerItem)
+					else if(MekanismUtils.useRF() && inv.getStackInSlot(54).getItem() instanceof IEnergyContainerItem)
 					{
 						ItemStack itemStack = inv.getStackInSlot(54);
 						IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(54).getItem();
@@ -981,6 +993,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public double getMaxTransfer(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)*0.005;
@@ -1055,18 +1068,21 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
 	}
 	
 	@Override
+	@Method(modid = "IC2API")
 	public Item getChargedItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;

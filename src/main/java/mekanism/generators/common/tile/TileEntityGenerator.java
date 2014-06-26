@@ -17,13 +17,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.power.IPowerReceptor;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPowerReceptor, IPeripheral, IActiveState, IHasSound, IRedstoneControl
+public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPeripheral, IActiveState, IHasSound, IRedstoneControl
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -44,7 +44,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
 	 * @param name - full name of this generator
 	 * @param maxEnergy - how much energy this generator can store
-	 * @param maxFuel - how much fuel this generator can store
 	 */
 	public TileEntityGenerator(String name, double maxEnergy, double out)
 	{

@@ -25,7 +25,7 @@ public final class ChargeUtils
 			{
 				storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(storer.inventory[slotID], storer.getMaxEnergy() - storer.getEnergy()));
 			}
-			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useIC2() && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
 				IElectricItem item = (IElectricItem)storer.inventory[slotID].getItem();
 
@@ -35,7 +35,7 @@ public final class ChargeUtils
 					storer.setEnergy(storer.getEnergy() + gain);
 				}
 			}
-			else if(storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
+			else if(MekanismUtils.useRF() && storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
 			{
 				ItemStack itemStack = storer.inventory[slotID];
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
@@ -71,12 +71,12 @@ public final class ChargeUtils
 			{
 				storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(storer.inventory[slotID], storer.getEnergy()));
 			}
-			else if(Mekanism.hooks.IC2Loaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
+			else if(Mekanism.hooks.IC2APILoaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
 				double sent = ElectricItem.manager.charge(storer.inventory[slotID], (int)(storer.getEnergy()*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
 				storer.setEnergy(storer.getEnergy() - sent);
 			}
-			else if(storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
+			else if(MekanismUtils.useRF() && storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
 			{
 				ItemStack itemStack = storer.inventory[slotID];
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
@@ -96,9 +96,9 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeDischarged(ItemStack itemstack)
 	{
-		return (itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) ||
+		return (MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack)) ||
 				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canSend(itemstack)) ||
-				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
+				(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).extractEnergy(itemstack, 1, true) != 0) ||
 				itemstack.getItem() == Items.redstone;
 	}
 
@@ -109,9 +109,9 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeCharged(ItemStack itemstack)
 	{
-		return itemstack.getItem() instanceof IElectricItem ||
+		return (MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem) ||
 				(itemstack.getItem() instanceof IEnergizedItem && ((IEnergizedItem)itemstack.getItem()).canReceive(itemstack)) ||
-				(itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0);
+				(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem && ((IEnergyContainerItem)itemstack.getItem()).receiveEnergy(itemstack, 1, true) != 0);
 	}
 
 	/**
@@ -125,10 +125,10 @@ public final class ChargeUtils
 	{
 		if(chargeSlot)
 		{
-			return itemstack.getItem() instanceof IElectricItem;
+			return MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem;
 		}
 		else {
-			return itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack);
+			return MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack);
 		}
 	}
 }

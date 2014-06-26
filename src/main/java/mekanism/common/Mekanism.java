@@ -175,7 +175,7 @@ public class Mekanism
     public static Mekanism instance;
     
     /** Mekanism hooks instance */
-    public static MekanismHooks hooks = new MekanismHooks();
+    public static MekanismHooks hooks;
     
     /** Mekanism configuration instance */
     public static Configuration configuration;
@@ -1091,7 +1091,7 @@ public class Mekanism
 		OreDictionary.registerOre("ingotIron", new ItemStack(Items.iron_ingot));
 		OreDictionary.registerOre("ingotGold", new ItemStack(Items.gold_ingot));
 		OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.redstone_ore));
-		OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.lit_redstone_ore));
+		//OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.lit_redstone_ore));
 		
 		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
 		{
@@ -1344,6 +1344,7 @@ public class Mekanism
 	public void postInit(FMLPostInitializationEvent event)
 	{		
 		proxy.loadSoundHandler();
+		hooks = new MekanismHooks();
 		hooks.hook();
 		
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());

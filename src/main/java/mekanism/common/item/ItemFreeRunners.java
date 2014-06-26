@@ -27,10 +27,18 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import cofh.api.energy.IEnergyContainerItem;
+
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@InterfaceList({
+		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
+		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
+})
 public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
@@ -96,36 +104,42 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return canSend(itemStack);
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getChargedItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTier(ItemStack itemStack)
 	{
 		return 4;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
@@ -239,6 +253,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);

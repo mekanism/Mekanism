@@ -18,6 +18,8 @@ import mekanism.common.RobitAIPickup;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
+import mekanism.common.util.MekanismUtils;
+
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -170,7 +172,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 				{
 					setEnergy(getEnergy() + EnergizedItemManager.discharge(inventory[27], MAX_ELECTRICITY - getEnergy()));
 				}
-				else if(Mekanism.hooks.IC2Loaded && inventory[27].getItem() instanceof IElectricItem)
+				else if(MekanismUtils.useIC2() && inventory[27].getItem() instanceof IElectricItem)
 				{
 					IElectricItem item = (IElectricItem)inventory[27].getItem();
 
@@ -180,7 +182,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 						setEnergy(getEnergy() + gain);
 					}
 				}
-				else if(inventory[27].getItem() instanceof IEnergyContainerItem)
+				else if(MekanismUtils.useRF() && inventory[27].getItem() instanceof IEnergyContainerItem)
 				{
 					ItemStack itemStack = inventory[27];
 					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();

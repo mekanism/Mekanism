@@ -1,11 +1,5 @@
 package mekanism.common.integration;
 
-import ic2.api.recipe.IRecipeInput;
-import ic2.api.recipe.RecipeInputItemStack;
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.RecipeOutput;
-import ic2.api.recipe.Recipes;
-
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +13,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModAPIManager;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import dan200.computercraft.api.ComputerCraftAPI;
+import ic2.api.recipe.IRecipeInput;
+import ic2.api.recipe.RecipeInputItemStack;
+import ic2.api.recipe.RecipeInputOreDict;
+import ic2.api.recipe.RecipeOutput;
+import ic2.api.recipe.Recipes;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -34,9 +35,11 @@ public final class MekanismHooks
 	private Class BuildCraftEnergy;
 
 	public boolean IC2Loaded = false;
+	public boolean IC2APILoaded = false;
 	public boolean RailcraftLoaded = false;
 	public boolean BasicComponentsLoaded = false;
-	public boolean BuildCraftLoaded = false;
+	public boolean BuildCraftPowerLoaded = false;
+	public boolean RedstoneFluxLoaded = false;
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
 
@@ -45,10 +48,12 @@ public final class MekanismHooks
 
 	public void hook()
 	{
+		if(ModAPIManager.INSTANCE.hasAPI("IC2API")) IC2APILoaded = true;
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|power")) BuildCraftPowerLoaded = true;
+		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI|energy")) RedstoneFluxLoaded = true;
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
 		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
-		if(Loader.isModLoaded("BuildCraft|Energy")) BuildCraftLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 
@@ -61,58 +66,7 @@ public final class MekanismHooks
 
 		if(IC2Loaded)
 		{
-			for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
-			{
-				if(!entry.getKey().getInputs().isEmpty())
-				{
-					List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
-
-					for(String name : names)
-					{
-						boolean did = false;
-
-						if(name.startsWith("ingot"))
-						{
-							RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
-							did = true;
-						}
-
-						if(did)
-						{
-							break;
-						}
-					}
-				}
-			}
-
-			try {
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
-			} catch(Exception e) {}
-
-			try {
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone_dust));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
-			} catch(Exception e) {}
-
-			try {
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
-				Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
-			} catch(Exception e) {}
-
-			NBTTagCompound tag = new NBTTagCompound();
-
-			tag.setInteger("amplification", 50000);
-
-			Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
-
+			hookIC2Recipes();
 			Mekanism.logger.info("Hooked into IC2 successfully.");
 		}
 
@@ -133,7 +87,7 @@ public final class MekanismHooks
 			Mekanism.logger.info("Hooked into BasicComponents successfully.");
 		}
 
-		if(BuildCraftLoaded)
+		if(BuildCraftPowerLoaded)
 		{
 			Mekanism.logger.info("Hooked into BuildCraft successfully.");
 		}
@@ -145,6 +99,62 @@ public final class MekanismHooks
 			} catch(Exception ex) {}
 		}
 		
+	}
+
+	@Method(modid = "IC2API")
+	public void hookIC2Recipes()
+	{
+		for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())
+		{
+			if(!entry.getKey().getInputs().isEmpty())
+			{
+				List<String> names = MekanismUtils.getOreDictName(entry.getKey().getInputs().get(0));
+
+				for(String name : names)
+				{
+					boolean did = false;
+
+					if(name.startsWith("ingot"))
+					{
+						RecipeHandler.addCrusherRecipe(entry.getKey().getInputs().get(0), entry.getValue().items.get(0));
+						did = true;
+					}
+
+					if(did)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		try {
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
+		} catch(Exception e) {}
+
+		try {
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone_dust));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
+		} catch(Exception e) {}
+
+		try {
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
+		} catch(Exception e) {}
+
+		NBTTagCompound tag = new NBTTagCompound();
+
+		tag.setInteger("amplification", 50000);
+
+		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)

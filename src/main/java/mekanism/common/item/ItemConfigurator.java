@@ -22,8 +22,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+
 import buildcraft.api.tools.IToolWrench;
 
+@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
 public class ItemConfigurator extends ItemEnergized implements IToolWrench
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
@@ -304,11 +308,13 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|tools")
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
 		return !(player.worldObj.getTileEntity(x, y, z) instanceof TileEntityBasicBlock);
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|tools")
 	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
 }

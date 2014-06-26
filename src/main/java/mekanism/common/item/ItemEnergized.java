@@ -15,8 +15,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
+
 import cofh.api.energy.IEnergyContainerItem;
 
+@InterfaceList({
+		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
+		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
+})
 public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpecialElectricItem, IEnergyContainerItem
 {
 	/** The maximum amount of energy this item can hold. */
@@ -57,36 +65,42 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return canSend(itemStack);
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getChargedItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTier(ItemStack itemStack)
 	{
 		return 4;
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public int getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
@@ -200,6 +214,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
+	@Method(modid = "IC2API")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);

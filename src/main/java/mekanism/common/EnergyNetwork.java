@@ -202,19 +202,19 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					{
 						sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
 					}
-					else if(acceptor instanceof IEnergyHandler)
+					else if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
 					{
 						IEnergyHandler handler = (IEnergyHandler)acceptor;
 						int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*Mekanism.TO_TE), false);
 						sent += used*Mekanism.FROM_TE;
 					}
-					else if(acceptor instanceof IEnergySink)
+					else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 					{
 						double toSend = Math.min(currentSending, ((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2);
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2);
 						sent += (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
 					}
-					else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildCraft())
+					else if(MekanismUtils.useBuildCraft() && acceptor instanceof IPowerReceptor)
 					{
 						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(side.getOpposite());
 
@@ -262,7 +262,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			else if(acceptor instanceof IEnergyHandler)
+			else if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
 			{
 				IEnergyHandler handler = (IEnergyHandler)acceptor;
 
@@ -274,7 +274,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			else if(acceptor instanceof IEnergySink)
+			else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 			{
 				IEnergySink handler = (IEnergySink)acceptor;
 
@@ -286,7 +286,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			else if(acceptor instanceof IPowerReceptor && MekanismUtils.useBuildCraft())
+			else if(MekanismUtils.useBuildCraft() && acceptor instanceof IPowerReceptor)
 			{
 				IPowerReceptor handler = (IPowerReceptor)acceptor;
 

@@ -47,6 +47,8 @@ import codechicken.multipart.NormalOcclusionTest;
 import codechicken.multipart.PartMap;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TSlottedPart;
+
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -421,7 +423,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return false;
 		}
 
-		if(item.getItem() instanceof IToolWrench && !(item.getItem() instanceof ItemConfigurator) && player.isSneaking())
+		if(Loader.isModLoaded("BuildCraftAPI|tools") && item.getItem() instanceof IToolWrench && !(item.getItem() instanceof ItemConfigurator) && player.isSneaking())
 		{
 			if(!world().isRemote)
 			{

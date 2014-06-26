@@ -5,6 +5,8 @@ import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -181,6 +183,6 @@ public class ContainerEnergyCube extends Container
 
 	private boolean canTransfer(ItemStack slotStack)
 	{
-		return slotStack.getItem() instanceof IElectricItem;
+		return MekanismUtils.useIC2() && slotStack.getItem() instanceof IElectricItem;
 	}
 }
