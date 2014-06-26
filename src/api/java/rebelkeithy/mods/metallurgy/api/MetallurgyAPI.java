@@ -6,12 +6,19 @@ public class MetallurgyAPI
 {
 
     // Values for name: "base", "precious", "nether", "fantasy", "ender",
-    // "utility"
+    // "utility", "vanilla"
     public static IMetalSet getMetalSet(String name)
     {
         try
         {
-            final Class metallurgyMetals = Class.forName("rebelkeithy.mods.metallurgy.metals.MetallurgyMetals");
+            String className = "rebelkeithy.mods.metallurgy.metals.MetallurgyMetals";
+            
+            if (name.equals("vanilla"))
+            {
+                className = "rebelkeithy.mods.metallurgy.vanilla.MetallurgyVanilla";
+            }
+            
+            final Class<?> metallurgyMetals = Class.forName(className);
             final Field set = metallurgyMetals.getField(name + "Set");
             return (IMetalSet) set.get(null);
         } catch (final NoSuchFieldException e)
@@ -43,7 +50,7 @@ public class MetallurgyAPI
     {
         // TODO maybe put something to get runtime list here
         final String[] names =
-        { "base", "precious", "nether", "fantasy", "ender", "utility" };
+        { "base", "precious", "nether", "fantasy", "ender", "utility", "vanilla" };
         return names;
     }
 }

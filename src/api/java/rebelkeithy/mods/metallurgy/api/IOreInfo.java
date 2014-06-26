@@ -36,4 +36,8 @@ public interface IOreInfo
     public OreType getType();
 
     public boolean isEnabled();
+    
+    public int getBlockHarvestLevel();
+    
+    public int getToolHarvestLevel();
 }
