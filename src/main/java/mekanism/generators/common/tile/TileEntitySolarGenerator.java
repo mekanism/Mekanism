@@ -13,6 +13,8 @@ import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.ModAPIManager;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -124,7 +126,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			ret = GENERATION_RATE;
 
-			if(worldObj.provider instanceof ISolarLevel)
+			if(ModAPIManager.INSTANCE.hasAPI("Galacticraft API") && worldObj.provider instanceof ISolarLevel)
 			{
 				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
 			}

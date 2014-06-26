@@ -14,5 +14,5 @@ package micdoodle8.mods.galacticraft.api.world;
  */
 public interface ISolarLevel
 {
-    public double getSolarEnergyMultiplier();
+	public double getSolarEnergyMultiplier();
 }
