@@ -57,9 +57,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
 		if(MekanismUtils.useBuildCraft())
 		{
-			powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
-			powerHandler.configurePowerPerdition(0, 0);
-			powerHandler.configure(0, 0, 0, 0);
+			configure();
 		}
 	}
 
@@ -135,7 +133,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		super.refreshTransmitterNetwork();
 
-		reconfigure();
+		if(MekanismUtils.useBuildCraft())
+			reconfigure();
 	}
 
 	@Override
@@ -369,27 +368,31 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		return world();
 	}
 
+	@Method(modid = "BuildCraftAPI|power")
+	private void configure()
+	{
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configurePowerPerdition(0, 0);
+		powerHandler.configure(0, 0, 0, 0);
+	}
+
+	@Method(modid = "BuildCraftAPI|power")
 	private void reconfigure()
 	{
-		if(MekanismUtils.useBuildCraft())
-		{
-			float needed = (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_BC);
-			powerHandler.configure(1, needed, 0, needed);
-		}
+		float needed = (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_BC);
+		powerHandler.configure(1, needed, 0, needed);
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|power")
 	public void doWork(PowerHandler workProvider)
 	{
-		if(MekanismUtils.useBuildCraft())
+		if(powerHandler.getEnergyStored() > 0)
 		{
-			if(powerHandler.getEnergyStored() > 0)
-			{
-				getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC);
-			}
-
-			powerHandler.setEnergy(0);
-			reconfigure();
+			getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC);
 		}
+
+		powerHandler.setEnergy(0);
+		reconfigure();
 	}
 }

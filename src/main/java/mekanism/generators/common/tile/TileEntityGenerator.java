@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -269,6 +270,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 
 	@Override
+	@Method(modid = "BuildCraftAPI|power")
 	protected void reconfigure()
 	{
 		powerHandler.configure(0, 0, 0, 0);

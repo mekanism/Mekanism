@@ -62,12 +62,17 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		MAX_ELECTRICITY = maxEnergy;
 
 		if(MekanismUtils.useBuildCraft())
-		{
-			powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
-			powerHandler.configurePowerPerdition(0, 0);
-			powerHandler.configure(0, 0, 0, 0);
-		}
+			configure();
 	}
+
+	@Method(modid = "BuildCraftAPI|power")
+	public void configure()
+	{
+		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
+		powerHandler.configurePowerPerdition(0, 0);
+		powerHandler.configure(0, 0, 0, 0);
+	}
+
 
 	@Method(modid = "IC2API")
 	public void register()
@@ -98,7 +103,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void onUpdate()
 	{
-		reconfigure();
+		if(MekanismUtils.useBuildCraft())
+			reconfigure();
 	}
 
 	public EnumSet<ForgeDirection> getOutputtingSides()
@@ -156,7 +162,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void onChunkUnload()
 	{
 		if(MekanismUtils.useIC2())
-		deregister();
+			deregister();
 
 		super.onChunkUnload();
 	}
@@ -167,7 +173,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.invalidate();
 
 		if(MekanismUtils.useIC2())
-		deregister();
+			deregister();
 	}
 
 	@Override
@@ -176,7 +182,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.readFromNBT(nbtTags);
 
 		electricityStored = nbtTags.getDouble("electricityStored");
-		reconfigure();
+
+		if(MekanismUtils.useBuildCraft())
+			reconfigure();
 	}
 
 	@Override
@@ -199,12 +207,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		return null;
 	}
 
+	@Method(modid = "BuildCraftAPI|power")
 	protected void reconfigure()
 	{
-		if(MekanismUtils.useBuildCraft())
-		{
 			powerHandler.configure(1, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
-		}
 	}
 
 	@Override
