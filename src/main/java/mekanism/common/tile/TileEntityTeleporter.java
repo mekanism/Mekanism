@@ -30,12 +30,15 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
 {
 	private MinecraftServer server = MinecraftServer.getServer();
@@ -519,18 +522,21 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
 		return getInventoryName();
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "canTeleport", "getMaxEnergy", "getEnergyNeeded", "teleport", "set"};
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
@@ -579,15 +585,18 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public boolean equals(IPeripheral other)
 	{
 		return this == other;
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void attach(IComputerAccess computer) {}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void detach(IComputerAccess computer) {}
 
 	@Override

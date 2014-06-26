@@ -20,6 +20,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.Optional.Method;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -156,12 +158,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)

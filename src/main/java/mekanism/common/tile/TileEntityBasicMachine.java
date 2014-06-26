@@ -23,10 +23,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.common.Optional.Method;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
 {
 	/** This machine's side configuration. */
@@ -249,12 +251,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
 		return getInventoryName();
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public boolean equals(IPeripheral other)
 	{
 		return this == other;
@@ -267,9 +271,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void attach(IComputerAccess computer) {}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void detach(IComputerAccess computer) {}
 
 	@Override

@@ -94,9 +94,7 @@ public final class MekanismHooks
 		
 		if(CCLoaded)
 		{
-			try {
-				ComputerCraftAPI.registerPeripheralProvider((BlockMachine)Mekanism.MachineBlock);
-			} catch(Exception ex) {}
+			loadCCPeripheralProviders();
 		}
 		
 	}
@@ -155,6 +153,14 @@ public final class MekanismHooks
 		tag.setInteger("amplification", 50000);
 
 		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
+	}
+
+	@Method(modid = "ComputerCraft")
+	public void loadCCPeripheralProviders()
+	{
+		try {
+			ComputerCraftAPI.registerPeripheralProvider((BlockMachine)Mekanism.MachineBlock);
+		} catch(Exception ex) {}
 	}
 
 	public void addPulverizerRecipe(ItemStack input, ItemStack output, int energy)

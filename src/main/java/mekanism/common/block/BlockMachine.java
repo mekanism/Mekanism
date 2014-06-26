@@ -87,6 +87,8 @@ import net.minecraftforge.fluids.FluidStack;
 import buildcraft.api.tools.IToolWrench;
 
 import cpw.mods.fml.common.ModAPIManager;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -125,6 +127,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * @author AidanBrady
  *
  */
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
 public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
 	public IIcon[][] icons = new IIcon[16][16];
@@ -1347,6 +1350,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
 	{
 		TileEntity te = world.getTileEntity(x, y, z);

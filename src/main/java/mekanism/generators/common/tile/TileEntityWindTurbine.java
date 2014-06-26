@@ -7,6 +7,8 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.Optional.Method;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -54,12 +56,14 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)

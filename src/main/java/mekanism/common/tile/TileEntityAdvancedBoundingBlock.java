@@ -29,7 +29,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 @InterfaceList({
 		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2API", striprefs = true),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy")
+		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
+		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess
 {
@@ -428,6 +429,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
 		if(getInv() == null)
@@ -439,6 +441,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
 		if(getInv() == null)
@@ -450,6 +453,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		if(getInv() == null)
@@ -461,6 +465,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void attach(IComputerAccess computer)
 	{
 		if(getInv() == null)
@@ -472,6 +477,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void detach(IComputerAccess computer)
 	{
 		if(getInv() == null)
@@ -483,6 +489,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public boolean equals(IPeripheral other)
 	{
 		return this == other;

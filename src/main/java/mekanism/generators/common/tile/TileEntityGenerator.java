@@ -18,12 +18,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPeripheral, IActiveState, IHasSound, IRedstoneControl
 {
 	/** Output per tick this generator can transfer. */
@@ -157,18 +159,22 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
 		return getInventoryName();
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void attach(IComputerAccess computer) {}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void detach(IComputerAccess computer) {}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public boolean equals(IPeripheral other)
 	{
 		return this == other;

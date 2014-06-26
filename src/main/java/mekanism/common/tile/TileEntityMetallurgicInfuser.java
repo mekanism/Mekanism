@@ -31,10 +31,14 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
 {
 	/** This machine's side configuration. */
@@ -434,18 +438,21 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
 		return getInventoryName();
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
 		return new String[] {"getStored", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse", "getInfuseNeeded"};
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
 	{
 		switch(method)
@@ -473,15 +480,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public boolean equals(IPeripheral other)
 	{
 		return this == other;
 	}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void attach(IComputerAccess computer) {}
 
 	@Override
+	@Method(modid = "ComputerCraft")
 	public void detach(IComputerAccess computer) {}
 
 	@Override
