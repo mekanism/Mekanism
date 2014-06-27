@@ -189,13 +189,7 @@ public class PacketHandler
 	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
-		if(context.side.isClient())
-		{
-			return Minecraft.getMinecraft().thePlayer;
-		}
-		else {
-			return context.getServerHandler().playerEntity;
-		}
+		return Mekanism.proxy.getPlayer(context);
 	}
 	
 	/**
