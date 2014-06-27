@@ -156,7 +156,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+		dependencies = "after:BuildCraft;after:IC2;after:CoFHCore;after:ComputerCraft;after:Galacticraft;" +
+				"after:MineFactoryReloaded;after:MetallurgyCore;after:Railcraft;after:Forestry")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
