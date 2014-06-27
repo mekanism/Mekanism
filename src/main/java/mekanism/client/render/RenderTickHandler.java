@@ -81,7 +81,7 @@ public class RenderTickHandler
 				{
 					ItemStack stack = player.getEquipmentInSlot(3);
 	
-					ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+					ScaledResolution scaledresolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 	
 					int x = scaledresolution.getScaledWidth();
 					int y = scaledresolution.getScaledHeight();
