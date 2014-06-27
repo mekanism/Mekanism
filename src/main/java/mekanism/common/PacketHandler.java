@@ -78,8 +78,6 @@ public class PacketHandler
 {
 	public SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("MEK");
 	
-	private int packetsRegistered = 0;
-	
 	public void initialize()
 	{
 		netHandler.registerMessage(PacketRobit.class, RobitMessage.class, 0, Side.SERVER);
