@@ -51,7 +51,8 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	{
 		if(gasType == GasRegistry.getGas("sulfuricAcid"))
 		{
-			List<ItemStack> fuels = OreDictionary.getOres("dustSulfur");
+			List<ItemStack> fuels = new ArrayList<ItemStack>();
+			fuels.addAll(OreDictionary.getOres("dustSulfur"));
 			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("sulfuricAcid")));
 			return fuels;
 		}
@@ -61,7 +62,8 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 		}
 		else if(gasType == GasRegistry.getGas("hydrogenChloride"))
 		{
-			List<ItemStack> fuels = OreDictionary.getOres("dustSalt");
+			List<ItemStack> fuels = new ArrayList<ItemStack>();
+			fuels.addAll(OreDictionary.getOres("dustSalt"));
 			fuels.add(MekanismUtils.getFullGasTank(GasRegistry.getGas("hydrogenChloride")));
 			return fuels;
 		}

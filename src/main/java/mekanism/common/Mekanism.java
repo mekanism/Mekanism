@@ -1091,7 +1091,9 @@ public class Mekanism
 		OreDictionary.registerOre("ingotIron", new ItemStack(Items.iron_ingot));
 		OreDictionary.registerOre("ingotGold", new ItemStack(Items.gold_ingot));
 		OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.redstone_ore));
-		OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.lit_redstone_ore));
+
+		// This triggers a NullPointerException.  OreDictionary.registerOre calls ItemStack.getItemDamage() which triggers the NPE in minecraft code. (Forge 10.12.2.1121) 
+		//OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.lit_redstone_ore));
 		
 		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
 		{
