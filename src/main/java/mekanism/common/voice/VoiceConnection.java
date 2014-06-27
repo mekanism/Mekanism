@@ -198,6 +198,6 @@ public class VoiceConnection extends Thread
 
 	public EntityPlayerMP getPlayer()
 	{
-		return server.getConfigurationManager().func_152612_a(username); //getPlayerForUsername TODO
+		return server.getConfigurationManager().getPlayerForUsername(username);
 	}
 }
