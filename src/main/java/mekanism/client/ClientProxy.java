@@ -144,6 +144,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -555,5 +556,10 @@ public class ClientProxy extends CommonProxy
 		{
 			MekanismClient.voiceClient.start();
 		}
+	}
+	
+	@Override
+	public EntityPlayer getPlayer(MessageContext context) {
+		return Minecraft.getMinecraft().thePlayer;
 	}
 }

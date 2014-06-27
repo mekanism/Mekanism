@@ -84,6 +84,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
@@ -458,5 +459,9 @@ public class CommonProxy
 		}
 
 		Mekanism.logger.info("Received config from server.");
+	}
+	
+	public EntityPlayer getPlayer(MessageContext context) {
+		return context.getServerHandler().playerEntity;
 	}
 }
