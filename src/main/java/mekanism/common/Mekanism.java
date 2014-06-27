@@ -133,6 +133,8 @@ import org.apache.logging.log4j.Logger;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
+
+import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.Mod;
@@ -154,7 +156,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0")
+@Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
@@ -892,7 +894,6 @@ public class Mekanism
 	public void addItems()
 	{	
 		//Declarations
-		configuration.load();
 		PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 		EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
 		EnrichedIron = new ItemMekanism().setUnlocalizedName("EnrichedIron");
@@ -936,8 +937,6 @@ public class Mekanism
 		BioFuel = new ItemMekanism().setUnlocalizedName("BioFuel");
 		GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
 
-		configuration.save();
-		
 		//Fluid Container stuff
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		
@@ -1440,6 +1439,16 @@ public class Mekanism
 					}
 				}
 			}
+		}
+	}
+
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
+	{
+		if(event.modID.equals("Mekanism") || event.modID.equals("MekanismGenerators") || event.modID.equals("MekanismTools"))
+		{
+			proxy.loadConfiguration();
+			proxy.onConfigSync();
 		}
 	}
 }

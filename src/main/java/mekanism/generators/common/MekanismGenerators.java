@@ -35,7 +35,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "7.0.0", dependencies = "required-after:Mekanism")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "7.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
