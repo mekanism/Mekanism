@@ -31,6 +31,13 @@ item.Salt.name=Sal
 item.BrineBucket.name=Balde de Salmoura
 item.FreeRunners.name=Corredores
 item.ArmoredJetpack.name=Jetpack Blindado
+item.FilterCard.name=Cartão de Filtro
+item.SeismicReader.name=Leitor Sísmico
+item.HDPEPellet.name=Pelota de HDPE
+item.HDPERod.name=Vara de HDPE
+item.HDPESheet.name=Folha de HDPE
+item.PlaStick.name=Plástico
+item.Substrate.name=Substrato
 
 //Gas Tank
 tile.GasTank.GasTank.name=Tanque de Gás
@@ -91,6 +98,20 @@ tile.MachineBlock2.PrecisionSawmill.name=Serraria de Precisão
 tile.MachineBlock2.ChemicalDissolutionChamber.name=Câmara de Dissolução Química
 tile.MachineBlock2.ChemicalWasher.name=Lavador Químico
 tile.MachineBlock2.ChemicalCrystallizer.name=Cristalizador Químico
+tile.MachineBlock2.SeismicVibrator.name=Vibrador Sísmico
+tile.MachineBlock2.PressurizedReactionChamber.name=Câmara de Reação Pressurizada
+tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PortableTank.name=Tanque Portátil
+tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+
+//Plastic
+tile.PlasticBlock.name=Bloco de Plástico
+tile.SlickPlasticBlock.name=Bloco de Plástico Liso
+tile.GlowPlasticBlock.name=Bloco de Plástico Fluorescente
+tile.ReinforcedPlasticBlock.name=Bloco de Plástico Reforçado
+tile.RoadPlasticBlock.name=Estrada de Plástico
+
+tile.PlasticFence.name=Barreira de Plástico
 
 //Infuse types
 infuse.carbon=Carbono
@@ -107,12 +128,18 @@ tile.OreBlock.TinOre.name=Minério de Estanho
 item.MultipartTransmitter.PressurizedTube.name=Tubo Pressurizado
 item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Básico
 item.MultipartTransmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
-item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal de Elite
-item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Definitivo
-item.MultipartTransmitter.MechanicalPipe.name=Tubo Mecânico
+item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal Elite
+item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Ultimate
+item.MultipartTransmitter.BasicMechanicalPipe.name=Tubo Mecânico Básico
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=Tubo Mecânico Avançado
+item.MultipartTransmitter.EliteMechanicalPipe.name=Tubo Mecânico Elite
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Tubo Mecânico Ultimate
 item.MultipartTransmitter.LogisticalTransporter.name=Transportador Logístico
 item.MultipartTransmitter.RestrictiveTransporter.name=Transportador Restritivo
 item.MultipartTransmitter.DiversionTransporter.name=Transportador Redirecionador
+
+//Glow Panel
+item.GlowPanel.name=Painel de Glowstone
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Cubo de Energia Básico
@@ -193,6 +220,7 @@ gas.sulfuricAcid=Ácido Sulfúrico
 gas.hydrogenChloride=Cloreto de Hidrogênio
 gas.liquidOsmium=Ósmio Líquido
 gas.liquidStone=Pedra Líquida
+gas.ethene=Etileno
 
 gas.iron=Lodo de Ferro
 gas.gold=Lodo de Ouro
@@ -212,6 +240,10 @@ gas.cleanSilver=Lodo Puro de Prata
 gas.cleanObsidian=Lodo Puro de Obsidiana
 gas.cleanLead=Lodo Puro de Chumbo
 
+//BC Fuel Gases
+gas.fuel=Combustível Vaporizado
+gas.oil=Óleo Vaporizado
+
 //Fluids
 fluid.hydrogen=Hidrogênio Líquido
 fluid.oxygen=Oxigênio Líquido
@@ -221,6 +253,7 @@ fluid.sulfurTrioxideGas=Trióxido de Enxofre Líquido
 fluid.sulfuricAcid=Ácido Sulfúrico Líquido
 fluid.hydrogenChloride=Cloreto de Hidrogênio Líquido
 fluid.brine=Salmoura
+fluid.ethene=Etileno Líquido
 
 //OreGas names
 oregas.iron=Minério de Ferro
@@ -231,6 +264,18 @@ oregas.tin=Minério de Estanho
 oregas.silver=Minério de Prata
 oregas.obsidian=Minério de Obsidiana
 oregas.lead=Minério de Chumbo
+
+//Update handler text
+update.consider=Considere atualizar para a versão
+update.newFeatures=Novas funcionalidades
+update.visit=Visite
+update.toDownload=para fazer o download
+update.devBuild=Usando a versão de desenvolvedor 
+update.outdated=Usando a versão desatualizada em um ou mais módulos
+
+//Key description text
+key.mode=Modo Interruptor
+key.voice=Voz
 
 //Gui text
 gui.removeSpeedUpgrade=Remover upgrade de velocidade
@@ -251,6 +296,7 @@ gui.status=Estatus
 gui.autoEject=Auto-ejetar
 gui.itemstack=PilhaDeItems
 gui.oredict=OreDict
+gui.material=Material
 gui.out=Saída
 gui.noFluid=Sem Fluidos
 gui.empty=Vazio
@@ -267,12 +313,20 @@ gui.on=Ligado
 gui.off=Desligado
 gui.filters=Filtros
 gui.idle=Inativo
+gui.data=Dados
+gui.newFilter=Novo Filtro
+gui.energy=Energia
+gui.gas=Gás
+gui.dumping=Despejar
+gui.modID=Mod ID
+gui.key=Chave
+gui.id=ID
+gui.finished=Terminou
 
 gui.chemicalInfuser.short=Infusor Quím.
 gui.chemicalDissolutionChamber.short=Câm. Dissolução Quím.
 
 gui.dictionary.noKey=Sem Entrada.
-gui.dictionary.key=Entrada
 
 gui.configuration=Configuração
 gui.configuration.strictInput=Entrada Restrita
@@ -289,15 +343,29 @@ gui.factory.purifying=Purificando
 gui.factory.injecting=Injetando
 gui.factory.autoSort=Classif. Auto
 
+gui.seismicReader.short=Leitor S.
+gui.seismicReader.solids=Sólidos
+gui.seismicReader.fluids=Líquidos
+gui.seismicReader.reading=Lendo
+
+gui.filterSelect.title=Criar Novo Filtro
+
 gui.oredictFilter=Filtro OreDict
 gui.oredictFilter.noKey=Nenhuma entrada digitada
 gui.oredictFilter.sameKey=Mesma entrada
+
+gui.modIDFilter=Mod ID Filtro
+gui.modIDFilter.noID=Nenhuma ID inserido
+gui.modIDFilter.sameID=O mesmo ID
 
 gui.itemFilter=Filtro de Itens
 gui.itemFilter.noItem=Sem Itens
 gui.itemFilter.details=Detalhes da Pilha De Itens
 gui.itemFilter.min=Min
 gui.itemFilter.max=Máx
+
+gui.materialFilter=Filtrar Material
+gui.materialFilter.details=Utilizando material de
 
 gui.portableTeleporter=Teleportador Portátil
 
@@ -317,6 +385,9 @@ gui.robit.toggleFollow=Alternar modo 'seguir'
 gui.robit.rename=Renomear este Robit
 gui.robit.teleport=Teleportar para casa
 gui.robit.togglePickup=Alternar modo 'coletar itens'
+gui.robit.following=Seguindo
+gui.robit.dropPickup=Largar e Capturar
+gui.robit.owner=Proprietário
 
 gui.password.setPassword=Definir senha
 gui.password.enterPassword=Digitar senha
@@ -344,6 +415,9 @@ gui.digitalMiner.toMine=Para Minerar
 gui.digitalMiner.running=Rodando
 gui.digitalMiner.inverse=Modo Inverso
 
+//Recipe names
+recipe.mekanismShaped=Em Formato de
+
 //Item and block tooltip text
 tooltip.configurator.modify=Modificar
 tooltip.configurator.empty=Vazio
@@ -357,12 +431,72 @@ tooltip.configurator.unauth=Este baú está trancado
 tooltip.configurator.noLink=Sem ligação
 tooltip.configurator.linkMsg=Ligado a
 tooltip.configurator.dim=dimensão
+tooltip.configurator.setLink=Defina ligação ao bloco de
+tooltip.configurator.plenisherReset=Redefinição de Cálculo de Fluído
+
+tooltip.upgrade.speed=Velocidade
+tooltip.upgrade.energy=Energia
+
+tooltip.inventory=Inventário
+tooltip.storedEnergy=Energia Armazenada
+tooltip.auth=Autenticado
+tooltip.locked=Trancado
+tooltip.recipeType=Tipo de Receita
+tooltip.hold=Segurar
+tooltip.forDesc=para uma descrição
+tooltip.forDetails=para mais detalhes
+tooltip.fireMode=Modo Fogo
+tooltip.capacity=Capacidade
+tooltip.pumpRate=Taxa de Bobeio
+tooltip.items=Itens
+tooltip.blocks=Blocos
+tooltip.universal=universal
+tooltip.fluids=Fluídos
+tooltip.gasses=Gases
+tooltip.capableTrans=Capaz de transferir
+tooltip.restrictiveDesc=Só é usado se não houver outros caminhos disponíveis
+tooltip.diversionDesc=Controlável por redstone
+tooltip.noGas=Sem gás armazenado
+tooltip.stored=Armazenado
+tooltip.channel=Canal
+tooltip.mode=Modo
+tooltip.efficiency=Eficiência
+tooltip.modeToggle=Modo alternado para
+tooltip.flowing=Corrente
+tooltip.yes=sim
+tooltip.no=não
+tooltip.name=Nome
+tooltip.blockData=Bloco de dados
+tooltip.block=Bloco
+tooltip.meta=Metadados
+tooltip.tile=Telha
+tooltip.keysFound=Chave(s) encontradas
+tooltip.noKey=Sem chave
+tooltip.hp=HP
+tooltip.configureState=Configurar Estado
+
+tooltip.portableTank.bucketMode=Modo Balde
+
+tooltip.disassembler.normal=normal
+tooltip.disassembler.slow=lento
+tooltip.disassembler.fast=rápido
+tooltip.disassembler.vein=vein
+tooltip.disassembler.off=desligado
+
+tooltip.filterCard.got=Filtrar dados recuperados de %s
+tooltip.filterCard.set=Filtrar dados injetados do tipo%s
+tooltip.filterCard.unequal=Formatos de dados do filtro desiguais
+tooltip.filterCard.logisticalSorter=Classificador Logístico
+tooltip.filterCard.digitalMiner=Minerador Digital
 
 tooltip.balloon=Balão
 
 tooltip.jetpack.regular=Normal
 tooltip.jetpack.hover=Pairar
 tooltip.jetpack.disabled=Desativado
+
+tooltip.seismicReader.needsEnergy=Energia não é suficiente para interpretar a vibração
+tooltip.seismicReader.noVibrations=Incapaz de descobrir quaisquer vibrações
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.
@@ -387,9 +521,20 @@ tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based i
 tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
+tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
+tooltip.PressurizedReactionChamber=An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.
+tooltip.PortableTank=A handy, portable tank that lets you carry 14 !nbuckets of fluid wherever you !nplease. Also doubles as a bucket!
+tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
+
+tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
+tooltip.SolarGenerator=A generator that uses the power of the !nsun to produce energy.
+tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
+tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
+tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
+tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
-tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. It's ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
+tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
 
 //Redstone control
@@ -414,9 +559,31 @@ color.indigo=Índigo
 color.brightGreen=Verde Claro
 color.aqua=Ciano
 color.red=Vermelho
-color.pink=Rosa
+color.pink=Magenta
 color.yellow=Amarelo
 color.white=Branco
+color.brown=Marrom
+color.brightPink=Rosa
+
+//Dyes
+dye.black=Preto
+dye.darkBlue=Azul Escuro
+dye.brown=Marrom
+dye.darkGreen=Verde Escuro
+dye.darkAqua=Ciano Escuro
+dye.darkRed=Vermelho Escuro
+dye.purple=Roxo
+dye.orange=Laranja
+dye.grey=Cinza
+dye.darkGrey=Cinza
+dye.indigo=Índigo
+dye.brightGreen=Verde Claro
+dye.aqua=Ciano
+dye.red=Vermelho
+dye.brightPink=Rosa
+dye.pink=Magenta
+dye.yellow=Amarelo
+dye.white=Branco
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
