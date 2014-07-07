@@ -48,13 +48,14 @@ public class GeneratorsCommonProxy
 	 */
 	public void loadConfiguration()
 	{
-		Mekanism.configuration.load();
 		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble(300D);
 		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble(350D);
 		MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
 		MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
 		MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 60D).getDouble(60D);
-		Mekanism.configuration.save();
+
+		if(Mekanism.configuration.hasChanged())
+			Mekanism.configuration.save();
 	}
 
 	/**

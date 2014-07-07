@@ -1,7 +1,6 @@
 package mekanism.tools.common;
 
 import mekanism.common.Mekanism;
-import net.minecraftforge.common.config.Configuration;
 
 public class ToolsCommonProxy 
 {
@@ -10,8 +9,9 @@ public class ToolsCommonProxy
 	 */
 	public void loadConfiguration()
 	{
-		Mekanism.configuration.load();
-		MekanismTools.armourSpawnRate = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "mob-armor-spawn-rate", 0.03).getDouble(0.03);
-		Mekanism.configuration.save();
+		MekanismTools.armorSpawnRate = Mekanism.configuration.get("tools.general", "MobArmorSpawnRate", 0.03, null, 0.00, 1.00).getDouble(0.03);
+
+		if(Mekanism.configuration.hasChanged())
+			Mekanism.configuration.save();
 	}
 }

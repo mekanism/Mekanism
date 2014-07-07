@@ -53,7 +53,6 @@ public final class MekanismHooks
 		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI|energy")) RedstoneFluxLoaded = true;
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
-		if(Loader.isModLoaded("BasicComponents")) BasicComponentsLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 
@@ -68,23 +67,6 @@ public final class MekanismHooks
 		{
 			hookIC2Recipes();
 			Mekanism.logger.info("Hooked into IC2 successfully.");
-		}
-
-		if(BasicComponentsLoaded)
-		{
-			if(Mekanism.disableBCSteelCrafting)
-			{
-				MekanismUtils.removeRecipes(getBasicComponentsItem("itemSteelDust"));
-				MekanismUtils.removeRecipes(getBasicComponentsItem("itemSteelIngot"));
-			}
-
-			if(Mekanism.disableBCBronzeCrafting)
-			{
-				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeDust"));
-				MekanismUtils.removeRecipes(getBasicComponentsItem("itemBronzeIngot"));
-			}
-
-			Mekanism.logger.info("Hooked into BasicComponents successfully.");
 		}
 
 		if(BuildCraftPowerLoaded)
@@ -194,30 +176,6 @@ public final class MekanismHooks
 			}
 		} catch(Exception e) {
 			Mekanism.logger.error("Unable to retrieve BuildCraft item " + name + ".");
-			return null;
-		}
-	}
-
-	public ItemStack getBasicComponentsItem(String name)
-	{
-		try {
-			if(BasicComponents == null) BasicComponents = Class.forName("basiccomponents.common.BasicComponents");
-			if(BasicComponents == null) BasicComponents = Class.forName("net.minecraft.src.basiccomponents.common.BasicComponents");
-			Object ret = BasicComponents.getField(name).get(null);
-
-			if(ret instanceof Item)
-			{
-				return new ItemStack((Item)ret);
-			}
-			else if(ret instanceof Block)
-			{
-				return new ItemStack((Block)ret);
-			}
-			else {
-				throw new Exception("not instanceof ItemStack");
-			}
-		} catch(Exception e) {
-			Mekanism.logger.error("Unable to retrieve Basic Components item " + name + ".");
 			return null;
 		}
 	}

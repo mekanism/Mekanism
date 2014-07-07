@@ -287,14 +287,11 @@ public class Mekanism
 	public static boolean osmiumGenerationEnabled = true;
 	public static boolean copperGenerationEnabled = true;
 	public static boolean tinGenerationEnabled = true;
-	public static boolean disableBCBronzeCrafting = true;
-	public static boolean disableBCSteelCrafting = true;
 	public static boolean updateNotifications = true;
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
 	public static boolean dynamicTankEasterEgg = false;
 	public static boolean voiceServerEnabled = true;
-	public static boolean forceBuildcraft = false;
 	public static boolean cardboardSpawners = true;
 	public static boolean machineEffects = true;
 	public static int obsidianTNTBlastRadius = 12;
@@ -1310,6 +1307,7 @@ public class Mekanism
 		new ThreadGetData();
 		
 		//Register to receive subscribed events
+		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 
 		//Set up VoiceServerManager
@@ -1454,7 +1452,7 @@ public class Mekanism
 	@SubscribeEvent
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
 	{
-		if(event.modID.equals("Mekanism") || event.modID.equals("MekanismGenerators") || event.modID.equals("MekanismTools"))
+		if(event.modID.equals("Mekanism"))
 		{
 			proxy.loadConfiguration();
 			proxy.onConfigSync();

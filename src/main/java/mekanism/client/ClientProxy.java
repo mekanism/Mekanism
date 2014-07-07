@@ -164,13 +164,14 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		Mekanism.configuration.load();
 		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
 		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
 		MekanismClient.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
-		Mekanism.configuration.save();
+
+		if(Mekanism.configuration.hasChanged())
+			Mekanism.configuration.save();
 	}
 
 	@Override

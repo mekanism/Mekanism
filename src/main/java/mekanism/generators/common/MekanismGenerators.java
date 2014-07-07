@@ -25,6 +25,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import buildcraft.api.fuels.IronEngineFuel;
 
+import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -32,6 +34,7 @@ import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -87,7 +90,8 @@ public class MekanismGenerators implements IModule
 		
 		//Set up the GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
-		
+		FMLCommonHandler.instance().bus().register(this);
+
 		//Load the proxy
 		proxy.loadConfiguration();
 		proxy.registerSpecialTileEntities();
@@ -141,10 +145,8 @@ public class MekanismGenerators implements IModule
 	public void addItems()
 	{
 		//Declarations
-		Mekanism.configuration.load();
 		SolarPanel = new ItemMekanism().setUnlocalizedName("SolarPanel");
-		Mekanism.configuration.save();
-		
+
 		//Registrations
 		GameRegistry.registerItem(SolarPanel, "SolarPanel");
 	}
@@ -179,5 +181,14 @@ public class MekanismGenerators implements IModule
 		heatGeneration = dataStream.readDouble();
 		solarGeneration = dataStream.readDouble();
 		windGeneration = dataStream.readDouble();
+	}
+
+	@SubscribeEvent
+	public void onConfigChanged(OnConfigChangedEvent event)
+	{
+		if(event.modID.equals("MekanismGenerators"))
+		{
+			proxy.loadConfiguration();
+		}
 	}
 }

@@ -28,9 +28,28 @@ public class GuiToolsConfig extends GuiConfig
 	private static List<IConfigElement> getConfigElements()
 	{
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
-		list.add(new DummyCategoryElement("Armor Balance", "mekanism.configgui.ctgy.armor", ArmorEntry.class));
-		list.add(new DummyCategoryElement("Tools Balance", "mekanism.configgui.ctgy.tools", ToolsEntry.class));
+		list.add(new DummyCategoryElement("General", "mekanism.configgui.ctgy.tools.general", GeneralEntry.class));
+		list.add(new DummyCategoryElement("Armor Balance", "mekanism.configgui.ctgy.tools.armor", ArmorEntry.class));
+		list.add(new DummyCategoryElement("Tools Balance", "mekanism.configgui.ctgy.tools.tools", ToolsEntry.class));
 		return list;
+	}
+
+	public static class GeneralEntry extends CategoryEntry
+	{
+		public GeneralEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+		{
+			super(owningScreen, owningEntryList, prop);
+		}
+
+		@Override
+		protected GuiScreen buildChildScreen()
+		{
+			return new GuiConfig(this.owningScreen,
+					new ConfigElement(Mekanism.configuration.getCategory("tools.general")).getChildElements(),
+					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
+					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+		}
 	}
 
 	public static class ArmorEntry extends CategoryEntry
@@ -44,7 +63,7 @@ public class GuiToolsConfig extends GuiConfig
 		protected GuiScreen buildChildScreen()
 		{
 			return new GuiConfig(this.owningScreen,
-					new ConfigElement(Mekanism.configuration.getCategory("armor-balance")).getChildElements(),
+					new ConfigElement(Mekanism.configuration.getCategory("tools.armor-balance")).getChildElements(),
 					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
 					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
@@ -62,7 +81,7 @@ public class GuiToolsConfig extends GuiConfig
 		protected GuiScreen buildChildScreen()
 		{
 			return new GuiConfig(this.owningScreen,
-					new ConfigElement(Mekanism.configuration.getCategory("tool-balance")).getChildElements(),
+					new ConfigElement(Mekanism.configuration.getCategory("tools.tool-balance")).getChildElements(),
 					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
 					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
