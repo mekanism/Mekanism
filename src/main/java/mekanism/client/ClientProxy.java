@@ -560,6 +560,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public EntityPlayer getPlayer(MessageContext context)
 	{
-		return Minecraft.getMinecraft().thePlayer;
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			return context.getServerHandler().playerEntity;
+		}
+		else
+		{
+			return Minecraft.getMinecraft().thePlayer;
+		}
 	}
 }
