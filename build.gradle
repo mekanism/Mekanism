@@ -46,7 +46,7 @@ dependencies {
     compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
 }
 
-version = "${config.mod_version}.${System.env.BUILD_NUMBER}"
+version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
@@ -73,7 +73,6 @@ processResources
 }
 
 task coreJar(type: Jar) {
-    dependsOn 'reobf'
     baseName = 'Mekanism'
 
     manifest {
@@ -81,29 +80,45 @@ task coreJar(type: Jar) {
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 
-    from 'etc/core'
+    from('etc/core') {
+        include '*.info'
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+    }
+
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         exclude 'mekanism/tools/**', 'mekanism/generators/**'
     }
 }
 
 task toolsJar(type: Jar) {
-    dependsOn 'reobf'
     baseName = 'MekanismTools'
-    from 'etc/tools'
+
+    from('etc/tools') {
+        include '*.info'
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+    }
+
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/tools/**'
     }
 }
 
 task generatorsJar(type: Jar) {
-    dependsOn 'reobf'
     baseName = 'MekanismGenerators'
-    from 'etc/generators'
+
+    from('etc/generators') {
+        include '*.info'
+        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+    }
+
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/generators/**'
     }
 }
+
+coreJar.dependsOn('reobf')
+toolsJar.dependsOn('reobf')
+generatorsJar.dependsOn('reobf')
 
 task MDKZip(type: Zip) {
     baseName = 'MDK'
@@ -122,6 +137,6 @@ task releaseJars(type: Copy) {
 }
 
 task fullBuild(type: Delete) {
-    dependsOn 'releaseJars'
     delete reobf
 }
+fullBuild.dependsOn('releaseJars')

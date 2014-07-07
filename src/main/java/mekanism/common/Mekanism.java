@@ -157,8 +157,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
  *
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-		dependencies = "required-after:Forge@[10.12.2.1147,); after:BuildCraft;after:IC2;after:CoFHCore;after:ComputerCraft;after:Galacticraft;" +
-				"after:MineFactoryReloaded;after:MetallurgyCore;after:Railcraft;after:Forestry")
+		dependencies = "after:BuildCraftAPI;after:IC2API;after:CoFHAPI|energy;after:ComputerCraft;after:Galacticraft API;" +
+				"after:MineFactoryReloaded;after:MetallurgyCore")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
@@ -595,9 +595,6 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock2, 1, 12), new Object[] {
 			"TTT", "CPC", "TTT", Character.valueOf('P'), new ItemStack(MachineBlock, 1, 12), Character.valueOf('T'), "ingotTin", Character.valueOf('C'), "circuitBasic"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Blocks.rail, 24), new Object[] {
-			"O O", "OSO", "O O", Character.valueOf('O'), "ingotOsmium", Character.valueOf('S'), "stickWood"
 		}));
 
 		for(RecipeType type : RecipeType.values())
