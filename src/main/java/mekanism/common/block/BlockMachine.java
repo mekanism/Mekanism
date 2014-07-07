@@ -85,7 +85,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import buildcraft.api.tools.IToolWrench;
-
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -745,7 +744,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			{
 				if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
 				{
-					manageInventory(entityplayer, (TileEntityPortableTank)tileEntity);
+					if(manageInventory(entityplayer, (TileEntityPortableTank)tileEntity))
+					{
+						entityplayer.inventory.markDirty();
+						return true;
+					}
 				}
 				else {
 					entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
@@ -869,29 +872,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 						if(itemStack.stackSize > 1)
 						{
-							for(int i = 0; i < player.inventory.mainInventory.length; i++)
+							if(player.inventory.addItemStackToInventory(filled))
 							{
-								if(player.inventory.mainInventory[i] == null)
-								{
-									player.inventory.mainInventory[i] = filled;
-									itemStack.stackSize--;
+								itemStack.stackSize--;
 
-									tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-
-									return true;
-								}
-								else if(player.inventory.mainInventory[i].isItemEqual(filled))
-								{
-									if(filled.getMaxStackSize() > player.inventory.mainInventory[i].stackSize)
-									{
-										player.inventory.mainInventory[i].stackSize++;
-										itemStack.stackSize--;
-
-										tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
-
-										return true;
-									}
-								}
+								tileEntity.fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
 							}
 						}
 						else if(itemStack.stackSize == 1)
@@ -908,34 +893,63 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			else if(FluidContainerRegistry.isFilledContainer(itemStack))
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-				int max = tileEntity.fluidTank.getCapacity();
-
-				if(tileEntity.fluidTank.getFluid() == null || (tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid) && (tileEntity.fluidTank.getFluid().amount+itemFluid.amount <= max)))
+				int needed = tileEntity.getCurrentNeeded();
+				
+				if((tileEntity.fluidTank.getFluid() == null && itemFluid.amount <= tileEntity.fluidTank.getCapacity()) || itemFluid.amount <= needed)
 				{
-					if(FluidContainerRegistry.isBucket(itemStack))
+					if(tileEntity.fluidTank.getFluid() != null && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid))
 					{
-						tileEntity.fluidTank.fill(itemFluid, true);
-
-						if(!player.capabilities.isCreativeMode)
-						{
-							player.setCurrentItemOrArmor(0, new ItemStack(Items.bucket));
-						}
-
-						return true;
+						return false;
+					}
+					
+					boolean filled = false;
+					
+					if(player.capabilities.isCreativeMode)
+					{
+						filled = true;
 					}
 					else {
-						if(!player.capabilities.isCreativeMode)
+						ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
+	
+						if(containerItem != null)
 						{
+							if(itemStack.stackSize == 1)
+							{
+								player.setCurrentItemOrArmor(0, containerItem);
+								filled = true;
+							}
+							else {
+								if(player.inventory.addItemStackToInventory(containerItem))
+								{
+									itemStack.stackSize--;
+	
+									filled = true;
+								}
+							}
+						}
+						else {
 							itemStack.stackSize--;
+	
+							if(itemStack.stackSize == 0)
+							{
+								player.setCurrentItemOrArmor(0, null);
+							}
+	
+							filled = true;
 						}
+					}
 
-						if(itemStack.stackSize == 0)
-						{
-							player.setCurrentItemOrArmor(0, null);
-						}
+					if(filled)
+					{
+						int toFill = Math.min(tileEntity.fluidTank.getCapacity()-tileEntity.fluidTank.getFluidAmount(), itemFluid.amount);
 						
 						tileEntity.fluidTank.fill(itemFluid, true);
-
+						
+						if(itemFluid.amount-toFill > 0)
+						{
+							tileEntity.pushUp(new FluidStack(itemFluid.getFluid(), itemFluid.amount-toFill), true);
+						}
+						
 						return true;
 					}
 				}

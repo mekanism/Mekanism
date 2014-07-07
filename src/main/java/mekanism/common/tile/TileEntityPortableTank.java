@@ -181,8 +181,9 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+				int needed = getCurrentNeeded();
 
-				if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || fluidTank.getFluid().amount+itemFluid.amount <= fluidTank.getCapacity())
+				if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || itemFluid.amount <= needed)
 				{
 					if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
 					{
@@ -223,24 +224,31 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 
 					if(filled)
 					{
+						int toFill = Math.min(needed, itemFluid.amount);
+						
 						fluidTank.fill(itemFluid, true);
+						
+						if(itemFluid.amount-toFill > 0)
+						{
+							pushUp(new FluidStack(itemFluid.getFluid(), itemFluid.amount-toFill), true);
+						}
 					}
 				}
 			}
 		}
 	}
 	
-	private int pushUp(FluidStack fluid)
+	public int pushUp(FluidStack fluid, boolean doFill)
 	{
 		Coord4D up = Coord4D.get(this).getFromSide(ForgeDirection.UP);
 		
-		if(up.getTileEntity(worldObj) instanceof IFluidHandler)
+		if(up.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
 			IFluidHandler handler = (IFluidHandler)up.getTileEntity(worldObj);
 			
 			if(handler.canFill(ForgeDirection.DOWN, fluid.getFluid()))
 			{
-				return handler.fill(ForgeDirection.DOWN, fluid, true);
+				return handler.fill(ForgeDirection.DOWN, fluid, doFill);
 			}
 		}
 		
@@ -347,6 +355,20 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		}
 	}
 	
+	public int getCurrentNeeded()
+	{
+		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
+		
+		Coord4D top = Coord4D.get(this).getFromSide(ForgeDirection.UP);
+		
+		if(top.getTileEntity(worldObj) instanceof TileEntityPortableTank)
+		{
+			needed += ((TileEntityPortableTank)top.getTileEntity(worldObj)).getCurrentNeeded();
+		}
+		
+		return needed;
+	}
+	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
@@ -428,7 +450,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			
 			if(filled < resource.amount && !isActive)
 			{
-				filled += pushUp(new FluidStack(resource.getFluid(), resource.amount-filled));
+				filled += pushUp(new FluidStack(resource.getFluid(), resource.amount-filled), doFill);
 			}
 			
 			if(filled > 0 && from == ForgeDirection.UP)
@@ -472,7 +494,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj);
 			
-			if(!(tile instanceof TileEntityPortableTank))
+			if(isActive && !(tile instanceof TileEntityPortableTank))
 			{
 				return false;
 			}

@@ -133,7 +133,6 @@ import org.apache.logging.log4j.Logger;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
-
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
@@ -774,6 +773,11 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.stonebrick, 1, 3), new ItemStack(Blocks.stonebrick, 1, 0));
         RecipeHandler.addCrusherRecipe(new ItemStack(Items.flint, 4), new ItemStack(Items.gunpowder));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.sandstone), new ItemStack(Blocks.sand, 2));
+        
+        for(int i = 0; i < 16; i++)
+        {
+        	RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.wool, 1, i), new ItemStack(Items.string, 4));
+        }
         
 		//BioFuel Crusher Recipes
 		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.tallgrass), new ItemStack(BioFuel, 4));

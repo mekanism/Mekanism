@@ -470,39 +470,18 @@ public class BlockBasic extends Block
 
 						if(itemStack.stackSize > 1)
 						{
-							for(int i = 0; i < player.inventory.mainInventory.length; i++)
+							if(player.inventory.addItemStackToInventory(filled))
 							{
-								if(player.inventory.mainInventory[i] == null)
+								itemStack.stackSize--;
+
+								tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
+
+								if(tileEntity.structure.fluidStored.amount == 0)
 								{
-									player.inventory.mainInventory[i] = filled;
-									itemStack.stackSize--;
-
-									tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-									if(tileEntity.structure.fluidStored.amount == 0)
-									{
-										tileEntity.structure.fluidStored = null;
-									}
-
-									return true;
+									tileEntity.structure.fluidStored = null;
 								}
-								else if(player.inventory.mainInventory[i].isItemEqual(filled))
-								{
-									if(filled.getMaxStackSize() > player.inventory.mainInventory[i].stackSize)
-									{
-										player.inventory.mainInventory[i].stackSize++;
-										itemStack.stackSize--;
 
-										tileEntity.structure.fluidStored.amount -= FluidContainerRegistry.getFluidForFilledItem(filled).amount;
-
-										if(tileEntity.structure.fluidStored.amount == 0)
-										{
-											tileEntity.structure.fluidStored = null;
-										}
-
-										return true;
-									}
-								}
+								return true;
 							}
 						}
 						else if(itemStack.stackSize == 1)
@@ -528,7 +507,44 @@ public class BlockBasic extends Block
 
 				if(tileEntity.structure.fluidStored == null || (tileEntity.structure.fluidStored.isFluidEqual(itemFluid) && (tileEntity.structure.fluidStored.amount+itemFluid.amount <= max)))
 				{
-					if(FluidContainerRegistry.isBucket(itemStack))
+					boolean filled = false;
+					
+					if(player.capabilities.isCreativeMode)
+					{
+						filled = true;
+					}
+					else {
+						ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
+	
+						if(containerItem != null)
+						{
+							if(itemStack.stackSize == 1)
+							{
+								player.setCurrentItemOrArmor(0, containerItem);
+								filled = true;
+							}
+							else {
+								if(player.inventory.addItemStackToInventory(containerItem))
+								{
+									itemStack.stackSize--;
+	
+									filled = true;
+								}
+							}
+						}
+						else {
+							itemStack.stackSize--;
+	
+							if(itemStack.stackSize == 0)
+							{
+								player.setCurrentItemOrArmor(0, null);
+							}
+	
+							filled = true;
+						}
+					}
+
+					if(filled)
 					{
 						if(tileEntity.structure.fluidStored == null)
 						{
@@ -537,33 +553,7 @@ public class BlockBasic extends Block
 						else {
 							tileEntity.structure.fluidStored.amount += itemFluid.amount;
 						}
-
-						if(!player.capabilities.isCreativeMode)
-						{
-							player.setCurrentItemOrArmor(0, new ItemStack(Items.bucket));
-						}
-
-						return true;
-					}
-					else {
-						if(!player.capabilities.isCreativeMode)
-						{
-							itemStack.stackSize--;
-						}
-
-						if(itemStack.stackSize == 0)
-						{
-							player.setCurrentItemOrArmor(0, null);
-						}
-
-						if(tileEntity.structure.fluidStored == null)
-						{
-							tileEntity.structure.fluidStored = itemFluid;
-						}
-						else {
-							tileEntity.structure.fluidStored.amount += itemFluid.amount;
-						}
-
+						
 						return true;
 					}
 				}
