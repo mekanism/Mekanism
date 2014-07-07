@@ -42,11 +42,11 @@ configFile.withReader {
 
 dependencies {
     compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
-    compile "codechicken:ForgeMultipart:1.7.2-${config.FMP_version}:dev"
-    compile "codechicken:NotEnoughItems:1.7.2-${config.NEI_version}:dev"
+    compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
+    compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
 }
 
-version = "${config.mod_version}.${System.env.BUILD_NUMBER}"
+version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
