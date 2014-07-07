@@ -109,11 +109,11 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
-				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.OPPOSITES[side] == 0)
 				{
 					slots = sidedInventory.getAccessibleSlotsFromSide(1);
 				}
@@ -124,7 +124,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.OPPOSITES[side]))
 						{
 							continue;
 						}
@@ -186,8 +186,8 @@ public final class InventoryUtils
 			}
 		}
 		else {
-			ISidedInventory sidedInventory = (ISidedInventory) inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(side);
+			ISidedInventory sidedInventory = (ISidedInventory)inventory;
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
 
 			if(slots != null)
 			{
@@ -200,7 +200,7 @@ public final class InventoryUtils
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
 						toSend.stackSize = 1;
 
-						if(sidedInventory.canExtractItem(slotID, toSend, side))
+						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.OPPOSITES[side]))
 						{
 							return new InvStack(inventory, slotID, toSend);
 						}
@@ -246,7 +246,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
@@ -263,7 +263,7 @@ public final class InventoryUtils
 						{
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.OPPOSITES[side]))
 							{
 								ret.appendStack(slotID, copy);
 							}
@@ -271,7 +271,7 @@ public final class InventoryUtils
 						else {
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.OPPOSITES[side]))
 							{
 								copy.stackSize = max-current;
 								ret.appendStack(slotID, copy);
@@ -312,7 +312,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
@@ -324,7 +324,7 @@ public final class InventoryUtils
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 
-						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.OPPOSITES[side]))
 						{
 							return new InvStack(inventory, slotID, toSend);
 						}
@@ -399,11 +399,11 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
-				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.OPPOSITES[side] == 0)
 				{
 					slots = sidedInventory.getAccessibleSlotsFromSide(1);
 				}
@@ -414,7 +414,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.OPPOSITES[side]))
 						{
 							continue;
 						}
