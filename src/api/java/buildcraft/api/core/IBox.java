@@ -6,6 +6,20 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-@API(apiVersion = "1.1", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|power")
-package buildcraft.api.power;
-import cpw.mods.fml.common.API;
+package buildcraft.api.core;
+
+public interface IBox {
+
+	IBox expand(int amount);
+
+	IBox contract(int amount);
+
+	boolean contains(double x, double y, double z);
+
+	Position pMin();
+
+	Position pMax();
+
+	void createLaserData();
+
+}

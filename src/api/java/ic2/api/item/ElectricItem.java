@@ -1,13 +1,12 @@
 package ic2.api.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 
 /**
  * Allows for charging, discharging and using electric items (IElectricItem).
- *
- * The charge or remaining capacity of an item can be determined by calling charge/discharge with
- * ignoreTransferLimit and simulate set to true.
  */
 public final class ElectricItem {
 	/**
@@ -25,84 +24,36 @@ public final class ElectricItem {
 	public static IElectricItemManager rawManager;
 
 	/**
-	 * Charge an item with a specified amount of energy
-	 *
-	 * @param itemStack electric item's stack
-	 * @param amount amount of energy to charge in EU
-	 * @param tier tier of the charging device, has to be at least as high as the item to charge
-	 * @param ignoreTransferLimit ignore the transfer limit specified by getTransferLimit()
-	 * @param simulate don't actually change the item, just determine the return value
-	 * @return Energy transferred into the electric item
+	 * Register an electric item manager for items not implementing IElectricItem.
 	 * 
-	 * @deprecated use manager.charge() instead
+	 * This method is only designed for special purposes, implementing IElectricItem or
+	 * ISpecialElectricItem instead of using this is faster.
+	 * 
+	 * Managers used with ISpecialElectricItem shouldn't be registered.
+	 * 
+	 * @param manager Manager to register.
 	 */
-	@Deprecated
-	public static int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
-		return manager.charge(itemStack, amount, tier, ignoreTransferLimit, simulate);
+	public static void registerBackupManager(IBackupElectricItemManager manager) {
+		backupManagers.add(manager);
 	}
 
 	/**
-	 * Discharge an item by a specified amount of energy
-	 *
-	 * @param itemStack electric item's stack
-	 * @param amount amount of energy to charge in EU
-	 * @param tier tier of the discharging device, has to be at least as high as the item to discharge
-	 * @param ignoreTransferLimit ignore the transfer limit specified by getTransferLimit()
-	 * @param simulate don't actually discharge the item, just determine the return value
-	 * @return Energy retrieved from the electric item
+	 * Get the electric item manager suitable for the supplied item stack.
 	 * 
-	 * @deprecated use manager.discharge() instead
+	 * This method is for internal use only.
+	 * 
+	 * @param stack ItemStack to be handled.
+	 * @return First suitable electric item manager.
 	 */
-	@Deprecated
-	public static int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
-		return manager.discharge(itemStack, amount, tier, ignoreTransferLimit, simulate);
+	public static IBackupElectricItemManager getBackupManager(ItemStack stack) {
+		for (IBackupElectricItemManager manager : backupManagers) {
+			if (manager.handles(stack)) return manager;
+		}
+
+		return null;
 	}
 
-	/**
-	 * Determine if the specified electric item has at least a specific amount of EU.
-	 * This is supposed to be used in the item code during operation, for example if you want to implement your own electric item.
-	 * BatPacks are not taken into account.
-	 *
-	 * @param itemStack electric item's stack
-	 * @param amount minimum amount of energy required
-	 * @return true if there's enough energy
-	 * 
-	 * @deprecated use manager.canUse() instead
-	 */
-	@Deprecated
-	public static boolean canUse(ItemStack itemStack, int amount) {
-		return manager.canUse(itemStack, amount);
-	}
 
-	/**
-	 * Try to retrieve a specific amount of energy from an Item, and if applicable, a BatPack.
-	 * This is supposed to be used in the item code during operation, for example if you want to implement your own electric item.
-	 *
-	 * @param itemStack electric item's stack
-	 * @param amount amount of energy to discharge in EU
-	 * @param player player holding the item
-	 * @return true if the operation succeeded
-	 * 
-	 * @deprecated use manager.use() instead
-	 */
-	@Deprecated
-	public static boolean use(ItemStack itemStack, int amount, EntityPlayer player) {
-		return manager.use(itemStack, amount, player);
-	}
-
-	/**
-	 * Charge an item from the BatPack a player is wearing.
-	 * This is supposed to be used in the item code during operation, for example if you want to implement your own electric item.
-	 * use() already contains this functionality.
-	 *
-	 * @param itemStack electric item's stack
-	 * @param player player holding the item
-	 * 
-	 * @deprecated use manager.chargeFromArmor() instead
-	 */
-	@Deprecated
-	public static void chargeFromArmor(ItemStack itemStack, EntityPlayer player) {
-		manager.chargeFromArmor(itemStack, player);
-	}
+	private static final List<IBackupElectricItemManager> backupManagers = new ArrayList<IBackupElectricItemManager>();
 }
 

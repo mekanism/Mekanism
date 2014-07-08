@@ -55,8 +55,9 @@ public class SafeTimeTracker {
 	 * this function without a parameter
 	 */
 	public boolean markTimeIfDelay(World world, long delay) {
-		if (world == null)
+		if (world == null) {
 			return false;
+		}
 
 		long currentTime = world.getTotalWorldTime();
 

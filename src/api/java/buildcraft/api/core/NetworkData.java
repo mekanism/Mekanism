@@ -6,6 +6,14 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-@API(apiVersion = "1.1", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|power")
-package buildcraft.api.power;
-import cpw.mods.fml.common.API;
+package buildcraft.api.core;
+
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface NetworkData {
+
+}

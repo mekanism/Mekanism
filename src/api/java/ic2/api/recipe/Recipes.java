@@ -1,7 +1,5 @@
 package ic2.api.recipe;
 
-
-
 /**
  * General recipe registry.
  * 
@@ -55,5 +53,6 @@ public class Recipes {
 	public static ICraftingRecipeManager advRecipes;
 
 	public static ISemiFluidFuelManager semiFluidGenerator;
+	public static IFluidHeatManager FluidHeatGenerator;
 
 }
