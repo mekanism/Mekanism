@@ -564,8 +564,7 @@ public class ClientProxy extends CommonProxy
 		{
 			return context.getServerHandler().playerEntity;
 		}
-		else
-		{
+		else {
 			return Minecraft.getMinecraft().thePlayer;
 		}
 	}
