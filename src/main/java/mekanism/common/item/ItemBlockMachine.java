@@ -401,7 +401,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 	@Override
 	@Method(modid = "IC2API")
-	public int getMaxCharge(ItemStack itemStack)
+	public double getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
@@ -415,7 +415,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 	@Override
 	@Method(modid = "IC2API")
-	public int getTransferLimit(ItemStack itemStack)
+	public double getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
 	}
@@ -443,7 +443,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 						if(item.canProvideEnergy(inv.getStackInSlot(54)))
 						{
-							double gain = ElectricItem.manager.discharge(inv.getStackInSlot(54), (int)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_IC2), 3, false, false)*Mekanism.FROM_IC2;
+							double gain = ElectricItem.manager.discharge(inv.getStackInSlot(54), (int)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_IC2), 3, false, true, false)*Mekanism.FROM_IC2;
 							setEnergy(itemstack, getEnergy(itemstack) + gain);
 						}
 					}

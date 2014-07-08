@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 
 import java.util.Arrays;
@@ -210,9 +211,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 					else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 					{
-						double toSend = Math.min(currentSending, ((IEnergySink)acceptor).getMaxSafeInput()*Mekanism.FROM_IC2);
-						toSend = Math.min(toSend, ((IEnergySink)acceptor).demandedEnergyUnits()*Mekanism.FROM_IC2);
-						sent += (toSend - (((IEnergySink)acceptor).injectEnergyUnits(side.getOpposite(), toSend*Mekanism.TO_IC2)*Mekanism.FROM_IC2));
+						double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink) acceptor).getSinkTier())*Mekanism.FROM_IC2);
+						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*Mekanism.FROM_IC2);
+						sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*Mekanism.TO_IC2, 0)*Mekanism.FROM_IC2));
 					}
 					else if(MekanismUtils.useBuildCraft() && acceptor instanceof IPowerReceptor)
 					{
@@ -280,7 +281,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 				if(handler.acceptsEnergyFrom(null, side.getOpposite()))
 				{
-					if(Math.min((handler.demandedEnergyUnits()*Mekanism.FROM_IC2), (handler.getMaxSafeInput()*Mekanism.FROM_IC2)) > 0)
+					if(Math.min((handler.getDemandedEnergy()*Mekanism.FROM_IC2), (EnergyNet.instance.getPowerFromTier(handler.getSinkTier())*Mekanism.FROM_IC2)) > 0)
 					{
 						toReturn.add(acceptor);
 					}

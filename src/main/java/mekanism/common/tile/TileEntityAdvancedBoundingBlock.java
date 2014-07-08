@@ -359,38 +359,38 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "IC2API")
-	public double demandedEnergyUnits()
+	public double getDemandedEnergy()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
 
-		return getInv().demandedEnergyUnits();
+		return getInv().getDemandedEnergy();
 	}
 
 	@Override
 	@Method(modid = "IC2API")
-	public double injectEnergyUnits(ForgeDirection directionFrom, double amount)
+	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
 		if(getInv() == null)
 		{
 			return amount;
 		}
 
-		return getInv().injectEnergyUnits(directionFrom, amount);
+		return getInv().injectEnergy(directionFrom, amount, voltage);
 	}
 
 	@Override
 	@Method(modid = "IC2API")
-	public int getMaxSafeInput()
+	public int getSinkTier()
 	{
 		if(getInv() == null)
 		{
 			return 0;
 		}
 
-		return getInv().getMaxSafeInput();
+		return getInv().getSinkTier();
 	}
 
 	public IAdvancedBoundingBlock getInv()
