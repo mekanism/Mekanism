@@ -570,6 +570,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		String name = side.name().toLowerCase();
 		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
 		name += out ? "NORMAL" : "NONE";
+		
 		if(type.getSize() == Size.SMALL)
 		{
 			return small_models.get(name);
