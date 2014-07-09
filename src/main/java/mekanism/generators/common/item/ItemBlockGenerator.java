@@ -406,7 +406,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public boolean isMetadataSpecific()
+	public boolean isMetadataSpecific(ItemStack itemStack)
 	{
 		return true;
 	}

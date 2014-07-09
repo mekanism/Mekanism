@@ -247,7 +247,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 	}
 
 	@Override
-	public boolean isMetadataSpecific()
+	public boolean isMetadataSpecific(ItemStack itemStack)
 	{
 		return false;
 	}

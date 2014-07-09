@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.IFactory;
 import mekanism.common.IUpgradeManagement;
@@ -148,16 +150,55 @@ public class MekanismRecipe implements IRecipe
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null)
+				if(itemstack != null && itemstack.getItem() instanceof IEnergizedItem)
 				{
-					if(itemstack.getItem() instanceof IEnergizedItem)
-					{
-						energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
-					}
+					energyFound += ((IEnergizedItem)itemstack.getItem()).getEnergy(itemstack);
 				}
 			}
 
 			((IEnergizedItem)toReturn.getItem()).setEnergy(toReturn, Math.min(((IEnergizedItem)toReturn.getItem()).getMaxEnergy(toReturn), energyFound));
+		}
+		
+		if(toReturn.getItem() instanceof IGasItem)
+		{
+			GasStack gasFound = null;
+			
+			for(int i = 0; i < 9; i++)
+			{
+				ItemStack itemstack = inv.getStackInSlot(i);
+
+				if(itemstack != null && itemstack.getItem() instanceof IGasItem)
+				{
+					GasStack stored = ((IGasItem)itemstack.getItem()).getGas(itemstack);
+					
+					if(stored != null)
+					{
+						if(!((IGasItem)toReturn.getItem()).canReceiveGas(toReturn, stored.getGas()))
+						{
+							return null;
+						}
+						
+						if(gasFound == null)
+						{
+							gasFound = stored;
+						}
+						else {
+							if(gasFound.getGas() != stored.getGas())
+							{
+								return null;
+							}
+							
+							gasFound.amount += stored.amount;
+						}
+					}
+				}
+			}
+			
+			if(gasFound != null)
+			{
+				gasFound.amount = Math.min(((IGasItem)toReturn.getItem()).getMaxGas(toReturn), gasFound.amount);
+				((IGasItem)toReturn.getItem()).setGas(toReturn, gasFound);
+			}
 		}
 
 		if(toReturn.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)toReturn.getItem()).supportsUpgrades(toReturn))
@@ -290,7 +331,7 @@ public class MekanismRecipe implements IRecipe
 			return false;
 		}
 
-		if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem))
+		if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem) && !(target.getItem() instanceof IGasItem) && !(input.getItem() instanceof IGasItem))
 		{
 			if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
 			{
@@ -298,11 +339,25 @@ public class MekanismRecipe implements IRecipe
 			}
 		}
 		else {
-			if(((IEnergizedItem)target.getItem()).isMetadataSpecific() && ((IEnergizedItem)input.getItem()).isMetadataSpecific())
+			if(target.getItem() instanceof IEnergizedItem && input.getItem() instanceof IEnergizedItem)
 			{
-				if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+				if(((IEnergizedItem)target.getItem()).isMetadataSpecific(target) && ((IEnergizedItem)input.getItem()).isMetadataSpecific(input))
 				{
-					return false;
+					if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+					{
+						return false;
+					}
+				}
+			}
+			
+			if(target.getItem() instanceof IGasItem && input.getItem() instanceof IGasItem)
+			{
+				if(((IGasItem)target.getItem()).isMetadataSpecific(target) && ((IGasItem)input.getItem()).isMetadataSpecific(input))
+				{
+					if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+					{
+						return false;
+					}
 				}
 			}
 

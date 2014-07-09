@@ -184,6 +184,12 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 		return stored;
 	}
+	
+	@Override
+	public boolean isMetadataSpecific(ItemStack itemStack)
+	{
+		return false;
+	}
 
 	public JetpackMode getMode(ItemStack stack)
 	{

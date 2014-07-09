@@ -208,7 +208,7 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public boolean isMetadataSpecific()
+	public boolean isMetadataSpecific(ItemStack itemStack)
 	{
 		return false;
 	}

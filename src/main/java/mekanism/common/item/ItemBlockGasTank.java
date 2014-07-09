@@ -271,4 +271,10 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		return null;
 	}
+	
+	@Override
+	public boolean isMetadataSpecific(ItemStack itemStack)
+	{
+		return false;
+	}
 }

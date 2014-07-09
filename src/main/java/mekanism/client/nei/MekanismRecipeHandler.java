@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.gas.IGasItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -13,6 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.oredict.OreDictionary;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 
@@ -83,50 +85,64 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 		}
 	}
 
-	public static boolean areItemsEqual(ItemStack stack1, ItemStack stack2)
+	public static boolean areItemsEqual(ItemStack target, ItemStack input)
 	{
-		if(stack1 == null && stack2 != null || stack1 != null && stack2 == null)
+		if(target == null && input != null || target != null && input == null)
 		{
 			return false;
 		}
-		else if(stack1 == null && stack2 == null)
+		else if(target == null && input == null)
 		{
 			return true;
 		}
 
-		if(stack1.getItem() != stack2.getItem())
+		if(target.getItem() != input.getItem())
 		{
 			return false;
 		}
 
-		if(!(stack1.getItem() instanceof IEnergizedItem) && !(stack2.getItem() instanceof IEnergizedItem))
+		if(!(target.getItem() instanceof IEnergizedItem) && !(input.getItem() instanceof IEnergizedItem) && !(target.getItem() instanceof IGasItem) && !(input.getItem() instanceof IGasItem))
 		{
-			if(stack1.getItemDamage() != stack2.getItemDamage())
+			if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
 			{
 				return false;
 			}
 		}
 		else {
-			if(((IEnergizedItem)stack1.getItem()).isMetadataSpecific() && ((IEnergizedItem)stack2.getItem()).isMetadataSpecific())
+			if(target.getItem() instanceof IEnergizedItem && input.getItem() instanceof IEnergizedItem)
 			{
-				if(stack1.getItemDamage() != stack2.getItemDamage())
+				if(((IEnergizedItem)target.getItem()).isMetadataSpecific(target) && ((IEnergizedItem)input.getItem()).isMetadataSpecific(input))
 				{
-					return false;
+					if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+					{
+						return false;
+					}
+				}
+			}
+			
+			if(target.getItem() instanceof IGasItem && input.getItem() instanceof IGasItem)
+			{
+				if(((IGasItem)target.getItem()).isMetadataSpecific(target) && ((IGasItem)input.getItem()).isMetadataSpecific(input))
+				{
+					if(target.getItemDamage() != input.getItemDamage() && target.getItemDamage() != OreDictionary.WILDCARD_VALUE)
+					{
+						return false;
+					}
 				}
 			}
 
-			if(stack1.getItem() instanceof IEnergyCube && stack2.getItem() instanceof IEnergyCube)
+			if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
 			{
-				if(((IEnergyCube)stack1.getItem()).getEnergyCubeTier(stack1) != ((IEnergyCube)stack2.getItem()).getEnergyCubeTier(stack2))
+				if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
 				{
 					return false;
 				}
 			}
-			else if(stack1.getItem() instanceof IFactory && stack2.getItem() instanceof IFactory)
+			else if(target.getItem() instanceof IFactory && input.getItem() instanceof IFactory)
 			{
-				if(isFactory(stack1) && isFactory(stack2))
+				if(isFactory(target) && isFactory(input))
 				{
-					if(((IFactory)stack1.getItem()).getRecipeType(stack1) != ((IFactory)stack2.getItem()).getRecipeType(stack2))
+					if(((IFactory)target.getItem()).getRecipeType(target) != ((IFactory)input.getItem()).getRecipeType(input))
 					{
 						return false;
 					}

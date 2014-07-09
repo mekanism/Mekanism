@@ -1062,7 +1062,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	public boolean isMetadataSpecific()
+	public boolean isMetadataSpecific(ItemStack itemStack)
 	{
 		return true;
 	}

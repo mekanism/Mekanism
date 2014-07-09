@@ -218,6 +218,12 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
+	
+	@Override
+	public boolean isMetadataSpecific(ItemStack itemStack)
+	{
+		return false;
+	}
 
 	public ItemStack getEmptyItem()
 	{
