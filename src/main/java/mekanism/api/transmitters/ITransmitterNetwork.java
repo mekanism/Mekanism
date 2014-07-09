@@ -11,12 +11,6 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 
 	public int getAcceptorSize();
 
-	public String getNeeded();
-
-	public String getStored();
-
-	public String getFlow();
-
 	public Set<A> getAcceptors(Object... data);
 
 	public void removeTransmitter(IGridTransmitter<N> transmitter);
@@ -28,8 +22,6 @@ public interface ITransmitterNetwork<A, N extends DynamicNetwork<A, N>>
 	public void refresh(IGridTransmitter<N> transmitter);
 
 	public void split(IGridTransmitter<N> splitPoint);
-
-	public void merge(N network);
 
 	public void fixMessedUpNetwork(IGridTransmitter<N> transmitter);
 

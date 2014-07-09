@@ -346,19 +346,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		}
 	}
 
-	@Override
-	public synchronized void merge(GasNetwork network)
-	{
-		if(network != null && network != this)
-		{
-			Set<GasNetwork> networks = new HashSet();
-			networks.add(this);
-			networks.add(network);
-			GasNetwork newNetwork = create(networks);
-			newNetwork.fullRefresh();
-		}
-	}
-
 	public static class GasTransferEvent extends Event
 	{
 		public final GasNetwork gasNetwork;
@@ -471,19 +458,19 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 
 	@Override
-	public String getNeeded()
+	public String getNeededInfo()
 	{
 		return Integer.toString(getGasNeeded());
 	}
 
 	@Override
-	public String getStored()
+	public String getStoredInfo()
 	{
 		return gasStored != null ? gasStored.getGas().getLocalizedName() + " (" + gasStored.amount + ")" : "None";
 	}
 
 	@Override
-	public String getFlow()
+	public String getFlowInfo()
 	{
 		return Integer.toString(prevTransferAmount) + "/t";
 	}

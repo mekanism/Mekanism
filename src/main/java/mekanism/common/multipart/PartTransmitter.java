@@ -38,22 +38,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public void refreshTransmitterNetwork()
 	{
-		byte possibleTransmitters = getPossibleTransmitterConnections();
-		byte possibleAcceptors = getPossibleAcceptorConnections();
-
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			if(connectionMapContainsSide(possibleTransmitters, side))
-			{
-				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmissionType()))
-				{
-					((DynamicNetwork<?,N>)getTransmitterNetwork()).merge(((IGridTransmitter<N>)tileEntity).getTransmitterNetwork());
-				}
-			}
-		}
-
 		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh(this);
 		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh();
 	}

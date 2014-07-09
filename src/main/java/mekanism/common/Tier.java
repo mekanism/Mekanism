@@ -139,11 +139,11 @@ public final class Tier
 			{
 				case 4:
 					return BASIC;
-				case 9:
+				case 5:
 					return ADVANCED;
-				case 10:
+				case 6:
 					return ELITE;
-				case 11:
+				case 7:
 					return ULTIMATE;
 				default:
 					return BASIC;

@@ -357,19 +357,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		}
 	}
 
-	@Override
-	public synchronized void merge(EnergyNetwork network)
-	{
-		if(network != null && network != this)
-		{
-			Set<EnergyNetwork> networks = new HashSet<EnergyNetwork>();
-			networks.add(this);
-			networks.add(network);
-			EnergyNetwork newNetwork = create(networks);
-			newNetwork.fullRefresh();
-		}
-	}
-
 	public static class EnergyTransferEvent extends Event
 	{
 		public final EnergyNetwork energyNetwork;
@@ -473,20 +460,20 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public String getNeeded()
+	public String getNeededInfo()
 	{
 		return MekanismUtils.getEnergyDisplay(getEnergyNeeded());
 	}
 
 	@Override
-	public String getStored()
+	public String getStoredInfo()
 	{
 		return MekanismUtils.getEnergyDisplay(electricityStored);
 	}
 
 	@Override
-	public String getFlow()
+	public String getFlowInfo()
 	{
-		return MekanismUtils.getEnergyDisplay(20*joulesTransmitted) + " per second";
+		return MekanismUtils.getEnergyDisplay(joulesTransmitted) + "/t";
 	}
 }

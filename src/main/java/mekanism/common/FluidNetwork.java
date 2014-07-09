@@ -359,19 +359,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 	}
 
-	@Override
-	public synchronized void merge(FluidNetwork network)
-	{
-		if(network != null && network != this)
-		{
-			Set<FluidNetwork> networks = new HashSet<FluidNetwork>();
-			networks.add(this);
-			networks.add(network);
-			FluidNetwork newNetwork = create(networks);
-			newNetwork.fullRefresh();
-		}
-	}
-
 	public static class FluidTransferEvent extends Event
 	{
 		public final FluidNetwork fluidNetwork;
@@ -486,20 +473,20 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
-	public String getNeeded()
+	public String getNeededInfo()
 	{
-		return "Fluid needed: " + (float)getFluidNeeded()/1000F + " buckets";
+		return (float)getFluidNeeded()/1000F + " buckets";
 	}
 
 	@Override
-	public String getStored()
+	public String getStoredInfo()
 	{
-		return fluidStored == null ? "None" : fluidStored.getFluid().getLocalizedName() + ", " + fluidStored.amount + "mB";
+		return fluidStored != null ? fluidStored.getFluid().getLocalizedName(fluidStored) + " (" + fluidStored.amount + " mB)" : "None";
 	}
 
 	@Override
-	public String getFlow()
+	public String getFlowInfo()
 	{
-		return Integer.toString(prevTransferAmount) + "mB/t";
+		return Integer.toString(prevTransferAmount) + " mB/t";
 	}
 }

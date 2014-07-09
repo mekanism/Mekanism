@@ -30,7 +30,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 
-	public static TransmitterIcons pipeIcons = new TransmitterIcons(2, 1);
+	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 1);
 
 	public float currentScale;
 
@@ -198,14 +198,15 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
 	public static void registerIcons(IIconRegister register)
 	{
-		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipe", "MechanicalPipeActive"});
+		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced",
+				"MechanicalPipeElite", "MechanicalPipeUltimate"});
 		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeSide"});
 	}
 
 	@Override
 	public IIcon getCenterIcon()
 	{
-		return pipeIcons.getCenterIcon(0);
+		return pipeIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
@@ -221,7 +222,10 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	}
 
 	@Override
-	public TransmitterType getTransmitter() { return tier.type; }
+	public TransmitterType getTransmitter() 
+	{ 
+		return tier.type; 
+	}
 
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
@@ -312,13 +316,13 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public String getTransmitterNetworkNeeded()
 	{
-		return getTransmitterNetwork().getNeeded();
+		return getTransmitterNetwork().getNeededInfo();
 	}
 
 	@Override
 	public String getTransmitterNetworkFlow()
 	{
-		return getTransmitterNetwork().getFlow();
+		return getTransmitterNetwork().getFlowInfo();
 	}
 
 	@Override

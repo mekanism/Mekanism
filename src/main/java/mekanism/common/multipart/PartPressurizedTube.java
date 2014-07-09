@@ -232,13 +232,13 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	@Override
 	public String getTransmitterNetworkNeeded()
 	{
-		return getTransmitterNetwork().getNeeded();
+		return getTransmitterNetwork().getNeededInfo();
 	}
 
 	@Override
 	public String getTransmitterNetworkFlow()
 	{
-		return getTransmitterNetwork().getFlow();
+		return getTransmitterNetwork().getFlowInfo();
 	}
 
 	@Override
