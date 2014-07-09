@@ -99,7 +99,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			return 0;
 		}
 		
-		return transmitters.iterator().next().getLocation().dimensionId;
+		return transmitters.iterator().next().getTile().getWorldObj().provider.dimensionId;
 	}
 	
 	protected AxisAlignedBB genPacketRange()
@@ -110,7 +110,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			return null;
 		}
 		
-		Coord4D initCoord = transmitters.iterator().next().getLocation();
+		Coord4D initCoord = Coord4D.get(transmitters.iterator().next().getTile());
 		
 		int minX = initCoord.xCoord;
 		int minY = initCoord.yCoord;
@@ -121,7 +121,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		
 		for(IGridTransmitter transmitter : transmitters)
 		{
-			Coord4D coord = transmitter.getLocation();
+			Coord4D coord = Coord4D.get(transmitter.getTile());
 			
 			if(coord.xCoord < minX) minX = coord.xCoord;
 			if(coord.yCoord < minY) minY = coord.yCoord;

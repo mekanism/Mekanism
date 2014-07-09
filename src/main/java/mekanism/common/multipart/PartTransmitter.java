@@ -203,12 +203,6 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	}
 	
 	@Override
-	public Coord4D getLocation()
-	{
-		return Coord4D.get(tile());
-	}
-	
-	@Override
 	public TileEntity getTile()
 	{
 		return tile();

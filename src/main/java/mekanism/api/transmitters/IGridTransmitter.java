@@ -62,7 +62,5 @@ public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITrans
 
 	public int getCapacity();
 	
-	public Coord4D getLocation();
-	
 	public TileEntity getTile();
 }
