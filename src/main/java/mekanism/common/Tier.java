@@ -11,6 +11,29 @@ import net.minecraft.util.ResourceLocation;
  */
 public final class Tier
 {
+	/** The default tiers used in Mekanism.
+	 * @author aidancbrady
+	 */
+	public static enum BaseTier
+	{
+		BASIC("Basic"),
+		ADVANCED("Advanced"),
+		ELITE("Elite"),
+		ULTIMATE("Ultimate");
+		
+		public String getName()
+		{
+			return name;
+		}
+		
+		private String name;
+		
+		private BaseTier(String s)
+		{
+			name = s;
+		}
+	}
+	
 	/**
 	 * The tiers used by the Energy Cube and their corresponding values.
 	 * @author aidancbrady
@@ -40,6 +63,11 @@ public final class Tier
 
 			Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
 			return BASIC;
+		}
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
 		}
 
 		private EnergyCubeTier(String s, EnumColor c, double maxEnergy, double out)
@@ -79,6 +107,11 @@ public final class Tier
 			Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
 			return BASIC;
 		}
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
 
 		private FactoryTier(String s, int process, ResourceLocation gui)
 		{
@@ -99,6 +132,11 @@ public final class Tier
 		ADVANCED(2000, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
 		ELITE(8000, TransmitterType.UNIVERSAL_CABLE_ELITE),
 		ULTIMATE(32000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
 
 		public int cableCapacity;
 		public TransmitterType type;
@@ -121,6 +159,11 @@ public final class Tier
 		ADVANCED(4000, 400, TransmitterType.MECHANICAL_PIPE_ADVANCED),
 		ELITE(16000, 1600, TransmitterType.MECHANICAL_PIPE_ELITE),
 		ULTIMATE(64000, 6400, TransmitterType.MECHANICAL_PIPE_ULTIMATE);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
 
 		public int pipeCapacity;
 		public int pipePullAmount;

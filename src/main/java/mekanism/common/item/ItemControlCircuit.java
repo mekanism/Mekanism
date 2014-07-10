@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-import mekanism.common.Resource;
+import mekanism.common.Tier.BaseTier;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -24,9 +24,9 @@ public class ItemControlCircuit extends ItemMekanism
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
-		for(int i = 0; i < Resource.values().length; i++)
+		for(BaseTier tier : BaseTier.values())
 		{
-			icons[i] = register.registerIcon("mekanism:" + Resource.values()[i].getName() + "ControlCircuit");
+			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "ControlCircuit");
 		}
 	}
 
@@ -39,15 +39,15 @@ public class ItemControlCircuit extends ItemMekanism
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter < Resource.values().length; counter++)
+		for(BaseTier tier : BaseTier.values())
 		{
-			itemList.add(new ItemStack(item, 1, counter));
+			itemList.add(new ItemStack(item, 1, tier.ordinal()));
 		}
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase() + "ControlCircuit";
+		return "item." + BaseTier.values()[item.getItemDamage()].getName() + "ControlCircuit";
 	}
 }

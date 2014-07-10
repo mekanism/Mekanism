@@ -5,15 +5,19 @@
 //Items
 tile.ObsidianTNT.name=Obsidian TNT
 item.EnrichedAlloy.name=Enriched Alloy
+item.ReinforcedAlloy.name=Reinforced Alloy
+item.AtomicAlloy.name=Atomic Alloy
 item.EnergyTablet.name=Energy Tablet
 item.SpeedUpgrade.name=Speed Upgrade
 item.EnergyUpgrade.name=Energy Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
-item.AtomicCore.name=Atomic Core
 item.ElectricBow.name=Electric Bow
 item.EnrichedIron.name=Enriched Iron
 item.CompressedCarbon.name=Compressed Carbon
+item.CompressedRedstone.name=Compressed Redstone
+item.CompressedDiamond.name=Compressed Diamond
+item.CompressedObsidian.name=Compressed Obsidian
 item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
@@ -24,7 +28,6 @@ item.ScubaTank.name=Scuba Tank
 item.GasMask.name=Gas Mask
 item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
-item.CompressedRedstone.name=Compressed Redstone
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
 item.BrineBucket.name=Brine Bucket
@@ -127,6 +130,7 @@ infuse.tin=Tin
 infuse.diamond=Diamond
 infuse.redstone=Redstone
 infuse.fungi=Fungi
+infuse.obsidian=Obsidian
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -229,6 +233,8 @@ gas.hydrogenChloride=Hydrogen Chloride
 gas.liquidOsmium=Liquid Osmium
 gas.liquidStone=Liquid Stone
 gas.ethene=Ethylene
+gas.sodium=Sodium
+gas.brine=Gaseous Brine
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -262,6 +268,7 @@ fluid.sulfuricAcid=Liquid Sulfuric Acid
 fluid.hydrogenChloride=Liquid Hydrogen Chloride
 fluid.brine=Brine
 fluid.ethene=Liquid Ethylene
+fluid.sodium=Liquid Sodium
 
 //OreGas names
 oregas.iron=Iron Ore
