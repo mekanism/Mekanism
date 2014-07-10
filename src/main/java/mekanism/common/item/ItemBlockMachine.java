@@ -61,11 +61,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
-
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
@@ -109,7 +109,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
 		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
 })
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IFluidContainerItem
 {
 	public Block metaBlock;
 
@@ -1086,5 +1086,73 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;
+	}
+
+	@Override
+	public FluidStack getFluid(ItemStack container)
+	{
+		return getFluidStack(container);
+	}
+
+	@Override
+	public int getCapacity(ItemStack container) 
+	{
+		return TileEntityPortableTank.MAX_FLUID;
+	}
+
+	@Override
+	public int fill(ItemStack container, FluidStack resource, boolean doFill) 
+	{
+		if(MachineType.get(container) == MachineType.PORTABLE_TANK && resource != null)
+		{
+			FluidStack stored = getFluidStack(container);
+			int toFill = 0;
+			
+			if(stored != null && stored.getFluid() != resource.getFluid())
+			{
+				return 0;
+			}
+			
+			if(stored == null)
+			{
+				toFill = Math.min(resource.amount, TileEntityPortableTank.MAX_FLUID);
+			}
+			else {
+				toFill = Math.min(resource.amount, TileEntityPortableTank.MAX_FLUID-stored.amount);
+			}
+			
+			if(doFill)
+			{
+				setFluidStack(new FluidStack(resource.getFluid(), toFill));
+			}
+			
+			return toFill;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) 
+	{
+		if(MachineType.get(container) == MachineType.PORTABLE_TANK)
+		{
+			FluidStack stored = getFluidStack(container);
+			
+			if(stored != null)
+			{
+				FluidStack toDrain = new FluidStack(stored.getFluid(), Math.min(stored.amount, maxDrain));
+				
+				if(doDrain)
+				{
+					stored.amount -= toDrain.amount;
+					setFluidStack(stored.amount > 0 ? stored : null, container);
+				}
+				
+				return toDrain;
+			}
+		}
+		
+		return null;
 	}
 }
