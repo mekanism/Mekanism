@@ -10,21 +10,22 @@ package buildcraft.api.fuels;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class IronEngineFuel {
+public final class IronEngineFuel {
 
 	public static Map<String, Fuel> fuels = new HashMap<String, Fuel>();
+
+	private IronEngineFuel() {
+	}
 
 	public static Fuel getFuelForFluid(Fluid liquid) {
 		return liquid == null ? null : fuels.get(liquid.getName());
 	}
 
-	private IronEngineFuel() {
-	}
-
-	public static class Fuel {
+	public static final class Fuel {
 
 		public final Fluid liquid;
 		public final float powerPerCycle;

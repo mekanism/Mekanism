@@ -9,6 +9,7 @@
 package buildcraft.api.power;
 
 import net.minecraft.world.World;
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -27,9 +28,8 @@ public interface IPowerReceptor {
 	 * engines to eventually explode.
 	 *
 	 * @param side
-	 * @return
 	 */
-	public PowerHandler.PowerReceiver getPowerReceiver(ForgeDirection side);
+	PowerHandler.PowerReceiver getPowerReceiver(ForgeDirection side);
 
 	/**
 	 * Call back from the PowerHandler that is called when the stored power
@@ -39,7 +39,7 @@ public interface IPowerReceptor {
 	 *
 	 * @param workProvider
 	 */
-	public void doWork(PowerHandler workProvider);
+	void doWork(PowerHandler workProvider);
 
-	public World getWorld();
+	World getWorld();
 }

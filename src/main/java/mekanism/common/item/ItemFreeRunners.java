@@ -126,7 +126,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	@Override
 	@Method(modid = "IC2API")
-	public int getMaxCharge(ItemStack itemStack)
+	public double getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
@@ -140,7 +140,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	@Override
 	@Method(modid = "IC2API")
-	public int getTransferLimit(ItemStack itemStack)
+	public double getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
 	}

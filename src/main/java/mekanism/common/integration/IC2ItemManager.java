@@ -19,7 +19,7 @@ public class IC2ItemManager implements IElectricItemManager
 	}
 
 	@Override
-	public int charge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	public double charge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean simulate)
 	{
 		if(energizedItem.canReceive(itemStack))
 		{
@@ -38,7 +38,7 @@ public class IC2ItemManager implements IElectricItemManager
 	}
 
 	@Override
-	public int discharge(ItemStack itemStack, int amount, int tier, boolean ignoreTransferLimit, boolean simulate)
+	public double discharge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean external, boolean simulate)
 	{
 		if(energizedItem.canSend(itemStack))
 		{
@@ -57,19 +57,19 @@ public class IC2ItemManager implements IElectricItemManager
 	}
 
 	@Override
-	public boolean canUse(ItemStack itemStack, int amount)
+	public boolean canUse(ItemStack itemStack, double amount)
 	{
 		return energizedItem.getEnergy(itemStack) >= amount*Mekanism.FROM_IC2;
 	}
 
 	@Override
-	public int getCharge(ItemStack itemStack)
+	public double getCharge(ItemStack itemStack)
 	{
 		return (int)Math.round(energizedItem.getEnergy(itemStack)*Mekanism.TO_IC2);
 	}
 
 	@Override
-	public boolean use(ItemStack itemStack, int amount, EntityLivingBase entity)
+	public boolean use(ItemStack itemStack, double amount, EntityLivingBase entity)
 	{
 		return false;
 	}

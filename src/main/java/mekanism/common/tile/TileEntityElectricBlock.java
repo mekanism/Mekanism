@@ -308,9 +308,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "IC2API")
-	public int getMaxSafeInput()
+	public int getSinkTier()
 	{
-		return Integer.MAX_VALUE;
+		return 4;
 	}
 
 	@Override
@@ -371,7 +371,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "IC2API")
-	public double demandedEnergyUnits()
+	public double getDemandedEnergy()
 	{
 		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
 	}
@@ -391,7 +391,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "IC2API")
-	public double injectEnergyUnits(ForgeDirection direction, double i)
+	public double injectEnergy(ForgeDirection direction, double i, double v)
 	{
 		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
 		{

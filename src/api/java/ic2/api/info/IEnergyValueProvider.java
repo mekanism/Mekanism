@@ -10,5 +10,5 @@ public interface IEnergyValueProvider {
 	 * @param itemStack ItemStack containing the item to evaluate.
 	 * @return energy in EU
 	 */
-	int getEnergyValue(ItemStack itemStack);
+	double getEnergyValue(ItemStack itemStack);
 }

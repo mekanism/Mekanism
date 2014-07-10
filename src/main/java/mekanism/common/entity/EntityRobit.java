@@ -182,7 +182,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					if(item.canProvideEnergy(inventory[27]))
 					{
-						double gain = ElectricItem.manager.discharge(inventory[27], (int)((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
+						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())*Mekanism.TO_IC2, 4, true, true, false)*Mekanism.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
