@@ -10,14 +10,19 @@ public final class FluidContainerUtils
 {
 	public static FluidStack extractFluid(FluidTank tileTank, ItemStack container)
 	{
-		return extractFluid(tileTank, container, null);
+		return extractFluid(tileTank, container, tileTank.getFluid() != null ? tileTank.getFluid().getFluid() : null);
 	}
 	
 	public static FluidStack extractFluid(FluidTank tileTank, ItemStack container, Fluid fluid)
 	{
 		IFluidContainerItem item = (IFluidContainerItem)container.getItem();
 		
-		if(fluid != null && item.getFluid(container) != null && item.getFluid(container).getFluid() != fluid)
+		if(item.getFluid(container) == null)
+		{
+			return null;
+		}
+		
+		if(fluid != null && item.getFluid(container).getFluid() != fluid)
 		{
 			return null;
 		}

@@ -15,6 +15,7 @@ import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -202,7 +204,18 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 		if(structure.inventory[0] != null)
 		{
-			if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]))
+			if(structure.inventory[0].getItem() instanceof IFluidContainerItem)
+			{
+				if(structure.editMode == ContainerEditMode.FILL)
+				{
+					//TODO
+				}
+				else if(structure.editMode == ContainerEditMode.EMPTY)
+				{
+					//TODO
+				}
+			}
+			else if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.FILL))
 			{
 				if(structure.fluidStored != null && structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
@@ -241,7 +254,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]))
+			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.EMPTY))
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(structure.inventory[0]);
 
@@ -270,7 +283,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 								structure.inventory[1].stackSize++;
 							}
 
-							markDirty();
 							filled = true;
 						}
 					}
@@ -294,6 +306,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 						else {
 							structure.fluidStored.amount += itemFluid.amount;
 						}
+						
+						markDirty();
 					}
 
 					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));

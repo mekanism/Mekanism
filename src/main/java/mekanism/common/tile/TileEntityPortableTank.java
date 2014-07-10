@@ -13,6 +13,7 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +27,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager
@@ -151,7 +153,42 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(inventory[0] != null)
 		{
-			if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
+			if(inventory[0].getItem() instanceof IFluidContainerItem)
+			{
+				if(editMode == ContainerEditMode.FILL)
+				{
+					int prev = fluidTank.getFluidAmount();
+					
+					fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[0]), true);
+					
+					if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
+					{
+						if(inventory[1] == null)
+						{
+							inventory[1] = inventory[0].copy();
+							inventory[0] = null;
+							
+							markDirty();
+						}
+					}
+				}
+				else if(editMode == ContainerEditMode.EMPTY)
+				{
+					fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+					
+					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
+					{
+						if(inventory[1] == null)
+						{
+							inventory[1] = inventory[0].copy();
+							inventory[0] = null;
+							
+							markDirty();
+						}
+					}
+				}
+			}
+			else if(FluidContainerRegistry.isEmptyContainer(inventory[0]) && (editMode == ContainerEditMode.BOTH || editMode == ContainerEditMode.FILL))
 			{
 				if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
@@ -181,7 +218,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+			else if(FluidContainerRegistry.isFilledContainer(inventory[0]) && (editMode == ContainerEditMode.BOTH || editMode == ContainerEditMode.EMPTY))
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 				int needed = getCurrentNeeded();
