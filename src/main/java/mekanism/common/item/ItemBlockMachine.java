@@ -1123,7 +1123,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(doFill)
 			{
-				setFluidStack(new FluidStack(resource.getFluid(), toFill));
+				setFluidStack(new FluidStack(resource.getFluid(), toFill), container);
 			}
 			
 			return toFill;
