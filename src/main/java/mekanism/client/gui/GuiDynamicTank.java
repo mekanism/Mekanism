@@ -23,6 +23,7 @@ public class GuiDynamicTank extends GuiMekanism
 	{
 		super(new ContainerDynamicTank(inventory, tentity));
 		tileEntity = tentity;
+		guiElements.add(new GuiContainerEditMode(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDynamicTank.png")));
 	}
 
 	@Override

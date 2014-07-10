@@ -886,7 +886,7 @@ public final class MekanismUtils
 
 			if(tileEntity != null)
 			{
-				tileEntity.cachedFluid = null;
+				tileEntity.cachedData = new DynamicTankCache();
 				tileEntity.inventory = new ItemStack[2];
 				tileEntity.inventoryID = -1;
 			}
@@ -904,13 +904,10 @@ public final class MekanismUtils
 	 * @param inventory - inventory of the dynamic tank
 	 * @param tileEntity - dynamic tank TileEntity
 	 */
-	public static void updateCache(int inventoryID, FluidStack fluid, ItemStack[] inventory, TileEntityDynamicTank tileEntity)
+	public static void updateCache(int inventoryID, DynamicTankCache cache, TileEntityDynamicTank tileEntity)
 	{
 		if(!Mekanism.dynamicInventories.containsKey(inventoryID))
 		{
-			DynamicTankCache cache = new DynamicTankCache();
-			cache.inventory = inventory;
-			cache.fluid = fluid;
 			cache.locations.add(Coord4D.get(tileEntity));
 
 			Mekanism.dynamicInventories.put(inventoryID, cache);
@@ -918,9 +915,7 @@ public final class MekanismUtils
 			return;
 		}
 
-		Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
-		Mekanism.dynamicInventories.get(inventoryID).fluid = fluid;
-
+		Mekanism.dynamicInventories.put(inventoryID, cache);
 		Mekanism.dynamicInventories.get(inventoryID).locations.add(Coord4D.get(tileEntity));
 	}
 

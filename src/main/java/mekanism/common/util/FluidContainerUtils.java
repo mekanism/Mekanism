@@ -36,4 +36,23 @@ public final class FluidContainerUtils
 		
 		return item.fill(container, tileTank.getFluid(), true);
 	}
+	
+	public static enum ContainerEditMode
+	{
+		BOTH("fluidedit.both"),
+		FILL("fluidedit.fill"),
+		EMPTY("fluidedit.empty");
+		
+		private String display;
+
+		public String getDisplay()
+		{
+			return MekanismUtils.localize(display);
+		}
+
+		private ContainerEditMode(String s)
+		{
+			display = s;
+		}
+	}
 }

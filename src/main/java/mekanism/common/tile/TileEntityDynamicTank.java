@@ -7,11 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tank.TankUpdateProtocol;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,13 +26,16 @@ import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDynamicTank extends TileEntityContainerBlock
+public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager
 {
 	/** Unique inventory ID for the dynamic tank, serves as a way to retrieve cached inventories. */
 	public int inventoryID = -1;
 
 	/** The tank data for this structure. */
 	public SynchronizedTankData structure;
+	
+	/** The cache used by this specific tank segment */
+	public DynamicTankCache cachedData = new DynamicTankCache();
 
 	/** Whether or not to send this tank's structure in the next update packet. */
 	public boolean sendStructure;
@@ -39,9 +45,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 	/** Whether or not this tank has it's structure, for the client side mechanics. */
 	public boolean clientHasStructure;
-
-	/** The cached fluid this tank segment contains. */
-	public FluidStack cachedFluid;
 
 	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
@@ -146,7 +149,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 			if(inventoryID != -1 && structure == null)
 			{
-				MekanismUtils.updateCache(inventoryID, cachedFluid, inventory, this);
+				MekanismUtils.updateCache(inventoryID, cachedData, this);
 			}
 
 			if(structure == null && ticker == 5)
@@ -184,10 +187,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 				if(inventoryID != -1)
 				{
-					MekanismUtils.updateCache(inventoryID, structure.fluidStored, structure.inventory, this);
-
-					cachedFluid = structure.fluidStored;
-					inventory = structure.inventory;
+					cachedData.sync(structure);
+					MekanismUtils.updateCache(inventoryID, cachedData, this);
 				}
 
 				manageInventory();
@@ -308,7 +309,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		data.add(isRendering);
 		data.add(structure != null);
-		data.add(structure != null ? structure.volume*TankUpdateProtocol.FLUID_PER_TANK : 0);
+		
+		if(structure != null)
+		{
+			data.add(structure.volume*TankUpdateProtocol.FLUID_PER_TANK);
+			data.add(structure.editMode.ordinal());
+		}
 
 		if(structure != null && structure.fluidStored != null)
 		{
@@ -364,8 +370,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		isRendering = dataStream.readBoolean();
 		clientHasStructure = dataStream.readBoolean();
-
-		clientCapacity = dataStream.readInt();
+		
+		if(clientHasStructure)
+		{
+			clientCapacity = dataStream.readInt();
+			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
+		}
 
 		if(dataStream.readInt() == 1)
 		{
@@ -477,10 +487,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 			if(inventoryID != -1)
 			{
-				if(nbtTags.hasKey("cachedFluid"))
-				{
-					cachedFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
-				}
+				cachedData.load(nbtTags);
 			}
 		}
 	}
@@ -492,9 +499,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		nbtTags.setInteger("inventoryID", inventoryID);
 
-		if(cachedFluid != null)
+		if(inventoryID != -1)
 		{
-			nbtTags.setTag("cachedFluid", cachedFluid.writeToNBT(new NBTTagCompound()));
+			cachedData.save(nbtTags);
 		}
 	}
 
@@ -503,5 +510,27 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public ContainerEditMode getContainerEditMode() 
+	{
+		if(structure != null)
+		{
+			return structure.editMode;
+		}
+		
+		return ContainerEditMode.BOTH;
+	}
+
+	@Override
+	public void setContainerEditMode(ContainerEditMode mode) 
+	{
+		if(structure == null)
+		{
+			return;
+		}
+		
+		structure.editMode = mode;
 	}
 }
