@@ -182,21 +182,21 @@ public class CommonProxy
 	 */
 	public void loadConfiguration()
 	{
-		Mekanism.osmiumGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationEnabled", true).getBoolean(true);
-		Mekanism.copperGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationEnabled", true).getBoolean(true);
-		Mekanism.tinGenerationEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationEnabled", true).getBoolean(true);
 		Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);
 		Mekanism.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean(true);
 		Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(false);
-		Mekanism.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean(true);
+		Mekanism.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean(false);
 		Mekanism.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", true).getBoolean(true);
 		Mekanism.cardboardSpawners = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true).getBoolean(true);
+		Mekanism.enableWorldRegeneration = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableWorldRegeneration", false).getBoolean(false);
 		Mekanism.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();
 		Mekanism.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
 		Mekanism.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();
-		Mekanism.osmiumGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumGenerationAmount", 12).getInt();
-		Mekanism.copperGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperGenerationAmount", 16).getInt();
-		Mekanism.tinGenerationAmount = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinGenerationAmount", 14).getInt();
+		Mekanism.osmiumPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumPerChunk", 12).getInt();
+		Mekanism.copperPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CopperPerChunk", 16).getInt();
+		Mekanism.tinPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "TinPerChunk", 14).getInt();
+		Mekanism.saltPerChunk = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SaltPerChunk", 2).getInt();
+		Mekanism.userWorldGenVersion = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "WorldRegenVersion", 0).getInt();
 		Mekanism.FROM_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToEU", 10D).getDouble(10D);
 		Mekanism.TO_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EUToJoules", .1D).getDouble(.1D);
 		Mekanism.FROM_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToMJ", 25D).getDouble(25D);
@@ -263,7 +263,9 @@ public class CommonProxy
 		Mekanism.fluidicPlenisherUsage = Mekanism.configuration.get("usage", "FluidicPlenisherUsage", 100D).getDouble(100D);
 
 		if(Mekanism.configuration.hasChanged())
+		{
 			Mekanism.configuration.save();
+		}
 	}
 
 	/**
@@ -271,7 +273,7 @@ public class CommonProxy
 	 */
 	public void loadUtilities() 
 	{
-		FMLCommonHandler.instance().bus().register(new CommonWorldTickHandler());
+		FMLCommonHandler.instance().bus().register(Mekanism.worldTickHandler);
 	}
 
 	/**

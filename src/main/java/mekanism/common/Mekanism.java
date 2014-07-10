@@ -48,6 +48,7 @@ import mekanism.common.block.BlockObsidianTNT;
 import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
+import mekanism.common.block.BlockSalt;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
@@ -64,6 +65,7 @@ import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
 import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemControlCircuit;
 import mekanism.common.item.ItemCrystal;
 import mekanism.common.item.ItemDictionary;
 import mekanism.common.item.ItemDirtyDust;
@@ -107,6 +109,7 @@ import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
+import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -114,9 +117,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -210,6 +216,14 @@ public class Mekanism
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
 	
+	public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
+	
+	/** The Mekanism world generation handler. */
+	public static GenHandler genHandler = new GenHandler();
+	
+	/** The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes. */
+	public static int baseWorldGenVersion = 0;
+	
 	public static KeySync keyMap = new KeySync();
 	
 	public static Set<String> jetpackOn = new HashSet<String>();
@@ -228,7 +242,6 @@ public class Mekanism
 	public static ItemRobit Robit;
 	public static ItemAtomicDisassembler AtomicDisassembler;
 	public static Item AtomicCore;
-	public static Item ControlCircuit;
 	public static Item EnrichedIron;
 	public static Item CompressedCarbon;
 	public static Item PortableTeleporter;
@@ -274,6 +287,7 @@ public class Mekanism
 	public static Block BlockReinforcedHDPE;
 	public static Block BlockRoadHDPE;
 	public static Block BlockHDPEFence;
+	public static Block SaltBlock;
 
 	//Multi-ID Items
 	public static Item Dust;
@@ -282,11 +296,9 @@ public class Mekanism
 	public static Item DirtyDust;
 	public static Item Shard;
 	public static Item Crystal;
+	public static Item ControlCircuit;
 
 	//General Configuration
-	public static boolean osmiumGenerationEnabled = true;
-	public static boolean copperGenerationEnabled = true;
-	public static boolean tinGenerationEnabled = true;
 	public static boolean updateNotifications = true;
 	public static boolean controlCircuitOreDict = true;
 	public static boolean logPackets = false;
@@ -294,14 +306,17 @@ public class Mekanism
 	public static boolean voiceServerEnabled = true;
 	public static boolean cardboardSpawners = true;
 	public static boolean machineEffects = true;
+	public static boolean enableWorldRegeneration = true;
 	public static int obsidianTNTBlastRadius = 12;
-	public static int osmiumGenerationAmount = 12;
-	public static int copperGenerationAmount = 16;
-	public static int tinGenerationAmount = 14;
+	public static int osmiumPerChunk = 12;
+	public static int copperPerChunk = 16;
+	public static int tinPerChunk = 14;
+	public static int saltPerChunk = 2;
 	public static int obsidianTNTDelay = 100;
 	public static int UPDATE_DELAY = 10;
 	public static int VOICE_PORT = 36123;
 	public static int maxUpgradeMultiplier = 10;
+	public static int userWorldGenVersion = 0;
 	public static double ENERGY_PER_REDSTONE = 10000;
 	public static EnergyType activeType = EnergyType.J;
 
@@ -391,6 +406,9 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 6), new Object[] {
 			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 13)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(SaltBlock), new Object[] {
+			"**", "**", Character.valueOf('*'), Salt
 		}));
 		
 		//Base Recipes
@@ -744,6 +762,9 @@ public class Mekanism
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.stonebrick, 1, 0), new ItemStack(Blocks.stonebrick, 1, 3));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.stonebrick, 1, 1), new ItemStack(Blocks.stonebrick, 1, 0));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.quartz_ore), new ItemStack(Items.quartz, 2));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.glowstone), new ItemStack(Items.glowstone_dust, 4));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.clay), new ItemStack(Items.clay_ball, 4));
+		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(SaltBlock), new ItemStack(Salt, 4));
 		
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
@@ -768,7 +789,8 @@ public class Mekanism
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.stonebrick, 1, 2), new ItemStack(Blocks.stone));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.stonebrick, 1, 0), new ItemStack(Blocks.stonebrick, 1, 2));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.stonebrick, 1, 3), new ItemStack(Blocks.stonebrick, 1, 0));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Items.flint, 4), new ItemStack(Items.gunpowder));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.gravel), new ItemStack(Items.flint));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Items.flint), new ItemStack(Items.gunpowder));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.sandstone), new ItemStack(Blocks.sand, 2));
         
         for(int i = 0; i < 16; i++)
@@ -791,7 +813,6 @@ public class Mekanism
 
 		//Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.obsidian), new ItemStack(Clump, 3, 6));
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.gravel), new ItemStack(Items.flint));
         
         //Chemical Injection Chamber Recipes
         RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Blocks.obsidian), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Shard, 4, 6));
@@ -903,7 +924,7 @@ public class Mekanism
 		PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 		EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
 		EnrichedIron = new ItemMekanism().setUnlocalizedName("EnrichedIron");
-		ControlCircuit = new ItemMekanism().setUnlocalizedName("ControlCircuit");
+		ControlCircuit = new ItemControlCircuit();
 		AtomicCore = new ItemMekanism().setUnlocalizedName("AtomicCore");
 		TeleportationCore = new ItemMekanism().setUnlocalizedName("TeleportationCore");
 		ElectrolyticCore = new ItemMekanism().setUnlocalizedName("ElectrolyticCore");
@@ -1013,6 +1034,7 @@ public class Mekanism
 		BlockReinforcedHDPE = new BlockPlastic().setBlockName("ReinforcedPlasticBlock");
 		BlockRoadHDPE = new BlockPlastic().setBlockName("RoadPlasticBlock");
 		BlockHDPEFence = new BlockPlasticFence().setBlockName("PlasticFence");
+		SaltBlock = new BlockSalt().setBlockName("SaltBlock");
 
 		//Registrations
 		GameRegistry.registerBlock(BasicBlock, ItemBlockBasic.class, "BasicBlock");
@@ -1031,6 +1053,7 @@ public class Mekanism
 		GameRegistry.registerBlock(BlockReinforcedHDPE, ItemBlockPlastic.class, "ReinforcedPlasticBlock");
 		GameRegistry.registerBlock(BlockRoadHDPE, ItemBlockPlastic.class, "RoadPlasticBlock");
 		GameRegistry.registerBlock(BlockHDPEFence, "PlasticFence");
+		GameRegistry.registerBlock(SaltBlock, "SaltBlock");
 	}
 	
 	/**
@@ -1038,10 +1061,11 @@ public class Mekanism
 	 */
 	public void registerOreDict()
 	{
-		//Add specific items to ore dictionary for recipe usage in other mods. @Calclavia
+		//Add specific items to ore dictionary for recipe usage in other mods.
 		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		OreDictionary.registerOre("pulpWood", Sawdust);
+		OreDictionary.registerOre("blockSalt", SaltBlock);
 		
 		//for RailCraft/IC2.
 		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
@@ -1098,9 +1122,12 @@ public class Mekanism
 		OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.redstone_ore));
 		//OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.lit_redstone_ore));
 		
-		if(controlCircuitOreDict || !hooks.BasicComponentsLoaded)
+		if(controlCircuitOreDict)
 		{
-			OreDictionary.registerOre("circuitBasic", new ItemStack(ControlCircuit));
+			OreDictionary.registerOre("circuitBasic", new ItemStack(ControlCircuit, 1, 0));
+			OreDictionary.registerOre("circuitAdvanced", new ItemStack(ControlCircuit, 1, 1));
+			OreDictionary.registerOre("circuitElite", new ItemStack(ControlCircuit, 1, 2));
+			OreDictionary.registerOre("circuitUltimate", new ItemStack(ControlCircuit, 1, 3));
 		}
 		
 		OreDictionary.registerOre("itemCompressedCarbon", new ItemStack(CompressedCarbon));
@@ -1233,6 +1260,7 @@ public class Mekanism
 		jetpackOn.clear();
 		gasmaskOn.clear();
 		activeVibrators.clear();
+		worldTickHandler.resetRegenChunks();
 		
 		TransporterManager.flowingStacks.clear();
 	}
@@ -1290,8 +1318,8 @@ public class Mekanism
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		//Register the mod's ore handler
-		GameRegistry.registerWorldGenerator(new OreHandler(), 1);
+		//Register the mod's world generators
+		GameRegistry.registerWorldGenerator(genHandler, 1);
 		
 		//Register the mod's GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
@@ -1445,6 +1473,26 @@ public class Mekanism
 						((TileEntityElectricBlock)tileEntity).register();
 					}
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public synchronized void onChunkDataLoad(ChunkDataEvent.Load event)
+	{
+		if(!event.world.isRemote)
+		{
+			if(enableWorldRegeneration)
+			{
+				NBTTagCompound loadData = event.getData();
+				
+				if(loadData.getInteger("MekanismWorldGen") == baseWorldGenVersion && loadData.getInteger("MekanismUserWorldGen") == userWorldGenVersion)
+				{
+					return;
+				}
+	
+				ChunkCoordIntPair coordPair = event.getChunk().getChunkCoordIntPair();
+				worldTickHandler.addRegenChunk(event.world.provider.dimensionId, coordPair);
 			}
 		}
 	}

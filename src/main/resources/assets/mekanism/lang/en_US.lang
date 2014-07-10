@@ -12,7 +12,6 @@ item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
 item.AtomicCore.name=Atomic Core
 item.ElectricBow.name=Electric Bow
-item.ControlCircuit.name=Control Circuit
 item.EnrichedIron.name=Enriched Iron
 item.CompressedCarbon.name=Compressed Carbon
 item.PortableTeleporter.name=Portable Teleporter
@@ -39,6 +38,12 @@ item.HDPESheet.name=HDPE Sheet
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 
+//Control Circuits
+item.BasicControlCircuit.name=Basic Control Circuit
+item.AdvancedControlCircuit.name=Advanced Control Circuit
+item.EliteControlCircuit.name=Elite Control Circuit
+item.UltimateControlCircuit.name=Ultimate Control Circuit
+
 //Gas Tank
 tile.GasTank.GasTank.name=Gas Tank
 
@@ -47,6 +52,9 @@ tile.CardboardBox.name=Cardboard Box
 
 //Bounding Block
 tile.BoundingBlock.name=Bounding Block
+
+//Salt
+tile.SaltBlock.name=Salt Block
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmium Block
@@ -276,6 +284,10 @@ update.outdated=Using outdated version on one or more modules
 //Key description text
 key.mode=Mode Switch
 key.voice=Voice
+
+//Config Gui
+mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
@@ -699,3 +711,8 @@ item.SteelAxe.name=Steel Axe
 item.SteelShovel.name=Steel Shovel
 item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
+mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
+mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets

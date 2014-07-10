@@ -24,9 +24,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeBoolean(Mekanism.osmiumGenerationEnabled);
-			dataStream.writeBoolean(Mekanism.copperGenerationEnabled);
-			dataStream.writeBoolean(Mekanism.tinGenerationEnabled);
 			dataStream.writeBoolean(Mekanism.updateNotifications);
 			dataStream.writeBoolean(Mekanism.controlCircuitOreDict);
 			dataStream.writeBoolean(Mekanism.logPackets);
@@ -36,9 +33,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(Mekanism.obsidianTNTDelay);
 			dataStream.writeInt(Mekanism.obsidianTNTBlastRadius);
 			dataStream.writeInt(Mekanism.UPDATE_DELAY);
-			dataStream.writeInt(Mekanism.osmiumGenerationAmount);
-			dataStream.writeInt(Mekanism.copperGenerationAmount);
-			dataStream.writeInt(Mekanism.tinGenerationAmount);
 			dataStream.writeDouble(Mekanism.FROM_IC2);
 			dataStream.writeDouble(Mekanism.TO_IC2);
 			dataStream.writeDouble(Mekanism.FROM_BC);
@@ -83,9 +77,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			Mekanism.osmiumGenerationEnabled = dataStream.readBoolean();
-			Mekanism.copperGenerationEnabled = dataStream.readBoolean();
-			Mekanism.tinGenerationEnabled = dataStream.readBoolean();
 			Mekanism.updateNotifications = dataStream.readBoolean();
 			Mekanism.controlCircuitOreDict = dataStream.readBoolean();
 			Mekanism.logPackets = dataStream.readBoolean();
@@ -95,9 +86,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			Mekanism.obsidianTNTDelay = dataStream.readInt();
 			Mekanism.obsidianTNTBlastRadius = dataStream.readInt();
 			Mekanism.UPDATE_DELAY = dataStream.readInt();
-			Mekanism.osmiumGenerationAmount = dataStream.readInt();
-			Mekanism.copperGenerationAmount = dataStream.readInt();
-			Mekanism.tinGenerationAmount = dataStream.readInt();
 			Mekanism.FROM_IC2 = dataStream.readDouble();
 			Mekanism.TO_IC2 = dataStream.readDouble();
 			Mekanism.FROM_BC = dataStream.readDouble();

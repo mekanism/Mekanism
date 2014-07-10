@@ -37,7 +37,6 @@ public final class MekanismHooks
 	public boolean IC2Loaded = false;
 	public boolean IC2APILoaded = false;
 	public boolean RailcraftLoaded = false;
-	public boolean BasicComponentsLoaded = false;
 	public boolean BuildCraftPowerLoaded = false;
 	public boolean RedstoneFluxLoaded = false;
 	public boolean TELoaded = false;
