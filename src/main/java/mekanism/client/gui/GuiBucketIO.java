@@ -18,7 +18,7 @@ public class GuiBucketIO extends GuiElement
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 4, 26, 57);
+		return new Rectangle4i(guiWidth + 176, guiHeight + 66, 26, 57);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class GuiBucketIO extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 4, 0, 0, 26, 57);
+		guiObj.drawTexturedRect(guiWidth + 176, guiHeight + 66, 0, 0, 26, 57);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -40,8 +40,20 @@ public class GuiBucketIO extends GuiElement
 	}
 
 	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button) {}
+	public void preMouseClicked(int xAxis, int yAxis, int button) 
+	{
+		if((xAxis >= 180 && xAxis <= 196 && yAxis >= 71 && yAxis <= 87) || (xAxis >= 180 && xAxis <= 196 && yAxis >= 102 && yAxis <= 118))
+		{
+			offsetX(26);
+		}
+	}
 
 	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) {}
+	public void mouseClicked(int xAxis, int yAxis, int button) 
+	{
+		if((xAxis >= 180 && xAxis <= 196 && yAxis >= 71 && yAxis <= 87) || (xAxis >= 180 && xAxis <= 196 && yAxis >= 102 && yAxis <= 118))
+		{
+			offsetX(-26);
+		}
+	}
 }
