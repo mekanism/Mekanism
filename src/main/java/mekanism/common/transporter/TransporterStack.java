@@ -167,7 +167,6 @@ public class TransporterStack
 		}
 
 		pathToTarget = newPath.path;
-		System.out.println("Def reset");
 		pathType = Path.DEST;
 		idleDir = ForgeDirection.UNKNOWN;
 		initiatedPath = true;
@@ -185,7 +184,6 @@ public class TransporterStack
 		}
 
 		pathToTarget = newPath.path;
-		System.out.println("RR reset");
 		pathType = Path.DEST;
 		idleDir = ForgeDirection.UNKNOWN;
 		initiatedPath = true;
@@ -204,7 +202,6 @@ public class TransporterStack
 		
 		if(pathType == Path.HOME)
 		{
-			System.out.println("Idle reset");
 			idleDir = ForgeDirection.UNKNOWN;
 		}
 
