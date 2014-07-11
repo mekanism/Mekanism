@@ -335,6 +335,7 @@ public final class OreDictManager
 		for(ItemStack ore : OreDictionary.getOres("ingotOsmium"))
 		{
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 2));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("REDSTONE"), 10, MekanismUtils.size(ore, 1)), new ItemStack(Mekanism.ControlCircuit, 1, 0));
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotRedstone"))
