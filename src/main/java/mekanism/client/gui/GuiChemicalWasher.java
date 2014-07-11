@@ -88,7 +88,15 @@ public class GuiChemicalWasher extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 4, 0x404040);
+		
+		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
