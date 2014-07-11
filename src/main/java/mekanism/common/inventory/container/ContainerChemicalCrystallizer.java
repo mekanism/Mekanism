@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -22,6 +23,7 @@ public class ContainerChemicalCrystallizer extends Container
 		addSlotToContainer(new SlotStorageTank(tentity, 0, 6, 65));
 		addSlotToContainer(new SlotOutput(tentity, 1, 131, 57));
 		addSlotToContainer(new SlotDischarge(tentity, 2, 155, 5));
+		addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 180, 11));
 
 		int slotY;
 
