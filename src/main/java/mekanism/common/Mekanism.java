@@ -421,7 +421,7 @@ public class Mekanism
 			" AB", "E B", " AB", Character.valueOf('A'), EnrichedAlloy, Character.valueOf('B'), Items.string, Character.valueOf('E'), EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(EnergyTablet.getUnchargedItem(), new Object[] {
-			"RCR", "ECE", "RCR", Character.valueOf('C'), Items.gold_ingot, Character.valueOf('R'), Items.redstone, Character.valueOf('E'), EnrichedAlloy
+			"RCR", "ECE", "RCR", Character.valueOf('C'), "ingotGold", Character.valueOf('R'), Items.redstone, Character.valueOf('E'), EnrichedAlloy
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MachineBlock, 1, 0), new Object[] {
 			"RCR", "iIi", "RCR", Character.valueOf('i'), "ingotIron", Character.valueOf('C'), "circuitBasic", Character.valueOf('R'), "alloyBasic", Character.valueOf('I'), new ItemStack(BasicBlock, 1, 8)
