@@ -19,12 +19,14 @@ import mekanism.common.IActiveState;
 import mekanism.common.IEjector;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +38,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IInvConfiguration
+public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IInvConfiguration, IUpgradeTile
 {
 	public static final int MAX_GAS = 10000;
 	public static final int MAX_FLUID = 10000;
@@ -73,6 +75,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileComponentEjector ejectorComponent;
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 
 	public TileEntityChemicalCrystallizer()
 	{
@@ -125,21 +128,21 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 				inputTank.receive(GasTransmission.removeGas(inventory[0], null, inputTank.getNeeded()), true);
 			}
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= ENERGY_USAGE)
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE))
 			{
 				setActive(true);
 
-				if((operatingTicks+1) < TICKS_REQUIRED)
+				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					setEnergy(getEnergy() - ENERGY_USAGE);
+					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 				}
-				else if((operatingTicks+1) >= TICKS_REQUIRED)
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operate();
 
 					operatingTicks = 0;
-					setEnergy(getEnergy() - ENERGY_USAGE);
+					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 				}
 			}
 			else {
@@ -319,14 +322,15 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 		return inputTank != null ? inputTank.getStored()*i / MAX_GAS : 0;
 	}
 
-	public int getScaledProgress(int i)
-	{
-		return operatingTicks*i / TICKS_REQUIRED;
-	}
-
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);
+		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
+	}
+	
+	@Override
+	public double getMaxEnergy()
+	{
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
 	@Override
@@ -496,5 +500,43 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 	public IEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+	
+	@Override
+	public int getEnergyMultiplier(Object... data)
+	{
+		return upgradeComponent.energyMultiplier;
+	}
+
+	@Override
+	public void setEnergyMultiplier(int multiplier, Object... data)
+	{
+		upgradeComponent.energyMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public int getSpeedMultiplier(Object... data)
+	{
+		return upgradeComponent.speedMultiplier;
+	}
+
+	@Override
+	public void setSpeedMultiplier(int multiplier, Object... data)
+	{
+		upgradeComponent.speedMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean supportsUpgrades(Object... data) 
+	{
+		return true;
+	}
+
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
 	}
 }

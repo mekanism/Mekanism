@@ -95,11 +95,6 @@ public class GuiChemicalDissolutionChamber extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int displayInt;
-
-		displayInt = tileEntity.getScaledProgress(48);
-		drawTexturedModalRect(guiWidth + 64, guiHeight + 40, 176, 63, displayInt, 8);
-
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 }

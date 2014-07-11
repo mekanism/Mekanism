@@ -210,11 +210,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 		return InventoryUtils.EMPTY;
 	}
 
-	public int getScaledProgress(int i)
-	{
-		return operatingTicks*i / TICKS_REQUIRED;
-	}
-
 	public double getScaledProgress()
 	{
 		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);

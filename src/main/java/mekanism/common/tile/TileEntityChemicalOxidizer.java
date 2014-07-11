@@ -194,11 +194,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 		return InventoryUtils.EMPTY;
 	}
 
-	public int getScaledProgress(int i)
-	{
-		return operatingTicks*i / MekanismUtils.getTicks(this, TICKS_REQUIRED);
-	}
-
 	public double getScaledProgress()
 	{
 		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
