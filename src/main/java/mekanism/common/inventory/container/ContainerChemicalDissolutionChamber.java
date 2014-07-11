@@ -2,7 +2,9 @@ package mekanism.common.inventory.container;
 
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotStorageTank;
+import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
@@ -24,6 +26,7 @@ public class ContainerChemicalDissolutionChamber extends Container
 		addSlotToContainer(new Slot(tentity, 1, 26, 36));
 		addSlotToContainer(new SlotStorageTank(tentity, 2, 155, 25));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
+		addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 180, 11));
 
 		int slotY;
 
@@ -80,7 +83,7 @@ public class ContainerChemicalDissolutionChamber extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -97,7 +100,7 @@ public class ContainerChemicalDissolutionChamber extends Container
 				}
 				else if(slotID == 3)
 				{
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -116,29 +119,45 @@ public class ContainerChemicalDissolutionChamber extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+			else if(slotStack.getItem() instanceof ItemMachineUpgrade)
+			{
+				if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
+				{
+					if(!mergeItemStack(slotStack, 4, 5, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				if(slotID >= 4 && slotID <= 30)
+				if(slotID >= 5 && slotID <= 31)
 				{
-					if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
+					if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
 					{
 						return null;
 					}
 				}
 				else if(slotID > 31)
 				{
-					if(!mergeItemStack(slotStack, 4, 30, false))
+					if(!mergeItemStack(slotStack, 5, 31, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
 					{
 						return null;
 					}

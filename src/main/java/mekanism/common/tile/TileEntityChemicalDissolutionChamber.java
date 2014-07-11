@@ -16,11 +16,13 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler
+public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler, IUpgradeTile
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -53,13 +55,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	public int TICKS_REQUIRED = 100;
 
 	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityChemicalDissolutionChamber()
 	{
 		super("ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
-		inventory = new ItemStack[4];
+		inventory = new ItemStack[5];
 	}
 
 	@Override
@@ -107,12 +111,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 			boolean changed = false;
 
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate() && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - ENERGY_USAGE);
+				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 
-				if(operatingTicks < TICKS_REQUIRED)
+				if(operatingTicks < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
 					injectTank.draw(INJECT_USAGE, true);
@@ -321,6 +325,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	{
 		return i != 0 && i != 1;
 	}
+	
+	@Override
+	public double getMaxEnergy()
+	{
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
+	}
 
 	public int getScaledInjectGasLevel(int i)
 	{
@@ -422,5 +432,43 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
+	}
+	
+	@Override
+	public int getEnergyMultiplier(Object... data)
+	{
+		return upgradeComponent.energyMultiplier;
+	}
+
+	@Override
+	public void setEnergyMultiplier(int multiplier, Object... data)
+	{
+		upgradeComponent.energyMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public int getSpeedMultiplier(Object... data)
+	{
+		return upgradeComponent.speedMultiplier;
+	}
+
+	@Override
+	public void setSpeedMultiplier(int multiplier, Object... data)
+	{
+		upgradeComponent.speedMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean supportsUpgrades(Object... data) 
+	{
+		return true;
+	}
+
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
 	}
 }
