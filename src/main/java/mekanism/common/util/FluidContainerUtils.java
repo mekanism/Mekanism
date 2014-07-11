@@ -15,6 +15,11 @@ public final class FluidContainerUtils
 	
 	public static FluidStack extractFluid(FluidTank tileTank, ItemStack container, Fluid fluid)
 	{
+		return extractFluid(tileTank.getCapacity()-tileTank.getFluidAmount(), container, fluid);
+	}
+	
+	public static FluidStack extractFluid(int needed, ItemStack container, Fluid fluid)
+	{
 		IFluidContainerItem item = (IFluidContainerItem)container.getItem();
 		
 		if(item.getFluid(container) == null)
@@ -27,19 +32,24 @@ public final class FluidContainerUtils
 			return null;
 		}
 		
-		return item.drain(container, tileTank.getCapacity()-tileTank.getFluidAmount(), true);
+		return item.drain(container, needed, true);
 	}
 	
 	public static int insertFluid(FluidTank tileTank, ItemStack container)
 	{
+		return insertFluid(tileTank.getFluid(), container);
+	}
+	
+	public static int insertFluid(FluidStack fluid, ItemStack container)
+	{
 		IFluidContainerItem item = (IFluidContainerItem)container.getItem();
 		
-		if(tileTank.getFluid() == null)
+		if(fluid == null)
 		{
 			return 0;
 		}
 		
-		return item.fill(container, tileTank.getFluid(), true);
+		return item.fill(container, fluid, true);
 	}
 	
 	public static enum ContainerEditMode

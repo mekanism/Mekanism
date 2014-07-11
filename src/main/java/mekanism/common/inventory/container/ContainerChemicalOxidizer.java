@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -23,6 +24,7 @@ public class ContainerChemicalOxidizer extends Container
 		addSlotToContainer(new Slot(tentity, 0, 26, 36));
 		addSlotToContainer(new SlotDischarge(tentity, 1, 155, 5));
 		addSlotToContainer(new SlotStorageTank(tentity, 2, 155, 25));
+		addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 180, 11));
 
 		int slotX;
 

@@ -13,9 +13,22 @@ import java.util.Set;
 import mekanism.api.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElectrolyticSeparator;
+import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.GuiFluidGauge;
+import mekanism.client.gui.GuiGasGauge;
+import mekanism.client.gui.GuiGauge;
+import mekanism.client.gui.GuiPowerBar;
+import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.GuiProgress;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.GuiSlot;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -30,9 +43,42 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
+	
+	public GuiFluidGauge fluidInput;
+	public GuiGasGauge leftGas;
+	public GuiGasGauge rightGas;
 
 	public static int xOffset = 5;
 	public static int yOffset = 9;
+	
+	@Override
+	public void addGuiElements()
+	{
+		guiElements.add(fluidInput = GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 5, 10));
+		guiElements.add(leftGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 18));
+		guiElements.add(rightGas = GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 18));
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public double getLevel()
+			{
+				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
+			}
+		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
+		
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 25, 34));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 58, 51));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 100, 51));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 142, 34).with(SlotOverlay.POWER));
+
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return 1;
+			}
+		}, ProgressBar.BI, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 78, 29));
+	}
 
 	@Override
 	public String getRecipeName()
@@ -74,6 +120,11 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(-1, 0, 4, yOffset, 167, 62);
+		
+		for(GuiElement e : guiElements)
+		{
+			e.renderBackground(0, 0, -xOffset, -yOffset);
+		}
 	}
 
 	@Override
@@ -81,22 +132,24 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 
-		float f = ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
-		drawProgressBar(165-xOffset, 17-yOffset, 176, 0, 4, 52, f, 3);
-
 		if(recipe.fluidInput != null)
 		{
-			displayGauge(58, 6-xOffset, 11-yOffset, 176, 68, 58, recipe.fluidInput, null);
+			fluidInput.setDummyType(recipe.fluidInput.getFluid());
+			fluidInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
 		if(recipe.outputPair.leftGas != null)
 		{
 			displayGauge(28, 59-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.leftGas);
+			leftGas.setDummyType(recipe.outputPair.leftGas.getGas());
+			leftGas.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
 		if(recipe.outputPair.rightGas != null)
 		{
 			displayGauge(28, 101-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.rightGas);
+			rightGas.setDummyType(recipe.outputPair.rightGas.getGas());
+			rightGas.renderScale(0, 0, -xOffset, -yOffset);
 		}
 	}
 
@@ -309,12 +362,6 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	public int recipiesPerPage()
 	{
 		return 1;
-	}
-
-	@Override
-	public void addGuiElements()
-	{
-
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe

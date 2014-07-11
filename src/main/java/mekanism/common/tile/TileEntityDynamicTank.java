@@ -206,13 +206,55 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		{
 			if(structure.inventory[0].getItem() instanceof IFluidContainerItem)
 			{
-				if(structure.editMode == ContainerEditMode.FILL)
+				if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
 				{
-					//TODO
+					int prev = structure.fluidStored.amount;
+					
+					structure.fluidStored.amount -= FluidContainerUtils.insertFluid(structure.fluidStored, structure.inventory[0]);
+					
+					if(prev == structure.fluidStored.amount || structure.fluidStored.amount == 0)
+					{
+						if(structure.inventory[1] == null)
+						{
+							structure.inventory[1] = structure.inventory[0].copy();
+							structure.inventory[0] = null;
+							
+							markDirty();
+						}
+					}
+					
+					if(structure.fluidStored.amount == 0)
+					{
+						structure.fluidStored = null;
+					}
 				}
 				else if(structure.editMode == ContainerEditMode.EMPTY)
 				{
-					//TODO
+					if(structure.fluidStored != null)
+					{
+						FluidStack received = FluidContainerUtils.extractFluid(max-structure.fluidStored.amount, structure.inventory[0], structure.fluidStored.getFluid());
+						
+						if(received != null)
+						{
+							structure.fluidStored.amount += received.amount;
+						}
+					}
+					else {
+						structure.fluidStored = FluidContainerUtils.extractFluid(max, structure.inventory[0], null);
+					}
+					
+					int newStored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
+					
+					if(((IFluidContainerItem)structure.inventory[0].getItem()).getFluid(structure.inventory[0]) == null || newStored == max)
+					{
+						if(structure.inventory[1] == null)
+						{
+							structure.inventory[1] = structure.inventory[0].copy();
+							structure.inventory[0] = null;
+							
+							markDirty();
+						}
+					}
 				}
 			}
 			else if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.FILL))
@@ -546,5 +588,11 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		}
 		
 		structure.editMode = mode;
+	}
+	
+	@Override
+	public boolean handleInventory()
+	{
+		return false;
 	}
 }

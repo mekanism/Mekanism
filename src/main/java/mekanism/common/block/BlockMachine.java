@@ -1272,7 +1272,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		CHARGEPAD(Mekanism.MachineBlock, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true, true, false),
 		LOGISTICAL_SORTER(Mekanism.MachineBlock, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, false, true, false),
 		ROTARY_CONDENSENTRATOR(Mekanism.MachineBlock2, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, true, false),
-		CHEMICAL_OXIDIZER(Mekanism.MachineBlock2, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, true, false),
+		CHEMICAL_OXIDIZER(Mekanism.MachineBlock2, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, true, true),
 		CHEMICAL_INFUSER(Mekanism.MachineBlock2, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, true, false),
 		CHEMICAL_INJECTION_CHAMBER(Mekanism.MachineBlock2, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, true, false, true),
 		ELECTROLYTIC_SEPARATOR(Mekanism.MachineBlock2, 4, "ElectrolyticSeparator", 32, 400000, TileEntityElectrolyticSeparator.class, true, true, false),

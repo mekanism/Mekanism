@@ -96,13 +96,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
 			boolean changed = false;
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= SECONDARY_ENERGY_PER_TICK)
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= SECONDARY_ENERGY_PER_TICK)
 			{
 				setActive(true);
 
 				operatingTicks++;
 
-				if(operatingTicks >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				if(operatingTicks >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operate();
 
@@ -110,7 +110,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				}
 
 				gasTank.draw(SECONDARY_ENERGY_PER_TICK, true);
-				electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+				electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -382,9 +382,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			case 5:
 				return new Object[] {canOperate()};
 			case 6:
-				return new Object[] {MekanismUtils.getMaxEnergy(getEnergyMultiplier(), getMaxEnergy())};
+				return new Object[] {MekanismUtils.getMaxEnergy(this, getMaxEnergy())};
 			case 7:
-				return new Object[] {(MekanismUtils.getMaxEnergy(getEnergyMultiplier(), getMaxEnergy())-getEnergy())};
+				return new Object[] {(MekanismUtils.getMaxEnergy(this, getMaxEnergy())-getEnergy())};
 			default:
 				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

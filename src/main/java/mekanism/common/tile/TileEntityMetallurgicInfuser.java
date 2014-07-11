@@ -156,21 +156,21 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
 			{
 				setActive(true);
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operate();
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
 				}
 			}
 			else {
@@ -320,12 +320,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 	public int getScaledProgress(int i)
 	{
-		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
+		return operatingTicks*i / MekanismUtils.getTicks(this, TICKS_REQUIRED);
 	}
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED));
+		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
 	}
 
 	@Override
@@ -503,7 +503,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public double getMaxEnergy()
 	{
-		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
 	@Override

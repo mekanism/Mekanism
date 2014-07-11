@@ -215,21 +215,21 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
 				{
-					if((progress[process]+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+					if((progress[process]+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 					{
 						progress[process]++;
 						gasTank.draw(getSecondaryEnergyPerTick(), true);
-						electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+						electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 					}
-					else if((progress[process]+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+					else if((progress[process]+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
 
 						progress[process] = 0;
 						gasTank.draw(getSecondaryEnergyPerTick(), true);
-						electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+						electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 					}
 				}
 
@@ -253,7 +253,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 				}
 			}
 
-			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
 			{
 				setActive(true);
 			}
@@ -479,7 +479,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 	public int getScaledProgress(int i, int process)
 	{
-		return progress[process]*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
+		return progress[process]*i / MekanismUtils.getTicks(this, TICKS_REQUIRED);
 	}
 
 	public int getScaledGasLevel(int i)
@@ -770,7 +770,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	@Override
 	public double getMaxEnergy()
 	{
-		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
 	@Override
