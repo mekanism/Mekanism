@@ -1,4 +1,4 @@
-# Mekanism for Minecraft 1.7.2 #
+# Mekanism for Minecraft 1.7.10 #
 
 [**Official Website**](http://aidancbrady.com)
 
