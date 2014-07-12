@@ -161,7 +161,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  *
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "7.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
-		dependencies = "after:BuildCraftAPI;after:IC2API;after:CoFHAPI|energy;after:ComputerCraft;after:Galacticraft API;" +
+		dependencies = "after:ForgeMultipart;after:BuildCraftAPI;after:IC2API;after:CoFHAPI|energy;after:ComputerCraft;after:Galacticraft API;" +
 				"after:MineFactoryReloaded;after:MetallurgyCore")
 public class Mekanism
 {
