@@ -38,18 +38,22 @@ public class FusionReactor
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
 
 	public double temperature;
-	public double ignitionTemperature = 10^7;
+	public static double burnTemperature = 10^8;
 
-	public double burnRatio = 1;
-	public double tempPerFuel = 100000;
+	public static double burnRatio = 1;
+	public static double tempPerFuel = 5*10^6;
 	public int injectionRate;
+	
+	public static double coolingCoefficient = 0.2;
+	
+	public static double waterRatio = 10^-14;
 
 	public boolean burning = false;
 	public boolean hasHohlraum = false;
 
 	public void simulate()
 	{
-		if(temperature >= ignitionTemperature)
+		if(temperature >= burnTemperature)
 		{
 			if(!burning && hasHohlraum)
 			{
@@ -86,7 +90,7 @@ public class FusionReactor
 
 	public int burnFuel()
 	{
-		int fuelBurned = (int)min(fuelTank.getStored(), max(0, temperature-ignitionTemperature)*burnRatio);
+		int fuelBurned = (int)min(fuelTank.getStored(), max(0, temperature-burnTemperature)*burnRatio);
 		fuelTank.draw(fuelBurned, true);
 		temperature += tempPerFuel * fuelBurned;
 		return fuelBurned;
@@ -109,11 +113,11 @@ public class FusionReactor
 
 	public void boilWater()
 	{
-		int waterToBoil = (int)min(waterTank.getFluidAmount(), temperature/1000);
+		int waterToBoil = (int)min(waterTank.getFluidAmount(), temperature*temperature*waterRatio);
 	}
 
 	public void ambientLoss()
 	{
-		temperature -= 0.1*temperature;
+		temperature -= coolingCoefficient*temperature;
 	}
 }
