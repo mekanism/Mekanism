@@ -115,7 +115,7 @@ public class CommonWorldTickHandler
 
 					if(dynamicTank != null)
 					{
-						dynamicTank.cachedFluid = null;
+						dynamicTank.cachedData = new DynamicTankCache();
 						dynamicTank.inventory = new ItemStack[2];
 						dynamicTank.inventoryID = -1;
 					}

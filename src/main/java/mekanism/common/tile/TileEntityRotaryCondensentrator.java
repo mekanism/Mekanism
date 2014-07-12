@@ -19,6 +19,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,6 +33,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedTank, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
@@ -106,7 +108,24 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 				if(inventory[2] != null)
 				{
-					if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
+					if(inventory[2].getItem() instanceof IFluidContainerItem)
+					{
+						int prev = fluidTank.getFluidAmount();
+						
+						fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[2]), true);
+						
+						if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
+						{
+							if(inventory[3] == null)
+							{
+								inventory[3] = inventory[2].copy();
+								inventory[2] = null;
+								
+								markDirty();
+							}
+						}
+					}
+					else if(FluidContainerRegistry.isEmptyContainer(inventory[2]))
 					{
 						if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
@@ -130,6 +149,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 									else {
 										inventory[3].stackSize++;
 									}
+									
+									markDirty();
 
 									fluidTank.drain(FluidContainerRegistry.getFluidForFilledItem(filled).amount, true);
 								}
@@ -174,52 +195,71 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(FluidContainerRegistry.isFilledContainer(inventory[2]))
+				if(inventory[2] != null)
 				{
-					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[2]);
-
-					if((fluidTank.getFluid() == null && itemFluid.amount <= MAX_FLUID) || fluidTank.getFluid().amount+itemFluid.amount <= MAX_FLUID)
+					if(inventory[2].getItem() instanceof IFluidContainerItem)
 					{
-						if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[2]), true);
+						
+						if(((IFluidContainerItem)inventory[2].getItem()).getFluid(inventory[2]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
 						{
-							return;
-						}
-
-						ItemStack containerItem = inventory[2].getItem().getContainerItem(inventory[2]);
-
-						boolean filled = false;
-
-						if(containerItem != null)
-						{
-							if(inventory[3] == null || (inventory[3].isItemEqual(containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
+							if(inventory[3] == null)
 							{
+								inventory[3] = inventory[2].copy();
 								inventory[2] = null;
-
-								if(inventory[3] == null)
+								
+								markDirty();
+							}
+						}
+					}
+					else if(FluidContainerRegistry.isFilledContainer(inventory[2]))
+					{
+						FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[2]);
+	
+						if((fluidTank.getFluid() == null && itemFluid.amount <= MAX_FLUID) || fluidTank.getFluid().amount+itemFluid.amount <= MAX_FLUID)
+						{
+							if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+							{
+								return;
+							}
+	
+							ItemStack containerItem = inventory[2].getItem().getContainerItem(inventory[2]);
+	
+							boolean filled = false;
+	
+							if(containerItem != null)
+							{
+								if(inventory[3] == null || (inventory[3].isItemEqual(containerItem) && inventory[3].stackSize+1 <= containerItem.getMaxStackSize()))
 								{
-									inventory[3] = containerItem;
+									inventory[2] = null;
+	
+									if(inventory[3] == null)
+									{
+										inventory[3] = containerItem;
+									}
+									else {
+										inventory[3].stackSize++;
+									}
+	
+									filled = true;
 								}
-								else {
-									inventory[3].stackSize++;
+							}
+							else {
+								inventory[2].stackSize--;
+	
+								if(inventory[2].stackSize == 0)
+								{
+									inventory[2] = null;
 								}
-
+	
 								filled = true;
 							}
-						}
-						else {
-							inventory[2].stackSize--;
-
-							if(inventory[2].stackSize == 0)
+	
+							if(filled)
 							{
-								inventory[2] = null;
+								fluidTank.fill(itemFluid, true);
+								markDirty();
 							}
-
-							filled = true;
-						}
-
-						if(filled)
-						{
-							fluidTank.fill(itemFluid, true);
 						}
 					}
 				}

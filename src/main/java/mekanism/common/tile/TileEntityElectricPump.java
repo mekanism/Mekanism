@@ -17,6 +17,7 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,6 +33,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable
@@ -62,7 +64,24 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			{
 				if(fluidTank.getFluid() != null && fluidTank.getFluid().amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
-					if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
+					if(inventory[0].getItem() instanceof IFluidContainerItem)
+					{
+						int prev = fluidTank.getFluidAmount();
+						
+						fluidTank.drain(FluidContainerUtils.insertFluid(fluidTank, inventory[0]), true);
+						
+						if(prev == fluidTank.getFluidAmount() || fluidTank.getFluidAmount() == 0)
+						{
+							if(inventory[1] == null)
+							{
+								inventory[1] = inventory[0].copy();
+								inventory[0] = null;
+								
+								markDirty();
+							}
+						}
+					}
+					else if(FluidContainerRegistry.isEmptyContainer(inventory[0]))
 					{
 						ItemStack tempStack = FluidContainerRegistry.fillFluidContainer(fluidTank.getFluid(), inventory[0]);
 	

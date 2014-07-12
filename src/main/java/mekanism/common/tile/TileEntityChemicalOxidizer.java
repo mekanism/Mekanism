@@ -15,11 +15,13 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound
+public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IUpgradeTile
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
@@ -51,11 +53,13 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 
 	public TileEntityChemicalOxidizer()
 	{
 		super("ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
-		inventory = new ItemStack[3];
+		inventory = new ItemStack[4];
 	}
 
 	@Override
@@ -96,12 +100,12 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
 			}
 
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate() && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - ENERGY_USAGE);
+				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 
-				if(operatingTicks < TICKS_REQUIRED)
+				if(operatingTicks < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
 				}
@@ -190,14 +194,9 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 		return InventoryUtils.EMPTY;
 	}
 
-	public int getScaledProgress(int i)
-	{
-		return operatingTicks*i / TICKS_REQUIRED;
-	}
-
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);
+		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
 	}
 
 	public boolean canOperate()
@@ -286,6 +285,12 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		return i != 0 && i != 1;
 	}
+	
+	@Override
+	public double getMaxEnergy()
+	{
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
+	}
 
 	public int getScaledGasLevel(int i)
 	{
@@ -353,5 +358,43 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	public float getVolumeMultiplier()
 	{
 		return 1;
+	}
+
+	@Override
+	public int getEnergyMultiplier(Object... data)
+	{
+		return upgradeComponent.energyMultiplier;
+	}
+
+	@Override
+	public void setEnergyMultiplier(int multiplier, Object... data)
+	{
+		upgradeComponent.energyMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public int getSpeedMultiplier(Object... data)
+	{
+		return upgradeComponent.speedMultiplier;
+	}
+
+	@Override
+	public void setSpeedMultiplier(int multiplier, Object... data)
+	{
+		upgradeComponent.speedMultiplier = multiplier;
+		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean supportsUpgrades(Object... data) 
+	{
+		return true;
+	}
+
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
 	}
 }

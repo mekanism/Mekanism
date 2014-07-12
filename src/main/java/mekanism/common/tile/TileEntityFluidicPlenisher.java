@@ -14,6 +14,7 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,10 +26,10 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IConfigurable, IFluidHandler, ISustainedTank
@@ -56,52 +57,71 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			ChargeUtils.discharge(2, this);
 			
-			if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+			if(inventory[0] != null)
 			{
-				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-
-				if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || fluidTank.getFluid().amount+itemFluid.amount <= fluidTank.getCapacity())
+				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+					fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+					
+					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
 					{
-						return;
-					}
-
-					ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
-
-					boolean filled = false;
-
-					if(containerItem != null)
-					{
-						if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
+						if(inventory[1] == null)
 						{
+							inventory[1] = inventory[0].copy();
 							inventory[0] = null;
-
-							if(inventory[1] == null)
+							
+							markDirty();
+						}
+					}
+				}
+				else if(FluidContainerRegistry.isFilledContainer(inventory[0]))
+				{
+					FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+	
+					if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || fluidTank.getFluid().amount+itemFluid.amount <= fluidTank.getCapacity())
+					{
+						if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+						{
+							return;
+						}
+	
+						ItemStack containerItem = inventory[0].getItem().getContainerItem(inventory[0]);
+	
+						boolean filled = false;
+	
+						if(containerItem != null)
+						{
+							if(inventory[1] == null || (inventory[1].isItemEqual(containerItem) && inventory[1].stackSize+1 <= containerItem.getMaxStackSize()))
 							{
-								inventory[1] = containerItem;
+								inventory[0] = null;
+	
+								if(inventory[1] == null)
+								{
+									inventory[1] = containerItem;
+								}
+								else {
+									inventory[1].stackSize++;
+								}
+	
+								filled = true;
 							}
-							else {
-								inventory[1].stackSize++;
+						}
+						else {
+							inventory[0].stackSize--;
+	
+							if(inventory[0].stackSize == 0)
+							{
+								inventory[0] = null;
 							}
-
+	
 							filled = true;
 						}
-					}
-					else {
-						inventory[0].stackSize--;
-
-						if(inventory[0].stackSize == 0)
+	
+						if(filled)
 						{
-							inventory[0] = null;
+							fluidTank.fill(itemFluid, true);
+							markDirty();
 						}
-
-						filled = true;
-					}
-
-					if(filled)
-					{
-						fluidTank.fill(itemFluid, true);
 					}
 				}
 			}

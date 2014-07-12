@@ -7,11 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tank.TankUpdateProtocol;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,16 +24,20 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDynamicTank extends TileEntityContainerBlock
+public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager
 {
 	/** Unique inventory ID for the dynamic tank, serves as a way to retrieve cached inventories. */
 	public int inventoryID = -1;
 
 	/** The tank data for this structure. */
 	public SynchronizedTankData structure;
+	
+	/** The cache used by this specific tank segment */
+	public DynamicTankCache cachedData = new DynamicTankCache();
 
 	/** Whether or not to send this tank's structure in the next update packet. */
 	public boolean sendStructure;
@@ -39,9 +47,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 	/** Whether or not this tank has it's structure, for the client side mechanics. */
 	public boolean clientHasStructure;
-
-	/** The cached fluid this tank segment contains. */
-	public FluidStack cachedFluid;
 
 	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
@@ -146,7 +151,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 			if(inventoryID != -1 && structure == null)
 			{
-				MekanismUtils.updateCache(inventoryID, cachedFluid, inventory, this);
+				MekanismUtils.updateCache(inventoryID, cachedData, this);
 			}
 
 			if(structure == null && ticker == 5)
@@ -184,10 +189,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 				if(inventoryID != -1)
 				{
-					MekanismUtils.updateCache(inventoryID, structure.fluidStored, structure.inventory, this);
-
-					cachedFluid = structure.fluidStored;
-					inventory = structure.inventory;
+					cachedData.sync(structure);
+					MekanismUtils.updateCache(inventoryID, cachedData, this);
 				}
 
 				manageInventory();
@@ -201,7 +204,60 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		if(structure.inventory[0] != null)
 		{
-			if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]))
+			if(structure.inventory[0].getItem() instanceof IFluidContainerItem)
+			{
+				if(structure.editMode == ContainerEditMode.FILL && structure.fluidStored != null)
+				{
+					int prev = structure.fluidStored.amount;
+					
+					structure.fluidStored.amount -= FluidContainerUtils.insertFluid(structure.fluidStored, structure.inventory[0]);
+					
+					if(prev == structure.fluidStored.amount || structure.fluidStored.amount == 0)
+					{
+						if(structure.inventory[1] == null)
+						{
+							structure.inventory[1] = structure.inventory[0].copy();
+							structure.inventory[0] = null;
+							
+							markDirty();
+						}
+					}
+					
+					if(structure.fluidStored.amount == 0)
+					{
+						structure.fluidStored = null;
+					}
+				}
+				else if(structure.editMode == ContainerEditMode.EMPTY)
+				{
+					if(structure.fluidStored != null)
+					{
+						FluidStack received = FluidContainerUtils.extractFluid(max-structure.fluidStored.amount, structure.inventory[0], structure.fluidStored.getFluid());
+						
+						if(received != null)
+						{
+							structure.fluidStored.amount += received.amount;
+						}
+					}
+					else {
+						structure.fluidStored = FluidContainerUtils.extractFluid(max, structure.inventory[0], null);
+					}
+					
+					int newStored = structure.fluidStored != null ? structure.fluidStored.amount : 0;
+					
+					if(((IFluidContainerItem)structure.inventory[0].getItem()).getFluid(structure.inventory[0]) == null || newStored == max)
+					{
+						if(structure.inventory[1] == null)
+						{
+							structure.inventory[1] = structure.inventory[0].copy();
+							structure.inventory[0] = null;
+							
+							markDirty();
+						}
+					}
+				}
+			}
+			else if(FluidContainerRegistry.isEmptyContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.FILL))
 			{
 				if(structure.fluidStored != null && structure.fluidStored.amount >= FluidContainerRegistry.BUCKET_VOLUME)
 				{
@@ -240,7 +296,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 					}
 				}
 			}
-			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]))
+			else if(FluidContainerRegistry.isFilledContainer(structure.inventory[0]) && (structure.editMode == ContainerEditMode.BOTH || structure.editMode == ContainerEditMode.EMPTY))
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(structure.inventory[0]);
 
@@ -269,7 +325,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 								structure.inventory[1].stackSize++;
 							}
 
-							markDirty();
 							filled = true;
 						}
 					}
@@ -293,6 +348,8 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 						else {
 							structure.fluidStored.amount += itemFluid.amount;
 						}
+						
+						markDirty();
 					}
 
 					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
@@ -308,7 +365,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		data.add(isRendering);
 		data.add(structure != null);
-		data.add(structure != null ? structure.volume*TankUpdateProtocol.FLUID_PER_TANK : 0);
+		
+		if(structure != null)
+		{
+			data.add(structure.volume*TankUpdateProtocol.FLUID_PER_TANK);
+			data.add(structure.editMode.ordinal());
+		}
 
 		if(structure != null && structure.fluidStored != null)
 		{
@@ -364,8 +426,12 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		isRendering = dataStream.readBoolean();
 		clientHasStructure = dataStream.readBoolean();
-
-		clientCapacity = dataStream.readInt();
+		
+		if(clientHasStructure)
+		{
+			clientCapacity = dataStream.readInt();
+			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
+		}
 
 		if(dataStream.readInt() == 1)
 		{
@@ -477,10 +543,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 			if(inventoryID != -1)
 			{
-				if(nbtTags.hasKey("cachedFluid"))
-				{
-					cachedFluid = FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cachedFluid"));
-				}
+				cachedData.load(nbtTags);
 			}
 		}
 	}
@@ -492,9 +555,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 
 		nbtTags.setInteger("inventoryID", inventoryID);
 
-		if(cachedFluid != null)
+		if(inventoryID != -1)
 		{
-			nbtTags.setTag("cachedFluid", cachedFluid.writeToNBT(new NBTTagCompound()));
+			cachedData.save(nbtTags);
 		}
 	}
 
@@ -503,5 +566,33 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public ContainerEditMode getContainerEditMode() 
+	{
+		if(structure != null)
+		{
+			return structure.editMode;
+		}
+		
+		return ContainerEditMode.BOTH;
+	}
+
+	@Override
+	public void setContainerEditMode(ContainerEditMode mode) 
+	{
+		if(structure == null)
+		{
+			return;
+		}
+		
+		structure.editMode = mode;
+	}
+	
+	@Override
+	public boolean handleInventory()
+	{
+		return false;
 	}
 }

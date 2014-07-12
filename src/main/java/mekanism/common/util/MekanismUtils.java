@@ -26,6 +26,7 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
+import mekanism.common.IUpgradeManagement;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.Teleporter;
@@ -602,9 +603,9 @@ public final class MekanismUtils
 	 * @param def - the original, default ticks required
 	 * @return max operating ticks
 	 */
-	public static int getTicks(int speedUpgrade, int def)
+	public static int getTicks(IUpgradeManagement mgmt, int def)
 	{
-		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -speedUpgrade/8.0));
+		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -mgmt.getSpeedMultiplier()/8.0));
 	}
 
 	/**
@@ -614,9 +615,9 @@ public final class MekanismUtils
 	 * @param def - the original, default energy required
 	 * @return max energy per tick
 	 */
-	public static double getEnergyPerTick(int speedUpgrade, int energyUpgrade, double def)
+	public static double getEnergyPerTick(IUpgradeManagement mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*speedUpgrade-energyUpgrade)/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getSpeedMultiplier()-mgmt.getEnergyMultiplier())/8.0);
 	}
 
 	/**
@@ -625,9 +626,20 @@ public final class MekanismUtils
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
-	public static double getMaxEnergy(int energyUpgrade, double def)
+	public static double getMaxEnergy(IUpgradeManagement mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, energyUpgrade/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getEnergyMultiplier()/8.0);
+	}
+	
+	/**
+	 * Gets the maximum energy for a machine's item form via it's upgrades.
+	 * @param energyUpgrade - number of energy upgrades
+	 * @param def - original, default max energy
+	 * @return max energy
+	 */
+	public static double getMaxEnergy(ItemStack itemStack, IUpgradeManagement mgmt, double def)
+	{
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getEnergyMultiplier(itemStack)/8.0);
 	}
 
 	/**
@@ -886,7 +898,7 @@ public final class MekanismUtils
 
 			if(tileEntity != null)
 			{
-				tileEntity.cachedFluid = null;
+				tileEntity.cachedData = new DynamicTankCache();
 				tileEntity.inventory = new ItemStack[2];
 				tileEntity.inventoryID = -1;
 			}
@@ -904,13 +916,10 @@ public final class MekanismUtils
 	 * @param inventory - inventory of the dynamic tank
 	 * @param tileEntity - dynamic tank TileEntity
 	 */
-	public static void updateCache(int inventoryID, FluidStack fluid, ItemStack[] inventory, TileEntityDynamicTank tileEntity)
+	public static void updateCache(int inventoryID, DynamicTankCache cache, TileEntityDynamicTank tileEntity)
 	{
 		if(!Mekanism.dynamicInventories.containsKey(inventoryID))
 		{
-			DynamicTankCache cache = new DynamicTankCache();
-			cache.inventory = inventory;
-			cache.fluid = fluid;
 			cache.locations.add(Coord4D.get(tileEntity));
 
 			Mekanism.dynamicInventories.put(inventoryID, cache);
@@ -918,9 +927,7 @@ public final class MekanismUtils
 			return;
 		}
 
-		Mekanism.dynamicInventories.get(inventoryID).inventory = inventory;
-		Mekanism.dynamicInventories.get(inventoryID).fluid = fluid;
-
+		Mekanism.dynamicInventories.put(inventoryID, cache);
 		Mekanism.dynamicInventories.get(inventoryID).locations.add(Coord4D.get(tileEntity));
 	}
 

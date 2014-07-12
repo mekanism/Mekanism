@@ -206,27 +206,17 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 	/**
 	 * Gets the scaled progress level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getScaledProgress(int i)
-	{
-		return operatingTicks*i / MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED);
-	}
-
-	/**
-	 * Gets the scaled progress level for the GUI.
 	 * @return
 	 */
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED));
+		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
 	}
 
 	@Override
 	public double getMaxEnergy()
 	{
-		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
 	@Override

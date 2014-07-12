@@ -21,6 +21,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -33,10 +34,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -86,23 +87,29 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
 				{
-					FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-
-					if(fluid != null && fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
+					if(inventory[0].getItem() instanceof IFluidContainerItem)
 					{
-						fluidTank.fill(fluid, true);
-
-						if(inventory[0].getItem().hasContainerItem())
+						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+					}
+					else {
+						FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
+	
+						if(fluid != null && fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
 						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
-						}
-						else {
-							inventory[0].stackSize--;
-						}
-
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
+							fluidTank.fill(fluid, true);
+	
+							if(inventory[0].getItem().hasContainerItem(inventory[0]))
+							{
+								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							}
+							else {
+								inventory[0].stackSize--;
+							}
+	
+							if(inventory[0].stackSize == 0)
+							{
+								inventory[0] = null;
+							}
 						}
 					}
 				}

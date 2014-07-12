@@ -32,11 +32,12 @@ public class GuiChemicalOxidizer extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));
+		guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.ENERGY_USAGE);
+				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.ENERGY_USAGE));
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png")));
@@ -85,11 +86,11 @@ public class GuiChemicalOxidizer extends GuiMekanism
 
 		int xAxis = mouseX - guiWidth;
 		int yAxis = mouseY - guiHeight;
-
+		
 		int displayInt;
 
-		displayInt = tileEntity.getScaledProgress(48);
-		drawTexturedModalRect(guiWidth + 64, guiHeight + 40, 176, 63, displayInt + 1, 8);
+		displayInt = tileEntity.getScaledEnergyLevel(52);
+		drawTexturedModalRect(guiWidth + 116, guiHeight + 76, 176, 0, displayInt, 4);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

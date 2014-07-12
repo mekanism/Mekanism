@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.init.Blocks;
@@ -20,9 +21,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -49,24 +50,31 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			if(inventory[0] != null)
 			{
 				FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
-
-				if(fluid != null && fluid.fluidID == FluidRegistry.LAVA.getID())
+				
+				if(inventory[0].getItem() instanceof IFluidContainerItem)
 				{
-					if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
+					lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, inventory[0], FluidRegistry.LAVA), true);
+				}
+				else if(fluid != null)
+				{
+					if(fluid != null && fluid.fluidID == FluidRegistry.LAVA.getID())
 					{
-						lavaTank.fill(fluid, true);
-
-						if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+						if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
 						{
-							inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
-						}
-						else {
-							inventory[0].stackSize--;
-						}
-
-						if(inventory[0].stackSize == 0)
-						{
-							inventory[0] = null;
+							lavaTank.fill(fluid, true);
+	
+							if(inventory[0].getItem().getContainerItem(inventory[0]) != null)
+							{
+								inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+							}
+							else {
+								inventory[0].stackSize--;
+							}
+	
+							if(inventory[0].stackSize == 0)
+							{
+								inventory[0] = null;
+							}
 						}
 					}
 				}

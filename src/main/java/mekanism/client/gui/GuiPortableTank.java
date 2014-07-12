@@ -24,6 +24,7 @@ public class GuiPortableTank extends GuiMekanism
 	{
 		super(new ContainerPortableTank(inventory, tentity));
 		tileEntity = tentity;
+		guiElements.add(new GuiContainerEditMode(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
 		{
 			@Override

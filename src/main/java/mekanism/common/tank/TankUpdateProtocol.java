@@ -404,8 +404,7 @@ public class TankUpdateProtocol
 				idFound = MekanismUtils.getUniqueInventoryID();
 			}
 
-			structureFound.fluidStored = cache.fluid;
-			structureFound.inventory = cache.inventory;
+			cache.apply(structureFound);
 
 			if(structureFound.fluidStored != null)
 			{
@@ -418,8 +417,8 @@ public class TankUpdateProtocol
 
 				tileEntity.inventoryID = idFound;
 				tileEntity.structure = structureFound;
-				tileEntity.cachedFluid = structureFound.fluidStored;
-				tileEntity.inventory = structureFound.inventory;
+				
+				tileEntity.cachedData.sync(structureFound);
 			}
 		}
 		else {

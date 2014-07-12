@@ -38,7 +38,6 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -76,23 +75,23 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 		{
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
 			{
 				PressurizedRecipe recipe = getRecipe();
 				TICKS_REQUIRED = recipe.ticks;
 				setActive(true);
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED) && electricityStored >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK + recipe.extraEnergy))
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED) && electricityStored >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK + recipe.extraEnergy))
 				{
 					operate();
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK + recipe.extraEnergy);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK + recipe.extraEnergy);
 				}
 			}
 			else {
@@ -202,6 +201,12 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 		}
 
 		return true;
+	}
+	
+	@Override
+	public double getMaxEnergy()
+	{
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
 	public PressurizedRecipe getRecipe()

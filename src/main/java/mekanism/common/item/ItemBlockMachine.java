@@ -787,7 +787,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.fluidID == 0)
 			{
-				itemStack.stackTagCompound.setTag("fluidTank", null);
+				itemStack.stackTagCompound.removeTag("fluidTank");
 			}
 			else {
 				itemStack.stackTagCompound.setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
@@ -989,7 +989,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(itemStack), MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(itemStack, this, MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override
@@ -1123,7 +1123,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(doFill)
 			{
-				setFluidStack(new FluidStack(resource.getFluid(), toFill));
+				setFluidStack(new FluidStack(resource.getFluid(), toFill), container);
 			}
 			
 			return toFill;

@@ -273,7 +273,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public double getPerTick()
 	{
-		double ret = MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_USAGE);
+		double ret = MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE);
 
 		if(silkTouch)
 		{
@@ -291,7 +291,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public int getDelay()
 	{
-		return MekanismUtils.getTicks(getSpeedMultiplier(), 80);
+		return MekanismUtils.getTicks(this, 80);
 	}
 
 	public void setReplace(Coord4D obj)
@@ -902,7 +902,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public double getMaxEnergy()
 	{
-		return MekanismUtils.getMaxEnergy(getEnergyMultiplier(), MAX_ELECTRICITY);
+		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
 	@Override

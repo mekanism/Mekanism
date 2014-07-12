@@ -49,21 +49,21 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 		{
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK))
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
 			{
 				setActive(true);
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(getSpeedMultiplier(), TICKS_REQUIRED))
+				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operate();
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(getSpeedMultiplier(), getEnergyMultiplier(), ENERGY_PER_TICK);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
 			}
 			else {

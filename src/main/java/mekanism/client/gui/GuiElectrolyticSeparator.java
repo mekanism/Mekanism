@@ -82,7 +82,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			{
 				return tileEntity.isActive ? 1 : 0;
 			}
-		}, ProgressBar.BI, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalDissolutionChamber.png"), 78, 29));
+		}, ProgressBar.BI, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png"), 78, 29));
 	}
 
 	@Override

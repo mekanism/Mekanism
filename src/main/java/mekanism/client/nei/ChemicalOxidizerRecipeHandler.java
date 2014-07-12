@@ -12,9 +12,20 @@ import java.util.Set;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalOxidizer;
+import mekanism.client.gui.GuiElement;
+import mekanism.client.gui.GuiGasGauge;
+import mekanism.client.gui.GuiGauge;
+import mekanism.client.gui.GuiProgress;
+import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.GuiSlot;
+import mekanism.client.gui.GuiSlot.SlotOverlay;
+import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.nei.ElectrolyticSeparatorRecipeHandler.CachedIORecipe;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -30,9 +41,30 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
+	
+	public GuiGasGauge gasOutput;
 
 	public static int xOffset = 5;
 	public static int yOffset = 12;
+	
+	@Override
+	public void addGuiElements()
+	{
+		guiElements.add(gasOutput = GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 133, 13));
+
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 25, 35));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 154, 24).with(SlotOverlay.PLUS));
+
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
+			}
+		}, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 62, 39));
+	}
 
 	@Override
 	public String getRecipeName()
@@ -74,19 +106,22 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
 		drawTexturedModalRect(0, 0, xOffset, yOffset, 147, 62);
+		
+		for(GuiElement e : guiElements)
+		{
+			e.renderBackground(0, 0, -xOffset, -yOffset);
+		}
 	}
 
 	@Override
 	public void drawExtras(int i)
 	{
-		GasStack gas = ((CachedIORecipe)arecipes.get(i)).outputStack;
+		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 
-		float f = ticksPassed % 20 / 20.0F;
-		drawProgressBar(64-xOffset, 40-yOffset, 176, 63, 48, 8, f, 0);
-
-		if(gas != null)
+		if(recipe.outputStack != null)
 		{
-			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, gas);
+			gasOutput.setDummyType(recipe.outputStack.getGas());
+			gasOutput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 	}
 
@@ -133,11 +168,12 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	public List<String> handleTooltip(GuiRecipe gui, List<String> currenttip, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
 
-		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		if(xAxis >= 134-5 && xAxis <= 150-5 && yAxis >= 14-11 && yAxis <= 72-11)
 		{
 			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
 		}
@@ -149,11 +185,12 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	public boolean keyTyped(GuiRecipe gui, char keyChar, int keyCode, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
 
-		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		if(xAxis >= 134-5 && xAxis <= 150-5 && yAxis >= 14-11 && yAxis <= 72-11)
 		{
 			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 
@@ -180,11 +217,12 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	public boolean mouseClicked(GuiRecipe gui, int button, int recipe)
 	{
 		Point point = GuiDraw.getMousePosition();
+		Point offset = gui.getRecipePosition(recipe);
 
-		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
-		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
+		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft)-offset.x;
+		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop)-offset.y;
 
-		if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
+		if(xAxis >= 134-5 && xAxis <= 150-5 && yAxis >= 14-11 && yAxis <= 72-11)
 		{
 			GasStack stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 
@@ -223,12 +261,6 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
-	}
-
-	@Override
-	public void addGuiElements()
-	{
-
 	}
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe

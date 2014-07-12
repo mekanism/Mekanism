@@ -42,7 +42,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity.getSpeedMultiplier(), tileEntity.getEnergyMultiplier(), tileEntity.ENERGY_PER_TICK));
+				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.ENERGY_PER_TICK));
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
@@ -91,14 +91,9 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 		int xAxis = mouseX - guiWidth;
 		int yAxis = mouseY - guiHeight;
 
-		int displayInt;
-
-		displayInt = tileEntity.getScaledProgress(32);
-		drawTexturedModalRect(guiWidth + 72, guiHeight + 47, 176, 52, displayInt + 1, 8);
-
 		if(tileEntity.type != null)
 		{
-			displayInt = tileEntity.getScaledInfuseLevel(52);
+			int displayInt = tileEntity.getScaledInfuseLevel(52);
 			mc.renderEngine.bindTexture(tileEntity.type.texture);
 			drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
 		}

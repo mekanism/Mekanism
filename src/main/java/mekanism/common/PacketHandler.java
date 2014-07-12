@@ -13,6 +13,8 @@ import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketConfiguratorState;
 import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
+import mekanism.common.network.PacketContainerEditMode;
+import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketDigitUpdate;
@@ -57,7 +59,6 @@ import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -113,6 +114,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketConfigSync.class, ConfigSyncMessage.class, 23, Side.CLIENT);
 		netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTankState.class, PortableTankStateMessage.class, 25, Side.SERVER);
+		netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
 	}
 	
 	/**

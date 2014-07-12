@@ -72,36 +72,30 @@ public class GuiUpgradeManagement extends GuiElement
 	@Override
 	public void preMouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(button == 0)
+		if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
 		{
-			if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
-			{
-				offsetX(26);
-			}
+			offsetX(26);
 		}
 	}
 
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(button == 0)
+		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
 		{
-			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
-			{
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tileEntity), (byte)0));
-			}
+            SoundHandler.playSound("gui.button.press");
+			Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tileEntity), (byte)0));
+		}
 
-			if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
-			{
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tileEntity), (byte)1));
-			}
+		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
+		{
+            SoundHandler.playSound("gui.button.press");
+			Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tileEntity), (byte)1));
+		}
 
-			if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
-			{
-				offsetX(-26);
-			}
+		if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
+		{
+			offsetX(-26);
 		}
 	}
 }

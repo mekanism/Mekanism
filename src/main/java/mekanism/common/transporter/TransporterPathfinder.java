@@ -2,6 +2,7 @@ package mekanism.common.transporter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +29,6 @@ public final class TransporterPathfinder
 
 		public Coord4D start;
 
-		public Set<Destination> destinations = new HashSet<Destination>();
-
 		public TransporterStack transportStack;
 
 		public IdlePath(World world, Coord4D obj, TransporterStack stack)
@@ -39,65 +38,117 @@ public final class TransporterPathfinder
 			transportStack = stack;
 		}
 
-		public void loop(Coord4D pointer, ArrayList<Coord4D> currentPath, int dist)
+		public Destination find()
 		{
-			if(pointer == null)
+			ArrayList<Coord4D> ret = new ArrayList<Coord4D>();
+			ret.add(start);
+			
+			if(transportStack.idleDir == ForgeDirection.UNKNOWN)
 			{
-				return;
-			}
-
-			currentPath.add(pointer);
-
-			dist += ((ILogisticalTransporter)pointer.getTileEntity(worldObj)).getCost();
-
-			boolean found = false;
-
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
-
-				if(transportStack.canInsertToTransporter(tile, side) && !currentPath.contains(Coord4D.get(tile)))
+				ForgeDirection newSide = findSide();
+				
+				if(newSide == null)
 				{
-					loop(Coord4D.get(tile), (ArrayList<Coord4D>)currentPath.clone(), dist);
-					found = true;
+					return null;
 				}
+				
+				transportStack.idleDir = newSide;
+				loopSide(ret, newSide);
+				return new Destination(ret, 0, true, null).setPathType(Path.NONE);
 			}
-
-			if(!found)
-			{
-				destinations.add(new Destination(currentPath, dist, true, null));
-			}
-		}
-
-		public List<Coord4D> find()
-		{
-			loop(start, new ArrayList<Coord4D>(), 0);
-
-			Destination farthest = null;
-
-			for(Destination obj : destinations)
-			{
-				if(farthest == null || obj.score > farthest.score)
+			else {
+				TileEntity tile = start.getFromSide(transportStack.idleDir).getTileEntity(worldObj);
+				
+				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir))
 				{
-					if(!obj.path.isEmpty() && !obj.path.get(0).equals(start))
+					loopSide(ret, transportStack.idleDir);
+					return new Destination(ret, 0, true, null).setPathType(Path.NONE);
+				}
+				else {
+					Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter)start.getTileEntity(worldObj), transportStack, 0);
+					
+					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
-						farthest = obj;
+						transportStack.idleDir = ForgeDirection.UNKNOWN;
+						newPath.setPathType(Path.DEST);
+						return newPath;
+					}
+					else {
+						ForgeDirection newSide = findSide();
+						
+						if(newSide == null)
+						{
+							return null;
+						}
+						
+						transportStack.idleDir = newSide;
+						loopSide(ret, newSide);
+						return new Destination(ret, 0, true, null).setPathType(Path.NONE);
 					}
 				}
 			}
-
-			if(farthest == null)
+		}
+		
+		private void loopSide(List<Coord4D> list, ForgeDirection side)
+		{
+			int count = 1;
+			
+			while(true)
 			{
-				return null;
+				Coord4D coord = start.getFromSide(side, count);
+				
+				if(transportStack.canInsertToTransporter(coord.getTileEntity(worldObj), side))
+				{
+					list.add(coord);
+					count++;
+				}
+				else {
+					break;
+				}
 			}
-
-			return farthest.path;
+		}
+		
+		private ForgeDirection findSide()
+		{
+			if(transportStack.idleDir == ForgeDirection.UNKNOWN)
+			{
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					TileEntity tile = start.getFromSide(side).getTileEntity(worldObj);
+	
+					if(transportStack.canInsertToTransporter(tile, side))
+					{
+						return side;
+					}
+				}
+			}
+			else {
+				for(ForgeDirection side : EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN, transportStack.idleDir.getOpposite())))
+				{
+					TileEntity tile = start.getFromSide(side).getTileEntity(worldObj);
+	
+					if(transportStack.canInsertToTransporter(tile, side))
+					{
+						return side;
+					}
+				}
+				
+				TileEntity tile = start.getFromSide(transportStack.idleDir.getOpposite()).getTileEntity(worldObj);
+				
+				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir.getOpposite()))
+				{
+					return transportStack.idleDir.getOpposite();
+				}
+			}
+			
+			return null;
 		}
 	}
 
 	public static class Destination implements Comparable<Destination>
 	{
 		public List<Coord4D> path = new ArrayList<Coord4D>();
+		public Path pathType;
 		public double score;
 		public ItemStack rejected;
 
@@ -112,6 +163,12 @@ public final class TransporterPathfinder
 
 			score = d;
 			rejected = rejects;
+		}
+		
+		public Destination setPathType(Path type)
+		{
+			pathType = type;
+			return this;
 		}
 
 		@Override
@@ -513,22 +570,20 @@ public final class TransporterPathfinder
 				return path;
 			}
 			else {
-				if(stack.homeLocation.getTileEntity(start.getTile().getWorldObj()) == null)
-				{
-					stack.homeLocation = null;
-				}
+				stack.homeLocation = null;
 			}
 		}
 
 		IdlePath d = new IdlePath(start.getTile().getWorldObj(), Coord4D.get(start.getTile()), stack);
-		List<Coord4D> path = d.find();
-		stack.pathType = Path.NONE;
+		Destination dest = d.find();
 
-		if(path == null)
+		if(dest == null)
 		{
 			return null;
 		}
+		
+		stack.pathType = dest.pathType;
 
-		return path;
+		return dest.path;
 	}
 }

@@ -27,6 +27,8 @@ public class TransporterStack
 	public EnumColor color = null;
 
 	public boolean initiatedPath = false;
+	
+	public ForgeDirection idleDir = ForgeDirection.UNKNOWN;
 
 	public List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
 
@@ -103,6 +105,7 @@ public class TransporterStack
 
 		nbtTags.setInteger("progress", progress);
 		nbtTags.setTag("originalLocation", originalLocation.write(new NBTTagCompound()));
+		nbtTags.setInteger("idleDir", idleDir.ordinal());
 
 		if(homeLocation != null)
 		{
@@ -122,6 +125,7 @@ public class TransporterStack
 
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
+		idleDir = ForgeDirection.values()[nbtTags.getInteger("idleDir")];
 
 		if(nbtTags.hasKey("homeLocation"))
 		{
@@ -163,8 +167,8 @@ public class TransporterStack
 		}
 
 		pathToTarget = newPath.path;
-
 		pathType = Path.DEST;
+		idleDir = ForgeDirection.UNKNOWN;
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -180,8 +184,8 @@ public class TransporterStack
 		}
 
 		pathToTarget = newPath.path;
-
 		pathType = Path.DEST;
+		idleDir = ForgeDirection.UNKNOWN;
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -194,6 +198,11 @@ public class TransporterStack
 		if(newPath == null)
 		{
 			return false;
+		}
+		
+		if(pathType == Path.HOME)
+		{
+			idleDir = ForgeDirection.UNKNOWN;
 		}
 
 		pathToTarget = newPath;

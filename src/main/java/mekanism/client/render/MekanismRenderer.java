@@ -82,6 +82,8 @@ public class MekanismRenderer
 			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
 			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
 			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:Ethene"));
+			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
+			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
 			
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{

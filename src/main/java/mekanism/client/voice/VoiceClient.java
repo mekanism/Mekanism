@@ -20,7 +20,7 @@ public class VoiceClient extends Thread
 
 	public String ip;
 
-	public AudioFormat format = new AudioFormat(11025.0F, 8, 1, true, true);
+	public AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);
 
 	public VoiceInput inputThread;
 	public VoiceOutput outputThread;

@@ -21,8 +21,8 @@ public class ContainerChemicalWasher extends Container
 	public ContainerChemicalWasher(InventoryPlayer inventory, TileEntityChemicalWasher tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, -20, 9));
-		addSlotToContainer(new SlotOutput(tentity, 1, -20, 40));
+		addSlotToContainer(new Slot(tentity, 0, 180, 71));
+		addSlotToContainer(new SlotOutput(tentity, 1, 180, 102));
 		addSlotToContainer(new SlotStorageTank(tentity, 2, 155, 56));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 155, 5));
 

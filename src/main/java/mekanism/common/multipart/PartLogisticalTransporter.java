@@ -394,8 +394,18 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		needsSync.add(stack);
 
-		if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this, 0)))
+		if(stack.pathType != Path.NONE)
 		{
+			if(!TransporterManager.didEmit(stack.itemStack, stack.recalculatePath(this, 0)))
+			{
+				if(!stack.calculateIdle(this))
+				{
+					TransporterUtils.drop(this, stack);
+					return false;
+				}
+			}
+		}
+		else {
 			if(!stack.calculateIdle(this))
 			{
 				TransporterUtils.drop(this, stack);
