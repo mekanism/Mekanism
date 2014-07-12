@@ -41,12 +41,6 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	}
 
 	@Override
-	public String getGuiTexture()
-	{
-		return "mekanism:gui/GuiChemicalInjectionChamber.png";
-	}
-
-	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
 		if(gasType == GasRegistry.getGas("sulfuricAcid"))
