@@ -544,13 +544,26 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			}
 		}
 		
-		return (from == ForgeDirection.UP || from == ForgeDirection.DOWN) && (fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid);
+		return fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid;
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return !isActive && from == ForgeDirection.DOWN && (fluid == null || (fluidTank != null && fluidTank.getFluid().getFluid() == fluid));
+		if(fluidTank != null)
+		{
+			if(fluid == null || fluidTank.getFluid().getFluid() == fluid)
+			{
+				if(isActive)
+				{
+					return from != ForgeDirection.DOWN;
+				}
+				
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	@Override

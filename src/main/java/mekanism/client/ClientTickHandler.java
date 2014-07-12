@@ -95,11 +95,12 @@ public class ClientTickHandler
 	{
 		if(!preloadedSounds && MekanismClient.enableSounds && MekanismClient.audioHandler != null && MekanismClient.audioHandler.isSystemLoaded())
 		{
+			preloadedSounds = true;
+			
 			new Thread(new Runnable() {
 				@Override
 				public void run()
 				{
-					preloadedSounds = true;
 					MekanismClient.audioHandler.preloadSounds();
 				}
 			}).start();
