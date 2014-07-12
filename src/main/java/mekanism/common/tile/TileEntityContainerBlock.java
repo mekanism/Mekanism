@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import mekanism.common.ISustainedInventory;
+import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;

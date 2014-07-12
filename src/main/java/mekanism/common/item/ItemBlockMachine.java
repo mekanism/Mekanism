@@ -750,7 +750,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
-
+			
 			itemStack.stackTagCompound.setTag("Items", nbtTags);
 		}
 	}
@@ -767,7 +767,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				return null;
 			}
 			
-			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_ANY_NUMERIC);
+			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 		}
 
 		return null;
