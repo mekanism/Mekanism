@@ -37,12 +37,6 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	{
 		return Recipe.COMBINER.get().entrySet();
 	}
-
-	@Override
-	public String getGuiTexture()
-	{
-		return "mekanism:gui/GuiCombiner.png";
-	}
 	
 	@Override
 	public ProgressBar getProgressType()

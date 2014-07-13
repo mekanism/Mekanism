@@ -17,12 +17,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockCardboardBox extends BlockContainer
 {
+	private static boolean testingPlace = false;
+	
 	public IIcon[] icons = new IIcon[6];
 
 	public BlockCardboardBox()
@@ -54,6 +57,12 @@ public class BlockCardboardBox extends BlockContainer
 			return meta == 0 ? icons[1] : icons[2];
 		}
 	}
+	
+	@Override
+	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
+	{
+		return testingPlace;
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float hitX, float hitY, float hitZ)
@@ -67,10 +76,15 @@ public class BlockCardboardBox extends BlockContainer
 			{
 				BlockData data = tileEntity.storedData;
 				
+				testingPlace = true;
+				
 				if(!data.block.canPlaceBlockAt(world, x, y, z))
 				{
+					testingPlace = false;
 					return true;
 				}
+				
+				testingPlace = false;
 
 				if(data.block != null)
 				{
