@@ -5,6 +5,8 @@
 //Items
 tile.ObsidianTNT.name=Обсидиановый динамит
 item.EnrichedAlloy.name=Обогащённый сплав
+item.ReinforcedAlloy.name=Укреплённый сплав
+item.AtomicAlloy.name=Атомный сплав
 item.EnergyTablet.name=Энергетический планшет
 item.SpeedUpgrade.name=Улучшение «Скорость»
 item.EnergyUpgrade.name=Улучшение «Энергия»
@@ -39,6 +41,12 @@ item.HDPESheet.name=Лист полиэтилена НД
 item.PlaStick.name=Пластиковая палка
 item.Substrate.name=Субстрат
 
+//Control Circuits
+item.BasicControlCircuit.name=Основная схема управления
+item.AdvancedControlCircuit.name=Продвинутая схема управления
+item.EliteControlCircuit.name=Элитная схема управления
+item.UltimateControlCircuit.name=Максимальная схема управления
+
 //Gas Tank
 tile.GasTank.GasTank.name=Газовый баллон
 
@@ -47,6 +55,9 @@ tile.CardboardBox.name=Картонная коробка
 
 //Bounding Block
 tile.BoundingBlock.name=Скреплённый блок
+
+//Salt
+tile.SaltBlock.name=Блок соли
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Осмиевый блок
@@ -119,6 +130,7 @@ infuse.tin=Олово
 infuse.diamond=Алмаз
 infuse.redstone=Красный камень
 infuse.fungi=Грибок
+infuse.obsidian=Обсидиан
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Осмиевая руда
@@ -221,6 +233,8 @@ gas.hydrogenChloride=Хлороводород
 gas.liquidOsmium=Жидкий осмий
 gas.liquidStone=Жидкий камень
 gas.ethene=Этилен
+gas.sodium=Натрий
+gas.brine=Газообразный рассол
 
 gas.iron=Расплавленное железо
 gas.gold=Расплавленное золото
@@ -699,3 +713,8 @@ item.SteelAxe.name=Стальной топор
 item.SteelShovel.name=Стальная лопата
 item.SteelHoe.name=Стальная мотыга
 item.SteelSword.name=Стальной меч
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general.tooltip=Настройки, касающиеся основной настройки MekanismTools
+mekanism.configgui.ctgy.tools.armor.tooltip=Настройки, касающиеся значений защиты и баланса наборов брони MekanismTools
+mekanism.configgui.ctgy.tools.tools.tooltip=Настройки, касающиеся значений эффективности и баланса наборов инструментов MekanismTools
