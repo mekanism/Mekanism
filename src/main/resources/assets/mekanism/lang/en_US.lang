@@ -482,8 +482,8 @@ tooltip.mode=Mode
 tooltip.efficiency=Efficiency
 tooltip.modeToggle=Mode toggled to
 tooltip.flowing=Flowing
-tooltip.yes=yes
-tooltip.no=no
+tooltip.yes=Yes
+tooltip.no=No
 tooltip.name=Name
 tooltip.blockData=Block data
 tooltip.block=Block
@@ -496,11 +496,11 @@ tooltip.configureState=Configure State
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=slow
-tooltip.disassembler.fast=fast
-tooltip.disassembler.vein=vein
-tooltip.disassembler.off=off
+tooltip.disassembler.normal=Normal
+tooltip.disassembler.slow=Slow
+tooltip.disassembler.fast=Fast
+tooltip.disassembler.vein=Vein
+tooltip.disassembler.off=Off
 
 tooltip.filterCard.got=Retrieved filter data from %s
 tooltip.filterCard.set=Injected filter data of type %s
