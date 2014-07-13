@@ -993,7 +993,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 
 	@Override
-	@Method(modid = "IC2API")
 	public double getMaxTransfer(ItemStack itemStack)
 	{
 		return getMaxEnergy(itemStack)*0.005;
