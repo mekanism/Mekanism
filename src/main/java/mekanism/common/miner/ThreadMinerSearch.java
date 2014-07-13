@@ -4,12 +4,12 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import mekanism.api.BlockInfo;
 import mekanism.api.Coord4D;
-import mekanism.api.ItemInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.init.Blocks;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -21,7 +21,7 @@ public class ThreadMinerSearch extends Thread
 
 	public BitSet oresToMine = new BitSet();
 
-	public Map<ItemInfo, Boolean> acceptedItems = new HashMap<ItemInfo, Boolean>();
+	public Map<BlockInfo, Boolean> acceptedItems = new HashMap<BlockInfo, Boolean>();
 
 	public int found = 0;
 
@@ -44,7 +44,7 @@ public class ThreadMinerSearch extends Thread
 		Coord4D coord = tileEntity.getStartingCoord();
 		int diameter = tileEntity.getDiameter();
 		int size = tileEntity.getTotalSize();
-		ItemInfo info = new ItemInfo(null, 0);
+		BlockInfo info = new BlockInfo(null, 0);
 
 		for(int i = 0; i < size; i++)
 		{
