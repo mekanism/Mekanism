@@ -520,7 +520,16 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public double getEnergy()
 	{
-		return Double.parseDouble(dataWatcher.getWatchableObjectString(12));
+		int tmpEnergy = 0;
+		//Make sure data that does not have a gaurenteed data type is properly catched if failing.
+		try {
+			//Attempt to get energy and cast to int variable
+			tmpEnergy = Double.parseDouble(dataWatcher.getWatchableObjectString(12));
+		} catch (Exception e) {
+			//Energy not being formatted correctly, return 0
+			tmpEnergy = 0;
+		}
+		return tmpEnergy;
 	}
 
 	public void setEnergy(double energy)
