@@ -339,6 +339,7 @@ gui.energy=Energy
 gui.gas=Gas
 gui.dumping=Dumping
 gui.modID=Mod ID
+gui.modIDFilter.noKey=No mod ID
 gui.key=Key
 gui.id=ID
 gui.finished=Finished
