@@ -131,6 +131,22 @@ public class Pos3D
 
 		return this;
 	}
+	
+	public Pos3D rotatePitch(double pitch)
+	{
+		double pitchRadians = Math.toRadians(pitch);
+		
+		double y = yPos;
+		double z = zPos;
+		
+		if(pitch != 0)
+		{
+			yPos = y * Math.cos(pitchRadians) - z * Math.sin(pitchRadians);
+			zPos = z * Math.cos(pitchRadians) + y * Math.sin(pitchRadians);
+		}
+		
+		return this;
+	}
 
 	/**
 	 * Scales this Pos3D by the defined x, y, an z values.
