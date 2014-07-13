@@ -444,6 +444,13 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
 			
+			GL11.glTranslatef(0.0F, -2.0F, 0.0F);
+			
+			if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+			{
+				GL11.glScalef(2.0F, 2.0F, 2.0F);
+			}
+			
 			flamethrower.render(0.0625F);
 			GL11.glPopMatrix();
 		}

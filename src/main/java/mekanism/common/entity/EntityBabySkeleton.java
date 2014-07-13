@@ -17,9 +17,7 @@ public class EntityBabySkeleton extends EntitySkeleton
 	public EntityBabySkeleton(World world) 
 	{
 		super(world);
-		
 		setChild(true);
-		System.out.println("Spawned");
 	}
 	
 	@Override
@@ -28,14 +26,6 @@ public class EntityBabySkeleton extends EntitySkeleton
 		super.entityInit();
 		
         getDataWatcher().addObject(12, new Byte((byte)0));
-	}
-	
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
-		
-		System.out.println(posX + " " + posY + " " + posZ);
 	}
 	
     public void setChild(boolean child)
@@ -80,6 +70,6 @@ public class EntityBabySkeleton extends EntitySkeleton
 
     protected final void updateSize(float size)
     {
-        super.setSize(size, size);
+        super.setSize(size, size+0.4F);
     }
 }

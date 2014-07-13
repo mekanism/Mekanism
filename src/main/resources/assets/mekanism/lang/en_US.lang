@@ -293,6 +293,10 @@ update.outdated=Using outdated version on one or more modules
 key.mode=Mode Switch
 key.voice=Voice
 
+//Entities
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Baby Skeleton
+
 //Config Gui
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
@@ -396,7 +400,6 @@ gui.teleporter.linksCapacity=Links > 2
 gui.teleporter.noLink=No link found
 
 gui.robit=Robit
-entity.Robit.name=Robit
 gui.robit.smelting=Robit Smelting
 gui.robit.inventory=Robit Inventory
 gui.robit.crafting=Robit Crafting

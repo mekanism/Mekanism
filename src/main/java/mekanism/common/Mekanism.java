@@ -1398,7 +1398,7 @@ public class Mekanism
 			{
 				if(biome.getSpawnableList(EnumCreatureType.monster) != null && biome.getSpawnableList(EnumCreatureType.monster).size() > 0)
 				{
-					EntityRegistry.addSpawn(EntityBabySkeleton.class, 6, 1, 3, EnumCreatureType.monster, new BiomeGenBase[] {biome});
+					EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.monster, new BiomeGenBase[] {biome});
 				}
 			}
 		}
