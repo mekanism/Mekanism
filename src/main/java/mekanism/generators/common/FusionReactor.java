@@ -9,9 +9,10 @@ import java.util.Set;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
-import mekanism.generators.common.tile.TileEntityReactorController;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
@@ -19,14 +20,14 @@ import net.minecraftforge.fluids.FluidTank;
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 
-public class FusionReactor
+public class FusionReactor implements IFusionReactor
 {
 	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
 
 	public static final int MAX_FUEL = 100 * FluidContainerRegistry.BUCKET_VOLUME;
 
 	public FluidTank waterTank = new FluidTank(MAX_WATER);
-	public GasTank steamTank = new GasTank(MAX_WATER*1000);
+	public FluidTank steamTank = new FluidTank(MAX_WATER*1000);
 
 	public GasTank deuteriumTank = new GasTank(MAX_FUEL);
 	public GasTank tritiumTank = new GasTank(MAX_FUEL);
@@ -47,10 +48,18 @@ public class FusionReactor
 	public static double coolingCoefficient = 0.2;
 	
 	public static double waterRatio = 10^-14;
+	public static double inverseHeatCapacity = 1;
 
 	public boolean burning = false;
 	public boolean hasHohlraum = false;
 
+	@Override
+	public void addTemperature(double energyAdded)
+	{
+		temperature += energyAdded * inverseHeatCapacity;
+	}
+
+	@Override
 	public void simulate()
 	{
 		if(temperature >= burnTemperature)
@@ -119,5 +128,35 @@ public class FusionReactor
 	public void ambientLoss()
 	{
 		temperature -= coolingCoefficient*temperature;
+	}
+
+	@Override
+	public FluidTank getWaterTank()
+	{
+		return waterTank;
+	}
+
+	@Override
+	public FluidTank getSteamTank()
+	{
+		return steamTank;
+	}
+
+	@Override
+	public GasTank getDeuteriumTank()
+	{
+		return deuteriumTank;
+	}
+
+	@Override
+	public GasTank getTritiumTank()
+	{
+		return tritiumTank;
+	}
+
+	@Override
+	public GasTank getFuelTank()
+	{
+		return fuelTank;
 	}
 }

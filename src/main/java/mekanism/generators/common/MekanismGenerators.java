@@ -13,6 +13,7 @@ import mekanism.common.Version;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.generators.common.block.BlockGenerator;
+import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -55,6 +56,7 @@ public class MekanismGenerators implements IModule
 	
 	//Blocks
 	public static Block Generator;
+	public static Block Reactor;
 	
 	//Generation Configuration
 	public static double advancedSolarGeneration;
@@ -138,8 +140,10 @@ public class MekanismGenerators implements IModule
 	{
 		//Declarations
 		Generator = new BlockGenerator().setBlockName("Generator");
+		Reactor = new BlockReactor().setBlockName("Reactor");
 		
 		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
+		GameRegistry.registerBlock(Reactor, "Reactor");
 	}
 	
 	public void addItems()

@@ -1,4 +1,4 @@
-package mekanism.generators.common.tile;
+package mekanism.generators.common.tile.reactor;
 
 public class TileEntityReactorController extends TileEntityReactorBlock
 {
@@ -10,6 +10,5 @@ public class TileEntityReactorController extends TileEntityReactorBlock
 
 	public void radiateNeutrons(int neutrons)
 	{
-
 	}
 }
