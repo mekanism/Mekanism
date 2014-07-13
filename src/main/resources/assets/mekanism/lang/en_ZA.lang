@@ -20,7 +20,7 @@ tooltip.configurator.toggleDiverter=Diverter mode changed to
 tooltip.configurator.toggleColor=Colour bumped to
 tooltip.configurator.viewColor=Current colour
 
-tooltip.Chargepad=A universal chargepad that can charge any energised item !nfrom any mod.
+tooltip.Chargepad=A universal chargepad that can charge !nany energised item from any mod.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallisation.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallise !npurified ore slurry into ore crystals.
 
