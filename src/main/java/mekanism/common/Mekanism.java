@@ -49,6 +49,7 @@ import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
+import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
@@ -73,6 +74,7 @@ import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemFilterCard;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemHDPE;
@@ -111,6 +113,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -120,6 +123,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -258,6 +263,7 @@ public class Mekanism
 	public static ItemJetpack Jetpack;
 	public static ItemScubaTank ScubaTank;
 	public static ItemGasMask GasMask;
+	public static ItemFlamethrower Flamethrower;
 	public static Item Dictionary;
 	public static Item Balloon;
 	public static Item ElectrolyticCore;
@@ -309,6 +315,7 @@ public class Mekanism
 	public static boolean cardboardSpawners = true;
 	public static boolean machineEffects = true;
 	public static boolean enableWorldRegeneration = true;
+	public static boolean spawnBabySkeletons = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int osmiumPerChunk = 12;
 	public static int copperPerChunk = 16;
@@ -967,6 +974,7 @@ public class Mekanism
 		Jetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("Jetpack");
 		ArmoredJetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("ArmoredJetpack");
 		FreeRunners = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
+		Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
 		BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
 		Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 		Salt = new ItemMekanism().setUnlocalizedName("Salt");
@@ -1033,6 +1041,7 @@ public class Mekanism
 		GameRegistry.registerItem(Polyethene, "Polyethene");
 		GameRegistry.registerItem(BioFuel, "BioFuel");
 		GameRegistry.registerItem(GlowPanel, "GlowPanel");
+		GameRegistry.registerItem(Flamethrower, "Flamethrower");
 	}
 	
 	/**
@@ -1237,11 +1246,13 @@ public class Mekanism
 		EntityRegistry.registerGlobalEntityID(EntityObsidianTNT.class, "ObsidianTNT", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityRobit.class, "Robit", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityBalloon.class, "Balloon", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerGlobalEntityID(EntityBabySkeleton.class, "BabySkeleton", EntityRegistry.findGlobalUniqueEntityId());
 		
 		//Registrations
 		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 40, 5, true);
 		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 2, true);
 		EntityRegistry.registerModEntity(EntityBalloon.class, "Balloon", 2, this, 40, 1, true);
+		EntityRegistry.registerModEntity(EntityBabySkeleton.class, "BabySkeleton", 3, this, 64, 5, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
@@ -1379,6 +1390,18 @@ public class Mekanism
 		
 		//Load configuration
 		proxy.loadConfiguration();
+		
+		//Add baby skeleton spawner
+		if(spawnBabySkeletons)
+		{
+			for(BiomeGenBase biome : WorldChunkManager.allowedBiomes) 
+			{
+				if(biome.getSpawnableList(EnumCreatureType.monster) != null && biome.getSpawnableList(EnumCreatureType.monster).size() > 0)
+				{
+					EntityRegistry.addSpawn(EntityBabySkeleton.class, 6, 1, 3, EnumCreatureType.monster, new BiomeGenBase[] {biome});
+				}
+			}
+		}
 
 		//Load this module
 		addItems();

@@ -40,6 +40,7 @@ item.HDPERod.name=HDPE Rod
 item.HDPESheet.name=HDPE Sheet
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
+item.Flamethrower.name=Flamethrower
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit

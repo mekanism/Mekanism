@@ -87,6 +87,7 @@ import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
@@ -133,6 +134,7 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -313,6 +315,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
 		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
+		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new RenderSkeleton());
 
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
@@ -334,6 +337,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler, handler);
 		MinecraftForgeClient.registerItemRenderer(Mekanism.GlowPanel, handler);
+		MinecraftForgeClient.registerItemRenderer(Mekanism.Flamethrower, handler);
 
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());

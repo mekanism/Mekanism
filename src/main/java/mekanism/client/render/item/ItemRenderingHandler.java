@@ -8,6 +8,7 @@ import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelGasTank;
@@ -31,6 +32,7 @@ import mekanism.common.item.ItemAtomicDisassembler;
 import mekanism.common.item.ItemBalloon;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockMachine;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemRobit;
@@ -83,6 +85,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelFreeRunners freeRunners = new ModelFreeRunners();
 	public ModelAtomicDisassembler atomicDisassembler = new ModelAtomicDisassembler();
 	public ModelPortableTank portableTank = new ModelPortableTank();
+	public ModelFlamethrower flamethrower = new ModelFlamethrower();
 
 	private final RenderBalloon balloonRenderer = new RenderBalloon();
 	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
@@ -434,6 +437,15 @@ public class ItemRenderingHandler implements IItemRenderer
 			RenderGlowPanel.getInstance().renderItem(item.getItemDamage());
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glPopAttrib();
+		}
+		else if(item.getItem() instanceof ItemFlamethrower)
+		{
+			GL11.glPushMatrix();
+			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Flamethrower.png"));
+			
+			flamethrower.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(MachineType.get(item) == MachineType.PORTABLE_TANK)
 		{
