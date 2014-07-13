@@ -365,11 +365,11 @@ public final class OreDictManager
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().func_151394_a(new ItemStack(Mekanism.Dust, 8), MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
+			FurnaceRecipes.smelting().func_151394_a(new ItemStack(Mekanism.Dust, 1, 8), MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().func_151394_a(new ItemStack(Mekanism.Dust, 9), MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
+			FurnaceRecipes.smelting().func_151394_a(new ItemStack(Mekanism.Dust, 1, 9), MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
