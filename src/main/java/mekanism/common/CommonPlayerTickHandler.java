@@ -29,7 +29,7 @@ public class CommonPlayerTickHandler
 
 	public void tickEnd(EntityPlayer player)
 	{
-		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
+		if(!player.worldObj.isRemote && player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
 			ItemStack itemstack = player.getCurrentEquippedItem();
@@ -57,7 +57,6 @@ public class CommonPlayerTickHandler
 							Mekanism.packetHandler.sendTo(new StatusUpdateMessage(1), (EntityPlayerMP)player);
 						}
 					}
-					return;
 				}
 				else if(Mekanism.teleporters.get(teleCode).size() > 2)
 				{
@@ -66,7 +65,6 @@ public class CommonPlayerTickHandler
 						item.setStatus(itemstack, 3);
 						Mekanism.packetHandler.sendTo(new StatusUpdateMessage(3), (EntityPlayerMP)player);
 					}
-					return;
 				}
 				else {
 					if(item.getStatus(itemstack) != 4)
@@ -74,7 +72,6 @@ public class CommonPlayerTickHandler
 						item.setStatus(itemstack, 4);
 						Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
 					}
-					return;
 				}
 			}
 			else {
@@ -83,7 +80,6 @@ public class CommonPlayerTickHandler
 					item.setStatus(itemstack, 4);
 					Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
 				}
-				return;
 			}
 		}
 
