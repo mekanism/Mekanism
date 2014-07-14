@@ -12,6 +12,13 @@ import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
+import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
+import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
+import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -25,6 +32,19 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 public class GeneratorsCommonProxy
 {
+	/**
+	 * Register normal tile entities
+	 */
+	public void registerRegularTileEntities()
+	{
+		GameRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController");
+		GameRegistry.registerTileEntity(TileEntityReactorFrame.class, "ReactorFrame");
+		GameRegistry.registerTileEntity(TileEntityReactorGlass.class, "ReactorGlass");
+		GameRegistry.registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "ReactorLaserFocus");
+		GameRegistry.registerTileEntity(TileEntityReactorNeutronCapture.class, "ReactorNeutronCapture");
+		GameRegistry.registerTileEntity(TileEntityReactorPort.class, "ReactorPort");
+	}
+
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */

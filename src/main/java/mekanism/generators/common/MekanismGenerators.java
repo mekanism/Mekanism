@@ -15,6 +15,8 @@ import mekanism.common.recipe.MekanismRecipe;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.item.ItemBlockGenerator;
+import mekanism.generators.common.item.ItemBlockReactor;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -96,6 +98,7 @@ public class MekanismGenerators implements IModule
 
 		//Load the proxy
 		proxy.loadConfiguration();
+		proxy.registerRegularTileEntities();
 		proxy.registerSpecialTileEntities();
 		proxy.registerRenderInformation();
 		
@@ -143,7 +146,7 @@ public class MekanismGenerators implements IModule
 		Reactor = new BlockReactor().setBlockName("Reactor");
 		
 		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
-		GameRegistry.registerBlock(Reactor, "Reactor");
+		GameRegistry.registerBlock(Reactor, ItemBlockReactor.class, "Reactor");
 	}
 	
 	public void addItems()

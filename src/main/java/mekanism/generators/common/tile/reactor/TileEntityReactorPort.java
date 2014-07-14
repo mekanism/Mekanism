@@ -4,6 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.ITubeConnection;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -12,7 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection
 {
 	@Override
 	public boolean isFrame()
@@ -117,5 +118,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return (type == GasRegistry.getGas("steam"));
+	}
+
+	@Override
+	public boolean canTubeConnect(ForgeDirection side)
+	{
+		return true;
 	}
 }

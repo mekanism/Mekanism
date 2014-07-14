@@ -191,7 +191,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
 			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
-			icons[13][0] = register.registerIcon("Mekanism:Laser");
+			icons[13][0] = register.registerIcon("Mekanism:SteelCasing");
+			icons[13][1] = register.registerIcon("Mekanism:Laser");
 		}
 	}
 
@@ -467,6 +468,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[meta][0];
 				}
 			}
+			else if(meta == 13)
+			{
+				if(side == 3)
+				{
+					return icons[meta][0];
+				}
+				else {
+					return icons[meta][1];
+				}
+			}
 		}
 
 		return null;
@@ -600,7 +611,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[metadata][2];
 				}
 			}
-			else if(metadata == 9)
+			else if(metadata == 9 || metadata == 13)
 			{
 				if(side == tileEntity.facing)
 				{
@@ -834,7 +845,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
