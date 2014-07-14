@@ -3,6 +3,7 @@ package mekanism.api;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 /**
  * Pos3D - a way of performing operations on objects in a three dimensional environment.
@@ -18,6 +19,13 @@ public class Pos3D
 	public Pos3D()
 	{
 		this(0, 0, 0);
+	}
+	
+	public Pos3D(Vec3 vec)
+	{
+		xPos = vec.xCoord;
+		yPos = vec.yCoord;
+		zPos = vec.zCoord;
 	}
 
 	public Pos3D(double x, double y, double z)
@@ -126,7 +134,7 @@ public class Pos3D
 		if(yaw != 0)
 		{
 			xPos = x * Math.cos(yawRadians) - z * Math.sin(yawRadians);
-			zPos = x * Math.sin(yawRadians) + z * Math.cos(yawRadians);
+			zPos = z * Math.cos(yawRadians) + x * Math.sin(yawRadians);
 		}
 
 		return this;
@@ -144,6 +152,31 @@ public class Pos3D
 			yPos = y * Math.cos(pitchRadians) - z * Math.sin(pitchRadians);
 			zPos = z * Math.cos(pitchRadians) + y * Math.sin(pitchRadians);
 		}
+		
+		return this;
+	}
+	
+	public Pos3D rotate(double yaw, double pitch)
+	{
+		double yawRadians = Math.toRadians(yaw);
+		double pitchRadians = Math.toRadians(pitch);
+		
+		double x = xPos;
+		double y = yPos;
+		double z = zPos;
+		
+		xPos = x * Math.cos(yawRadians) - z * Math.sin(yawRadians);
+		yPos = y * Math.cos(pitchRadians) - z * Math.sin(pitchRadians);
+		zPos = (z * Math.cos(yawRadians) + x * Math.sin(yawRadians)) * (z * Math.cos(pitchRadians) + y * Math.sin(pitchRadians));
+		
+		return this;
+	}
+	
+	public Pos3D multiply(Pos3D pos)
+	{
+		xPos *= pos.xPos;
+		yPos *= pos.yPos;
+		zPos *= pos.zPos;
 		
 		return this;
 	}

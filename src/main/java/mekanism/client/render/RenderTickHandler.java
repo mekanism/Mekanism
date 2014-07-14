@@ -188,12 +188,10 @@ public class RenderTickHandler
 								
 								if(player == p && mc.gameSettings.thirdPersonView == 0)
 								{
-									flameVec.xPos -= 0.25F;
-									flameVec.yPos -= 0.5F;
-									flameVec.zPos += 1.15F;
+									flameVec = new Pos3D(0.8, 0.8, 0.8);
 									
-									flameVec.rotateYaw(p.rotationYaw);
-									flameVec.rotatePitch(p.rotationPitch);
+									flameVec.multiply(new Pos3D(p.getLook(90)));
+									flameVec.rotateYaw(15);
 								}
 								else {
 									flameVec.xPos -= 0.45F;
