@@ -344,7 +344,6 @@ gui.energy=Energy
 gui.gas=Gas
 gui.dumping=Dumping
 gui.modID=Mod ID
-gui.modIDFilter.noKey=No mod ID
 gui.key=Key
 gui.id=ID
 gui.finished=Finished
@@ -377,11 +376,11 @@ gui.seismicReader.reading=Reading
 gui.filterSelect.title=Create New Filter
 
 gui.oredictFilter=OreDict Filter
-gui.oredictFilter.noKey=No key entered
+gui.oredictFilter.noKey=No key
 gui.oredictFilter.sameKey=Same key
 
 gui.modIDFilter=Mod ID Filter
-gui.modIDFilter.noID=No ID entered
+gui.modIDFilter.noID=No ID
 gui.modIDFilter.sameID=Same ID
 
 gui.itemFilter=Item Filter

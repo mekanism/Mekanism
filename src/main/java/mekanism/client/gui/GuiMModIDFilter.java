@@ -138,7 +138,7 @@ public class GuiMModIDFilter extends GuiMekanism
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), 0, 0, 0));
 			}
 			else {
-				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.modIDFilter.noKey");
+				status = EnumColor.DARK_RED + MekanismUtils.localize("gui.modIDFilter.noID");
 				ticker = 20;
 			}
 		}
