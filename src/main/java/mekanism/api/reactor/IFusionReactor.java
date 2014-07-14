@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.FluidTank;
 
 public interface IFusionReactor
 {
-	public void addTemperature(double energyAdded);
+	public void addTemperatureFromEnergyInput(double energyAdded);
 
 	public void simulate();
 
@@ -19,4 +19,6 @@ public interface IFusionReactor
 	public GasTank getTritiumTank();
 
 	public GasTank getFuelTank();
+
+	public void formMultiblock();
 }

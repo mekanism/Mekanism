@@ -64,6 +64,7 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
@@ -136,6 +137,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber");
 		GameRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank");
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
+		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 	}
 
 	/**

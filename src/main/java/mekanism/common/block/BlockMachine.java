@@ -180,19 +180,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 		else if(this == Mekanism.MachineBlock2)
 		{
-			icons[2][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
-			icons[2][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-			icons[2][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
 			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
-			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
-			icons[13][0] = register.registerIcon("Mekanism:SteelCasing");
-			icons[13][1] = register.registerIcon("Mekanism:Laser");
+			icons[13][0] = register.registerIcon("mekanism:SteelCasing");
+			icons[13][1] = register.registerIcon("mekanism:Laser");
 		}
 	}
 

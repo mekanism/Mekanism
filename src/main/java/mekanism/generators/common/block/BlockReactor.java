@@ -130,6 +130,17 @@ public class BlockReactor extends BlockContainer
 	}
 
 	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if(tile instanceof TileEntityReactorController)
+		{
+			((TileEntityReactorController)tile).formMultiblock();
+		}
+		return true;
+	}
+
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item i, CreativeTabs creativetabs, List list)
 	{
