@@ -17,6 +17,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -57,7 +58,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public boolean prevShouldRender;
 
 	/** This teleporter's current status. */
-	public String status = (EnumColor.DARK_RED + "Not ready.");
+	public String status = (EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.notReady"));
 
 	public TileEntityTeleporter()
 	{
@@ -99,22 +100,22 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			switch(canTeleport())
 			{
 				case 1:
-					status = EnumColor.DARK_GREEN + "Ready.";
+					status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
 					break;
 				case 2:
-					status = EnumColor.DARK_RED + "No frame.";
+					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
 					break;
 				case 3:
-					status = EnumColor.DARK_RED + "No link found.";
+					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
 					break;
 				case 4:
-					status = EnumColor.DARK_RED + "Links > 2.";
+					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.exceeds");
 					break;
 				case 5:
-					status = EnumColor.DARK_RED + "Needs energy.";
+					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
 					break;
 				case 6:
-					status = EnumColor.DARK_GREEN + "Idle.";
+					status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.idle");
 					break;
 			}
 

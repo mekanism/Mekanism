@@ -423,6 +423,14 @@ gui.logisticalSorter.roundRobin=Round-robin
 
 gui.electricChest.editPassword=Edit Password
 
+gui.teleporter.notReady=Not ready
+gui.teleporter.ready=Ready
+gui.teleporter.noFrame=No frame
+gui.teleporter.noLink=No link
+gui.teleporter.exceeds=Links > 2
+gui.teleporter.needsEnergy=Needs energy
+gui.teleporter.idle=Idle
+
 gui.digitalMinerConfig=Digital Miner Config
 
 gui.digitalMiner.autoPull=Auto-pull
