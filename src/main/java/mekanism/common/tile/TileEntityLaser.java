@@ -19,7 +19,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 	{
 		if(getEnergy() >= LASER_ENERGY)
 		{
-			LaserManager.fireLaser(Coord4D.get(this), ForgeDirection.getOrientation(facing), LASER_ENERGY);
+			LaserManager.fireLaser(Coord4D.get(this), ForgeDirection.getOrientation(facing), LASER_ENERGY, worldObj);
 		}
 	}
 }

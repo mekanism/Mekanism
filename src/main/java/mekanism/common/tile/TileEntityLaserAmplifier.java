@@ -44,7 +44,7 @@ public class TileEntityLaserAmplifier extends TileEntity implements ILaserRecept
 	{
 		if(shouldFire())
 		{
-			LaserManager.fireLaser(Coord4D.get(this), facing, collectedEnergy);
+			LaserManager.fireLaser(Coord4D.get(this), facing, collectedEnergy, worldObj);
 		}
 	}
 
