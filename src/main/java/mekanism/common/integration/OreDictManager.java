@@ -307,6 +307,46 @@ public final class OreDictManager
 			} catch(Exception e) {}
 		}
 		
+		for(ItemStack ore : OreDictionary.getOres("oreCertusQuartz"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustCertusQuartz").get(0), 4));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("crystalCertusQuartz"))
+		{
+			try {
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustCertusQuartz").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustCertusQuartz"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("crystalCertusQuartz").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("gemQuartz"))
+		{
+			try {
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustNetherQuartz").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustNetherQuartz"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("gemQuartz").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("oreQuartz"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Items.quartz, 6));
+		}
+		
 		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
 		{
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 6));

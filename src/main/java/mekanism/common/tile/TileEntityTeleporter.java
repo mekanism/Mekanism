@@ -58,7 +58,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public boolean prevShouldRender;
 
 	/** This teleporter's current status. */
-	public String status = (EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.notReady"));
+	public byte status = 0;
 
 	public TileEntityTeleporter()
 	{
@@ -96,30 +96,10 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				newCoords.add(Coord4D.get(this));
 				Mekanism.teleporters.put(code, newCoords);
 			}
+			
+			status = canTeleport();
 
-			switch(canTeleport())
-			{
-				case 1:
-					status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
-					break;
-				case 2:
-					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
-					break;
-				case 3:
-					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
-					break;
-				case 4:
-					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.exceeds");
-					break;
-				case 5:
-					status = EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
-					break;
-				case 6:
-					status = EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.idle");
-					break;
-			}
-
-			if(canTeleport() == 1 && teleDelay == 0)
+			if(status == 1 && teleDelay == 0)
 			{
 				teleport();
 			}
@@ -129,8 +109,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				cleanTeleportCache();
 			}
 
-			byte b = canTeleport();
-			shouldRender = b == 1 || b > 4;
+			shouldRender = status == 1 || status > 4;
 
 			if(shouldRender != prevShouldRender)
 			{
@@ -143,6 +122,27 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 
 		ChargeUtils.discharge(0, this);
+	}
+	
+	public String getStatusDisplay()
+	{
+		switch(status)
+		{
+			case 1:
+				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
+			case 2:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
+			case 3:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
+			case 4:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.exceeds");
+			case 5:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
+			case 6:
+				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.idle");
+		}
+		
+		return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
 	}
 
 	public void cleanTeleportCache()
@@ -488,12 +488,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			{
 				code.digitFour = dataStream.readInt();
 			}
+			
 			return;
 		}
 
 		super.handlePacketData(dataStream);
 
-		status = PacketHandler.readString(dataStream).trim();
+		status = dataStream.readByte();
 		code.digitOne = dataStream.readInt();
 		code.digitTwo = dataStream.readInt();
 		code.digitThree = dataStream.readInt();

@@ -104,6 +104,11 @@ public class ItemBalloon extends ItemMekanism
 			{
 				obj.yCoord--;
 			}
+			
+			if(!world.isSideSolid(x, y, z, ForgeDirection.UP))
+			{
+				return true;
+			}
 
 			if(canReplace(world, obj.xCoord, obj.yCoord+1, obj.zCoord) && canReplace(world, obj.xCoord, obj.yCoord+2, obj.zCoord))
 			{

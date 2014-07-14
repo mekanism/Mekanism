@@ -41,7 +41,7 @@ public class GuiTeleporter extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRendererObj.drawString(tileEntity.status, 66, 19, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.getStatusDisplay(), 66, 19, 0x00CD00);
 
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{

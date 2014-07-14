@@ -56,7 +56,7 @@ public class ItemPortableTeleporter extends ItemEnergized
 			case 2:
 				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
 			case 3:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.linksCapacity");
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.exceeds");
 			case 4:
 				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
 			default:
