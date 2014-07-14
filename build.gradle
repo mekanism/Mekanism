@@ -78,7 +78,7 @@ task coreJar(type: Jar) {
     }
 
     from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
-        exclude 'mekanism/tools/**', 'mekanism/generators/**'
+        exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
     }
 }
 

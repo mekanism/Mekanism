@@ -394,12 +394,6 @@ gui.materialFilter.details=Using material of
 
 gui.portableTeleporter=Portable Teleporter
 
-gui.teleporter.notReady=Not Ready
-gui.teleporter.ready=Ready
-gui.teleporter.needsEnergy=Needs energy
-gui.teleporter.linksCapacity=Links > 2
-gui.teleporter.noLink=No link found
-
 gui.robit=Robit
 gui.robit.smelting=Robit Smelting
 gui.robit.inventory=Robit Inventory
@@ -426,6 +420,13 @@ gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Round-robin
 
 gui.electricChest.editPassword=Edit Password
+
+gui.teleporter.notReady=Not ready
+gui.teleporter.ready=Ready
+gui.teleporter.noFrame=No frame
+gui.teleporter.noLink=No link
+gui.teleporter.exceeds=Links > 2
+gui.teleporter.needsEnergy=Needs energy
 
 gui.digitalMinerConfig=Digital Miner Config
 
