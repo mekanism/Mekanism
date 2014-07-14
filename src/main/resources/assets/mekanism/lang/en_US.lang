@@ -138,6 +138,7 @@ tile.OreBlock.OsmiumOre.name=Osmium Ore
 tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
 
+//Transmitters
 item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
 item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Cable
 item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Cable
@@ -343,6 +344,7 @@ gui.energy=Energy
 gui.gas=Gas
 gui.dumping=Dumping
 gui.modID=Mod ID
+gui.modIDFilter.noKey=No mod ID
 gui.key=Key
 gui.id=ID
 gui.finished=Finished
@@ -422,7 +424,7 @@ gui.password=Password
 
 gui.logisticalSorter.default=Default
 gui.logisticalSorter.auto=Auto
-gui.logisticalSorter.roundRobin=Round robin
+gui.logisticalSorter.roundRobin=Round-robin
 
 gui.electricChest.editPassword=Edit Password
 
@@ -523,34 +525,36 @@ tooltip.seismicReader.noVibrations=Unable to discover any vibrations
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.
-tooltip.Combiner=A machine used to combine dusts and cobblestone to !nform their ore counterparts.
+tooltip.Combiner=A machine used to combine dusts and cobblestone !nto form their ore counterparts.
 tooltip.Crusher=A machine used to crush ingots into their dust counterparts, !nas well as perform many other operations.
-tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner that can !nmine whatever block you tell it to within !na 32 block (max) radius.
-tooltip.BasicFactory=The lowest tier of the line of Factories, which can !nbe used to process multiple machine operations !nat once.
-tooltip.AdvancedFactory=The middle tier of the line of Factories, which can !nbe used to process multiple machine !noperations at once.
-tooltip.EliteFactory=The highest tier of the line of Factories, which can !nbe used to process multiple machine !noperations at once.
+tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner !nthat can mine whatever block you tell it to !nwithin a 32 block (max) radius.
+tooltip.BasicFactory=The lowest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
+tooltip.AdvancedFactory=The middle tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
+tooltip.EliteFactory=The highest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
 tooltip.MetallurgicInfuser=A machine used to infuse various materials !ninto (generally) metals to create metal alloys !nand other compounds.
 tooltip.PurificationChamber=An advanced machine capable of processing !nores into three clumps, serving as the initial !nstage of 300% ore processing.
 tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
 tooltip.Teleporter=A machine capable of teleporting players to various !nlocations defined by another teleporter.
-tooltip.ElectricPump=An advanced pump capable of pumping out an entire !nlava lake.
+tooltip.ElectricPump=An advanced pump capable of pumping !nout an entire lava lake.
 tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitself from others by means of password protection.
-tooltip.Chargepad=A universal chargepad that can charge any energized item !nfrom any mod.
+tooltip.Chargepad=A universal chargepad that can charge !nany energized item from any mod.
 tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
 tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
 tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
 tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
-tooltip.ChemicalDissolutionChamber=An ultimate machine used to !nchemically dissolve all impurities of an !nore, leaving an unprocessed slurry !nbehind.
+tooltip.ChemicalDissolutionChamber=An ultimate machine used to chemically !ndissolve all impurities of an ore, !nleaving an unprocessed slurry behind.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
+tooltip.ChemicalOxidizer=A machine capable of oxidizing !nsolid materials into gas phase.
+tooltip.ChemicalInfuser=A machine that produces a new !ngas by infusing two others.
 tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
-tooltip.PressurizedReactionChamber=An advanced machine that processes a solid, liquid and gaseous mixture and creates both a gaseous and solid product.
-tooltip.PortableTank=A handy, portable tank that lets you carry 14 !nbuckets of fluid wherever you !nplease. Also doubles as a bucket!
+tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
+tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
-tooltip.SolarGenerator=A generator that uses the power of the !nsun to produce energy.
+tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
 tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
 tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
