@@ -47,15 +47,15 @@ public class FusionReactor implements IFusionReactor
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
 
 	public double temperature;
-	public static double burnTemperature = 10^8;
+	public static double burnTemperature = 1E8;
 
 	public static double burnRatio = 1;
-	public static double tempPerFuel = 5*10^6;
+	public static double tempPerFuel = 5E6;
 	public int injectionRate = 0;
 	
 	public static double coolingCoefficient = 0.1;
 	
-	public static double waterRatio = 10^-14;
+	public static double waterRatio = 1E-14;
 	public static double inverseHeatCapacity = 1;
 
 	public boolean burning = false;
