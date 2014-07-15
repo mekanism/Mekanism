@@ -50,7 +50,11 @@ public class TileSound extends Sound
 	@Override
 	public boolean update(World world)
 	{
-		if(!(tileEntity instanceof IHasSound))
+		if(!super.update(world))
+		{
+			return false;
+		}
+		else if(!(tileEntity instanceof IHasSound))
 		{
 			return false;
 		}
@@ -58,7 +62,7 @@ public class TileSound extends Sound
 		{
 			return false;
 		}
-		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(soundPath))
+		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(prevSoundPath))
 		{
 			return false;
 		}

@@ -25,7 +25,11 @@ public abstract class PlayerSound extends Sound
 	@Override
 	public boolean update(World world)
 	{
-		if(player.isDead)
+		if(!super.update(world))
+		{
+			return false;
+		}
+		else if(player.isDead)
 		{
 			return false;
 		}

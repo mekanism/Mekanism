@@ -181,29 +181,26 @@ public class SoundHandler
 				{
 					ArrayList<Sound> soundsToRemove = new ArrayList<Sound>();
 					World world = FMLClientHandler.instance().getClient().theWorld;
-
-					for(Sound sound : sounds.values())
+					
+					if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
 					{
-						if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
+						for(Sound sound : sounds.values())
 						{
 							if(!sound.update(world))
 							{
 								soundsToRemove.add(sound);
 								continue;
 							}
+							
+							if(sound.isPlaying)
+							{
+								sound.updateVolume();
+							}
 						}
-					}
-
-					for(Sound sound : soundsToRemove)
-					{
-						sound.remove();
-					}
-
-					for(Sound sound : sounds.values())
-					{
-						if(sound.isPlaying)
+	
+						for(Sound sound : soundsToRemove)
 						{
-							sound.updateVolume();
+							sound.remove();
 						}
 					}
 				}

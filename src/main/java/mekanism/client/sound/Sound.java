@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public abstract class Sound
 {
 	/** The bundled path where the sound is */
-	public String soundPath;
+	public String prevSoundPath;
 
 	/** A unique identifier for this sound */
 	public String identifier;
@@ -40,7 +40,7 @@ public abstract class Sound
 
 		synchronized(MekanismClient.audioHandler.sounds)
 		{
-			soundPath = sound;
+			prevSoundPath = sound;
 			identifier = id;
 			objRef = obj;
 
@@ -129,8 +129,21 @@ public abstract class Sound
 			}
 		}
 	}
+	
+	public String getSoundPath()
+	{
+		return prevSoundPath;
+	}
 
-	public abstract boolean update(World world);
+	public boolean update(World world)
+	{
+		if(!getSoundPath().equals(prevSoundPath))
+		{
+			return false;
+		}
+		
+		return true;
+	}
 
 	public abstract Pos3D getLocation();
 
