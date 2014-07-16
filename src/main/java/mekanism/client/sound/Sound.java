@@ -22,6 +22,8 @@ public abstract class Sound
 	public int ticksSincePlay = 0;
 
 	private Object objRef;
+	
+	public String channel;
 
 	protected Minecraft mc = Minecraft.getMinecraft();
 
@@ -31,9 +33,9 @@ public abstract class Sound
 	 * @param sound - bundled path to the sound
 	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public Sound(String id, String sound, Object obj, Pos3D loc)
+	public Sound(String id, String sound, String chan, Object obj, Pos3D loc)
 	{
-		if(MekanismClient.audioHandler.getMap(obj) != null)
+		if(MekanismClient.audioHandler.getSound(obj, chan) != null)
 		{
 			return;
 		}
@@ -43,6 +45,7 @@ public abstract class Sound
 			prevSoundPath = sound;
 			identifier = id;
 			objRef = obj;
+			channel = chan;
 
 			URL url = getClass().getClassLoader().getResource("assets/mekanism/sounds/" + sound);
 
@@ -58,7 +61,7 @@ public abstract class Sound
 				SoundHandler.getSoundSystem().activate(id);
 			}
 
-			MekanismClient.audioHandler.registerSound(objRef, prevSoundPath, this);
+			MekanismClient.audioHandler.registerSound(objRef, channel, this);
 		}
 	}
 
@@ -109,7 +112,7 @@ public abstract class Sound
 	}
 
 	/**
-	 * Remove the sound effect from the PaulsCode SoundSystem
+	 * Remove the sound effect from the PaulsCode SoundSystem and the Mekanism SoundHandler
 	 */
 	public void remove()
 	{
@@ -120,7 +123,7 @@ public abstract class Sound
 				stopLoop();
 			}
 
-			MekanismClient.audioHandler.removeSound(objRef, prevSoundPath);
+			MekanismClient.audioHandler.removeSound(objRef, channel);
 
 			if(SoundHandler.getSoundSystem() != null)
 			{

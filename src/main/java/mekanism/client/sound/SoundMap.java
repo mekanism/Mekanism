@@ -71,6 +71,11 @@ public class SoundMap implements Iterable<Sound>
 		MekanismClient.audioHandler.soundMaps.remove(objRef);
 	}
 	
+	public boolean isEmpty()
+	{
+		return soundMap.isEmpty();
+	}
+	
 	public int size()
 	{
 		return soundMap.size();

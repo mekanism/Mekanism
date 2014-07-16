@@ -28,9 +28,9 @@ public class TileSound extends Sound
 	 * @param sound - bundled path to the sound
 	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public TileSound(String id, String sound, TileEntity tileentity)
+	public TileSound(String id, String sound, String chan, TileEntity tileentity)
 	{
-		super(id, sound, tileentity, new Pos3D(tileentity));
+		super(id, sound, chan, tileentity, new Pos3D(tileentity));
 
 		tileEntity = tileentity;
 	}

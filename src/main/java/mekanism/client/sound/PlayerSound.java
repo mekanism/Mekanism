@@ -9,9 +9,9 @@ public abstract class PlayerSound extends Sound
 	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
 
-	public PlayerSound(String id, String sound, EntityPlayer entity)
+	public PlayerSound(String id, String sound, String chan, EntityPlayer entity)
 	{
-		super(id, sound, entity, new Pos3D(entity));
+		super(id, sound, chan, entity, new Pos3D(entity));
 
 		player = entity;
 	}

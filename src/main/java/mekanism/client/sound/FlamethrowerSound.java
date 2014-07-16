@@ -11,7 +11,7 @@ public class FlamethrowerSound extends PlayerSound
 	
 	public FlamethrowerSound(String id, EntityPlayer entity)
 	{
-		super(id, getSound(getInUse(entity)), entity);
+		super(id, getSound(getInUse(entity)), SoundHandler.CHANNEL_FLAMETHROWER, entity);
 		
 		inUse = getInUse(entity);
 	}
@@ -31,12 +31,13 @@ public class FlamethrowerSound extends PlayerSound
 		{
 			return false;
 		}
-
-		if(isPlaying)
+		
+		if(!isPlaying)
 		{
-			System.out.println(getLocation());
-			ticksSincePlay++;
+			play();
 		}
+
+		ticksSincePlay++;
 
 		return true;
 	}

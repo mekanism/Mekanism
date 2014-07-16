@@ -9,7 +9,7 @@ public class JetpackSound extends PlayerSound
 {
 	public JetpackSound(String id, EntityPlayer entity)
 	{
-		super(id, "Jetpack.ogg", entity);
+		super(id, "Jetpack.ogg", SoundHandler.CHANNEL_JETPACK, entity);
 	}
 
 	@Override

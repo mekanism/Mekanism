@@ -225,25 +225,30 @@ public class SoundHandler
 		}
 	}
 	
-	public void removeSound(Object ref, String path)
+	public void removeSound(Object ref, String channel)
 	{
 		if(soundMaps.get(ref) == null)
 		{
 			return;
 		}
 		
-		soundMaps.get(ref).remove(path);
+		soundMaps.get(ref).remove(channel);
+		
+		if(soundMaps.get(ref).isEmpty())
+		{
+			soundMaps.remove(ref);
+		}
 	}
 	
-	public void registerSound(Object ref, String path, Sound sound)
+	public void registerSound(Object ref, String channel, Sound sound)
 	{
 		if(soundMaps.get(ref) == null)
 		{
-			soundMaps.put(ref, new SoundMap(ref, path, sound));
+			soundMaps.put(ref, new SoundMap(ref, channel, sound));
 			return;
 		}
 		
-		soundMaps.get(ref).add(path, sound);
+		soundMaps.get(ref).add(channel, sound);
 	}
 
 	/**
@@ -251,22 +256,22 @@ public class SoundHandler
 	 * @param tileEntity - the holder of the sound
 	 * @return Sound instance
 	 */
-	public SoundMap getMap(Object obj)
+	public SoundMap getMap(Object ref)
 	{
 		synchronized(soundMaps)
 		{
-			return soundMaps.get(obj);
+			return soundMaps.get(ref);
 		}
 	}
 	
-	public Sound getSound(Object obj, String channel)
+	public Sound getSound(Object ref, String channel)
 	{
-		if(soundMaps.get(obj) == null)
+		if(soundMaps.get(ref) == null)
 		{
 			return null;
 		}
 		
-		return soundMaps.get(obj).getSound(channel);
+		return soundMaps.get(ref).getSound(channel);
 	}
 
 	/**
@@ -285,7 +290,7 @@ public class SoundHandler
 		{
 			if(getMap(tile) == null)
 			{
-				new TileSound(getIdentifier(tile), HolidayManager.filterSound(((IHasSound)tile).getSoundPath()), tile);
+				new TileSound(getIdentifier(tile), CHANNEL_TILE_DEFAULT, HolidayManager.filterSound(((IHasSound)tile).getSoundPath()), tile);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ public class GasMaskSound extends PlayerSound
 {
 	public GasMaskSound(String id, EntityPlayer entity)
 	{
-		super(id, "GasMask.ogg", entity);
+		super(id, "GasMask.ogg", SoundHandler.CHANNEL_GASMASK, entity);
 	}
 
 	@Override
