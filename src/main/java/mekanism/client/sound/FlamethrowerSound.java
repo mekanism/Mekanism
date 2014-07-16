@@ -8,11 +8,13 @@ import net.minecraft.world.World;
 
 public class FlamethrowerSound extends PlayerSound
 {
-	public byte type = 0;
+	public boolean inUse = false;
 	
 	public FlamethrowerSound(String id, EntityPlayer entity)
 	{
-		super(id, "Jetpack.ogg", entity);
+		super(id, "Flamethrower.ogg", entity);
+		
+		inUse = getInUse(entity);
 	}
 
 	@Override
@@ -22,21 +24,13 @@ public class FlamethrowerSound extends PlayerSound
 		{
 			return false;
 		}
-		else if(!hasFlamethrower(player))
+		else if(!ClientTickHandler.hasFlamethrower(player))
 		{
 			return false;
 		}
-		else {
-			if(ClientTickHandler.isJetpackOn(player) != isPlaying)
-			{
-				if(ClientTickHandler.isJetpackOn(player))
-				{
-					play();
-				}
-				else {
-					stopLoop();
-				}
-			}
+		else if(inUse != getInUse(player))
+		{
+			return false;
 		}
 
 		if(isPlaying)
@@ -46,19 +40,11 @@ public class FlamethrowerSound extends PlayerSound
 
 		return true;
 	}
-
-	private boolean hasFlamethrower(EntityPlayer player)
+	
+	private boolean getInUse(EntityPlayer player)
 	{
-		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemJetpack)
-		{
-			ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
-			
-			if(flamethrower.getGas(player.getCurrentEquippedItem()) != null)
-			{
-				return true;
-			}
-		}
+		ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
 		
-		return false;
+		return flamethrower.getInUse(player.getCurrentEquippedItem());
 	}
 }

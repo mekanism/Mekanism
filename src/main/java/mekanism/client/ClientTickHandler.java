@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
+import mekanism.client.sound.FlamethrowerSound;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
 import mekanism.client.sound.SoundHandler;
@@ -19,6 +20,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
@@ -404,6 +406,14 @@ public class ClientTickHandler
 						}
 					}
 				}
+				
+				for(EntityPlayer player : (List<EntityPlayer>)mc.theWorld.playerEntities)
+				{
+					if(hasFlamethrower(player))
+					{
+						new FlamethrowerSound(MekanismClient.audioHandler.getIdentifier(), player);
+					}
+				}
 			}
 
 			if(mc.thePlayer.getEquipmentInSlot(3) != null && mc.thePlayer.getEquipmentInSlot(3).getItem() instanceof ItemJetpack)
@@ -531,6 +541,21 @@ public class ClientTickHandler
 			}
 		}
 
+		return false;
+	}
+	
+	public static boolean hasFlamethrower(EntityPlayer player)
+	{
+		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemJetpack)
+		{
+			ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
+			
+			if(flamethrower.getGas(player.getCurrentEquippedItem()) != null)
+			{
+				return true;
+			}
+		}
+		
 		return false;
 	}
 

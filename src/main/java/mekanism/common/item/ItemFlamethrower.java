@@ -148,6 +148,26 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
+	
+	public boolean getInUse(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			return false;
+		}
+		
+		return itemstack.stackTagCompound.getBoolean("inUse");
+	}
+	
+	public void setInUse(ItemStack itemstack, boolean state)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+		
+		itemstack.stackTagCompound.setBoolean("inUse", state);
+	}
 
 	public ItemStack getEmptyItem()
 	{
