@@ -46,7 +46,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(getReactor() != null)
 		{
-			getReactor().getSteamTank().drain(maxDrain, doDrain);
+			return getReactor().getSteamTank().drain(maxDrain, doDrain);
 		}
 		return null;
 	}
@@ -86,7 +86,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 			{
 				return getReactor().getTritiumTank().receive(stack, true);
 			}
-			else if(stack.getGas() == GasRegistry.getGas("fusionFuel"))
+			else if(stack.getGas() == GasRegistry.getGas("fusionFuelDT"))
 			{
 				return getReactor().getFuelTank().receive(stack, true);
 			}
@@ -111,7 +111,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return (type == GasRegistry.getGas("deuterium") || type == GasRegistry.getGas("tritium") || type == GasRegistry.getGas("fusionFuel"));
+		return (type == GasRegistry.getGas("deuterium") || type == GasRegistry.getGas("tritium") || type == GasRegistry.getGas("fusionFuelDT"));
 	}
 
 	@Override
@@ -123,6 +123,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return true;
+		return getReactor() != null;
 	}
 }

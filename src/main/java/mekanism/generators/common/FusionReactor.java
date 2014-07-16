@@ -19,12 +19,12 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-import static java.lang.Math.exp;
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 
@@ -99,7 +99,8 @@ public class FusionReactor implements IFusionReactor
 
 	public void vaporiseHohlraum()
 	{
-		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuel"), 1000), true);
+		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 1000), true);
+		hasHohlraum = false;
 		burning = true;
 	}
 
@@ -139,7 +140,10 @@ public class FusionReactor implements IFusionReactor
 
 	public void boilWater()
 	{
-		int waterToBoil = (int)min(waterTank.getFluidAmount(), temperature*temperature*waterRatio);
+		int waterToBoil = (int)min(waterTank.getFluidAmount(), temperature*1E-6);
+		int steamToGenerate = (int)(waterToBoil*temperature * 1E-6);
+		waterTank.drain(waterToBoil, true);
+		steamTank.fill(new FluidStack(FluidRegistry.getFluid("steam"), steamToGenerate), true);
 	}
 
 	public void ambientLoss()
@@ -181,41 +185,46 @@ public class FusionReactor implements IFusionReactor
 		return fuelTank;
 	}
 
+	public void unformMultiblock()
+	{
+		for(IReactorBlock block: reactorBlocks)
+		{
+			block.setReactor(null);
+		}
+		reactorBlocks.clear();
+		neutronCaptors.clear();
+		formed = false;
+	}
+
+	@Override
 	public void formMultiblock()
 	{
 		Coord4D controllerPosition = Coord4D.get(controller);
 		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
 
+		unformMultiblock();
+
+		reactorBlocks.add(controller);
+
 		Mekanism.logger.info("Centre at " + centreOfReactor.toString());
 		if(!createFrame(centreOfReactor))
 		{
-			for(IReactorBlock block: reactorBlocks)
-			{
-				block.setReactor(null);
-			}
-			reactorBlocks.clear();
+			unformMultiblock();
+			Mekanism.logger.info("Reactor failed: Frame not complete.");
 			return;
 		}
 		Mekanism.logger.info("Frame valid");
 		if(!addSides(centreOfReactor))
 		{
-			for(IReactorBlock block: reactorBlocks)
-			{
-				block.setReactor(null);
-			}
-			reactorBlocks.clear();
-			neutronCaptors.clear();
+			unformMultiblock();
+			Mekanism.logger.info("Reactor failed: Sides not complete.");
 			return;
 		}
 		Mekanism.logger.info("Side Blocks Valid");
 		if(!centreIsClear(centreOfReactor))
 		{
-			for(IReactorBlock block: reactorBlocks)
-			{
-				block.setReactor(null);
-			}
-			reactorBlocks.clear();
-			neutronCaptors.clear();
+			unformMultiblock();
+			Mekanism.logger.info("Blocks in chamber.");
 			return;
 		}
 		Mekanism.logger.info("Centre is clear");
@@ -257,7 +266,7 @@ public class FusionReactor implements IFusionReactor
 				{+0, +2, +0}, {+1, +2, +0}, {+0, +2, +1}, {-1, +2, +0}, {+0, +2, -1}, //TOP
 				{+0, -2, +0}, {+1, -2, +0}, {+0, -2, +1}, {-1, -2, +0}, {+0, -2, -1}, //BOTTOM
 				{+0, +0, +2}, {+1, +0, +2}, {+0, +1, +2}, {-1, +0, +2}, {+0, -1, +2}, //SOUTH
-				{+0, +0, +2}, {+1, +0, +2}, {+0, +1, +2}, {-1, +0, +2}, {+0, -1, +2}, //NORTH
+				{+0, +0, -2}, {+1, +0, -2}, {+0, +1, -2}, {-1, +0, -2}, {+0, -1, -2}, //NORTH
 		};
 
 		for(int[] coords : positions)
