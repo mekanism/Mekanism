@@ -2,7 +2,6 @@ package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemFlamethrower;
-import mekanism.common.item.ItemJetpack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -12,7 +11,7 @@ public class FlamethrowerSound extends PlayerSound
 	
 	public FlamethrowerSound(String id, EntityPlayer entity)
 	{
-		super(id, "Flamethrower.ogg", entity);
+		super(id, getSound(getInUse(entity)), entity);
 		
 		inUse = getInUse(entity);
 	}
@@ -35,16 +34,22 @@ public class FlamethrowerSound extends PlayerSound
 
 		if(isPlaying)
 		{
+			System.out.println(getLocation());
 			ticksSincePlay++;
 		}
 
 		return true;
 	}
 	
-	private boolean getInUse(EntityPlayer player)
+	private static boolean getInUse(EntityPlayer player)
 	{
 		ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
 		
 		return flamethrower.getInUse(player.getCurrentEquippedItem());
+	}
+	
+	private static String getSound(boolean inUse)
+	{
+		return inUse ? "FlamethrowerActive.ogg" : "FlamethrowerIdle.ogg";
 	}
 }

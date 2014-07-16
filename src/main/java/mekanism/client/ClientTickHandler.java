@@ -387,22 +387,26 @@ public class ClientTickHandler
 			{
 				for(String username : Mekanism.jetpackOn)
 				{
-					if(mc.theWorld.getPlayerEntityByName(username) != null)
+					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
+					
+					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getFrom(mc.theWorld.getPlayerEntityByName(username)) == null)
+						if(MekanismClient.audioHandler.getMap(player) == null)
 						{
-							new JetpackSound(MekanismClient.audioHandler.getIdentifier(), mc.theWorld.getPlayerEntityByName(username));
+							new JetpackSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
 					}
 				}
 
 				for(String username : Mekanism.gasmaskOn)
 				{
-					if(mc.theWorld.getPlayerEntityByName(username) != null)
+					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
+					
+					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getFrom(mc.theWorld.getPlayerEntityByName(username)) == null)
+						if(MekanismClient.audioHandler.getMap(player) == null)
 						{
-							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), mc.theWorld.getPlayerEntityByName(username));
+							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
 					}
 				}
@@ -411,7 +415,10 @@ public class ClientTickHandler
 				{
 					if(hasFlamethrower(player))
 					{
-						new FlamethrowerSound(MekanismClient.audioHandler.getIdentifier(), player);
+						if(MekanismClient.audioHandler.getMap(player) == null)
+						{
+							new FlamethrowerSound(MekanismClient.audioHandler.getIdentifier(player), player);
+						}
 					}
 				}
 			}
@@ -546,7 +553,7 @@ public class ClientTickHandler
 	
 	public static boolean hasFlamethrower(EntityPlayer player)
 	{
-		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemJetpack)
+		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
 		{
 			ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
 			
@@ -563,7 +570,7 @@ public class ClientTickHandler
 	{
 		if(MekanismClient.audioHandler != null)
 		{
-			synchronized(MekanismClient.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
 				MekanismClient.audioHandler.onTick();
 			}

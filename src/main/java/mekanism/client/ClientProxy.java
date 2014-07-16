@@ -80,8 +80,8 @@ import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
-import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
+import mekanism.client.sound.SoundMap;
 import mekanism.common.CommonProxy;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
@@ -185,13 +185,13 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void registerSound(Object obj)
+	public void registerSound(TileEntity tileEntity)
 	{
 		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
-			synchronized(MekanismClient.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
-				MekanismClient.audioHandler.register(obj);
+				MekanismClient.audioHandler.registerTileSound(tileEntity);
 			}
 		}
 	}
@@ -201,11 +201,11 @@ public class ClientProxy extends CommonProxy
 	{
 		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
-			synchronized(MekanismClient.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
-				if(MekanismClient.audioHandler.getFrom(tileEntity) != null)
+				if(MekanismClient.audioHandler.getMap(tileEntity) != null)
 				{
-					MekanismClient.audioHandler.getFrom(tileEntity).remove();
+					MekanismClient.audioHandler.getMap(tileEntity).kill();
 				}
 			}
 		}
@@ -504,17 +504,17 @@ public class ClientProxy extends CommonProxy
 		{
 			if(MekanismClient.audioHandler != null)
 			{
-				synchronized(MekanismClient.audioHandler.sounds)
+				synchronized(MekanismClient.audioHandler.soundMaps)
 				{
-					HashMap<Object, Sound> sounds = new HashMap<Object, Sound>();
-					sounds.putAll(MekanismClient.audioHandler.sounds);
+					HashMap<Object, SoundMap> mapsCopy = new HashMap<Object, SoundMap>();
+					mapsCopy.putAll(MekanismClient.audioHandler.soundMaps);
 
-					for(Sound sound : sounds.values())
+					for(SoundMap map : mapsCopy.values())
 					{
-						sound.remove();
+						map.kill();
 					}
 
-					MekanismClient.audioHandler.sounds.clear();
+					MekanismClient.audioHandler.soundMaps.clear();
 				}
 			}
 		}

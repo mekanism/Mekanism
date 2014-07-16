@@ -44,7 +44,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class SoundHandler
 {
 	/** All the sound references in the Minecraft game. */
-	public Map<Object, Sound> sounds = Collections.synchronizedMap(new HashMap<Object, Sound>());
+	public Map<Object, SoundMap> soundMaps = Collections.synchronizedMap(new HashMap<Object, SoundMap>());
 
 	public static Minecraft mc = Minecraft.getMinecraft();
 
@@ -173,7 +173,7 @@ public class SoundHandler
 	 */
 	public void onTick()
 	{
-		synchronized(sounds)
+		synchronized(soundMaps)
 		{
 			if(getSoundSystem() != null)
 			{
@@ -184,17 +184,20 @@ public class SoundHandler
 					
 					if(FMLClientHandler.instance().getClient().thePlayer != null && world != null)
 					{
-						for(Sound sound : sounds.values())
+						for(SoundMap map : soundMaps.values())
 						{
-							if(!sound.update(world))
+							for(Sound sound : map)
 							{
-								soundsToRemove.add(sound);
-								continue;
-							}
-							
-							if(sound.isPlaying)
-							{
-								sound.updateVolume();
+								if(!sound.update(world))
+								{
+									soundsToRemove.add(sound);
+									continue;
+								}
+								
+								if(sound.isPlaying)
+								{
+									sound.updateVolume();
+								}
 							}
 						}
 	
@@ -205,12 +208,9 @@ public class SoundHandler
 					}
 				}
 				else {
-					for(Sound sound : sounds.values())
+					for(SoundMap map : soundMaps.values())
 					{
-						if(sound.isPlaying)
-						{
-							sound.stopLoop();
-						}
+						map.stopLoops();
 					}
 				}
 			}
@@ -219,18 +219,49 @@ public class SoundHandler
 			}
 		}
 	}
+	
+	public void removeSound(Object ref, String path)
+	{
+		if(soundMaps.get(ref) == null)
+		{
+			return;
+		}
+		
+		soundMaps.get(ref).remove(path);
+	}
+	
+	public void registerSound(Object ref, String path, Sound sound)
+	{
+		if(soundMaps.get(ref) == null)
+		{
+			soundMaps.put(ref, new SoundMap(ref, path, sound));
+			return;
+		}
+		
+		soundMaps.get(ref).add(path, sound);
+	}
 
 	/**
 	 * Gets a sound object from a specific TileEntity, null if there is none.
 	 * @param tileEntity - the holder of the sound
 	 * @return Sound instance
 	 */
-	public Sound getFrom(Object obj)
+	public SoundMap getMap(Object obj)
 	{
-		synchronized(sounds)
+		synchronized(soundMaps)
 		{
-			return sounds.get(obj);
+			return soundMaps.get(obj);
 		}
+	}
+	
+	public Sound getSound(Object obj, String path)
+	{
+		if(soundMaps.get(obj) == null)
+		{
+			return null;
+		}
+		
+		return soundMaps.get(obj).getSound(path);
 	}
 
 	/**
@@ -238,21 +269,18 @@ public class SoundHandler
 	 * @param tileEntity - the holder of this sound.
 	 * @return Sound instance
 	 */
-	public void register(Object obj)
+	public void registerTileSound(TileEntity tile)
 	{
-		if(obj instanceof TileEntity && !(obj instanceof IHasSound))
+		if(!(tile instanceof IHasSound))
 		{
 			return;
 		}
 
-		synchronized(sounds)
+		synchronized(soundMaps)
 		{
-			if(getFrom(obj) == null)
+			if(getMap(tile) == null)
 			{
-				if(obj instanceof TileEntity)
-				{
-					new TileSound(getIdentifier(), HolidayManager.filterSound(((IHasSound)obj).getSoundPath()), (TileEntity)obj);
-				}
+				new TileSound(getIdentifier(tile), HolidayManager.filterSound(((IHasSound)tile).getSoundPath()), tile);
 			}
 		}
 	}
@@ -263,19 +291,11 @@ public class SoundHandler
 	 * number between 0 and 10,000. Example: "Mekanism_6_6123"
 	 * @return unique identifier
 	 */
-	public String getIdentifier()
+	public String getIdentifier(Object obj)
 	{
-		synchronized(sounds)
+		synchronized(soundMaps)
 		{
-			String toReturn = "Mekanism_" + sounds.size() + "_" + new Random().nextInt(10000);
-
-			for(Sound sound : sounds.values())
-			{
-				if(sound.identifier.equals(toReturn))
-				{
-					return getIdentifier();
-				}
-			}
+			String toReturn = "Mekanism_" + soundMaps.size() + "_" + new Random().nextInt(10000);
 
 			return toReturn;
 		}
@@ -350,11 +370,11 @@ public class SoundHandler
 
 					if(tileEntity instanceof IHasSound)
 					{
-						if(getFrom(tileEntity) != null)
+						if(getMap(tileEntity) != null)
 						{
-							if(sounds.containsKey(tileEntity))
+							if(soundMaps.containsKey(tileEntity))
 							{
-								getFrom(tileEntity).remove();
+								getMap(tileEntity).kill();
 							}
 						}
 					}

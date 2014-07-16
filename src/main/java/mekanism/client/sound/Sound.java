@@ -33,12 +33,12 @@ public abstract class Sound
 	 */
 	public Sound(String id, String sound, Object obj, Pos3D loc)
 	{
-		if(MekanismClient.audioHandler.getFrom(obj) != null)
+		if(MekanismClient.audioHandler.getMap(obj) != null)
 		{
 			return;
 		}
 
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			prevSoundPath = sound;
 			identifier = id;
@@ -58,7 +58,7 @@ public abstract class Sound
 				SoundHandler.getSoundSystem().activate(id);
 			}
 
-			MekanismClient.audioHandler.sounds.put(obj, this);
+			MekanismClient.audioHandler.registerSound(objRef, prevSoundPath, this);
 		}
 	}
 
@@ -67,7 +67,7 @@ public abstract class Sound
 	 */
 	public void play()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			if(isPlaying)
 			{
@@ -91,7 +91,7 @@ public abstract class Sound
 	 */
 	public void stopLoop()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			if(!isPlaying)
 			{
@@ -113,14 +113,14 @@ public abstract class Sound
 	 */
 	public void remove()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			if(isPlaying)
 			{
 				stopLoop();
 			}
 
-			MekanismClient.audioHandler.sounds.remove(objRef);
+			MekanismClient.audioHandler.removeSound(objRef, prevSoundPath);
 
 			if(SoundHandler.getSoundSystem() != null)
 			{
@@ -158,7 +158,7 @@ public abstract class Sound
 	 */
 	public void updateVolume()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			try {
 				float multiplier = getMultiplier();
