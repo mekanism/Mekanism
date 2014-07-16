@@ -46,20 +46,31 @@ public class FusionReactor implements IFusionReactor
 	public Set<IReactorBlock> reactorBlocks = new HashSet<IReactorBlock>();
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
 
-	public double temperature;
-	public static double burnTemperature = 1E8;
+	//Current stores of energy
+	public double plasmaTemperature;
+	public double caseTemperature;
+	public double energyBuffer;
 
+	//Reaction characteristics
+	public static double burnTemperature = 1E8;
 	public static double burnRatio = 1;
 	public static double tempPerFuel = 5E6;
 	public int injectionRate = 0;
-	
-	public static double coolingCoefficient = 0.1;
-	
-	public static double waterRatio = 1E-14;
-	public static double inverseHeatCapacity = 1;
+
+	//Thermal characteristics
+	public static double plasmaHeatCapacity = 1;
+	public static double caseHeatCapacity = 1;
+	public static double enthalpyOfVaporization = 10;
+	public static double thermocoupleEfficiency = 0.01;
+
+	//Heat transfer metrics
+	public static double plasmaCaseConductivity = 0.2;
+	public static double caseWaterConductivity = 0.3;
+	public static double caseAirConductivity = 0.1;
 
 	public boolean burning = false;
 	public boolean hasHohlraum = false;
+	public boolean activelyCooled = true;
 
 	public boolean formed = false;
 
@@ -71,35 +82,45 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void addTemperatureFromEnergyInput(double energyAdded)
 	{
-		temperature += energyAdded * inverseHeatCapacity;
+		plasmaTemperature += energyAdded / plasmaHeatCapacity;
 	}
 
 	@Override
 	public void simulate()
 	{
-		if(temperature >= burnTemperature)
+		//Only thermal transfer happens unless we're hot enough to burn.
+		if(plasmaTemperature >= burnTemperature)
 		{
+			//If we're not burning yet we need a hohlraum to ignite
 			if(!burning && hasHohlraum)
 			{
 				vaporiseHohlraum();
 			}
-			injectFuel();
+			//Only inject fuel if we're burning
+			if(burning)
+			{
+				injectFuel();
 
-			int fuelBurned = burnFuel();
-			neutronFlux(fuelBurned);
+				int fuelBurned = burnFuel();
+				neutronFlux(fuelBurned);
+			}
 		}
 		else {
 			burning = false;
 		}
-		boilWater();
-		ambientLoss();
-		if(temperature > 0)
-			Mekanism.logger.info("Reactor temperature: " + (int)temperature);
+
+		//Perform the heat transfer calculations
+		transferHeat();
+
+		if(plasmaTemperature > 1E-6 || caseTemperature > 1E-6)
+		{
+			Mekanism.logger.info("Reactor temperatures: Plasma: " + (int) plasmaTemperature + ",			Casing: " + (int) caseTemperature);
+		}
 	}
 
 	public void vaporiseHohlraum()
 	{
-		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 1000), true);
+		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
 		hasHohlraum = false;
 		burning = true;
 	}
@@ -117,9 +138,9 @@ public class FusionReactor implements IFusionReactor
 
 	public int burnFuel()
 	{
-		int fuelBurned = (int)min(fuelTank.getStored(), max(0, temperature-burnTemperature)*burnRatio);
+		int fuelBurned = (int)min(fuelTank.getStored(), max(0, plasmaTemperature - burnTemperature)*burnRatio);
 		fuelTank.draw(fuelBurned, true);
-		temperature += tempPerFuel * fuelBurned;
+		plasmaTemperature += tempPerFuel * fuelBurned;
 		return fuelBurned;
 	}
 
@@ -138,21 +159,34 @@ public class FusionReactor implements IFusionReactor
 		controller.radiateNeutrons(neutronsRemaining);
 	}
 
-	public void boilWater()
+	public void transferHeat()
 	{
-		int waterToBoil = (int)min(waterTank.getFluidAmount(), temperature*1E-6);
-		int steamToGenerate = (int)(waterToBoil*temperature * 1E-6);
-		waterTank.drain(waterToBoil, true);
-		steamTank.fill(new FluidStack(FluidRegistry.getFluid("steam"), steamToGenerate), true);
-	}
+		//Transfer from plasma to casing
+		double plasmaCaseHeat = plasmaCaseConductivity * (plasmaTemperature - caseTemperature);
+		plasmaTemperature -= plasmaCaseHeat / plasmaHeatCapacity;
+		caseTemperature += plasmaCaseHeat / caseHeatCapacity;
 
-	public void ambientLoss()
-	{
-		temperature -= coolingCoefficient*temperature;
-		if(temperature < 1E-6)
+		//Transfer from casing to water if necessary
+		if(activelyCooled)
 		{
-			temperature = 0;
+			double caseWaterHeat = caseWaterConductivity * caseTemperature;
+			int waterToVaporize = (int)(caseWaterHeat / enthalpyOfVaporization);
+			Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
+			waterToVaporize = min(waterToVaporize, min(waterTank.getFluidAmount(), steamTank.getCapacity() - steamTank.getFluidAmount()));
+			if(waterToVaporize > 0)
+			{
+				Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
+				waterTank.drain(waterToVaporize, true);
+				steamTank.fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
+			}
+			caseWaterHeat = waterToVaporize * enthalpyOfVaporization;
+			caseTemperature -= caseWaterHeat / caseHeatCapacity;
 		}
+
+		//Transfer from casing to environment
+		double caseAirHeat = caseAirConductivity * caseTemperature;
+		caseTemperature -= caseAirHeat / caseHeatCapacity;
+		energyBuffer += caseAirHeat * thermocoupleEfficiency;
 	}
 
 	@Override
@@ -191,6 +225,8 @@ public class FusionReactor implements IFusionReactor
 		{
 			block.setReactor(null);
 		}
+		//Don't remove from controller
+		controller.setReactor(this);
 		reactorBlocks.clear();
 		neutronCaptors.clear();
 		formed = false;
@@ -199,6 +235,8 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void formMultiblock()
 	{
+		Mekanism.logger.trace("Attempting to form multiblock");
+
 		Coord4D controllerPosition = Coord4D.get(controller);
 		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
 
@@ -206,28 +244,28 @@ public class FusionReactor implements IFusionReactor
 
 		reactorBlocks.add(controller);
 
-		Mekanism.logger.info("Centre at " + centreOfReactor.toString());
+		Mekanism.logger.trace("Centre at " + centreOfReactor.toString());
 		if(!createFrame(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.info("Reactor failed: Frame not complete.");
+			Mekanism.logger.trace("Reactor failed: Frame not complete.");
 			return;
 		}
-		Mekanism.logger.info("Frame valid");
+		Mekanism.logger.trace("Frame valid");
 		if(!addSides(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.info("Reactor failed: Sides not complete.");
+			Mekanism.logger.trace("Reactor failed: Sides not complete.");
 			return;
 		}
-		Mekanism.logger.info("Side Blocks Valid");
+		Mekanism.logger.trace("Side Blocks Valid");
 		if(!centreIsClear(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.info("Blocks in chamber.");
+			Mekanism.logger.trace("Blocks in chamber.");
 			return;
 		}
-		Mekanism.logger.info("Centre is clear");
+		Mekanism.logger.trace("Centre is clear");
 		formed = true;
 	}
 

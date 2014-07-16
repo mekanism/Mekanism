@@ -21,7 +21,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock
 		{
 			setReactor(new FusionReactor(this));
 		}
-		Mekanism.logger.info("Attempting to form multiblock");
 		getReactor().formMultiblock();
 	}
 
