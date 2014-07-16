@@ -391,7 +391,7 @@ public class ClientTickHandler
 					
 					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getMap(player) == null)
+						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_JETPACK) == null)
 						{
 							new JetpackSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
@@ -404,7 +404,7 @@ public class ClientTickHandler
 					
 					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getMap(player) == null)
+						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_GASMASK) == null)
 						{
 							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
@@ -415,7 +415,7 @@ public class ClientTickHandler
 				{
 					if(hasFlamethrower(player))
 					{
-						if(MekanismClient.audioHandler.getMap(player) == null)
+						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_FLAMETHROWER) == null)
 						{
 							new FlamethrowerSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}

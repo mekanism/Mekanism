@@ -47,6 +47,11 @@ public class SoundHandler
 	public Map<Object, SoundMap> soundMaps = Collections.synchronizedMap(new HashMap<Object, SoundMap>());
 
 	public static Minecraft mc = Minecraft.getMinecraft();
+	
+	public static final String CHANNEL_TILE_DEFAULT = "tile";
+	public static final String CHANNEL_JETPACK = "jetpack";
+	public static final String CHANNEL_GASMASK = "gasMask";
+	public static final String CHANNEL_FLAMETHROWER = "flamethrower";
 
 	/**
 	 * SoundHandler -- a class that handles all Sounds used by Mekanism.
@@ -254,14 +259,14 @@ public class SoundHandler
 		}
 	}
 	
-	public Sound getSound(Object obj, String path)
+	public Sound getSound(Object obj, String channel)
 	{
 		if(soundMaps.get(obj) == null)
 		{
 			return null;
 		}
 		
-		return soundMaps.get(obj).getSound(path);
+		return soundMaps.get(obj).getSound(channel);
 	}
 
 	/**
@@ -295,10 +300,22 @@ public class SoundHandler
 	{
 		synchronized(soundMaps)
 		{
-			String toReturn = "Mekanism_" + soundMaps.size() + "_" + new Random().nextInt(10000);
+			String toReturn = "Mekanism_" + getActiveSize() + "_" + new Random().nextInt(10000);
 
 			return toReturn;
 		}
+	}
+	
+	public int getActiveSize()
+	{
+		int count = 0;
+		
+		for(SoundMap map : soundMaps.values())
+		{
+			count += map.size();
+		}
+		
+		return count;
 	}
 
 	/**

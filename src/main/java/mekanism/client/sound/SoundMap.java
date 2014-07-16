@@ -17,11 +17,11 @@ public class SoundMap implements Iterable<Sound>
 		objRef = obj;
 	}
 	
-	public SoundMap(Object obj, String path, Sound sound)
+	public SoundMap(Object obj, String channel, Sound sound)
 	{
 		this(obj);
 		
-		soundMap.put(path, sound);
+		soundMap.put(channel, sound);
 	}
 
 	@Override
@@ -30,24 +30,24 @@ public class SoundMap implements Iterable<Sound>
 		return soundMap.values().iterator();
 	}
 	
-	public Sound getSound(String path)
+	public Sound getSound(String channel)
 	{
-		return soundMap.get(path);
+		return soundMap.get(channel);
 	}
 	
-	public boolean hasSound(String path)
+	public boolean hasSound(String channel)
 	{
-		return soundMap.containsKey(path);
+		return soundMap.containsKey(channel);
 	}
 	
-	public void remove(String path)
+	public void remove(String channel)
 	{
-		soundMap.remove(path);
+		soundMap.remove(channel);
 	}
 	
-	public void add(String path, Sound sound)
+	public void add(String channel, Sound sound)
 	{
-		soundMap.put(path, sound);
+		soundMap.put(channel, sound);
 	}
 	
 	public void stopLoops()
@@ -69,5 +69,10 @@ public class SoundMap implements Iterable<Sound>
 		}
 		
 		MekanismClient.audioHandler.soundMaps.remove(objRef);
+	}
+	
+	public int size()
+	{
+		return soundMap.size();
 	}
 }
