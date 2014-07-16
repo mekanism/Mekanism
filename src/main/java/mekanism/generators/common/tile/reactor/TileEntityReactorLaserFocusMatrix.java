@@ -7,8 +7,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock implements ILaserReceptor
 {
-	public IFusionReactor fusionReactor;
-
 	@Override
 	public boolean isFrame()
 	{
@@ -18,7 +16,8 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
 	@Override
 	public void receiveLaserEnergy(double energy, ForgeDirection side)
 	{
-		fusionReactor.addTemperature(energy);
+		if(getReactor() != null)
+			getReactor().addTemperatureFromEnergyInput(energy);
 	}
 
 	@Override

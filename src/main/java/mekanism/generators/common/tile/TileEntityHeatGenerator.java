@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -27,7 +28,7 @@ import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ILaserReceptor
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
@@ -334,5 +335,23 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return new FluidTankInfo[] {lavaTank.getInfo()};
+	}
+
+	@Override
+	public void receiveLaserEnergy(double energy, ForgeDirection side)
+	{
+		setEnergy(getEnergy()+energy);
+	}
+
+	@Override
+	public boolean canLasersDig()
+	{
+		return false;
+	}
+
+	@Override
+	public double energyToDig()
+	{
+		return 0;
 	}
 }

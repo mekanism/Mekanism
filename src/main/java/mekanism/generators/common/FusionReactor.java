@@ -6,15 +6,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
+import mekanism.common.Mekanism;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 import static java.lang.Math.min;
@@ -38,51 +46,82 @@ public class FusionReactor implements IFusionReactor
 	public Set<IReactorBlock> reactorBlocks = new HashSet<IReactorBlock>();
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
 
-	public double temperature;
-	public static double burnTemperature = 10^8;
+	//Current stores of energy
+	public double plasmaTemperature;
+	public double caseTemperature;
+	public double energyBuffer;
 
+	//Reaction characteristics
+	public static double burnTemperature = 1E8;
 	public static double burnRatio = 1;
-	public static double tempPerFuel = 5*10^6;
-	public int injectionRate;
-	
-	public static double coolingCoefficient = 0.2;
-	
-	public static double waterRatio = 10^-14;
-	public static double inverseHeatCapacity = 1;
+	public static double tempPerFuel = 5E6;
+	public int injectionRate = 0;
+
+	//Thermal characteristics
+	public static double plasmaHeatCapacity = 1;
+	public static double caseHeatCapacity = 1;
+	public static double enthalpyOfVaporization = 10;
+	public static double thermocoupleEfficiency = 0.01;
+
+	//Heat transfer metrics
+	public static double plasmaCaseConductivity = 0.2;
+	public static double caseWaterConductivity = 0.3;
+	public static double caseAirConductivity = 0.1;
 
 	public boolean burning = false;
 	public boolean hasHohlraum = false;
+	public boolean activelyCooled = true;
+
+	public boolean formed = false;
+
+	public FusionReactor(TileEntityReactorController c)
+	{
+		controller = c;
+	}
 
 	@Override
-	public void addTemperature(double energyAdded)
+	public void addTemperatureFromEnergyInput(double energyAdded)
 	{
-		temperature += energyAdded * inverseHeatCapacity;
+		plasmaTemperature += energyAdded / plasmaHeatCapacity;
 	}
 
 	@Override
 	public void simulate()
 	{
-		if(temperature >= burnTemperature)
+		//Only thermal transfer happens unless we're hot enough to burn.
+		if(plasmaTemperature >= burnTemperature)
 		{
+			//If we're not burning yet we need a hohlraum to ignite
 			if(!burning && hasHohlraum)
 			{
 				vaporiseHohlraum();
 			}
-			injectFuel();
+			//Only inject fuel if we're burning
+			if(burning)
+			{
+				injectFuel();
 
-			int fuelBurned = burnFuel();
-			neutronFlux(fuelBurned);
+				int fuelBurned = burnFuel();
+				neutronFlux(fuelBurned);
+			}
 		}
 		else {
 			burning = false;
 		}
-		boilWater();
-		ambientLoss();
+
+		//Perform the heat transfer calculations
+		transferHeat();
+
+		if(plasmaTemperature > 1E-6 || caseTemperature > 1E-6)
+		{
+			Mekanism.logger.info("Reactor temperatures: Plasma: " + (int) plasmaTemperature + ",			Casing: " + (int) caseTemperature);
+		}
 	}
 
 	public void vaporiseHohlraum()
 	{
-		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuel"), 1000), true);
+		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
+		hasHohlraum = false;
 		burning = true;
 	}
 
@@ -99,9 +138,9 @@ public class FusionReactor implements IFusionReactor
 
 	public int burnFuel()
 	{
-		int fuelBurned = (int)min(fuelTank.getStored(), max(0, temperature-burnTemperature)*burnRatio);
+		int fuelBurned = (int)min(fuelTank.getStored(), max(0, plasmaTemperature - burnTemperature)*burnRatio);
 		fuelTank.draw(fuelBurned, true);
-		temperature += tempPerFuel * fuelBurned;
+		plasmaTemperature += tempPerFuel * fuelBurned;
 		return fuelBurned;
 	}
 
@@ -120,14 +159,34 @@ public class FusionReactor implements IFusionReactor
 		controller.radiateNeutrons(neutronsRemaining);
 	}
 
-	public void boilWater()
+	public void transferHeat()
 	{
-		int waterToBoil = (int)min(waterTank.getFluidAmount(), temperature*temperature*waterRatio);
-	}
+		//Transfer from plasma to casing
+		double plasmaCaseHeat = plasmaCaseConductivity * (plasmaTemperature - caseTemperature);
+		plasmaTemperature -= plasmaCaseHeat / plasmaHeatCapacity;
+		caseTemperature += plasmaCaseHeat / caseHeatCapacity;
 
-	public void ambientLoss()
-	{
-		temperature -= coolingCoefficient*temperature;
+		//Transfer from casing to water if necessary
+		if(activelyCooled)
+		{
+			double caseWaterHeat = caseWaterConductivity * caseTemperature;
+			int waterToVaporize = (int)(caseWaterHeat / enthalpyOfVaporization);
+			Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
+			waterToVaporize = min(waterToVaporize, min(waterTank.getFluidAmount(), steamTank.getCapacity() - steamTank.getFluidAmount()));
+			if(waterToVaporize > 0)
+			{
+				Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
+				waterTank.drain(waterToVaporize, true);
+				steamTank.fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
+			}
+			caseWaterHeat = waterToVaporize * enthalpyOfVaporization;
+			caseTemperature -= caseWaterHeat / caseHeatCapacity;
+		}
+
+		//Transfer from casing to environment
+		double caseAirHeat = caseAirConductivity * caseTemperature;
+		caseTemperature -= caseAirHeat / caseHeatCapacity;
+		energyBuffer += caseAirHeat * thermocoupleEfficiency;
 	}
 
 	@Override
@@ -158,5 +217,140 @@ public class FusionReactor implements IFusionReactor
 	public GasTank getFuelTank()
 	{
 		return fuelTank;
+	}
+
+	public void unformMultiblock()
+	{
+		for(IReactorBlock block: reactorBlocks)
+		{
+			block.setReactor(null);
+		}
+		//Don't remove from controller
+		controller.setReactor(this);
+		reactorBlocks.clear();
+		neutronCaptors.clear();
+		formed = false;
+	}
+
+	@Override
+	public void formMultiblock()
+	{
+		Mekanism.logger.trace("Attempting to form multiblock");
+
+		Coord4D controllerPosition = Coord4D.get(controller);
+		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
+
+		unformMultiblock();
+
+		reactorBlocks.add(controller);
+
+		Mekanism.logger.trace("Centre at " + centreOfReactor.toString());
+		if(!createFrame(centreOfReactor))
+		{
+			unformMultiblock();
+			Mekanism.logger.trace("Reactor failed: Frame not complete.");
+			return;
+		}
+		Mekanism.logger.trace("Frame valid");
+		if(!addSides(centreOfReactor))
+		{
+			unformMultiblock();
+			Mekanism.logger.trace("Reactor failed: Sides not complete.");
+			return;
+		}
+		Mekanism.logger.trace("Side Blocks Valid");
+		if(!centreIsClear(centreOfReactor))
+		{
+			unformMultiblock();
+			Mekanism.logger.trace("Blocks in chamber.");
+			return;
+		}
+		Mekanism.logger.trace("Centre is clear");
+		formed = true;
+	}
+
+	public boolean createFrame(Coord4D centre)
+	{
+		int[][] positions = new int[][] {
+				{+2, +2, +0}, {+2, +1, +1}, {+2, +0, +2}, {+2, -1, +1}, {+2, -2, +0}, {+2, -1, -1}, {+2, +0, -2}, {+2, +1, -1},
+				{+1, +2, +1}, {+1, +1, +2}, {+1, -1, +2}, {+1, -2, +1}, {+1, -2, -1}, {+1, -1, -2}, {+1, +1, -2}, {+1, +2, -1},
+				{+0, +2, +2}, {+0, -2, +2}, {+0, -2, -2}, {+0, +2, -2},
+				{-1, +2, +1}, {-1, +1, +2}, {-1, -1, +2}, {-1, -2, +1}, {-1, -2, -1}, {-1, -1, -2}, {-1, +1, -2}, {-1, +2, -1},
+				{-2, +2, +0}, {-2, +1, +1}, {-2, +0, +2}, {-2, -1, +1}, {-2, -2, +0}, {-2, -1, -1}, {-2, +0, -2}, {-2, +1, -1},
+		};
+
+		for(int[] coords : positions)
+		{
+			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+
+			if(tile instanceof IReactorBlock && ((IReactorBlock)tile).isFrame())
+			{
+				reactorBlocks.add((IReactorBlock)tile);
+				((IReactorBlock)tile).setReactor(this);
+			}
+			else {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public boolean addSides(Coord4D centre)
+	{
+		int[][] positions = new int[][] {
+				{+2, +0, +0}, {+2, +1, +0}, {+2, +0, +1}, {+2, -1, +0}, {+2, +0, -1}, //EAST
+				{-2, +0, +0}, {-2, +1, +0}, {-2, +0, +1}, {-2, -1, +0}, {-2, +0, -1}, //WEST
+				{+0, +2, +0}, {+1, +2, +0}, {+0, +2, +1}, {-1, +2, +0}, {+0, +2, -1}, //TOP
+				{+0, -2, +0}, {+1, -2, +0}, {+0, -2, +1}, {-1, -2, +0}, {+0, -2, -1}, //BOTTOM
+				{+0, +0, +2}, {+1, +0, +2}, {+0, +1, +2}, {-1, +0, +2}, {+0, -1, +2}, //SOUTH
+				{+0, +0, -2}, {+1, +0, -2}, {+0, +1, -2}, {-1, +0, -2}, {+0, -1, -2}, //NORTH
+		};
+
+		for(int[] coords : positions)
+		{
+			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+
+			if(tile instanceof ILaserReceptor && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0)))
+			{
+				return false;
+			}
+
+			if(tile instanceof IReactorBlock)
+			{
+				reactorBlocks.add((IReactorBlock)tile);
+				((IReactorBlock)tile).setReactor(this);
+				if(tile instanceof INeutronCapture)
+				{
+					neutronCaptors.add((INeutronCapture)tile);
+				}
+			}
+			else {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public boolean centreIsClear(Coord4D centre)
+	{
+		for(int x = -1; x <= 1; x++)
+		{
+			for(int y = -1; x <= 1; x++)
+			{
+				for(int z = -1; x <= 1; x++)
+				{
+					Block tile = centre.clone().translate(x, y, z).getBlock(controller.getWorldObj());
+
+					if(!tile.isAir(controller.getWorldObj(), x, y, z))
+					{
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 }

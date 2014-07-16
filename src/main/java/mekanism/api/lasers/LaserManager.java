@@ -15,8 +15,9 @@ public class LaserManager
 
 	public static void fireLaser(Coord4D from, ForgeDirection direction, double energy, World world)
 	{
+		Coord4D rangeFrom = from.getFromSide(direction, 1);
 		Coord4D to = from.getFromSide(direction, range);
-		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xCoord, from.yCoord, from.zCoord), Vec3.createVectorHelper(to.xCoord, to.yCoord, to.zCoord));
+		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(rangeFrom.xCoord, rangeFrom.yCoord, rangeFrom.zCoord), Vec3.createVectorHelper(to.xCoord, to.yCoord, to.zCoord));
 
 		if(mop != null)
 		{

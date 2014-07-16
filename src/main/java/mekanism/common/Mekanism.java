@@ -105,6 +105,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.transporter.TransporterManager;
@@ -1335,6 +1336,11 @@ public class Mekanism
 		GasRegistry.register(new Gas("ethene").registerFluid());
 		GasRegistry.register(new Gas("sodium").registerFluid());
 		GasRegistry.register(new Gas("brine").registerFluid());
+		GasRegistry.register(new Gas("deuterium")).registerFluid();
+		GasRegistry.register(new Gas("tritium")).registerFluid();
+		GasRegistry.register(new Gas("fusionFuelDD")).registerFluid();
+		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
+		GasRegistry.register(new Gas("steam")).registerFluid();
 		
 		for(Resource resource : Resource.values())
 		{

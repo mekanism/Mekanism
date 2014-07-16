@@ -180,18 +180,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 		else if(this == Mekanism.MachineBlock2)
 		{
-			icons[2][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
-			icons[2][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-			icons[2][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
 			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
-			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
-			icons[13][0] = register.registerIcon("Mekanism:Laser");
+			icons[13][0] = register.registerIcon("mekanism:SteelCasing");
+			icons[13][1] = register.registerIcon("mekanism:Laser");
 		}
 	}
 
@@ -467,6 +463,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[meta][0];
 				}
 			}
+			else if(meta == 13)
+			{
+				if(side == 3)
+				{
+					return icons[meta][0];
+				}
+				else {
+					return icons[meta][1];
+				}
+			}
 		}
 
 		return null;
@@ -600,7 +606,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[metadata][2];
 				}
 			}
-			else if(metadata == 9)
+			else if(metadata == 9 || metadata == 13)
 			{
 				if(side == tileEntity.facing)
 				{
@@ -834,7 +840,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
