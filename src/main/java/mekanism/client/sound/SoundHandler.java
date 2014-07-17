@@ -290,7 +290,7 @@ public class SoundHandler
 		{
 			if(getMap(tile) == null)
 			{
-				new TileSound(getIdentifier(tile), CHANNEL_TILE_DEFAULT, HolidayManager.filterSound(((IHasSound)tile).getSoundPath()), tile);
+				new TileSound(getIdentifier(tile), HolidayManager.filterSound(((IHasSound)tile).getSoundPath()), CHANNEL_TILE_DEFAULT, tile);
 			}
 		}
 	}
