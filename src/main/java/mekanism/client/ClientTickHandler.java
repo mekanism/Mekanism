@@ -30,6 +30,7 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
+import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
@@ -357,6 +358,21 @@ public class ClientTickHandler
 					mc.thePlayer.stepHeight = 0.5F;
 				}
 			}
+			
+			if(isFlamethrowerOn(mc.thePlayer) != Mekanism.flamethrowerActive.contains(mc.thePlayer.getCommandSenderName()))
+			{
+				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.thePlayer.getCurrentEquippedItem().getItem();
+				
+				if(isFlamethrowerOn(mc.thePlayer))
+				{
+					Mekanism.flamethrowerActive.add(mc.thePlayer.getCommandSenderName());
+				}
+				else {
+					Mekanism.flamethrowerActive.remove(mc.thePlayer);
+				}
+				
+				Mekanism.packetHandler.sendToServer(new FlamethrowerActiveMessage(isFlamethrowerOn(mc.thePlayer)));
+			}
 
 			if(Mekanism.jetpackOn.contains(mc.thePlayer.getCommandSenderName()) != isJetpackOn(mc.thePlayer))
 			{
@@ -560,6 +576,19 @@ public class ClientTickHandler
 			}
 		}
 
+		return false;
+	}
+	
+	public static boolean isFlamethrowerOn(EntityPlayer player)
+	{
+		if(hasFlamethrower(player))
+		{
+			if(mc.gameSettings.keyBindUseItem.getIsKeyPressed())
+			{
+				return true;
+			}
+		}
+		
 		return false;
 	}
 	

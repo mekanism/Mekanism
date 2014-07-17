@@ -2,18 +2,17 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.item.ItemJetpack.JetpackMode;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemFlamethrower extends ItemMekanism implements IGasItem
 {
@@ -147,26 +146,6 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
 			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
-	}
-	
-	public boolean getInUse(ItemStack itemstack)
-	{
-		if(itemstack.stackTagCompound == null)
-		{
-			return false;
-		}
-		
-		return itemstack.stackTagCompound.getBoolean("inUse");
-	}
-	
-	public void setInUse(ItemStack itemstack, boolean state)
-	{
-		if(itemstack.stackTagCompound == null)
-		{
-			itemstack.setTagCompound(new NBTTagCompound());
-		}
-		
-		itemstack.stackTagCompound.setBoolean("inUse", state);
 	}
 
 	public ItemStack getEmptyItem()

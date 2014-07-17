@@ -152,7 +152,12 @@ public abstract class Sound
 
 	public float getMultiplier()
 	{
-		return Math.min(1, ((float)ticksSincePlay/30F));
+		return doGradualEffect() ? Math.min(1, ((float)ticksSincePlay/30F)) : 1;
+	}
+	
+	public boolean doGradualEffect()
+	{
+		return true;
 	}
 
 	/**

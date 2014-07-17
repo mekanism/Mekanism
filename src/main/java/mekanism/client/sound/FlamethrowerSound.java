@@ -1,7 +1,6 @@
 package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
-import mekanism.common.item.ItemFlamethrower;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -11,9 +10,9 @@ public class FlamethrowerSound extends PlayerSound
 	
 	public FlamethrowerSound(String id, EntityPlayer entity)
 	{
-		super(id, getSound(getInUse(entity)), SoundHandler.CHANNEL_FLAMETHROWER, entity);
+		super(id, getSound(ClientTickHandler.isFlamethrowerOn(entity)), SoundHandler.CHANNEL_FLAMETHROWER, entity);
 		
-		inUse = getInUse(entity);
+		inUse = ClientTickHandler.isFlamethrowerOn(entity);
 	}
 
 	@Override
@@ -27,7 +26,7 @@ public class FlamethrowerSound extends PlayerSound
 		{
 			return false;
 		}
-		else if(inUse != getInUse(player))
+		else if(inUse != ClientTickHandler.isFlamethrowerOn(player))
 		{
 			return false;
 		}
@@ -42,11 +41,16 @@ public class FlamethrowerSound extends PlayerSound
 		return true;
 	}
 	
-	private static boolean getInUse(EntityPlayer player)
+	@Override
+	public float getMultiplier()
 	{
-		ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
-		
-		return flamethrower.getInUse(player.getCurrentEquippedItem());
+		return super.getMultiplier() * (inUse ? 2 : 1);
+	}
+	
+	@Override
+	public boolean doGradualEffect()
+	{
+		return false;
 	}
 	
 	private static String getSound(boolean inUse)

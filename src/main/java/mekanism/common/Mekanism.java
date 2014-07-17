@@ -105,7 +105,6 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
-import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntitySalinationTank;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.transporter.TransporterManager;
@@ -233,6 +232,7 @@ public class Mekanism
 	
 	public static Set<String> jetpackOn = new HashSet<String>();
 	public static Set<String> gasmaskOn = new HashSet<String>();
+	public static Set<String> flamethrowerActive = new HashSet<String>();
 	
 	public static Set<Coord4D> ic2Registered = new HashSet<Coord4D>();
 	
