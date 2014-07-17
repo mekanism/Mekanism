@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.gas.GasStack;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
@@ -15,13 +16,14 @@ import net.minecraft.network.NetHandlerPlayServer;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class CommonPlayerTickHandler
 {
 	@SubscribeEvent
 	public void onTick(PlayerTickEvent event)
 	{
-		if(event.phase == Phase.END)
+		if(event.phase == Phase.END && event.side == Side.SERVER)
 		{
 			tickEnd(event.player);
 		}
@@ -29,7 +31,7 @@ public class CommonPlayerTickHandler
 
 	public void tickEnd(EntityPlayer player)
 	{
-		if(!player.worldObj.isRemote && player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
+		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
 		{
 			ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
 			ItemStack itemstack = player.getCurrentEquippedItem();
@@ -141,9 +143,20 @@ public class CommonPlayerTickHandler
 		{
 			ItemScubaTank tank = (ItemScubaTank)player.getEquipmentInSlot(3).getItem();
 
+			final int max = 300;
+			
 			tank.useGas(player.getEquipmentInSlot(3));
-			player.setAir(300);
-			player.clearActivePotions();
+			GasStack received = tank.removeGas(player.getEquipmentInSlot(3), max-player.getAir());
+			
+			if(received != null)
+			{
+				player.setAir(player.getAir()+received.amount);
+				
+				if(player.getAir() == max)
+				{
+					player.clearActivePotions();
+				}
+			}
 		}
 	}
 
