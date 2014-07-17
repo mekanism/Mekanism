@@ -5,16 +5,19 @@
 //Items
 tile.ObsidianTNT.name=Obsidian-TNT
 item.EnrichedAlloy.name=Angereicherte Legierung
+item.ReinforcedAlloy.name=Verstärkte Legierung
+item.AtomicAlloy.name=Atomlegierung
 item.EnergyTablet.name=Energietablett
 item.SpeedUpgrade.name=Geschwindigkeitsupgrade
 item.EnergyUpgrade.name=Energieupgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomar-Disassembler
-item.AtomicCore.name=Atomar-Kern
 item.ElectricBow.name=Elektrischer Bogen
-item.ControlCircuit.name=Kontrollschaltkreis
 item.EnrichedIron.name=Angereichertes Eisen
 item.CompressedCarbon.name=Komprimierter Kohlenstoff
+item.CompressedRedstone.name=Komprimiertes Redstone
+item.CompressedDiamond.name=Komprimierter Diamant
+item.CompressedObsidian.name=Komprimiertes Obsidian
 item.PortableTeleporter.name=Tragbarer Teleporter
 item.TeleportationCore.name=Teleportationskern
 item.Configurator.name=Konfigurator
@@ -25,7 +28,6 @@ item.ScubaTank.name=Taucherflasche
 item.GasMask.name=Gasmaske
 item.Dictionary.name=Lexikon
 item.ElectrolyticCore.name=Elektrolysekern
-item.CompressedRedstone.name=Komprimiertes Redstone
 item.Sawdust.name=Sägemehl
 item.Salt.name=Salz
 item.BrineBucket.name=Eimer mit Salzwasser
@@ -39,6 +41,12 @@ item.HDPESheet.name=HDPE-Bogen
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrat
 
+//Control Circuits
+item.BasicControlCircuit.name=Basis-Kontrollschaltkreis
+item.AdvancedControlCircuit.name=Fortgeschr. Kontrollschaltkreis
+item.EliteControlCircuit.name=Elite-Kontrollschaltkreis
+item.UltimateControlCircuit.name=Ultimativer Kontrollschaltkreis
+
 //Gas Tank
 tile.GasTank.GasTank.name=Gastank
 
@@ -47,6 +55,9 @@ tile.CardboardBox.name=Pappkarton
 
 //Bounding Block
 tile.BoundingBlock.name=Begrenzungsblock
+
+//Salt
+tile.SaltBlock.name=Salzblock
 
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Osmiumblock
@@ -101,6 +112,8 @@ tile.MachineBlock2.ChemicalCrystallizer.name=Chemischer Kristallisierer
 tile.MachineBlock2.SeismicVibrator.name=Seismischer Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Druckreaktionskammer
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PortableTank.name=Tragbarer Tank
+tile.MachineBlock2.FluidicPlenisher.name=Flüssigkeitsfüller
 
 //Plastic
 tile.PlasticBlock.name=Plastikblock
@@ -117,12 +130,14 @@ infuse.tin=Zinn
 infuse.diamond=Diamant
 infuse.redstone=Redstone
 infuse.fungi=Fungi
+infuse.obsidian=Obsidian
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmiumerz
 tile.OreBlock.CopperOre.name=Kupfererz
 tile.OreBlock.TinOre.name=Zinnerz
 
+//Transmitters
 item.MultipartTransmitter.PressurizedTube.name=Druckröhre
 item.MultipartTransmitter.BasicUniversalCable.name=Universelles Basiskabel
 item.MultipartTransmitter.AdvancedUniversalCable.name=Fortgeschrittenes Universelles Kabel
@@ -219,6 +234,8 @@ gas.hydrogenChloride=Chlorwasserstoff
 gas.liquidOsmium=Flüssiges Osmium
 gas.liquidStone=Flüssiges Gestein
 gas.ethene=Ethylen
+gas.sodium=Natrium
+gas.brine=Gasförmiges Salzwasser
 
 gas.iron=Eisenschlamm
 gas.gold=Goldschlamm
@@ -252,6 +269,7 @@ fluid.sulfuricAcid=Flüssige Schwefelsäure
 fluid.hydrogenChloride=Flüssiger Chlorwasserstoff
 fluid.brine=Salzwasser
 fluid.ethene=Flüssigethylen
+fluid.sodium=Flüssignatrium
 
 //OreGas names
 oregas.iron=Eisenerz
@@ -262,6 +280,22 @@ oregas.tin=Zinnerz
 oregas.silver=Silbererz
 oregas.obsidian=Obsidianerz
 oregas.lead=Bleierz
+
+//Update handler text
+update.consider=Vielleicht möchtest du deine Version updaten
+update.newFeatures=Neue Features
+update.visit=Besuche
+update.toDownload=zum Download
+update.devBuild=Verwendung einer Entwicklungsversion
+update.outdated=Verwendung von veralteten Versionen eines oder mehrerer Module
+
+//Key description text
+key.mode=Moduswechsel
+key.voice=Stimme
+
+//Config Gui
+mekanism.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich Mekanism und all seinen Modulen
+mekanism.configgui.ctgy.usage.tooltip=Einstellungen bezüglich Maschinerie und ihren Energieverbauch
 
 //Gui text
 gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
@@ -302,12 +336,17 @@ gui.idle=Bereit
 gui.data=Daten
 gui.newFilter=Neuer Filter
 gui.energy=Energie
+gui.gas=Gas
+gui.dumping=Ausleeren
+gui.modID=Mod-ID
+gui.key=Key
+gui.id=ID
+gui.finished=Beendet
 
 gui.chemicalInfuser.short=C. Infundierer
 gui.chemicalDissolutionChamber.short=C. Auflösungsk.
 
 gui.dictionary.noKey=Kein Key.
-gui.dictionary.key=Key
 
 gui.configuration=Konfiguration
 gui.configuration.strictInput=Strikter Input
@@ -335,6 +374,10 @@ gui.oredictFilter=OreDict-Filter
 gui.oredictFilter.noKey=Keine Kennung eingegeben
 gui.oredictFilter.sameKey=Selbes Kennwort
 
+gui.modIDFilter=Mod-ID-Filter
+gui.modIDFilter.noID=Keine ID
+gui.modIDFilter.sameID=Selbe ID
+
 gui.itemFilter=Item-Filter
 gui.itemFilter.noItem=Kein Item
 gui.itemFilter.details=ItemStack-Details
@@ -346,12 +389,6 @@ gui.materialFilter.details=Nutze Material von
 
 gui.portableTeleporter=Tragbarer Teleporter
 
-gui.teleporter.notReady=Nicht bereit
-gui.teleporter.ready=Bereit
-gui.teleporter.needsEnergy=Benötigt Energie
-gui.teleporter.linksCapacity=Links > 2
-gui.teleporter.noLink=Keinen Link gefunden
-
 gui.robit=Robit
 entity.Robit.name=Robit
 gui.robit.smelting=Robit-Schmelzen
@@ -362,8 +399,11 @@ gui.robit.toggleFollow=Schalte 'Folgen'-Modus
 gui.robit.rename=Benenne diesen Robit um
 gui.robit.teleport=Teleport zurück nach Hause
 gui.robit.togglePickup=Schalte 'Drop-Aufsammel'-Modus
+gui.robit.following=Folgend
+gui.robit.dropPickup=Wirf Gesammeltes ab
+gui.robit.owner=Eigentümer
 
-gui.password.setPassword=Passwort setzen
+gui.password.setPassword=Passwort einstellen
 gui.password.enterPassword=Gib Passwort ein
 gui.password.fieldsEmpty=Feld(er) leer
 gui.password.notMatching=Passt nicht
@@ -377,6 +417,13 @@ gui.logisticalSorter.roundRobin=Round-Robin
 
 gui.electricChest.editPassword=Passwort ändern
 
+gui.teleporter.notReady=Nicht bereit
+gui.teleporter.ready=Bereit
+gui.teleporter.noFrame=Kein Rahmen
+gui.teleporter.noLink=Kein Link
+gui.teleporter.exceeds=Links > 2
+gui.teleporter.needsEnergy=Benötigt Energie
+
 gui.digitalMinerConfig=Konfiguration
 
 gui.digitalMiner.autoPull=Auto-Anziehen
@@ -388,6 +435,9 @@ gui.digitalMiner.silk=Behutsam
 gui.digitalMiner.toMine=Zum Abbauen
 gui.digitalMiner.running=Arbeitend
 gui.digitalMiner.inverse=Inversionsmodus
+
+//Recipe names
+recipe.mekanismShaped=Geformt
 
 //Item and block tooltip text
 tooltip.configurator.modify=Verändern
@@ -402,6 +452,57 @@ tooltip.configurator.unauth=Diese Truhe ist verschlossen
 tooltip.configurator.noLink=Kein Link
 tooltip.configurator.linkMsg=Verbunden mit
 tooltip.configurator.dim=Dimension
+tooltip.configurator.setLink=Setze Link auf Block
+tooltip.configurator.plenisherReset=Flüssigkeitsfüllerkalkulation zurücksetzen
+
+tooltip.upgrade.speed=Geschwindigkeit
+tooltip.upgrade.energy=Energie
+
+tooltip.inventory=Inventar
+tooltip.storedEnergy=Gespeicherte Energie
+tooltip.auth=Authentifiziert
+tooltip.locked=Gesperrt
+tooltip.recipeType=Rezeptart
+tooltip.hold=Halte
+tooltip.forDesc=für eine Beschreibung
+tooltip.forDetails=für Details
+tooltip.fireMode=Feuermodus
+tooltip.capacity=Kapazität
+tooltip.pumpRate=Pumprate
+tooltip.items=Items
+tooltip.blocks=Blöcke
+tooltip.universal=Universell
+tooltip.fluids=Flüssigkeiten
+tooltip.gasses=Gase
+tooltip.capableTrans=Fähig zum Transferieren von
+tooltip.restrictiveDesc=Nur verwendet, wenn kein anderer Pfad verfügbar ist
+tooltip.diversionDesc=Kontrollierbar via Redstone
+tooltip.noGas=Kein Gas gespeichert
+tooltip.stored=Gespeichert
+tooltip.channel=Kanal
+tooltip.mode=Modus
+tooltip.efficiency=Effizienz
+tooltip.modeToggle=Modus gewechselt auf
+tooltip.flowing=Fließend
+tooltip.yes=Ja
+tooltip.no=Nein
+tooltip.name=Name
+tooltip.blockData=Block-Daten
+tooltip.block=Block
+tooltip.meta=Metadaten
+tooltip.tile=Tile
+tooltip.keysFound=Key(s) gefunden
+tooltip.noKey=Kein key
+tooltip.hp=HP
+tooltip.configureState=Status Konfigurieren
+
+tooltip.portableTank.bucketMode=Bucket Mode
+
+tooltip.disassembler.normal=normal
+tooltip.disassembler.slow=slow
+tooltip.disassembler.fast=fast
+tooltip.disassembler.vein=vein
+tooltip.disassembler.off=off
 
 tooltip.filterCard.got=Filterdaten von %s empfangen
 tooltip.filterCard.set=Filterdaten vom Typ %s injeziert
@@ -440,10 +541,23 @@ tooltip.ElectrolyticSeparator=Eine Maschine, die den Prozess der Elektrolyse nut
 tooltip.PrecisionSawmill=Eine Maschine, genutzt, um Baumstämme und andere !nhölzerne Dinge effizienter zu verarbeiten und um Sägemehl zu bekommen.
 tooltip.ChemicalDissolutionChamber=Eine ultimative Maschine, genutzt, !num jegliche Unreinheiten in einem Erz aufzulösen, !nwas unverarbeiteten Schlamm zurücklässt.
 tooltip.ChemicalWasher=Eine ultimative Maschine, die unverarbeiteten Schlamm !nsäubert und ihn für die Kristallisierung vorbereitet.
-tooltip.ChemicalCrystallizer=Eine ultimative Maschine, genutzt, um!n Purifizierten Erzschlamm zu Erzkristallen zu verarbeiten.
+tooltip.ChemicalCrystallizer=Eine ultimative Maschine, genutzt, um !nPurifizierten Erzschlamm zu Erzkristallen zu verarbeiten.
+tooltip.ChemicalOxidizer=Eine Maschine, fähig, !nFeststoffe in ihre Gasform zu verdampfen.
+tooltip.ChemicalInfuser=Eine Maschine, die ein Gas durch Infusion !nvon zwei anderen erstellt.
+tooltip.SeismicVibrator=Eine Maschine, die seismische Vibrationen nutzt, !num Informationen über verschiedene Schichten !nder Welt zu beschaffen.
+tooltip.PressurizedReactionChamber=Eine fortgeschrittene Maschine, die !neine feste, flüssige sowie gasförmige Mixtur verarbeitet !nund sowohl ein gasförmiges als auch ein festes Produkt herstellt.
+tooltip.PortableTank=Ein praktischer, tragbarer Tank, der dich !n14 Eimer einer Flüssigkeit überall hintragen lässt. !nFunktioniert ebenfalls als ein Eimer!
+tooltip.FluidicPlenisher=Eine Maschine, fähig, ganze !nSeen durch das Füllen von Schluchten mit Flüssigkeiten zu kreieren.
+
+tooltip.HeatGenerator=Ein Generator, der die Wärme aus Lava oder !nanderen Brennstoffen zur Energieerzeugung nutzt.
+tooltip.SolarGenerator=Ein Generator, der die Energie der Sonne !nzur Energieerzeugung nutzt.
+tooltip.GasGenerator=Ein Generator, der molekular unterschiedliche !nGase zur Energieerzeugung nutzt.
+tooltip.BioGenerator=Ein Generator, der organische Materialien dieser Welt !nzur Energieerzeugung nutzt.
+tooltip.AdvancedSolarGenerator=Ein fortgeschrittener Generator, der Sonnenstrahlung !ndirekt und verlustarm zur Energieerzeugung absorbiert.
+tooltip.WindTurbine=Ein Generator, der die Stärke des Windes !nzur Energieerzeugung nutzt, was in großer Höhe deutlich effizienter ist.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
-tooltip.CopperOre=Ein häufiges, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
+tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
 tooltip.TinOre=Ein leiches, jedoch robustes und leitfähiges !nMaterial, dass etwas schwieriger !nzu finden ist als Kupfer.
 
 //Redstone control
@@ -453,6 +567,11 @@ control.low=Low
 control.disabled.desc=Immer aktiv
 control.high.desc=Aktiv mit Signal
 control.low.desc=Aktiv ohne Signal
+
+//Container edit modes
+fluidedit.both=Beides
+fluidedit.fill=Füllen
+fluidedit.empty=Leeren
 
 //Colors
 color.black=Schwarz
@@ -471,6 +590,8 @@ color.red=Rot
 color.pink=Pink
 color.yellow=Gelb
 color.white=Weiß
+color.brown=Braun
+color.brightPink=Hellrosa
 
 //Dyes
 dye.black=Schwarz
@@ -513,7 +634,7 @@ infuse.bio=Biomasse
 //Generators
 tile.Generator.HeatGenerator.name=Hitzegenerator
 tile.Generator.SolarGenerator.name=Solargenerator
-tile.Generator.HydrogenGenerator.name=Wasserstoffgenerator
+tile.Generator.GasGenerator.name=Gasverbrennender Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Fortgeschrittener Solargenerator
 tile.Generator.WindTurbine.name=Windturbine
@@ -606,3 +727,8 @@ item.SteelAxe.name=Stahlaxt
 item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general.tooltip=Einstellungen bezüglich MekanismTools' genereller Konfiguration
+mekanism.configgui.ctgy.tools.armor.tooltip=Einstellungen bezüglich der Schutzwerte und Balance der MekanismTools Rüstungssets
+mekanism.configgui.ctgy.tools.tools.tooltip=Einstellungen bezüglich der Effizientwerte und Balance der MekanismTools Werkzeugsets
