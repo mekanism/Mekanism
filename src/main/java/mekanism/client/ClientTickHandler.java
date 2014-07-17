@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
+import mekanism.api.gas.GasStack;
 import mekanism.client.sound.FlamethrowerSound;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
@@ -472,9 +473,20 @@ public class ClientTickHandler
 			{
 				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getEquipmentInSlot(3).getItem();
 
+				final int max = 300;
+
 				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
-				mc.thePlayer.setAir(300);
-				mc.thePlayer.clearActivePotions();
+				GasStack received = tank.removeGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
+
+				if(received != null)
+				{
+					mc.thePlayer.setAir(mc.thePlayer.getAir()+received.amount);
+
+					if(mc.thePlayer.getAir() == max)
+					{
+						mc.thePlayer.clearActivePotions();
+					}
+				}
 			}
 		}
 	}

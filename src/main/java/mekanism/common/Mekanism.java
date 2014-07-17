@@ -316,6 +316,7 @@ public class Mekanism
 	public static boolean cardboardSpawners = true;
 	public static boolean machineEffects = true;
 	public static boolean enableWorldRegeneration = true;
+	public static boolean creativeOverrideElectricChest = true;
 	public static boolean spawnBabySkeletons = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int osmiumPerChunk = 12;

@@ -30,6 +30,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(Mekanism.dynamicTankEasterEgg);
 			dataStream.writeBoolean(Mekanism.voiceServerEnabled);
 			dataStream.writeBoolean(Mekanism.cardboardSpawners);
+			dataStream.writeBoolean(Mekanism.creativeOverrideElectricChest);
+			dataStream.writeBoolean(Mekanism.spawnBabySkeletons);
 			dataStream.writeInt(Mekanism.obsidianTNTDelay);
 			dataStream.writeInt(Mekanism.obsidianTNTBlastRadius);
 			dataStream.writeInt(Mekanism.UPDATE_DELAY);
@@ -83,6 +85,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			Mekanism.dynamicTankEasterEgg = dataStream.readBoolean();
 			Mekanism.voiceServerEnabled = dataStream.readBoolean();
 			Mekanism.cardboardSpawners = dataStream.readBoolean();
+			Mekanism.creativeOverrideElectricChest = dataStream.readBoolean();
+			Mekanism.spawnBabySkeletons = dataStream.readBoolean();
 			Mekanism.obsidianTNTDelay = dataStream.readInt();
 			Mekanism.obsidianTNTBlastRadius = dataStream.readInt();
 			Mekanism.UPDATE_DELAY = dataStream.readInt();

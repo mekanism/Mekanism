@@ -71,7 +71,10 @@ public class InventoryElectricChest extends InventoryBasic
 			}
 		}
 
-		((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
+		if(getStack() != null)
+		{
+			((ISustainedInventory)getStack().getItem()).setInventory(tagList, getStack());
+		}
 	}
 
 	public void read()

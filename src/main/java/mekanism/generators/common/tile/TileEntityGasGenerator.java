@@ -62,7 +62,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				}
 				else if(inventory[0] != null && inventory[0].getItem() instanceof IGasItem)
 				{
-					gasType = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]).getGas();
+					if(((IGasItem)inventory[0].getItem()).getGas(inventory[0]) != null)
+					{
+						gasType = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]).getGas();
+					}
 				}
 				
 				if(gasType != null && FuelHandler.getFuel(gasType) != null)
