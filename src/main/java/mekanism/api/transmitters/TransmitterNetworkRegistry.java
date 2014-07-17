@@ -9,10 +9,12 @@ import java.util.Set;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ChunkEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.event.world.ChunkEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class TransmitterNetworkRegistry
 {
@@ -66,7 +68,10 @@ public class TransmitterNetworkRegistry
 	@SubscribeEvent
 	public void onTick(ServerTickEvent event)
 	{
-		tickEnd();
+		if(event.phase == Phase.END && event.side == Side.SERVER)
+		{
+			tickEnd();
+		}
 	}
 
 	public void tickEnd()
