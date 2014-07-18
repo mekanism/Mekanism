@@ -170,7 +170,7 @@ public class RenderTickHandler
 				{
 					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
 					{
-						if(!p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
 						{
 							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
 							{

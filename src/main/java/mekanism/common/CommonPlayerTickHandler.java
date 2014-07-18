@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.api.gas.GasStack;
+import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
@@ -99,7 +100,7 @@ public class CommonPlayerTickHandler
 		
 		if(isFlamethrowerOn(player))
 		{
-			//TODO spawn flame entities
+			player.worldObj.spawnEntityInWorld(new EntityFlame(player));
 		}
 
 		if(isJetpackOn(player))

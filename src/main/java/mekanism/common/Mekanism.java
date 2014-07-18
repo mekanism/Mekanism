@@ -51,6 +51,7 @@ import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
+import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
@@ -1249,12 +1250,14 @@ public class Mekanism
 		EntityRegistry.registerGlobalEntityID(EntityRobit.class, "Robit", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityBalloon.class, "Balloon", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerGlobalEntityID(EntityBabySkeleton.class, "BabySkeleton", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerGlobalEntityID(EntityFlame.class, "Flame", EntityRegistry.findGlobalUniqueEntityId());
 		
 		//Registrations
-		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 40, 5, true);
-		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 40, 2, true);
-		EntityRegistry.registerModEntity(EntityBalloon.class, "Balloon", 2, this, 40, 1, true);
+		EntityRegistry.registerModEntity(EntityObsidianTNT.class, "ObsidianTNT", 0, this, 64, 5, true);
+		EntityRegistry.registerModEntity(EntityRobit.class, "Robit", 1, this, 64, 2, true);
+		EntityRegistry.registerModEntity(EntityBalloon.class, "Balloon", 2, this, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityBabySkeleton.class, "BabySkeleton", 3, this, 64, 5, true);
+		EntityRegistry.registerModEntity(EntityFlame.class, "Flame", 4, this, 64, 5, true);
 		
 		//Tile entities
 		GameRegistry.registerTileEntity(TileEntityBoundingBlock.class, "BoundingBlock");
