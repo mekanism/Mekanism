@@ -20,5 +20,11 @@ public interface IFusionReactor
 
 	public GasTank getFuelTank();
 
+	public double getBufferedEnergy();
+
+	public void setBufferedEnergy(double energy);
+
+	public double getBufferSize();
+
 	public void formMultiblock();
 }
