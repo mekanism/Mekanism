@@ -30,18 +30,6 @@ import static java.lang.Math.max;
 
 public class FusionReactor implements IFusionReactor
 {
-	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
-
-	public static final int MAX_FUEL = 100 * FluidContainerRegistry.BUCKET_VOLUME;
-
-	public FluidTank waterTank = new FluidTank(MAX_WATER);
-	public FluidTank steamTank = new FluidTank(MAX_WATER*1000);
-
-	public GasTank deuteriumTank = new GasTank(MAX_FUEL);
-	public GasTank tritiumTank = new GasTank(MAX_FUEL);
-
-	public GasTank fuelTank = new GasTank(MAX_FUEL);
-
 	public TileEntityReactorController controller;
 	public Set<IReactorBlock> reactorBlocks = new HashSet<IReactorBlock>();
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
@@ -49,7 +37,6 @@ public class FusionReactor implements IFusionReactor
 	//Current stores of energy
 	public double plasmaTemperature;
 	public double caseTemperature;
-	public double energyBuffer;
 
 	//Reaction characteristics
 	public static double burnTemperature = 1E8;
@@ -120,26 +107,26 @@ public class FusionReactor implements IFusionReactor
 
 	public void vaporiseHohlraum()
 	{
-		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
+		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
 		hasHohlraum = false;
 		burning = true;
 	}
 
 	public void injectFuel()
 	{
-		int amountNeeded = fuelTank.getNeeded();
-		int amountAvailable = 2*min(deuteriumTank.getStored(), tritiumTank.getStored());
+		int amountNeeded = getFuelTank().getNeeded();
+		int amountAvailable = 2*min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
 		int amountToInject = min(amountNeeded, min(amountAvailable, injectionRate));
 		amountToInject -= amountToInject % 2;
-		deuteriumTank.draw(amountToInject/2, true);
-		tritiumTank.draw(amountToInject/2, true);
-		fuelTank.receive(new GasStack(GasRegistry.getGas("fusionFuel"), amountToInject), true);
+		getDeuteriumTank().draw(amountToInject / 2, true);
+		getTritiumTank().draw(amountToInject / 2, true);
+		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuel"), amountToInject), true);
 	}
 
 	public int burnFuel()
 	{
-		int fuelBurned = (int)min(fuelTank.getStored(), max(0, plasmaTemperature - burnTemperature)*burnRatio);
-		fuelTank.draw(fuelBurned, true);
+		int fuelBurned = (int)min(getFuelTank().getStored(), max(0, plasmaTemperature - burnTemperature)*burnRatio);
+		getFuelTank().draw(fuelBurned, true);
 		plasmaTemperature += tempPerFuel * fuelBurned;
 		return fuelBurned;
 	}
@@ -172,12 +159,12 @@ public class FusionReactor implements IFusionReactor
 			double caseWaterHeat = caseWaterConductivity * caseTemperature;
 			int waterToVaporize = (int)(caseWaterHeat / enthalpyOfVaporization);
 			Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
-			waterToVaporize = min(waterToVaporize, min(waterTank.getFluidAmount(), steamTank.getCapacity() - steamTank.getFluidAmount()));
+			waterToVaporize = min(waterToVaporize, min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
 			if(waterToVaporize > 0)
 			{
 				Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
-				waterTank.drain(waterToVaporize, true);
-				steamTank.fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
+				getWaterTank().drain(waterToVaporize, true);
+				getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
 			}
 			caseWaterHeat = waterToVaporize * enthalpyOfVaporization;
 			caseTemperature -= caseWaterHeat / caseHeatCapacity;
@@ -186,37 +173,55 @@ public class FusionReactor implements IFusionReactor
 		//Transfer from casing to environment
 		double caseAirHeat = caseAirConductivity * caseTemperature;
 		caseTemperature -= caseAirHeat / caseHeatCapacity;
-		energyBuffer += caseAirHeat * thermocoupleEfficiency;
+		setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
 	}
 
 	@Override
 	public FluidTank getWaterTank()
 	{
-		return waterTank;
+		return controller != null ? controller.waterTank : null;
 	}
 
 	@Override
 	public FluidTank getSteamTank()
 	{
-		return steamTank;
+		return controller.steamTank;
 	}
 
 	@Override
 	public GasTank getDeuteriumTank()
 	{
-		return deuteriumTank;
+		return controller.deuteriumTank;
 	}
 
 	@Override
 	public GasTank getTritiumTank()
 	{
-		return tritiumTank;
+		return controller.tritiumTank;
 	}
 
 	@Override
 	public GasTank getFuelTank()
 	{
-		return fuelTank;
+		return controller.fuelTank;
+	}
+
+	@Override
+	public double getBufferedEnergy()
+	{
+		return controller.getEnergy();
+	}
+
+	@Override
+	public void setBufferedEnergy(double energy)
+	{
+		controller.setEnergy(energy);
+	}
+
+	@Override
+	public double getBufferSize()
+	{
+		return controller.getMaxEnergy();
 	}
 
 	public void unformMultiblock()
