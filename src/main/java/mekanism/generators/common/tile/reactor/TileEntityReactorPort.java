@@ -11,6 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.util.CableUtils;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -23,7 +24,9 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public TileEntityReactorPort()
 	{
 		super("name", 1);
+		inventory = new ItemStack[0];
 	}
+
 	@Override
 	public boolean isFrame()
 	{

@@ -4,6 +4,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.common.Mekanism;
 import mekanism.generators.common.FusionReactor;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -24,6 +25,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock
 	public TileEntityReactorController()
 	{
 		super("ReactorController", 1000000000);
+		inventory = new ItemStack[1];
 	}
 
 	@Override
