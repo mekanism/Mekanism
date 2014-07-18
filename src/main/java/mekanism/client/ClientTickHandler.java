@@ -361,8 +361,6 @@ public class ClientTickHandler
 			
 			if(isFlamethrowerOn(mc.thePlayer) != Mekanism.flamethrowerActive.contains(mc.thePlayer.getCommandSenderName()))
 			{
-				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.thePlayer.getCurrentEquippedItem().getItem();
-				
 				if(isFlamethrowerOn(mc.thePlayer))
 				{
 					Mekanism.flamethrowerActive.add(mc.thePlayer.getCommandSenderName());

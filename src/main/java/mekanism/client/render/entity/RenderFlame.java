@@ -18,14 +18,13 @@ public class RenderFlame extends Render
 {
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {
-    	float alpha = (float)entity.ticksExisted/100F;
+    	float alpha = (float)(entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
     	float size = alpha*8;
     	
         GL11.glPushMatrix();
         MekanismRenderer.glowOn();
         MekanismRenderer.blendOn();
         GL11.glColor4f(1, 1, 1, 1-alpha);
-        GL11.glScalef(size, size, size);
         
         bindTexture(getEntityTexture(entity));
         
@@ -34,37 +33,18 @@ public class RenderFlame extends Render
         GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
         
         Tessellator tessellator = Tessellator.instance;
+        
         int i = 0;
         float f2 = 0.0F;
         float f3 = 0.5F;
         float f4 = (float)(0 + i * 10) / 32F;
         float f5 = (float)(5 + i * 10) / 32F;
-        float f6 = 0.0F;
-        float f7 = 0.15625F;
-        float f8 = (float)(5 + i * 10) / 32F;
-        float f9 = (float)(10 + i * 10) / 32F;
-        float scale = 0.05625F;
+        float scale = 0.05625F*(0.8F+alpha);
         
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glRotatef(45F, 1.0F, 0.0F, 0.0F);
         GL11.glScalef(scale, scale, scale);
         GL11.glTranslatef(-4F, 0.0F, 0.0F);
-        
-        GL11.glNormal3f(scale, 0.0F, 0.0F);
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(-7D, -2D, -2D, f6, f8);
-        tessellator.addVertexWithUV(-7D, -2D, 2D, f7, f8);
-        tessellator.addVertexWithUV(-7D, 2D, 2D, f7, f9);
-        tessellator.addVertexWithUV(-7D, 2D, -2D, f6, f9);
-        tessellator.draw();
-        
-        GL11.glNormal3f(-scale, 0.0F, 0.0F);
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(-7D, 2D, -2D, f6, f8);
-        tessellator.addVertexWithUV(-7D, 2D, 2D, f7, f8);
-        tessellator.addVertexWithUV(-7D, -2D, 2D, f7, f9);
-        tessellator.addVertexWithUV(-7D, -2D, -2D, f6, f9);
-        tessellator.draw();
 
         for(int j = 0; j < 4; j++)
         {
