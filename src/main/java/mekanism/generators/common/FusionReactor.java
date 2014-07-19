@@ -110,13 +110,8 @@ public class FusionReactor implements IFusionReactor
 		//Perform the heat transfer calculations
 		transferHeat();
 
-		lastPlasmaTemperature = plasmaTemperature;
-		lastCaseTemperature = caseTemperature;
-
-		if(plasmaTemperature > 1E-6 || caseTemperature > 1E-6)
-		{
-			Mekanism.logger.info("Reactor temperatures: Plasma: " + (int) plasmaTemperature + ",			Casing: " + (int) caseTemperature);
-		}
+		lastPlasmaTemperature = plasmaTemperature < 1E-1 ? 0 : plasmaTemperature;
+		lastCaseTemperature = caseTemperature < 1E-1 ? 0 : caseTemperature;
 	}
 
 	public void vaporiseHohlraum()
