@@ -6,6 +6,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -17,18 +18,18 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 {
 	public static final int LIFESPAN = 60;
 	public static final int DAMAGE = 4;
-	
-	public DamageSource flamethrowerDamage = (new DamageSource("flamethrower")).setFireDamage().setProjectile();
 	
 	public Entity owner = null;
 	
@@ -93,10 +94,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
         posY += motionY;
         posZ += motionZ;
         
-        if(rand.nextInt(4) == 0)
-        {
-        	calculateVector();
-        }
+    	calculateVector();
         
 		if(ticksExisted > LIFESPAN)
 		{
@@ -108,8 +106,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	private void calculateVector()
 	{
 		Vec3 localVec = Vec3.createVectorHelper(posX, posY, posZ);
-        Vec3 motionVec = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
-        MovingObjectPosition mop = worldObj.func_147447_a(localVec, motionVec, true, true, false);
+        Vec3 motionVec = Vec3.createVectorHelper(posX + motionX*2, posY + motionY*2, posZ + motionZ*2);
+        MovingObjectPosition mop = worldObj.func_147447_a(localVec, motionVec, true, false, false);
         localVec = Vec3.createVectorHelper(posX, posY, posZ);
         motionVec = Vec3.createVectorHelper(posX + motionX, posY + motionY, posZ + motionZ);
 
@@ -127,7 +125,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
         {
             if((entity1 instanceof EntityItem || entity1.canBeCollidedWith()) && (entity1 != owner || ticksExisted >= 5))
             {
-                float boundsScale = 0.3F;
+                float boundsScale = 0.4F;
                 AxisAlignedBB newBounds = entity1.boundingBox.expand((double)boundsScale, (double)boundsScale, (double)boundsScale);
                 MovingObjectPosition movingobjectposition1 = newBounds.calculateIntercept(localVec, motionVec);
 
@@ -180,10 +178,23 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
             else {
                 Block block = worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
                 int meta = worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+                boolean fluid = MekanismUtils.isFluid(worldObj, mop.blockX, mop.blockY, mop.blockZ) || MekanismUtils.isDeadFluid(worldObj, mop.blockX, mop.blockY, mop.blockZ);
                 
-                smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ));
+                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).getFromSide(ForgeDirection.getOrientation(mop.sideHit));
                 
-                System.out.println(block);
+                if(!fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
+                {
+                	if(!smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
+                	{
+                		worldObj.setBlock(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, Blocks.fire);
+                	}
+                }
+                
+                if(fluid)
+                {
+                	spawnParticlesAt(new Pos3D(this));
+                	worldObj.playSoundAtEntity(this, "random.fizz", 1.0F, 1.0F);
+                }
             }
             
             setDead();
@@ -200,6 +211,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			item.ticksExisted = 0;
 			
 			spawnParticlesAt(new Pos3D(item));
+		  	worldObj.playSoundAtEntity(this, "random.fizz", 1.0F, 1.0F);
 			
 			return true;
 		}
@@ -226,6 +238,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 					worldObj.setBlockToAir(block.xCoord, block.yCoord, block.zCoord);
 					
 					EntityItem item = new EntityItem(worldObj, block.xCoord + 0.5, block.yCoord + 0.5, block.zCoord + 0.5, result.copy());
+					item.motionX = 0;
+					item.motionY = 0;
+					item.motionZ = 0;
 					worldObj.spawnEntityInWorld(item);
 				}
 				
@@ -242,8 +257,19 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
 	private void burn(Entity entity)
 	{
-    	entity.setFire(200);
-        entity.attackEntityFrom(flamethrowerDamage, DAMAGE);
+    	entity.setFire(20);
+        entity.attackEntityFrom(getFlamethrowerDamage(), DAMAGE);
+	}
+	
+	private DamageSource getFlamethrowerDamage()
+	{
+		if(owner == null)
+		{
+			return DamageSource.causeThrownDamage(this, this);
+		}
+		else {
+			return DamageSource.causeThrownDamage(this, owner);
+		}
 	}
 	
 	private void spawnParticlesAt(Pos3D pos)
