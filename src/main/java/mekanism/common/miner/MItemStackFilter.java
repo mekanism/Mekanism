@@ -47,6 +47,8 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
+		super.write(nbtTags);
+		
 		nbtTags.setInteger("type", 0);
 		itemType.writeToNBT(nbtTags);
 
@@ -56,6 +58,8 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
+		super.read(nbtTags);
+		
 		itemType = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 
@@ -63,6 +67,8 @@ public class MItemStackFilter extends MinerFilter
 	public void write(ArrayList data)
 	{
 		data.add(0);
+		
+		super.write(data);
 
 		data.add(MekanismUtils.getID(itemType));
 		data.add(itemType.stackSize);
@@ -72,6 +78,8 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	protected void read(ByteBuf dataStream)
 	{
+		super.read(dataStream);
+		
 		itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
@@ -95,6 +103,8 @@ public class MItemStackFilter extends MinerFilter
 	public MItemStackFilter clone()
 	{
 		MItemStackFilter filter = new MItemStackFilter();
+		filter.replaceStack = replaceStack;
+		filter.requireStack = requireStack;
 		filter.itemType = itemType.copy();
 
 		return filter;

@@ -1,7 +1,9 @@
 package mekanism.common.miner;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.BlockInfo;
@@ -9,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -20,6 +21,7 @@ public class ThreadMinerSearch extends Thread
 	public State state = State.IDLE;
 
 	public BitSet oresToMine = new BitSet();
+	public List<Integer> replaceMap = new ArrayList<Integer>();
 
 	public Map<BlockInfo, Boolean> acceptedItems = new HashMap<BlockInfo, Boolean>();
 

@@ -28,6 +28,8 @@ public class MModIDFilter extends MinerFilter
 	@Override
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
+		super.write(nbtTags);
+		
 		nbtTags.setInteger("type", 3);
 		nbtTags.setString("modID", modID);
 
@@ -37,6 +39,8 @@ public class MModIDFilter extends MinerFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
+		super.read(nbtTags);
+		
 		modID = nbtTags.getString("modID");
 	}
 
@@ -44,12 +48,17 @@ public class MModIDFilter extends MinerFilter
 	public void write(ArrayList data)
 	{
 		data.add(3);
+		
+		super.write(data);
+		
 		data.add(modID);
 	}
 
 	@Override
 	protected void read(ByteBuf dataStream)
 	{
+		super.read(dataStream);
+		
 		modID = PacketHandler.readString(dataStream);
 	}
 
@@ -71,6 +80,8 @@ public class MModIDFilter extends MinerFilter
 	public MModIDFilter clone()
 	{
 		MModIDFilter filter = new MModIDFilter();
+		filter.replaceStack = replaceStack;
+		filter.requireStack = requireStack;
 		filter.modID = modID;
 
 		return filter;

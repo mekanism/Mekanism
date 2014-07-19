@@ -211,7 +211,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			item.ticksExisted = 0;
 			
 			spawnParticlesAt(new Pos3D(item));
-		  	worldObj.playSoundAtEntity(this, "random.fizz", 1.0F, 1.0F);
+		  	worldObj.playSoundAtEntity(item, "random.fizz", 1.0F, 1.0F);
 			
 			return true;
 		}

@@ -4,20 +4,64 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class MinerFilter
 {
+	public ItemStack replaceStack;
+	
+	public boolean requireStack;
+	
 	public abstract boolean canFilter(ItemStack itemStack);
 
-	public abstract NBTTagCompound write(NBTTagCompound nbtTags);
+	public NBTTagCompound write(NBTTagCompound nbtTags)
+	{
+		nbtTags.setBoolean("requireStack", requireStack);
 
-	protected abstract void read(NBTTagCompound nbtTags);
+		if(replaceStack != null)
+		{
+			nbtTags.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+		}
+		
+		return nbtTags;
+	}
 
-	public abstract void write(ArrayList data);
+	protected void read(NBTTagCompound nbtTags)
+	{
+		requireStack = nbtTags.getBoolean("requireStack");
+		
+		if(nbtTags.hasKey("replaceStack"))
+		{
+			replaceStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("replaceStack"));
+		}
+	}
 
-	protected abstract void read(ByteBuf dataStream);
+	public void write(ArrayList data)
+	{
+		if(replaceStack != null)
+		{
+			data.add(true);
+			data.add(MekanismUtils.getID(replaceStack));
+			data.add(replaceStack.getItemDamage());
+		}
+		else {
+			data.add(false);
+		}
+	}
+
+	protected void read(ByteBuf dataStream)
+	{
+		if(dataStream.readBoolean())
+		{
+			replaceStack = new ItemStack(Block.getBlockById(dataStream.readInt()), 1, dataStream.readInt());
+		}
+		else {
+			replaceStack = null;
+		}
+	}
 
 	public static MinerFilter readFromNBT(NBTTagCompound nbtTags)
 	{

@@ -36,6 +36,8 @@ public class MMaterialFilter extends MinerFilter
 	@Override
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
+		super.write(nbtTags);
+		
 		nbtTags.setInteger("type", 2);
 		materialItem.writeToNBT(nbtTags);
 
@@ -45,6 +47,8 @@ public class MMaterialFilter extends MinerFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
+		super.read(nbtTags);
+		
 		materialItem = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 
@@ -52,6 +56,8 @@ public class MMaterialFilter extends MinerFilter
 	public void write(ArrayList data)
 	{
 		data.add(2);
+		
+		super.write(data);
 
 		data.add(MekanismUtils.getID(materialItem));
 		data.add(materialItem.stackSize);
@@ -61,6 +67,8 @@ public class MMaterialFilter extends MinerFilter
 	@Override
 	protected void read(ByteBuf dataStream)
 	{
+		super.read(dataStream);
+		
 		materialItem = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
@@ -84,6 +92,8 @@ public class MMaterialFilter extends MinerFilter
 	public MMaterialFilter clone()
 	{
 		MMaterialFilter filter = new MMaterialFilter();
+		filter.replaceStack = replaceStack;
+		filter.requireStack = requireStack;
 		filter.materialItem = materialItem;
 
 		return filter;

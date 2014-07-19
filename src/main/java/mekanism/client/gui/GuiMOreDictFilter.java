@@ -205,6 +205,29 @@ public class GuiMOreDictFilter extends GuiMekanism
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
 		}
+		
+		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+		{
+			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 14, 14, 14);
+		}
+		
+		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
+		{
+			GL11.glPushMatrix();
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+			int x = guiWidth + 149;
+			int y = guiHeight + 19;
+			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+
+			GL11.glPopAttrib();
+			GL11.glPopMatrix();
+		}
 
 		oreDictText.drawTextBox();
 	}

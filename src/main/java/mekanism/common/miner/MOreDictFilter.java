@@ -71,6 +71,8 @@ public class MOreDictFilter extends MinerFilter
 	public MOreDictFilter clone()
 	{
 		MOreDictFilter filter = new MOreDictFilter();
+		filter.replaceStack = replaceStack;
+		filter.requireStack = requireStack;
 		filter.oreDictName = oreDictName;
 
 		return filter;
