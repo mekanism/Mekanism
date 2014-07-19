@@ -34,21 +34,26 @@ public class FusionReactor implements IFusionReactor
 	public Set<IReactorBlock> reactorBlocks = new HashSet<IReactorBlock>();
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
 
-	//Current stores of energy
+	//Current stores of temperature
 	public double plasmaTemperature;
 	public double caseTemperature;
+
+	//Last values of temperature
+	public double lastPlasmaTemperature;
+	public double lastCaseTemperature;
 
 	//Reaction characteristics
 	public static double burnTemperature = 1E8;
 	public static double burnRatio = 1;
-	public static double tempPerFuel = 5E6;
+	public static double energyPerFuel = 5E6;
 	public int injectionRate = 0;
 
 	//Thermal characteristics
-	public static double plasmaHeatCapacity = 1;
+	public static double plasmaHeatCapacity = 100;
 	public static double caseHeatCapacity = 1;
 	public static double enthalpyOfVaporization = 10;
 	public static double thermocoupleEfficiency = 0.01;
+	public static double steamTransferEfficiency = 0.1;
 
 	//Heat transfer metrics
 	public static double plasmaCaseConductivity = 0.2;
@@ -75,6 +80,12 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void simulate()
 	{
+		if(controller.getWorldObj().isRemote)
+		{
+			lastPlasmaTemperature = plasmaTemperature;
+			lastCaseTemperature = caseTemperature;
+			return;
+		}
 		//Only thermal transfer happens unless we're hot enough to burn.
 		if(plasmaTemperature >= burnTemperature)
 		{
@@ -99,10 +110,8 @@ public class FusionReactor implements IFusionReactor
 		//Perform the heat transfer calculations
 		transferHeat();
 
-		if(plasmaTemperature > 1E-6 || caseTemperature > 1E-6)
-		{
-			Mekanism.logger.info("Reactor temperatures: Plasma: " + (int) plasmaTemperature + ",			Casing: " + (int) caseTemperature);
-		}
+		lastPlasmaTemperature = plasmaTemperature < 1E-1 ? 0 : plasmaTemperature;
+		lastCaseTemperature = caseTemperature < 1E-1 ? 0 : caseTemperature;
 	}
 
 	public void vaporiseHohlraum()
@@ -125,9 +134,9 @@ public class FusionReactor implements IFusionReactor
 
 	public int burnFuel()
 	{
-		int fuelBurned = (int)min(getFuelTank().getStored(), max(0, plasmaTemperature - burnTemperature)*burnRatio);
+		int fuelBurned = (int)min(getFuelTank().getStored(), max(0, lastPlasmaTemperature - burnTemperature)*burnRatio);
 		getFuelTank().draw(fuelBurned, true);
-		plasmaTemperature += tempPerFuel * fuelBurned;
+		plasmaTemperature += energyPerFuel * fuelBurned / plasmaHeatCapacity;
 		return fuelBurned;
 	}
 
@@ -149,29 +158,29 @@ public class FusionReactor implements IFusionReactor
 	public void transferHeat()
 	{
 		//Transfer from plasma to casing
-		double plasmaCaseHeat = plasmaCaseConductivity * (plasmaTemperature - caseTemperature);
+		double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
 		plasmaTemperature -= plasmaCaseHeat / plasmaHeatCapacity;
 		caseTemperature += plasmaCaseHeat / caseHeatCapacity;
 
 		//Transfer from casing to water if necessary
 		if(activelyCooled)
 		{
-			double caseWaterHeat = caseWaterConductivity * caseTemperature;
-			int waterToVaporize = (int)(caseWaterHeat / enthalpyOfVaporization);
-			Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
+			double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
+			int waterToVaporize = (int)(steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
+			//Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
 			waterToVaporize = min(waterToVaporize, min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
 			if(waterToVaporize > 0)
 			{
-				Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
+				//Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
 				getWaterTank().drain(waterToVaporize, true);
 				getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
 			}
-			caseWaterHeat = waterToVaporize * enthalpyOfVaporization;
+			caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
 			caseTemperature -= caseWaterHeat / caseHeatCapacity;
 		}
 
 		//Transfer from casing to environment
-		double caseAirHeat = caseAirConductivity * caseTemperature;
+		double caseAirHeat = caseAirConductivity * lastCaseTemperature;
 		caseTemperature -= caseAirHeat / caseHeatCapacity;
 		setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
 	}
@@ -216,6 +225,30 @@ public class FusionReactor implements IFusionReactor
 	public void setBufferedEnergy(double energy)
 	{
 		controller.setEnergy(energy);
+	}
+
+	@Override
+	public double getPlasmaTemp()
+	{
+		return lastPlasmaTemperature;
+	}
+
+	@Override
+	public void setPlasmaTemp(double temp)
+	{
+		plasmaTemperature = temp;
+	}
+
+	@Override
+	public double getCaseTemp()
+	{
+		return lastCaseTemperature;
+	}
+
+	@Override
+	public void setCaseTemp(double temp)
+	{
+		caseTemperature = temp;
 	}
 
 	@Override

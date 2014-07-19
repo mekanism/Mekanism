@@ -57,6 +57,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		if(changed)
 		{
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+			changed = false;
 		}
 	}
 

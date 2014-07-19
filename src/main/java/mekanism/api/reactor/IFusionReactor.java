@@ -24,6 +24,14 @@ public interface IFusionReactor
 
 	public void setBufferedEnergy(double energy);
 
+	public double getPlasmaTemp();
+
+	public void setPlasmaTemp(double temp);
+
+	public double getCaseTemp();
+
+	public void setCaseTemp(double temp);
+
 	public double getBufferSize();
 
 	public void formMultiblock();
