@@ -1,14 +1,24 @@
 package mekanism.generators.common.tile.reactor;
 
+import java.util.ArrayList;
+
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class TileEntityReactorController extends TileEntityReactorBlock
+import io.netty.buffer.ByteBuf;
+
+public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState
 {
 	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
 
@@ -52,9 +62,83 @@ public class TileEntityReactorController extends TileEntityReactorBlock
 	{
 		super.onUpdate();
 
-		if(getReactor() != null && !worldObj.isRemote)
+		if(getReactor() != null)
 		{
 			getReactor().simulate();
 		}
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+
+		data.add(getReactor() != null);
+		if(getReactor() != null)
+		{
+			data.add(getReactor().getPlasmaTemp());
+			data.add(getReactor().getCaseTemp());
+			data.add(fuelTank.getStored());
+			data.add(deuteriumTank.getStored());
+			data.add(tritiumTank.getStored());
+			data.add(waterTank.getFluidAmount());
+			data.add(steamTank.getFluidAmount());
+		}
+
+		return data;
+	}
+
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+		boolean formed = dataStream.readBoolean();
+		if(formed)
+		{
+			if(getReactor() == null)
+			{
+				setReactor(new FusionReactor(this));
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
+			getReactor().setPlasmaTemp(dataStream.readDouble());
+			getReactor().setCaseTemp(dataStream.readDouble());
+			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
+			deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
+			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
+			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
+			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
+		}
+		else if(getReactor() != null)
+		{
+			setReactor(null);
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return getReactor() != null;
+	}
+
+	@Override
+	public void setActive(boolean active)
+	{
+		if(active == (getReactor() == null))
+		{
+			setReactor(active ? new FusionReactor(this) : null);
+		}
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate()
+	{
+		return false;
 	}
 }

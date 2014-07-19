@@ -4,6 +4,8 @@ import mekanism.common.Mekanism;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
+import mekanism.generators.common.inventory.container.ContainerNeutronCapture;
+import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.inventory.container.ContainerWindTurbine;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -119,6 +121,10 @@ public class GeneratorsCommonProxy
 				return new ContainerBioGenerator(player.inventory, (TileEntityBioGenerator)tileEntity);
 			case 5:
 				return new ContainerWindTurbine(player.inventory, (TileEntityWindTurbine)tileEntity);
+			case 10:
+				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
+			case 11:
+				return new ContainerNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
 		}
 		
 		return null;

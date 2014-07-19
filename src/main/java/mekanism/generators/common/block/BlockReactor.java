@@ -132,12 +132,69 @@ public class BlockReactor extends BlockContainer
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		if(tile instanceof TileEntityReactorController)
+		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
-			((TileEntityReactorController)tile).formMultiblock();
+			return false;
 		}
-		return true;
+
+		if(world.isRemote)
+		{
+			return true;
+		}
+
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		int metadata = world.getBlockMetadata(x, y, z);
+
+		if(entityplayer.getCurrentEquippedItem() != null)
+		{
+			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
+			{
+				if(entityplayer.isSneaking())
+				{
+					dismantleBlock(world, x, y, z, false);
+					return true;
+				}
+
+				((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+
+				int change = 0;
+
+				switch(tileEntity.facing)
+				{
+					case 3:
+						change = 5;
+						break;
+					case 5:
+						change = 2;
+						break;
+					case 2:
+						change = 4;
+						break;
+					case 4:
+						change = 3;
+						break;
+				}
+
+				tileEntity.setFacing((short)change);
+				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				return true;
+			}
+		}
+
+		if(tileEntity instanceof TileEntityReactorController)
+		{
+			if(!entityplayer.isSneaking())
+			{
+				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.getFromMetadata(metadata).guiId, world, x, y, z);
+			}
+			else
+			{
+				((TileEntityReactorController)tileEntity).formMultiblock();
+			}
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -210,7 +267,7 @@ public class BlockReactor extends BlockContainer
 		public int guiId;
 		public Class<? extends TileEntity> tileEntityClass;
 
-		private ReactorBlockType(int i, String s, int j, Class<? extends TileEntity> tileClass)
+		private ReactorBlockType(int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass)
 		{
 			meta = i;
 			name = s;
@@ -256,4 +313,24 @@ public class BlockReactor extends BlockContainer
 		}
 	}
 
+	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	{
+		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+
+		world.setBlockToAir(x, y, z);
+
+		if(!returnBlock)
+		{
+			float motion = 0.7F;
+			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+
+			world.spawnEntityInWorld(entityItem);
+		}
+
+		return itemStack;
+	}
 }

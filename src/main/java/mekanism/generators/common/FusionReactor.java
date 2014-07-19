@@ -52,8 +52,8 @@ public class FusionReactor implements IFusionReactor
 	public static double plasmaHeatCapacity = 100;
 	public static double caseHeatCapacity = 1;
 	public static double enthalpyOfVaporization = 10;
-	public static double thermocoupleEfficiency = 0.001;
-	public static double steamTransferEfficiency = 0.01;
+	public static double thermocoupleEfficiency = 0.01;
+	public static double steamTransferEfficiency = 0.1;
 
 	//Heat transfer metrics
 	public static double plasmaCaseConductivity = 0.2;
@@ -80,6 +80,12 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void simulate()
 	{
+		if(controller.getWorldObj().isRemote)
+		{
+			lastPlasmaTemperature = plasmaTemperature;
+			lastCaseTemperature = caseTemperature;
+			return;
+		}
 		//Only thermal transfer happens unless we're hot enough to burn.
 		if(plasmaTemperature >= burnTemperature)
 		{
@@ -224,6 +230,30 @@ public class FusionReactor implements IFusionReactor
 	public void setBufferedEnergy(double energy)
 	{
 		controller.setEnergy(energy);
+	}
+
+	@Override
+	public double getPlasmaTemp()
+	{
+		return lastPlasmaTemperature;
+	}
+
+	@Override
+	public void setPlasmaTemp(double temp)
+	{
+		plasmaTemperature = temp;
+	}
+
+	@Override
+	public double getCaseTemp()
+	{
+		return lastCaseTemperature;
+	}
+
+	@Override
+	public void setCaseTemp(double temp)
+	{
+		caseTemperature = temp;
 	}
 
 	@Override
