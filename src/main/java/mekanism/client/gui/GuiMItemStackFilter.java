@@ -11,6 +11,7 @@ import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -131,6 +132,11 @@ public class GuiMItemStackFilter extends GuiMekanism
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
+		
+		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -224,6 +230,12 @@ public class GuiMItemStackFilter extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new DigitalMinerGuiMessage(MinerGuiPacket.SERVER, Coord4D.get(tileEntity), isNew ? 5 : 0, 0, 0));
+			}
+			
+			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+			{
+				SoundHandler.playSound("gui.button.press");
+				filter.requireStack = !filter.requireStack;
 			}
 
 			if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)

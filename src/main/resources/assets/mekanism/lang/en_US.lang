@@ -439,6 +439,7 @@ gui.digitalMiner.silk=Silk
 gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
 gui.digitalMiner.inverse=Inverse mode
+gui.digitalMiner.requireReplace=Require replace
 
 //Recipe names
 recipe.mekanismShaped=Shaped

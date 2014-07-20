@@ -15,6 +15,7 @@ import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -172,6 +173,11 @@ public class GuiMOreDictFilter extends GuiMekanism
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
 		}
+		
+		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -295,6 +301,12 @@ public class GuiMOreDictFilter extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 				setOreDictKey();
+			}
+			
+			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+			{
+				SoundHandler.playSound("gui.button.press");
+				filter.requireStack = !filter.requireStack;
 			}
 		}
 	}

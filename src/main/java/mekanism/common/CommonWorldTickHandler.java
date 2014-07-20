@@ -131,7 +131,7 @@ public class CommonWorldTickHandler
 			
 			int dimensionId = world.provider.dimensionId;
 
-			//Credit to E. Beef :)
+			//Credit to E. Beef
 			if(chunkRegenMap.containsKey(dimensionId)) 
 			{
 				Queue<ChunkCoordIntPair> chunksToGen = chunkRegenMap.get(dimensionId);
@@ -152,6 +152,7 @@ public class CommonWorldTickHandler
 			        fmlRandom.setSeed((xSeed*nextChunk.chunkXPos + zSeed*nextChunk.chunkZPos) ^ world.getSeed());
 
 					Mekanism.genHandler.generate(fmlRandom, nextChunk.chunkXPos, nextChunk.chunkZPos, world, world.getChunkProvider(), world.getChunkProvider());
+					Mekanism.logger.info("[Mekanism] Regenerating ores at chunk " + nextChunk);
 				}
 
 				if(chunksToGen.isEmpty()) 

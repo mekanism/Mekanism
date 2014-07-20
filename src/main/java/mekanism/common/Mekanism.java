@@ -221,6 +221,7 @@ public class Mekanism
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
 	
+	/** The server's world tick handler. */
 	public static CommonWorldTickHandler worldTickHandler = new CommonWorldTickHandler();
 	
 	/** The Mekanism world generation handler. */
@@ -1540,6 +1541,18 @@ public class Mekanism
 					}
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void chunkSave(ChunkDataEvent.Save event) 
+	{
+		if(!event.world.isRemote)
+		{
+			NBTTagCompound nbtTags = event.getData();
+
+			nbtTags.setInteger("MekanismWorldGen", baseWorldGenVersion);
+			nbtTags.setInteger("MekanismUserWorldGen", userWorldGenVersion);
 		}
 	}
 	
