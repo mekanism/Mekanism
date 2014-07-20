@@ -173,14 +173,14 @@ public class GuiDigitalMiner extends GuiMekanism
 		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
 		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
-		if(tileEntity.replaceStack != null)
+		/**if(tileEntity.replaceStack != null) TODO display missing replace stack
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.replaceStack, 144, 27);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
-		}
+		}*/
 
 		if(xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77)
 		{

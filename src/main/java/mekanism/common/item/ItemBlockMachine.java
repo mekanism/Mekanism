@@ -280,11 +280,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					miner.silkTouch = stack.stackTagCompound.getBoolean("silkTouch");
 					miner.inverse = stack.stackTagCompound.getBoolean("inverse");
 
-					if(stack.stackTagCompound.hasKey("replaceStack"))
-					{
-						miner.replaceStack = ItemStack.loadItemStackFromNBT(stack.stackTagCompound.getCompoundTag("replaceStack"));
-					}
-
 					if(stack.stackTagCompound.hasKey("filters"))
 					{
 						NBTTagList tagList = stack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);

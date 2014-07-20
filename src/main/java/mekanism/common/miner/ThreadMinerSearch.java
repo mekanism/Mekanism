@@ -21,9 +21,9 @@ public class ThreadMinerSearch extends Thread
 	public State state = State.IDLE;
 
 	public BitSet oresToMine = new BitSet();
-	public List<Integer> replaceMap = new ArrayList<Integer>();
+	public List<MinerFilter> replaceMap = new ArrayList<MinerFilter>();
 
-	public Map<BlockInfo, Boolean> acceptedItems = new HashMap<BlockInfo, Boolean>();
+	public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<BlockInfo, MinerFilter>();
 
 	public int found = 0;
 
@@ -81,16 +81,17 @@ public class ThreadMinerSearch extends Thread
 
 			if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
 			{
+				MinerFilter filterFound = null;
 				boolean canFilter = false;
 
 				if(acceptedItems.containsKey(info))
 				{
-					canFilter = acceptedItems.get(info);
+					filterFound = acceptedItems.get(info);
 				}
 				else {
 					ItemStack stack = new ItemStack(info.block, 1, info.meta);
 
-					if(tileEntity.replaceStack != null && tileEntity.replaceStack.isItemEqual(stack))
+					if(tileEntity.isReplaceStack(stack))
 					{
 						continue;
 					}
@@ -105,13 +106,16 @@ public class ThreadMinerSearch extends Thread
 						}
 					}
 
-					canFilter = tileEntity.inverse ? !hasFilter : hasFilter;
-					acceptedItems.put(info, canFilter);
+					acceptedItems.put(info, filterFound);
 				}
+				
+				canFilter = tileEntity.inverse ? filterFound == null : filterFound != null;
 
 				if(canFilter)
 				{
 					oresToMine.set(i);
+					replaceMap.add(i, filterFound);
+					
 					found++;
 				}
 			}
@@ -119,6 +123,7 @@ public class ThreadMinerSearch extends Thread
 
 		state = State.FINISHED;
 		tileEntity.oresToMine = oresToMine;
+		tileEntity.replaceMap = replaceMap;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 

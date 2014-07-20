@@ -1049,11 +1049,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			itemStack.stackTagCompound.setBoolean("silkTouch", miner.silkTouch);
 			itemStack.stackTagCompound.setBoolean("inverse", miner.inverse);
 
-			if(miner.replaceStack != null)
-			{
-				itemStack.stackTagCompound.setTag("replaceStack", miner.replaceStack.writeToNBT(new NBTTagCompound()));
-			}
-
 			NBTTagList filterTags = new NBTTagList();
 
 			for(MinerFilter filter : miner.filters)
