@@ -4,9 +4,11 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -60,7 +62,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public static int[] EJECT_INV;
 
 	public BitSet oresToMine = new BitSet();
-	public List<MinerFilter> replaceMap = new ArrayList<MinerFilter>();
+	public Map<Integer, MinerFilter> replaceMap = new HashMap<Integer, MinerFilter>();
 
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
 

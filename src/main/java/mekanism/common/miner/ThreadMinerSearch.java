@@ -1,9 +1,7 @@
 package mekanism.common.miner;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import mekanism.api.BlockInfo;
@@ -21,7 +19,7 @@ public class ThreadMinerSearch extends Thread
 	public State state = State.IDLE;
 
 	public BitSet oresToMine = new BitSet();
-	public List<MinerFilter> replaceMap = new ArrayList<MinerFilter>();
+	public Map<Integer, MinerFilter> replaceMap = new HashMap<Integer, MinerFilter>();
 
 	public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<BlockInfo, MinerFilter>();
 
@@ -96,13 +94,12 @@ public class ThreadMinerSearch extends Thread
 						continue;
 					}
 
-					boolean hasFilter = false;
-
 					for(MinerFilter filter : tileEntity.filters)
 					{
 						if(filter.canFilter(stack))
 						{
-							hasFilter = true;
+							filterFound = filter;
+							break;
 						}
 					}
 
@@ -114,7 +111,7 @@ public class ThreadMinerSearch extends Thread
 				if(canFilter)
 				{
 					oresToMine.set(i);
-					replaceMap.add(i, filterFound);
+					replaceMap.put(i, filterFound);
 					
 					found++;
 				}
