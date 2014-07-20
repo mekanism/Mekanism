@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
@@ -10,6 +12,7 @@ import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -129,6 +132,15 @@ public class GuiMItemStackFilter extends GuiMekanism
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
 			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.itemType, 12, 19);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+		
+		if(filter.replaceStack != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glEnable(GL11.GL_LIGHTING);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -256,6 +268,36 @@ public class GuiMItemStackFilter extends GuiMekanism
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					filter.itemType = null;
+				}
+
+                SoundHandler.playSound("gui.button.press");
+			}
+			
+			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
+			{
+				boolean doNull = false;
+				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack toUse = null;
+
+				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					if(stack.getItem() instanceof ItemBlock)
+					{
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						{
+							toUse = stack.copy();
+							toUse.stackSize = 1;
+						}
+					}
+				}
+				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					doNull = true;
+				}
+
+				if(toUse != null || doNull)
+				{
+					filter.replaceStack = toUse;
 				}
 
                 SoundHandler.playSound("gui.button.press");

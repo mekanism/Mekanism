@@ -265,21 +265,6 @@ public class GuiDigitalMiner extends GuiMekanism
 		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
-		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
-		{
-			GL11.glPushMatrix();
-			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-			int x = guiWidth + 144;
-			int y = guiHeight + 27;
-			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
-
-			GL11.glPopAttrib();
-			GL11.glPopMatrix();
-		}
 	}
 
 	@Override
@@ -330,49 +315,6 @@ public class GuiDigitalMiner extends GuiMekanism
 				data.add(9);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-			}
-
-			if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
-			{
-				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
-				ItemStack toUse = null;
-
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-				{
-					if(stack.getItem() instanceof ItemBlock)
-					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
-						{
-							toUse = stack.copy();
-							toUse.stackSize = 1;
-						}
-					}
-				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-				{
-					doNull = true;
-				}
-
-				if(toUse != null || doNull)
-				{
-					ArrayList data = new ArrayList();
-					data.add(2);
-
-					if(stack != null)
-					{
-						data.add(false);
-						data.add(MekanismUtils.getID(toUse));
-						data.add(toUse.getItemDamage());
-					}
-					else {
-						data.add(true);
-					}
-
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				}
-
-                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

@@ -17,9 +17,12 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
@@ -171,6 +174,15 @@ public class GuiMModIDFilter extends GuiMekanism
 			} catch(Exception e) {}
 		}
 		
+		if(filter.replaceStack != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glEnable(GL11.GL_LIGHTING);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+		
 		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
@@ -304,6 +316,36 @@ public class GuiMModIDFilter extends GuiMekanism
 			{
 				SoundHandler.playSound("gui.button.press");
 				filter.requireStack = !filter.requireStack;
+			}
+			
+			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
+			{
+				boolean doNull = false;
+				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack toUse = null;
+
+				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					if(stack.getItem() instanceof ItemBlock)
+					{
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						{
+							toUse = stack.copy();
+							toUse.stackSize = 1;
+						}
+					}
+				}
+				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					doNull = true;
+				}
+
+				if(toUse != null || doNull)
+				{
+					filter.replaceStack = toUse;
+				}
+
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

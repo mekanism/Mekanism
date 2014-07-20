@@ -41,6 +41,8 @@ public abstract class MinerFilter
 
 	public void write(ArrayList data)
 	{
+		data.add(requireStack);
+		
 		if(replaceStack != null)
 		{
 			data.add(true);
@@ -54,6 +56,8 @@ public abstract class MinerFilter
 
 	protected void read(ByteBuf dataStream)
 	{
+		requireStack = dataStream.readBoolean();
+		
 		if(dataStream.readBoolean())
 		{
 			replaceStack = new ItemStack(Block.getBlockById(dataStream.readInt()), 1, dataStream.readInt());
