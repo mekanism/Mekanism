@@ -135,7 +135,7 @@ infuse.obsidian=黑曜石
 //Ore Block
 tile.OreBlock.OsmiumOre.name=锇矿石
 tile.OreBlock.CopperOre.name=铜矿石
-tile.OreBlock.TinOre.name=锡矿
+tile.OreBlock.TinOre.name=锡矿石
 
 //Transmitters
 item.MultipartTransmitter.PressurizedTube.name=加压管道
