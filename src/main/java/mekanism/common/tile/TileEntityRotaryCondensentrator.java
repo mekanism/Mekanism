@@ -103,7 +103,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
-					gasTank.receive(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
+					gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
 				}
 
 				if(inventory[2] != null)

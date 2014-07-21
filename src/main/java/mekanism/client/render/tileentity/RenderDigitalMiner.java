@@ -43,6 +43,9 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer
 		model.render(0.0625F, tileEntity.isActive);
 		GL11.glPopMatrix();
 		
-		MinerVisualRenderer.render(tileEntity);
+		if(tileEntity.clientRendering)
+		{
+			MinerVisualRenderer.render(tileEntity);
+		}
 	}
 }

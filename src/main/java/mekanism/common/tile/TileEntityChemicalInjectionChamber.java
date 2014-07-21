@@ -67,7 +67,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
 			if(gas != null && isValidGas(gas.getGas()))
 			{
-				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
+				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded());
 				gasTank.receive(removed, true);
 			}
 

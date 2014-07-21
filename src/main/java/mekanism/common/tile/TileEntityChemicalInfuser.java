@@ -94,12 +94,12 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 			if(inventory[0] != null && (leftTank.getGas() == null || leftTank.getStored() < leftTank.getMaxGas()))
 			{
-				leftTank.receive(GasTransmission.removeGas(inventory[0], null, leftTank.getNeeded()), true);
+				leftTank.receive(GasTransmission.removeGas(inventory[0], leftTank.getGasType(), leftTank.getNeeded()), true);
 			}
 
 			if(inventory[1] != null && (rightTank.getGas() == null || rightTank.getStored() < rightTank.getMaxGas()))
 			{
-				rightTank.receive(GasTransmission.removeGas(inventory[1], null, rightTank.getNeeded()), true);
+				rightTank.receive(GasTransmission.removeGas(inventory[1], leftTank.getGasType(), rightTank.getNeeded()), true);
 			}
 
 			if(inventory[2] != null && centerTank.getGas() != null)

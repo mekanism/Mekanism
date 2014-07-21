@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -30,7 +31,7 @@ public final class MinerVisualRenderer
 		GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
 		MekanismRenderer.blendOn();
 		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.4F);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 		getList(new MinerRenderData(miner)).render();
 		MekanismRenderer.blendOff();
@@ -49,39 +50,18 @@ public final class MinerVisualRenderer
 		
 		List<Model3D> models = new ArrayList<Model3D>();
 		
-		if(data.radius == 0)
+		for(int x = -data.radius; x <= data.radius; x++)
 		{
-			//Single vertical render
-			models.add(createModel(-offset, (data.minY-data.yCoord)-offset, -offset, 1+offset, (data.maxY-data.yCoord)+1+offset, 1+offset));
-		}
-		else if(data.maxY-data.minY == 0)
-		{
-			//Flat panel render
-			models.add(createModel(-data.radius-offset, (data.minY-data.yCoord)-offset, -data.radius-offset, data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, data.radius+1+offset));
-		}
-		else {
-			//Complete render: Top face
-			models.add(createModel(-data.radius-offset+1, (data.maxY-data.yCoord)-offset, -data.radius-offset+1, data.radius+offset, (data.maxY-data.yCoord)+1+offset, data.radius+offset, ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.EAST, ForgeDirection.WEST));
-			//Bottom face
-			models.add(createModel(-data.radius-offset+1, (data.minY-data.yCoord)-offset, -data.radius-offset+1, data.radius+offset, (data.minY-data.yCoord)+1+offset, data.radius+offset, ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.EAST, ForgeDirection.WEST));
-			
-			//Northwest strip
-			models.add(createModel(-data.radius-offset, (data.minY-data.yCoord)-offset, -data.radius-offset, -data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, -data.radius+1+offset, ForgeDirection.SOUTH, ForgeDirection.EAST));
-			//Northeast strip
-			models.add(createModel(data.radius-offset, (data.minY-data.yCoord)-offset, -data.radius-offset, data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, -data.radius+1+offset, ForgeDirection.SOUTH, ForgeDirection.WEST));
-			//Southwest strip
-			models.add(createModel(-data.radius-offset, (data.minY-data.yCoord)-offset, data.radius-offset, -data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, data.radius+1+offset, ForgeDirection.NORTH, ForgeDirection.EAST));
-			//Southeast strip
-			models.add(createModel(data.radius-offset, (data.minY-data.yCoord)-offset, data.radius-offset, data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, data.radius+1+offset, ForgeDirection.NORTH, ForgeDirection.WEST));
-			
-			//North face
-			models.add(createModel(-data.radius-offset+1, (data.minY-data.yCoord)-offset, -data.radius-offset, data.radius+offset, (data.maxY-data.yCoord)+1+offset, -data.radius+1+offset, ForgeDirection.EAST, ForgeDirection.WEST));
-			//South face
-			models.add(createModel(-data.radius-offset+1, (data.minY-data.yCoord)-offset, data.radius-offset, data.radius+offset, (data.maxY-data.yCoord)+1+offset, data.radius+1+offset, ForgeDirection.EAST, ForgeDirection.WEST));
-			//West face
-			models.add(createModel(-data.radius-offset, (data.minY-data.yCoord)-offset, -data.radius-offset+1, -data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, data.radius+offset, ForgeDirection.NORTH, ForgeDirection.SOUTH));
-			//East face
-			models.add(createModel(data.radius-offset, (data.minY-data.yCoord)-offset, -data.radius-offset+1, data.radius+1+offset, (data.maxY-data.yCoord)+1+offset, data.radius+offset, ForgeDirection.NORTH, ForgeDirection.SOUTH));
+			for(int y = data.minY-data.yCoord; y <= data.maxY-data.yCoord; y++)
+			{
+				for(int z = -data.radius; z <= data.radius; z++)
+				{
+					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
+					{
+						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.dimensionId)));
+					}
+				}
+			}
 		}
 		
 		for(Model3D model : models)
@@ -94,16 +74,11 @@ public final class MinerVisualRenderer
 		return display;
 	}
 	
-	private static Model3D createModel(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, ForgeDirection... ignoreDirs)
+	private static Model3D createModel(Coord4D rel)
 	{
 		Model3D toReturn = new Model3D();
 		
-		for(ForgeDirection dir : ignoreDirs)
-		{
-			toReturn.setSideRender(dir, false);
-		}
-		
-		toReturn.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
+		toReturn.setBlockBounds(rel.xCoord + 0.4, rel.yCoord + 0.4, rel.zCoord + 0.4, rel.xCoord + 0.6, rel.yCoord + 0.6, rel.zCoord + 0.6);
 		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
@@ -148,7 +123,7 @@ public final class MinerVisualRenderer
 		@Override
 		public boolean equals(Object data)
 		{
-			return data instanceof MinerRenderData && super.equals(data) && ((MinerRenderData)data).minY == minY && 
+			return data instanceof MinerRenderData && ((MinerRenderData)data).minY == minY && 
 					((MinerRenderData)data).maxY == maxY && ((MinerRenderData)data).radius == radius && 
 					((MinerRenderData)data).yCoord == yCoord;
 		}
@@ -157,7 +132,6 @@ public final class MinerVisualRenderer
 		public int hashCode()
 		{
 			int code = 1;
-			code = 31 * code + super.hashCode();
 			code = 31 * code + minY;
 			code = 31 * code + maxY;
 			code = 31 * code + radius;

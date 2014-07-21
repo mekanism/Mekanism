@@ -361,7 +361,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 				if(gas != null && RecipeType.values()[recipeType].isValidGas(gas.getGas()))
 				{
-					GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
+					GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGasType(), gasTank.getNeeded());
 					gasTank.receive(removed, true);
 				}
 

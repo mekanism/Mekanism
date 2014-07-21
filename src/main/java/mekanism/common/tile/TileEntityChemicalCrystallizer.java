@@ -125,7 +125,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
 			{
-				inputTank.receive(GasTransmission.removeGas(inventory[0], null, inputTank.getNeeded()), true);
+				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 
 			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE))

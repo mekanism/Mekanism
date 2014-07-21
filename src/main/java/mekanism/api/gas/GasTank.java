@@ -171,6 +171,15 @@ public class GasTank
 	{
 		return stored;
 	}
+	
+	/**
+	 * Gets the type of gas currently stored in this GasTank.
+	 * @return gas type contained
+	 */
+	public Gas getGasType()
+	{
+		return stored != null ? stored.getGas() : null;
+	}
 
 	/**
 	 * Gets the amount of gas stored by this GasTank.

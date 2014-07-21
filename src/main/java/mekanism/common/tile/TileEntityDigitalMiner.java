@@ -100,6 +100,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public boolean initCalc = false;
 
 	public int numPowering;
+	
+	public boolean clientRendering = false;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -1377,9 +1379,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		//TODO
-		
-		return true;
+		return clientRendering = !clientRendering;
 	}
 
 	@Override
