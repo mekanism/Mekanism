@@ -30,10 +30,12 @@ public final class MinerVisualRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
 		MekanismRenderer.blendOn();
+		MekanismRenderer.glowOn();
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 0.8F);
 		mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 		getList(new MinerRenderData(miner)).render();
+		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}

@@ -1,5 +1,7 @@
 package mekanism.common.inventory.container;
 
+import mekanism.common.IUpgradeTile;
+import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -7,14 +9,15 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerFilter extends Container
+public class ContainerUpgradeManagement extends Container
 {
-	private TileEntityContainerBlock tileEntity;
+	private IUpgradeTile tileEntity;
 
-	public ContainerFilter(InventoryPlayer inventory, TileEntityContainerBlock tile)
+	public ContainerUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile)
 	{
 		tileEntity = tile;
-
+		addSlotToContainer(new SlotMachineUpgrade((TileEntityContainerBlock)tile, 3, 180, 11));
+		
 		int slotX;
 
 		for(slotX = 0; slotX < 3; slotX++)
@@ -30,8 +33,8 @@ public class ContainerFilter extends Container
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
 
-		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		((TileEntityContainerBlock)tileEntity).open(inventory.player);
+		((TileEntityContainerBlock)tileEntity).openInventory();
 	}
 
 	@Override
@@ -39,14 +42,14 @@ public class ContainerFilter extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		((TileEntityContainerBlock)tileEntity).close(entityplayer);
+		((TileEntityContainerBlock)tileEntity).closeInventory();
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		return ((TileEntityContainerBlock)tileEntity).isUseableByPlayer(entityplayer);
 	}
 
 	@Override
