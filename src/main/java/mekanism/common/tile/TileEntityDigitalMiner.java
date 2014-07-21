@@ -1373,4 +1373,21 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		return "tooltip.filterCard.digitalMiner";
 	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		if(worldObj.isRemote)
+		{
+			Mekanism.proxy.toggleMinerRender(Coord4D.get(this));
+		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
+		return false;
+	}
 }

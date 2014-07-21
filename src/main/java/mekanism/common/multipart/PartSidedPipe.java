@@ -590,25 +590,30 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		ExtendedMOP hit = (ExtendedMOP)RayTracer.retraceBlock(world(), player, x(), y(), z());
-
-		if(hit == null)
+		if(!world().isRemote)
 		{
-			return false;
+			ExtendedMOP hit = (ExtendedMOP)RayTracer.retraceBlock(world(), player, x(), y(), z());
+	
+			if(hit == null)
+			{
+				return false;
+			}
+			else if(hit.subHit < 6)
+			{
+				connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
+				sendDesc = true;
+	
+				onModeChange(ForgeDirection.getOrientation(side));
+				player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
+	
+				return true;
+			}
+			else {
+				return onConfigure(player, hit.subHit, side);
+			}
 		}
-		else if(hit.subHit < 6)
-		{
-			connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
-			sendDesc = true;
-
-			onModeChange(ForgeDirection.getOrientation(side));
-			player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
-
-			return true;
-		}
-		else {
-			return onConfigure(player, hit.subHit, side);
-		}
+		
+		return true;
 	}
 
 	protected boolean onConfigure(EntityPlayer player, int part, int side)
@@ -624,11 +629,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
-		redstoneReactive ^= true;
-		refreshConnections();
-		tile().notifyPartChange(this);
-
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+		if(!world().isRemote)
+		{
+			redstoneReactive ^= true;
+			refreshConnections();
+			tile().notifyPartChange(this);
+	
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+		}
+		
 		return true;
 	}
 

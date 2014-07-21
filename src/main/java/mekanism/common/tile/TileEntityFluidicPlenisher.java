@@ -469,11 +469,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		activeNodes.clear();
-		usedNodes.clear();
-		finishedCalc = false;
-		
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.plenisherReset")));
+		if(!worldObj.isRemote)
+		{
+			activeNodes.clear();
+			usedNodes.clear();
+			finishedCalc = false;
+			
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.plenisherReset")));
+		}
 
 		return true;
 	}

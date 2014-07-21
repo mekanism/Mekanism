@@ -7,14 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.IConfigurable;
 import mekanism.api.ISalinationSolar;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -27,7 +25,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySalinationController extends TileEntitySalinationTank implements IConfigurable
+public class TileEntitySalinationController extends TileEntitySalinationTank
 {
 	public static final int MAX_BRINE = 10000;
 	public static final int MAX_SOLARS = 4;
@@ -628,18 +626,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 		startPoint.translate(0, -(height-2), 0);
 		
 		return startPoint;
-	}
-
-	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
-	{
-		return false;
 	}
 	
 	@Override

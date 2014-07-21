@@ -562,8 +562,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		setActive(!getActive());
-		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		if(!worldObj.isRemote)
+		{
+			setActive(!getActive());
+			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		}
+		
 		return true;
 	}
 

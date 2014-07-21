@@ -549,10 +549,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		recurringNodes.clear();
-		cleaningNodes.clear();
-
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
+		if(!worldObj.isRemote)
+		{
+			recurringNodes.clear();
+			cleaningNodes.clear();
+	
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
+		}
 
 		return true;
 	}

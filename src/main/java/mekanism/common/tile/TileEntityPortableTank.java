@@ -12,8 +12,8 @@ import mekanism.common.IFluidContainerManager;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -474,8 +474,12 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		setActive(!getActive());
-		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		if(!worldObj.isRemote)
+		{
+			setActive(!getActive());
+			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		}
+		
 		return true;
 	}
 

@@ -1,5 +1,9 @@
 package mekanism.client;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.client.sound.SoundHandler;
@@ -9,9 +13,6 @@ import mekanism.common.network.PacketKey.KeyMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
-
-import org.lwjgl.input.Keyboard;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -22,6 +23,8 @@ public class MekanismClient extends Mekanism
 	public static SoundHandler audioHandler;
 
 	public static VoiceClient voiceClient;
+	
+	public static Set<Coord4D> renderingMiners = new HashSet<Coord4D>();
 
 	//General Configuration
 	public static boolean enableSounds = true;
@@ -61,7 +64,10 @@ public class MekanismClient extends Mekanism
 
 		Mekanism.jetpackOn.clear();
 		Mekanism.gasmaskOn.clear();
+		Mekanism.flamethrowerActive.clear();
 		Mekanism.activeVibrators.clear();
+		
+		renderingMiners.clear();
 
 		Mekanism.proxy.loadConfiguration();
 

@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.io.File;
 
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.entity.EntityRobit;
@@ -468,4 +469,6 @@ public class CommonProxy
 	{
 		return context.getServerHandler().playerEntity;
 	}
+	
+	public void toggleMinerRender(Coord4D coord) {}
 }
