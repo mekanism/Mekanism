@@ -125,7 +125,7 @@ public class ContainerFactory extends Container
 
 			if(isOutputSlot(slotID))
 			{
-				if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -139,7 +139,7 @@ public class ContainerFactory extends Container
 			}
 			else if(slotID == 2)
 			{
-				if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -154,7 +154,7 @@ public class ContainerFactory extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -171,7 +171,7 @@ public class ContainerFactory extends Container
 				}
 				else if(slotID == 0)
 				{
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -187,14 +187,14 @@ public class ContainerFactory extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, tileEntity.inventory.length, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, tileEntity.inventory.length-1, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				int slotEnd = tileEntity.inventory.length;
+				int slotEnd = tileEntity.inventory.length-1;
 
 				if(slotID >= slotEnd && slotID <= (slotEnd+26))
 				{
@@ -253,11 +253,11 @@ public class ContainerFactory extends Container
 	public boolean isInputSlot(int slot)
 	{
 		if(tileEntity.tier == Tier.FactoryTier.BASIC)
-			return slot >= 5 && slot <= 7;
+			return slot >= 4 && slot <= 6;
 		if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-			return slot >= 5 && slot <= 9;
+			return slot >= 4 && slot <= 8;
 		if(tileEntity.tier == Tier.FactoryTier.ELITE)
-			return slot >= 5 && slot <= 11;
+			return slot >= 4 && slot <= 10;
 
 		return false;
 	}
@@ -265,11 +265,11 @@ public class ContainerFactory extends Container
 	public boolean isOutputSlot(int slot)
 	{
 		if(tileEntity.tier == Tier.FactoryTier.BASIC)
-			return slot >= 8 && slot <= 10;
+			return slot >= 7 && slot <= 9;
 		if(tileEntity.tier == Tier.FactoryTier.ADVANCED)
-			return slot >= 10 && slot <= 14;
+			return slot >= 9 && slot <= 13;
 		if(tileEntity.tier == Tier.FactoryTier.ELITE)
-			return slot >= 12 && slot <= 18;
+			return slot >= 11 && slot <= 17;
 
 		return false;
 	}

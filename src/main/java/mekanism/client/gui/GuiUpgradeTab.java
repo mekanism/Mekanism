@@ -51,8 +51,6 @@ public class GuiUpgradeTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
-
 		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 		{
 			displayTooltip(MekanismUtils.localize("gui.upgrades"), xAxis, yAxis);
