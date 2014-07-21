@@ -347,6 +347,7 @@ gui.modID=Mod ID
 gui.key=Key
 gui.id=ID
 gui.finished=Finished
+gui.well=All is well!
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
@@ -441,6 +442,7 @@ gui.digitalMiner.running=Running
 gui.digitalMiner.inverse=Inverse mode
 gui.digitalMiner.requireReplace=Require replace
 gui.digitalMiner.fuzzyMode=Fuzzy mode
+gui.digitalMiner.missingBlock=Missing block
 
 //Recipe names
 recipe.mekanismShaped=Shaped

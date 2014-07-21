@@ -79,6 +79,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public boolean doEject = false;
 	public boolean doPull = false;
+	
+	public ItemStack missingStack = null;
 
 	public int delay;
 
@@ -213,6 +215,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
 
+							missingStack = null;
 							delay = getDelay();
 						}
 
@@ -312,12 +315,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			return true;
 		}
 		else {
-			if(!replaceMap.get(index).requireStack)
+			MinerFilter filter = replaceMap.get(index);
+			
+			if(filter.replaceStack == null || !filter.requireStack)
 			{
 				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 				
 				return true;
 			}
+			
+			missingStack = filter.replaceStack;
 			
 			return false;
 		}
@@ -514,6 +521,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		running = false;
 		oresToMine.clear();
 		replaceMap.clear();
+		missingStack = null;
 
 		MekanismUtils.saveChunk(this);
 	}
@@ -691,6 +699,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			inverse = dataStream.readBoolean();
+			
+			if(dataStream.readBoolean())
+			{
+				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+			}
+			else {
+				missingStack = null;
+			}
 
 			filters.clear();
 
@@ -716,6 +732,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			clientToMine = dataStream.readInt();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
 			inverse = dataStream.readBoolean();
+			
+			if(dataStream.readBoolean())
+			{
+				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+			}
+			else {
+				missingStack = null;
+			}
 		}
 		else if(type == 2)
 		{
@@ -733,6 +757,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			isActive = dataStream.readBoolean();
 			running = dataStream.readBoolean();
 			clientToMine = dataStream.readInt();
+			
+			if(dataStream.readBoolean())
+			{
+				missingStack = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+			}
+			else {
+				missingStack = null;
+			}
 		}
 	}
 
@@ -764,6 +796,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		data.add(controlType.ordinal());
 		data.add(inverse);
+		
+		if(missingStack != null)
+		{
+			data.add(true);
+			data.add(MekanismUtils.getID(missingStack));
+			data.add(missingStack.getItemDamage());
+		}
+		else {
+			data.add(false);
+		}
 
 		data.add(filters.size());
 
@@ -790,6 +832,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		}
 		else {
 			data.add(oresToMine.cardinality());
+		}
+		
+		if(missingStack != null)
+		{
+			data.add(true);
+			data.add(MekanismUtils.getID(missingStack));
+			data.add(missingStack.getItemDamage());
+		}
+		else {
+			data.add(false);
 		}
 
 		return data;
@@ -822,6 +874,16 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		data.add(controlType.ordinal());
 		data.add(inverse);
+		
+		if(missingStack != null)
+		{
+			data.add(true);
+			data.add(MekanismUtils.getID(missingStack));
+			data.add(missingStack.getItemDamage());
+		}
+		else {
+			data.add(false);
+		}
 
 		return data;
 	}
