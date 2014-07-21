@@ -1377,10 +1377,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.toggleMinerRender(Coord4D.get(this));
-		}
+		//TODO
 		
 		return true;
 	}

@@ -1,22 +1,17 @@
 package mekanism.client.render;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.lwjgl.opengl.GL11;
-
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
-import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -213,31 +208,8 @@ public class RenderTickHandler
 						}
 					}
 				}
-				
-				for(Iterator<Coord4D> iter = MekanismClient.renderingMiners.iterator(); iter.hasNext();)
-				{
-					Coord4D coord = iter.next();
-					
-					if(coord.exists(mc.theWorld))
-					{
-						if(coord.getTileEntity(mc.theWorld) instanceof TileEntityDigitalMiner)
-						{
-							
-						}
-						else {
-							iter.remove();
-						}
-					}
-				}
 			}
 		}
-	}
-	
-	public void renderMinerVisual(TileEntityDigitalMiner tileEntity)
-	{
-		GL11.glPushMatrix();
-		
-		GL11.glPopMatrix();
 	}
 
 	public void spawnAndSetParticle(String s, World world, double x, double y, double z, double velX, double velY, double velZ)

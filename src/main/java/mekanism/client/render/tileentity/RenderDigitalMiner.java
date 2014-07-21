@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelDigitalMiner;
+import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -41,5 +42,7 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 		model.render(0.0625F, tileEntity.isActive);
 		GL11.glPopMatrix();
+		
+		MinerVisualRenderer.render(tileEntity);
 	}
 }

@@ -579,16 +579,4 @@ public class ClientProxy extends CommonProxy
 			return Minecraft.getMinecraft().thePlayer;
 		}
 	}
-	
-	@Override
-	public void toggleMinerRender(Coord4D coord)
-	{
-		if(MekanismClient.renderingMiners.contains(coord))
-		{
-			MekanismClient.renderingMiners.remove(coord);
-		}
-		else {
-			MekanismClient.renderingMiners.add(coord);
-		}
-	}
 }

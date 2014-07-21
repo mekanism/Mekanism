@@ -469,6 +469,4 @@ public class CommonProxy
 	{
 		return context.getServerHandler().playerEntity;
 	}
-	
-	public void toggleMinerRender(Coord4D coord) {}
 }

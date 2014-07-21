@@ -123,7 +123,7 @@ public class MekanismRenderer
 
 		public Block baseBlock = Blocks.sand;
 		
-	    public final void setBlockBounds(float xNeg, float yNeg, float zNeg, float xPos, float yPos, float zPos)
+	    public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos)
 	    {
 	    	minX = xNeg;
 	    	minY = yNeg;

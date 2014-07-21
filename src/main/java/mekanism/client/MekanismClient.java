@@ -23,8 +23,6 @@ public class MekanismClient extends Mekanism
 	public static SoundHandler audioHandler;
 
 	public static VoiceClient voiceClient;
-	
-	public static Set<Coord4D> renderingMiners = new HashSet<Coord4D>();
 
 	//General Configuration
 	public static boolean enableSounds = true;
@@ -66,8 +64,6 @@ public class MekanismClient extends Mekanism
 		Mekanism.gasmaskOn.clear();
 		Mekanism.flamethrowerActive.clear();
 		Mekanism.activeVibrators.clear();
-		
-		renderingMiners.clear();
 
 		Mekanism.proxy.loadConfiguration();
 
