@@ -206,11 +206,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 						List<ItemStack> drops = MinerUtils.getDrops(worldObj, coord, silkTouch);
 
-						if(canInsert(drops))
+						if(canInsert(drops) && setReplace(coord, index))
 						{
 							add(drops);
-
-							setReplace(coord, index);
 							toRemove.add(index);
 
 							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
@@ -294,10 +292,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		return MekanismUtils.getTicks(this, 80);
 	}
 
-	public void setReplace(Coord4D obj, int index)
+	/*
+	 * returns false if unsuccessful
+	 */
+	public boolean setReplace(Coord4D obj, int index)
 	{
 		ItemStack stack = getReplace(index);
-
+		 
 		if(stack != null)
 		{
 			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, Block.getBlockFromItem(stack.getItem()), stack.getItemDamage(), 3);
@@ -307,9 +308,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
 				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 			}
+			
+			return true;
 		}
 		else {
-			worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+			if(!replaceMap.get(index).requireStack)
+			{
+				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+				
+				return true;
+			}
+			
+			return false;
 		}
 	}
 
