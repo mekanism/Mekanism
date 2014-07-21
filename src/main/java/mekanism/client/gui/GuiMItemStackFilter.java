@@ -204,10 +204,10 @@ public class GuiMItemStackFilter extends GuiMekanism
 		
 		if(xAxis >= 15 && xAxis <= 29 && yAxis >= 45 && yAxis <= 59)
 		{
-			drawTexturedModalRect(guiWidth + 14, guiHeight + 45, 176 + 37, 0, 14, 14);
+			drawTexturedModalRect(guiWidth + 15, guiHeight + 45, 176 + 37, 0, 14, 14);
 		}
 		else {
-			drawTexturedModalRect(guiWidth + 14, guiHeight + 45, 176 + 37, 14, 14, 14);
+			drawTexturedModalRect(guiWidth + 15, guiHeight + 45, 176 + 37, 14, 14, 14);
 		}
 
 		if(xAxis >= 12 && xAxis <= 28 && yAxis >= 19 && yAxis <= 35)

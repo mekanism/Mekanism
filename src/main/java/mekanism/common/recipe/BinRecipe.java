@@ -10,14 +10,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
-public class BinRecipe implements IRecipe//, ICraftingHandler
+public class BinRecipe implements IRecipe
 {
+	private static boolean registered;
+	
 	public BinRecipe()
 	{
-		MinecraftForge.EVENT_BUS.register(this);
+		if(!registered)
+		{
+			FMLCommonHandler.instance().bus().register(this);
+			registered = true;
+		}
 	}
 
 	@Override
@@ -114,7 +121,7 @@ public class BinRecipe implements IRecipe//, ICraftingHandler
 	}
 
 	@SubscribeEvent
-	public void onCrafting(ItemCraftedEvent event) //EntityPlayer player, ItemStack item, IInventory craftMatrix)
+	public void onCrafting(ItemCraftedEvent event)
 	{
 		if(getResult(event.craftMatrix) != null)
 		{
