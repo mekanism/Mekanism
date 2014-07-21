@@ -9,7 +9,6 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -35,6 +34,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
+		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return new GasStack(GasRegistry.getGas("hydrogenChloride"), 2);
 		if(Block.getBlockFromItem(itemstack.getItem()) == Mekanism.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 
