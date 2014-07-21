@@ -45,6 +45,7 @@ import mekanism.client.gui.GuiSalinationController;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiTeleporter;
+import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
@@ -86,6 +87,7 @@ import mekanism.client.sound.SoundMap;
 import mekanism.common.CommonProxy;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityBabySkeleton;
@@ -465,6 +467,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
 			case 42:
 				return new GuiFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
+			case 43:
+				return new GuiUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
 		}
 
 		return null;

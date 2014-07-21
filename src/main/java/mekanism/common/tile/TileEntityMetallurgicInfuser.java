@@ -80,7 +80,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 	public TileComponentEjector ejectorComponent;
 
 	public TileEntityMetallurgicInfuser()
@@ -131,7 +131,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 
-			ChargeUtils.discharge(4, this);
+			ChargeUtils.discharge(0, this);
 
 			if(inventory[1] != null)
 			{

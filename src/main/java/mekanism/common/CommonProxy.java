@@ -2,7 +2,6 @@ package mekanism.common;
 
 import java.io.File;
 
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.entity.EntityRobit;
@@ -37,6 +36,7 @@ import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerSalinationController;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
 import mekanism.common.inventory.container.ContainerTeleporter;
+import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
@@ -426,6 +426,8 @@ public class CommonProxy
 				return new ContainerPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
 			case 42:
 				return new ContainerFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
+			case 43:
+				return new ContainerUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
 		}
 
 		return null;
