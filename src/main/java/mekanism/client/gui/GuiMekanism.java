@@ -48,7 +48,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			element.renderForeground(xAxis, yAxis);
 		}
 
-		if(tileEntity != null)
+		if(tileEntity instanceof IInvConfiguration)
 		{
 			Slot hovering = null;
 

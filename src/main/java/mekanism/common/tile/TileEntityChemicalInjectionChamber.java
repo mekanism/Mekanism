@@ -35,6 +35,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
+		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return new GasStack(GasRegistry.getGas("hydrogenChloride"), 2);
 		if(Block.getBlockFromItem(itemstack.getItem()) == Mekanism.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 
@@ -67,7 +68,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 
 			if(gas != null && isValidGas(gas.getGas()))
 			{
-				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, gasTank.getNeeded());
+				GasStack removed = GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded());
 				gasTank.receive(removed, true);
 			}
 
