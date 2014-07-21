@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.IUpgradeTile;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
+import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,7 +17,7 @@ public class ContainerUpgradeManagement extends Container
 	public ContainerUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile)
 	{
 		tileEntity = tile;
-		addSlotToContainer(new SlotMachineUpgrade((TileEntityContainerBlock)tile, 3, 180, 11));
+		addSlotToContainer(new SlotMachineUpgrade((TileEntityContainerBlock)tile, tileEntity.getComponent().getUpgradeSlot(), 154, 7));
 		
 		int slotX;
 
@@ -63,24 +64,42 @@ public class ContainerUpgradeManagement extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(slotID >= 0 && slotID <= 26)
+			if(slotStack.getItem() instanceof ItemMachineUpgrade)
 			{
-				if(!mergeItemStack(slotStack, 27, inventorySlots.size(), false))
+				if(slotID != 0)
 				{
-					return null;
+					if(!mergeItemStack(slotStack, 0, 1, false))
+					{
+						return null;
+					}
 				}
-			}
-			else if(slotID > 26)
-			{
-				if(!mergeItemStack(slotStack, 0, 26, false))
-				{
-					return null;
+				else {
+					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
+					{
+						return null;
+					}
 				}
 			}
 			else {
-				if(!mergeItemStack(slotStack, 0, inventorySlots.size(), true))
+				if(slotID >= 1 && slotID <= 27)
 				{
-					return null;
+					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), false))
+					{
+						return null;
+					}
+				}
+				else if(slotID > 27)
+				{
+					if(!mergeItemStack(slotStack, 1, 27, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, 1, inventorySlots.size(), true))
+					{
+						return null;
+					}
 				}
 			}
 

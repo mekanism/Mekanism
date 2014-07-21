@@ -96,6 +96,11 @@ public class TileComponentUpgrade implements ITileComponent
 			}
 		}
 	}
+	
+	public int getUpgradeSlot()
+	{
+		return upgradeSlot;
+	}
 
 	public int getScaledUpgradeProgress(int i)
 	{

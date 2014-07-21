@@ -1,15 +1,16 @@
 package mekanism.client.gui;
 
-import codechicken.lib.vec.Rectangle4i;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
+import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import codechicken.lib.vec.Rectangle4i;
 
 public class GuiUpgradeTab extends GuiElement
 {
@@ -17,7 +18,7 @@ public class GuiUpgradeTab extends GuiElement
 
 	public GuiUpgradeTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeManagement.png"), gui, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiUpgradeTab.png"), gui, def);
 
 		tileEntity = tile;
 	}
@@ -25,7 +26,7 @@ public class GuiUpgradeTab extends GuiElement
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
-		return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 63);
+		return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 26);
 	}
 
 	@Override
@@ -50,52 +51,25 @@ public class GuiUpgradeTab extends GuiElement
 
 		IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
 
-		if(getFontRenderer() != null)
+		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 		{
-			getFontRenderer().drawString("S:" + (upgradeTile.getSpeedMultiplier()+1) + "x", 179, 47, 0x404040);
-			getFontRenderer().drawString("E:" + (upgradeTile.getEnergyMultiplier()+1) + "x", 179, 57, 0x404040);
+			displayTooltip(MekanismUtils.localize("gui.upgrades"), xAxis, yAxis);
 		}
 
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
-		{
-			displayTooltip(MekanismUtils.localize("gui.removeSpeedUpgrade"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
-		{
-			displayTooltip(MekanismUtils.localize("gui.removeEnergyUpgrade"), xAxis, yAxis);
-		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
 
 	@Override
-	public void preMouseClicked(int xAxis, int yAxis, int button)
-	{
-		if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
-		{
-			offsetX(26);
-		}
-	}
+	public void preMouseClicked(int xAxis, int yAxis, int button) {}
 
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 47 && yAxis <= 54)
+		if(xAxis >= 179 && xAxis <= 197 && yAxis >= 10 && yAxis <= 28)
 		{
+			Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 9));
             SoundHandler.playSound("gui.button.press");
-			Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tileEntity), (byte)0));
-		}
-
-		if(xAxis >= 179 && xAxis <= 198 && yAxis >= 57 && yAxis <= 64)
-		{
-            SoundHandler.playSound("gui.button.press");
-			Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tileEntity), (byte)1));
-		}
-
-		if(xAxis >= 180 && xAxis <= 196 && yAxis >= 11 && yAxis <= 27)
-		{
-			offsetX(-26);
 		}
 	}
 }

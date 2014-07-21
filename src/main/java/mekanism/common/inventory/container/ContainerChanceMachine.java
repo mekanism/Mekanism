@@ -23,19 +23,18 @@ public class ContainerChanceMachine extends Container
 		addSlotToContainer(new Slot(tentity, 0, 56, 17));
 		addSlotToContainer(new SlotDischarge(tentity, 1, 56, 53));
 		addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
-		addSlotToContainer(new SlotMachineUpgrade(tentity, 3, 180, 11));
 		addSlotToContainer(new SlotOutput(tentity, 4, 132, 35));
 		int slotX;
 
-		for(slotX = 0; slotX < 3; ++slotX)
+		for(slotX = 0; slotX < 3; slotX++)
 		{
-			for(int slotY = 0; slotY < 9; ++slotY)
+			for(int slotY = 0; slotY < 9; slotY++)
 			{
 				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
@@ -70,9 +69,9 @@ public class ContainerChanceMachine extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(slotID == 2 || slotID == 4)
+			if(slotID == 2 || slotID == 3)
 			{
-				if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -88,7 +87,7 @@ public class ContainerChanceMachine extends Container
 				}
 				else if(slotID == 1)
 				{
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -96,7 +95,7 @@ public class ContainerChanceMachine extends Container
 			}
 			else if(RecipeHandler.getChanceOutput(slotStack, false, tileEntity.getRecipes()) != null)
 			{
-				if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
+				if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
@@ -104,45 +103,29 @@ public class ContainerChanceMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
-					{
-						return null;
-					}
-				}
-			}
-			else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-			{
-				if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
-				{
-					if(!mergeItemStack(slotStack, 3, 4, false))
-					{
-						return null;
-					}
-				}
-				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				if(slotID >= 5 && slotID <= 31)
+				if(slotID >= 4 && slotID <= 30)
 				{
-					if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
+					if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
 					{
 						return null;
 					}
 				}
-				else if(slotID > 31)
+				else if(slotID > 30)
 				{
-					if(!mergeItemStack(slotStack, 5, 31, false))
+					if(!mergeItemStack(slotStack, 4, 30, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}

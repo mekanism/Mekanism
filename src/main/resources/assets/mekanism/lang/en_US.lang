@@ -349,6 +349,8 @@ gui.id=ID
 gui.finished=Finished
 gui.well=All is well!
 
+gui.upgrades=Upgrades
+
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
 

@@ -26,7 +26,6 @@ public class ContainerAdvancedElectricMachine extends Container
 		addSlotToContainer(new Slot(tentity, 1, 56, 53));
 		addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 31, 35));
-		addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 180, 11));
 
 		int slotX;
 
@@ -75,7 +74,7 @@ public class ContainerAdvancedElectricMachine extends Container
 
 			if(slotID == 2)
 			{
-				if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -90,7 +89,7 @@ public class ContainerAdvancedElectricMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -106,7 +105,7 @@ public class ContainerAdvancedElectricMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -122,45 +121,29 @@ public class ContainerAdvancedElectricMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
-					{
-						return null;
-					}
-				}
-			}
-			else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-			{
-				if(slotID != 4)
-				{
-					if(!mergeItemStack(slotStack, 4, 5, false))
-					{
-						return null;
-					}
-				}
-				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				if(slotID >= 5 && slotID <= 31)
+				if(slotID >= 4 && slotID <= 30)
 				{
-					if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
+					if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
 					{
 						return null;
 					}
 				}
-				else if(slotID > 31)
+				else if(slotID > 30)
 				{
-					if(!mergeItemStack(slotStack, 5, 31, false))
+					if(!mergeItemStack(slotStack, 4, 30, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
