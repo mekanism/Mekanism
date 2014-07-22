@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
+import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -147,6 +148,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -582,5 +584,11 @@ public class ClientProxy extends CommonProxy
 		else {
 			return Minecraft.getMinecraft().thePlayer;
 		}
+	}
+
+	@Override
+	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction)
+	{
+		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction));
 	}
 }

@@ -2,6 +2,7 @@ package mekanism.api.lasers;
 
 import mekanism.api.Coord4D;
 import mekanism.client.entity.EntityLaser;
+import mekanism.common.Mekanism;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityNoteFX;
@@ -39,11 +40,11 @@ public class LaserManager
 				}
 			}
 
-			renderLaser(world, from, new Coord4D(mop.blockX, mop.blockY, mop.blockZ), direction);
+			Mekanism.proxy.renderLaser(world, from, new Coord4D(mop.blockX, mop.blockY, mop.blockZ), direction);
 		}
 		else
 		{
-			renderLaser(world, from, to, direction);
+			Mekanism.proxy.renderLaser(world, from, to, direction);
 		}
 	}
 
