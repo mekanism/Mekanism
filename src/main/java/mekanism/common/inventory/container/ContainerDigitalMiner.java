@@ -1,8 +1,6 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
-import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;

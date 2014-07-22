@@ -54,14 +54,18 @@ public enum Upgrade
 	public static Map<Upgrade, Integer> buildMap(NBTTagCompound nbtTags)
 	{
 		Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
-		NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
 		
-		for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
+		if(nbtTags.hasKey("upgrades"))
 		{
-			NBTTagCompound compound = (NBTTagCompound)list.getCompoundTagAt(tagCount);
+			NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
 			
-			Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
-			upgrades.put(upgrade, compound.getInteger("amount"));
+			for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
+			{
+				NBTTagCompound compound = (NBTTagCompound)list.getCompoundTagAt(tagCount);
+				
+				Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
+				upgrades.put(upgrade, compound.getInteger("amount"));
+			}
 		}
 		
 		return upgrades;

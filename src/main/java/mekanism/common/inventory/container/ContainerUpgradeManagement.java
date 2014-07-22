@@ -1,8 +1,8 @@
 package mekanism.common.inventory.container;
 
+import mekanism.common.IUpgradeItem;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
-import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -64,7 +64,7 @@ public class ContainerUpgradeManagement extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(slotStack.getItem() instanceof ItemMachineUpgrade)
+			if(slotStack.getItem() instanceof IUpgradeItem)
 			{
 				if(slotID != 0)
 				{

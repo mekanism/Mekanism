@@ -15,10 +15,10 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.IUpgradeItem;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -140,7 +140,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 		}
 		else if(slotID == 3)
 		{
-			return itemstack.getItem() instanceof ItemMachineUpgrade;
+			return itemstack.getItem() instanceof IUpgradeItem;
 		}
 
 		return false;

@@ -2,9 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotStorageTank;
-import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
