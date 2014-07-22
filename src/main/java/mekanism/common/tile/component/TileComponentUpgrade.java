@@ -3,29 +3,33 @@ package mekanism.common.tile.component;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import mekanism.common.ITileComponent;
-import mekanism.common.Mekanism;
+import mekanism.common.IUpgradeItem;
+import mekanism.common.Upgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentUpgrade implements ITileComponent
 {
 	/** How long it takes this machine to install an upgrade. */
 	public static int UPGRADE_TICKS_REQUIRED = 40;
+	
+	private Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
+	
+	private Set<Upgrade> supported = new HashSet<Upgrade>();
 
 	/** The inventory slot the upgrade slot of this component occupies. */
 	private int upgradeSlot;
 
 	/** How many upgrade ticks have progressed. */
 	public int upgradeTicks;
-
-	/** This machine's speed multiplier. */
-	public int speedMultiplier;
-
-	/** This machine's energy multiplier. */
-	public int energyMultiplier;
 
 	/** TileEntity implementing this component. */
 	public TileEntityContainerBlock tileEntity;
@@ -34,6 +38,9 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		tileEntity = tile;
 		upgradeSlot = slot;
+		
+		setSupported(Upgrade.SPEED);
+		setSupported(Upgrade.ENERGY);
 
 		tile.components.add(this);
 	}
@@ -43,9 +50,11 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		if(!tileEntity.getWorldObj().isRemote)
 		{
-			if(tileEntity.inventory[upgradeSlot] != null)
+			if(tileEntity.inventory[upgradeSlot] != null && tileEntity.inventory[upgradeSlot].getItem() instanceof IUpgradeItem)
 			{
-				if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
+				Upgrade type = ((IUpgradeItem)tileEntity.inventory[upgradeSlot].getItem()).getUpgradeType(tileEntity.inventory[upgradeSlot]);
+				
+				if(supports(type) && getUpgrades(type) < type.getMax())
 				{
 					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
@@ -54,28 +63,7 @@ public class TileComponentUpgrade implements ITileComponent
 					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
 					{
 						upgradeTicks = 0;
-						energyMultiplier++;
-
-						tileEntity.inventory[upgradeSlot].stackSize--;
-
-						if(tileEntity.inventory[upgradeSlot].stackSize == 0)
-						{
-							tileEntity.inventory[upgradeSlot] = null;
-						}
-
-						tileEntity.markDirty();
-					}
-				}
-				else if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
-				{
-					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks++;
-					}
-					else if(upgradeTicks == UPGRADE_TICKS_REQUIRED)
-					{
-						upgradeTicks = 0;
-						speedMultiplier++;
+						addUpgrade(type);
 
 						tileEntity.inventory[upgradeSlot].stackSize--;
 
@@ -106,34 +94,110 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		return upgradeTicks*i / UPGRADE_TICKS_REQUIRED;
 	}
-
-	@Override
-	public void read(NBTTagCompound nbtTags)
+	
+	public int getUpgrades(Upgrade upgrade)
 	{
-		speedMultiplier = nbtTags.getInteger("speedMultiplier");
-		energyMultiplier = nbtTags.getInteger("energyMultiplier");
+		return upgrades.get(upgrade);
+	}
+	
+	public void addUpgrade(Upgrade upgrade)
+	{
+		upgrades.put(upgrade, Math.min(upgrade.getMax(), upgrades.get(upgrade)+1));
+	}
+	
+	public void setUpgrades(Upgrade upgrade, int amount)
+	{
+		upgrades.put(upgrade, amount);
+	
+		if(upgrades.get(upgrade) == 0)
+		{
+			upgrades.remove(upgrade);
+		}
+	}
+	
+	public void removeUpgrade(Upgrade upgrade)
+	{
+		upgrades.put(upgrade, Math.max(0, upgrades.get(upgrade)-1));
+		
+		if(upgrades.get(upgrade) == 0)
+		{
+			upgrades.remove(upgrade);
+		}
+	}
+	
+	public void setSupported(Upgrade upgrade)
+	{
+		supported.add(upgrade);
+	}
+	
+	public boolean supports(Upgrade upgrade)
+	{
+		return supported.contains(upgrade);
+	}
+	
+	public NBTTagCompound getTagFor(Upgrade upgrade)
+	{
+		NBTTagCompound compound = new NBTTagCompound();
+		
+		compound.setInteger("type", upgrade.ordinal());
+		compound.setInteger("amount", getUpgrades(upgrade));
+		
+		return compound;
 	}
 
 	@Override
 	public void read(ByteBuf dataStream)
 	{
-		speedMultiplier = dataStream.readInt();
-		energyMultiplier = dataStream.readInt();
+		upgrades.clear();
+		
+		int amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
+		{
+			upgrades.put(Upgrade.values()[dataStream.readInt()], dataStream.readInt());
+		}
+		
 		upgradeTicks = dataStream.readInt();
+	}
+	
+	@Override
+	public void write(ArrayList data)
+	{
+		data.add(upgrades.size());
+		
+		for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
+		{
+			data.add(entry.getKey().ordinal());
+			data.add(entry.getValue());
+		}
+		
+		data.add(upgradeTicks);
+	}
+	
+	@Override
+	public void read(NBTTagCompound nbtTags)
+	{
+		NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
+		
+		for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
+		{
+			NBTTagCompound compound = (NBTTagCompound)list.getCompoundTagAt(tagCount);
+			
+			Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
+			upgrades.put(upgrade, compound.getInteger("amount"));
+		}
 	}
 
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setInteger("speedMultiplier", speedMultiplier);
-		nbtTags.setInteger("energyMultiplier", energyMultiplier);
-	}
-
-	@Override
-	public void write(ArrayList data)
-	{
-		data.add(speedMultiplier);
-		data.add(energyMultiplier);
-		data.add(upgradeTicks);
+		NBTTagList list = new NBTTagList();
+		
+		for(Upgrade upgrade : upgrades.keySet())
+		{
+			list.appendTag(getTagFor(upgrade));
+		}
+		
+		nbtTags.setTag("upgrades", list);
 	}
 }

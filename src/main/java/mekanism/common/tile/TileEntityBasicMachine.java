@@ -15,6 +15,7 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -23,7 +24,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -294,26 +294,26 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public int getEnergyMultiplier(Object... data)
 	{
-		return upgradeComponent.energyMultiplier;
+		return upgradeComponent.getUpgrades(Upgrade.ENERGY);
 	}
 
 	@Override
 	public void setEnergyMultiplier(int multiplier, Object... data)
 	{
-		upgradeComponent.energyMultiplier = multiplier;
+		upgradeComponent.setUpgrades(Upgrade.ENERGY, multiplier);
 		MekanismUtils.saveChunk(this);
 	}
 
 	@Override
 	public int getSpeedMultiplier(Object... data)
 	{
-		return upgradeComponent.speedMultiplier;
+		return upgradeComponent.getUpgrades(Upgrade.SPEED);
 	}
 
 	@Override
 	public void setSpeedMultiplier(int multiplier, Object... data)
 	{
-		upgradeComponent.speedMultiplier = multiplier;
+		upgradeComponent.setUpgrades(Upgrade.SPEED, multiplier);
 		MekanismUtils.saveChunk(this);
 	}
 
