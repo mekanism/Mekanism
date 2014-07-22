@@ -312,7 +312,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@SideOnly(Side.CLIENT)
 	public boolean renderStatic(Vector3 pos, int pass)
 	{
-		if(pass == 1)
+		if(pass == 0)
 		{
 			RenderPartTransmitter.getInstance().renderStatic(this);
 			return true;

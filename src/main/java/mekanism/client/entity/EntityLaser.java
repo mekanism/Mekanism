@@ -11,8 +11,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class EntityLaser extends EntityFX
 {
 	double length;
@@ -21,7 +24,7 @@ public class EntityLaser extends EntityFX
 	public EntityLaser(World world, Coord4D start, Coord4D end, ForgeDirection direction)
 	{
 		super(world, (start.xCoord + end.xCoord)/2D + 0.5D, (start.yCoord + end.yCoord)/2D + 0.5D, (start.zCoord+end.zCoord)/2D + 0.5D);
-		particleMaxAge = 1;
+		particleMaxAge = 5;
 		particleRed = 1;
 		particleGreen = 0;
 		particleBlue = 0;
