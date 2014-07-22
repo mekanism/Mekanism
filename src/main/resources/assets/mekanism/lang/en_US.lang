@@ -290,6 +290,12 @@ update.toDownload=to download
 update.devBuild=Using developer build
 update.outdated=Using outdated version on one or more modules
 
+//Upgrades
+upgrade.energy=Energy
+upgrade.energy.desc=Increases energy efficiency and capacity of machinery.
+upgrade.speed=Speed
+upgrade.speed.desc=Increases speed of machinery.
+
 //Key description text
 key.mode=Mode Switch
 key.voice=Voice

@@ -17,6 +17,7 @@ import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.miner.MinerFilter;
@@ -74,7 +75,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -1015,10 +1015,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
 		{
-			IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
-
-			upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
-			upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
+			((IUpgradeTile)tileEntity).getComponent().write(itemStack.stackTagCompound);
 		}
 
 		if(tileEntity instanceof IInvConfiguration)

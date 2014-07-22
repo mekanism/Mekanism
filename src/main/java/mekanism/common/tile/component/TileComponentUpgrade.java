@@ -14,7 +14,6 @@ import mekanism.common.Upgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentUpgrade implements ITileComponent
 {
@@ -134,16 +133,6 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		return supported.contains(upgrade);
 	}
-	
-	public NBTTagCompound getTagFor(Upgrade upgrade)
-	{
-		NBTTagCompound compound = new NBTTagCompound();
-		
-		compound.setInteger("type", upgrade.ordinal());
-		compound.setInteger("amount", getUpgrades(upgrade));
-		
-		return compound;
-	}
 
 	@Override
 	public void read(ByteBuf dataStream)
@@ -177,27 +166,12 @@ public class TileComponentUpgrade implements ITileComponent
 	@Override
 	public void read(NBTTagCompound nbtTags)
 	{
-		NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
-		
-		for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
-		{
-			NBTTagCompound compound = (NBTTagCompound)list.getCompoundTagAt(tagCount);
-			
-			Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
-			upgrades.put(upgrade, compound.getInteger("amount"));
-		}
+		upgrades = Upgrade.buildMap(nbtTags);
 	}
 
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
-		NBTTagList list = new NBTTagList();
-		
-		for(Upgrade upgrade : upgrades.keySet())
-		{
-			list.appendTag(getTagFor(upgrade));
-		}
-		
-		nbtTags.setTag("upgrades", list);
+		Upgrade.saveMap(upgrades, nbtTags);
 	}
 }

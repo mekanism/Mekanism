@@ -6,6 +6,7 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -21,7 +22,9 @@ import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeManagement;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
@@ -180,16 +183,20 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					list.add(EnumColor.PINK + FluidRegistry.getFluidName(getFluidStack(itemstack)) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
 				}
 			}
-
-			if(supportsUpgrades(itemstack))
-			{
-				list.add(EnumColor.PURPLE + MekanismUtils.localize("tooltip.upgrade.energy") + ": " + EnumColor.GREY + "x" + (getEnergyMultiplier(itemstack)+1));
-				list.add(EnumColor.PURPLE + MekanismUtils.localize("tooltip.upgrade.speed") + ": " + EnumColor.GREY + "x" + (getSpeedMultiplier(itemstack)+1));
-			}
-
+			
 			if(type != MachineType.CHARGEPAD && type != MachineType.LOGISTICAL_SORTER)
 			{
 				list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
+			}
+
+			if(supportsUpgrades(itemstack) && itemstack.stackTagCompound != null && itemstack.stackTagCompound.hasKey("upgrades"))
+			{
+				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemstack.stackTagCompound);
+				
+				for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
+				{
+					list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + entry.getValue(): ""));
+				}
 			}
 		}
 		else {
@@ -245,10 +252,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-			if(tileEntity instanceof IUpgradeManagement)
+			if(tileEntity instanceof IUpgradeTile)
 			{
-				((IUpgradeManagement)tileEntity).setEnergyMultiplier(getEnergyMultiplier(stack));
-				((IUpgradeManagement)tileEntity).setSpeedMultiplier(getSpeedMultiplier(stack));
+				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("upgrades"))
+				{
+					((IUpgradeTile)tileEntity).getComponent().read(stack.stackTagCompound);
+				}
 			}
 
 			if(tileEntity instanceof IInvConfiguration)
