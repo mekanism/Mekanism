@@ -33,6 +33,8 @@ import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketKey;
 import mekanism.common.network.PacketKey.KeyMessage;
+import mekanism.common.network.PacketLaserFire;
+import mekanism.common.network.PacketLaserFire.LaserFireMessage;
 import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketNewFilter;
@@ -118,6 +120,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketPortableTankState.class, PortableTankStateMessage.class, 25, Side.SERVER);
 		netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
 		netHandler.registerMessage(PacketFlamethrowerActive.class, FlamethrowerActiveMessage.class, 27, Side.SERVER);
+		netHandler.registerMessage(PacketLaserFire.class, LaserFireMessage.class, 28, Side.CLIENT);
 	}
 	
 	/**
