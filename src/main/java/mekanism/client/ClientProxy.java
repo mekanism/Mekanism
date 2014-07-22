@@ -591,10 +591,4 @@ public class ClientProxy extends CommonProxy
 	{
 		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction));
 	}
-
-	@Override
-	public boolean isClientSide()
-	{
-		return true;
-	}
 }

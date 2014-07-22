@@ -38,7 +38,6 @@ import mekanism.common.inventory.container.ContainerSalinationController;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
-import mekanism.common.network.PacketLaserFire.LaserFireMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityBin;
@@ -475,13 +474,5 @@ public class CommonProxy
 		return context.getServerHandler().playerEntity;
 	}
 
-	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction)
-	{
-		Mekanism.packetHandler.sendToAllAround(new LaserFireMessage(from, to, direction), from.getTargetPoint(50D));
-	}
-
-	public boolean isClientSide()
-	{
-		return false;
-	}
+	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction) {}
 }

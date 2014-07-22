@@ -28,7 +28,7 @@ public class EntityLaser extends EntityFX
 		particleRed = 1;
 		particleGreen = 0;
 		particleBlue = 0;
-		particleAlpha = 0.3F;
+		particleAlpha = 0.1F;
 		particleScale = 0.1F;
 		length = new Pos3D(end).distance(new Pos3D(start));
 		this.direction = direction;
@@ -40,6 +40,8 @@ public class EntityLaser extends EntityFX
 		tessellator.draw();
 
 		GL11.glPushMatrix();
+		GL11.glPushAttrib(GL11.GL_POLYGON_BIT + GL11.GL_ENABLE_BIT);
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("mekanism", "particles/laser.png"));
 
 		float newX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
@@ -81,6 +83,7 @@ public class EntityLaser extends EntityFX
 		tessellator.addVertexWithUV(particleScale, -length/2, 0, 1, 0);
 		tessellator.draw();
 
+		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
 		Minecraft.getMinecraft().renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
