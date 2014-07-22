@@ -1,13 +1,17 @@
 package mekanism.api.lasers;
 
 import mekanism.api.Coord4D;
+import mekanism.client.entity.EntityLaser;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EntityNoteFX;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class LaserManager
 {
@@ -35,16 +39,16 @@ public class LaserManager
 				}
 			}
 
-			renderLaser(from, new Coord4D(mop.blockX, mop.blockY, mop.blockZ));
+			renderLaser(world, from, new Coord4D(mop.blockX, mop.blockY, mop.blockZ), direction);
 		}
 		else
 		{
-			renderLaser(from, to);
+			renderLaser(world, from, to, direction);
 		}
 	}
 
-	public static void renderLaser(Coord4D from, Coord4D to)
+	public static void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction)
 	{
-		//TODO Particle effects
+		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction));
 	}
 }
