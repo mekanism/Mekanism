@@ -96,12 +96,17 @@ public class TileComponentUpgrade implements ITileComponent
 	
 	public int getUpgrades(Upgrade upgrade)
 	{
+		if(upgrades.get(upgrade) == null)
+		{
+			return 0;
+		}
+		
 		return upgrades.get(upgrade);
 	}
 	
 	public void addUpgrade(Upgrade upgrade)
 	{
-		upgrades.put(upgrade, Math.min(upgrade.getMax(), upgrades.get(upgrade)+1));
+		upgrades.put(upgrade, Math.min(upgrade.getMax(), getUpgrades(upgrade)+1));
 	}
 	
 	public void setUpgrades(Upgrade upgrade, int amount)
@@ -116,7 +121,7 @@ public class TileComponentUpgrade implements ITileComponent
 	
 	public void removeUpgrade(Upgrade upgrade)
 	{
-		upgrades.put(upgrade, Math.max(0, upgrades.get(upgrade)-1));
+		upgrades.put(upgrade, Math.max(0, getUpgrades(upgrade)-1));
 		
 		if(upgrades.get(upgrade) == 0)
 		{

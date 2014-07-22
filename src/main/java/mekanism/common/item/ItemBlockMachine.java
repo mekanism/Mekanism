@@ -195,7 +195,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				
 				for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
 				{
-					list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + entry.getValue(): ""));
+					list.add(entry.getKey().getColor() + "- " + entry.getKey().getName() + (entry.getKey().canMultiply() ? ": " + EnumColor.GREY + "x" + entry.getValue(): ""));
 				}
 			}
 		}
