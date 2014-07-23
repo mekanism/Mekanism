@@ -20,11 +20,9 @@ import mekanism.common.IEjector;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.IUpgradeManagement;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.Upgrade;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -189,10 +187,13 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						recipeTicks = 0;
 						
 						ItemStack returnStack = getMachineStack();
-						IUpgradeManagement mgmt = (IUpgradeManagement)inventory[2].getItem();
 						
-						((IUpgradeManagement)returnStack.getItem()).setEnergyMultiplier(mgmt.getEnergyMultiplier(inventory[2]), returnStack);
-						((IUpgradeManagement)returnStack.getItem()).setSpeedMultiplier(mgmt.getSpeedMultiplier(inventory[2]), returnStack);
+						if(returnStack.stackTagCompound == null)
+						{
+							returnStack.setTagCompound(new NBTTagCompound());
+						}
+						
+						upgradeComponent.write(returnStack.stackTagCompound);
 
 						inventory[2] = null;
 						inventory[3] = returnStack;
@@ -821,38 +822,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.getUpgrades(Upgrade.ENERGY);
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.setUpgrades(Upgrade.ENERGY, multiplier);
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.getUpgrades(Upgrade.SPEED);
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.setUpgrades(Upgrade.SPEED, multiplier);
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		return true;
 	}
 
 	@Override

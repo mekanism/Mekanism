@@ -21,7 +21,6 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
-import mekanism.common.IUpgradeManagement;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -112,7 +111,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
 		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
 })
-public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IUpgradeManagement, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IFluidContainerItem
+public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpecialElectricItem, IFactory, ISustainedInventory, ISustainedTank, IElectricChest, IEnergyContainerItem, IFluidContainerItem
 {
 	public Block metaBlock;
 
@@ -189,7 +188,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
 
-			if(supportsUpgrades(itemstack) && itemstack.stackTagCompound != null && itemstack.stackTagCompound.hasKey("upgrades"))
+			if(type.supportsUpgrades && itemstack.stackTagCompound != null && itemstack.stackTagCompound.hasKey("upgrades"))
 			{
 				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemstack.stackTagCompound);
 				
@@ -494,87 +493,6 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	public boolean onEntityItemUpdate(EntityItem entityItem)
 	{
 		onUpdate(entityItem.getEntityItem(), null, entityItem, 0, false);
-
-		return false;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.stackTagCompound == null)
-			{
-				return 0;
-			}
-
-			return itemStack.stackTagCompound.getInteger("energyMultiplier");
-		}
-
-		return 0;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.stackTagCompound == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			itemStack.stackTagCompound.setInteger("energyMultiplier", multiplier);
-		}
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.stackTagCompound == null)
-			{
-				return 0;
-			}
-
-			return itemStack.stackTagCompound.getInteger("speedMultiplier");
-		}
-
-		return 0;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			ItemStack itemStack = (ItemStack)data[0];
-
-			if(itemStack.stackTagCompound == null)
-			{
-				itemStack.setTagCompound(new NBTTagCompound());
-			}
-
-			itemStack.stackTagCompound.setInteger("speedMultiplier", multiplier);
-		}
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		if(data[0] instanceof ItemStack)
-		{
-			MachineType type = MachineType.get((ItemStack)data[0]);
-
-			return type.supportsUpgrades;
-		}
 
 		return false;
 	}
@@ -993,7 +911,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(itemStack, this, MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(itemStack, MachineType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
@@ -26,12 +27,13 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
-import mekanism.common.IUpgradeManagement;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Upgrade;
 import mekanism.common.Version;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -603,9 +605,9 @@ public final class MekanismUtils
 	 * @param def - the original, default ticks required
 	 * @return max operating ticks
 	 */
-	public static int getTicks(IUpgradeManagement mgmt, int def)
+	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
-		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -mgmt.getSpeedMultiplier()/8.0));
+		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -mgmt.getComponent().getUpgrades(Upgrade.SPEED)/8.0));
 	}
 
 	/**
@@ -615,9 +617,9 @@ public final class MekanismUtils
 	 * @param def - the original, default energy required
 	 * @return max energy per tick
 	 */
-	public static double getEnergyPerTick(IUpgradeManagement mgmt, double def)
+	public static double getEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getSpeedMultiplier()-mgmt.getEnergyMultiplier())/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/8.0);
 	}
 
 	/**
@@ -626,9 +628,9 @@ public final class MekanismUtils
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
-	public static double getMaxEnergy(IUpgradeManagement mgmt, double def)
+	public static double getMaxEnergy(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getEnergyMultiplier()/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/8.0);
 	}
 	
 	/**
@@ -637,9 +639,10 @@ public final class MekanismUtils
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
-	public static double getMaxEnergy(ItemStack itemStack, IUpgradeManagement mgmt, double def)
+	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getEnergyMultiplier(itemStack)/8.0);
+		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, upgrades.get(Upgrade.ENERGY)/8.0);
 	}
 
 	/**

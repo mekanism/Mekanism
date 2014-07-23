@@ -16,7 +16,6 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.ISpecialBounds;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
-import mekanism.common.IUpgradeManagement;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -1013,7 +1012,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
+		if(tileEntity instanceof IUpgradeTile)
 		{
 			((IUpgradeTile)tileEntity).getComponent().write(itemStack.stackTagCompound);
 		}

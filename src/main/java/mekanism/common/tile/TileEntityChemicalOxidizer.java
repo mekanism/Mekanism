@@ -17,7 +17,6 @@ import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
-import mekanism.common.Upgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -359,38 +358,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	public float getVolumeMultiplier()
 	{
 		return 1;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.getUpgrades(Upgrade.ENERGY);
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.setUpgrades(Upgrade.ENERGY, multiplier);
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.getUpgrades(Upgrade.SPEED);
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.setUpgrades(Upgrade.SPEED, multiplier);
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data) 
-	{
-		return true;
 	}
 
 	@Override

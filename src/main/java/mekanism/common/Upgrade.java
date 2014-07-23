@@ -45,7 +45,7 @@ public enum Upgrade
 	public EnumColor getColor()
 	{
 		return color;
-	}
+	} 
 	
 	public boolean canMultiply()
 	{
@@ -69,7 +69,7 @@ public enum Upgrade
 	{
 		Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
 		
-		if(nbtTags.hasKey("upgrades"))
+		if(nbtTags != null && nbtTags.hasKey("upgrades"))
 		{
 			NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
 			
