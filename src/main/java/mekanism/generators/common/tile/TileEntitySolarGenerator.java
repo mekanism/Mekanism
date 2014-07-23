@@ -15,7 +15,6 @@ import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -63,10 +62,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	{
 		super.onUpdate();
 
-		ChargeUtils.charge(0, this);
-
 		if(!worldObj.isRemote)
 		{
+			ChargeUtils.charge(0, this);
+			
 			if(worldObj.isDaytime() && ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord))
 			{
 				seesSun = true;

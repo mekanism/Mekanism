@@ -8,7 +8,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
@@ -28,10 +27,10 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	{
 		super.onUpdate();
 
-		ChargeUtils.charge(0, this);
-
 		if(!worldObj.isRemote)
 		{
+			ChargeUtils.charge(0, this);
+			
 			if(canOperate())
 			{
 				setActive(true);

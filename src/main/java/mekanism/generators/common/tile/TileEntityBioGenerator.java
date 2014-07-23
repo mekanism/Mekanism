@@ -46,10 +46,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	{
 		super.onUpdate();
 
-		ChargeUtils.charge(1, this);
-
 		if(inventory[0] != null)
 		{
+			ChargeUtils.charge(1, this);
+			
 			FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 
 			if(fluid != null && FluidRegistry.isFluidRegistered("bioethanol"))
