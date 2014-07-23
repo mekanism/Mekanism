@@ -20,7 +20,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -55,22 +54,25 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		super.onUpdate();
 
-		ChargeUtils.charge(0, this);
-		ChargeUtils.discharge(1, this);
-
-		if(MekanismUtils.canFunction(this))
+		if(!worldObj.isRemote)
 		{
-			CableUtils.emit(this);
+			ChargeUtils.charge(0, this);
+			ChargeUtils.discharge(1, this);
+	
+			if(MekanismUtils.canFunction(this))
+			{
+				CableUtils.emit(this);
+			}
+			
+			int newScale = getScaledEnergyLevel(20);
+	
+			if(newScale != prevScale)
+			{
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+			}
+	
+			prevScale = newScale;
 		}
-		
-		int newScale = getScaledEnergyLevel(20);
-
-		if(!(newScale == prevScale || worldObj.isRemote))
-		{
-			Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
-		}
-
-		prevScale = newScale;
 	}
 
 	@Override
