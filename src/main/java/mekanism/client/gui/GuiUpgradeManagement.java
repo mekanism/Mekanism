@@ -1,10 +1,8 @@
 package mekanism.client.gui;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.IUpgradeTile;
@@ -12,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
+import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -47,14 +46,20 @@ public class GuiUpgradeManagement extends GuiMekanism
 		
 		if(selectedType == null)
 		{
-			renderText(MekanismUtils.localize("gui.upgrades.noSelection") + ".", 96, 9, 0.8F);
+			renderText(MekanismUtils.localize("gui.upgrades.noSelection") + ".", 92, 8, 0.8F, true);
+		}
+		else {
+			int amount = tileEntity.getComponent().getUpgrades(selectedType);
+			
+			renderText(selectedType.getName() + " " + MekanismUtils.localize("gui.upgrade"), 92, 8, 0.6F, true);
+			renderText(MekanismUtils.localize("gui.upgrades.amount") + ": " + amount + "/" + selectedType.getMax(), 92, 16, 0.6F, true);
 		}
 		
 		int rendered = 0;
 		
 		for(Upgrade upgrade : tileEntity.getComponent().getSupportedTypes())
 		{
-			renderUpgrade(upgrade, 84 + (rendered++*12), 60, 0.8F);
+			renderUpgrade(upgrade, 80 + (rendered++*12), 58, 0.8F, true);
 		}
 		
 		int counter = 0;
@@ -65,6 +70,10 @@ public class GuiUpgradeManagement extends GuiMekanism
 			int yPos = 7 + (counter++*12);
 			int yRender = 0;
 			
+			fontRendererObj.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
+			
+			renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F, true);
+			
 			if(xAxis >= xPos && xAxis <= xPos+64 && yAxis >= yPos && yAxis <= yPos+12)
 			{
 				func_146283_a(MekanismUtils.splitLines(upgrade.getDescription()), xAxis, yAxis);
@@ -74,20 +83,20 @@ public class GuiUpgradeManagement extends GuiMekanism
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	
-	private void renderText(String text, int x, int y, float size)
+	private void renderText(String text, int x, int y, float size, boolean scale)
 	{
 		GL11.glPushMatrix();
 		GL11.glScalef(size, size, size);
-		fontRendererObj.drawString(text, (int)(x*(1+(1-size))), (int)(y*(1+(1-size))), 0x00CD00);
+		fontRendererObj.drawString(text, scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y, 0x00CD00);
 		GL11.glPopMatrix();
 	}
 	
-	private void renderUpgrade(Upgrade type, int x, int y, float size)
+	private void renderUpgrade(Upgrade type, int x, int y, float size, boolean scale)
 	{
 		GL11.glPushMatrix();
 		GL11.glScalef(size, size, size);
 		GL11.glEnable(GL11.GL_LIGHTING);
-		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getStack(), (int)(x*(1+(1-size))), (int)(y*(1+(1-size))));
+		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getStack(), scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}
@@ -111,6 +120,18 @@ public class GuiUpgradeManagement extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 14, 14, 14);
+		}
+		
+		if(selectedType == null)
+		{
+			drawTexturedModalRect(guiWidth + 136, guiHeight + 58, 176 + 14, 24, 12, 12);
+		}
+		else if(xAxis >= 136 && xAxis <= 148 && yAxis >= 58 && yAxis <= 70)
+		{
+			drawTexturedModalRect(guiWidth + 136, guiHeight + 58, 176 + 14, 0, 12, 12);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 136, guiHeight + 58, 176 + 14, 12, 12, 12);
 		}
 		
 		int displayInt = tileEntity.getComponent().getScaledUpgradeProgress(14);
@@ -172,6 +193,12 @@ public class GuiUpgradeManagement extends GuiMekanism
 				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
                 SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
+			}
+			
+			if(selectedType != null && xAxis >= 136 && xAxis <= 148 && yAxis >= 58 && yAxis <= 70)
+			{
+				SoundHandler.playSound("gui.button.press");
+				Mekanism.packetHandler.sendToServer(new RemoveUpgradeMessage(Coord4D.get(tile), selectedType.ordinal()));
 			}
 			
 			int counter = 0;

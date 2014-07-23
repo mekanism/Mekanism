@@ -354,10 +354,14 @@ gui.key=Key
 gui.id=ID
 gui.finished=Finished
 gui.well=All is well!
+gui.upgrade=Upgrade
 
 gui.upgrades=Upgrades
 gui.upgrades.supported=Supported
 gui.upgrades.noSelection=No selection
+gui.upgrades.amount=Amount
+gui.upgrades.max=Max
+gui.upgrades.effect=Effect
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
@@ -656,9 +660,6 @@ tile.Generator.GasGenerator.name=Gas-Burning Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
-
-//Reactor Blocks
-tile.Reactor.ReactorController.name=Reactor Controller
 
 //Gui text
 gui.heatGenerator.fuel=Fuel
