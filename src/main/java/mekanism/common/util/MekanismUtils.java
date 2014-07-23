@@ -607,7 +607,7 @@ public final class MekanismUtils
 	 */
 	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
-		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -mgmt.getComponent().getUpgrades(Upgrade.SPEED)/8.0));
+		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, (float)-mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax()));
 	}
 
 	/**
@@ -619,7 +619,7 @@ public final class MekanismUtils
 	 */
 	public static double getEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/(float)Upgrade.SPEED.getMax());
 	}
 
 	/**
@@ -630,7 +630,7 @@ public final class MekanismUtils
 	 */
 	public static double getMaxEnergy(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
 	}
 	
 	/**
@@ -642,7 +642,7 @@ public final class MekanismUtils
 	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
 		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, upgrades.get(Upgrade.ENERGY)/8.0);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (float)upgrades.get(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
 	}
 
 	/**

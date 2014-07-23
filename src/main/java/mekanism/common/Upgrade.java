@@ -1,6 +1,8 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
@@ -8,6 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public enum Upgrade
@@ -63,6 +66,23 @@ public enum Upgrade
 		}
 		
 		return null;
+	}
+	
+	public List<String> getInfo(TileEntity tile)
+	{
+		List<String> ret = new ArrayList<String>();
+		
+		if(tile instanceof IUpgradeTile)
+		{
+			if(canMultiply())
+			{
+				double effect = Math.pow(Mekanism.maxUpgradeMultiplier, (float)((IUpgradeTile)tile).getComponent().getUpgrades(this)/(float)getMax());
+				
+				ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
+			}
+		}
+		
+		return ret;
 	}
 	
 	public static Map<Upgrade, Integer> buildMap(NBTTagCompound nbtTags)
