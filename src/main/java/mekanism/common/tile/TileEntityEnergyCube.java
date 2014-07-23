@@ -65,7 +65,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 		
 		int newScale = getScaledEnergyLevel(20);
 
-		if(newScale != prevScale)
+		if(!(newScale == prevScale || worldObj.isRemote))
 		{
 			Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 		}

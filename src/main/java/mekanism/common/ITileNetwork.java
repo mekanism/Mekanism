@@ -13,9 +13,6 @@ public interface ITileNetwork
 {
 	/**
 	 * Receive and manage a packet's data.
-	 * @param network
-	 * @param packet
-	 * @param player
 	 * @param dataStream
 	 */
 	public void handlePacketData(ByteBuf dataStream) throws Exception;

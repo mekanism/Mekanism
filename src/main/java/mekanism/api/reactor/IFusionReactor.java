@@ -35,4 +35,6 @@ public interface IFusionReactor
 	public double getBufferSize();
 
 	public void formMultiblock();
+
+	public boolean isFormed();
 }

@@ -657,6 +657,9 @@ tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
 
+//Reactor Blocks
+tile.Reactor.ReactorController.name=Reactor Controller
+
 //Gui text
 gui.heatGenerator.fuel=Fuel
 gui.solarGenerator.sun=Sun

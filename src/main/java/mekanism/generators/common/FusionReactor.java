@@ -15,9 +15,11 @@ import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
+import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemCoal;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -61,7 +63,6 @@ public class FusionReactor implements IFusionReactor
 	public static double caseAirConductivity = 0.1;
 
 	public boolean burning = false;
-	public boolean hasHohlraum = false;
 	public boolean activelyCooled = true;
 
 	public boolean formed = false;
@@ -77,6 +78,11 @@ public class FusionReactor implements IFusionReactor
 		plasmaTemperature += energyAdded / plasmaHeatCapacity;
 	}
 
+	public boolean hasHohlraum()
+	{
+		return controller != null && controller.inventory[0] != null && controller.inventory[0].getItem() instanceof ItemCoal;
+	}
+
 	@Override
 	public void simulate()
 	{
@@ -90,7 +96,7 @@ public class FusionReactor implements IFusionReactor
 		if(plasmaTemperature >= burnTemperature)
 		{
 			//If we're not burning yet we need a hohlraum to ignite
-			if(!burning && hasHohlraum)
+			if(!burning && hasHohlraum())
 			{
 				vaporiseHohlraum();
 			}
@@ -117,7 +123,11 @@ public class FusionReactor implements IFusionReactor
 	public void vaporiseHohlraum()
 	{
 		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
-		hasHohlraum = false;
+		controller.inventory[0].stackSize -= 1;
+		if(controller.inventory[0].stackSize == 0)
+		{
+			controller.inventory[0] = null;
+		}
 		burning = true;
 	}
 
@@ -391,4 +401,10 @@ public class FusionReactor implements IFusionReactor
 
 		return true;
 	}
+
+	public boolean isFormed()
+	{
+		return formed;
+	}
+
 }

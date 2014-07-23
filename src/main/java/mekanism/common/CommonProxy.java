@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.io.File;
 
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.entity.EntityRobit;
@@ -85,6 +86,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -143,7 +145,7 @@ public class CommonProxy
 
 	/**
 	 * Registers a client-side sound, assigned to a TileEntity.
-	 * @param tile - TileEntity who is registering the sound
+	 * @param tileEntity - TileEntity who is registering the sound
 	 */
 	public void registerSound(TileEntity tileEntity) {}
 
@@ -471,4 +473,6 @@ public class CommonProxy
 	{
 		return context.getServerHandler().playerEntity;
 	}
+
+	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction) {}
 }
