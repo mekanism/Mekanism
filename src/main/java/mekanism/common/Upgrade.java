@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -49,6 +50,19 @@ public enum Upgrade
 	public boolean canMultiply()
 	{
 		return getMax() > 1;
+	}
+	
+	public ItemStack getStack()
+	{
+		switch(this)
+		{
+			case SPEED:
+				return new ItemStack(Mekanism.SpeedUpgrade);
+			case ENERGY:
+				return new ItemStack(Mekanism.EnergyUpgrade);
+		}
+		
+		return null;
 	}
 	
 	public static Map<Upgrade, Integer> buildMap(NBTTagCompound nbtTags)

@@ -13,7 +13,6 @@ import mekanism.common.IUpgradeItem;
 import mekanism.common.Upgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 public class TileComponentUpgrade implements ITileComponent
 {
@@ -137,6 +136,16 @@ public class TileComponentUpgrade implements ITileComponent
 	public boolean supports(Upgrade upgrade)
 	{
 		return supported.contains(upgrade);
+	}
+	
+	public Set<Upgrade> getInstalledTypes()
+	{
+		return upgrades.keySet();
+	}
+	
+	public Set<Upgrade> getSupportedTypes()
+	{
+		return supported;
 	}
 
 	@Override

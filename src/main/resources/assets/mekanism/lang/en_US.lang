@@ -292,7 +292,7 @@ update.outdated=Using outdated version on one or more modules
 
 //Upgrades
 upgrade.energy=Energy
-upgrade.energy.desc=Increases energy efficiency and capacity of machinery.
+upgrade.energy.desc=Increases energy efficiency !nand capacity of machinery.
 upgrade.speed=Speed
 upgrade.speed.desc=Increases speed of machinery.
 
@@ -356,6 +356,8 @@ gui.finished=Finished
 gui.well=All is well!
 
 gui.upgrades=Upgrades
+gui.upgrades.supported=Supported
+gui.upgrades.noSelection=No selection
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
