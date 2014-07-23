@@ -57,12 +57,30 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		getReactor().formMultiblock();
 	}
 
+	public double getPlasmaTemp()
+	{
+		if(getReactor() == null || !getReactor().isFormed())
+		{
+			return 0;
+		}
+		return getReactor().getPlasmaTemp();
+	}
+
+	public double getCaseTemp()
+	{
+		if(getReactor() == null || !getReactor().isFormed())
+		{
+			return 0;
+		}
+		return getReactor().getCaseTemp();
+	}
+
 	@Override
 	public void onUpdate()
 	{
 		super.onUpdate();
 
-		if(getReactor() != null)
+		if(getReactor() != null && getReactor().isFormed())
 		{
 			getReactor().simulate();
 		}
@@ -73,7 +91,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.getNetworkedData(data);
 
-		data.add(getReactor() != null);
+		data.add(getReactor() != null && getReactor().isFormed());
 		if(getReactor() != null)
 		{
 			data.add(getReactor().getPlasmaTemp());
@@ -100,6 +118,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 				setReactor(new FusionReactor(this));
 				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
+			((FusionReactor)getReactor()).formed = true;
 			getReactor().setPlasmaTemp(dataStream.readDouble());
 			getReactor().setCaseTemp(dataStream.readDouble());
 			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
@@ -118,7 +137,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	@Override
 	public boolean getActive()
 	{
-		return getReactor() != null;
+		return getReactor() != null && getReactor().isFormed();
 	}
 
 	@Override
