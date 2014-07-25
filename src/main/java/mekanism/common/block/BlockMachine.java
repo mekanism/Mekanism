@@ -124,7 +124,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 1:10: Pressurized Reaction Chamber
  * 1:11: Portable Tank
  * 1:12: Fluidic Plenisher
- * 1:13; Laser
+ * 1:13: Laser
  * @author AidanBrady
  *
  */
@@ -185,8 +185,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[13][0] = register.registerIcon("mekanism:SteelCasing");
-			icons[13][1] = register.registerIcon("mekanism:Laser");
 		}
 	}
 
@@ -462,16 +460,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[meta][0];
 				}
 			}
-			else if(meta == 13)
-			{
-				if(side == 3)
-				{
-					return icons[meta][0];
-				}
-				else {
-					return icons[meta][1];
-				}
-			}
 		}
 
 		return null;
@@ -605,7 +593,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[metadata][2];
 				}
 			}
-			else if(metadata == 9 || metadata == 13)
+			else if(metadata == 9)
 			{
 				if(side == tileEntity.facing)
 				{
@@ -1285,7 +1273,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
 		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
 		FLUIDIC_PLENISHER(Mekanism.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
-		LASER(Mekanism.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, false, false);
+		LASER(Mekanism.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false);
 
 		public Block typeBlock;
 		public int meta;

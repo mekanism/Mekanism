@@ -104,6 +104,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:9: Seismic Vibrator
  * 1:10: Pressurized Reaction Chamber
  * 1:11: Portable Tank
+ * 1:12: Fluidic Plenisher
+ * 1:13: Laser
  * @author AidanBrady
  *
  */

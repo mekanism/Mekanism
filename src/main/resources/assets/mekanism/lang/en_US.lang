@@ -115,6 +115,7 @@ tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.PortableTank.name=Portable Tank
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.Laser.name=Laser
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -570,6 +571,7 @@ tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide info
 tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
 tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
+tooltip.Laser=An advanced form of linear energy transfer that utilizes !nan extremely compressed beam of !nlight.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
@@ -660,6 +662,14 @@ tile.Generator.GasGenerator.name=Gas-Burning Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
+
+tile.Reactor.ReactorController=Reactor Controller
+tile.Reactor.ReactorFrame=Reactor Frame
+tile.Reactor.ReactorLaserFocusMatrix=Laser Focus Matrix
+tile.Reactor.ReactorNeutronCapturePlate=Neutron Capture Plate
+tile.Reactor.ReactorInOutPort=Reactor Port
+
+tile.ReactorGlass.ReactorGlass.name=Reactor Glass
 
 //Gui text
 gui.heatGenerator.fuel=Fuel

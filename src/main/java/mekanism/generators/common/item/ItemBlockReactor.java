@@ -41,14 +41,14 @@ public class ItemBlockReactor extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + ReactorBlockType.getFromMetadata(itemstack.getItemDamage()).name;
+		return getUnlocalizedName() + "." + ReactorBlockType.get(itemstack).name;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		ReactorBlockType type = ReactorBlockType.getFromMetadata(itemstack.getItemDamage());
+		ReactorBlockType type = ReactorBlockType.get(itemstack);
 
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{

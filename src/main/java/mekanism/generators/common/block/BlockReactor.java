@@ -3,19 +3,11 @@ package mekanism.generators.common.block;
 import java.util.List;
 import java.util.Random;
 
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.IActiveState;
-import mekanism.common.IBoundingBlock;
-import mekanism.common.ISustainedInventory;
-import mekanism.common.ISustainedTank;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
@@ -23,29 +15,23 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
 
 public class BlockReactor extends BlockContainer
 {
@@ -69,10 +55,13 @@ public class BlockReactor extends BlockContainer
 			icons[0][1] = register.registerIcon("mekanism:ReactorControllerOn");
 			icons[0][2] = register.registerIcon("mekanism:ReactorFrame");
 			icons[1][0] = register.registerIcon("mekanism:ReactorFrame");
-			icons[2][0] = register.registerIcon("mekanism:ReactorGlass");
-			icons[3][0] = register.registerIcon("mekanism:ReactorLaserFocus");
-			icons[4][0] = register.registerIcon("mekanism:ReactorNeutronCapture");
-			icons[5][0] = register.registerIcon("mekanism:ReactorPort");
+			icons[2][0] = register.registerIcon("mekanism:ReactorLaserFocus");
+			icons[3][0] = register.registerIcon("mekanism:ReactorNeutronCapture");
+			icons[4][0] = register.registerIcon("mekanism:ReactorPort");
+		}
+		else if(this == MekanismGenerators.ReactorGlass)
+		{
+			icons[0][0] = register.registerIcon("mekanism:ReactorGlass");
 		}
 	}
 
@@ -86,10 +75,13 @@ public class BlockReactor extends BlockContainer
 			{
 				return icons[0][side == 6 ? 0 : 2];
 			}
-			else
-			{
+			else {
 				return icons[meta][0];
 			}
+		}
+		else if(this == MekanismGenerators.ReactorGlass)
+		{
+			return icons[meta][0];
 		}
 
 		return null;
@@ -114,10 +106,13 @@ public class BlockReactor extends BlockContainer
 					return icons[0][2];
 				}
 			}
-			else
-			{
+			else {
 				return icons[metadata][0];
 			}
+		}
+		else if(this == MekanismGenerators.ReactorGlass)
+		{
+			return icons[metadata][0];
 		}
 
 		return null;
@@ -185,12 +180,12 @@ public class BlockReactor extends BlockContainer
 		{
 			if(!entityplayer.isSneaking())
 			{
-				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.getFromMetadata(metadata).guiId, world, x, y, z);
+				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, x, y, z);
 			}
-			else
-			{
+			else {
 				((TileEntityReactorController)tileEntity).formMultiblock();
 			}
+			
 			return true;
 		}
 
@@ -199,14 +194,15 @@ public class BlockReactor extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item i, CreativeTabs creativetabs, List list)
+	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		list.add(new ItemStack(i, 1, 0));
-		list.add(new ItemStack(i, 1, 1));
-		list.add(new ItemStack(i, 1, 2));
-		list.add(new ItemStack(i, 1, 3));
-		list.add(new ItemStack(i, 1, 4));
-		list.add(new ItemStack(i, 1, 5));
+		for(ReactorBlockType type : ReactorBlockType.values())
+		{
+			if(type.typeBlock == this)
+			{
+				list.add(new ItemStack(item, 1, type.meta));
+			}
+		}
 	}
 
 	@Override
@@ -218,7 +214,7 @@ public class BlockReactor extends BlockContainer
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		ReactorBlockType type = ReactorBlockType.getFromMetadata(metadata);
+		ReactorBlockType type = ReactorBlockType.get(this, metadata);
 
 		if(type != null)
 		{
@@ -239,6 +235,12 @@ public class BlockReactor extends BlockContainer
 	{
 		return false;
 	}
+	
+	@Override
+	public int getRenderBlockPass()
+	{
+		return this == MekanismGenerators.Reactor ? 0 : 1;
+	}
 
 	@Override
 	public boolean isOpaqueCube()
@@ -255,34 +257,44 @@ public class BlockReactor extends BlockContainer
 
 	public static enum ReactorBlockType
 	{
-		CONTROLLER(0, "ReactorController", 10, TileEntityReactorController.class),
-		FRAME(1, "ReactorFrame", -1, TileEntityReactorFrame.class),
-		GLASS(2, "ReactorGlass", -1, TileEntityReactorGlass.class),
-		LASER_FOCUS_MATRIX(3, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class),
-		NEUTRON_CAPTURE(4, "ReactorNeutronCapturePlate", 11, TileEntityReactorNeutronCapture.class),
-		PORT(5, "ReactorInOutPort", -1, TileEntityReactorPort.class);
+		CONTROLLER(MekanismGenerators.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
+		FRAME(MekanismGenerators.Reactor, 1, "ReactorFrame", -1, TileEntityReactorFrame.class),
+		LASER_FOCUS_MATRIX(MekanismGenerators.Reactor, 2, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class),
+		NEUTRON_CAPTURE(MekanismGenerators.Reactor, 3, "ReactorNeutronCapturePlate", 11, TileEntityReactorNeutronCapture.class),
+		PORT(MekanismGenerators.Reactor, 4, "ReactorInOutPort", -1, TileEntityReactorPort.class),
+		GLASS(MekanismGenerators.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class);
 
+		public Block typeBlock;
 		public int meta;
 		public String name;
 		public int guiId;
 		public Class<? extends TileEntity> tileEntityClass;
 
-		private ReactorBlockType(int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass)
+		private ReactorBlockType(Block b, int i, String s, int j, Class<? extends TileEntityElectricBlock> tileClass)
 		{
+			typeBlock = b;
 			meta = i;
 			name = s;
 			guiId = j;
 			tileEntityClass = tileClass;
 		}
 
-		public static ReactorBlockType getFromMetadata(int meta)
+		public static ReactorBlockType get(Block block, int meta)
 		{
 			for(ReactorBlockType type : values())
 			{
-				if(type.meta == meta)
+				if(type.typeBlock == block && type.meta == meta)
+				{
 					return type;
+				}
 			}
+			
 			return null;
+		}
+		
+		public static ReactorBlockType get(ItemStack stack)
+		{
+			return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
 		}
 
 		public TileEntity create()
@@ -303,7 +315,7 @@ public class BlockReactor extends BlockContainer
 
 		public ItemStack getStack()
 		{
-			return new ItemStack(MekanismGenerators.Reactor, 1, meta);
+			return new ItemStack(typeBlock, 1, meta);
 		}
 
 		@Override

@@ -16,7 +16,6 @@ import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.item.ItemBlockReactor;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -27,7 +26,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import buildcraft.api.fuels.IronEngineFuel;
-
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -59,6 +57,7 @@ public class MekanismGenerators implements IModule
 	//Blocks
 	public static Block Generator;
 	public static Block Reactor;
+	public static Block ReactorGlass;
 	
 	//Generation Configuration
 	public static double advancedSolarGeneration;
@@ -144,9 +143,11 @@ public class MekanismGenerators implements IModule
 		//Declarations
 		Generator = new BlockGenerator().setBlockName("Generator");
 		Reactor = new BlockReactor().setBlockName("Reactor");
+		ReactorGlass = new BlockReactor().setBlockName("ReactorGlass");
 		
 		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
 		GameRegistry.registerBlock(Reactor, ItemBlockReactor.class, "Reactor");
+		GameRegistry.registerBlock(ReactorGlass, ItemBlockReactor.class, "ReactorGlass");
 	}
 	
 	public void addItems()
