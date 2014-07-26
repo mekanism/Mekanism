@@ -14,7 +14,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.ISustainedTank;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -36,7 +36,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedTank, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
+public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
@@ -501,23 +501,26 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		return mode == 0 && side == MekanismUtils.getLeft(facing) ? gasTank.canReceive(type) : false;
 	}
-
+	
 	@Override
-	public void setFluidStack(FluidStack fluidStack, Object... data)
+	public void writeSustainedData(ItemStack itemStack)
 	{
-		fluidTank.setFluid(fluidStack);
+		if(fluidTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(gasTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
+		}
 	}
-
+	
 	@Override
-	public FluidStack getFluidStack(Object... data)
+	public void readSustainedData(ItemStack itemStack)
 	{
-		return fluidTank.getFluid();
-	}
-
-	@Override
-	public boolean hasTank(Object... data)
-	{
-		return true;
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank")));
+		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
 	}
 
 	@Override

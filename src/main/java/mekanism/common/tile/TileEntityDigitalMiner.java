@@ -15,6 +15,7 @@ import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.ISustainedData;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -37,7 +38,6 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IUpgradeTile, IRedstoneControl, IActiveState, IAdvancedBoundingBlock
+public class TileEntityDigitalMiner extends TileEntityElectricBlock implements IPeripheral, IUpgradeTile, IRedstoneControl, IActiveState, ISustainedData, IAdvancedBoundingBlock
 {
 	public static int[] EJECT_INV;
 
@@ -1368,5 +1368,66 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public String getDataType()
 	{
 		return "tooltip.filterCard.digitalMiner";
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		itemStack.stackTagCompound.setBoolean("hasMinerConfig", true);
+
+		itemStack.stackTagCompound.setInteger("radius", radius);
+		itemStack.stackTagCompound.setInteger("minY", minY);
+		itemStack.stackTagCompound.setInteger("maxY", maxY);
+		itemStack.stackTagCompound.setBoolean("doEject", doEject);
+		itemStack.stackTagCompound.setBoolean("doPull", doPull);
+		itemStack.stackTagCompound.setBoolean("silkTouch", silkTouch);
+		itemStack.stackTagCompound.setBoolean("inverse", inverse);
+
+		if(replaceStack != null)
+		{
+			itemStack.stackTagCompound.setTag("replaceStack", replaceStack.writeToNBT(new NBTTagCompound()));
+		}
+
+		NBTTagList filterTags = new NBTTagList();
+
+		for(MinerFilter filter : filters)
+		{
+			filterTags.appendTag(filter.write(new NBTTagCompound()));
+		}
+
+		if(filterTags.tagCount() != 0)
+		{
+			itemStack.stackTagCompound.setTag("filters", filterTags);
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack)
+	{
+		if(itemStack.stackTagCompound.hasKey("hasMinerConfig"))
+		{
+			radius = itemStack.stackTagCompound.getInteger("radius");
+			minY = itemStack.stackTagCompound.getInteger("minY");
+			maxY = itemStack.stackTagCompound.getInteger("maxY");
+			doEject = itemStack.stackTagCompound.getBoolean("doEject");
+			doPull = itemStack.stackTagCompound.getBoolean("doPull");
+			silkTouch = itemStack.stackTagCompound.getBoolean("silkTouch");
+			inverse = itemStack.stackTagCompound.getBoolean("inverse");
+
+			if(itemStack.stackTagCompound.hasKey("replaceStack"))
+			{
+				replaceStack = ItemStack.loadItemStackFromNBT(itemStack.stackTagCompound.getCompoundTag("replaceStack"));
+			}
+
+			if(itemStack.stackTagCompound.hasKey("filters"))
+			{
+				NBTTagList tagList = itemStack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
+
+				for(int i = 0; i < tagList.tagCount(); i++)
+				{
+					filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				}
+			}
+		}
 	}
 }
