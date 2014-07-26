@@ -27,7 +27,7 @@ public class FuelHandler
 			return fuels.get(gas.getName());
 		}
 
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuel") && gas.hasFluid())
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && gas.hasFluid())
 		{
 			Fuel bcFuel = IronEngineFuel.getFuelForFluid(gas.getFluid());
 			
