@@ -15,6 +15,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.ISustainedData;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -30,7 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IUpgradeTile
+public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IUpgradeTile, ISustainedData
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
@@ -364,5 +365,20 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	public TileComponentUpgrade getComponent() 
 	{
 		return upgradeComponent;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(gasTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
 	}
 }

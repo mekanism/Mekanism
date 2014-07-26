@@ -15,10 +15,11 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.IUpgradeItem;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -41,7 +42,7 @@ import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandler, IGasHandler, ITubeConnection
+public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData
 {
 	public FluidTank inputFluidTank = new FluidTank(10000);
 	public GasTank inputGasTank = new GasTank(10000);
@@ -140,7 +141,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 		}
 		else if(slotID == 3)
 		{
-			return itemstack.getItem() instanceof IUpgradeItem;
+			return itemstack.getItem() instanceof ItemUpgrade;
 		}
 
 		return false;
@@ -437,5 +438,32 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(inputFluidTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("inputFluidTank", inputFluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(inputGasTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("inputGasTank", inputGasTank.getGas().write(new NBTTagCompound()));
+		}
+		
+		if(outputGasTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("outputGasTank", outputGasTank.getGas().write(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("inputFluidTank")));
+		inputGasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputGasTank")));
+		outputGasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputGasTank")));
 	}
 }

@@ -16,6 +16,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -40,7 +41,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityChemicalWasher extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IFluidHandler
+public class TileEntityChemicalWasher extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IFluidHandler, ISustainedData
 {
 	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
 	public GasTank inputTank = new GasTank(MAX_GAS);
@@ -586,5 +587,32 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 		}
 
 		return PipeUtils.EMPTY;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(fluidTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(inputTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+		}
+		
+		if(outputTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank")));
+		inputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputTank")));
+		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
 	}
 }

@@ -14,12 +14,12 @@ import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.ISpecialBounds;
+import mekanism.common.ISustainedData;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -58,9 +58,7 @@ import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -74,7 +72,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -1020,61 +1017,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				itemStack.stackTagCompound.setByte("config"+i, config.getConfiguration()[i]);
 			}
 		}
-
-		if(tileEntity instanceof TileEntityDigitalMiner)
+		
+		if(tileEntity instanceof ISustainedData)
 		{
-			TileEntityDigitalMiner miner = (TileEntityDigitalMiner)tileEntity;
-
-			itemStack.stackTagCompound.setBoolean("hasMinerConfig", true);
-
-			itemStack.stackTagCompound.setInteger("radius", miner.radius);
-			itemStack.stackTagCompound.setInteger("minY", miner.minY);
-			itemStack.stackTagCompound.setInteger("maxY", miner.maxY);
-			itemStack.stackTagCompound.setBoolean("doEject", miner.doEject);
-			itemStack.stackTagCompound.setBoolean("doPull", miner.doPull);
-			itemStack.stackTagCompound.setBoolean("silkTouch", miner.silkTouch);
-			itemStack.stackTagCompound.setBoolean("inverse", miner.inverse);
-
-			NBTTagList filterTags = new NBTTagList();
-
-			for(MinerFilter filter : miner.filters)
-			{
-				filterTags.appendTag(filter.write(new NBTTagCompound()));
-			}
-
-			if(filterTags.tagCount() != 0)
-			{
-				itemStack.stackTagCompound.setTag("filters", filterTags);
-			}
-		}
-
-		if(tileEntity instanceof TileEntityLogisticalSorter)
-		{
-			TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
-
-			itemStack.stackTagCompound.setBoolean("hasSorterConfig", true);
-
-			if(sorter.color != null)
-			{
-				itemStack.stackTagCompound.setInteger("color", TransporterUtils.colors.indexOf(sorter.color));
-			}
-
-			itemStack.stackTagCompound.setBoolean("autoEject", sorter.autoEject);
-			itemStack.stackTagCompound.setBoolean("roundRobin", sorter.roundRobin);
-
-			NBTTagList filterTags = new NBTTagList();
-
-			for(TransporterFilter filter : sorter.filters)
-			{
-				NBTTagCompound tagCompound = new NBTTagCompound();
-				filter.write(tagCompound);
-				filterTags.appendTag(tagCompound);
-			}
-
-			if(filterTags.tagCount() != 0)
-			{
-				itemStack.stackTagCompound.setTag("filters", filterTags);
-			}
+			((ISustainedData)tileEntity).writeSustainedData(itemStack);
 		}
 
 		if(tileEntity instanceof IRedstoneControl)
@@ -1118,46 +1064,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		{
 			IFactory factoryItem = (IFactory)itemStack.getItem();
 			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
-		}
-
-		if(tileEntity instanceof TileEntityRotaryCondensentrator)
-		{
-			TileEntityRotaryCondensentrator condensentrator = (TileEntityRotaryCondensentrator)tileEntity;
-
-			if(condensentrator.gasTank.getGas() != null)
-			{
-				itemStack.stackTagCompound.setTag("gasStack", condensentrator.gasTank.getGas().write(new NBTTagCompound()));
-			}
-		}
-
-		if(tileEntity instanceof TileEntityChemicalOxidizer)
-		{
-			TileEntityChemicalOxidizer formulator = (TileEntityChemicalOxidizer)tileEntity;
-
-			if(formulator.gasTank.getGas() != null)
-			{
-				itemStack.stackTagCompound.setTag("gasTank", formulator.gasTank.getGas().write(new NBTTagCompound()));
-			}
-		}
-
-		if(tileEntity instanceof TileEntityChemicalInfuser)
-		{
-			TileEntityChemicalInfuser infuser = (TileEntityChemicalInfuser)tileEntity;
-
-			if(infuser.leftTank.getGas() != null)
-			{
-				itemStack.stackTagCompound.setTag("leftTank", infuser.leftTank.getGas().write(new NBTTagCompound()));
-			}
-
-			if(infuser.rightTank.getGas() != null)
-			{
-				itemStack.stackTagCompound.setTag("rightTank", infuser.rightTank.getGas().write(new NBTTagCompound()));
-			}
-
-			if(infuser.centerTank.getGas() != null)
-			{
-				itemStack.stackTagCompound.setTag("leftTank", infuser.centerTank.getGas().write(new NBTTagCompound()));
-			}
 		}
 
 		return itemStack;
