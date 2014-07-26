@@ -1140,11 +1140,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(tileEntity instanceof TileEntityChemicalOxidizer)
 		{
-			TileEntityChemicalOxidizer formulator = (TileEntityChemicalOxidizer)tileEntity;
+			TileEntityChemicalOxidizer oxidizer = (TileEntityChemicalOxidizer)tileEntity;
 
-			if(formulator.gasTank.getGas() != null)
+			if(oxidizer.gasTank.getGas() != null)
 			{
-				itemStack.stackTagCompound.setTag("gasTank", formulator.gasTank.getGas().write(new NBTTagCompound()));
+				itemStack.stackTagCompound.setTag("gasTank", oxidizer.gasTank.getGas().write(new NBTTagCompound()));
 			}
 		}
 
@@ -1164,7 +1164,52 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 			if(infuser.centerTank.getGas() != null)
 			{
-				itemStack.stackTagCompound.setTag("leftTank", infuser.centerTank.getGas().write(new NBTTagCompound()));
+				itemStack.stackTagCompound.setTag("centerTank", infuser.centerTank.getGas().write(new NBTTagCompound()));
+			}
+		}
+		
+		if(tileEntity instanceof TileEntityChemicalDissolutionChamber)
+		{
+			TileEntityChemicalDissolutionChamber chamber = (TileEntityChemicalDissolutionChamber)tileEntity;
+			
+			if(chamber.injectTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("injectTank", chamber.injectTank.getGas().write(new NBTTagCompound()));
+			}
+			
+			if(chamber.outputTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("outputTank", chamber.outputTank.getGas().write(new NBTTagCompound()));
+			}
+		}
+		
+		if(tileEntity instanceof TileEntityChemicalWasher)
+		{
+			TileEntityChemicalWasher washer = (TileEntityChemicalWasher)tileEntity;
+			
+			if(washer.fluidTank.getFluid() != null)
+			{
+				itemStack.stackTagCompound.setTag("fluidTank", washer.fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			}
+			
+			if(washer.inputTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("inputTank", washer.inputTank.getGas().write(new NBTTagCompound()));
+			}
+			
+			if(washer.outputTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("outputTank", washer.outputTank.getGas().write(new NBTTagCompound()));
+			}
+		}
+		
+		if(tileEntity instanceof TileEntityChemicalCrystallizer)
+		{
+			TileEntityChemicalCrystallizer crystallizer = (TileEntityChemicalCrystallizer)tileEntity;
+			
+			if(crystallizer.inputTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("inputTank", crystallizer.inputTank.getGas().write(new NBTTagCompound()));
 			}
 		}
 		

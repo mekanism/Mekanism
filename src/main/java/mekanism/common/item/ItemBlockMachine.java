@@ -29,8 +29,11 @@ import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityChemicalCrystallizer;
+import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
+import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -378,6 +381,33 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					((TileEntityChemicalInfuser)tileEntity).leftTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("leftTank")));
 					((TileEntityChemicalInfuser)tileEntity).rightTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("rightTank")));
 					((TileEntityChemicalInfuser)tileEntity).centerTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("centerTank")));
+				}
+			}
+			
+			if(tileEntity instanceof TileEntityChemicalDissolutionChamber)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((TileEntityChemicalDissolutionChamber)tileEntity).injectTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("injectTank")));
+					((TileEntityChemicalDissolutionChamber)tileEntity).outputTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("outputTank")));
+				}
+			}
+			
+			if(tileEntity instanceof TileEntityChemicalWasher)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((TileEntityChemicalWasher)tileEntity).fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(stack.stackTagCompound.getCompoundTag("fluidTank")));
+					((TileEntityChemicalWasher)tileEntity).inputTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("inputTank")));
+					((TileEntityChemicalWasher)tileEntity).outputTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("outputTank")));
+				}
+			}
+			
+			if(tileEntity instanceof TileEntityChemicalCrystallizer)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((TileEntityChemicalCrystallizer)tileEntity).inputTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("inputTank")));
 				}
 			}
 			
