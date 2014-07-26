@@ -526,7 +526,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		HEAT_GENERATOR(0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true),
 		SOLAR_GENERATOR(1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true),
-		GAS_GENERATOR(3, "GasGenerator", 3, 40000, TileEntityGasGenerator.class, true),
+		GAS_GENERATOR(3, "GasGenerator", 3, Mekanism.FROM_H2*100, TileEntityGasGenerator.class, true),
 		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
 		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
 		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);

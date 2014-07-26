@@ -34,8 +34,10 @@ import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.transporter.TransporterFilter;
@@ -376,6 +378,26 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					((TileEntityChemicalInfuser)tileEntity).leftTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("leftTank")));
 					((TileEntityChemicalInfuser)tileEntity).rightTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("rightTank")));
 					((TileEntityChemicalInfuser)tileEntity).centerTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("centerTank")));
+				}
+			}
+			
+			if(tileEntity instanceof TileEntityElectrolyticSeparator)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((TileEntityElectrolyticSeparator)tileEntity).fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(stack.stackTagCompound.getCompoundTag("fluidTank")));
+					((TileEntityElectrolyticSeparator)tileEntity).leftTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("leftTank")));
+					((TileEntityElectrolyticSeparator)tileEntity).rightTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("rightTank")));
+				}
+			}
+			
+			if(tileEntity instanceof TileEntityPRC)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((TileEntityPRC)tileEntity).inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(stack.stackTagCompound.getCompoundTag("inputFluidTank")));
+					((TileEntityPRC)tileEntity).inputGasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("inputGasTank")));
+					((TileEntityPRC)tileEntity).outputGasTank.setGas(GasStack.readFromNBT(stack.stackTagCompound.getCompoundTag("outputGasTank")));
 				}
 			}
 

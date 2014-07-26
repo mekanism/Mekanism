@@ -73,7 +73,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -1166,6 +1165,46 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			if(infuser.centerTank.getGas() != null)
 			{
 				itemStack.stackTagCompound.setTag("leftTank", infuser.centerTank.getGas().write(new NBTTagCompound()));
+			}
+		}
+		
+		if(tileEntity instanceof TileEntityElectrolyticSeparator)
+		{
+			TileEntityElectrolyticSeparator separator = (TileEntityElectrolyticSeparator)tileEntity;
+			
+			if(separator.fluidTank.getFluid() != null)
+			{
+				itemStack.stackTagCompound.setTag("fluidTank", separator.fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			}
+			
+			if(separator.leftTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("leftTank", separator.leftTank.getGas().write(new NBTTagCompound()));
+			}
+			
+			if(separator.rightTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("rightTank", separator.rightTank.getGas().write(new NBTTagCompound()));
+			}
+		}
+		
+		if(tileEntity instanceof TileEntityPRC)
+		{
+			TileEntityPRC prc = (TileEntityPRC)tileEntity;
+			
+			if(prc.inputFluidTank.getFluid() != null)
+			{
+				itemStack.stackTagCompound.setTag("inputFluidTank", prc.inputFluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			}
+			
+			if(prc.inputGasTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("inputGasTank", prc.inputGasTank.getGas().write(new NBTTagCompound()));
+			}
+			
+			if(prc.outputGasTank.getGas() != null)
+			{
+				itemStack.stackTagCompound.setTag("outputGasTank", prc.outputGasTank.getGas().write(new NBTTagCompound()));
 			}
 		}
 
