@@ -7,6 +7,7 @@ import java.util.EnumSet;
 
 import mekanism.client.sound.TileSound;
 import mekanism.common.FluidSlot;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +27,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler
+public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
 	/** The Sound instance for this machine. */
 	@SideOnly(Side.CLIENT)
@@ -316,5 +317,17 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return null;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack)
+	{
+		itemStack.stackTagCompound.setInteger("fluidStored", bioFuelSlot.fluidStored);
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		bioFuelSlot.setFluid(itemStack.stackTagCompound.getInteger("fluidStored"));
 	}
 }

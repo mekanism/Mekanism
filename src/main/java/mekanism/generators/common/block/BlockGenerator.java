@@ -7,6 +7,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ISpecialBounds;
+import mekanism.common.ISustainedData;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.ItemAttacher;
@@ -18,8 +19,8 @@ import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.block.Block;
@@ -39,7 +40,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
-
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -459,6 +459,11 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 		inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+		
+		if(tileEntity instanceof ISustainedData)
+		{
+			((ISustainedData)tileEntity).writeSustainedData(itemStack);
+		}
 
 		if(((ISustainedTank)itemStack.getItem()).hasTank(itemStack))
 		{
