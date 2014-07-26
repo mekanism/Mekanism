@@ -47,6 +47,7 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityLaser;
+import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -125,6 +126,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 1:11: Portable Tank
  * 1:12: Fluidic Plenisher
  * 1:13: Laser
+ * 1:14: Laser Amplifier
  * @author AidanBrady
  *
  */
@@ -1273,7 +1275,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
 		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
 		FLUIDIC_PLENISHER(Mekanism.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
-		LASER(Mekanism.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false);
+		LASER(Mekanism.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
+		LASER_AMPLIFIER(Mekanism.MachineBlock2, 14, "LaserAmplifier", -1, 0, TileEntityLaserAmplifier.class, false, true, false);
 
 		public Block typeBlock;
 		public int meta;

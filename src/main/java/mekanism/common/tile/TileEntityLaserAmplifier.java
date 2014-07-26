@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import mekanism.api.Coord4D;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.lasers.LaserManager;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 

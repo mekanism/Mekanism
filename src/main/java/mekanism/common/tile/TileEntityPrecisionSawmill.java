@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;

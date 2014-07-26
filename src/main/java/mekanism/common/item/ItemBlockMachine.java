@@ -106,6 +106,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 1:11: Portable Tank
  * 1:12: Fluidic Plenisher
  * 1:13: Laser
+ * 1:14: Laser Amplifier
  * @author AidanBrady
  *
  */
