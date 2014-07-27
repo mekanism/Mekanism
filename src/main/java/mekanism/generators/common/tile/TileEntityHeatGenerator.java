@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -28,7 +29,7 @@ import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ILaserReceptor
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ILaserReceptor, ISustainedData
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
@@ -353,5 +354,20 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public double energyToDig()
 	{
 		return 0;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(lavaTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("lavaTank")));
 	}
 }
