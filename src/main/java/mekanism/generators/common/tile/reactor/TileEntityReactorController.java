@@ -96,6 +96,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			data.add(getReactor().getPlasmaTemp());
 			data.add(getReactor().getCaseTemp());
+			data.add(getReactor().getInjectionRate());
 			data.add(fuelTank.getStored());
 			data.add(deuteriumTank.getStored());
 			data.add(tritiumTank.getStored());
@@ -113,9 +114,13 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			int type = dataStream.readInt();
 
-			if(type == 0)
+			switch(type)
 			{
-				formMultiblock();
+				case 0:
+					formMultiblock();
+					break;
+				case 1:
+					if(getReactor() != null) getReactor().setInjectionRate(dataStream.readInt());
 			}
 
 			return;
@@ -134,11 +139,13 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			((FusionReactor)getReactor()).formed = true;
 			getReactor().setPlasmaTemp(dataStream.readDouble());
 			getReactor().setCaseTemp(dataStream.readDouble());
+			getReactor().setInjectionRate(dataStream.readInt());
 			fuelTank.setGas(new GasStack(GasRegistry.getGas("fusionFuelDT"), dataStream.readInt()));
 			deuteriumTank.setGas(new GasStack(GasRegistry.getGas("deuterium"), dataStream.readInt()));
 			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
 			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
 			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
+
 		}
 		else if(getReactor() != null)
 		{

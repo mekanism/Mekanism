@@ -37,4 +37,8 @@ public interface IFusionReactor
 	public void formMultiblock();
 
 	public boolean isFormed();
+
+	public void setInjectionRate(int rate);
+
+	public int getInjectionRate();
 }

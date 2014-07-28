@@ -1,43 +1,41 @@
 package mekanism.generators.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
-import mekanism.client.gui.GuiFluidGauge;
-import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.GuiGasGauge;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiGauge.Type;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.GuiNumberGauge;
-import mekanism.client.gui.GuiNumberGauge.INumberInfoHandler;
-import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiProgress;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
-import net.minecraft.block.BlockStaticLiquid;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorFuel extends GuiMekanism
 {
 	public TileEntityReactorController tileEntity;
+
+	public GuiTextField injectionRateField;
 
 	public GuiReactorFuel(InventoryPlayer inventory, final TileEntityReactorController tentity)
 	{
@@ -101,6 +99,7 @@ public class GuiReactorFuel extends GuiMekanism
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 6, 6, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.injectionRate") + ": " + (tileEntity.getReactor()==null?"None":tileEntity.getReactor().getInjectionRate()), 55, 35, 0x404040);
 	}
 
 	@Override
@@ -113,5 +112,76 @@ public class GuiReactorFuel extends GuiMekanism
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+
+		injectionRateField.drawTextBox();
+	}
+
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+
+		injectionRateField.updateCursorCounter();
+	}
+
+	@Override
+	public void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+
+		injectionRateField.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public void keyTyped(char c, int i)
+	{
+		if(!injectionRateField.isFocused() || i == Keyboard.KEY_ESCAPE)
+		{
+			super.keyTyped(c, i);
+		}
+
+		if(i == Keyboard.KEY_RETURN)
+		{
+			if(injectionRateField.isFocused())
+			{
+				setInjection();
+			}
+		}
+
+		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		{
+			injectionRateField.textboxKeyTyped(c, i);
+		}
+	}
+
+	private void setInjection()
+	{
+		if(!injectionRateField.getText().isEmpty())
+		{
+			int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
+
+			ArrayList data = new ArrayList();
+			data.add(1);
+			data.add(toUse);
+
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+
+			injectionRateField.setText("");
+		}
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+
+		String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
+
+		injectionRateField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 115, 26, 11);
+		injectionRateField.setMaxStringLength(2);
+		injectionRateField.setText(prevRad);
 	}
 }

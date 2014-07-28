@@ -407,4 +407,16 @@ public class FusionReactor implements IFusionReactor
 		return formed;
 	}
 
+	@Override
+	public void setInjectionRate(int rate)
+	{
+		injectionRate = rate;
+	}
+
+	@Override
+	public int getInjectionRate()
+	{
+		return injectionRate;
+	}
+
 }
