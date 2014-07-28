@@ -127,7 +127,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			if(!block.isReplaceable(world, x, y, z))
+			if(!(block.isReplaceable(world, x, y, z) && world.isAirBlock(x, y+1, z)))
 			{
 				return false;
 			}

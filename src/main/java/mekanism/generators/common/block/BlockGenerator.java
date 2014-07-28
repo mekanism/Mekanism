@@ -239,16 +239,18 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	@Override
 	public boolean canPlaceBlockAt(World world, int x, int y, int z)
 	{
+		//This method doesn't actually seem to be used in MC code...
 		if(world.getBlockMetadata(x, y, z) == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
 			boolean canPlace = super.canPlaceBlockAt(world, x, y, z);
 
 			boolean nonAir = false;
 			nonAir |= world.isAirBlock(x, y, z);
+			nonAir |= world.isAirBlock(x, y+1, x);
 
-			for(int xPos=-1;xPos<=2;xPos++)
+			for(int xPos=-1;xPos<=1;xPos++)
 			{
-				for(int zPos=-1;zPos<=2;zPos++)
+				for(int zPos=-1;zPos<=1;zPos++)
 				{
 					nonAir |= world.isAirBlock(x+xPos, y+2, z+zPos);
 				}
