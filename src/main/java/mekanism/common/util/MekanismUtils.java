@@ -1196,7 +1196,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useIC2()
 	{
-		return Mekanism.hooks.IC2APILoaded;
+		return Mekanism.hooks.IC2Loaded;
 	}
 
 	/**
