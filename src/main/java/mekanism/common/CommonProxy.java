@@ -192,6 +192,16 @@ public class CommonProxy
 		Mekanism.creativeOverrideElectricChest = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CreativeOverrideElectricChest", true).getBoolean(true);
 		Mekanism.metallurgicInfuserBronze = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MetallurgicInfuserBronze", true).getBoolean(true);
 		Mekanism.metallurgicInfuserSteel = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MetallurgicInfuserSteel", true).getBoolean(true);
+		Mekanism.osmiumRailsRecipe = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OsmiumRailsRecipe", true).getBoolean(true);
+		Mekanism.gunpowderRecipe = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "GunpowderRecipe", true).getBoolean(true);
+		Mekanism.sulfurRecipe = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SulfurRecipe", true).getBoolean(true);
+		Mekanism.oreCombinerRecipes = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreCombinerRecipes", true).getBoolean(true);
+		Mekanism.cardboardBoxEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "CardboardBoxEnabled", true).getBoolean(true);
+		Mekanism.factoryBasicEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FactoryBasicEnabled", true).getBoolean(true);
+		Mekanism.factoryAdvancedEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FactoryAdvancedEnabled", true).getBoolean(true);
+		Mekanism.factoryEliteEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FactoryEliteEnabled", true).getBoolean(true);
+		Mekanism.digitalMinerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DigitalMinerEnabled", true).getBoolean(true);
+		Mekanism.salinationPlantEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SalinationPlantEnabled", true).getBoolean(true);
 		Mekanism.obsidianTNTDelay = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTDelay", 100).getInt();
 		Mekanism.obsidianTNTBlastRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ObsidianTNTBlastRadius", 12).getInt();
 		Mekanism.UPDATE_DELAY = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ClientUpdateDelay", 10).getInt();

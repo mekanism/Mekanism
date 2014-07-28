@@ -427,9 +427,12 @@ public final class OreDictManager
 			}
 		} catch(Exception e) {}
 		
-		for(ItemStack ore : OreDictionary.getOres("dustIron"))
+		if(Mekanism.oreCombinerRecipes)
 		{
+			for(ItemStack ore : OreDictionary.getOres("dustIron"))
+			{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.iron_ore));
+			}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotSteel"))
@@ -437,9 +440,12 @@ public final class OreDictManager
 			RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(Mekanism.Dust, 1, 5));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("dustGold"))
+		if(Mekanism.oreCombinerRecipes)
 		{
+			for(ItemStack ore : OreDictionary.getOres("dustGold"))
+			{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.gold_ore));
+			}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustLapisLazuli"))
@@ -449,13 +455,19 @@ public final class OreDictManager
 		
 		for(ItemStack ore : OreDictionary.getOres("dustObsidian"))
 		{
-			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 4), new ItemStack(Blocks.obsidian));
+			if(Mekanism.oreCombinerRecipes)
+			{
+				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 4), new ItemStack(Blocks.obsidian));
+			}
 			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("DIAMOND"), 10, MekanismUtils.size(ore, 1)), new ItemStack(Mekanism.Dust, 1, 3));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("dustOsmium"))
+		if(Mekanism.oreCombinerRecipes)
 		{
+			for(ItemStack ore : OreDictionary.getOres("dustOsmium"))
+			{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Mekanism.OreBlock, 1, 0));
+			}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("dustDiamond"))
@@ -464,9 +476,12 @@ public final class OreDictManager
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Items.diamond));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("dustCopper"))
+		if(Mekanism.oreCombinerRecipes)
 		{
+			for(ItemStack ore : OreDictionary.getOres("dustCopper"))
+			{
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Mekanism.OreBlock, 1, 1));
+			}
 		}
 		
 		if(Mekanism.metallurgicInfuserBronze)
@@ -479,23 +494,32 @@ public final class OreDictManager
 			
 		for(ItemStack ore : OreDictionary.getOres("dustTin"))
 		{
-			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Mekanism.OreBlock, 1, 2));
+			if(Mekanism.oreCombinerRecipes)
+			{
+				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Mekanism.OreBlock, 1, 2));
+			}
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 50));
 		}
 		
-		try {
-			for(ItemStack ore : OreDictionary.getOres("dustLead"))
-			{
-				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreLead").get(0), 1));
-			}
-		} catch(Exception e) {}
+		if(Mekanism.oreCombinerRecipes)
+		{
+			try {
+				for(ItemStack ore : OreDictionary.getOres("dustLead"))
+				{
+					RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreLead").get(0), 1));
+				}
+			} catch(Exception e) {}
+		}
 		
-		try {
-			for(ItemStack ore : OreDictionary.getOres("dustSilver"))
-			{
-				RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreSilver").get(0), 1));
-			}
-		} catch(Exception e) {}
+		if(Mekanism.oreCombinerRecipes)
+		{
+			try {
+				for(ItemStack ore : OreDictionary.getOres("dustSilver"))
+				{
+					RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), MekanismUtils.size(OreDictionary.getOres("oreSilver").get(0), 1));
+				}
+			} catch(Exception e) {}
+		}
 
 		try {
 			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
