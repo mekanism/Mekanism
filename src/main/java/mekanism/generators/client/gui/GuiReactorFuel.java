@@ -91,6 +91,7 @@ public class GuiReactorFuel extends GuiMekanism
 				return tileEntity.getActive() ? 1 : 0;
 			}
 		}, ProgressBar.SMALL_LEFT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 99, 75));
+		guiElements.add(new GuiHeatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 	}
 
 	@Override

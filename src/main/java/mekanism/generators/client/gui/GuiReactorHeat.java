@@ -156,6 +156,7 @@ public class GuiReactorHeat extends GuiMekanism
 				return tileEntity;
 			}
 		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 115, 46));
+		guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 	}
 
 	@Override
