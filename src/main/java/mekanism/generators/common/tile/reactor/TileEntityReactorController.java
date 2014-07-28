@@ -109,7 +109,20 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			int type = dataStream.readInt();
+
+			if(type == 0)
+			{
+				formMultiblock();
+			}
+
+			return;
+		}
+
 		super.handlePacketData(dataStream);
+
 		boolean formed = dataStream.readBoolean();
 		if(formed)
 		{

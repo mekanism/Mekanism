@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.ContainerNull;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
@@ -124,6 +125,9 @@ public class GeneratorsCommonProxy
 			case 10:
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:
+			case 12:
+				return new ContainerNull(player, (TileEntityReactorController)tileEntity);
+			case 13:
 				return new ContainerNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
 		}
 		

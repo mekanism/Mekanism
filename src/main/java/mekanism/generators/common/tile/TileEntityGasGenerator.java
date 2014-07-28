@@ -14,6 +14,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -21,11 +22,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection
+public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ITubeConnection, ISustainedData
 {
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 18000;
@@ -276,5 +276,20 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public boolean canTubeConnect(ForgeDirection side)
 	{
 		return side != ForgeDirection.getOrientation(facing);
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack)
+	{
+		if(fuelTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		fuelTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("fuelTank")));
 	}
 }

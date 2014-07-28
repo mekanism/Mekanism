@@ -18,8 +18,16 @@ public class ContainerReactorController extends Container
 	public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, 99, 27));
+		addSlotToContainer(new Slot(tentity, 0, 80, 39));
 		int slotX;
+
+		for(slotX = 0; slotX < 3; slotX++)
+		{
+			for(int slotY = 0; slotY < 9; slotY++)
+			{
+				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
+			}
+		}
 
 		for(slotX = 0; slotX < 9; ++slotX)
 		{

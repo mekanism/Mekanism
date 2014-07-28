@@ -8,6 +8,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekanismKeyHandler;
+import mekanism.common.ISustainedData;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
@@ -31,7 +32,6 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
-
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
@@ -169,6 +169,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			tileEntity.electricityStored = getEnergy(stack);
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			
+			if(tileEntity instanceof ISustainedData)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((ISustainedData)tileEntity).readSustainedData(stack);
+				}
+			}
 
 			if(tileEntity instanceof ISustainedTank)
 			{

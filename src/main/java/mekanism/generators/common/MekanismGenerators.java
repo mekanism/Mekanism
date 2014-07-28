@@ -42,6 +42,9 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
+	/** Mekanism Generators Packet Pipeline */
+	public static GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
+
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
 	public static GeneratorsCommonProxy proxy;
 	
@@ -90,6 +93,8 @@ public class MekanismGenerators implements IModule
 	{
 		//Add this module to the core list
 		Mekanism.modulesLoaded.add(this);
+
+		packetHandler.initialize();
 		
 		//Set up the GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
