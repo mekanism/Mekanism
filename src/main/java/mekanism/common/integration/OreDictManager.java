@@ -469,9 +469,12 @@ public final class OreDictManager
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Mekanism.OreBlock, 1, 1));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
+		if(Mekanism.metallurgicInfuserBronze)
 		{
-			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("TIN"), 10, MekanismUtils.size(ore, 1)), new ItemStack(Mekanism.Ingot, 1, 2));
+			for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
+			{
+				RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("TIN"), 10, MekanismUtils.size(ore, 1)), new ItemStack(Mekanism.Ingot, 1, 2));
+			}
 		}
 			
 		for(ItemStack ore : OreDictionary.getOres("dustTin"))

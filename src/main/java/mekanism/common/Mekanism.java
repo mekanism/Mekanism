@@ -311,6 +311,8 @@ public class Mekanism
 	public static boolean machineEffects = true;
 	public static boolean enableWorldRegeneration = true;
 	public static boolean creativeOverrideElectricChest = true;
+	public static boolean metallurgicInfuserSteel = true;
+	public static boolean metallurgicInfuserBronze = true;
 	public static int obsidianTNTBlastRadius = 12;
 	public static int osmiumPerChunk = 12;
 	public static int copperPerChunk = 16;
@@ -849,8 +851,11 @@ public class Mekanism
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.crafting_table), new ChanceOutput(new ItemStack(Blocks.planks, 4)));
 		
         //Metallurgic Infuser Recipes
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(EnrichedIron));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+		if(metallurgicInfuserSteel)
+		{
+			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(EnrichedIron));
+			RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+		}
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("REDSTONE"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(EnrichedAlloy));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Blocks.dirt)), new ItemStack(Blocks.mycelium));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone)), new ItemStack(Blocks.mossy_cobblestone));
