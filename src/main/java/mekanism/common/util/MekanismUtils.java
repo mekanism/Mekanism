@@ -642,7 +642,8 @@ public final class MekanismUtils
 	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
 		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (float)upgrades.get(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
+		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
+		return def * Math.pow(Mekanism.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
 
 	/**
