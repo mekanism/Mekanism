@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySalinationController extends TileEntitySalinationTank
+public class TileEntitySalinationController extends TileEntitySalinationBlock
 {
 	public static final int MAX_BRINE = 10000;
 	public static final int MAX_SOLARS = 4;
@@ -35,7 +35,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 	public FluidTank waterTank = new FluidTank(0);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
 
-	public Set<TileEntitySalinationTank> tankParts = new HashSet<TileEntitySalinationTank>();
+	public Set<TileEntitySalinationBlock> tankParts = new HashSet<TileEntitySalinationBlock>();
 	public ISalinationSolar[] solars = new ISalinationSolar[4];
 
 	public boolean temperatureSet = false;
@@ -76,10 +76,9 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 		{
 			updatedThisTick = false;
 			
-			if(ticker == 5 && cacheStructure)
+			if(ticker == 5)
 			{
 				refresh(true);
-				cacheStructure = false;
 			}
 			
 			updateTemperature();
@@ -124,7 +123,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 	{
 		super.onChunkUnload();
 		
-		refresh(false);
+		refresh(true);
 	}
 	
 	@Override
@@ -132,7 +131,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 	{
 		super.onNeighborChange(block);
 		
-		refresh(false);
+		refresh(true);
 	}
 	
 	protected void refresh(boolean canCreate)
@@ -356,6 +355,11 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 		
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
+		
+		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		{
+			startPoint.step(ForgeDirection.UP);
+		}
 
 		int middle = 0;
 		
@@ -378,7 +382,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 		
 		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 		
-		for(TileEntitySalinationTank tank : tankParts)
+		for(TileEntitySalinationBlock tank : tankParts)
 		{
 			if(tank != this && tank instanceof TileEntitySalinationValve)
 			{
@@ -500,7 +504,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 		height = 1;
 		Coord4D baseBlock = Coord4D.get(this);
 		
-		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationTank)
+		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
 		{
 			baseBlock.step(ForgeDirection.DOWN);
 			height++;
@@ -564,12 +568,12 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 
 	public boolean addTankPart(TileEntity tile)
 	{
-		if(tile instanceof TileEntitySalinationTank && (tile == this || !(tile instanceof TileEntitySalinationController)))
+		if(tile instanceof TileEntitySalinationBlock && (tile == this || !(tile instanceof TileEntitySalinationController)))
 		{
 			if(tile != this)
 			{
-				((TileEntitySalinationTank)tile).addToStructure(this);
-				tankParts.add((TileEntitySalinationTank)tile);
+				((TileEntitySalinationBlock)tile).addToStructure(this);
+				tankParts.add((TileEntitySalinationBlock)tile);
 			}
 			
 			return true;
@@ -631,18 +635,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
-		{
-			int type = dataStream.readInt();
-			
-			if(type == 0)
-			{
-				refresh(true);
-			}
-			
-			return;
-		}
-		
 		super.handlePacketData(dataStream);
 		
 		if(dataStream.readBoolean())
@@ -728,8 +720,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
         
         partialWater = nbtTags.getDouble("partialWater");
         partialBrine = nbtTags.getDouble("partialBrine");
-        
-        cacheStructure = nbtTags.getBoolean("cacheStructure");
     }
 
 	@Override
@@ -744,8 +734,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
         
         nbtTags.setDouble("partialWater", partialWater);
         nbtTags.setDouble("partialBrine", partialBrine);
-        
-        nbtTags.setBoolean("cacheStructure", structured);
     }
 	
 	@Override
@@ -756,7 +744,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 
 	public void clearStructure()
 	{
-		for(TileEntitySalinationTank tankPart : tankParts)
+		for(TileEntitySalinationBlock tankPart : tankParts)
 		{
 			tankPart.controllerGone();
 		}

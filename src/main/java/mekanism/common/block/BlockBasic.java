@@ -19,7 +19,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntitySalinationController;
-import mekanism.common.tile.TileEntitySalinationTank;
+import mekanism.common.tile.TileEntitySalinationBlock;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -653,7 +653,7 @@ public class BlockBasic extends Block
 			switch(metadata)
 			{
 				case 0:
-					return new TileEntitySalinationTank();
+					return new TileEntitySalinationBlock();
 			}
 		}
 
