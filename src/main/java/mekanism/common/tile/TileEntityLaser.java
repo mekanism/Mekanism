@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityLaser extends TileEntityElectricBlock
 {
-	public static final double LASER_ENERGY = 1E10;
+	public static final double LASER_ENERGY = 5000;
 
 	public boolean on;
 

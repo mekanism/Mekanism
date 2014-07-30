@@ -185,7 +185,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FluidicPlenisher.png"));
 			fluidicPlenisher.render(0.0560F);
 		}
-		else if(type == MachineType.LASER)
+		else if(type == MachineType.LASER || type == MachineType.LASER_AMPLIFIER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);

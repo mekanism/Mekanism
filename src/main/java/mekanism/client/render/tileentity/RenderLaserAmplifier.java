@@ -2,6 +2,7 @@ package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelLaser;
 import mekanism.common.tile.TileEntityLaser;
+import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -20,10 +21,10 @@ public class RenderLaserAmplifier extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityLaser)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityLaserAmplifier)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityLaser tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityLaserAmplifier tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);

@@ -306,7 +306,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				((TileEntityElectricChest)tileEntity).password = getPassword(stack);
 			}
 
-			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			if(tileEntity instanceof ISustainedInventory)
+			{
+				((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			}
 
 			if(tileEntity instanceof TileEntityElectricBlock)
 			{

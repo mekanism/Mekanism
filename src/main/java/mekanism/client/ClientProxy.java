@@ -27,6 +27,7 @@ import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiFluidicPlenisher;
 import mekanism.client.gui.GuiGasTank;
+import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
@@ -473,6 +474,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 			case 43:
 				return new GuiUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
+			case 44:
+				return new GuiLaserAmplifier(player.inventory, (TileEntityLaserAmplifier)tileEntity);
 		}
 
 		return null;

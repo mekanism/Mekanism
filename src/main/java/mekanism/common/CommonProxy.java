@@ -432,6 +432,8 @@ public class CommonProxy
 				return new ContainerFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
 			case 43:
 				return new ContainerUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
+			case 44:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 
 		return null;

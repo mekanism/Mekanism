@@ -1182,7 +1182,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
 		FLUIDIC_PLENISHER(Mekanism.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
 		LASER(Mekanism.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
-		LASER_AMPLIFIER(Mekanism.MachineBlock2, 14, "LaserAmplifier", -1, 0, TileEntityLaserAmplifier.class, false, true, false);
+		LASER_AMPLIFIER(Mekanism.MachineBlock2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false);
 
 		public Block typeBlock;
 		public int meta;
