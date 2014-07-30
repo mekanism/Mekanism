@@ -44,7 +44,7 @@ public class GuiGasGauge extends GuiGauge<Gas>
 			return dummyType.getIcon();
 		}
 		
-		return infoHandler.getTank().getGas().getGas().getIcon();
+		return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null && infoHandler.getTank().getGas().getGas() != null) ? infoHandler.getTank().getGas().getGas().getIcon() : null;
 	}
 
 	@Override
