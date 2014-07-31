@@ -197,7 +197,7 @@ public class GasTank
 	 */
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
-		if(stored != null)
+		if(stored != null && stored.getGas() != null)
 		{
 			nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
 		}

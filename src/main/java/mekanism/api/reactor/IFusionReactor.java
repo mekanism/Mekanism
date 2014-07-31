@@ -41,4 +41,8 @@ public interface IFusionReactor
 	public void setInjectionRate(int rate);
 
 	public int getInjectionRate();
+
+	public boolean isBurning();
+
+	public void setBurning(boolean burn);
 }

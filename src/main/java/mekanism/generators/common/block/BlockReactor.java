@@ -55,13 +55,13 @@ public class BlockReactor extends BlockContainer
 			icons[0][1] = register.registerIcon("mekanism:ReactorControllerOn");
 			icons[0][2] = register.registerIcon("mekanism:ReactorFrame");
 			icons[1][0] = register.registerIcon("mekanism:ReactorFrame");
-			icons[2][0] = register.registerIcon("mekanism:ReactorLaserFocus");
-			icons[3][0] = register.registerIcon("mekanism:ReactorNeutronCapture");
-			icons[4][0] = register.registerIcon("mekanism:ReactorPort");
+			icons[2][0] = register.registerIcon("mekanism:ReactorNeutronCapture");
+			icons[3][0] = register.registerIcon("mekanism:ReactorPort");
 		}
 		else if(this == MekanismGenerators.ReactorGlass)
 		{
 			icons[0][0] = register.registerIcon("mekanism:ReactorGlass");
+			icons[1][0] = register.registerIcon("mekanism:ReactorLaserFocus");
 		}
 	}
 
@@ -92,7 +92,6 @@ public class BlockReactor extends BlockContainer
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntityReactorBlock tileEntity = (TileEntityReactorBlock)world.getTileEntity(x, y, z);
 
 		if(this == MekanismGenerators.Reactor)
 		{
@@ -259,10 +258,10 @@ public class BlockReactor extends BlockContainer
 	{
 		CONTROLLER(MekanismGenerators.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
 		FRAME(MekanismGenerators.Reactor, 1, "ReactorFrame", -1, TileEntityReactorFrame.class),
-		LASER_FOCUS_MATRIX(MekanismGenerators.Reactor, 2, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class),
-		NEUTRON_CAPTURE(MekanismGenerators.Reactor, 3, "ReactorNeutronCapturePlate", 13, TileEntityReactorNeutronCapture.class),
-		PORT(MekanismGenerators.Reactor, 4, "ReactorInOutPort", -1, TileEntityReactorPort.class),
-		GLASS(MekanismGenerators.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class);
+		NEUTRON_CAPTURE(MekanismGenerators.Reactor, 2, "ReactorNeutronCapturePlate", 13, TileEntityReactorNeutronCapture.class),
+		PORT(MekanismGenerators.Reactor, 3, "ReactorInOutPort", -1, TileEntityReactorPort.class),
+		GLASS(MekanismGenerators.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class),
+		LASER_FOCUS_MATRIX(MekanismGenerators.ReactorGlass, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class);
 
 		public Block typeBlock;
 		public int meta;

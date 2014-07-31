@@ -13,6 +13,7 @@ import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
 import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
+import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderWindTurbine;
 import mekanism.generators.common.GeneratorsCommonProxy;
@@ -48,6 +49,7 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator", new RenderHeatGenerator());
 		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
 		ClientRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine", new RenderWindTurbine());
+		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
 	}
 
 	@Override

@@ -419,4 +419,15 @@ public class FusionReactor implements IFusionReactor
 		return injectionRate;
 	}
 
+	@Override
+	public boolean isBurning()
+	{
+		return burning;
+	}
+
+	@Override
+	public void setBurning(boolean burn)
+	{
+		burning = burn;
+	}
 }

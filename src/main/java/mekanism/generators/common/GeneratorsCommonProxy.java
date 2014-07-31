@@ -40,7 +40,6 @@ public class GeneratorsCommonProxy
 	 */
 	public void registerRegularTileEntities()
 	{
-		GameRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController");
 		GameRegistry.registerTileEntity(TileEntityReactorFrame.class, "ReactorFrame");
 		GameRegistry.registerTileEntity(TileEntityReactorGlass.class, "ReactorGlass");
 		GameRegistry.registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "ReactorLaserFocus");
@@ -59,6 +58,7 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityHeatGenerator.class, "HeatGenerator");
 		GameRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator");
 		GameRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine");
+		GameRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController");
 	}
 
 	/**
