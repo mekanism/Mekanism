@@ -7,7 +7,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
+import mekanism.api.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
