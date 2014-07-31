@@ -18,7 +18,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.PressurizedProducts;
 import mekanism.api.PressurizedReactants;
-import mekanism.api.gas.FuelHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;

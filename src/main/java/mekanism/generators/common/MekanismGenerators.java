@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import mekanism.api.gas.FuelHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.common.FuelHandler;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;

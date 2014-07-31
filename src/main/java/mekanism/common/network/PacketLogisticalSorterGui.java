@@ -185,7 +185,7 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 					}
 					else if(type == 5)
 					{
-						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
 					}
 				}
 			}
