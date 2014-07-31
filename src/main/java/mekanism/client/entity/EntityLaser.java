@@ -21,7 +21,7 @@ public class EntityLaser extends EntityFX
 	double length;
 	ForgeDirection direction;
 
-	public EntityLaser(World world, Coord4D start, Coord4D end, ForgeDirection direction)
+	public EntityLaser(World world, Coord4D start, Coord4D end, ForgeDirection dir)
 	{
 		super(world, (start.xCoord + end.xCoord)/2D + 0.5D, (start.yCoord + end.yCoord)/2D + 0.5D, (start.zCoord+end.zCoord)/2D + 0.5D);
 		particleMaxAge = 5;
@@ -31,7 +31,7 @@ public class EntityLaser extends EntityFX
 		particleAlpha = 0.1F;
 		particleScale = 0.1F;
 		length = new Pos3D(end).distance(new Pos3D(start));
-		this.direction = direction;
+		direction = dir;
 	}
 
 	@Override
@@ -42,6 +42,7 @@ public class EntityLaser extends EntityFX
 		GL11.glPushMatrix();
 		GL11.glPushAttrib(GL11.GL_POLYGON_BIT + GL11.GL_ENABLE_BIT);
 		GL11.glDisable(GL11.GL_CULL_FACE);
+		MekanismRenderer.glowOn();
 		Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("mekanism", "particles/laser.png"));
 
 		float newX = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTick - interpPosX);
@@ -82,7 +83,8 @@ public class EntityLaser extends EntityFX
 		tessellator.addVertexWithUV(particleScale, length/2, 0, 1, 1);
 		tessellator.addVertexWithUV(particleScale, -length/2, 0, 1, 0);
 		tessellator.draw();
-
+		
+		MekanismRenderer.glowOff();
 		GL11.glPopAttrib();
 		GL11.glPopMatrix();
 
@@ -90,6 +92,7 @@ public class EntityLaser extends EntityFX
 		tessellator.startDrawingQuads();
 	}
 
+	@Override
 	public int getFXLayer()
 	{
 		return 1;

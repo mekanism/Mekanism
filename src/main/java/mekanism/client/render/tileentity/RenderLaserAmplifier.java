@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
-import mekanism.client.model.ModelLaser;
-import mekanism.common.tile.TileEntityLaser;
+import mekanism.client.model.ModelLaserAmplifier;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -16,7 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderLaserAmplifier extends TileEntitySpecialRenderer
 {
-	private ModelLaser model = new ModelLaser();
+	private ModelLaserAmplifier model = new ModelLaserAmplifier();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
@@ -29,7 +29,7 @@ public class RenderLaserAmplifier extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Laser.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserAmplifier.png"));
 
 		switch(tileEntity.facing)
 		{
@@ -60,7 +60,9 @@ public class RenderLaserAmplifier extends TileEntitySpecialRenderer
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+		MekanismRenderer.blendOn();
 		model.render(0.0625F);
+		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
 }
