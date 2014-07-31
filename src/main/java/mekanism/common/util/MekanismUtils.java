@@ -601,7 +601,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the operating ticks required for a machine via it's upgrades.
-	 * @param speedUpgrade - number of speed upgrades
+	 * @param mgmt - tile containing upgrades
 	 * @param def - the original, default ticks required
 	 * @return max operating ticks
 	 */
@@ -612,8 +612,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the energy required per tick for a machine via it's upgrades.
-	 * @param speedUpgrade - number of speed upgrades
-	 * @param energyUpgrade - number of energy upgrades
+	 * @param mgmt - tile containing upgrades
 	 * @param def - the original, default energy required
 	 * @return max energy per tick
 	 */
@@ -624,7 +623,7 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the maximum energy for a machine via it's upgrades.
-	 * @param energyUpgrade - number of energy upgrades
+	 * @param mgmt - tile containing upgrades - best known for "Kids", 2008
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
@@ -635,7 +634,7 @@ public final class MekanismUtils
 	
 	/**
 	 * Gets the maximum energy for a machine's item form via it's upgrades.
-	 * @param energyUpgrade - number of energy upgrades
+	 * @param itemStack - stack holding energy upgrades
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
@@ -916,8 +915,7 @@ public final class MekanismUtils
 	/**
 	 * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
 	 * @param inventoryID - inventory ID of the dynamic tank
-	 * @param fluid - cached fluid of the dynamic tank
-	 * @param inventory - inventory of the dynamic tank
+	 * @param cache - cache of the dynamic tank
 	 * @param tileEntity - dynamic tank TileEntity
 	 */
 	public static void updateCache(int inventoryID, DynamicTankCache cache, TileEntityDynamicTank tileEntity)
@@ -1163,24 +1161,14 @@ public final class MekanismUtils
 			case J:
 				return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return Math.round(energy*Mekanism.TO_TE) + " RF";
+				return EnergyDisplay.getDisplayShort(energy*Mekanism.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
 			case EU:
-				return Math.round(energy*Mekanism.TO_IC2) + " EU";
+				return EnergyDisplay.getDisplayShort(energy*Mekanism.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return (Math.round((energy*Mekanism.TO_BC)*100)/100) + " MJ";
+				return EnergyDisplay.getDisplayShort(energy*Mekanism.TO_BC, ElectricUnit.MINECRAFT_JOULES);
 		}
 
 		return "error";
-	}
-
-	/**
-	 * Gets a rounded power display of a defined amount of energy.
-	 * @param energy - energy to display
-	 * @return rounded power display
-	 */
-	public static String getPowerDisplay(double energy)
-	{
-		return EnergyDisplay.getDisplayShort(energy, ElectricUnit.WATT);
 	}
 
 	/**

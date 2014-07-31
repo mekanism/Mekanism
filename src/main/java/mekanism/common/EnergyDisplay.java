@@ -7,14 +7,10 @@ public class EnergyDisplay
 {
 	public static enum ElectricUnit
 	{
-		AMPERE("Amp", "I"),
-		AMP_HOUR("Amp Hour", "Ah"),
-		VOLTAGE("Volt", "V"),
-		WATT("Watt", "W"),
-		WATT_HOUR("Watt Hour", "Wh"),
-		RESISTANCE("Ohm", "R"),
-		CONDUCTANCE("Siemen", "S"),
-		JOULES("Joule", "J");
+		JOULES("Joule", "J"),
+		REDSTONE_FLUX("Redstone Flux", "RF"),
+		MINECRAFT_JOULES("Minecraft Joule", "MJ"),
+		ELECTRICAL_UNITS("Electrical Unit", "EU");
 
 		public String name;
 		public String symbol;
@@ -27,13 +23,16 @@ public class EnergyDisplay
 
 		public String getPlural()
 		{
-			return name + "s";
+			return this == REDSTONE_FLUX ? name : name + "s";
 		}
 	}
 
 	/** Metric system of measurement. */
 	public static enum MeasurementUnit
 	{
+		FEMTO("Femto", "f", 0.000000000000001D),
+		PICO("Pico", "p", 0.000000000001D),
+		NANO("Nano", "n", 0.000000001D),
 		MICRO("Micro", "u", 0.000001D),
 		MILLI("Milli", "m", 0.001D),
 		BASE("", "", 1),
@@ -143,11 +142,6 @@ public class EnergyDisplay
 		}
 
 		return prefix + roundDecimals(value, decimalPlaces) + " " + unitName;
-	}
-
-	public static String getDisplay(double value, ElectricUnit unit)
-	{
-		return getDisplay(value, unit, 2, false);
 	}
 
 	public static String getDisplayShort(double value, ElectricUnit unit)
