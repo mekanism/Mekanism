@@ -19,7 +19,6 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
-
 import micdoodle8.mods.galacticraft.api.entity.IEntityBreathable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -43,7 +42,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import cofh.api.energy.IEnergyContainerItem;
 
 @Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticrat API")
@@ -405,7 +403,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
 		item.setInventory(getInventory(), entityItem.getEntityItem());
-		item.setName(entityItem.getEntityItem(), getTranslatedEntityName());
+		item.setName(entityItem.getEntityItem(), getCommandSenderName());
 
 		float k = 0.05F;
 		entityItem.motionX = 0;
@@ -723,7 +721,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return tagList;
 	}
 
-	public String getTranslatedEntityName()
+	@Override
+    public String getCommandSenderName()
 	{
 		return getName().isEmpty() ? "Robit" : getName();
 	}

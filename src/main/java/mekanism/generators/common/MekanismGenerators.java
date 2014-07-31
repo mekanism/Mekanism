@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import mekanism.api.gas.FuelHandler;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.common.FuelHandler;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -24,7 +24,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import buildcraft.api.fuels.IronEngineFuel;
-
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
