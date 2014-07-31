@@ -162,6 +162,7 @@ tile.EnergyCube.Basic.name=Basic Energy Cube
 tile.EnergyCube.Advanced.name=Advanced Energy Cube
 tile.EnergyCube.Elite.name=Elite Energy Cube
 tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
+tile.EnergyCube.Creative.name=Creative Energy Cube
 
 //Dust
 item.ironDust.name=Iron Dust
@@ -357,6 +358,7 @@ gui.id=ID
 gui.finished=Finished
 gui.well=All is well!
 gui.upgrade=Upgrade
+gui.infinite=Infinite
 
 gui.upgrades=Upgrades
 gui.upgrades.supported=Supported

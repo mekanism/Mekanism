@@ -46,7 +46,7 @@ public final class Tier
 		ADVANCED("Advanced", EnumColor.DARK_RED, 8000000, 3200),
 		ELITE("Elite", EnumColor.DARK_BLUE, 32000000, 12800),
 		ULTIMATE("Ultimate", EnumColor.PURPLE, 128000000, 51200),
-		CREATIVE("Creative", EnumColor.BLACK, Integer.MAX_VALUE, Integer.MAX_VALUE/2D);
+		CREATIVE("Creative", EnumColor.BLACK, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
 		public double MAX_ELECTRICITY;
 		public double OUTPUT;

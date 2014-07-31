@@ -247,8 +247,9 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		if(tier == EnergyCubeTier.CREATIVE)
 		{
-			energy = Integer.MAX_VALUE / 2D;
+			return;
 		}
+		
 		super.setEnergy(energy);
 
 		int newRedstoneLevel = getRedstoneLevel();

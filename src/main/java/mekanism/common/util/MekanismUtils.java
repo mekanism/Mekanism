@@ -1156,6 +1156,11 @@ public final class MekanismUtils
 	 */
 	public static String getEnergyDisplay(double energy)
 	{
+		if(energy == Integer.MAX_VALUE)
+		{
+			return localize("gui.infinite");
+		}
+		
 		switch(Mekanism.activeType)
 		{
 			case J:
