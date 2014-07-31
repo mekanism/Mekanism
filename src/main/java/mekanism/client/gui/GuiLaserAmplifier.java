@@ -73,10 +73,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 55, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
-		}
+		fontRendererObj.drawString(MekanismUtils.localize("gui.threshold" + ": " + MekanismUtils.getEnergyDisplay(tileEntity.threshold)), 75, 45, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -134,7 +131,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || c == '.' || c == 'E' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
 			thresholdField.textboxKeyTyped(c, i);
 			timerField.textboxKeyTyped(c, i);
@@ -145,11 +142,20 @@ public class GuiLaserAmplifier extends GuiMekanism
 	{
 		if(!thresholdField.getText().isEmpty())
 		{
-			int toUse = Math.max(0, Integer.parseInt(thresholdField.getText()));
+			double toUse;
+
+			try
+			{
+				toUse = Math.max(0, Double.parseDouble(thresholdField.getText()));
+			}
+			catch(Exception e)
+			{
+				toUse = 0;
+			}
 
 			ArrayList data = new ArrayList();
 			data.add(1);
-			data.add((double)toUse);
+			data.add(toUse);
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
@@ -183,7 +189,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 		String prevThresh = thresholdField != null ? thresholdField.getText() : "";
 
-		thresholdField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 55, 56, 11);
+		thresholdField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
 		thresholdField.setMaxStringLength(10);
 		thresholdField.setText(prevThresh);
 
