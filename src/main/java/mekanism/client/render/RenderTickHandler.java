@@ -8,6 +8,8 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
+import mekanism.client.render.particle.EntityJetpackFlameFX;
+import mekanism.client.render.particle.EntityJetpackSmokeFX;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
@@ -15,11 +17,8 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityFlameFX;
-import net.minecraft.client.particle.EntitySmokeFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -42,7 +41,7 @@ public class RenderTickHandler
 	{
 		if(event.phase == Phase.END)
 		{
-			if(mc.thePlayer != null && mc.theWorld != null)
+			if(mc.thePlayer != null && mc.theWorld != null && !mc.isGamePaused())
 			{
 				EntityPlayer player = mc.thePlayer;
 				World world = mc.thePlayer.worldObj;
@@ -79,7 +78,7 @@ public class RenderTickHandler
 					}
 				}
 	
-				if(player != null && !(mc.currentScreen instanceof GuiChat) && player.getEquipmentInSlot(3) != null)
+				if(player != null && mc.currentScreen == null && player.getEquipmentInSlot(3) != null)
 				{
 					ItemStack stack = player.getEquipmentInSlot(3);
 	
@@ -218,11 +217,11 @@ public class RenderTickHandler
 
 		if(s.equals("flame"))
 		{
-			fx = new EntityFlameFX(world, x, y, z, velX, velY, velZ);
+			fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
 		}
 		else if(s.equals("smoke"))
 		{
-			fx = new EntitySmokeFX(world, x, y, z, velX, velY, velZ);
+			fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
 		}
 
 		mc.effectRenderer.addEffect(fx);
