@@ -6,13 +6,14 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.core;
+package buildcraft.api.recipes;
 
-import net.minecraft.world.World;
+public final class BuildcraftRecipes {
 
-public interface IWorldProperty {
+	public static IAssemblyRecipeManager assemblyTable;
+	public static IIntegrationRecipeManager integrationTable;
+	public static IRefineryRecipeManager refinery;
 
-	boolean get(World world, int x, int y, int z);
-
-	void clear();
+	private BuildcraftRecipes() {
+	}
 }

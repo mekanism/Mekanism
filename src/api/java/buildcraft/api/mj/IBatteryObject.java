@@ -8,8 +8,6 @@
  */
 package buildcraft.api.mj;
 
-import java.lang.reflect.Field;
-
 public interface IBatteryObject {
 	/**
 	 * @return Current energy requirement for keeping machine state
@@ -47,31 +45,39 @@ public interface IBatteryObject {
 	void setEnergyStored(double mj);
 
 	/**
+	 * Can be overrided via {@link #reconfigure(double, double, double)}
+	 *
 	 * @return Maximal energy amount for this battery.
 	 */
 	double maxCapacity();
 
 	/**
+	 * Can be overrided via {@link #reconfigure(double, double, double)}
+	 *
 	 * @return Minimal energy amount for keep your machine in active state
 	 */
 	double minimumConsumption();
 
 	/**
+	 * Can be overrided via {@link #reconfigure(double, double, double)}
+	 *
 	 * @return Maximal energy received per one tick
 	 */
 	double maxReceivedPerCycle();
 
 	/**
+	 * Allow to dynamically reconfigure your battery.
+	 * Usually it's not very good change battery parameters for already present machines, but if you want...
+	 *
+	 * @param maxCapacity         {@link #maxCapacity()}
+	 * @param maxReceivedPerCycle {@link #maxReceivedPerCycle()}
+	 * @param minimumConsumption  {@link #minimumConsumption()}
+	 * @return Current battery object instance
+	 */
+	IBatteryObject reconfigure(double maxCapacity, double maxReceivedPerCycle, double minimumConsumption);
+
+	/**
 	 * @return kind of this energy battery
 	 */
 	String kind();
-
-	/**
-	 * Basic initialization method
-	 *
-	 * @param object      Basic object which hold a battery field
-	 * @param storedField Field for energy storing
-	 * @param battery     Battery data
-	 */
-	void init(Object object, Field storedField, MjBattery battery);
 }

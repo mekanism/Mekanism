@@ -22,7 +22,7 @@ public interface IInvSlot {
 
     boolean canTakeStackFromSlot(ItemStack stack);
 
-	ItemStack decreaseStackInSlot(int amount);
+    ItemStack decreaseStackInSlot();
 
     ItemStack getStackInSlot();
 

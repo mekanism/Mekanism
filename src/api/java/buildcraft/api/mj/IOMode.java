@@ -9,22 +9,12 @@
 package buildcraft.api.mj;
 
 public enum IOMode {
-	Both(true, true, false),
-	BothActive(true, true, true),
+	Both(true, true), Receive(true, false), Send(false, true), None(false, false);
 
-	Receive(true, false, false),
-	ReceiveActive(true, false, true),
+	public final boolean canReceive, canSend;
 
-	Send(false, true, false),
-	SendActive(false, true, true),
-
-	None(false, false, false);
-
-	public final boolean canReceive, canSend, active;
-
-	IOMode(boolean canReceive, boolean canSend, boolean active) {
+	IOMode(boolean canReceive, boolean canSend) {
 		this.canReceive = canReceive;
 		this.canSend = canSend;
-		this.active = active;
 	}
 }

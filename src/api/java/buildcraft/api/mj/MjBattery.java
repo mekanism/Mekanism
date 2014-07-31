@@ -27,7 +27,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  * "maxReceivedPerCycle" units of energy. As an optional behavior, the system
  * can have a minimum amount of energy consumed even if the system is at max
  * capacity, modelized by the "minimumConsumption" value.
- *
+ * 
  * If the field designated by MjBattery is an object, then it will be considered
  * as a nested battery, and will look for the field in the designated object.
  *
@@ -50,37 +50,24 @@ public @interface MjBattery {
 	double maxReceivedPerCycle() default 10.0;
 
 	/**
-	 * @return Max energy received per one tick
-	 */
-	double maxSendedPerCycle() default 10.0;
-
-	/**
 	 * @return Minimal energy for keep machine is active
 	 */
 	double minimumConsumption() default 0.1;
 
 	/**
 	 * @return The kind of battery stored. Specific power systems can be created
-	 * through this system, as several battery of different kind can
-	 * coexist in the same tile.
+	 *         through this system, as several battery of different kind can
+	 *         coexist in the same tile.
 	 */
 	String kind() default MjAPI.DEFAULT_POWER_FRAMEWORK;
 
 	/**
 	 * @return Sides on which this battery should works.
 	 */
-	ForgeDirection[] sides() default {ForgeDirection.UNKNOWN};
+	ForgeDirection[] sides() default { ForgeDirection.UNKNOWN };
 
 	/**
 	 * @return Current battery input/output mode
 	 */
 	IOMode mode() default IOMode.Receive;
-
-	/**
-	 * @return Ability to cache this battery instance for performance reasons. Usual
-	 * not required to modify it for every battery, you can dynamicaly reconfigure
-	 * your batteries with {@link MjAPI#reconfigure()} and reset cache
-	 * for tile with {@link MjAPI#resetBatteriesCache(IBatteryObject)}
-	 */
-	boolean cacheable() default true;
 }

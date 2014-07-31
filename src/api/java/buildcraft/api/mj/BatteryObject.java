@@ -8,8 +8,11 @@
  */
 package buildcraft.api.mj;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
+
+import net.minecraftforge.common.util.ForgeDirection;
 
 import buildcraft.api.core.BCLog;
 import buildcraft.api.core.JavaTools;
@@ -19,7 +22,7 @@ import buildcraft.api.core.JavaTools;
  * battery field is of type double, and is the only piece of data specific to
  * this object. Others are class-wide.
  */
-public class BatteryObject implements IBatteryIOObject, MjReconfigurator.IConfigurableBatteryObject {
+public class BatteryObject implements IBatteryIOObject {
 	protected Field energyStored;
 	protected Object obj;
 	protected MjBattery batteryData;
@@ -54,6 +57,9 @@ public class BatteryObject implements IBatteryIOObject, MjReconfigurator.IConfig
 	 */
 	@Override
 	public double addEnergy(double mj, boolean ignoreCycleLimit) {
+		if (!batteryData.mode().canReceive) {
+			return 0;
+		}
 		try {
 			double contained = energyStored.getDouble(obj);
 			double maxAccepted = batteryData.maxCapacity() - contained + batteryData.minimumConsumption();
@@ -68,30 +74,7 @@ public class BatteryObject implements IBatteryIOObject, MjReconfigurator.IConfig
 		} catch (IllegalAccessException e) {
 			BCLog.logger.log(Level.WARNING, "can't add energy", e);
 		}
-		return 0;
-	}
 
-	@Override
-	public double extractEnergy(double mj) {
-		return extractEnergy(mj, false);
-	}
-
-	@Override
-	public double extractEnergy(double mj, boolean ignoreCycleLimit) {
-		try {
-			double contained = energyStored.getDouble(obj);
-			double maxExtracted = contained;
-			if (!ignoreCycleLimit && maxExtracted > batteryData.maxSendedPerCycle()) {
-				maxExtracted = batteryData.maxSendedPerCycle();
-			}
-			double used = Math.min(maxExtracted, mj);
-			if (used > 0) {
-				energyStored.setDouble(obj, Math.max(contained - used, 0));
-				return used;
-			}
-		} catch (IllegalAccessException e) {
-			BCLog.logger.log(Level.WARNING, "can't extract energy", e);
-		}
 		return 0;
 	}
 
@@ -145,21 +128,59 @@ public class BatteryObject implements IBatteryIOObject, MjReconfigurator.IConfig
 		return batteryData.maxReceivedPerCycle();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public BatteryObject reconfigure(double maxCapacity, double maxReceivedPerCycle, double minimumConsumption) {
+		overrideBattery(maxCapacity, maxReceivedPerCycle, minimumConsumption,
+					batteryData.kind(), batteryData.sides(), batteryData.mode());
+		return this;
+	}
+
+	public void overrideBattery(final double maxCapacity, final double maxReceivedPerCycle, final double minimumConsumption,
+								 final String kind, final ForgeDirection[] sides, final IOMode mode) {
+		batteryData = new MjBattery() {
+			@Override
+			public double maxCapacity() {
+				return maxCapacity;
+			}
+
+			@Override
+			public double maxReceivedPerCycle() {
+				return maxReceivedPerCycle;
+			}
+
+			@Override
+			public double minimumConsumption() {
+				return minimumConsumption;
+			}
+
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return MjBattery.class;
+			}
+
+			@Override
+			public String kind() {
+				return kind;
+			}
+
+			@Override
+			public ForgeDirection[] sides() {
+				return sides;
+			}
+
+			@Override
+			public IOMode mode() {
+				return mode;
+			}
+		};
+	}
+
 	@Override
 	public String kind() {
 		return batteryData.kind();
-	}
-
-	@Override
-	public void init(Object object, Field storedField, MjBattery battery) {
-		this.obj = object;
-		this.energyStored = storedField;
-		this.batteryData = battery;
-	}
-
-	@Override
-	public double maxSendedPerCycle() {
-		return batteryData.maxSendedPerCycle();
 	}
 
 	@Override
@@ -175,25 +196,5 @@ public class BatteryObject implements IBatteryIOObject, MjReconfigurator.IConfig
 	@Override
 	public boolean canReceive() {
 		return batteryData.mode().canReceive;
-	}
-
-	@Override
-	public boolean isActive() {
-		return batteryData.mode().active;
-	}
-
-	@Override
-	public boolean isCacheable() {
-		return batteryData.cacheable();
-	}
-
-	@Override
-	public MjBattery getMjBattery() {
-		return batteryData;
-	}
-
-	@Override
-	public void setMjBattery(MjBattery battery) {
-		batteryData = battery;
 	}
 }
