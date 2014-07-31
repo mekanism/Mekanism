@@ -1,7 +1,7 @@
 package mekanism.api;
 
 import mekanism.api.gas.Gas;
-import mekanism.common.util.StackUtils;
+
 import net.minecraft.item.ItemStack;
 
 public class AdvancedInput

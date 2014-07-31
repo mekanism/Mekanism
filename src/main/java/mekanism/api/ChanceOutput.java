@@ -2,7 +2,6 @@ package mekanism.api;
 
 import java.util.Random;
 
-import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 
 public class ChanceOutput
