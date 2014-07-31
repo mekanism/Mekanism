@@ -3,6 +3,7 @@ package mekanism.common.block;
 import java.util.Random;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
@@ -69,7 +70,7 @@ public class BlockCardboardBox extends BlockContainer
 	{
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
-			ItemStack itemStack = new ItemStack(Mekanism.CardboardBox);
+			ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox);
 			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
 
 			if(tileEntity.storedData != null)
@@ -151,7 +152,7 @@ public class BlockCardboardBox extends BlockContainer
 	{
 		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
 
-		ItemStack itemStack = new ItemStack(Mekanism.CardboardBox, 1, world.getBlockMetadata(x, y, z));
+		ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox, 1, world.getBlockMetadata(x, y, z));
 
 		if(itemStack.getItemDamage() == 1)
 		{

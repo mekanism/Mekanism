@@ -5,10 +5,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
+
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenDesert;
@@ -28,8 +29,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public TileEntitySolarGenerator()
 	{
-		super("SolarGenerator", 96000, MekanismGenerators.solarGeneration*2);
-		GENERATION_RATE = MekanismGenerators.solarGeneration;
+		super("SolarGenerator", 96000, generators.solarGeneration*2);
+		GENERATION_RATE = generators.solarGeneration;
 		inventory = new ItemStack[1];
 	}
 

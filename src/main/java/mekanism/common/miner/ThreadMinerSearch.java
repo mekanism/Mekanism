@@ -4,7 +4,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.BlockInfo;
+import mekanism.api.util.BlockInfo;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;

@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -96,7 +97,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 		else if(slotID == 3)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 0)
 		{

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -51,7 +52,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 	public int TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
+	public final double ENERGY_USAGE = usage.rotaryCondensentratorUsage;
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	

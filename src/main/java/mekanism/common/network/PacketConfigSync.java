@@ -1,7 +1,10 @@
 package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.common.EnergyDisplay.EnergyType;
+
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
+import mekanism.api.util.EnergyUtil.EnergyType;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
@@ -24,47 +27,47 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeBoolean(Mekanism.updateNotifications);
-			dataStream.writeBoolean(Mekanism.controlCircuitOreDict);
-			dataStream.writeBoolean(Mekanism.logPackets);
-			dataStream.writeBoolean(Mekanism.dynamicTankEasterEgg);
-			dataStream.writeBoolean(Mekanism.voiceServerEnabled);
-			dataStream.writeBoolean(Mekanism.cardboardSpawners);
-			dataStream.writeBoolean(Mekanism.creativeOverrideElectricChest);
-			dataStream.writeBoolean(Mekanism.spawnBabySkeletons);
-			dataStream.writeInt(Mekanism.obsidianTNTDelay);
-			dataStream.writeInt(Mekanism.obsidianTNTBlastRadius);
-			dataStream.writeInt(Mekanism.UPDATE_DELAY);
-			dataStream.writeDouble(Mekanism.FROM_IC2);
-			dataStream.writeDouble(Mekanism.TO_IC2);
-			dataStream.writeDouble(Mekanism.FROM_BC);
-			dataStream.writeDouble(Mekanism.TO_BC);
-			dataStream.writeDouble(Mekanism.FROM_H2);
-			dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
-			dataStream.writeInt(Mekanism.VOICE_PORT);
-			dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
-			dataStream.writeInt(Mekanism.activeType.ordinal());
+			dataStream.writeBoolean(general.updateNotifications);
+			dataStream.writeBoolean(general.controlCircuitOreDict);
+			dataStream.writeBoolean(general.logPackets);
+			dataStream.writeBoolean(general.dynamicTankEasterEgg);
+			dataStream.writeBoolean(general.voiceServerEnabled);
+			dataStream.writeBoolean(general.cardboardSpawners);
+			dataStream.writeBoolean(general.creativeOverrideElectricChest);
+			dataStream.writeBoolean(general.spawnBabySkeletons);
+			dataStream.writeInt(general.obsidianTNTDelay);
+			dataStream.writeInt(general.obsidianTNTBlastRadius);
+			dataStream.writeInt(general.UPDATE_DELAY);
+			dataStream.writeDouble(general.FROM_IC2);
+			dataStream.writeDouble(general.TO_IC2);
+			dataStream.writeDouble(general.FROM_BC);
+			dataStream.writeDouble(general.TO_BC);
+			dataStream.writeDouble(general.FROM_H2);
+			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
+			dataStream.writeInt(general.VOICE_PORT);
+			dataStream.writeInt(general.maxUpgradeMultiplier);
+			dataStream.writeInt(general.activeType.ordinal());
 	
-			dataStream.writeDouble(Mekanism.enrichmentChamberUsage);
-			dataStream.writeDouble(Mekanism.osmiumCompressorUsage);
-			dataStream.writeDouble(Mekanism.combinerUsage);
-			dataStream.writeDouble(Mekanism.crusherUsage);
-			dataStream.writeDouble(Mekanism.factoryUsage);
-			dataStream.writeDouble(Mekanism.metallurgicInfuserUsage);
-			dataStream.writeDouble(Mekanism.purificationChamberUsage);
-			dataStream.writeDouble(Mekanism.energizedSmelterUsage);
-			dataStream.writeDouble(Mekanism.digitalMinerUsage);
-			dataStream.writeDouble(Mekanism.electricPumpUsage);
-			dataStream.writeDouble(Mekanism.rotaryCondensentratorUsage);
-			dataStream.writeDouble(Mekanism.oxidationChamberUsage);
-			dataStream.writeDouble(Mekanism.chemicalInfuserUsage);
-			dataStream.writeDouble(Mekanism.chemicalInjectionChamberUsage);
-			dataStream.writeDouble(Mekanism.precisionSawmillUsage);
-			dataStream.writeDouble(Mekanism.chemicalDissolutionChamberUsage);
-			dataStream.writeDouble(Mekanism.chemicalWasherUsage);
-			dataStream.writeDouble(Mekanism.chemicalCrystallizerUsage);
-			dataStream.writeDouble(Mekanism.seismicVibratorUsage);
-			dataStream.writeDouble(Mekanism.fluidicPlenisherUsage);
+			dataStream.writeDouble(usage.enrichmentChamberUsage);
+			dataStream.writeDouble(usage.osmiumCompressorUsage);
+			dataStream.writeDouble(usage.combinerUsage);
+			dataStream.writeDouble(usage.crusherUsage);
+			dataStream.writeDouble(usage.factoryUsage);
+			dataStream.writeDouble(usage.metallurgicInfuserUsage);
+			dataStream.writeDouble(usage.purificationChamberUsage);
+			dataStream.writeDouble(usage.energizedSmelterUsage);
+			dataStream.writeDouble(usage.digitalMinerUsage);
+			dataStream.writeDouble(usage.electricPumpUsage);
+			dataStream.writeDouble(usage.rotaryCondensentratorUsage);
+			dataStream.writeDouble(usage.oxidationChamberUsage);
+			dataStream.writeDouble(usage.chemicalInfuserUsage);
+			dataStream.writeDouble(usage.chemicalInjectionChamberUsage);
+			dataStream.writeDouble(usage.precisionSawmillUsage);
+			dataStream.writeDouble(usage.chemicalDissolutionChamberUsage);
+			dataStream.writeDouble(usage.chemicalWasherUsage);
+			dataStream.writeDouble(usage.chemicalCrystallizerUsage);
+			dataStream.writeDouble(usage.seismicVibratorUsage);
+			dataStream.writeDouble(usage.fluidicPlenisherUsage);
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)
@@ -79,50 +82,50 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			Mekanism.updateNotifications = dataStream.readBoolean();
-			Mekanism.controlCircuitOreDict = dataStream.readBoolean();
-			Mekanism.logPackets = dataStream.readBoolean();
-			Mekanism.dynamicTankEasterEgg = dataStream.readBoolean();
-			Mekanism.voiceServerEnabled = dataStream.readBoolean();
-			Mekanism.cardboardSpawners = dataStream.readBoolean();
-			Mekanism.creativeOverrideElectricChest = dataStream.readBoolean();
-			Mekanism.spawnBabySkeletons = dataStream.readBoolean();
-			Mekanism.obsidianTNTDelay = dataStream.readInt();
-			Mekanism.obsidianTNTBlastRadius = dataStream.readInt();
-			Mekanism.UPDATE_DELAY = dataStream.readInt();
-			Mekanism.FROM_IC2 = dataStream.readDouble();
-			Mekanism.TO_IC2 = dataStream.readDouble();
-			Mekanism.FROM_BC = dataStream.readDouble();
-			Mekanism.TO_BC = dataStream.readDouble();
-			Mekanism.FROM_H2 = dataStream.readDouble();
-			Mekanism.ENERGY_PER_REDSTONE = dataStream.readDouble();
-			Mekanism.VOICE_PORT = dataStream.readInt();
-			Mekanism.maxUpgradeMultiplier = dataStream.readInt();
-			Mekanism.activeType = EnergyType.values()[dataStream.readInt()];
+			general.updateNotifications = dataStream.readBoolean();
+			general.controlCircuitOreDict = dataStream.readBoolean();
+			general.logPackets = dataStream.readBoolean();
+			general.dynamicTankEasterEgg = dataStream.readBoolean();
+			general.voiceServerEnabled = dataStream.readBoolean();
+			general.cardboardSpawners = dataStream.readBoolean();
+			general.creativeOverrideElectricChest = dataStream.readBoolean();
+			general.spawnBabySkeletons = dataStream.readBoolean();
+			general.obsidianTNTDelay = dataStream.readInt();
+			general.obsidianTNTBlastRadius = dataStream.readInt();
+			general.UPDATE_DELAY = dataStream.readInt();
+			general.FROM_IC2 = dataStream.readDouble();
+			general.TO_IC2 = dataStream.readDouble();
+			general.FROM_BC = dataStream.readDouble();
+			general.TO_BC = dataStream.readDouble();
+			general.FROM_H2 = dataStream.readDouble();
+			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
+			general.VOICE_PORT = dataStream.readInt();
+			general.maxUpgradeMultiplier = dataStream.readInt();
+			general.activeType = EnergyType.values()[dataStream.readInt()];
 	
-			Mekanism.TO_TE = Mekanism.TO_BC*10;
-			Mekanism.FROM_TE = Mekanism.FROM_BC/10;
+			general.TO_TE = general.TO_BC*10;
+			general.FROM_TE = general.FROM_BC/10;
 	
-			Mekanism.enrichmentChamberUsage = dataStream.readDouble();
-			Mekanism.osmiumCompressorUsage = dataStream.readDouble();
-			Mekanism.combinerUsage = dataStream.readDouble();
-			Mekanism.crusherUsage = dataStream.readDouble();
-			Mekanism.factoryUsage = dataStream.readDouble();
-			Mekanism.metallurgicInfuserUsage = dataStream.readDouble();
-			Mekanism.purificationChamberUsage = dataStream.readDouble();
-			Mekanism.energizedSmelterUsage = dataStream.readDouble();
-			Mekanism.digitalMinerUsage = dataStream.readDouble();
-			Mekanism.electricPumpUsage = dataStream.readDouble();
-			Mekanism.rotaryCondensentratorUsage = dataStream.readDouble();
-			Mekanism.oxidationChamberUsage = dataStream.readDouble();
-			Mekanism.chemicalInfuserUsage = dataStream.readDouble();
-			Mekanism.chemicalInjectionChamberUsage = dataStream.readDouble();
-			Mekanism.precisionSawmillUsage = dataStream.readDouble();
-			Mekanism.chemicalDissolutionChamberUsage = dataStream.readDouble();
-			Mekanism.chemicalWasherUsage = dataStream.readDouble();
-			Mekanism.chemicalCrystallizerUsage = dataStream.readDouble();
-			Mekanism.seismicVibratorUsage = dataStream.readDouble();
-			Mekanism.fluidicPlenisherUsage = dataStream.readDouble();
+			usage.enrichmentChamberUsage = dataStream.readDouble();
+			usage.osmiumCompressorUsage = dataStream.readDouble();
+			usage.combinerUsage = dataStream.readDouble();
+			usage.crusherUsage = dataStream.readDouble();
+			usage.factoryUsage = dataStream.readDouble();
+			usage.metallurgicInfuserUsage = dataStream.readDouble();
+			usage.purificationChamberUsage = dataStream.readDouble();
+			usage.energizedSmelterUsage = dataStream.readDouble();
+			usage.digitalMinerUsage = dataStream.readDouble();
+			usage.electricPumpUsage = dataStream.readDouble();
+			usage.rotaryCondensentratorUsage = dataStream.readDouble();
+			usage.oxidationChamberUsage = dataStream.readDouble();
+			usage.chemicalInfuserUsage = dataStream.readDouble();
+			usage.chemicalInjectionChamberUsage = dataStream.readDouble();
+			usage.precisionSawmillUsage = dataStream.readDouble();
+			usage.chemicalDissolutionChamberUsage = dataStream.readDouble();
+			usage.chemicalWasherUsage = dataStream.readDouble();
+			usage.chemicalCrystallizerUsage = dataStream.readDouble();
+			usage.seismicVibratorUsage = dataStream.readDouble();
+			usage.fluidicPlenisherUsage = dataStream.readDouble();
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)

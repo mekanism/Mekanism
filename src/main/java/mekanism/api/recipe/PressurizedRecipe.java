@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.api.recipe;
 
 public class PressurizedRecipe
 {

@@ -2,31 +2,24 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyGauge;
 import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.GuiGasGauge;
-import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiGauge.Type;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiNumberGauge;
 import mekanism.client.gui.GuiNumberGauge.INumberInfoHandler;
-import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiProgress;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.block.BlockStaticLiquid;

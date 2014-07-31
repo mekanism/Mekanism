@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -38,7 +39,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
 	public TileEntityGasGenerator()
 	{
-		super("GasGenerator", Mekanism.FROM_H2*100, Mekanism.FROM_H2*2);
+		super("GasGenerator", general.FROM_H2*100, general.FROM_H2*2);
 		inventory = new ItemStack[2];
 		fuelTank = new GasTank(MAX_GAS);
 	}

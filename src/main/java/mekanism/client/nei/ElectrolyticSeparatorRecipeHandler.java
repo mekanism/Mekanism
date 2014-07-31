@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.ChemicalPair;
+import mekanism.api.recipe.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiElement;

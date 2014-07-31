@@ -7,6 +7,8 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -22,6 +24,7 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -31,7 +34,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.StackUtils;
+import mekanism.api.util.StackUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,7 +64,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public int TICKS_REQUIRED = 200;
 
 	/** How much energy each operation consumes per tick. */
-	public double ENERGY_PER_TICK = Mekanism.factoryUsage;
+	public double ENERGY_PER_TICK = usage.factoryUsage;
 
 	/** How long it takes this factory to switch recipe types. */
 	public int RECIPE_TICKS_REQUIRED = 40;
@@ -453,7 +456,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 		if(slotID == 0)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 1)
 		{
@@ -590,7 +593,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}

@@ -8,6 +8,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
@@ -257,14 +258,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive*Mekanism.TO_TE);
+			return (int)Math.round(toReceive* general.TO_TE);
 		}
 
 		return 0;
@@ -276,14 +277,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend* general.TO_TE);
 		}
 
 		return 0;
@@ -292,13 +293,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getMaxEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override

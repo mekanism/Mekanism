@@ -2,7 +2,8 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.MekanismConfig.generators;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge;
@@ -16,7 +17,6 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -43,7 +43,7 @@ public class GuiHeatGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? MekanismGenerators.heatGeneration : tileEntity.getBoost()) + "/t",
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.heatGeneration : tileEntity.getBoost()) + "/t",
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}

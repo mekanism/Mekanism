@@ -1,6 +1,8 @@
-package mekanism.api;
+package mekanism.api.recipe;
 
 import java.util.Random;
+
+import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
 

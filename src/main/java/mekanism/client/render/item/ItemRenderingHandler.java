@@ -24,7 +24,8 @@ import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.common.IEnergyCube;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryBin;
@@ -95,7 +96,7 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		if(item.getItem() == Mekanism.WalkieTalkie)
+		if(item.getItem() == MekanismItems.WalkieTalkie)
 		{
 			return type != ItemRenderType.INVENTORY;
 		}
@@ -163,7 +164,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemBlockBasic && item.getItemDamage() == 6)
 		{
-			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Mekanism.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
 			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
 			{
@@ -280,7 +281,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				GL11.glPopMatrix();
 			}
 		}
-		else if(Block.getBlockFromItem(item.getItem()) == Mekanism.GasTank)
+		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.GasTank)
 		{
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -288,7 +289,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			gasTank.render(0.0625F);
 		}
-		else if(Block.getBlockFromItem(item.getItem()) == Mekanism.ObsidianTNT)
+		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.ObsidianTNT)
 		{
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ObsidianTNT.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
@@ -331,7 +332,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
 		}
-		else if(item.getItem() == Mekanism.Jetpack)
+		else if(item.getItem() == MekanismItems.Jetpack)
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
@@ -339,7 +340,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
 			jetpack.render(0.0625F);
 		}
-		else if(item.getItem() == Mekanism.ArmoredJetpack)
+		else if(item.getItem() == MekanismItems.ArmoredJetpack)
 		{
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);

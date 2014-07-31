@@ -7,8 +7,8 @@ import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
@@ -49,7 +49,7 @@ public class BlockReactor extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == MekanismGenerators.Reactor)
+		if(this == GeneratorsBlocks.Reactor)
 		{
 			icons[0][0] = register.registerIcon("mekanism:ReactorControllerOff");
 			icons[0][1] = register.registerIcon("mekanism:ReactorControllerOn");
@@ -58,7 +58,7 @@ public class BlockReactor extends BlockContainer
 			icons[2][0] = register.registerIcon("mekanism:ReactorNeutronCapture");
 			icons[3][0] = register.registerIcon("mekanism:ReactorPort");
 		}
-		else if(this == MekanismGenerators.ReactorGlass)
+		else if(this == GeneratorsBlocks.ReactorGlass)
 		{
 			icons[0][0] = register.registerIcon("mekanism:ReactorGlass");
 			icons[1][0] = register.registerIcon("mekanism:ReactorLaserFocus");
@@ -69,7 +69,7 @@ public class BlockReactor extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(this == MekanismGenerators.Reactor)
+		if(this == GeneratorsBlocks.Reactor)
 		{
 			if(meta == 0)
 			{
@@ -79,7 +79,7 @@ public class BlockReactor extends BlockContainer
 				return icons[meta][0];
 			}
 		}
-		else if(this == MekanismGenerators.ReactorGlass)
+		else if(this == GeneratorsBlocks.ReactorGlass)
 		{
 			return icons[meta][0];
 		}
@@ -93,7 +93,7 @@ public class BlockReactor extends BlockContainer
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(this == MekanismGenerators.Reactor)
+		if(this == GeneratorsBlocks.Reactor)
 		{
 			if(metadata == 0)
 			{
@@ -109,7 +109,7 @@ public class BlockReactor extends BlockContainer
 				return icons[metadata][0];
 			}
 		}
-		else if(this == MekanismGenerators.ReactorGlass)
+		else if(this == GeneratorsBlocks.ReactorGlass)
 		{
 			return icons[metadata][0];
 		}
@@ -238,7 +238,7 @@ public class BlockReactor extends BlockContainer
 	@Override
 	public int getRenderBlockPass()
 	{
-		return this == MekanismGenerators.Reactor ? 0 : 1;
+		return this == GeneratorsBlocks.Reactor ? 0 : 1;
 	}
 
 	@Override
@@ -256,12 +256,12 @@ public class BlockReactor extends BlockContainer
 
 	public static enum ReactorBlockType
 	{
-		CONTROLLER(MekanismGenerators.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
-		FRAME(MekanismGenerators.Reactor, 1, "ReactorFrame", -1, TileEntityReactorFrame.class),
-		NEUTRON_CAPTURE(MekanismGenerators.Reactor, 2, "ReactorNeutronCapturePlate", 13, TileEntityReactorNeutronCapture.class),
-		PORT(MekanismGenerators.Reactor, 3, "ReactorInOutPort", -1, TileEntityReactorPort.class),
-		GLASS(MekanismGenerators.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class),
-		LASER_FOCUS_MATRIX(MekanismGenerators.ReactorGlass, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class);
+		CONTROLLER(GeneratorsBlocks.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
+		FRAME(GeneratorsBlocks.Reactor, 1, "ReactorFrame", -1, TileEntityReactorFrame.class),
+		NEUTRON_CAPTURE(GeneratorsBlocks.Reactor, 2, "ReactorNeutronCapturePlate", 13, TileEntityReactorNeutronCapture.class),
+		PORT(GeneratorsBlocks.Reactor, 3, "ReactorInOutPort", -1, TileEntityReactorPort.class),
+		GLASS(GeneratorsBlocks.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class),
+		LASER_FOCUS_MATRIX(GeneratorsBlocks.ReactorGlass, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class);
 
 		public Block typeBlock;
 		public int meta;

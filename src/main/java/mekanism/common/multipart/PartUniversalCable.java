@@ -5,13 +5,13 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
-import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -105,14 +105,14 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
 							if(acceptor instanceof IEnergySource)
 							{
-								double received = ((IEnergySource) acceptor).getOfferedEnergy() * Mekanism.FROM_IC2;
+								double received = ((IEnergySource) acceptor).getOfferedEnergy() * general.FROM_IC2;
 								double toDraw = received;
 
 								if(received > 0)
 								{
 									toDraw -= getTransmitterNetwork().emit(received);
 								}
-								((IEnergySource) acceptor).drawEnergy(toDraw * Mekanism.TO_IC2);
+								((IEnergySource) acceptor).drawEnergy(toDraw * general.TO_IC2);
 							}
 						}
 					}
@@ -271,7 +271,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		if(!simulate)
 		{
-			return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive*Mekanism.FROM_TE)*Mekanism.TO_TE);
+			return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive* general.FROM_TE)* general.TO_TE);
 		}
 
 		return 0;
@@ -302,7 +302,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Method(modid = "CoFHAPI|energy")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_TE);
+		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded()* general.TO_TE);
 	}
 
 	@Override
@@ -379,7 +379,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Method(modid = "BuildCraftAPI|power")
 	private void reconfigure()
 	{
-		float needed = (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_BC);
+		float needed = (float)(getTransmitterNetwork().getEnergyNeeded()* general.TO_BC);
 		powerHandler.configure(1, needed, 0, needed);
 	}
 
@@ -389,7 +389,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		if(powerHandler.getEnergyStored() > 0)
 		{
-			getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC);
+			getTransmitterNetwork().emit(powerHandler.getEnergyStored()* general.FROM_BC);
 		}
 
 		powerHandler.setEnergy(0);

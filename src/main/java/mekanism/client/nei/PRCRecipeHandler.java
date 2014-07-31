@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.PressurizedReactants;
-import mekanism.api.PressurizedRecipe;
+import mekanism.api.recipe.PressurizedReactants;
+import mekanism.api.recipe.PressurizedRecipe;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiFluidGauge;

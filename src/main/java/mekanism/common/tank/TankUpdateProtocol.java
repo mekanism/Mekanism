@@ -5,6 +5,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
@@ -353,7 +354,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == Mekanism.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
+		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
 	}
 
 	/**

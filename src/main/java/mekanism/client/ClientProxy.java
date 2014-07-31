@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
@@ -93,6 +94,8 @@ import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
@@ -181,7 +184,7 @@ public class ClientProxy extends CommonProxy
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
 		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
-		MekanismClient.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
+		general.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();
@@ -334,24 +337,24 @@ public class ClientProxy extends CommonProxy
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
 
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.EnergyCube), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.MachineBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.MachineBlock2), handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie, handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.GasTank), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.ObsidianTNT), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.BasicBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ArmoredJetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GlowPanel, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Flamethrower, handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.EnergyCube), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Robit, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.WalkieTalkie, handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.GasTank), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock), handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Jetpack, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.ArmoredJetpack, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.PartTransmitter, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.GasMask, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.ScubaTank, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Balloon, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.FreeRunners, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.AtomicDisassembler, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.GlowPanel, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);
 
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
@@ -573,7 +576,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.onConfigSync();
 
-		if(Mekanism.voiceServerEnabled && MekanismClient.voiceClient != null)
+		if(general.voiceServerEnabled && MekanismClient.voiceClient != null)
 		{
 			MekanismClient.voiceClient.start();
 		}

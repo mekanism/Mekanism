@@ -3,7 +3,7 @@ package mekanism.client.nei;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiProgress.ProgressBar;

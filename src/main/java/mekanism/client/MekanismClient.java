@@ -1,11 +1,8 @@
 package mekanism.client;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
+import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
@@ -45,7 +42,7 @@ public class MekanismClient extends Mekanism
 
 	public static void reset()
 	{
-		if(Mekanism.voiceServerEnabled)
+		if(general.voiceServerEnabled)
 		{
 			if(MekanismClient.voiceClient != null)
 			{

@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.api.recipe;
 
 import java.lang.reflect.Method;
 

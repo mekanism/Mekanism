@@ -4,7 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.ChemicalPair;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.recipe.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -134,7 +135,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				setActive(true);
 				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
-				setEnergy(getEnergy() - Mekanism.FROM_H2*2);
+				setEnergy(getEnergy() - general.FROM_H2*2);
 			}
 			else {
 				setActive(false);
@@ -197,7 +198,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public boolean canOperate()
 	{
-		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.FROM_H2*2;
+		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= general.FROM_H2*2;
 	}
 
 	public boolean canFillWithSwap(ChemicalPair gases)

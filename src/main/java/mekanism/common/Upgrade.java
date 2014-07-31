@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -60,9 +61,9 @@ public enum Upgrade
 		switch(this)
 		{
 			case SPEED:
-				return new ItemStack(Mekanism.SpeedUpgrade);
+				return new ItemStack(MekanismItems.SpeedUpgrade);
 			case ENERGY:
-				return new ItemStack(Mekanism.EnergyUpgrade);
+				return new ItemStack(MekanismItems.EnergyUpgrade);
 		}
 		
 		return null;
@@ -76,7 +77,7 @@ public enum Upgrade
 		{
 			if(canMultiply())
 			{
-				double effect = Math.pow(Mekanism.maxUpgradeMultiplier, (float)((IUpgradeTile)tile).getComponent().getUpgrades(this)/(float)getMax());
+				double effect = Math.pow(general.maxUpgradeMultiplier, (float)((IUpgradeTile)tile).getComponent().getUpgrades(this)/(float)getMax());
 				
 				ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
 			}

@@ -4,11 +4,15 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.Version;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.recipe.MekanismRecipe;
@@ -16,10 +20,9 @@ import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.block.BlockReactor;
 import mekanism.generators.common.item.ItemBlockGenerator;
 import mekanism.generators.common.item.ItemBlockReactor;
-import net.minecraft.block.Block;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.Fluid;
@@ -53,21 +56,6 @@ public class MekanismGenerators implements IModule
 	
 	/** MekanismGenerators version number */
 	public static Version versionNumber = new Version(8, 0, 0);
-	
-	//Items
-	public static Item SolarPanel;
-	
-	//Blocks
-	public static Block Generator;
-	public static Block Reactor;
-	public static Block ReactorGlass;
-	
-	//Generation Configuration
-	public static double advancedSolarGeneration;
-	public static double bioGeneration;
-	public static double heatGeneration;
-	public static double solarGeneration;
-	public static double windGeneration;
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -84,7 +72,7 @@ public class MekanismGenerators implements IModule
 				}
 			}
 
-			IronEngineFuel.addFuel("ethene", (float) (240 * Mekanism.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
+			IronEngineFuel.addFuel("ethene", (float) (240 * general.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
 		}
 	}
 	
@@ -107,7 +95,7 @@ public class MekanismGenerators implements IModule
 		proxy.registerRenderInformation();
 		
 		//Load this module
-		addBlocks();
+		registerBlocks();
 		addItems();
 		addRecipes();
 		
@@ -117,51 +105,43 @@ public class MekanismGenerators implements IModule
 	
 	public void addRecipes()
 	{
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 0), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[] {
 			"III", "WOW", "CFC", Character.valueOf('I'), "ingotIron", Character.valueOf('C'), "ingotCopper", Character.valueOf('O'), "ingotOsmium", Character.valueOf('F'), Blocks.furnace, Character.valueOf('W'), Blocks.planks
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 1), new Object[] {
-			"SSS", "AIA", "PEP", Character.valueOf('S'), SolarPanel, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Items.iron_ingot, Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem()
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 1), new Object[] {
+			"SSS", "AIA", "PEP", Character.valueOf('S'), GeneratorsItems.SolarPanel, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), Items.iron_ingot, Character.valueOf('P'), "dustOsmium", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 5), new Object[] {
-			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(Generator, 1, 1), Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('I'), Items.iron_ingot
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 5), new Object[] {
+			"SES", "SES", "III", Character.valueOf('S'), new ItemStack(GeneratorsBlocks.Generator, 1, 1), Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), Items.iron_ingot
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 4), new Object[] {
-			"RER", "BCB", "NEN", Character.valueOf('R'), Items.redstone, Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('B'), Mekanism.BioFuel, Character.valueOf('C'), "circuitBasic", Character.valueOf('N'), Items.iron_ingot
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 4), new Object[] {
+			"RER", "BCB", "NEN", Character.valueOf('R'), Items.redstone, Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('B'), MekanismItems.BioFuel, Character.valueOf('C'), "circuitBasic", Character.valueOf('N'), Items.iron_ingot
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 3), new Object[] {
-			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), Mekanism.EnrichedAlloy, Character.valueOf('I'), new ItemStack(Mekanism.BasicBlock, 1, 8), Character.valueOf('C'), Mekanism.ElectrolyticCore
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 3), new Object[] {
+			"PEP", "ICI", "PEP", Character.valueOf('P'), "ingotOsmium", Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('C'), MekanismItems.ElectrolyticCore
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(SolarPanel), new Object[] {
-			"GGG", "RAR", "PPP", Character.valueOf('G'), Blocks.glass_pane, Character.valueOf('R'), Items.redstone, Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('P'), "ingotOsmium"
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsItems.SolarPanel), new Object[] {
+			"GGG", "RAR", "PPP", Character.valueOf('G'), Blocks.glass_pane, Character.valueOf('R'), Items.redstone, Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('P'), "ingotOsmium"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Generator, 1, 6), new Object[] {
-			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "circuitBasic"
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 6), new Object[] {
+			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "circuitBasic"
 		}));
 
-		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, Mekanism.FROM_H2 + bioGeneration * 80); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, general.FROM_H2 + generators.bioGeneration * 80); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
 
 	}
 	
-	public void addBlocks()
+	public void registerBlocks()
 	{
-		//Declarations
-		Generator = new BlockGenerator().setBlockName("Generator");
-		Reactor = new BlockReactor().setBlockName("Reactor");
-		ReactorGlass = new BlockReactor().setBlockName("ReactorGlass");
-		
-		GameRegistry.registerBlock(Generator, ItemBlockGenerator.class, "Generator");
-		GameRegistry.registerBlock(Reactor, ItemBlockReactor.class, "Reactor");
-		GameRegistry.registerBlock(ReactorGlass, ItemBlockReactor.class, "ReactorGlass");
+		GameRegistry.registerBlock(GeneratorsBlocks.Generator, ItemBlockGenerator.class, "Generator");
+		GameRegistry.registerBlock(GeneratorsBlocks.Reactor, ItemBlockReactor.class, "Reactor");
+		GameRegistry.registerBlock(GeneratorsBlocks.ReactorGlass, ItemBlockReactor.class, "ReactorGlass");
 	}
 	
 	public void addItems()
 	{
-		//Declarations
-		SolarPanel = new ItemMekanism().setUnlocalizedName("SolarPanel");
-
 		//Registrations
-		GameRegistry.registerItem(SolarPanel, "SolarPanel");
+		GameRegistry.registerItem(GeneratorsItems.SolarPanel, "SolarPanel");
 	}
 
 	@Override
@@ -179,21 +159,21 @@ public class MekanismGenerators implements IModule
 	@Override
 	public void writeConfig(ByteBuf dataStream) throws IOException
 	{
-		dataStream.writeDouble(advancedSolarGeneration);
-		dataStream.writeDouble(bioGeneration);
-		dataStream.writeDouble(heatGeneration);
-		dataStream.writeDouble(solarGeneration);
-		dataStream.writeDouble(windGeneration);
+		dataStream.writeDouble(generators.advancedSolarGeneration);
+		dataStream.writeDouble(generators.bioGeneration);
+		dataStream.writeDouble(generators.heatGeneration);
+		dataStream.writeDouble(generators.solarGeneration);
+		dataStream.writeDouble(generators.windGeneration);
 	}
 
 	@Override
 	public void readConfig(ByteBuf dataStream) throws IOException
 	{
-		advancedSolarGeneration = dataStream.readDouble();
-		bioGeneration = dataStream.readDouble();
-		heatGeneration = dataStream.readDouble();
-		solarGeneration = dataStream.readDouble();
-		windGeneration = dataStream.readDouble();
+		generators.advancedSolarGeneration = dataStream.readDouble();
+		generators.bioGeneration = dataStream.readDouble();
+		generators.heatGeneration = dataStream.readDouble();
+		generators.solarGeneration = dataStream.readDouble();
+		generators.windGeneration = dataStream.readDouble();
 	}
 
 	@SubscribeEvent

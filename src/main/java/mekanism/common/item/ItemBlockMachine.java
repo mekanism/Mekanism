@@ -10,6 +10,7 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekanismKeyHandler;
@@ -373,7 +374,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 						if(item.canProvideEnergy(inv.getStackInSlot(54)))
 						{
-							double gain = ElectricItem.manager.discharge(inv.getStackInSlot(54), (int)((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_IC2), 3, false, true, false)*Mekanism.FROM_IC2;
+							double gain = ElectricItem.manager.discharge(inv.getStackInSlot(54), (int)((getMaxEnergy(itemstack) - getEnergy(itemstack))* general.TO_IC2), 3, false, true, false)* general.FROM_IC2;
 							setEnergy(itemstack, getEnergy(itemstack) + gain);
 						}
 					}
@@ -383,13 +384,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 						IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(54).getItem();
 
 						int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-						int toTransfer = (int)Math.round(Math.min(itemEnergy, ((getMaxEnergy(itemstack) - getEnergy(itemstack))*Mekanism.TO_TE)));
+						int toTransfer = (int)Math.round(Math.min(itemEnergy, ((getMaxEnergy(itemstack) - getEnergy(itemstack))* general.TO_TE)));
 
-						setEnergy(itemstack, getEnergy(itemstack) + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+						setEnergy(itemstack, getEnergy(itemstack) + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 					}
-					else if(inv.getStackInSlot(54).getItem() == Items.redstone && getEnergy(itemstack)+Mekanism.ENERGY_PER_REDSTONE <= getMaxEnergy(itemstack))
+					else if(inv.getStackInSlot(54).getItem() == Items.redstone && getEnergy(itemstack)+ general.ENERGY_PER_REDSTONE <= getMaxEnergy(itemstack))
 					{
-						setEnergy(itemstack, getEnergy(itemstack) + Mekanism.ENERGY_PER_REDSTONE);
+						setEnergy(itemstack, getEnergy(itemstack) + general.ENERGY_PER_REDSTONE);
 						inv.getStackInSlot(54).stackSize--;
 
 						if(inv.getStackInSlot(54).stackSize <= 0)
@@ -864,14 +865,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive*Mekanism.TO_TE);
+			return (int)Math.round(toReceive* general.TO_TE);
 		}
 
 		return 0;
@@ -883,14 +884,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend* general.TO_TE);
 		}
 
 		return 0;
@@ -899,13 +900,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getMaxEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override

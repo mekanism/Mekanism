@@ -3,6 +3,7 @@ package mekanism.generators.common.block;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
@@ -16,6 +17,7 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.GeneratorsClientProxy;
+import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -340,7 +342,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 			}
 		}
 
-		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(MekanismGenerators.Generator, 1, 2)))
+		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(GeneratorsBlocks.Generator, 1, 2)))
 		{
 			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != facing)
 			{
@@ -426,7 +428,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -449,7 +451,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
-		ItemStack itemStack = new ItemStack(MekanismGenerators.Generator, 1, world.getBlockMetadata(x, y, z));
+		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
 
 		if(tileEntity == null)
 		{
@@ -533,7 +535,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 	{
 		HEAT_GENERATOR(0, "HeatGenerator", 0, 160000, TileEntityHeatGenerator.class, true),
 		SOLAR_GENERATOR(1, "SolarGenerator", 1, 96000, TileEntitySolarGenerator.class, true),
-		GAS_GENERATOR(3, "GasGenerator", 3, Mekanism.FROM_H2*100, TileEntityGasGenerator.class, true),
+		GAS_GENERATOR(3, "GasGenerator", 3, general.FROM_H2*100, TileEntityGasGenerator.class, true),
 		BIO_GENERATOR(4, "BioGenerator", 4, 160000, TileEntityBioGenerator.class, true),
 		ADVANCED_SOLAR_GENERATOR(5, "AdvancedSolarGenerator", 1, 200000, TileEntityAdvancedSolarGenerator.class, true),
 		WIND_TURBINE(6, "WindTurbine", 5, 200000, TileEntityWindTurbine.class, true);
@@ -583,7 +585,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 		
 		public ItemStack getStack()
 		{
-			return new ItemStack(MekanismGenerators.Generator, 1, meta);
+			return new ItemStack(GeneratorsBlocks.Generator, 1, meta);
 		}
 
 		@Override

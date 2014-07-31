@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
 import net.minecraft.item.ItemStack;
 
@@ -13,7 +13,7 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 
 	public TileEntityEnergizedSmelter()
 	{
-		super("Smelter.ogg", "EnergizedSmelter", Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
+		super("Smelter.ogg", "EnergizedSmelter", usage.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
 	}
 
 	@Override

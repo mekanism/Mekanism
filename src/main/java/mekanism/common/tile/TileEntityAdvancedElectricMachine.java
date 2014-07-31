@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.Map;
 
-import mekanism.api.AdvancedInput;
+import mekanism.api.recipe.AdvancedInput;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -13,6 +13,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -21,7 +22,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.api.StackUtils;
+import mekanism.api.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -183,7 +184,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 		}
 		else if(slotID == 4)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 0)
 		{

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.client.gui.GuiProgress.ProgressBar;

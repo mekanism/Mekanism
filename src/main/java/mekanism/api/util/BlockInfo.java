@@ -1,4 +1,4 @@
-package mekanism.api;
+package mekanism.api.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;

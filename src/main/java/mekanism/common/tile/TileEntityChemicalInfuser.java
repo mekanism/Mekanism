@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -49,7 +50,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 	public double prevEnergy;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalInfuserUsage;
+	public final double ENERGY_USAGE = usage.chemicalInfuserUsage;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;

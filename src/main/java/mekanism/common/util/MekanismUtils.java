@@ -16,10 +16,11 @@ import java.util.Map;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.common.EnergyDisplay;
-import mekanism.common.EnergyDisplay.ElectricUnit;
+import mekanism.api.util.EnergyUtil;
+import mekanism.api.util.EnergyUtil.ElectricUnit;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
@@ -29,6 +30,7 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.OreDictCache;
 import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
@@ -90,7 +92,7 @@ public final class MekanismUtils
 	public static boolean checkForUpdates(EntityPlayer entityplayer)
 	{
 		try {
-			if(Mekanism.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
+			if(general.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 			{
 				if(!Mekanism.latestVersionNumber.equals("null"))
 				{
@@ -370,7 +372,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getEnergyCube(EnergyCubeTier tier)
 	{
-		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(Mekanism.EnergyCube).getItem()).getUnchargedItem(tier);
+		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
 		return itemstack;
 	}
 
@@ -380,7 +382,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getEmptyGasTank()
 	{
-		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(Mekanism.GasTank).getItem()).getEmptyItem();
+		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem();
 		return itemstack;
 	}
 
@@ -392,7 +394,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
 	{
-		ItemStack itemstack = new ItemStack(Mekanism.MachineBlock, 1, 5+tier.ordinal());
+		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, 5+tier.ordinal());
 		((IFactory)itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
 		return itemstack;
 	}
@@ -607,7 +609,7 @@ public final class MekanismUtils
 	 */
 	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
-		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, (float)-mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax()));
+		return (int)(def * Math.pow(general.maxUpgradeMultiplier, (float)-mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax()));
 	}
 
 	/**
@@ -618,7 +620,7 @@ public final class MekanismUtils
 	 */
 	public static double getEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/(float)Upgrade.SPEED.getMax());
+		return def * Math.pow(general.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/(float)Upgrade.SPEED.getMax());
 	}
 
 	/**
@@ -629,7 +631,7 @@ public final class MekanismUtils
 	 */
 	public static double getMaxEnergy(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
+		return def * Math.pow(general.maxUpgradeMultiplier, (float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
 	}
 	
 	/**
@@ -642,7 +644,7 @@ public final class MekanismUtils
 	{
 		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
+		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
 
 	/**
@@ -655,7 +657,7 @@ public final class MekanismUtils
 	 */
 	public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
 	{
-		world.setBlock(x, y, z, Mekanism.BoundingBlock);
+		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock);
 
 		if(!world.isRemote)
 		{
@@ -673,7 +675,7 @@ public final class MekanismUtils
 	 */
 	public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
 	{
-		world.setBlock(x, y, z, Mekanism.BoundingBlock, 1, 0);
+		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock, 1, 0);
 
 		if(!world.isRemote)
 		{
@@ -695,7 +697,7 @@ public final class MekanismUtils
 			world.func_147479_m(x, y, z);
 		}
 
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
+		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && general.machineEffects)
 		{
 			updateAllLightTypes(world, x, y, z);
 		}
@@ -1161,16 +1163,16 @@ public final class MekanismUtils
 			return localize("gui.infinite");
 		}
 		
-		switch(Mekanism.activeType)
+		switch(general.activeType)
 		{
 			case J:
-				return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
+				return EnergyUtil.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return EnergyDisplay.getDisplayShort(energy*Mekanism.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
+				return EnergyUtil.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
 			case EU:
-				return EnergyDisplay.getDisplayShort(energy*Mekanism.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
+				return EnergyUtil.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return EnergyDisplay.getDisplayShort(energy*Mekanism.TO_BC, ElectricUnit.MINECRAFT_JOULES);
+				return EnergyUtil.getDisplayShort(energy * general.TO_BC, ElectricUnit.MINECRAFT_JOULES);
 		}
 
 		return "error";

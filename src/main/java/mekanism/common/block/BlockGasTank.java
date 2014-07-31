@@ -6,6 +6,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.Block;
@@ -225,7 +226,7 @@ public class BlockGasTank extends BlockContainer
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
-		ItemStack itemStack = new ItemStack(Mekanism.GasTank);
+		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 
 		IGasItem storageTank = (IGasItem)itemStack.getItem();
 		storageTank.setGas(itemStack, tileEntity.gasTank.getGas());

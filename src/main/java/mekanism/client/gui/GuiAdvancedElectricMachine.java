@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;

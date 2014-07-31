@@ -2,6 +2,8 @@ package mekanism.common.util;
 
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
+
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
@@ -31,7 +33,7 @@ public final class ChargeUtils
 
 				if(item.canProvideEnergy(storer.inventory[slotID]))
 				{
-					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 4, true, true, false)*Mekanism.FROM_IC2;
+					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())* general.TO_IC2), 4, true, true, false)* general.FROM_IC2;
 					storer.setEnergy(storer.getEnergy() + gain);
 				}
 			}
@@ -41,13 +43,13 @@ public final class ChargeUtils
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())* general.TO_TE)));
 
-				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 			}
-			else if(storer.inventory[slotID].getItem() == Items.redstone && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
+			else if(storer.inventory[slotID].getItem() == Items.redstone && storer.getEnergy()+ general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
-				storer.setEnergy(storer.getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
+				storer.setEnergy(storer.getEnergy() + general.ENERGY_PER_REDSTONE);
 				storer.inventory[slotID].stackSize--;
 
 				if(storer.inventory[slotID].stackSize <= 0)
@@ -73,7 +75,7 @@ public final class ChargeUtils
 			}
 			else if(Mekanism.hooks.IC2APILoaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(storer.inventory[slotID], (int)(storer.getEnergy()*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(storer.inventory[slotID], (int)(storer.getEnergy()* general.TO_IC2), 4, true, false)* general.FROM_IC2;
 				storer.setEnergy(storer.getEnergy() - sent);
 			}
 			else if(MekanismUtils.useRF() && storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
@@ -82,9 +84,9 @@ public final class ChargeUtils
 				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()* general.TO_TE)));
 
-				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 			}
 		}
 	}

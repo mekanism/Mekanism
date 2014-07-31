@@ -2,7 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiMekanism;
@@ -14,8 +14,6 @@ import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerNeutronCapture;
-import mekanism.generators.common.inventory.container.ContainerReactorController;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 
 import net.minecraft.entity.player.InventoryPlayer;

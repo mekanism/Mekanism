@@ -17,7 +17,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.ITileNetwork;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.TransmitterType.Size;
@@ -446,7 +446,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public ItemStack pickItem(MovingObjectPosition hit)
 	{
-		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmitter().ordinal());
+		return new ItemStack(MekanismItems.PartTransmitter, 1, getTransmitter().ordinal());
 	}
 
 	@Override

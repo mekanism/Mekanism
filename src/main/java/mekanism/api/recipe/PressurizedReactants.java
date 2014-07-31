@@ -1,5 +1,6 @@
-package mekanism.api;
+package mekanism.api.recipe;
 
+import mekanism.api.util.StackUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 

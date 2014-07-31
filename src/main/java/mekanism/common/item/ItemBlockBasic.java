@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tile.TileEntityBin;
 import net.minecraft.block.Block;
@@ -51,7 +51,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public int getItemStackLimit(ItemStack stack)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			if(stack.getItemDamage() == 6)
 			{
@@ -78,7 +78,7 @@ public class ItemBlockBasic extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock && itemstack.getItemDamage() == 6)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && itemstack.getItemDamage() == 6)
 		{
 			InventoryBin inv = new InventoryBin(itemstack);
 
@@ -102,7 +102,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			if(stack.getItemDamage() != 6)
 			{
@@ -121,7 +121,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 			{
@@ -142,7 +142,7 @@ public class ItemBlockBasic extends ItemBlock
 
 		if(place)
 		{
-			if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+			if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 			{
 				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
 				{
@@ -167,7 +167,7 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		String name = "";
 
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			switch(itemstack.getItemDamage())
 			{
@@ -224,7 +224,7 @@ public class ItemBlockBasic extends ItemBlock
 					break;
 			}
 		}
-		else if(Block.getBlockFromItem(this) == Mekanism.BasicBlock2)
+		else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
 		{
 			switch(itemstack.getItemDamage())
 			{

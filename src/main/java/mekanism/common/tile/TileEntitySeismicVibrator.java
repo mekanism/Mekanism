@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
@@ -67,10 +69,10 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			
 			ChargeUtils.discharge(0, this);
 			
-			if(MekanismUtils.canFunction(this) && getEnergy() >= Mekanism.seismicVibratorUsage)
+			if(MekanismUtils.canFunction(this) && getEnergy() >= usage.seismicVibratorUsage)
 			{
 				setActive(true);
-				setEnergy(getEnergy()-Mekanism.seismicVibratorUsage);
+				setEnergy(getEnergy()- usage.seismicVibratorUsage);
 			}
 			else {
 				setActive(false);
@@ -122,7 +124,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 		
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}

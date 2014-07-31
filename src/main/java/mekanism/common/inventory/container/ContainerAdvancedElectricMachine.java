@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import java.util.Map;
 
-import mekanism.api.AdvancedInput;
+import mekanism.api.recipe.AdvancedInput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;

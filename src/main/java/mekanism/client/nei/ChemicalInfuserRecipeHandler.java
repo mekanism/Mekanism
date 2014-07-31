@@ -10,10 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.ChemicalPair;
+import mekanism.api.recipe.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalInfuser;
-import mekanism.client.nei.ChemicalOxidizerRecipeHandler.CachedIORecipe;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;

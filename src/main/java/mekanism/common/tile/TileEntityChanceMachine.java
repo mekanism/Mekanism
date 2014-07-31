@@ -2,9 +2,9 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.ChanceOutput;
+import mekanism.api.recipe.ChanceOutput;
 import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -86,7 +86,7 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 	{
 		if(slotID == 3)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 0)
 		{

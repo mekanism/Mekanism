@@ -3,7 +3,7 @@ package mekanism.common.transporter;
 import java.util.List;
 
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.StackUtils;
+import mekanism.api.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;

@@ -10,6 +10,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -78,11 +79,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	{
 		ModelCustomArmor model = ModelCustomArmor.INSTANCE;
 
-		if(this == Mekanism.Jetpack)
+		if(this == MekanismItems.Jetpack)
 		{
 			model.modelType = ArmorModel.JETPACK;
 		}
-		else if(this == Mekanism.ArmoredJetpack)
+		else if(this == MekanismItems.ArmoredJetpack)
 		{
 			model.modelType = ArmorModel.ARMOREDJETPACK;
 		}
@@ -283,11 +284,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot)
 	{
-		if(this == Mekanism.Jetpack)
+		if(this == MekanismItems.Jetpack)
 		{
 			return new ArmorProperties(0, 0, 0);
 		}
-		else if(this == Mekanism.ArmoredJetpack)
+		else if(this == MekanismItems.ArmoredJetpack)
 		{
 			return new ArmorProperties(1, 0.8, 115);
 		}
@@ -298,11 +299,11 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot)
 	{
-		if(armor.getItem() == Mekanism.Jetpack)
+		if(armor.getItem() == MekanismItems.Jetpack)
 		{
 			return 0;
 		}
-		else if(armor.getItem() == Mekanism.ArmoredJetpack)
+		else if(armor.getItem() == MekanismItems.ArmoredJetpack)
 		{
 			return 12;
 		}

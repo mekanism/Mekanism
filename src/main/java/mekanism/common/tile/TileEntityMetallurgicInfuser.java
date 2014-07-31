@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -18,6 +20,7 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -53,7 +56,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = Mekanism.metallurgicInfuserUsage;
+	public double ENERGY_PER_TICK = usage.metallurgicInfuserUsage;
 
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
@@ -222,7 +225,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 0)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 2)
 		{
@@ -403,7 +406,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}

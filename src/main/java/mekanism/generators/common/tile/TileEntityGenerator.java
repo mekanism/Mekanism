@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
@@ -153,7 +154,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 		{
 			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
 
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			clientActive = active;
 		}
 	}
@@ -196,7 +197,7 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}

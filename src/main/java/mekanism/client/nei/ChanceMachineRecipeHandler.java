@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.ChanceOutput;
+import mekanism.api.recipe.ChanceOutput;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;

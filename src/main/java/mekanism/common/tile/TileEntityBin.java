@@ -14,7 +14,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.StackUtils;
+import mekanism.api.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

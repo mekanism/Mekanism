@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.IActiveState;
 import mekanism.common.IFluidContainerManager;
@@ -392,7 +393,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}

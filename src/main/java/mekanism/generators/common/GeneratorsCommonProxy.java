@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
@@ -71,11 +72,11 @@ public class GeneratorsCommonProxy
 	 */
 	public void loadConfiguration()
 	{
-		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble(300D);
-		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble(350D);
-		MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
-		MekanismGenerators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
-		MekanismGenerators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 60D).getDouble(60D);
+		generators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble(300D);
+		generators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble(350D);
+		generators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
+		generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
+		generators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 60D).getDouble(60D);
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();

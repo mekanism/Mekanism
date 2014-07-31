@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -31,7 +31,7 @@ public class ThreadTankSparkle extends Thread
 	public void run()
 	{
 		try {
-			if(Mekanism.dynamicTankEasterEgg)
+			if(general.dynamicTankEasterEgg)
 			{
 				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(8)+1) + ".ogg", pointer.getWorldObj(), Coord4D.get(pointer));
 			}

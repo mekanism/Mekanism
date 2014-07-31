@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -311,16 +311,16 @@ public final class CableUtils
 
 			if(handler.canConnectEnergy(side.getOpposite()))
 			{
-				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(sendingEnergy*Mekanism.TO_TE), false);
-				sent += used*Mekanism.FROM_TE;
+				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(sendingEnergy* general.TO_TE), false);
+				sent += used* general.FROM_TE;
 			}
 		}
 		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
 		{
 			if(((IEnergySink)tileEntity).acceptsEnergyFrom(from, side.getOpposite()))
 			{
-				double toSend = Math.min(sendingEnergy, Math.min(EnergyNet.instance.getPowerFromTier(((IEnergySink) tileEntity).getSinkTier()), ((IEnergySink)tileEntity).getDemandedEnergy())*Mekanism.FROM_IC2);
-				double rejects = ((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend*Mekanism.TO_IC2, 0)*Mekanism.FROM_IC2;
+				double toSend = Math.min(sendingEnergy, Math.min(EnergyNet.instance.getPowerFromTier(((IEnergySink) tileEntity).getSinkTier()), ((IEnergySink)tileEntity).getDemandedEnergy())* general.FROM_IC2);
+				double rejects = ((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend* general.TO_IC2, 0)* general.FROM_IC2;
 				sent += (toSend - rejects);
 			}
 		}
@@ -330,9 +330,9 @@ public final class CableUtils
 
 			if(battery != null)
 			{
-				double transferEnergy = Math.min(sendingEnergy, battery.getEnergyRequested()*Mekanism.FROM_BC);
-				double used = battery.addEnergy(transferEnergy*Mekanism.TO_BC);
-				sent += used*Mekanism.FROM_BC;
+				double transferEnergy = Math.min(sendingEnergy, battery.getEnergyRequested()* general.FROM_BC);
+				double used = battery.addEnergy(transferEnergy* general.TO_BC);
+				sent += used* general.FROM_BC;
 			}
 		}
 

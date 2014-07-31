@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -9,7 +10,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import net.minecraft.block.Block;
@@ -21,7 +22,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "PurificationChamber", Mekanism.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
+		super("PurificationChamber.ogg", "PurificationChamber", usage.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	public GasStack getItemGas(ItemStack itemstack)
 	{
 		if(itemstack.isItemEqual(new ItemStack(Items.flint))) return new GasStack(GasRegistry.getGas("oxygen"), 10);
-		if(Block.getBlockFromItem(itemstack.getItem()) == Mekanism.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
+		if(Block.getBlockFromItem(itemstack.getItem()) == MekanismBlocks.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				((IGasItem)itemstack.getItem()).getGas(itemstack).getGas() == GasRegistry.getGas("oxygen")) return new GasStack(GasRegistry.getGas("oxygen"), 1);
 
 		return null;

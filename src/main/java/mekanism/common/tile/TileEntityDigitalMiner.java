@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
@@ -20,6 +21,7 @@ import mekanism.common.IRedstoneControl;
 import mekanism.common.ISustainedData;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerNull;
@@ -69,7 +71,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
-	public final double ENERGY_USAGE = Mekanism.digitalMinerUsage;
+	public final double ENERGY_USAGE = usage.digitalMinerUsage;
 
 	public int radius;
 
@@ -1018,7 +1020,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					}
 
 					MekanismUtils.makeAdvancedBoundingBlock(worldObj, x, y, z, Coord4D.get(this));
-					worldObj.notifyBlocksOfNeighborChange(x, y, z, Mekanism.BoundingBlock);
+					worldObj.notifyBlocksOfNeighborChange(x, y, z, MekanismBlocks.BoundingBlock);
 				}
 			}
 		}

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.util.MekanismUtils;
@@ -108,39 +110,39 @@ public final class MekanismHooks
 		}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(MekanismItems.Dust, 2, 2));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(MekanismItems.Dust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(MekanismItems.Dust, 1, 3));
 			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone_dust));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(MekanismItems.Dust, 1, 5));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(MekanismItems.DirtyDust, 1, 0));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(MekanismItems.DirtyDust, 1, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(MekanismItems.DirtyDust, 1, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(MekanismItems.DirtyDust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(MekanismItems.DirtyDust, 1, 4));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(MekanismItems.DirtyDust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(MekanismItems.DirtyDust, 1, 6));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(MekanismItems.DirtyDust, 1, 7));
 		} catch(Exception e) {}
 
 		NBTTagCompound tag = new NBTTagCompound();
 
 		tag.setInteger("amplification", 50000);
 
-		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
+		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(MekanismItems.EnrichedAlloy), 1), tag);
 	}
 
 	@Method(modid = "ComputerCraft")
 	public void loadCCPeripheralProviders()
 	{
 		try {
-			ComputerCraftAPI.registerPeripheralProvider((BlockMachine)Mekanism.MachineBlock);
+			ComputerCraftAPI.registerPeripheralProvider((BlockMachine) MekanismBlocks.MachineBlock);
 		} catch(Exception ex) {}
 	}
 

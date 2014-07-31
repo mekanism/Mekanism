@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -209,7 +210,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "BuildCraftAPI|power")
 	protected void reconfigure()
 	{
-			powerHandler.configure(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
+			powerHandler.configure(0, (float)((getMaxEnergy()-getEnergy())* general.TO_BC), 0, (float)(getMaxEnergy()* general.TO_BC));
 	}
 
 	@Override
@@ -220,7 +221,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		{
 			if(getEnergy() < getMaxEnergy())
 			{
-				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
+				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())* general.TO_BC), true)* general.FROM_BC);
 			}
 
 			powerHandler.setEnergy(0);
@@ -252,14 +253,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*Mekanism.FROM_TE);
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 
-			return (int)Math.round(toAdd*Mekanism.TO_TE);
+			return (int)Math.round(toAdd* general.TO_TE);
 		}
 
 		return 0;
@@ -271,14 +272,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*Mekanism.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract* general.FROM_TE));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend* general.TO_TE);
 		}
 
 		return 0;
@@ -295,14 +296,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "CoFHAPI|energy")
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getEnergy()*Mekanism.TO_TE);
+		return (int)Math.round(getEnergy()* general.TO_TE);
 	}
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getMaxEnergy()*Mekanism.TO_TE);
+		return (int)Math.round(getMaxEnergy()* general.TO_TE);
 	}
 
 	@Override
@@ -316,15 +317,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2API")
 	public void setStored(int energy)
 	{
-		setEnergy(energy*Mekanism.FROM_IC2);
+		setEnergy(energy* general.FROM_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2API")
 	public int addEnergy(int amount)
 	{
-		setEnergy(getEnergy() + amount*Mekanism.FROM_IC2);
-		return (int)Math.round(getEnergy()*Mekanism.TO_IC2);
+		setEnergy(getEnergy() + amount* general.FROM_IC2);
+		return (int)Math.round(getEnergy()* general.TO_IC2);
 	}
 
 	@Override
@@ -351,28 +352,28 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2API")
 	public int getStored()
 	{
-		return (int)Math.round(getEnergy()*Mekanism.TO_IC2);
+		return (int)Math.round(getEnergy()* general.TO_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2API")
 	public int getCapacity()
 	{
-		return (int)Math.round(getMaxEnergy()*Mekanism.TO_IC2);
+		return (int)Math.round(getMaxEnergy()* general.TO_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2API")
 	public int getOutput()
 	{
-		return (int)Math.round(getMaxOutput()*Mekanism.TO_IC2);
+		return (int)Math.round(getMaxOutput()* general.TO_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2API")
 	public double getDemandedEnergy()
 	{
-		return (getMaxEnergy() - getEnergy())*Mekanism.TO_IC2;
+		return (getMaxEnergy() - getEnergy())* general.TO_IC2;
 	}
 
 	@Override
@@ -385,7 +386,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2API")
 	public double getOutputEnergyUnitsPerTick()
 	{
-		return getMaxOutput()*Mekanism.TO_IC2;
+		return getMaxOutput()* general.TO_IC2;
 	}
 
 	@Override
@@ -397,7 +398,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			return i;
 		}
 
-		return i-transferEnergyToAcceptor(direction, i*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
+		return i-transferEnergyToAcceptor(direction, i* general.FROM_IC2)* general.TO_IC2;
 	}
 
 	@Override

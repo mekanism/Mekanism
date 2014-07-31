@@ -2,7 +2,8 @@ package mekanism.client.render.block;
 
 import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
@@ -22,16 +23,16 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		if(block == Mekanism.BasicBlock || block == Mekanism.BasicBlock2)
+		if(block == MekanismBlocks.BasicBlock || block == MekanismBlocks.BasicBlock2)
 		{
-			if(block == Mekanism.BasicBlock && metadata == 10)
+			if(block == MekanismBlocks.BasicBlock && metadata == 10)
 			{
 				MekanismRenderer.blendOn();
 			}
 			
 			MekanismRenderer.renderItem(renderer, metadata, block);
 			
-			if(block == Mekanism.BasicBlock && metadata == 10)
+			if(block == MekanismBlocks.BasicBlock && metadata == 10)
 			{
 				MekanismRenderer.blendOff();
 			}
@@ -43,7 +44,7 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(block == Mekanism.BasicBlock || block == Mekanism.BasicBlock2)
+		if(block == MekanismBlocks.BasicBlock || block == MekanismBlocks.BasicBlock2)
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 

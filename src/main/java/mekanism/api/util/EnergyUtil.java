@@ -1,9 +1,9 @@
-package mekanism.common;
+package mekanism.api.util;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
  */
-public class EnergyDisplay
+public class EnergyUtil
 {
 	public static enum ElectricUnit
 	{

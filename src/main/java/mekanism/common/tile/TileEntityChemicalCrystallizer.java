@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -70,7 +71,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 	public float spin;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalCrystallizerUsage;
+	public final double ENERGY_USAGE = usage.chemicalCrystallizerUsage;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;

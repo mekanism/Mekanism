@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.util.HashSet;
 import java.util.Set;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 
 public class VoiceServerManager
@@ -26,7 +27,7 @@ public class VoiceServerManager
 
 		try {
 			running = true;
-			serverSocket = new ServerSocket(Mekanism.VOICE_PORT);
+			serverSocket = new ServerSocket(general.VOICE_PORT);
 			(listenThread = new ListenThread()).start();
 		} catch(Exception e) {}
 	}

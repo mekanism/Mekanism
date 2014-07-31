@@ -11,6 +11,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
@@ -429,7 +430,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlock(x, y, z) == Mekanism.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
+		return worldObj.getBlock(x, y, z) == MekanismBlocks.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
 
 	@Override

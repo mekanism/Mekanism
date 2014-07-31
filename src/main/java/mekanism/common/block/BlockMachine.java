@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
 import mekanism.common.IActiveState;
@@ -20,6 +22,7 @@ import mekanism.common.ISustainedTank;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -145,7 +148,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == Mekanism.MachineBlock)
+		if(this == MekanismBlocks.MachineBlock)
 		{
 			icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
 			icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
@@ -176,7 +179,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			icons[10][2] = register.registerIcon("mekanism:SteelCasing");
 			icons[11][0] = register.registerIcon("mekanism:Teleporter");
 		}
-		else if(this == Mekanism.MachineBlock2)
+		else if(this == MekanismBlocks.MachineBlock2)
 		{
 			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
@@ -270,7 +273,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && Mekanism.machineEffects)
+		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && general.machineEffects)
 		{
 			float xRandom = (float)x + 0.5F;
 			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -313,7 +316,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-		if(Mekanism.machineEffects && tileEntity instanceof IActiveState)
+		if(general.machineEffects && tileEntity instanceof IActiveState)
 		{
 			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 			{
@@ -328,7 +331,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(this == Mekanism.MachineBlock)
+		if(this == MekanismBlocks.MachineBlock)
 		{
 			if(meta == 0)
 			{
@@ -437,7 +440,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				return icons[11][0];
 			}
 		}
-		else if(this == Mekanism.MachineBlock2)
+		else if(this == MekanismBlocks.MachineBlock2)
 		{
 			if(meta == 3 || meta == 5)
 			{
@@ -471,7 +474,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		int metadata = world.getBlockMetadata(x, y, z);
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-		if(this == Mekanism.MachineBlock)
+		if(this == MekanismBlocks.MachineBlock)
 		{
 			if(metadata == 0)
 			{
@@ -580,7 +583,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				return icons[11][0];
 			}
 		}
-		else if(this == Mekanism.MachineBlock2)
+		else if(this == MekanismBlocks.MachineBlock2)
 		{
 			if(metadata == 3 || metadata == 5)
 			{
@@ -1152,37 +1155,37 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(Mekanism.MachineBlock, 0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, true, false, true),
-		OSMIUM_COMPRESSOR(Mekanism.MachineBlock, 1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, true, false, true),
-		COMBINER(Mekanism.MachineBlock, 2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, true, false, true),
-		CRUSHER(Mekanism.MachineBlock, 3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, true, false, true),
-		DIGITAL_MINER(Mekanism.MachineBlock, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true, true, true),
-		BASIC_FACTORY(Mekanism.MachineBlock, 5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, true, false, true),
-		ADVANCED_FACTORY(Mekanism.MachineBlock, 6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, true, false, true),
-		ELITE_FACTORY(Mekanism.MachineBlock, 7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, true, false, true),
-		METALLURGIC_INFUSER(Mekanism.MachineBlock, 8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true, true, true),
-		PURIFICATION_CHAMBER(Mekanism.MachineBlock, 9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, true, false, true),
-		ENERGIZED_SMELTER(Mekanism.MachineBlock, 10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, true, false, true),
-		TELEPORTER(Mekanism.MachineBlock, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, true, false, false),
-		ELECTRIC_PUMP(Mekanism.MachineBlock, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true, true, false),
-		ELECTRIC_CHEST(Mekanism.MachineBlock, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true, true, false),
-		CHARGEPAD(Mekanism.MachineBlock, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true, true, false),
-		LOGISTICAL_SORTER(Mekanism.MachineBlock, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, false, true, false),
-		ROTARY_CONDENSENTRATOR(Mekanism.MachineBlock2, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, true, false),
-		CHEMICAL_OXIDIZER(Mekanism.MachineBlock2, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, true, true),
-		CHEMICAL_INFUSER(Mekanism.MachineBlock2, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, true, false),
-		CHEMICAL_INJECTION_CHAMBER(Mekanism.MachineBlock2, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, true, false, true),
-		ELECTROLYTIC_SEPARATOR(Mekanism.MachineBlock2, 4, "ElectrolyticSeparator", 32, 400000, TileEntityElectrolyticSeparator.class, true, true, false),
-		PRECISION_SAWMILL(Mekanism.MachineBlock2, 5, "PrecisionSawmill", 34, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, true, false, true),
-		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.MachineBlock2, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, true, true),
-		CHEMICAL_WASHER(Mekanism.MachineBlock2, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, true, false),
-		CHEMICAL_CRYSTALLIZER(Mekanism.MachineBlock2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, true, true),
-		SEISMIC_VIBRATOR(Mekanism.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, true, false),
-		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
-		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
-		FLUIDIC_PLENISHER(Mekanism.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
-		LASER(Mekanism.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
-		LASER_AMPLIFIER(Mekanism.MachineBlock2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false);
+		ENRICHMENT_CHAMBER(MekanismBlocks.MachineBlock, 0, "EnrichmentChamber", 3, usage.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, true, false, true),
+		OSMIUM_COMPRESSOR(MekanismBlocks.MachineBlock, 1, "OsmiumCompressor", 4, usage.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, true, false, true),
+		COMBINER(MekanismBlocks.MachineBlock, 2, "Combiner", 5, usage.combinerUsage*400, TileEntityCombiner.class, true, false, true),
+		CRUSHER(MekanismBlocks.MachineBlock, 3, "Crusher", 6, usage.crusherUsage*400, TileEntityCrusher.class, true, false, true),
+		DIGITAL_MINER(MekanismBlocks.MachineBlock, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true, true, true),
+		BASIC_FACTORY(MekanismBlocks.MachineBlock, 5, "BasicFactory", 11, usage.factoryUsage*3*400, TileEntityFactory.class, true, false, true),
+		ADVANCED_FACTORY(MekanismBlocks.MachineBlock, 6, "AdvancedFactory", 11, usage.factoryUsage*5*400, TileEntityAdvancedFactory.class, true, false, true),
+		ELITE_FACTORY(MekanismBlocks.MachineBlock, 7, "EliteFactory", 11, usage.factoryUsage*7*400, TileEntityEliteFactory.class, true, false, true),
+		METALLURGIC_INFUSER(MekanismBlocks.MachineBlock, 8, "MetallurgicInfuser", 12, usage.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true, true, true),
+		PURIFICATION_CHAMBER(MekanismBlocks.MachineBlock, 9, "PurificationChamber", 15, usage.purificationChamberUsage*400, TileEntityPurificationChamber.class, true, false, true),
+		ENERGIZED_SMELTER(MekanismBlocks.MachineBlock, 10, "EnergizedSmelter", 16, usage.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, true, false, true),
+		TELEPORTER(MekanismBlocks.MachineBlock, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, true, false, false),
+		ELECTRIC_PUMP(MekanismBlocks.MachineBlock, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true, true, false),
+		ELECTRIC_CHEST(MekanismBlocks.MachineBlock, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true, true, false),
+		CHARGEPAD(MekanismBlocks.MachineBlock, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true, true, false),
+		LOGISTICAL_SORTER(MekanismBlocks.MachineBlock, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, false, true, false),
+		ROTARY_CONDENSENTRATOR(MekanismBlocks.MachineBlock2, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, true, false),
+		CHEMICAL_OXIDIZER(MekanismBlocks.MachineBlock2, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, true, true),
+		CHEMICAL_INFUSER(MekanismBlocks.MachineBlock2, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, true, false),
+		CHEMICAL_INJECTION_CHAMBER(MekanismBlocks.MachineBlock2, 3, "ChemicalInjectionChamber", 31, usage.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, true, false, true),
+		ELECTROLYTIC_SEPARATOR(MekanismBlocks.MachineBlock2, 4, "ElectrolyticSeparator", 32, 400000, TileEntityElectrolyticSeparator.class, true, true, false),
+		PRECISION_SAWMILL(MekanismBlocks.MachineBlock2, 5, "PrecisionSawmill", 34, usage.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, true, false, true),
+		CHEMICAL_DISSOLUTION_CHAMBER(MekanismBlocks.MachineBlock2, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, true, true),
+		CHEMICAL_WASHER(MekanismBlocks.MachineBlock2, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, true, false),
+		CHEMICAL_CRYSTALLIZER(MekanismBlocks.MachineBlock2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, true, true),
+		SEISMIC_VIBRATOR(MekanismBlocks.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, true, false),
+		PRESSURIZED_REACTION_CHAMBER(MekanismBlocks.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
+		PORTABLE_TANK(MekanismBlocks.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
+		FLUIDIC_PLENISHER(MekanismBlocks.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
+		LASER(MekanismBlocks.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
+		LASER_AMPLIFIER(MekanismBlocks.MachineBlock2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false);
 
 		public Block typeBlock;
 		public int meta;

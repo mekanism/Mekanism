@@ -1,6 +1,7 @@
 package mekanism.common.entity;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.general;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -34,7 +35,7 @@ public class EntityObsidianTNT extends Entity
 		motionY = 0.2;
 		motionZ = -(Math.cos(randPi))*0.02F;
 
-		fuse = Mekanism.obsidianTNTDelay;
+		fuse = general.obsidianTNTDelay;
 
 		prevPosX = x;
 		prevPosY = y;
@@ -108,7 +109,7 @@ public class EntityObsidianTNT extends Entity
 
 	private void explode()
 	{
-		worldObj.createExplosion(null, posX, posY, posZ, Mekanism.obsidianTNTBlastRadius, true);
+		worldObj.createExplosion(null, posX, posY, posZ, general.obsidianTNTBlastRadius, true);
 		hasExploded = true;
 	}
 

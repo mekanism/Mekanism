@@ -7,8 +7,9 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.PressurizedProducts;
-import mekanism.api.PressurizedRecipe;
+import mekanism.api.MekanismConfig.usage;
+import mekanism.api.recipe.PressurizedProducts;
+import mekanism.api.recipe.PressurizedRecipe;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -16,7 +17,6 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.ISustainedData;
-import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemUpgrade;
@@ -51,7 +51,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 
 	public TileEntityPRC()
 	{
-		super("PressurizedReactionChamber.ogg", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), Mekanism.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("PressurizedReactionChamber.ogg", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));

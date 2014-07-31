@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -55,7 +56,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public int TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
+	public final double ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 

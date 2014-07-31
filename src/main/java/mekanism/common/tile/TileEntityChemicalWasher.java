@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -62,7 +63,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 
 	public double prevEnergy;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalWasherUsage;
+	public final double ENERGY_USAGE = usage.chemicalWasherUsage;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
