@@ -12,6 +12,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -31,7 +32,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
-
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
@@ -212,6 +212,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
+		if(EnergyCubeTier.values()[getTier(itemStack)] == EnergyCubeTier.CREATIVE && amount != Integer.MAX_VALUE)
+		{
+			return;
+		}
+		
 		if(itemStack.stackTagCompound == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
