@@ -19,8 +19,8 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.EnergyUtil;
-import mekanism.api.util.EnergyUtil.ElectricUnit;
+import mekanism.api.util.EnergyUtils;
+import mekanism.api.util.EnergyUtils.ElectricUnit;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
@@ -1166,13 +1166,13 @@ public final class MekanismUtils
 		switch(general.activeType)
 		{
 			case J:
-				return EnergyUtil.getDisplayShort(energy, ElectricUnit.JOULES);
+				return EnergyUtils.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return EnergyUtil.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
+				return EnergyUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
 			case EU:
-				return EnergyUtil.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
+				return EnergyUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return EnergyUtil.getDisplayShort(energy * general.TO_BC, ElectricUnit.MINECRAFT_JOULES);
+				return EnergyUtils.getDisplayShort(energy * general.TO_BC, ElectricUnit.MINECRAFT_JOULES);
 		}
 
 		return "error";

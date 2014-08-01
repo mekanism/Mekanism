@@ -3,7 +3,7 @@ package mekanism.api.util;
 /**
  * Code taken from UE and modified to fit Mekanism.
  */
-public class EnergyUtil
+public class EnergyUtils
 {
 	public static enum ElectricUnit
 	{

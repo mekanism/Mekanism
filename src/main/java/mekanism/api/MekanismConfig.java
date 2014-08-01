@@ -1,6 +1,6 @@
 package mekanism.api;
 
-import mekanism.api.util.EnergyUtil.EnergyType;
+import mekanism.api.util.EnergyUtils.EnergyType;
 
 public class MekanismConfig
 {

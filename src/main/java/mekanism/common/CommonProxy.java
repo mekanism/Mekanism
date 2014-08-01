@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.EnergyUtil.EnergyType;
+import mekanism.api.util.EnergyUtils.EnergyType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;

@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.EnergyUtil.EnergyType;
+import mekanism.api.util.EnergyUtils.EnergyType;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
