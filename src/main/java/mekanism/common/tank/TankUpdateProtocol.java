@@ -400,16 +400,16 @@ public class TankUpdateProtocol
 			{
 				for(int id : idsFound)
 				{
-					if(Mekanism.dynamicInventories.get(id) != null)
+					if(Mekanism.tankManager.inventories.get(id) != null)
 					{
-						cache = MekanismUtils.pullInventory(pointer.getWorldObj(), id);
+						cache = Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
 						idToUse = id;
 						break;
 					}
 				}
 			}
 			else {
-				idToUse = MekanismUtils.getUniqueInventoryID();
+				idToUse = Mekanism.tankManager.getUniqueInventoryID();
 			}
 
 			cache.apply(structureFound);

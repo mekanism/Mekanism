@@ -151,7 +151,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 			if(inventoryID != -1 && structure == null)
 			{
-				MekanismUtils.updateCache(inventoryID, cachedData, this);
+				Mekanism.tankManager.updateCache(inventoryID, cachedData, this);
 			}
 
 			if(structure == null && ticker == 5)
@@ -190,7 +190,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 				if(inventoryID != -1)
 				{
 					cachedData.sync(structure);
-					MekanismUtils.updateCache(inventoryID, cachedData, this);
+					Mekanism.tankManager.updateCache(inventoryID, cachedData, this);
 				}
 
 				manageInventory();

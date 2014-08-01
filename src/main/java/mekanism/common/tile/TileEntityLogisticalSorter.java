@@ -486,7 +486,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			return new int[] {0};
 		}
 
-		return null;
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override

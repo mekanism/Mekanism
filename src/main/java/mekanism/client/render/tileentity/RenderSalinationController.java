@@ -43,7 +43,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			data.side = ForgeDirection.getOrientation(tileEntity.facing);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
-
+			
 			if(data.height >= 1 && tileEntity.waterTank.getCapacity() > 0)
 			{
 				Coord4D renderLoc = tileEntity.getRenderLocation();

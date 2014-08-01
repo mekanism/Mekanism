@@ -51,6 +51,7 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
@@ -71,7 +72,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
-
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -157,8 +157,8 @@ public class Mekanism
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
 	
-	/** A map containing references to all dynamic tank inventory caches. */
-	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
+	/** The Dynamic Tank multiblock manager */
+	public static MultiblockManager tankManager = new MultiblockManager("dynamicTank");
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -1066,13 +1066,13 @@ public class Mekanism
 		
 		//Clear all cache data
 		teleporters.clear();
-		dynamicInventories.clear();
 		ic2Registered.clear();
 		jetpackOn.clear();
 		gasmaskOn.clear();
 		activeVibrators.clear();
 		worldTickHandler.resetRegenChunks();
 		
+		MultiblockManager.reset();
 		TransporterManager.flowingStacks.clear();
 	}
 	
