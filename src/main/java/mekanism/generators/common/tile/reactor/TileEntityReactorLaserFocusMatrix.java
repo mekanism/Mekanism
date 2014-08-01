@@ -17,7 +17,9 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
 	public void receiveLaserEnergy(double energy, ForgeDirection side)
 	{
 		if(getReactor() != null)
+		{
 			getReactor().addTemperatureFromEnergyInput(energy);
+		}
 	}
 
 	@Override

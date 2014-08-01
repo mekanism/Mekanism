@@ -239,4 +239,9 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			}
 		}
 	}
+	
+	public void onAdded()
+	{
+		
+	}
 }

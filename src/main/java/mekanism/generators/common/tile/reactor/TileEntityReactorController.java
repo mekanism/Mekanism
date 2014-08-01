@@ -11,7 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
-
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -19,10 +19,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import io.netty.buffer.ByteBuf;
 
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState
@@ -40,8 +38,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	public GasTank fuelTank = new GasTank(MAX_FUEL);
 
 	public AxisAlignedBB box;
-
-	public boolean tryForm = false;
 
 	public double clientTemp = 0;
 	public boolean clientBurning = false;
@@ -108,12 +104,26 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 				clientTemp = getReactor().getPlasmaTemp();
 			}
 		}
-		else if(tryForm && !worldObj.isRemote)
+		else if(ticker == 5 && !worldObj.isRemote)
 		{
 			formMultiblock();
-			tryForm = false;
 		}
-
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		formMultiblock();
+	}
+	
+	@Override
+	public void onAdded()
+	{
+		super.onAdded();
+		
+		formMultiblock();
 	}
 
 	@Override
@@ -153,7 +163,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 		if(formed)
 		{
-			tryForm = true;
 			setReactor(new FusionReactor(this));
 			getReactor().setPlasmaTemp(tag.getDouble("plasmaTemp"));
 			getReactor().setCaseTemp(tag.getDouble("caseTemp"));
@@ -201,9 +210,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			switch(type)
 			{
 				case 0:
-					formMultiblock();
-					break;
-				case 1:
 					if(getReactor() != null) getReactor().setInjectionRate(dataStream.readInt());
 					break;
 			}

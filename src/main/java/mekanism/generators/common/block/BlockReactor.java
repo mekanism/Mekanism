@@ -5,6 +5,7 @@ import java.util.Random;
 
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
@@ -124,6 +125,20 @@ public class BlockReactor extends BlockContainer
 	}
 
 	@Override
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	{
+		if(!world.isRemote)
+		{
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+			}
+		}
+	}
+
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
@@ -180,9 +195,6 @@ public class BlockReactor extends BlockContainer
 			if(!entityplayer.isSneaking())
 			{
 				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, x, y, z);
-			}
-			else {
-				((TileEntityReactorController)tileEntity).formMultiblock();
 			}
 			
 			return true;
@@ -245,6 +257,20 @@ public class BlockReactor extends BlockContainer
 	public boolean isOpaqueCube()
 	{
 		return false;
+	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onAdded();
+			}
+		}
 	}
 
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/

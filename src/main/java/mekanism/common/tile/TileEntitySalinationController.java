@@ -78,7 +78,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock
 			
 			if(ticker == 5)
 			{
-				refresh(true);
+				refresh();
 			}
 			
 			updateTemperature();
@@ -123,7 +123,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock
 	{
 		super.onChunkUnload();
 		
-		refresh(true);
+		refresh();
 	}
 	
 	@Override
@@ -131,14 +131,14 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock
 	{
 		super.onNeighborChange(block);
 		
-		refresh(true);
+		refresh();
 	}
 	
-	protected void refresh(boolean canCreate)
+	protected void refresh()
 	{
 		if(!worldObj.isRemote)
 		{
-			if((structured || canCreate) && !updatedThisTick)
+			if(!updatedThisTick)
 			{
 				boolean prev = structured;
 				

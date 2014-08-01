@@ -37,6 +37,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public void onUpdate()
 	{
+		if(changed)
+		{
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+		}
+		
 		super.onUpdate();
 
 		CableUtils.emit(this);

@@ -1146,9 +1146,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		if(!world.isRemote)
 		{
-			if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
+			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityElectricBlock)tileEntity).register();
+				((TileEntityBasicBlock)tileEntity).onAdded();
 			}
 		}
 	}

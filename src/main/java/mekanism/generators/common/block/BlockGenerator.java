@@ -511,9 +511,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds
 
 		if(!world.isRemote)
 		{
-			if(tileEntity != null && MekanismUtils.useIC2())
+			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityElectricBlock)tileEntity).register();
+				((TileEntityBasicBlock)tileEntity).onAdded();
 			}
 		}
 	}

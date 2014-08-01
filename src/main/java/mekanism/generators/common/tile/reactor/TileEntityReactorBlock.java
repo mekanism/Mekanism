@@ -1,18 +1,23 @@
 package mekanism.generators.common.tile.reactor;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
+import mekanism.api.Coord4D;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.IReactorBlock;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectricBlock;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TileEntityReactorBlock extends TileEntityElectricBlock implements IReactorBlock
 {
 	public IFusionReactor fusionReactor;
+	
 	public boolean changed;
 
 	public TileEntityReactorBlock()
@@ -46,6 +51,8 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	@Override
 	public void invalidate()
 	{
+		super.invalidate();
+		
 		if(getReactor() != null)
 		{
 			getReactor().formMultiblock();
@@ -55,32 +62,99 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(changed)
 		{
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 			changed = false;
 		}
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double energy)
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
-	{
-		return false;
-	}
-
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
 	}
 
+	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+
+		if(!(this instanceof TileEntityReactorController) && getReactor() != null)
+		{
+			getReactor().formMultiblock();
+		}
+	}
+	
+	@Override
+	public void onAdded()
+	{
+		super.onAdded();
+
+		if(!worldObj.isRemote)
+		{
+			if(getReactor() != null)
+			{
+				getReactor().formMultiblock();
+			}
+			else {
+				if(!(this instanceof TileEntityReactorController))
+				{
+					TileEntityReactorController found = new ControllerFinder().find();
+					
+					if(found != null && (found.getReactor() == null || !found.getReactor().isFormed()))
+					{
+						found.formMultiblock();
+					}
+				}
+			}
+		}
+	}
+	
+	public class ControllerFinder
+	{
+		public TileEntityReactorController found;
+		
+		public Set<Coord4D> iterated = new HashSet<Coord4D>();
+		
+		public void loop(Coord4D pos)
+		{
+			if(iterated.size() > 512 || found != null)
+			{
+				return;
+			}
+			
+			iterated.add(pos);
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				Coord4D coord = pos.getFromSide(side);
+				
+				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityReactorBlock)
+				{
+					if(coord.getTileEntity(worldObj) instanceof TileEntityReactorController)
+					{
+						found = (TileEntityReactorController)coord.getTileEntity(worldObj);
+						return;
+					}
+					
+					loop(coord);
+				}
+			}
+		}
+		
+		public TileEntityReactorController find()
+		{
+			loop(Coord4D.get(TileEntityReactorBlock.this));
+			
+			return found;
+		}
 	}
 }

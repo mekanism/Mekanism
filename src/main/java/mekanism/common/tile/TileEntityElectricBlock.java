@@ -104,7 +104,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void onUpdate()
 	{
 		if(MekanismUtils.useBuildCraft())
+		{
 			reconfigure();
+		}
 	}
 
 	public EnumSet<ForgeDirection> getOutputtingSides()
@@ -157,12 +159,25 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		data.add(getEnergy());
 		return data;
 	}
+	
+	@Override
+	public void onAdded()
+	{
+		super.onAdded();
+		
+		if(MekanismUtils.useIC2())
+		{
+			register();
+		}
+	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		if(MekanismUtils.useIC2())
+		{
 			deregister();
+		}
 
 		super.onChunkUnload();
 	}
@@ -173,7 +188,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.invalidate();
 
 		if(MekanismUtils.useIC2())
+		{
 			deregister();
+		}
 	}
 
 	@Override
@@ -184,7 +201,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		electricityStored = nbtTags.getDouble("electricityStored");
 
 		if(MekanismUtils.useBuildCraft())
+		{
 			reconfigure();
+		}
 	}
 
 	@Override
@@ -210,7 +229,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "BuildCraftAPI|power")
 	protected void reconfigure()
 	{
-			powerHandler.configure(0, (float)((getMaxEnergy()-getEnergy())* general.TO_BC), 0, (float)(getMaxEnergy()* general.TO_BC));
+		powerHandler.configure(0, (float)((getMaxEnergy()-getEnergy())*general.TO_BC), 0, (float)(getMaxEnergy()*general.TO_BC));
 	}
 
 	@Override

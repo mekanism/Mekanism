@@ -15,9 +15,9 @@ import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemCoal;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +26,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 
@@ -64,6 +63,8 @@ public class FusionReactor implements IFusionReactor
 
 	public boolean burning = false;
 	public boolean activelyCooled = true;
+	
+	public boolean updatedThisTick;
 
 	public boolean formed = false;
 
@@ -90,8 +91,11 @@ public class FusionReactor implements IFusionReactor
 		{
 			lastPlasmaTemperature = plasmaTemperature;
 			lastCaseTemperature = caseTemperature;
+			
 			return;
 		}
+		
+		updatedThisTick = false;
 		
 		//Only thermal transfer happens unless we're hot enough to burn.
 		if(plasmaTemperature >= burnTemperature)
@@ -106,9 +110,7 @@ public class FusionReactor implements IFusionReactor
 			if(burning)
 			{
 				injectFuel();
-
-				int fuelBurned = burnFuel();
-				neutronFlux(fuelBurned);
+				neutronFlux(burnFuel());
 			}
 		}
 		else {
@@ -284,7 +286,7 @@ public class FusionReactor implements IFusionReactor
 
 	public void unformMultiblock()
 	{
-		for(IReactorBlock block: reactorBlocks)
+		for(IReactorBlock block : reactorBlocks)
 		{
 			block.setReactor(null);
 		}
@@ -294,12 +296,19 @@ public class FusionReactor implements IFusionReactor
 		reactorBlocks.clear();
 		neutronCaptors.clear();
 		formed = false;
+		
+		if(!controller.getWorldObj().isRemote)
+		{
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.dimensionId);
+		}
 	}
 
 	@Override
 	public void formMultiblock()
 	{
-		Mekanism.logger.trace("Attempting to form multiblock");
+		updatedThisTick = true;
+		
+		Mekanism.logger.info("Attempting to form multiblock");
 
 		Coord4D controllerPosition = Coord4D.get(controller);
 		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
@@ -308,32 +317,38 @@ public class FusionReactor implements IFusionReactor
 
 		reactorBlocks.add(controller);
 
-		Mekanism.logger.trace("Centre at " + centreOfReactor.toString());
+		Mekanism.logger.info("Centre at " + centreOfReactor.toString());
 		if(!createFrame(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.trace("Reactor failed: Frame not complete.");
+			Mekanism.logger.info("Reactor failed: Frame not complete.");
 			return;
 		}
 		
-		Mekanism.logger.trace("Frame valid");
+		Mekanism.logger.info("Frame valid");
 		if(!addSides(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.trace("Reactor failed: Sides not complete.");
+			Mekanism.logger.info("Reactor failed: Sides not complete.");
 			return;
 		}
 		
-		Mekanism.logger.trace("Side Blocks Valid");
+		Mekanism.logger.info("Side Blocks Valid");
 		if(!centreIsClear(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.trace("Blocks in chamber.");
+			Mekanism.logger.info("Blocks in chamber.");
 			return;
 		}
 		
-		Mekanism.logger.trace("Centre is clear");
+		Mekanism.logger.info("Centre is clear");
+		
 		formed = true;
+		
+		if(!controller.getWorldObj().isRemote)
+		{
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.dimensionId);
+		}
 	}
 
 	public boolean createFrame(Coord4D centre)
@@ -387,6 +402,7 @@ public class FusionReactor implements IFusionReactor
 			{
 				reactorBlocks.add((IReactorBlock)tile);
 				((IReactorBlock)tile).setReactor(this);
+				
 				if(tile instanceof INeutronCapture)
 				{
 					neutronCaptors.add((INeutronCapture)tile);

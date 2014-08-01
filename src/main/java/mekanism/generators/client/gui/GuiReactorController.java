@@ -53,12 +53,12 @@ public class GuiReactorController extends GuiMekanism
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 6, 6, 0x404040);
+		
 		if(tileEntity.getActive())
 		{
 			fontRendererObj.drawString(MekanismUtils.localize("container.reactor.formed"), 8, 16, 0x404040);
 		}
-		else
-		{
+		else {
 			fontRendererObj.drawString(MekanismUtils.localize("container.reactor.notFormed"), 8, 16, 0x404040);
 		}
 	}
@@ -73,26 +73,5 @@ public class GuiReactorController extends GuiMekanism
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int button)
-	{
-		super.mouseClicked(x, y, button);
-
-		if(button == 0)
-		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
-
-			if(xAxis >= 48 && xAxis <= 128 && yAxis >= 5 && yAxis <= 17)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
-			}
-		}
 	}
 }
