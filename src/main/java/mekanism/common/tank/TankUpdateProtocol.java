@@ -8,10 +8,10 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -388,9 +388,9 @@ public class TankUpdateProtocol
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
 
-				if(tileEntity.inventoryID != -1)
+				if(Mekanism.tankManager.getInventoryId(tileEntity) != -1)
 				{
-					idsFound.add(tileEntity.inventoryID);
+					idsFound.add(tileEntity.structure.inventoryID);
 				}
 			}
 
@@ -418,15 +418,14 @@ public class TankUpdateProtocol
 			{
 				structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
 			}
+			
+			structureFound.inventoryID = idToUse;
 
 			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
 
-				tileEntity.inventoryID = idToUse;
 				tileEntity.structure = structureFound;
-				
-				tileEntity.cachedData.sync(structureFound);
 			}
 		}
 		else {

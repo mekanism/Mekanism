@@ -12,6 +12,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class DynamicTankCache
 {
+	public HashSet<Coord4D> locations = new HashSet<Coord4D>();
+	
 	public ItemStack[] inventory = new ItemStack[2];
 	public FluidStack fluid;
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -78,6 +80,4 @@ public class DynamicTankCache
 			nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
 		}
 	}
-
-	public HashSet<Coord4D> locations = new HashSet<Coord4D>();
 }

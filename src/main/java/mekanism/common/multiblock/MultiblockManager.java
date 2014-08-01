@@ -8,6 +8,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.tank.DynamicTankCache;
+import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,19 +58,7 @@ public class MultiblockManager
 	public DynamicTankCache pullInventory(World world, int id)
 	{
 		DynamicTankCache toReturn = inventories.get(id);
-
-		for(Coord4D obj : inventories.get(id).locations)
-		{
-			TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
-
-			if(tileEntity != null)
-			{
-				tileEntity.cachedData = new DynamicTankCache();
-				tileEntity.inventory = new ItemStack[2];
-				tileEntity.inventoryID = -1;
-			}
-		}
-
+		
 		inventories.remove(id);
 		dataHandler.markDirty();
 
@@ -82,19 +71,21 @@ public class MultiblockManager
 	 * @param cache - cache of the dynamic tank
 	 * @param tileEntity - dynamic tank TileEntity
 	 */
-	public void updateCache(int inventoryID, DynamicTankCache cache, TileEntityDynamicTank tileEntity)
+	public void updateCache(TileEntityDynamicTank tileEntity)
 	{
-		if(!inventories.containsKey(inventoryID))
+		if(!inventories.containsKey(tileEntity.structure.inventoryID))
 		{
+			DynamicTankCache cache = new DynamicTankCache();
+			cache.sync(tileEntity.structure);
 			cache.locations.add(Coord4D.get(tileEntity));
 
-			inventories.put(inventoryID, cache);
+			inventories.put(tileEntity.structure.inventoryID, cache);
 
 			return;
 		}
-
-		inventories.put(inventoryID, cache);
-		inventories.get(inventoryID).locations.add(Coord4D.get(tileEntity));
+		
+		inventories.get(tileEntity.structure.inventoryID).sync(tileEntity.structure);
+		inventories.get(tileEntity.structure.inventoryID).locations.add(Coord4D.get(tileEntity));
 		dataHandler.markDirty();
 	}
 
@@ -138,7 +129,7 @@ public class MultiblockManager
 					{
 						TileEntity tileEntity = obj.getTileEntity(world);
 	
-						if(!(tileEntity instanceof TileEntityDynamicTank) || ((TileEntityDynamicTank)tileEntity).inventoryID != inventoryID)
+						if(!(tileEntity instanceof TileEntityDynamicTank) || getStructureId(((TileEntityDynamicTank)tileEntity)) != inventoryID)
 						{
 							if(!tilesToKill.containsKey(inventoryID))
 							{
@@ -167,22 +158,30 @@ public class MultiblockManager
 	
 			for(int inventoryID : idsToKill)
 			{
-				for(Coord4D obj : manager.inventories.get(inventoryID).locations)
-				{
-					TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)obj.getTileEntity(world);
-	
-					if(dynamicTank != null)
-					{
-						dynamicTank.cachedData = new DynamicTankCache();
-						dynamicTank.inventory = new ItemStack[2];
-						dynamicTank.inventoryID = -1;
-					}
-				}
-	
 				manager.inventories.remove(inventoryID);
 				manager.dataHandler.markDirty();
 			}
 		}
+	}
+	
+	public static int getStructureId(TileEntityDynamicTank tile)
+	{
+		return tile.structure != null ? tile.structure.inventoryID : -1;
+	}
+	
+	public int getInventoryId(TileEntityDynamicTank tile)
+	{
+		Coord4D coord = Coord4D.get(tile);
+		
+		for(Map.Entry<Integer, DynamicTankCache> entry : inventories.entrySet())
+		{
+			if(entry.getValue().locations.contains(coord))
+			{
+				return entry.getKey();
+			}
+		}
+		
+		return -1;
 	}
 	
 	public static void load(World world)

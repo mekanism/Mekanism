@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,6 +20,8 @@ public class SynchronizedTankData
 	public int volHeight;
 
 	public int volume;
+	
+	public int inventoryID;
 
 	public FluidStack fluidStored;
 	
