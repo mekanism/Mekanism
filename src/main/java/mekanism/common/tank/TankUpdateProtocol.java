@@ -1,6 +1,8 @@
 package mekanism.common.tank;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -379,7 +381,8 @@ public class TankUpdateProtocol
 				}
 			}
 
-			int idFound = -1;
+			List<Integer> idsFound = new ArrayList<Integer>();
+			int idToUse = -1;
 
 			for(Coord4D obj : structureFound.locations)
 			{
@@ -387,22 +390,26 @@ public class TankUpdateProtocol
 
 				if(tileEntity.inventoryID != -1)
 				{
-					idFound = tileEntity.inventoryID;
-					break;
+					idsFound.add(tileEntity.inventoryID);
 				}
 			}
 
 			DynamicTankCache cache = new DynamicTankCache();
 
-			if(idFound != -1)
+			if(!idsFound.isEmpty())
 			{
-				if(Mekanism.dynamicInventories.get(idFound) != null)
+				for(int id : idsFound)
 				{
-					cache = MekanismUtils.pullInventory(pointer.getWorldObj(), idFound);
+					if(Mekanism.dynamicInventories.get(id) != null)
+					{
+						cache = MekanismUtils.pullInventory(pointer.getWorldObj(), id);
+						idToUse = id;
+						break;
+					}
 				}
 			}
 			else {
-				idFound = MekanismUtils.getUniqueInventoryID();
+				idToUse = MekanismUtils.getUniqueInventoryID();
 			}
 
 			cache.apply(structureFound);
@@ -416,7 +423,7 @@ public class TankUpdateProtocol
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
 
-				tileEntity.inventoryID = idFound;
+				tileEntity.inventoryID = idToUse;
 				tileEntity.structure = structureFound;
 				
 				tileEntity.cachedData.sync(structureFound);

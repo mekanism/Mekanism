@@ -11,7 +11,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySalinationBlock extends TileEntityContainerBlock
 {
-	TileEntitySalinationController master;
+	public TileEntitySalinationController master;
+	
+	public boolean attempted;
 
 	public TileEntitySalinationBlock()
 	{
@@ -28,7 +30,15 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 	}
 
 	@Override
-	public void onUpdate() {};
+	public void onUpdate() 
+	{
+		if(!worldObj.isRemote && ticker == 5 && !attempted && master == null)
+		{
+			updateController();
+		}
+		
+		attempted = false;
+	}
 
 	public void addToStructure(TileEntitySalinationController controller)
 	{
@@ -63,15 +73,20 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 				master.refresh();
 			}
 			else {
-				if(!(this instanceof TileEntitySalinationController))
-				{
-					TileEntitySalinationController found = new ControllerFinder().find();
-					
-					if(found != null)
-					{
-						found.refresh();
-					}
-				}
+				updateController();
+			}
+		}
+	}
+	
+	public void updateController()
+	{
+		if(!(this instanceof TileEntitySalinationController))
+		{
+			TileEntitySalinationController found = new ControllerFinder().find();
+			
+			if(found != null)
+			{
+				found.refresh();
 			}
 		}
 	}
@@ -97,6 +112,8 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 				
 				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
 				{
+					((TileEntitySalinationBlock)coord.getTileEntity(worldObj)).attempted = true;
+					
 					if(coord.getTileEntity(worldObj) instanceof TileEntitySalinationController)
 					{
 						found = (TileEntitySalinationController)coord.getTileEntity(worldObj);

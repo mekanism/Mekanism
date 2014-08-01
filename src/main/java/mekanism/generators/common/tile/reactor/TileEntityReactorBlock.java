@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.reactor;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,8 +7,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.IReactorBlock;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -17,6 +14,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 public abstract class TileEntityReactorBlock extends TileEntityElectricBlock implements IReactorBlock
 {
 	public IFusionReactor fusionReactor;
+	
+	public boolean attempted;
 	
 	public boolean changed;
 
@@ -68,6 +67,13 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		{
 			changed = false;
 		}
+		
+		if(!worldObj.isRemote && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed()))
+		{
+			updateController();
+		}
+		
+		attempted = false;
 	}
 
 	@Override
@@ -105,15 +111,20 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 				getReactor().formMultiblock();
 			}
 			else {
-				if(!(this instanceof TileEntityReactorController))
-				{
-					TileEntityReactorController found = new ControllerFinder().find();
-					
-					if(found != null && (found.getReactor() == null || !found.getReactor().isFormed()))
-					{
-						found.formMultiblock();
-					}
-				}
+				updateController();
+			}
+		}
+	}
+	
+	public void updateController()
+	{
+		if(!(this instanceof TileEntityReactorController))
+		{
+			TileEntityReactorController found = new ControllerFinder().find();
+			
+			if(found != null && (found.getReactor() == null || !found.getReactor().isFormed()))
+			{
+				found.formMultiblock();
 			}
 		}
 	}
@@ -139,6 +150,8 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 				
 				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntityReactorBlock)
 				{
+					((TileEntityReactorBlock)coord.getTileEntity(worldObj)).attempted = true;
+					
 					if(coord.getTileEntity(worldObj) instanceof TileEntityReactorController)
 					{
 						found = (TileEntityReactorController)coord.getTileEntity(worldObj);

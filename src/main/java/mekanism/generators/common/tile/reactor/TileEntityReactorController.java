@@ -104,10 +104,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 				clientTemp = getReactor().getPlasmaTemp();
 			}
 		}
-		else if(ticker == 5 && !worldObj.isRemote)
-		{
-			formMultiblock();
-		}
 	}
 	
 	@Override

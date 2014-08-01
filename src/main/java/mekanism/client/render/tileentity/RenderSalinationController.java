@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.Mekanism;
 import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntitySalinationController;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -43,7 +44,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 
-			if(data.height >= 2 && tileEntity.waterTank.getCapacity() > 0)
+			if(data.height >= 1 && tileEntity.waterTank.getCapacity() > 0)
 			{
 				Coord4D renderLoc = tileEntity.getRenderLocation();
 
