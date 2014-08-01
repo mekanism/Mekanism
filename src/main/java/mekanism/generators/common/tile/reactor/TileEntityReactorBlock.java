@@ -33,6 +33,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 		{
 			changed = true;
 		}
+		
 		fusionReactor = reactor;
 	}
 

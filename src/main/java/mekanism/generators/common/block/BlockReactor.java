@@ -316,12 +316,6 @@ public class BlockReactor extends BlockContainer
 		{
 			return new ItemStack(typeBlock, 1, meta);
 		}
-
-		@Override
-		public String toString()
-		{
-			return Integer.toString(meta);
-		}
 	}
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)

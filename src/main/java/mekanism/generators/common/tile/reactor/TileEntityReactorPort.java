@@ -24,6 +24,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public TileEntityReactorPort()
 	{
 		super("name", 1);
+		
 		inventory = new ItemStack[0];
 	}
 
@@ -48,6 +49,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return getReactor().getWaterTank().fill(resource, doFill);
 		}
+		
 		return 0;
 	}
 
@@ -58,6 +60,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			getReactor().getSteamTank().drain(resource.amount, doDrain);
 		}
+		
 		return null;
 	}
 
@@ -68,6 +71,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return getReactor().getSteamTank().drain(maxDrain, doDrain);
 		}
+		
 		return null;
 	}
 
@@ -90,6 +94,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return new FluidTankInfo[0];
 		}
+		
 		return new FluidTankInfo[] {getReactor().getWaterTank().getInfo(), getReactor().getSteamTank().getInfo()};
 	}
 
@@ -111,6 +116,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 				return getReactor().getFuelTank().receive(stack, true);
 			}
 		}
+		
 		return 0;
 	}
 
@@ -159,8 +165,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return 0;
 		}
-		else
-		{
+		else {
 			return getReactor().getBufferedEnergy();
 		}
 	}
@@ -181,8 +186,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return 0;
 		}
-		else
-		{
+		else {
 			return getReactor().getBufferSize();
 		}
 	}
@@ -192,6 +196,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		EnumSet set = EnumSet.allOf(ForgeDirection.class);
 		set.remove(ForgeDirection.UNKNOWN);
+		
 		return set;
 	}
 

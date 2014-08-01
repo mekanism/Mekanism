@@ -68,6 +68,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			setReactor(new FusionReactor(this));
 		}
+		
 		getReactor().formMultiblock();
 	}
 
@@ -77,6 +78,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			return 0;
 		}
+		
 		return getReactor().getPlasmaTemp();
 	}
 
@@ -86,6 +88,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			return 0;
 		}
+		
 		return getReactor().getCaseTemp();
 	}
 
@@ -97,6 +100,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		if(isFormed())
 		{
 			getReactor().simulate();
+			
 			if(!worldObj.isRemote && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1000000))
 			{
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
@@ -126,8 +130,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			tag.setInteger("injectionRate", getReactor().getInjectionRate());
 			tag.setBoolean("burning", getReactor().isBurning());
 		}
-		else
-		{
+		else {
 			tag.setDouble("plasmaTemp", 0);
 			tag.setDouble("caseTemp", 0);
 			tag.setInteger("injectionRate", 0);
@@ -171,6 +174,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		super.getNetworkedData(data);
 
 		data.add(getReactor() != null && getReactor().isFormed());
+		
 		if(getReactor() != null)
 		{
 			data.add(getReactor().getPlasmaTemp());
@@ -201,6 +205,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 					break;
 				case 1:
 					if(getReactor() != null) getReactor().setInjectionRate(dataStream.readInt());
+					break;
 			}
 
 			return;
@@ -209,6 +214,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		super.handlePacketData(dataStream);
 
 		boolean formed = dataStream.readBoolean();
+		
 		if(formed)
 		{
 			if(getReactor() == null)
@@ -216,6 +222,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 				setReactor(new FusionReactor(this));
 				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
+			
 			((FusionReactor)getReactor()).formed = true;
 			getReactor().setPlasmaTemp(dataStream.readDouble());
 			getReactor().setCaseTemp(dataStream.readDouble());
@@ -280,6 +287,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		{
 			box = AxisAlignedBB.getBoundingBox(xCoord-1, yCoord-3, zCoord-1, xCoord+2, yCoord, zCoord+2);
 		}
+		
 		return box;
 	}
 }

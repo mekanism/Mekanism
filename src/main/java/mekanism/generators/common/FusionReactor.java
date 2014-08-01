@@ -92,6 +92,7 @@ public class FusionReactor implements IFusionReactor
 			lastCaseTemperature = caseTemperature;
 			return;
 		}
+		
 		//Only thermal transfer happens unless we're hot enough to burn.
 		if(plasmaTemperature >= burnTemperature)
 		{
@@ -100,6 +101,7 @@ public class FusionReactor implements IFusionReactor
 			{
 				vaporiseHohlraum();
 			}
+			
 			//Only inject fuel if we're burning
 			if(burning)
 			{
@@ -124,10 +126,12 @@ public class FusionReactor implements IFusionReactor
 	{
 		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
 		controller.inventory[0].stackSize -= 1;
+		
 		if(controller.inventory[0].stackSize == 0)
 		{
 			controller.inventory[0] = null;
 		}
+		
 		burning = true;
 	}
 
@@ -136,7 +140,9 @@ public class FusionReactor implements IFusionReactor
 		int amountNeeded = getFuelTank().getNeeded();
 		int amountAvailable = 2*min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
 		int amountToInject = min(amountNeeded, min(amountAvailable, injectionRate));
+		
 		amountToInject -= amountToInject % 2;
+		
 		getDeuteriumTank().draw(amountToInject / 2, true);
 		getTritiumTank().draw(amountToInject / 2, true);
 		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuel"), amountToInject), true);
@@ -145,8 +151,10 @@ public class FusionReactor implements IFusionReactor
 	public int burnFuel()
 	{
 		int fuelBurned = (int)min(getFuelTank().getStored(), max(0, lastPlasmaTemperature - burnTemperature)*burnRatio);
+		
 		getFuelTank().draw(fuelBurned, true);
 		plasmaTemperature += energyPerFuel * fuelBurned / plasmaHeatCapacity;
+		
 		return fuelBurned;
 	}
 
@@ -155,13 +163,17 @@ public class FusionReactor implements IFusionReactor
 		int neutronsRemaining = fuelBurned;
 		List<INeutronCapture> list = new ArrayList<INeutronCapture>(neutronCaptors);
 		Collections.shuffle(list);
+		
 		for(INeutronCapture captor: neutronCaptors)
 		{
 			if(neutronsRemaining <= 0)
+			{
 				break;
+			}
 
 			neutronsRemaining = captor.absorbNeutrons(neutronsRemaining);
 		}
+		
 		controller.radiateNeutrons(neutronsRemaining);
 	}
 
@@ -179,18 +191,21 @@ public class FusionReactor implements IFusionReactor
 			int waterToVaporize = (int)(steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
 			//Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
 			waterToVaporize = min(waterToVaporize, min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
+			
 			if(waterToVaporize > 0)
 			{
 				//Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
 				getWaterTank().drain(waterToVaporize, true);
 				getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
 			}
+			
 			caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
 			caseTemperature -= caseWaterHeat / caseHeatCapacity;
 		}
 
 		//Transfer from casing to environment
 		double caseAirHeat = caseAirConductivity * lastCaseTemperature;
+		
 		caseTemperature -= caseAirHeat / caseHeatCapacity;
 		setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
 	}
@@ -273,6 +288,7 @@ public class FusionReactor implements IFusionReactor
 		{
 			block.setReactor(null);
 		}
+		
 		//Don't remove from controller
 		controller.setReactor(this);
 		reactorBlocks.clear();
@@ -299,6 +315,7 @@ public class FusionReactor implements IFusionReactor
 			Mekanism.logger.trace("Reactor failed: Frame not complete.");
 			return;
 		}
+		
 		Mekanism.logger.trace("Frame valid");
 		if(!addSides(centreOfReactor))
 		{
@@ -306,6 +323,7 @@ public class FusionReactor implements IFusionReactor
 			Mekanism.logger.trace("Reactor failed: Sides not complete.");
 			return;
 		}
+		
 		Mekanism.logger.trace("Side Blocks Valid");
 		if(!centreIsClear(centreOfReactor))
 		{
@@ -313,6 +331,7 @@ public class FusionReactor implements IFusionReactor
 			Mekanism.logger.trace("Blocks in chamber.");
 			return;
 		}
+		
 		Mekanism.logger.trace("Centre is clear");
 		formed = true;
 	}

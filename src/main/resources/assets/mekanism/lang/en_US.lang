@@ -667,11 +667,11 @@ tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
 
-tile.Reactor.ReactorController=Reactor Controller
-tile.Reactor.ReactorFrame=Reactor Frame
-tile.Reactor.ReactorLaserFocusMatrix=Laser Focus Matrix
-tile.Reactor.ReactorNeutronCapturePlate=Neutron Capture Plate
-tile.Reactor.ReactorInOutPort=Reactor Port
+tile.Reactor.ReactorController.name=Reactor Controller
+tile.Reactor.ReactorFrame.name=Reactor Frame
+tile.Reactor.ReactorLaserFocusMatrix.name=Laser Focus Matrix
+tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
+tile.Reactor.ReactorInOutPort.name=Reactor Port
 
 tile.ReactorGlass.ReactorGlass.name=Reactor Glass
 
