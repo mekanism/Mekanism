@@ -27,6 +27,11 @@ public final class Tier
 			return name;
 		}
 		
+		public boolean isObtainable()
+		{
+			return this != CREATIVE;
+		}
+		
 		private String name;
 		
 		private BaseTier(String s)
