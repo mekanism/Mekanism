@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
@@ -17,13 +18,13 @@ public class ConnectedTextureRenderer
 	public static final byte[][] sideEdges = {{2, 5, 3, 4}, {2, 5, 3, 4}, {1, 4, 0, 5}, {1, 5, 0, 4}, {1, 3, 0, 2}, {1, 2, 0, 3}};
 
 	public Block block;
-	public int metadata;
+	public List<Integer> metadata;
 
 	public String iconTitle;
 
 	public Map<Integer, IIcon> glassMap = new HashMap<Integer, IIcon>();
 
-	public ConnectedTextureRenderer(String title, Block b, int meta)
+	public ConnectedTextureRenderer(String title, Block b, List<Integer> meta)
 	{
 		iconTitle = title;
 		block = b;
@@ -114,13 +115,13 @@ public class ConnectedTextureRenderer
 		Coord4D coord = obj.getFromSide(ForgeDirection.getOrientation(side));
 		Coord4D coordAbove = obj.getFromSide(ForgeDirection.getOrientation(face));
 
-		return (coord.getBlock(access) == block && coord.getMetadata(access) == metadata) && (coordAbove.getBlock(access) != block || coordAbove.getMetadata(access) != metadata);
+		return (coord.getBlock(access) == block && metadata.contains(coord.getMetadata(access))) && (coordAbove.getBlock(access) != block || metadata.contains(coordAbove.getMetadata(access)));
 	}
 
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		return obj.getBlock(world) != block || obj.getMetadata(world) != metadata;
+		return obj.getBlock(world) != block || metadata.contains(obj.getMetadata(world));
 	}
 }

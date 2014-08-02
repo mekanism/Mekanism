@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -19,8 +20,8 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntitySalinationController;
 import mekanism.common.tile.TileEntitySalinationBlock;
+import mekanism.common.tile.TileEntitySalinationController;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -74,7 +75,7 @@ public class BlockBasic extends Block
 {
 	public IIcon[][] icons = new IIcon[256][6];
 
-	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", this, 10);
+	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", this, Arrays.asList(10));
 
 	public BlockBasic()
 	{
