@@ -403,7 +403,7 @@ public class TankUpdateProtocol
 				{
 					if(Mekanism.tankManager.inventories.get(id) != null)
 					{
-						cache = Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+						cache = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
 						idToUse = id;
 						break;
 					}

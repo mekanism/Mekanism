@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
-import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,23 +15,26 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class MultiblockManager
+public class MultiblockManager<T>
 {
 	private static Set<MultiblockManager> managers = new HashSet<MultiblockManager>();
 	
 	public static boolean loaded;
+	
+	public Class<? extends MultiblockCache<T>> cacheClass;
 	
 	public DataHandler dataHandler;
 	
 	public String name;
 	
 	/** A map containing references to all dynamic tank inventory caches. */
-	public Map<Integer, DynamicTankCache> inventories = new HashMap<Integer, DynamicTankCache>();
+	public Map<Integer, MultiblockCache<T>> inventories = new HashMap<Integer, MultiblockCache<T>>();
 	
-	public MultiblockManager(String s)
+	public MultiblockManager(String s, Class<? extends MultiblockCache<T>> cache)
 	{
 		name = s;
 		managers.add(this);
+		cacheClass = cache;
 	}
 	
 	public void createOrLoad(World world)
@@ -61,14 +62,14 @@ public class MultiblockManager
 	 * @param id - inventory ID to pull
 	 * @return correct Dynamic Tank inventory cache
 	 */
-	public DynamicTankCache pullInventory(World world, int id)
+	public MultiblockCache<T> pullInventory(World world, int id)
 	{
 		if(!loaded)
 		{
 			load(world);
 		}
 		
-		DynamicTankCache toReturn = inventories.get(id);
+		MultiblockCache<T> toReturn = inventories.get(id);
 		
 		inventories.remove(id);
 		dataHandler.markDirty();
@@ -80,29 +81,33 @@ public class MultiblockManager
 	 * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
 	 * @param inventoryID - inventory ID of the dynamic tank
 	 * @param cache - cache of the dynamic tank
-	 * @param tileEntity - dynamic tank TileEntity
+	 * @param multiblock - dynamic tank TileEntity
 	 */
-	public void updateCache(TileEntityDynamicTank tileEntity)
+	public void updateCache(IMultiblock<T> multiblock)
 	{
-		if(!loaded)
-		{
-			load(tileEntity.getWorldObj());
+		try {
+			if(!loaded)
+			{
+				load(((TileEntity)multiblock).getWorldObj());
+			}
+			
+			if(!inventories.containsKey(multiblock.getSynchronizedData().inventoryID))
+			{
+				MultiblockCache<T> cache = cacheClass.newInstance();
+				cache.sync((T)multiblock.getSynchronizedData());
+				cache.locations.add(Coord4D.get((TileEntity)multiblock));
+	
+				inventories.put(multiblock.getSynchronizedData().inventoryID, cache);
+	
+				return;
+			}
+			
+			inventories.get(multiblock.getSynchronizedData().inventoryID).sync((T)multiblock.getSynchronizedData());
+			inventories.get(multiblock.getSynchronizedData().inventoryID).locations.add(Coord4D.get((TileEntity)multiblock));
+			dataHandler.markDirty();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		
-		if(!inventories.containsKey(tileEntity.structure.inventoryID))
-		{
-			DynamicTankCache cache = new DynamicTankCache();
-			cache.sync(tileEntity.structure);
-			cache.locations.add(Coord4D.get(tileEntity));
-
-			inventories.put(tileEntity.structure.inventoryID, cache);
-
-			return;
-		}
-		
-		inventories.get(tileEntity.structure.inventoryID).sync(tileEntity.structure);
-		inventories.get(tileEntity.structure.inventoryID).locations.add(Coord4D.get(tileEntity));
-		dataHandler.markDirty();
 	}
 
 	/**
@@ -140,11 +145,11 @@ public class MultiblockManager
 			ArrayList<Integer> idsToKill = new ArrayList<Integer>();
 			HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
 			
-			for(Map.Entry<Integer, DynamicTankCache> entry : manager.inventories.entrySet())
+			for(Map.Entry<Integer, MultiblockCache> entry : ((Map<Integer, MultiblockCache>)manager.inventories).entrySet())
 			{
 				int inventoryID = entry.getKey();
 	
-				for(Coord4D obj : entry.getValue().locations)
+				for(Coord4D obj : (Set<Coord4D>)entry.getValue().locations)
 				{
 					if(obj.dimensionId == world.provider.dimensionId && obj.exists(world))
 					{
@@ -172,7 +177,7 @@ public class MultiblockManager
 			{
 				for(Coord4D obj : entry.getValue())
 				{
-					manager.inventories.get(entry.getKey()).locations.remove(obj);
+					((Map<Integer, MultiblockCache>)manager.inventories).get(entry.getKey()).locations.remove(obj);
 					manager.dataHandler.markDirty();
 				}
 			}
@@ -194,7 +199,7 @@ public class MultiblockManager
 	{
 		Coord4D coord = Coord4D.get(tile);
 		
-		for(Map.Entry<Integer, DynamicTankCache> entry : inventories.entrySet())
+		for(Map.Entry<Integer, MultiblockCache<T>> entry : inventories.entrySet())
 		{
 			if(entry.getValue().locations.contains(coord))
 			{
@@ -230,7 +235,7 @@ public class MultiblockManager
 	{
 		public MultiblockManager manager;
 		
-		public Map<Integer, DynamicTankCache> loadedInventories;
+		public Map<Integer, MultiblockCache> loadedInventories;
 		
 		public DataHandler(String tagName)
 		{
@@ -253,33 +258,41 @@ public class MultiblockManager
 		@Override
 		public void readFromNBT(NBTTagCompound nbtTags) 
 		{
-			NBTTagList list = nbtTags.getTagList("invList", NBT.TAG_COMPOUND);
-			
-			loadedInventories = new HashMap<Integer, DynamicTankCache>();
-			
-			for(int i = 0; i < list.tagCount(); i++)
-			{
-				NBTTagCompound compound = list.getCompoundTagAt(i);
-				DynamicTankCache cache = new DynamicTankCache();
-				cache.load(compound);
+			try {
+				String cacheClass = nbtTags.getString("cacheClass");
 				
-				NBTTagList coordsList = compound.getTagList("coordsList", NBT.TAG_COMPOUND);
+				NBTTagList list = nbtTags.getTagList("invList", NBT.TAG_COMPOUND);
 				
-				for(int j = 0; j < coordsList.tagCount(); j++)
+				loadedInventories = new HashMap<Integer, MultiblockCache>();
+				
+				for(int i = 0; i < list.tagCount(); i++)
 				{
-					cache.locations.add(Coord4D.read(coordsList.getCompoundTagAt(j)));
+					NBTTagCompound compound = list.getCompoundTagAt(i);
+					MultiblockCache cache = (MultiblockCache)Class.forName(cacheClass).newInstance();
+					cache.load(compound);
+					
+					NBTTagList coordsList = compound.getTagList("coordsList", NBT.TAG_COMPOUND);
+					
+					for(int j = 0; j < coordsList.tagCount(); j++)
+					{
+						cache.locations.add(Coord4D.read(coordsList.getCompoundTagAt(j)));
+					}
+	
+					loadedInventories.put(compound.getInteger("id"), cache);
 				}
-
-				loadedInventories.put(compound.getInteger("id"), cache);
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 
 		@Override
 		public void writeToNBT(NBTTagCompound nbtTags) 
 		{
+			nbtTags.setString("cacheClass", manager.cacheClass.getName());
+			
 			NBTTagList list = new NBTTagList();
 			
-			for(Map.Entry<Integer, DynamicTankCache> entry : manager.inventories.entrySet())
+			for(Map.Entry<Integer, MultiblockCache> entry : ((Map<Integer, MultiblockCache>)manager.inventories).entrySet())
 			{
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setInteger("id", entry.getKey());
@@ -287,7 +300,7 @@ public class MultiblockManager
 				
 				NBTTagList coordsList = new NBTTagList();
 				
-				for(Coord4D coord : entry.getValue().locations)
+				for(Coord4D coord : (Set<Coord4D>)entry.getValue().locations)
 				{
 					coordsList.appendTag(coord.write(new NBTTagCompound()));
 				}

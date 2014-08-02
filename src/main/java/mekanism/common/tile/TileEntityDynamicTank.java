@@ -9,6 +9,8 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
+import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
@@ -25,7 +27,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager
+public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager, IMultiblock<SynchronizedTankData>
 {
 	/** The tank data for this structure. */
 	public SynchronizedTankData structure;
@@ -550,5 +552,11 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 	public boolean handleInventory()
 	{
 		return false;
+	}
+
+	@Override
+	public SynchronizedData<SynchronizedTankData> getSynchronizedData() 
+	{
+		return structure;
 	}
 }

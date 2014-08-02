@@ -9,16 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.recipe.AdvancedInput;
-import mekanism.api.recipe.ChanceOutput;
-import mekanism.api.recipe.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
-import mekanism.api.recipe.PressurizedProducts;
-import mekanism.api.recipe.PressurizedReactants;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
 import mekanism.api.gas.GasRegistry;
@@ -28,6 +23,11 @@ import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionInput;
+import mekanism.api.recipe.AdvancedInput;
+import mekanism.api.recipe.ChanceOutput;
+import mekanism.api.recipe.ChemicalPair;
+import mekanism.api.recipe.PressurizedProducts;
+import mekanism.api.recipe.PressurizedReactants;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
@@ -60,6 +60,7 @@ import mekanism.common.recipe.BinRecipe;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.tank.DynamicTankCache;
+import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -158,7 +159,7 @@ public class Mekanism
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
 	
 	/** The Dynamic Tank multiblock manager */
-	public static MultiblockManager tankManager = new MultiblockManager("dynamicTank");
+	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", DynamicTankCache.class);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
