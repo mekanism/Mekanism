@@ -3,9 +3,7 @@ package mekanism.common.inventory.container;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionInput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
@@ -23,22 +21,21 @@ public class ContainerMetallurgicInfuser extends Container
 	public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotMachineUpgrade(tentity, 0, 180, 11));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 143, 35));
 		addSlotToContainer(new Slot(tentity, 1, 17, 35));
 		addSlotToContainer(new Slot(tentity, 2, 51, 43));
 		addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
-		addSlotToContainer(new SlotDischarge(tentity, 4, 143, 35));
 		int slotX;
 
-		for(slotX = 0; slotX < 3; ++slotX)
+		for(slotX = 0; slotX < 3; slotX++)
 		{
-			for(int slotY = 0; slotY < 9; ++slotY)
+			for(int slotY = 0; slotY < 9; slotY++)
 			{
 				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
@@ -73,18 +70,11 @@ public class ContainerMetallurgicInfuser extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3 && slotID != 4)
+			if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 			{
 				if(InfuseRegistry.getObject(slotStack) != null && (tileEntity.type == null || tileEntity.type == InfuseRegistry.getObject(slotStack).type))
 				{
 					if(!mergeItemStack(slotStack, 1, 2, false))
-					{
-						return null;
-					}
-				}
-				else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-				{
-					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
 						return null;
 					}
@@ -104,22 +94,22 @@ public class ContainerMetallurgicInfuser extends Container
 					}
 				}
 				else {
-					if(slotID >= 5 && slotID <= 31)
+					if(slotID >= 4 && slotID <= 30)
 					{
-						if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
+						if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
 						{
 							return null;
 						}
 					}
-					else if(slotID > 31)
+					else if(slotID > 30)
 					{
-						if(!mergeItemStack(slotStack, 5, 31, false))
+						if(!mergeItemStack(slotStack, 4, 30, false))
 						{
 							return null;
 						}
 					}
 					else {
-						if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+						if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 						{
 							return null;
 						}
@@ -127,7 +117,7 @@ public class ContainerMetallurgicInfuser extends Container
 				}
 			}
 			else {
-				if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 				{
 					return null;
 				}

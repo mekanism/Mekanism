@@ -19,11 +19,17 @@ public final class Tier
 		BASIC("Basic"),
 		ADVANCED("Advanced"),
 		ELITE("Elite"),
-		ULTIMATE("Ultimate");
+		ULTIMATE("Ultimate"),
+		CREATIVE("Creative");
 		
 		public String getName()
 		{
 			return name;
+		}
+		
+		public boolean isObtainable()
+		{
+			return this != CREATIVE;
 		}
 		
 		private String name;
@@ -44,7 +50,8 @@ public final class Tier
 		BASIC("Basic", EnumColor.BRIGHT_GREEN, 2000000, 800),
 		ADVANCED("Advanced", EnumColor.DARK_RED, 8000000, 3200),
 		ELITE("Elite", EnumColor.DARK_BLUE, 32000000, 12800),
-		ULTIMATE("Ultimate", EnumColor.PURPLE, 128000000, 51200);
+		ULTIMATE("Ultimate", EnumColor.PURPLE, 128000000, 51200),
+		CREATIVE("Creative", EnumColor.BLACK, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
 		public double MAX_ELECTRICITY;
 		public double OUTPUT;

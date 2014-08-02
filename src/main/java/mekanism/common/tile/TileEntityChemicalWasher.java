@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -16,6 +17,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -40,7 +42,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityChemicalWasher extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IFluidHandler
+public class TileEntityChemicalWasher extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IFluidHandler, ISustainedData
 {
 	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
 	public GasTank inputTank = new GasTank(MAX_GAS);
@@ -61,7 +63,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 
 	public double prevEnergy;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalWasherUsage;
+	public final double ENERGY_USAGE = usage.chemicalWasherUsage;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -586,5 +588,32 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 		}
 
 		return PipeUtils.EMPTY;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(fluidTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(inputTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("inputTank", inputTank.getGas().write(new NBTTagCompound()));
+		}
+		
+		if(outputTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank")));
+		inputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputTank")));
+		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
 	}
 }

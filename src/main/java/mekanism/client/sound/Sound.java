@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public abstract class Sound
 {
 	/** The bundled path where the sound is */
-	public String soundPath;
+	public String prevSoundPath;
 
 	/** A unique identifier for this sound */
 	public String identifier;
@@ -22,6 +22,8 @@ public abstract class Sound
 	public int ticksSincePlay = 0;
 
 	private Object objRef;
+	
+	public String channel;
 
 	protected Minecraft mc = Minecraft.getMinecraft();
 
@@ -31,18 +33,19 @@ public abstract class Sound
 	 * @param sound - bundled path to the sound
 	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public Sound(String id, String sound, Object obj, Pos3D loc)
+	public Sound(String id, String sound, String chan, Object obj, Pos3D loc)
 	{
-		if(MekanismClient.audioHandler.getFrom(obj) != null)
+		if(MekanismClient.audioHandler.getSound(obj, chan) != null)
 		{
 			return;
 		}
 
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
-			soundPath = sound;
+			prevSoundPath = sound;
 			identifier = id;
 			objRef = obj;
+			channel = chan;
 
 			URL url = getClass().getClassLoader().getResource("assets/mekanism/sounds/" + sound);
 
@@ -58,7 +61,7 @@ public abstract class Sound
 				SoundHandler.getSoundSystem().activate(id);
 			}
 
-			MekanismClient.audioHandler.sounds.put(obj, this);
+			MekanismClient.audioHandler.registerSound(objRef, channel, this);
 		}
 	}
 
@@ -67,7 +70,7 @@ public abstract class Sound
 	 */
 	public void play()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			if(isPlaying)
 			{
@@ -91,7 +94,7 @@ public abstract class Sound
 	 */
 	public void stopLoop()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			if(!isPlaying)
 			{
@@ -109,18 +112,18 @@ public abstract class Sound
 	}
 
 	/**
-	 * Remove the sound effect from the PaulsCode SoundSystem
+	 * Remove the sound effect from the PaulsCode SoundSystem and the Mekanism SoundHandler
 	 */
 	public void remove()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			if(isPlaying)
 			{
 				stopLoop();
 			}
 
-			MekanismClient.audioHandler.sounds.remove(objRef);
+			MekanismClient.audioHandler.removeSound(objRef, channel);
 
 			if(SoundHandler.getSoundSystem() != null)
 			{
@@ -129,14 +132,32 @@ public abstract class Sound
 			}
 		}
 	}
+	
+	public String getSoundPath()
+	{
+		return prevSoundPath;
+	}
 
-	public abstract boolean update(World world);
+	public boolean update(World world)
+	{
+		if(!getSoundPath().equals(prevSoundPath))
+		{
+			return false;
+		}
+		
+		return true;
+	}
 
 	public abstract Pos3D getLocation();
 
 	public float getMultiplier()
 	{
-		return Math.min(1, ((float)ticksSincePlay/30F));
+		return doGradualEffect() ? Math.min(1, ((float)ticksSincePlay/30F)) : 1;
+	}
+	
+	public boolean doGradualEffect()
+	{
+		return true;
 	}
 
 	/**
@@ -145,7 +166,7 @@ public abstract class Sound
 	 */
 	public void updateVolume()
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
+		synchronized(MekanismClient.audioHandler.soundMaps)
 		{
 			try {
 				float multiplier = getMultiplier();

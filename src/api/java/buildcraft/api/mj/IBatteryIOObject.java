@@ -9,19 +9,9 @@
 package buildcraft.api.mj;
 
 public interface IBatteryIOObject extends IBatteryObject {
-	double maxSendedPerCycle();
-
-	double extractEnergy(double mj);
-
-	double extractEnergy(double mj, boolean ignoreCycleLimit);
-
 	IOMode mode();
 
 	boolean canSend();
 
 	boolean canReceive();
-
-	boolean isActive();
-
-	boolean isCacheable();
 }

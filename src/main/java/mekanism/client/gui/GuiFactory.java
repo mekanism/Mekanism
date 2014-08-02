@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
@@ -31,7 +31,7 @@ public class GuiFactory extends GuiMekanism
 		ySize += 11;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
-		guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.tier.guiLocation));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiSortingTab(this, tileEntity, tileEntity.tier.guiLocation));

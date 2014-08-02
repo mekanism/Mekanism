@@ -3,23 +3,16 @@ package mekanism.common.miner;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import mekanism.api.ListUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class MItemStackFilter extends MinerFilter
 {
-	private static List<Block> metaIgnoreArray = ListUtils.asList(Blocks.planks, Blocks.ladder, Blocks.torch,
-			Blocks.furnace, Blocks.dispenser, Blocks.piston,
-			Blocks.piston_extension, Blocks.piston_head);
-
 	public ItemStack itemType;
+	public boolean fuzzy;
 
 	public MItemStackFilter(ItemStack item)
 	{
@@ -36,7 +29,7 @@ public class MItemStackFilter extends MinerFilter
 			return false;
 		}
 
-		if(itemStack.getItem() == itemType.getItem() && metaIgnoreArray.contains(Block.getBlockFromItem(itemType.getItem())))
+		if(itemStack.getItem() == itemType.getItem() && fuzzy)
 		{
 			return true;
 		}
@@ -47,7 +40,11 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
+		super.write(nbtTags);
+		
 		nbtTags.setInteger("type", 0);
+		
+		nbtTags.setBoolean("fuzzy", fuzzy);
 		itemType.writeToNBT(nbtTags);
 
 		return nbtTags;
@@ -56,6 +53,9 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
+		super.read(nbtTags);
+		
+		fuzzy = nbtTags.getBoolean("fuzzy");
 		itemType = ItemStack.loadItemStackFromNBT(nbtTags);
 	}
 
@@ -63,7 +63,11 @@ public class MItemStackFilter extends MinerFilter
 	public void write(ArrayList data)
 	{
 		data.add(0);
+		
+		super.write(data);
 
+		data.add(fuzzy);
+		
 		data.add(MekanismUtils.getID(itemType));
 		data.add(itemType.stackSize);
 		data.add(itemType.getItemDamage());
@@ -72,6 +76,10 @@ public class MItemStackFilter extends MinerFilter
 	@Override
 	protected void read(ByteBuf dataStream)
 	{
+		super.read(dataStream);
+		
+		fuzzy = dataStream.readBoolean();
+		
 		itemType = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
 	}
 
@@ -95,6 +103,9 @@ public class MItemStackFilter extends MinerFilter
 	public MItemStackFilter clone()
 	{
 		MItemStackFilter filter = new MItemStackFilter();
+		filter.replaceStack = replaceStack;
+		filter.requireStack = requireStack;
+		filter.fuzzy = fuzzy;
 		filter.itemType = itemType.copy();
 
 		return filter;

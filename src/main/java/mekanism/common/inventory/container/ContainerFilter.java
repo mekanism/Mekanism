@@ -17,15 +17,15 @@ public class ContainerFilter extends Container
 
 		int slotX;
 
-		for(slotX = 0; slotX < 3; ++slotX)
+		for(slotX = 0; slotX < 3; slotX++)
 		{
-			for(int slotY = 0; slotY < 9; ++slotY)
+			for(int slotY = 0; slotY < 9; slotY++)
 			{
 				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}

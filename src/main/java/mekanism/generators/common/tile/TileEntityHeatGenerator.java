@@ -4,11 +4,14 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.MekanismConfig.generators;
+import mekanism.api.lasers.ILaserReceptor;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -27,14 +30,14 @@ import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ILaserReceptor, ISustainedData
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
 
 	public TileEntityHeatGenerator()
 	{
-		super("HeatGenerator", 160000, MekanismGenerators.heatGeneration*2);
+		super("HeatGenerator", 160000, generators.heatGeneration*2);
 		inventory = new ItemStack[2];
 	}
 
@@ -113,7 +116,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				setActive(true);
 
 				lavaTank.drain(10, true);
-				setEnergy(electricityStored + MekanismGenerators.heatGeneration);
+				setEnergy(electricityStored + generators.heatGeneration);
 			}
 			else {
 				setActive(false);
@@ -334,5 +337,38 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
 		return new FluidTankInfo[] {lavaTank.getInfo()};
+	}
+
+	@Override
+	public void receiveLaserEnergy(double energy, ForgeDirection side)
+	{
+		setEnergy(getEnergy()+energy);
+	}
+
+	@Override
+	public boolean canLasersDig()
+	{
+		return false;
+	}
+
+	@Override
+	public double energyToDig()
+	{
+		return 0;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(lavaTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("lavaTank")));
 	}
 }

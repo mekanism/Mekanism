@@ -2,7 +2,7 @@ package mekanism.common;
 
 import java.util.Map;
 
-import mekanism.api.AdvancedInput;
+import mekanism.api.recipe.AdvancedInput;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -10,7 +10,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
+import mekanism.api.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;

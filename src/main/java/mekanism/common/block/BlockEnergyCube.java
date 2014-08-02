@@ -8,6 +8,7 @@ import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -257,7 +258,7 @@ public class BlockEnergyCube extends BlockContainer
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
-		ItemStack itemStack = new ItemStack(Mekanism.EnergyCube);
+		ItemStack itemStack = new ItemStack(MekanismBlocks.EnergyCube);
 
 		IEnergyCube energyCube = (IEnergyCube)itemStack.getItem();
 		energyCube.setEnergyCubeTier(itemStack, tileEntity.tier);

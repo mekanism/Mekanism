@@ -17,7 +17,9 @@ import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSalinationController;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+
 import net.minecraft.item.ItemStack;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
@@ -104,8 +106,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		
 		API.registerNEIGuiHandler(new ElementBoundHandler());
 
-		API.hideItem(new ItemStack(Mekanism.BoundingBlock));
-		API.hideItem(new ItemStack(Mekanism.ItemProxy));
+		API.hideItem(new ItemStack(MekanismBlocks.BoundingBlock));
+		API.hideItem(new ItemStack(MekanismItems.Proxy));
 	}
 
 	@Override

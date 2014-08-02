@@ -17,7 +17,7 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.ITileNetwork;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.TransmitterType.Size;
@@ -312,7 +312,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@SideOnly(Side.CLIENT)
 	public boolean renderStatic(Vector3 pos, int pass)
 	{
-		if(pass == 1)
+		if(pass == 0)
 		{
 			RenderPartTransmitter.getInstance().renderStatic(this);
 			return true;
@@ -446,7 +446,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public ItemStack pickItem(MovingObjectPosition hit)
 	{
-		return new ItemStack(Mekanism.PartTransmitter, 1, getTransmitter().ordinal());
+		return new ItemStack(MekanismItems.PartTransmitter, 1, getTransmitter().ordinal());
 	}
 
 	@Override
@@ -590,25 +590,30 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		ExtendedMOP hit = (ExtendedMOP)RayTracer.retraceBlock(world(), player, x(), y(), z());
-
-		if(hit == null)
+		if(!world().isRemote)
 		{
-			return false;
+			ExtendedMOP hit = (ExtendedMOP)RayTracer.retraceBlock(world(), player, x(), y(), z());
+	
+			if(hit == null)
+			{
+				return false;
+			}
+			else if(hit.subHit < 6)
+			{
+				connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
+				sendDesc = true;
+	
+				onModeChange(ForgeDirection.getOrientation(side));
+				player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
+	
+				return true;
+			}
+			else {
+				return onConfigure(player, hit.subHit, side);
+			}
 		}
-		else if(hit.subHit < 6)
-		{
-			connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
-			sendDesc = true;
-
-			onModeChange(ForgeDirection.getOrientation(side));
-			player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
-
-			return true;
-		}
-		else {
-			return onConfigure(player, hit.subHit, side);
-		}
+		
+		return true;
 	}
 
 	protected boolean onConfigure(EntityPlayer player, int part, int side)
@@ -624,11 +629,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
-		redstoneReactive ^= true;
-		refreshConnections();
-		tile().notifyPartChange(this);
-
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+		if(!world().isRemote)
+		{
+			redstoneReactive ^= true;
+			refreshConnections();
+			tile().notifyPartChange(this);
+	
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
+		}
+		
 		return true;
 	}
 

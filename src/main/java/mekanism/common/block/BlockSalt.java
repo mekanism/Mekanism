@@ -3,6 +3,8 @@ package mekanism.common.block;
 import java.util.Random;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -30,7 +32,7 @@ public class BlockSalt extends Block
     @Override
     public Item getItemDropped(int i, Random random, int j)
     {
-        return Mekanism.Salt;
+        return MekanismItems.Salt;
     }
 
     @Override

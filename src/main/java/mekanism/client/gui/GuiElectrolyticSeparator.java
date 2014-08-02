@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ListUtils;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.util.ListUtils;
 import mekanism.api.gas.GasTank;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
@@ -43,7 +44,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(Mekanism.FROM_H2*2);
+				String multiplier = MekanismUtils.getEnergyDisplay(general.FROM_H2*2);
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png")));

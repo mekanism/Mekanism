@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ListUtils;
+import mekanism.api.EnumColor;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerDigitalMiner;
@@ -18,15 +20,11 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -46,7 +44,7 @@ public class GuiDigitalMiner extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
-		guiElements.add(new GuiUpgradeManagement(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png"), 163, 23));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
@@ -173,13 +171,24 @@ public class GuiDigitalMiner extends GuiMekanism
 		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
 		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
-		if(tileEntity.replaceStack != null)
+		if(tileEntity.missingStack != null)
 		{
 			GL11.glPushMatrix();
+			GL11.glColor4f(1, 1, 1, 1);
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.replaceStack, 144, 27);
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+			
+			itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.missingStack, 144, 27);
+			
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
+		}
+		else {
+			mc.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"));
+			drawTexturedModalRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
 		}
 
 		if(xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77)
@@ -199,7 +208,13 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.replaceBlock"), xAxis, yAxis);
+			if(tileEntity.missingStack != null)
+			{
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.well"), xAxis, yAxis);
+			}
 		}
 
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
@@ -265,21 +280,6 @@ public class GuiDigitalMiner extends GuiMekanism
 		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
-		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
-		{
-			GL11.glPushMatrix();
-			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-			int x = guiWidth + 144;
-			int y = guiHeight + 27;
-			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
-
-			GL11.glPopAttrib();
-			GL11.glPopMatrix();
-		}
 	}
 
 	@Override
@@ -330,49 +330,6 @@ public class GuiDigitalMiner extends GuiMekanism
 				data.add(9);
 
 				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-			}
-
-			if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
-			{
-				boolean doNull = false;
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
-				ItemStack toUse = null;
-
-				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-				{
-					if(stack.getItem() instanceof ItemBlock)
-					{
-						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
-						{
-							toUse = stack.copy();
-							toUse.stackSize = 1;
-						}
-					}
-				}
-				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
-				{
-					doNull = true;
-				}
-
-				if(toUse != null || doNull)
-				{
-					ArrayList data = new ArrayList();
-					data.add(2);
-
-					if(stack != null)
-					{
-						data.add(false);
-						data.add(MekanismUtils.getID(toUse));
-						data.add(toUse.getItemDamage());
-					}
-					else {
-						data.add(true);
-					}
-
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				}
-
-                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

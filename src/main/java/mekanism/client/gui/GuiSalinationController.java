@@ -38,6 +38,7 @@ public class GuiSalinationController extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 
 		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
 		fontRendererObj.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
@@ -131,35 +132,6 @@ public class GuiSalinationController extends GuiMekanism
 
 		displayInt = tileEntity.getScaledTempLevel(78);
 		drawTexturedModalRect(guiWidth + 49, guiHeight + 64, 176, 59, displayInt, 8);
-
-		if(xAxis >= 48 && xAxis <= 128 && yAxis >= 5 && yAxis <= 17)
-		{
-			drawTexturedModalRect(guiWidth + 48, guiHeight + 5, 176, 79, 80, 12);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 48, guiHeight + 5, 176, 67, 80, 12);
-		}
-	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int button)
-	{
-		super.mouseClicked(x, y, button);
-
-		if(button == 0)
-		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
-
-			if(xAxis >= 48 && xAxis <= 128 && yAxis >= 5 && yAxis <= 17)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-                SoundHandler.playSound("gui.button.press");
-			}
-		}
 	}
 
 	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)

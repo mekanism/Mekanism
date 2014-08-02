@@ -10,6 +10,7 @@ import java.util.Set;
 import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
 import mekanism.api.gas.GasStack;
+import mekanism.client.sound.FlamethrowerSound;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
 import mekanism.client.sound.SoundHandler;
@@ -20,6 +21,7 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemElectricBow;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
@@ -28,6 +30,7 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
+import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
@@ -36,7 +39,7 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
+import mekanism.api.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -355,6 +358,19 @@ public class ClientTickHandler
 					mc.thePlayer.stepHeight = 0.5F;
 				}
 			}
+			
+			if(isFlamethrowerOn(mc.thePlayer) != Mekanism.flamethrowerActive.contains(mc.thePlayer.getCommandSenderName()))
+			{
+				if(isFlamethrowerOn(mc.thePlayer))
+				{
+					Mekanism.flamethrowerActive.add(mc.thePlayer.getCommandSenderName());
+				}
+				else {
+					Mekanism.flamethrowerActive.remove(mc.thePlayer);
+				}
+				
+				Mekanism.packetHandler.sendToServer(new FlamethrowerActiveMessage(isFlamethrowerOn(mc.thePlayer)));
+			}
 
 			if(Mekanism.jetpackOn.contains(mc.thePlayer.getCommandSenderName()) != isJetpackOn(mc.thePlayer))
 			{
@@ -386,22 +402,37 @@ public class ClientTickHandler
 			{
 				for(String username : Mekanism.jetpackOn)
 				{
-					if(mc.theWorld.getPlayerEntityByName(username) != null)
+					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
+					
+					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getFrom(mc.theWorld.getPlayerEntityByName(username)) == null)
+						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_JETPACK) == null)
 						{
-							new JetpackSound(MekanismClient.audioHandler.getIdentifier(), mc.theWorld.getPlayerEntityByName(username));
+							new JetpackSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
 					}
 				}
 
 				for(String username : Mekanism.gasmaskOn)
 				{
-					if(mc.theWorld.getPlayerEntityByName(username) != null)
+					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
+					
+					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getFrom(mc.theWorld.getPlayerEntityByName(username)) == null)
+						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_GASMASK) == null)
 						{
-							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(), mc.theWorld.getPlayerEntityByName(username));
+							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(player), player);
+						}
+					}
+				}
+				
+				for(EntityPlayer player : (List<EntityPlayer>)mc.theWorld.playerEntities)
+				{
+					if(hasFlamethrower(player))
+					{
+						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_FLAMETHROWER) == null)
+						{
+							new FlamethrowerSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
 					}
 				}
@@ -457,14 +488,14 @@ public class ClientTickHandler
 				ItemScubaTank tank = (ItemScubaTank)mc.thePlayer.getEquipmentInSlot(3).getItem();
 
 				final int max = 300;
-				
+
 				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
 				GasStack received = tank.removeGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
-				
+
 				if(received != null)
 				{
 					mc.thePlayer.setAir(mc.thePlayer.getAir()+received.amount);
-					
+
 					if(mc.thePlayer.getAir() == max)
 					{
 						mc.thePlayer.clearActivePotions();
@@ -545,12 +576,40 @@ public class ClientTickHandler
 
 		return false;
 	}
+	
+	public static boolean isFlamethrowerOn(EntityPlayer player)
+	{
+		if(hasFlamethrower(player))
+		{
+			if(mc.gameSettings.keyBindUseItem.getIsKeyPressed())
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean hasFlamethrower(EntityPlayer player)
+	{
+		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+		{
+			ItemFlamethrower flamethrower = (ItemFlamethrower)player.getCurrentEquippedItem().getItem();
+			
+			if(flamethrower.getGas(player.getCurrentEquippedItem()) != null)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
 
 	public void tickEnd()
 	{
 		if(MekanismClient.audioHandler != null)
 		{
-			synchronized(MekanismClient.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
 				MekanismClient.audioHandler.onTick();
 			}

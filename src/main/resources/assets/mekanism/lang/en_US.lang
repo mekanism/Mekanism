@@ -40,6 +40,7 @@ item.HDPERod.name=HDPE Rod
 item.HDPESheet.name=HDPE Sheet
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
+item.Flamethrower.name=Flamethrower
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit
@@ -114,6 +115,8 @@ tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.PortableTank.name=Portable Tank
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.Laser.name=Laser
+tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -159,6 +162,7 @@ tile.EnergyCube.Basic.name=Basic Energy Cube
 tile.EnergyCube.Advanced.name=Advanced Energy Cube
 tile.EnergyCube.Elite.name=Elite Energy Cube
 tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
+tile.EnergyCube.Creative.name=Creative Energy Cube
 
 //Dust
 item.ironDust.name=Iron Dust
@@ -289,9 +293,19 @@ update.toDownload=to download
 update.devBuild=Using developer build
 update.outdated=Using outdated version on one or more modules
 
+//Upgrades
+upgrade.energy=Energy
+upgrade.energy.desc=Increases energy efficiency !nand capacity of machinery.
+upgrade.speed=Speed
+upgrade.speed.desc=Increases speed of machinery.
+
 //Key description text
 key.mode=Mode Switch
 key.voice=Voice
+
+//Entities
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Baby Skeleton
 
 //Config Gui
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
@@ -342,6 +356,16 @@ gui.modID=Mod ID
 gui.key=Key
 gui.id=ID
 gui.finished=Finished
+gui.well=All is well!
+gui.upgrade=Upgrade
+gui.infinite=Infinite
+
+gui.upgrades=Upgrades
+gui.upgrades.supported=Supported
+gui.upgrades.noSelection=No selection
+gui.upgrades.amount=Amount
+gui.upgrades.max=Max
+gui.upgrades.effect=Effect
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
@@ -390,7 +414,6 @@ gui.materialFilter.details=Using material of
 gui.portableTeleporter=Portable Teleporter
 
 gui.robit=Robit
-entity.Robit.name=Robit
 gui.robit.smelting=Robit Smelting
 gui.robit.inventory=Robit Inventory
 gui.robit.crafting=Robit Crafting
@@ -435,6 +458,9 @@ gui.digitalMiner.silk=Silk
 gui.digitalMiner.toMine=To mine
 gui.digitalMiner.running=Running
 gui.digitalMiner.inverse=Inverse mode
+gui.digitalMiner.requireReplace=Require replace
+gui.digitalMiner.fuzzyMode=Fuzzy mode
+gui.digitalMiner.missingBlock=Missing block
 
 //Recipe names
 recipe.mekanismShaped=Shaped
@@ -548,6 +574,8 @@ tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide info
 tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
 tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
+tooltip.Laser=An advanced form of linear energy transfer that utilizes !nan extremely compressed beam of !nlight.
+tooltip.LaserAmplifier=A block that can be used to both merge !nand amplify laser beams.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
@@ -638,6 +666,14 @@ tile.Generator.GasGenerator.name=Gas-Burning Generator
 tile.Generator.BioGenerator.name=Bio-Generator
 tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
 tile.Generator.WindTurbine.name=Wind Turbine
+
+tile.Reactor.ReactorController.name=Reactor Controller
+tile.Reactor.ReactorFrame.name=Reactor Frame
+tile.Reactor.ReactorLaserFocusMatrix.name=Laser Focus Matrix
+tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
+tile.Reactor.ReactorInOutPort.name=Reactor Port
+
+tile.ReactorGlass.ReactorGlass.name=Reactor Glass
 
 //Gui text
 gui.heatGenerator.fuel=Fuel

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -16,6 +17,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.ISustainedData;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -31,7 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler, IUpgradeTile
+public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler, IUpgradeTile, ISustainedData
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -54,7 +56,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public int TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
+	public final double ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 
@@ -433,42 +435,31 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	{
 		return false;
 	}
-	
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data) 
-	{
-		return true;
-	}
 
 	@Override
 	public TileComponentUpgrade getComponent() 
 	{
 		return upgradeComponent;
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		if(injectTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("injectTank", injectTank.getGas().write(new NBTTagCompound()));
+		}
+		
+		if(outputTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		injectTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("injectTank")));
+		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
 	}
 }

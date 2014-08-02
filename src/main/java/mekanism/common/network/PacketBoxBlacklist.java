@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 
-import mekanism.api.BlockInfo;
+import mekanism.api.util.BlockInfo;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.sound.IHasSound;
@@ -125,7 +126,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			}
 			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()* general.TO_IC2), 4, true, false)* general.FROM_IC2;
 				setEnergy(getEnergy() - sent);
 			}
 			else if(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem)
@@ -133,9 +134,9 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()* general.TO_TE)));
 
-				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*Mekanism.FROM_TE));
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)* general.FROM_TE));
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 package mekanism.common.inventory.slot;
 
-import mekanism.common.item.ItemMachineUpgrade;
+import mekanism.common.IUpgradeItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -15,6 +15,6 @@ public class SlotMachineUpgrade extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.getItem() instanceof ItemMachineUpgrade;
+		return itemstack.getItem() instanceof IUpgradeItem;
 	}
 }

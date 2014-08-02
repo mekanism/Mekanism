@@ -6,11 +6,12 @@ import ic2.api.item.ISpecialElectricItem;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekanismKeyHandler;
+import mekanism.common.ISustainedData;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.ISustainedTank;
-import mekanism.common.Mekanism;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
@@ -31,7 +32,6 @@ import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
-
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
@@ -127,7 +127,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			if(!block.isReplaceable(world, x, y, z))
+			if(!(block.isReplaceable(world, x, y, z) && world.isAirBlock(x, y+1, z)))
 			{
 				return false;
 			}
@@ -169,6 +169,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			tileEntity.electricityStored = getEnergy(stack);
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			
+			if(tileEntity instanceof ISustainedData)
+			{
+				if(stack.stackTagCompound != null)
+				{
+					((ISustainedData)tileEntity).readSustainedData(stack);
+				}
+			}
 
 			if(tileEntity instanceof ISustainedTank)
 			{
@@ -361,14 +369,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive*Mekanism.TO_TE);
+			return (int)Math.round(toReceive* general.TO_TE);
 		}
 
 		return 0;
@@ -380,14 +388,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend* general.TO_TE);
 		}
 
 		return 0;
@@ -396,13 +404,13 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getMaxEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override

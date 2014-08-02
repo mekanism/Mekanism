@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -18,6 +20,7 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -33,7 +36,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -54,7 +56,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int MAX_INFUSE = 1000;
 
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = Mekanism.metallurgicInfuserUsage;
+	public double ENERGY_PER_TICK = usage.metallurgicInfuserUsage;
 
 	/** How many ticks it takes to run an operation. */
 	public int TICKS_REQUIRED = 200;
@@ -80,7 +82,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 	public TileComponentEjector ejectorComponent;
 
 	public TileEntityMetallurgicInfuser()
@@ -131,7 +133,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 
-			ChargeUtils.discharge(4, this);
+			ChargeUtils.discharge(0, this);
 
 			if(inventory[1] != null)
 			{
@@ -223,7 +225,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 0)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 2)
 		{
@@ -404,7 +406,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -543,38 +545,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		return true;
 	}
 
 	@Override

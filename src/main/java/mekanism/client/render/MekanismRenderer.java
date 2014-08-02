@@ -73,18 +73,23 @@ public class MekanismRenderer
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:WaterVapor"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:Chlorine"));
+			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:LiquidChlorine"));
 			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
 			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
 			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
 			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
 			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
 			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:Ethene"));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:LiquidEthene"));
 			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
 			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
-			
+			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
+			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
+			GasRegistry.getGas("fusionFuelDD").setIcon(event.map.registerIcon("mekanism:LiquidDD"));
+			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
+			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
+
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
 				if(gas instanceof OreGas)
@@ -118,7 +123,7 @@ public class MekanismRenderer
 
 		public Block baseBlock = Blocks.sand;
 		
-	    public final void setBlockBounds(float xNeg, float yNeg, float zNeg, float xPos, float yPos, float zPos)
+	    public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos)
 	    {
 	    	minX = xNeg;
 	    	minY = yNeg;

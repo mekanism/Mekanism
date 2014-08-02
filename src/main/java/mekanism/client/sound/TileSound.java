@@ -28,9 +28,9 @@ public class TileSound extends Sound
 	 * @param sound - bundled path to the sound
 	 * @param tileentity - the tile this sound is playing from.
 	 */
-	public TileSound(String id, String sound, TileEntity tileentity)
+	public TileSound(String id, String sound, String chan, TileEntity tileentity)
 	{
-		super(id, sound, tileentity, new Pos3D(tileentity));
+		super(id, sound, chan, tileentity, new Pos3D(tileentity));
 
 		tileEntity = tileentity;
 	}
@@ -50,7 +50,11 @@ public class TileSound extends Sound
 	@Override
 	public boolean update(World world)
 	{
-		if(!(tileEntity instanceof IHasSound))
+		if(!super.update(world))
+		{
+			return false;
+		}
+		else if(!(tileEntity instanceof IHasSound))
 		{
 			return false;
 		}
@@ -58,7 +62,7 @@ public class TileSound extends Sound
 		{
 			return false;
 		}
-		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(soundPath))
+		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(prevSoundPath))
 		{
 			return false;
 		}

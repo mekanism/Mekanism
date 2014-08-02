@@ -5,6 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -165,9 +167,27 @@ public class Coord4D
 		return getFromSide(side, 1);
 	}
 
+	/**
+	 * Creates and returns a new Coord4D translated to the defined offsets of the side by the defined amount.
+	 * @param side - side to translate this Coord4D to
+	 * @param amount - how far to translate this Coord4D
+	 * @return translated Coord4D
+	 */
 	public Coord4D getFromSide(ForgeDirection side, int amount)
 	{
 		return new Coord4D(xCoord+(side.offsetX*amount), yCoord+(side.offsetY*amount), zCoord+(side.offsetZ*amount), dimensionId);
+	}
+	
+	public ItemStack getStack(IBlockAccess world)
+	{
+		Block block = getBlock(world);
+		
+		if(block == null || block == Blocks.air)
+		{
+			return null;
+		}
+		
+		return new ItemStack(block, 1, getMetadata(world));
 	}
 
 	/**
@@ -312,6 +332,16 @@ public class Coord4D
 	public boolean isAirBlock(IBlockAccess world)
 	{
 		return world.isAirBlock(xCoord, yCoord, zCoord);
+	}
+	
+	/**
+	 * Whether or not this block this Coord4D represents is replaceable.
+	 * @param world - world this Coord4D is in
+	 * @return if this Coord4D is replaceable
+	 */
+	public boolean isReplaceable(IBlockAccess world)
+	{
+		return getBlock(world).isReplaceable(world, xCoord, yCoord, zCoord);
 	}
 	
 	/**

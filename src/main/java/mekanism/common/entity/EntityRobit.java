@@ -8,11 +8,13 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.RobitAIFollow;
 import mekanism.common.RobitAIPickup;
 import mekanism.common.item.ItemConfigurator;
@@ -182,7 +184,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 					if(item.canProvideEnergy(inventory[27]))
 					{
-						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())*Mekanism.TO_IC2, 4, true, true, false)*Mekanism.FROM_IC2;
+						double gain = ElectricItem.manager.discharge(inventory[27], (MAX_ELECTRICITY - getEnergy())* general.TO_IC2, 4, true, true, false)* general.FROM_IC2;
 						setEnergy(getEnergy() + gain);
 					}
 				}
@@ -192,13 +194,13 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 					IEnergyContainerItem item = (IEnergyContainerItem)inventory[27].getItem();
 
 					int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())*Mekanism.TO_TE)));
+					int toTransfer = (int)Math.round(Math.min(itemEnergy, ((MAX_ELECTRICITY - getEnergy())* general.TO_TE)));
 
-					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+					setEnergy(getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 				}
-				else if(inventory[27].getItem() == Items.redstone && getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
+				else if(inventory[27].getItem() == Items.redstone && getEnergy()+ general.ENERGY_PER_REDSTONE <= MAX_ELECTRICITY)
 				{
-					setEnergy(getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
+					setEnergy(getEnergy() + general.ENERGY_PER_REDSTONE);
 					inventory[27].stackSize--;
 
 					if(inventory[27].stackSize <= 0)
@@ -400,12 +402,12 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 
 	public void drop()
 	{
-		EntityItem entityItem = new EntityItem(worldObj, posX, posY+0.3, posZ, new ItemStack(Mekanism.Robit));
+		EntityItem entityItem = new EntityItem(worldObj, posX, posY+0.3, posZ, new ItemStack(MekanismItems.Robit));
 
 		ItemRobit item = (ItemRobit)entityItem.getEntityItem().getItem();
 		item.setEnergy(entityItem.getEntityItem(), getEnergy());
 		item.setInventory(getInventory(), entityItem.getEntityItem());
-		item.setName(entityItem.getEntityItem(), getTranslatedEntityName());
+		item.setName(entityItem.getEntityItem(), getCommandSenderName());
 
 		float k = 0.05F;
 		entityItem.motionX = 0;
@@ -723,7 +725,8 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return tagList;
 	}
 
-	public String getTranslatedEntityName()
+	@Override
+    public String getCommandSenderName()
 	{
 		return getName().isEmpty() ? "Robit" : getName();
 	}

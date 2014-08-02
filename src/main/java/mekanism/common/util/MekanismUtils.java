@@ -11,14 +11,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.common.EnergyDisplay;
-import mekanism.common.EnergyDisplay.ElectricUnit;
+import mekanism.api.util.EnergyUtils;
+import mekanism.api.util.EnergyUtils.ElectricUnit;
 import mekanism.common.IActiveState;
 import mekanism.common.IFactory;
 import mekanism.common.IFactory.RecipeType;
@@ -26,12 +28,14 @@ import mekanism.common.IInvConfiguration;
 import mekanism.common.IModule;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.IRedstoneControl.RedstoneControl;
-import mekanism.common.IUpgradeManagement;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.OreDictCache;
 import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Upgrade;
 import mekanism.common.Version;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -88,7 +92,7 @@ public final class MekanismUtils
 	public static boolean checkForUpdates(EntityPlayer entityplayer)
 	{
 		try {
-			if(Mekanism.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
+			if(general.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
 			{
 				if(!Mekanism.latestVersionNumber.equals("null"))
 				{
@@ -368,7 +372,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getEnergyCube(EnergyCubeTier tier)
 	{
-		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(Mekanism.EnergyCube).getItem()).getUnchargedItem(tier);
+		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
 		return itemstack;
 	}
 
@@ -378,7 +382,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getEmptyGasTank()
 	{
-		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(Mekanism.GasTank).getItem()).getEmptyItem();
+		ItemStack itemstack = ((ItemBlockGasTank)new ItemStack(MekanismBlocks.GasTank).getItem()).getEmptyItem();
 		return itemstack;
 	}
 
@@ -390,7 +394,7 @@ public final class MekanismUtils
 	 */
 	public static ItemStack getFactory(FactoryTier tier, RecipeType type)
 	{
-		ItemStack itemstack = new ItemStack(Mekanism.MachineBlock, 1, 5+tier.ordinal());
+		ItemStack itemstack = new ItemStack(MekanismBlocks.MachineBlock, 1, 5+tier.ordinal());
 		((IFactory)itemstack.getItem()).setRecipeType(type.ordinal(), itemstack);
 		return itemstack;
 	}
@@ -599,47 +603,48 @@ public final class MekanismUtils
 
 	/**
 	 * Gets the operating ticks required for a machine via it's upgrades.
-	 * @param speedUpgrade - number of speed upgrades
+	 * @param mgmt - tile containing upgrades
 	 * @param def - the original, default ticks required
 	 * @return max operating ticks
 	 */
-	public static int getTicks(IUpgradeManagement mgmt, int def)
+	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
-		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, -mgmt.getSpeedMultiplier()/8.0));
+		return (int)(def * Math.pow(general.maxUpgradeMultiplier, (float)-mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax()));
 	}
 
 	/**
 	 * Gets the energy required per tick for a machine via it's upgrades.
-	 * @param speedUpgrade - number of speed upgrades
-	 * @param energyUpgrade - number of energy upgrades
+	 * @param mgmt - tile containing upgrades
 	 * @param def - the original, default energy required
 	 * @return max energy per tick
 	 */
-	public static double getEnergyPerTick(IUpgradeManagement mgmt, double def)
+	public static double getEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, (2*mgmt.getSpeedMultiplier()-mgmt.getEnergyMultiplier())/8.0);
+		return def * Math.pow(general.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/(float)Upgrade.SPEED.getMax());
 	}
 
 	/**
 	 * Gets the maximum energy for a machine via it's upgrades.
-	 * @param energyUpgrade - number of energy upgrades
+	 * @param mgmt - tile containing upgrades - best known for "Kids", 2008
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
-	public static double getMaxEnergy(IUpgradeManagement mgmt, double def)
+	public static double getMaxEnergy(IUpgradeTile mgmt, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getEnergyMultiplier()/8.0);
+		return def * Math.pow(general.maxUpgradeMultiplier, (float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
 	}
 	
 	/**
 	 * Gets the maximum energy for a machine's item form via it's upgrades.
-	 * @param energyUpgrade - number of energy upgrades
+	 * @param itemStack - stack holding energy upgrades
 	 * @param def - original, default max energy
 	 * @return max energy
 	 */
-	public static double getMaxEnergy(ItemStack itemStack, IUpgradeManagement mgmt, double def)
+	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
-		return def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getEnergyMultiplier(itemStack)/8.0);
+		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
+		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
+		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
 
 	/**
@@ -652,7 +657,7 @@ public final class MekanismUtils
 	 */
 	public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
 	{
-		world.setBlock(x, y, z, Mekanism.BoundingBlock);
+		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock);
 
 		if(!world.isRemote)
 		{
@@ -670,7 +675,7 @@ public final class MekanismUtils
 	 */
 	public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
 	{
-		world.setBlock(x, y, z, Mekanism.BoundingBlock, 1, 0);
+		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock, 1, 0);
 
 		if(!world.isRemote)
 		{
@@ -692,7 +697,7 @@ public final class MekanismUtils
 			world.func_147479_m(x, y, z);
 		}
 
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && Mekanism.machineEffects)
+		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && general.machineEffects)
 		{
 			updateAllLightTypes(world, x, y, z);
 		}
@@ -880,78 +885,6 @@ public final class MekanismUtils
 		player.openContainer = new ContainerElectricChest(player.inventory, tileEntity, inventory, isBlock);
 		player.openContainer.windowId = id;
 		player.openContainer.addCraftingToCrafters(player);
-	}
-
-	/**
-	 * Grabs an inventory from the world's caches, and removes all the world's references to it.
-	 * @param world - world the cache is stored in
-	 * @param id - inventory ID to pull
-	 * @return correct Dynamic Tank inventory cache
-	 */
-	public static DynamicTankCache pullInventory(World world, int id)
-	{
-		DynamicTankCache toReturn = Mekanism.dynamicInventories.get(id);
-
-		for(Coord4D obj : Mekanism.dynamicInventories.get(id).locations)
-		{
-			TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(world);
-
-			if(tileEntity != null)
-			{
-				tileEntity.cachedData = new DynamicTankCache();
-				tileEntity.inventory = new ItemStack[2];
-				tileEntity.inventoryID = -1;
-			}
-		}
-
-		Mekanism.dynamicInventories.remove(id);
-
-		return toReturn;
-	}
-
-	/**
-	 * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
-	 * @param inventoryID - inventory ID of the dynamic tank
-	 * @param fluid - cached fluid of the dynamic tank
-	 * @param inventory - inventory of the dynamic tank
-	 * @param tileEntity - dynamic tank TileEntity
-	 */
-	public static void updateCache(int inventoryID, DynamicTankCache cache, TileEntityDynamicTank tileEntity)
-	{
-		if(!Mekanism.dynamicInventories.containsKey(inventoryID))
-		{
-			cache.locations.add(Coord4D.get(tileEntity));
-
-			Mekanism.dynamicInventories.put(inventoryID, cache);
-
-			return;
-		}
-
-		Mekanism.dynamicInventories.put(inventoryID, cache);
-		Mekanism.dynamicInventories.get(inventoryID).locations.add(Coord4D.get(tileEntity));
-	}
-
-	/**
-	 * Grabs a unique inventory ID for a dynamic tank.
-	 * @return unique inventory ID
-	 */
-	public static int getUniqueInventoryID()
-	{
-		int id = 0;
-
-		while(true)
-		{
-			for(Integer i : Mekanism.dynamicInventories.keySet())
-			{
-				if(id == i)
-				{
-					id++;
-					continue;
-				}
-			}
-
-			return id;
-		}
 	}
 
 	/**
@@ -1154,29 +1087,24 @@ public final class MekanismUtils
 	 */
 	public static String getEnergyDisplay(double energy)
 	{
-		switch(Mekanism.activeType)
+		if(energy == Integer.MAX_VALUE)
+		{
+			return localize("gui.infinite");
+		}
+		
+		switch(general.activeType)
 		{
 			case J:
-				return EnergyDisplay.getDisplayShort(energy, ElectricUnit.JOULES);
+				return EnergyUtils.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return Math.round(energy*Mekanism.TO_TE) + " RF";
+				return EnergyUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
 			case EU:
-				return Math.round(energy*Mekanism.TO_IC2) + " EU";
+				return EnergyUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return (Math.round((energy*Mekanism.TO_BC)*100)/100) + " MJ";
+				return EnergyUtils.getDisplayShort(energy * general.TO_BC, ElectricUnit.MINECRAFT_JOULES);
 		}
 
 		return "error";
-	}
-
-	/**
-	 * Gets a rounded power display of a defined amount of energy.
-	 * @param energy - energy to display
-	 * @return rounded power display
-	 */
-	public static String getPowerDisplay(double energy)
-	{
-		return EnergyDisplay.getDisplayShort(energy, ElectricUnit.WATT);
 	}
 
 	/**

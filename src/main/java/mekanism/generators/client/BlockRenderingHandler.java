@@ -9,7 +9,7 @@ import mekanism.generators.client.model.ModelHeatGenerator;
 import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.client.model.ModelSolarGenerator;
 import mekanism.generators.client.model.ModelWindTurbine;
-import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -38,7 +38,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 		GL11.glPushMatrix();
 		GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
 
-		if(block == MekanismGenerators.Generator)
+		if(block == GeneratorsBlocks.Generator)
 		{
 			if(metadata == GeneratorType.BIO_GENERATOR.meta)
 			{
@@ -100,7 +100,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		if(block == MekanismGenerators.Generator)
+		if(block == GeneratorsBlocks.Generator)
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 

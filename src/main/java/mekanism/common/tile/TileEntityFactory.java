@@ -7,6 +7,8 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -20,9 +22,9 @@ import mekanism.common.IEjector;
 import mekanism.common.IFactory.RecipeType;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.IRedstoneControl;
-import mekanism.common.IUpgradeManagement;
 import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -32,14 +34,13 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
+import mekanism.api.util.StackUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -63,7 +64,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public int TICKS_REQUIRED = 200;
 
 	/** How much energy each operation consumes per tick. */
-	public double ENERGY_PER_TICK = Mekanism.factoryUsage;
+	public double ENERGY_PER_TICK = usage.factoryUsage;
 
 	/** How long it takes this factory to switch recipe types. */
 	public int RECIPE_TICKS_REQUIRED = 40;
@@ -189,10 +190,13 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 						recipeTicks = 0;
 						
 						ItemStack returnStack = getMachineStack();
-						IUpgradeManagement mgmt = (IUpgradeManagement)inventory[2].getItem();
 						
-						((IUpgradeManagement)returnStack.getItem()).setEnergyMultiplier(mgmt.getEnergyMultiplier(inventory[2]), returnStack);
-						((IUpgradeManagement)returnStack.getItem()).setSpeedMultiplier(mgmt.getSpeedMultiplier(inventory[2]), returnStack);
+						if(returnStack.stackTagCompound == null)
+						{
+							returnStack.setTagCompound(new NBTTagCompound());
+						}
+						
+						upgradeComponent.write(returnStack.stackTagCompound);
 
 						inventory[2] = null;
 						inventory[3] = returnStack;
@@ -452,7 +456,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 		if(slotID == 0)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 1)
 		{
@@ -589,7 +593,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -821,38 +825,6 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		return true;
 	}
 
 	@Override

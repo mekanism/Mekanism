@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
@@ -68,8 +67,6 @@ public class GuiConfigurationTab extends GuiElement
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		IRedstoneControl control = (IRedstoneControl)tileEntity;
-
 		if(button == 0)
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)

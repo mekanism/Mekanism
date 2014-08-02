@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
 import mekanism.common.IEjector;
@@ -23,7 +23,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -174,7 +173,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -289,38 +288,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		return true;
 	}
 
 	@Override

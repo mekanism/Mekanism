@@ -19,7 +19,7 @@ public final class ItemAttacher
 
 		for(TransmitterType type : TransmitterType.values())
 		{
-			attachable.add(new ItemStack(Mekanism.PartTransmitter, 1, type.ordinal()));
+			attachable.add(new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
 		}
 	}
 

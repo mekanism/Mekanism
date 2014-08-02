@@ -8,7 +8,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -97,6 +97,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		{
 			Block block = player.worldObj.getBlock(x, y, z);
 			int meta = player.worldObj.getBlockMetadata(x, y, z);
+			
+			if(block == Blocks.lit_redstone_ore)
+			{
+				block = Blocks.redstone_ore;
+			}
 
 			ItemStack stack = new ItemStack(block, 1, meta);
 			Coord4D orig = new Coord4D(x, y, z, player.worldObj.provider.dimensionId);

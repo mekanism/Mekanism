@@ -9,17 +9,16 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
+import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tank.TankUpdateProtocol;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -28,16 +27,10 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager
+public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager, IMultiblock<SynchronizedTankData>
 {
-	/** Unique inventory ID for the dynamic tank, serves as a way to retrieve cached inventories. */
-	public int inventoryID = -1;
-
 	/** The tank data for this structure. */
 	public SynchronizedTankData structure;
-	
-	/** The cache used by this specific tank segment */
-	public DynamicTankCache cachedData = new DynamicTankCache();
 
 	/** Whether or not to send this tank's structure in the next update packet. */
 	public boolean sendStructure;
@@ -149,11 +142,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 				isRendering = false;
 			}
 
-			if(inventoryID != -1 && structure == null)
-			{
-				MekanismUtils.updateCache(inventoryID, cachedData, this);
-			}
-
 			if(structure == null && ticker == 5)
 			{
 				update();
@@ -187,10 +175,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 			{
 				structure.didTick = false;
 
-				if(inventoryID != -1)
+				if(structure.inventoryID != -1)
 				{
-					cachedData.sync(structure);
-					MekanismUtils.updateCache(inventoryID, cachedData, this);
+					Mekanism.tankManager.updateCache(this);
 				}
 
 				manageInventory();
@@ -533,35 +520,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
-
-		if(structure == null)
-		{
-			inventoryID = nbtTags.getInteger("inventoryID");
-
-			if(inventoryID != -1)
-			{
-				cachedData.load(nbtTags);
-			}
-		}
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
-
-		nbtTags.setInteger("inventoryID", inventoryID);
-
-		if(inventoryID != -1)
-		{
-			cachedData.save(nbtTags);
-		}
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox()
 	{
@@ -594,5 +552,11 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 	public boolean handleInventory()
 	{
 		return false;
+	}
+
+	@Override
+	public SynchronizedData<SynchronizedTankData> getSynchronizedData() 
+	{
+		return structure;
 	}
 }

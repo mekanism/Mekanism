@@ -1,11 +1,12 @@
 package mekanism.generators.common.tile;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
+
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -18,7 +19,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 
 	public TileEntityWindTurbine()
 	{
-		super("WindTurbine", 200000, (MekanismGenerators.windGeneration*8)*2);
+		super("WindTurbine", 200000, (generators.windGeneration*8)*2);
 		inventory = new ItemStack[1];
 	}
 
@@ -34,7 +35,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + (MekanismGenerators.windGeneration*getMultiplier()));
+				setEnergy(electricityStored + (generators.windGeneration*getMultiplier()));
 			}
 			else {
 				setActive(false);

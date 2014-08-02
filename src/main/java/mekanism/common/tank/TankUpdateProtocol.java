@@ -1,14 +1,17 @@
 package mekanism.common.tank;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -353,7 +356,7 @@ public class TankUpdateProtocol
 	 */
 	private boolean isValidFrame(int x, int y, int z)
 	{
-		return pointer.getWorldObj().getBlock(x, y, z) == Mekanism.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
+		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
 	}
 
 	/**
@@ -378,30 +381,36 @@ public class TankUpdateProtocol
 				}
 			}
 
-			int idFound = -1;
+			List<Integer> idsFound = new ArrayList<Integer>();
+			int idToUse = -1;
 
 			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
+				int id = Mekanism.tankManager.getInventoryId(tileEntity);
 
-				if(tileEntity.inventoryID != -1)
+				if(id != -1)
 				{
-					idFound = tileEntity.inventoryID;
-					break;
+					idsFound.add(id);
 				}
 			}
 
 			DynamicTankCache cache = new DynamicTankCache();
 
-			if(idFound != -1)
+			if(!idsFound.isEmpty())
 			{
-				if(Mekanism.dynamicInventories.get(idFound) != null)
+				for(int id : idsFound)
 				{
-					cache = MekanismUtils.pullInventory(pointer.getWorldObj(), idFound);
+					if(Mekanism.tankManager.inventories.get(id) != null)
+					{
+						cache = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+						idToUse = id;
+						break;
+					}
 				}
 			}
 			else {
-				idFound = MekanismUtils.getUniqueInventoryID();
+				idToUse = Mekanism.tankManager.getUniqueInventoryID();
 			}
 
 			cache.apply(structureFound);
@@ -410,15 +419,14 @@ public class TankUpdateProtocol
 			{
 				structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
 			}
+			
+			structureFound.inventoryID = idToUse;
 
 			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
 
-				tileEntity.inventoryID = idFound;
 				tileEntity.structure = structureFound;
-				
-				tileEntity.cachedData.sync(structureFound);
 			}
 		}
 		else {

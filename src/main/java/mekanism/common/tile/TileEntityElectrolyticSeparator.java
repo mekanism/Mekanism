@@ -4,7 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
-import mekanism.api.ChemicalPair;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.recipe.ChemicalPair;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -14,7 +15,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.ISustainedTank;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -43,7 +44,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedTank, IGasHandler
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedData, IGasHandler
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -134,7 +135,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			{
 				setActive(true);
 				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
-				setEnergy(getEnergy() - Mekanism.FROM_H2*2);
+				setEnergy(getEnergy() - general.FROM_H2*2);
 			}
 			else {
 				setActive(false);
@@ -197,7 +198,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public boolean canOperate()
 	{
-		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= Mekanism.FROM_H2*2;
+		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= general.FROM_H2*2;
 	}
 
 	public boolean canFillWithSwap(ChemicalPair gases)
@@ -575,21 +576,30 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public void setFluidStack(FluidStack fluidStack, Object... data)
+	public void writeSustainedData(ItemStack itemStack) 
 	{
-		fluidTank.setFluid(fluidStack);
+		if(fluidTank.getFluid() != null)
+		{
+			itemStack.stackTagCompound.setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+		}
+		
+		if(leftTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
+		}
+		
+		if(rightTank.getGas() != null)
+		{
+			itemStack.stackTagCompound.setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
+		}
 	}
 
 	@Override
-	public FluidStack getFluidStack(Object... data)
+	public void readSustainedData(ItemStack itemStack) 
 	{
-		return fluidTank.getFluid();
-	}
-
-	@Override
-	public boolean hasTank(Object... data)
-	{
-		return true;
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank")));
+		leftTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("leftTank")));
+		rightTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("rightTank")));
 	}
 
 	@Override

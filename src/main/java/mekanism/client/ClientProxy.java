@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
+import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.GuiChemicalInfuser;
@@ -26,6 +28,7 @@ import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiFluidicPlenisher;
 import mekanism.client.gui.GuiGasTank;
+import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
@@ -45,6 +48,7 @@ import mekanism.client.gui.GuiSalinationController;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiTeleporter;
+import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
@@ -52,6 +56,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
+import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.item.ItemRenderingHandler;
@@ -71,6 +76,8 @@ import mekanism.client.render.tileentity.RenderElectrolyticSeparator;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidicPlenisher;
 import mekanism.client.render.tileentity.RenderGasTank;
+import mekanism.client.render.tileentity.RenderLaser;
+import mekanism.client.render.tileentity.RenderLaserAmplifier;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
@@ -80,14 +87,19 @@ import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
-import mekanism.client.sound.Sound;
 import mekanism.client.sound.SoundHandler;
+import mekanism.client.sound.SoundMap;
 import mekanism.common.CommonProxy;
 import mekanism.common.IElectricChest;
 import mekanism.common.IInvConfiguration;
+import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
+import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryElectricChest;
@@ -119,6 +131,8 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.tile.TileEntityLaser;
+import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityObsidianTNT;
@@ -133,6 +147,7 @@ import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -140,6 +155,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -168,7 +184,7 @@ public class ClientProxy extends CommonProxy
 		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
 		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
 		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
-		MekanismClient.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
+		general.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();
@@ -181,13 +197,13 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void registerSound(Object obj)
+	public void registerSound(TileEntity tileEntity)
 	{
 		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
-			synchronized(MekanismClient.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
-				MekanismClient.audioHandler.register(obj);
+				MekanismClient.audioHandler.registerTileSound(tileEntity);
 			}
 		}
 	}
@@ -197,11 +213,11 @@ public class ClientProxy extends CommonProxy
 	{
 		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
 		{
-			synchronized(MekanismClient.audioHandler.sounds)
+			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
-				if(MekanismClient.audioHandler.getFrom(tileEntity) != null)
+				if(MekanismClient.audioHandler.getMap(tileEntity) != null)
 				{
-					MekanismClient.audioHandler.getFrom(tileEntity).remove();
+					MekanismClient.audioHandler.getMap(tileEntity).kill();
 				}
 			}
 		}
@@ -301,6 +317,8 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityPRC.class, "PressurizedReactionChamber", new RenderPressurizedReactionChamber());
 		ClientRegistry.registerTileEntity(TileEntityPortableTank.class, "PortableTank", new RenderPortableTank());
 		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
+		ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
+		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
 	}
 
 	@Override
@@ -313,27 +331,30 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
 		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
 		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
+		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new RenderSkeleton());
+		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new RenderFlame());
 
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
 
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.EnergyCube), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.MachineBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.MachineBlock2), handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Robit, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.WalkieTalkie, handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.GasTank), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.ObsidianTNT), handler);
-		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(Mekanism.BasicBlock), handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Jetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ArmoredJetpack, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.PartTransmitter, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GasMask, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.ScubaTank, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.Balloon, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.FreeRunners, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.AtomicDisassembler, handler);
-		MinecraftForgeClient.registerItemRenderer(Mekanism.GlowPanel, handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.EnergyCube), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Robit, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.WalkieTalkie, handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.GasTank), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), handler);
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock), handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Jetpack, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.ArmoredJetpack, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.PartTransmitter, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.GasMask, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.ScubaTank, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Balloon, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.FreeRunners, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.AtomicDisassembler, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.GlowPanel, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);
 
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
@@ -454,6 +475,10 @@ public class ClientProxy extends CommonProxy
 				return new GuiPortableTank(player.inventory, (TileEntityPortableTank)tileEntity);
 			case 42:
 				return new GuiFluidicPlenisher(player.inventory, (TileEntityFluidicPlenisher)tileEntity);
+			case 43:
+				return new GuiUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
+			case 44:
+				return new GuiLaserAmplifier(player.inventory, (TileEntityLaserAmplifier)tileEntity);
 		}
 
 		return null;
@@ -496,17 +521,17 @@ public class ClientProxy extends CommonProxy
 		{
 			if(MekanismClient.audioHandler != null)
 			{
-				synchronized(MekanismClient.audioHandler.sounds)
+				synchronized(MekanismClient.audioHandler.soundMaps)
 				{
-					HashMap<Object, Sound> sounds = new HashMap<Object, Sound>();
-					sounds.putAll(MekanismClient.audioHandler.sounds);
+					HashMap<Object, SoundMap> mapsCopy = new HashMap<Object, SoundMap>();
+					mapsCopy.putAll(MekanismClient.audioHandler.soundMaps);
 
-					for(Sound sound : sounds.values())
+					for(SoundMap map : mapsCopy.values())
 					{
-						sound.remove();
+						map.kill();
 					}
 
-					MekanismClient.audioHandler.sounds.clear();
+					MekanismClient.audioHandler.soundMaps.clear();
 				}
 			}
 		}
@@ -551,7 +576,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.onConfigSync();
 
-		if(Mekanism.voiceServerEnabled && MekanismClient.voiceClient != null)
+		if(general.voiceServerEnabled && MekanismClient.voiceClient != null)
 		{
 			MekanismClient.voiceClient.start();
 		}
@@ -567,5 +592,11 @@ public class ClientProxy extends CommonProxy
 		else {
 			return Minecraft.getMinecraft().thePlayer;
 		}
+	}
+
+	@Override
+	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction)
+	{
+		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction));
 	}
 }

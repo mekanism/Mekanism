@@ -11,6 +11,7 @@ import mekanism.common.IActiveState;
 import mekanism.common.IBoundingBlock;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tank.TankUpdateProtocol;
@@ -19,7 +20,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntitySalinationController;
-import mekanism.common.tile.TileEntitySalinationTank;
+import mekanism.common.tile.TileEntitySalinationBlock;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -31,7 +32,6 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -107,7 +107,7 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
 			icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
@@ -134,7 +134,7 @@ public class BlockBasic extends Block
 
 			glassRenderer.registerIcons(register);
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
 		}
@@ -146,7 +146,7 @@ public class BlockBasic extends Block
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			if(metadata == 6)
 			{
@@ -184,7 +184,7 @@ public class BlockBasic extends Block
 				return getIcon(side, metadata);
 			}
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			return getIcon(side, metadata);
 		}
@@ -196,7 +196,7 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			if(meta != 6 && meta != 14)
 			{
@@ -227,7 +227,7 @@ public class BlockBasic extends Block
 				}
 			}
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			return icons[meta][0];
 		}
@@ -245,7 +245,7 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			list.add(new ItemStack(item, 1, 0));
 			list.add(new ItemStack(item, 1, 1));
@@ -264,7 +264,7 @@ public class BlockBasic extends Block
 			list.add(new ItemStack(item, 1, 14));
 			list.add(new ItemStack(item, 1, 15));
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			list.add(new ItemStack(item, 1, 0));
 		}
@@ -275,7 +275,7 @@ public class BlockBasic extends Block
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			if(meta == 9 || meta == 10 || meta == 11)
 			{
@@ -299,7 +299,7 @@ public class BlockBasic extends Block
 				}
 			}
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 
 		}
@@ -312,7 +312,7 @@ public class BlockBasic extends Block
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			if(!world.isRemote && meta == 6)
 			{
@@ -341,7 +341,7 @@ public class BlockBasic extends Block
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			if(metadata != 6)
 			{
@@ -439,7 +439,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		return !(this == Mekanism.BasicBlock && world.getBlockMetadata(x, y, z) == 10);
+		return !(this == MekanismBlocks.BasicBlock && world.getBlockMetadata(x, y, z) == 10);
 	}
 
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -596,7 +596,7 @@ public class BlockBasic extends Block
 			}
 		}
 
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			switch(metadata)
 			{
@@ -615,11 +615,11 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 12 || metadata == 14 || metadata == 15;
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			return metadata == 0;
 		}
@@ -630,7 +630,7 @@ public class BlockBasic extends Block
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			switch(metadata)
 			{
@@ -648,12 +648,12 @@ public class BlockBasic extends Block
 					return new TileEntitySalinationValve();
 			}
 		}
-		else if(this == Mekanism.BasicBlock2)
+		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			switch(metadata)
 			{
 				case 0:
-					return new TileEntitySalinationTank();
+					return new TileEntitySalinationBlock();
 			}
 		}
 
@@ -722,7 +722,7 @@ public class BlockBasic extends Block
 	{
 		ItemStack ret = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
-		if(this == Mekanism.BasicBlock)
+		if(this == MekanismBlocks.BasicBlock)
 		{
 			if(ret.getItemDamage() == 6)
 			{
@@ -792,7 +792,7 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(this == Mekanism.BasicBlock && world.getBlockMetadata(x, y, z) == 10)
+		if(this == MekanismBlocks.BasicBlock && world.getBlockMetadata(x, y, z) == 10)
 		{
 			return glassRenderer.shouldRenderSide(world, x, y, z, side);
 		}

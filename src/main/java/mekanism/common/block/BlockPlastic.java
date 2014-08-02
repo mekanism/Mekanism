@@ -4,6 +4,8 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -25,7 +27,7 @@ public class BlockPlastic extends Block
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		if(this == Mekanism.BlockSlickHDPE)
+		if(this == MekanismBlocks.BlockSlickHDPE)
 		{
 			slipperiness = 0.98F;
 		}
@@ -35,23 +37,23 @@ public class BlockPlastic extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == Mekanism.BlockHDPE)
+		if(this == MekanismBlocks.BlockHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:PlasticBlock");
 		}
-		else if(this == Mekanism.BlockSlickHDPE)
+		else if(this == MekanismBlocks.BlockSlickHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:SlickPlasticBlock");
 		}
-		else if(this == Mekanism.BlockGlowHDPE)
+		else if(this == MekanismBlocks.BlockGlowHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:GlowPlasticBlock");
 		}
-		else if(this == Mekanism.BlockReinforcedHDPE)
+		else if(this == MekanismBlocks.BlockReinforcedHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
 		}
-		else if(this == Mekanism.BlockRoadHDPE)
+		else if(this == MekanismBlocks.BlockRoadHDPE)
 		{
 			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
 		}
@@ -60,7 +62,7 @@ public class BlockPlastic extends Block
 	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity e)
 	{
-		if(this == Mekanism.BlockRoadHDPE)
+		if(this == MekanismBlocks.BlockRoadHDPE)
 		{
 			double boost = 1.6;
 
@@ -103,7 +105,7 @@ public class BlockPlastic extends Block
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(this == Mekanism.BlockGlowHDPE)
+		if(this == MekanismBlocks.BlockGlowHDPE)
 		{
 			return 10;
 		}

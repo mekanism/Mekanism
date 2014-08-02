@@ -1,6 +1,8 @@
 package mekanism.common;
 
 import mekanism.api.gas.GasStack;
+import mekanism.common.entity.EntityFlame;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
@@ -94,6 +96,11 @@ public class CommonPlayerTickHandler
 			{
 				player.stepHeight = 0.5F;
 			}
+		}
+		
+		if(isFlamethrowerOn(player))
+		{
+			player.worldObj.spawnEntityInWorld(new EntityFlame(player));
 		}
 
 		if(isJetpackOn(player))
@@ -208,6 +215,19 @@ public class CommonPlayerTickHandler
 			}
 		}
 
+		return false;
+	}
+	
+	public static boolean isFlamethrowerOn(EntityPlayer player)
+	{
+		if(Mekanism.flamethrowerActive.contains(player.getCommandSenderName()))
+		{
+			if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+			{
+				return true;
+			}
+		}
+		
 		return false;
 	}
 }

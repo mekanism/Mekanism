@@ -27,6 +27,8 @@ import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketFlamethrowerActive;
+import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketKey;
@@ -115,6 +117,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTankState.class, PortableTankStateMessage.class, 25, Side.SERVER);
 		netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
+		netHandler.registerMessage(PacketFlamethrowerActive.class, FlamethrowerActiveMessage.class, 27, Side.SERVER);
 	}
 	
 	/**

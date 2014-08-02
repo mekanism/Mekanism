@@ -12,6 +12,7 @@ import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.IRedstoneControl;
+import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -33,7 +34,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess
+public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess, ISustainedData
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
 
@@ -485,7 +486,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			return new int[] {0};
 		}
 
-		return null;
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override
@@ -619,5 +620,58 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public String getDataType()
 	{
 		return "tooltip.filterCard.logisticalSorter";
+	}
+
+	@Override
+	public void writeSustainedData(ItemStack itemStack) 
+	{
+		itemStack.stackTagCompound.setBoolean("hasSorterConfig", true);
+
+		if(color != null)
+		{
+			itemStack.stackTagCompound.setInteger("color", TransporterUtils.colors.indexOf(color));
+		}
+
+		itemStack.stackTagCompound.setBoolean("autoEject", autoEject);
+		itemStack.stackTagCompound.setBoolean("roundRobin", roundRobin);
+
+		NBTTagList filterTags = new NBTTagList();
+
+		for(TransporterFilter filter : filters)
+		{
+			NBTTagCompound tagCompound = new NBTTagCompound();
+			filter.write(tagCompound);
+			filterTags.appendTag(tagCompound);
+		}
+
+		if(filterTags.tagCount() != 0)
+		{
+			itemStack.stackTagCompound.setTag("filters", filterTags);
+		}
+	}
+
+	@Override
+	public void readSustainedData(ItemStack itemStack) 
+	{
+		if(itemStack.stackTagCompound.hasKey("hasSorterConfig"))
+		{
+			if(itemStack.stackTagCompound.hasKey("color"))
+			{
+				color = TransporterUtils.colors.get(itemStack.stackTagCompound.getInteger("color"));
+			}
+
+			autoEject = itemStack.stackTagCompound.getBoolean("autoEject");
+			roundRobin = itemStack.stackTagCompound.getBoolean("roundRobin");
+
+			if(itemStack.stackTagCompound.hasKey("filters"))
+			{
+				NBTTagList tagList = itemStack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
+
+				for(int i = 0; i < tagList.tagCount(); i++)
+				{
+					filters.add(TransporterFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
+				}
+			}
+		}
 	}
 }

@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
@@ -12,7 +12,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 
 	public TileEntityCrusher()
 	{
-		super("Crusher.ogg", "Crusher", Mekanism.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
+		super("Crusher.ogg", "Crusher", usage.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
 	}
 
 	@Override

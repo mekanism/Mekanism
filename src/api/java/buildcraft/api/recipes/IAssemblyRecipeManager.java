@@ -8,15 +8,24 @@
  */
 package buildcraft.api.recipes;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
 public interface IAssemblyRecipeManager {
 
+	public interface IAssemblyRecipe {
+
+		ItemStack getOutput();
+
+		Object[] getInputs();
+
+		double getEnergyCost();
+	}
+
 	/**
 	 * Add an Assembly Table recipe.
-	 *
+	 * 
 	 * @param input
 	 *            Object... containing either an ItemStack, or a paired string
 	 *            and integer(ex: "dyeBlue", 1)
@@ -25,9 +34,7 @@ public interface IAssemblyRecipeManager {
 	 * @param output
 	 *            resulting ItemStack
 	 */
-	void addRecipe(String id, double energyCost, ItemStack output, Object... input);
+	void addRecipe(double energyCost, ItemStack output, Object... input);
 
-	void addRecipe(IFlexibleRecipe<ItemStack> recipe);
-
-	Collection<IFlexibleRecipe<ItemStack>> getRecipes();
+	List<? extends IAssemblyRecipe> getRecipes();
 }

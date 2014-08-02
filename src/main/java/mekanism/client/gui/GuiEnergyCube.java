@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;

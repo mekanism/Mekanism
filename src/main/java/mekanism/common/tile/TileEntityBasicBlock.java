@@ -182,7 +182,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			facing = direction;
 		}
 
-		if(facing != clientFacing)
+		if(!(facing == clientFacing || worldObj.isRemote))
 		{
 			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
@@ -238,5 +238,10 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 				Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
 			}
 		}
+	}
+	
+	public void onAdded()
+	{
+		
 	}
 }

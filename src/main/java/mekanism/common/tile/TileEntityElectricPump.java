@@ -13,6 +13,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -123,7 +124,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
 		{
-			if(getEnergy() >= Mekanism.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
+			if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
 			{
 				if(suck(true))
 				{
@@ -171,7 +172,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
+						setEnergy(getEnergy() - usage.electricPumpUsage);
 						recurringNodes.add(wrapper.clone());
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
@@ -190,7 +191,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
+						setEnergy(getEnergy() - usage.electricPumpUsage);
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -208,7 +209,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
+						setEnergy(getEnergy() - usage.electricPumpUsage);
 						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
@@ -229,7 +230,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 						{
 							if(take)
 							{
-								setEnergy(getEnergy() - Mekanism.electricPumpUsage);
+								setEnergy(getEnergy() - usage.electricPumpUsage);
 								recurringNodes.add(side);
 								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
@@ -549,10 +550,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		recurringNodes.clear();
-		cleaningNodes.clear();
-
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
+		if(!worldObj.isRemote)
+		{
+			recurringNodes.clear();
+			cleaningNodes.clear();
+	
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
+		}
 
 		return true;
 	}

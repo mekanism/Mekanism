@@ -10,8 +10,8 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.ISustainedTank;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -126,7 +126,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				}
 			}
 			
-			if(getEnergy() >= Mekanism.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME && !finishedCalc)
+			if(getEnergy() >= usage.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME && !finishedCalc)
 			{
 				if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 				{
@@ -172,7 +172,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 				
-				setEnergy(getEnergy() - Mekanism.fluidicPlenisherUsage);
+				setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 				fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 				
 				for(ForgeDirection dir : dirs)
@@ -469,11 +469,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		activeNodes.clear();
-		usedNodes.clear();
-		finishedCalc = false;
-		
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.plenisherReset")));
+		if(!worldObj.isRemote)
+		{
+			activeNodes.clear();
+			usedNodes.clear();
+			finishedCalc = false;
+			
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.plenisherReset")));
+		}
 
 		return true;
 	}

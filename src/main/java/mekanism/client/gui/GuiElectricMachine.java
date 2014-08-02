@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.ListUtils;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
@@ -29,7 +29,7 @@ public class GuiElectricMachine extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiUpgradeManagement(this, tileEntity, tileEntity.guiLocation));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.guiLocation));
 		guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 164, 15));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {

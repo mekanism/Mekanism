@@ -14,11 +14,15 @@ import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.input.Keyboard;
@@ -169,6 +173,20 @@ public class GuiMModIDFilter extends GuiMekanism
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
 		}
+		
+		if(filter.replaceStack != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glEnable(GL11.GL_LIGHTING);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
+		
+		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.requireReplace") + ": " + LangUtils.transYesNo(filter.requireStack), xAxis, yAxis);
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -201,6 +219,29 @@ public class GuiMModIDFilter extends GuiMekanism
 		}
 		else {
 			drawTexturedModalRect(guiWidth + 131, guiHeight + 47, 176 + 11, 12, 12, 12);
+		}
+		
+		if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+		{
+			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 148, guiHeight + 45, 176 + 23, 14, 14, 14);
+		}
+		
+		if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
+		{
+			GL11.glPushMatrix();
+			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+			int x = guiWidth + 149;
+			int y = guiHeight + 19;
+			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+
+			GL11.glPopAttrib();
+			GL11.glPopMatrix();
 		}
 
 		modIDText.drawTextBox();
@@ -269,6 +310,42 @@ public class GuiMModIDFilter extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 				setModID();
+			}
+			
+			if(xAxis >= 148 && xAxis <= 162 && yAxis >= 45 && yAxis <= 59)
+			{
+				SoundHandler.playSound("gui.button.press");
+				filter.requireStack = !filter.requireStack;
+			}
+			
+			if(xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35)
+			{
+				boolean doNull = false;
+				ItemStack stack = mc.thePlayer.inventory.getItemStack();
+				ItemStack toUse = null;
+
+				if(stack != null && !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					if(stack.getItem() instanceof ItemBlock)
+					{
+						if(Block.getBlockFromItem(stack.getItem()) != Blocks.bedrock)
+						{
+							toUse = stack.copy();
+							toUse.stackSize = 1;
+						}
+					}
+				}
+				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+				{
+					doNull = true;
+				}
+
+				if(toUse != null || doNull)
+				{
+					filter.replaceStack = toUse;
+				}
+
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

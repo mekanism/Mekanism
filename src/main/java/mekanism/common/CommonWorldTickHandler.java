@@ -4,15 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tank.DynamicTankCache;
-import mekanism.common.tile.TileEntityDynamicTank;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import mekanism.common.multiblock.MultiblockManager;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -58,71 +54,35 @@ public class CommonWorldTickHandler
 	@SubscribeEvent
 	public void onTick(WorldTickEvent event)
 	{
-		if(event.side == Side.SERVER && event.phase == Phase.END)
+		if(event.side == Side.SERVER)
 		{
-			tickEnd(event.world);
+			if(event.phase == Phase.START)
+			{
+				tickStart(event.world);
+			}
+			else if(event.phase == Phase.END)
+			{
+				tickEnd(event.world);
+			}
+		}
+	}
+	
+	public void tickStart(World world)
+	{
+		if(!world.isRemote)
+		{
+			if(!MultiblockManager.loaded)
+			{
+				MultiblockManager.load(world);
+			}
 		}
 	}
 
 	public void tickEnd(World world)
 	{
-		ArrayList<Integer> idsToKill = new ArrayList<Integer>();
-		HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
-
 		if(!world.isRemote)
 		{
-			for(Map.Entry<Integer, DynamicTankCache> entry : Mekanism.dynamicInventories.entrySet())
-			{
-				int inventoryID = entry.getKey();
-
-				for(Coord4D obj : entry.getValue().locations)
-				{
-					if(obj.dimensionId == world.provider.dimensionId)
-					{
-						TileEntity tileEntity = obj.getTileEntity(world);
-
-						if(!(tileEntity instanceof TileEntityDynamicTank) || ((TileEntityDynamicTank)tileEntity).inventoryID != inventoryID)
-						{
-							if(!tilesToKill.containsKey(inventoryID))
-							{
-								tilesToKill.put(inventoryID, new HashSet<Coord4D>());
-							}
-
-							tilesToKill.get(inventoryID).add(obj);
-						}
-					}
-				}
-
-				if(entry.getValue().locations.isEmpty())
-				{
-					idsToKill.add(inventoryID);
-				}
-			}
-
-			for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
-			{
-				for(Coord4D obj : entry.getValue())
-				{
-					Mekanism.dynamicInventories.get(entry.getKey()).locations.remove(obj);
-				}
-			}
-
-			for(int inventoryID : idsToKill)
-			{
-				for(Coord4D obj : Mekanism.dynamicInventories.get(inventoryID).locations)
-				{
-					TileEntityDynamicTank dynamicTank = (TileEntityDynamicTank)obj.getTileEntity(world);
-
-					if(dynamicTank != null)
-					{
-						dynamicTank.cachedData = new DynamicTankCache();
-						dynamicTank.inventory = new ItemStack[2];
-						dynamicTank.inventoryID = -1;
-					}
-				}
-
-				Mekanism.dynamicInventories.remove(inventoryID);
-			}
+			MultiblockManager.tick(world);
 			
 			if(chunkRegenMap == null) 
 			{ 

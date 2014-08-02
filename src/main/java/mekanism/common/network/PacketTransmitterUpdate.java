@@ -9,6 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
+import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.entity.player.EntityPlayer;

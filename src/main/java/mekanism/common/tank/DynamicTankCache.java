@@ -3,6 +3,7 @@ package mekanism.common.tank;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
+import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,12 +11,13 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class DynamicTankCache
-{
+public class DynamicTankCache extends MultiblockCache<SynchronizedTankData>
+{	
 	public ItemStack[] inventory = new ItemStack[2];
 	public FluidStack fluid;
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 	
+	@Override
 	public void apply(SynchronizedTankData data)
 	{
 		data.inventory = inventory;
@@ -23,6 +25,7 @@ public class DynamicTankCache
 		data.editMode = editMode;
 	}
 	
+	@Override
 	public void sync(SynchronizedTankData data)
 	{
 		inventory = data.inventory;
@@ -30,6 +33,7 @@ public class DynamicTankCache
 		editMode = data.editMode;
 	}
 	
+	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
 		editMode = ContainerEditMode.values()[nbtTags.getInteger("editMode")];
@@ -54,6 +58,7 @@ public class DynamicTankCache
 		}
 	}
 	
+	@Override
 	public void save(NBTTagCompound nbtTags)
 	{
 		nbtTags.setInteger("editMode", editMode.ordinal());
@@ -78,6 +83,4 @@ public class DynamicTankCache
 			nbtTags.setTag("cachedFluid", fluid.writeToNBT(new NBTTagCompound()));
 		}
 	}
-
-	public HashSet<Coord4D> locations = new HashSet<Coord4D>();
 }
