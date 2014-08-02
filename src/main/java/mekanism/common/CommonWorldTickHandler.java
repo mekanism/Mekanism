@@ -20,8 +20,6 @@ public class CommonWorldTickHandler
 {
 	private static final long maximumDeltaTimeNanoSecs = 16000000; // 16 milliseconds
 	
-	public boolean loaded;
-	
 	private HashMap<Integer, Queue<ChunkCoordIntPair>> chunkRegenMap;
 	
 	public void addRegenChunk(int dimensionId, ChunkCoordIntPair chunkCoord) 
@@ -73,9 +71,8 @@ public class CommonWorldTickHandler
 	{
 		if(!world.isRemote)
 		{
-			if(!loaded)
+			if(!MultiblockManager.loaded)
 			{
-				loaded = true;
 				MultiblockManager.load(world);
 			}
 		}

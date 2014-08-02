@@ -387,10 +387,11 @@ public class TankUpdateProtocol
 			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
+				int id = Mekanism.tankManager.getInventoryId(tileEntity);
 
-				if(Mekanism.tankManager.getInventoryId(tileEntity) != -1)
+				if(id != -1)
 				{
-					idsFound.add(tileEntity.structure.inventoryID);
+					idsFound.add(id);
 				}
 			}
 

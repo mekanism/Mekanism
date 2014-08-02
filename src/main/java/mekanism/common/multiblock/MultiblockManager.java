@@ -7,10 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import mekanism.common.tank.DynamicTankCache;
-import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tile.TileEntityDynamicTank;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -21,6 +20,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class MultiblockManager
 {
 	private static Set<MultiblockManager> managers = new HashSet<MultiblockManager>();
+	
+	public static boolean loaded;
 	
 	public DataHandler dataHandler;
 	
@@ -43,8 +44,13 @@ public class MultiblockManager
 			
 			if(dataHandler == null)
 			{
-				dataHandler = new DataHandler();
+				dataHandler = new DataHandler(name);
+				dataHandler.setManager(this);
 				world.perWorldStorage.setData(name, dataHandler);
+			}
+			else {
+				dataHandler.setManager(this);
+				dataHandler.syncManager();
 			}
 		}
 	}
@@ -57,6 +63,11 @@ public class MultiblockManager
 	 */
 	public DynamicTankCache pullInventory(World world, int id)
 	{
+		if(!loaded)
+		{
+			load(world);
+		}
+		
 		DynamicTankCache toReturn = inventories.get(id);
 		
 		inventories.remove(id);
@@ -73,6 +84,11 @@ public class MultiblockManager
 	 */
 	public void updateCache(TileEntityDynamicTank tileEntity)
 	{
+		if(!loaded)
+		{
+			load(tileEntity.getWorldObj());
+		}
+		
 		if(!inventories.containsKey(tileEntity.structure.inventoryID))
 		{
 			DynamicTankCache cache = new DynamicTankCache();
@@ -114,6 +130,11 @@ public class MultiblockManager
 	
 	public static void tick(World world)
 	{
+		if(!loaded)
+		{
+			load(world);
+		}
+		
 		for(MultiblockManager manager : managers)
 		{
 			ArrayList<Integer> idsToKill = new ArrayList<Integer>();
@@ -125,11 +146,11 @@ public class MultiblockManager
 	
 				for(Coord4D obj : entry.getValue().locations)
 				{
-					if(obj.dimensionId == world.provider.dimensionId)
+					if(obj.dimensionId == world.provider.dimensionId && obj.exists(world))
 					{
 						TileEntity tileEntity = obj.getTileEntity(world);
 	
-						if(!(tileEntity instanceof TileEntityDynamicTank) || getStructureId(((TileEntityDynamicTank)tileEntity)) != inventoryID)
+						if(!(tileEntity instanceof TileEntityDynamicTank) || (getStructureId(((TileEntityDynamicTank)tileEntity)) != -1 && getStructureId(((TileEntityDynamicTank)tileEntity)) != inventoryID))
 						{
 							if(!tilesToKill.containsKey(inventoryID))
 							{
@@ -186,6 +207,8 @@ public class MultiblockManager
 	
 	public static void load(World world)
 	{
+		loaded = true;
+		
 		for(MultiblockManager manager : managers)
 		{
 			manager.createOrLoad(world);
@@ -199,19 +222,40 @@ public class MultiblockManager
 			manager.inventories.clear();
 			manager.dataHandler = null;
 		}
+		
+		loaded = false;
 	}
 	
-	public class DataHandler extends WorldSavedData
+	public static class DataHandler extends WorldSavedData
 	{
-		public DataHandler()
+		public MultiblockManager manager;
+		
+		public Map<Integer, DynamicTankCache> loadedInventories;
+		
+		public DataHandler(String tagName)
 		{
-			super(name);
+			super(tagName);
+		}
+		
+		public void setManager(MultiblockManager m)
+		{
+			manager = m;
+		}
+		
+		public void syncManager()
+		{
+			if(loadedInventories != null)
+			{
+				manager.inventories = loadedInventories;
+			}
 		}
 		
 		@Override
 		public void readFromNBT(NBTTagCompound nbtTags) 
 		{
 			NBTTagList list = nbtTags.getTagList("invList", NBT.TAG_COMPOUND);
+			
+			loadedInventories = new HashMap<Integer, DynamicTankCache>();
 			
 			for(int i = 0; i < list.tagCount(); i++)
 			{
@@ -225,6 +269,8 @@ public class MultiblockManager
 				{
 					cache.locations.add(Coord4D.read(coordsList.getCompoundTagAt(j)));
 				}
+
+				loadedInventories.put(compound.getInteger("id"), cache);
 			}
 		}
 
@@ -233,7 +279,7 @@ public class MultiblockManager
 		{
 			NBTTagList list = new NBTTagList();
 			
-			for(Map.Entry<Integer, DynamicTankCache> entry : inventories.entrySet())
+			for(Map.Entry<Integer, DynamicTankCache> entry : manager.inventories.entrySet())
 			{
 				NBTTagCompound compound = new NBTTagCompound();
 				compound.setInteger("id", entry.getKey());
