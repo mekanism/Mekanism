@@ -18,7 +18,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 
 	public TileEntityWindTurbine()
 	{
-		super("WindTurbine", 200000, (MekanismGenerators.windGeneration*8)*2);
+		super("WindTurbine", 200000, (MekanismGenerators.windGenerationMax)*2);
 		inventory = new ItemStack[1];
 	}
 
@@ -34,7 +34,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + (MekanismGenerators.windGeneration*getMultiplier()));
+				setEnergy(electricityStored + (MekanismGenerators.windGenerationMin*getMultiplier()));
 			}
 			else {
 				setActive(false);
@@ -42,10 +42,25 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 		}
 	}
 
-	/** 0 - 8 **/
+	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		return worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord) ? (((float)yCoord+4)/(float)256)*8 : 0;
+		if (worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) {
+			final float minY = (float) MekanismGenerators.windGenerationMinY;
+			final float maxY = (float) MekanismGenerators.windGenerationMaxY;
+			final float minG = (float) MekanismGenerators.windGenerationMin;
+			final float maxG = (float) MekanismGenerators.windGenerationMax;
+
+			final float slope = (maxG - minG) / (maxY - minY);
+			final float intercept = minG - slope * minY;
+
+			final float clampedY = Math.min(maxY, Math.max(minY, (float)(yCoord+4)));
+			final float toGen = slope * clampedY + intercept;
+
+			return toGen / minG;
+		} else {
+			return 0;
+		}
 	}
 
 	@Override
