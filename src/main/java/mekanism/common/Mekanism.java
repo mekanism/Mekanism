@@ -44,13 +44,6 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
-import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.item.ItemBlockCardboardBox;
-import mekanism.common.item.ItemBlockEnergyCube;
-import mekanism.common.item.ItemBlockGasTank;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockOre;
-import mekanism.common.item.ItemBlockPlastic;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -88,7 +81,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -412,7 +404,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 8), new Object[] {
 			"CGC", "ASA", "CGC", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('S'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.FreeRunners), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.FrictionBoots), new Object[] {
 			"C C", "A A", "T T", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.ArmoredJetpack.getEmptyItem(), new Object[] {
@@ -534,7 +526,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.Polyethene, 1, 3), new Object[] {
 			"R", "R", Character.valueOf('R'), new ItemStack(MekanismItems.Polyethene, 1, 1)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockHDPE, 4, 15), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 15), new Object[] {
 			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 2, 15), new Object[] {
@@ -543,7 +535,7 @@ public class Mekanism
 
 		for(int i = 0; i < EnumColor.DYES.length-1; i++)
 		{
-			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockHDPE, 4, i), new Object[] {
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i), new Object[] {
 				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(MekanismItems.Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 2, i), new Object[] {
@@ -563,31 +555,31 @@ public class Mekanism
 					new ItemStack(MekanismItems.Balloon, 1, j), "dye" + EnumColor.DYES[i].dyeName
 				}));
 
-				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.BlockHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.PlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
-				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockSlickHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.BlockSlickHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
-				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockGlowHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.BlockGlowHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
-				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockReinforcedHDPE, 4, i), new Object[] {
-					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.BlockReinforcedHDPE, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
+				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), new Object[] {
+					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 				CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 4, i), new Object[] {
 					" P ", "PDP", " P ", Character.valueOf('P'), new ItemStack(MekanismItems.GlowPanel, 1, j), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 				}));
 			}
 
-			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(MekanismBlocks.BlockGlowHDPE, 3, i), new Object[] {
-				new ItemStack(MekanismBlocks.BlockHDPE, 1, i), new ItemStack(MekanismBlocks.BlockHDPE, 1, i), new ItemStack(MekanismBlocks.BlockHDPE, 1, i), new ItemStack(Items.glowstone_dust)
+			CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i), new Object[] {
+				new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.glowstone_dust)
 			}));
-			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockReinforcedHDPE, 4, i), new Object[] {
-				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(MekanismItems.Dust, 1, 2)
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i), new Object[] {
+				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), Character.valueOf('O'), new ItemStack(MekanismItems.Dust, 1, 2)
 			}));
-			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BlockRoadHDPE, 3, i), new Object[] {
-				"SSS", "PPP", "SSS", Character.valueOf('S'), Blocks.sand, Character.valueOf('P'), new ItemStack(MekanismBlocks.BlockSlickHDPE, 1, i)
+			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 3, i), new Object[] {
+				"SSS", "PPP", "SSS", Character.valueOf('S'), Blocks.sand, Character.valueOf('P'), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i)
 			}));
         }
 	
@@ -626,7 +618,7 @@ public class Mekanism
 		
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.BlockHDPE, 1, i), new ItemStack(MekanismBlocks.BlockSlickHDPE, 1, i));
+			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i));
 		}
 		
 		//Combiner recipes
@@ -767,7 +759,7 @@ public class Mekanism
 				
 				return 0;
 			}
-        });
+		});
 
 		//Fuel Gases
 		FuelHandler.addGas(GasRegistry.getGas("hydrogen"), 1, general.FROM_H2);
@@ -776,89 +768,7 @@ public class Mekanism
 		RecipeSorter.register("mekanism", MekanismRecipe.class, Category.SHAPED, "");
 		RecipeSorter.register("bin", BinRecipe.class, Category.SHAPELESS, "");
 	}
-	
-	/**
-	 * Adds and registers all items.
-	 */
-	public void registerItems()
-	{	
-		//Fluid Container stuff
-		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(MekanismItems.BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
-		
-		//Registrations
-		GameRegistry.registerItem(MekanismItems.PartTransmitter, "PartTransmitter");
-		GameRegistry.registerItem(MekanismItems.ElectricBow, "ElectricBow");
-		GameRegistry.registerItem(MekanismItems.Dust, "Dust");
-		GameRegistry.registerItem(MekanismItems.Ingot, "Ingot");
-		GameRegistry.registerItem(MekanismItems.EnergyTablet, "EnergyTablet");
-		GameRegistry.registerItem(MekanismItems.SpeedUpgrade, "SpeedUpgrade");
-		GameRegistry.registerItem(MekanismItems.EnergyUpgrade, "EnergyUpgrade");
-		GameRegistry.registerItem(MekanismItems.Robit, "Robit");
-		GameRegistry.registerItem(MekanismItems.AtomicDisassembler, "AtomicDisassembler");
-		GameRegistry.registerItem(MekanismItems.EnrichedAlloy, "EnrichedAlloy");
-		GameRegistry.registerItem(MekanismItems.ReinforcedAlloy, "ReinforcedAlloy");
-		GameRegistry.registerItem(MekanismItems.AtomicAlloy, "AtomicAlloy");
-		GameRegistry.registerItem(MekanismItems.Proxy, "ItemProxy");
-		GameRegistry.registerItem(MekanismItems.ControlCircuit, "ControlCircuit");
-		GameRegistry.registerItem(MekanismItems.EnrichedIron, "EnrichedIron");
-		GameRegistry.registerItem(MekanismItems.CompressedCarbon, "CompressedCarbon");
-		GameRegistry.registerItem(MekanismItems.CompressedRedstone, "CompressedRedstone");
-		GameRegistry.registerItem(MekanismItems.CompressedDiamond, "CompressedDiamond");
-		GameRegistry.registerItem(MekanismItems.CompressedObsidian, "CompressedObsidian");
-		GameRegistry.registerItem(MekanismItems.PortableTeleporter, "PortableTeleporter");
-		GameRegistry.registerItem(MekanismItems.TeleportationCore, "TeleportationCore");
-		GameRegistry.registerItem(MekanismItems.Clump, "Clump");
-		GameRegistry.registerItem(MekanismItems.DirtyDust, "DirtyDust");
-		GameRegistry.registerItem(MekanismItems.Configurator, "Configurator");
-		GameRegistry.registerItem(MekanismItems.NetworkReader, "NetworkReader");
-		GameRegistry.registerItem(MekanismItems.WalkieTalkie, "WalkieTalkie");
-		GameRegistry.registerItem(MekanismItems.Jetpack, "Jetpack");
-		GameRegistry.registerItem(MekanismItems.Dictionary, "Dictionary");
-		GameRegistry.registerItem(MekanismItems.GasMask, "GasMask");
-		GameRegistry.registerItem(MekanismItems.ScubaTank, "ScubaTank");
-		GameRegistry.registerItem(MekanismItems.Balloon, "Balloon");
-		GameRegistry.registerItem(MekanismItems.Shard, "Shard");
-		GameRegistry.registerItem(MekanismItems.ElectrolyticCore, "ElectrolyticCore");
-		GameRegistry.registerItem(MekanismItems.Sawdust, "Sawdust");
-		GameRegistry.registerItem(MekanismItems.Salt, "Salt");
-		GameRegistry.registerItem(MekanismItems.BrineBucket, "BrineBucket");
-		GameRegistry.registerItem(MekanismItems.Crystal, "Crystal");
-		GameRegistry.registerItem(MekanismItems.FreeRunners, "FrictionBoots");
-		GameRegistry.registerItem(MekanismItems.ArmoredJetpack, "ArmoredJetpack");
-		GameRegistry.registerItem(MekanismItems.FilterCard, "FilterCard");
-		GameRegistry.registerItem(MekanismItems.SeismicReader, "SeismicReader");
-		GameRegistry.registerItem(MekanismItems.Substrate, "Substrate");
-		GameRegistry.registerItem(MekanismItems.Polyethene, "Polyethene");
-		GameRegistry.registerItem(MekanismItems.BioFuel, "BioFuel");
-		GameRegistry.registerItem(MekanismItems.GlowPanel, "GlowPanel");
-		GameRegistry.registerItem(MekanismItems.Flamethrower, "Flamethrower");
-	}
-	
-	/**
-	 * Adds and registers all blocks.
-	 */
-	public void registerBlocks()
-	{
-		//Registrations
-		GameRegistry.registerBlock(MekanismBlocks.BasicBlock, ItemBlockBasic.class, "BasicBlock");
-		GameRegistry.registerBlock(MekanismBlocks.BasicBlock2, ItemBlockBasic.class, "BasicBlock2");
-		GameRegistry.registerBlock(MekanismBlocks.MachineBlock, ItemBlockMachine.class, "MachineBlock");
-		GameRegistry.registerBlock(MekanismBlocks.MachineBlock2, ItemBlockMachine.class, "MachineBlock2");
-		GameRegistry.registerBlock(MekanismBlocks.OreBlock, ItemBlockOre.class, "OreBlock");
-		GameRegistry.registerBlock(MekanismBlocks.EnergyCube, ItemBlockEnergyCube.class, "EnergyCube");
-		GameRegistry.registerBlock(MekanismBlocks.ObsidianTNT, "ObsidianTNT");
-		GameRegistry.registerBlock(MekanismBlocks.BoundingBlock, "BoundingBlock");
-		GameRegistry.registerBlock(MekanismBlocks.GasTank, ItemBlockGasTank.class, "GasTank");
-		GameRegistry.registerBlock(MekanismBlocks.CardboardBox, ItemBlockCardboardBox.class, "CardboardBox");
-		GameRegistry.registerBlock(MekanismBlocks.BlockHDPE, ItemBlockPlastic.class, "PlasticBlock");
-		GameRegistry.registerBlock(MekanismBlocks.BlockSlickHDPE, ItemBlockPlastic.class, "SlickPlasticBlock");
-		GameRegistry.registerBlock(MekanismBlocks.BlockGlowHDPE, ItemBlockPlastic.class, "GlowPlasticBlock");
-		GameRegistry.registerBlock(MekanismBlocks.BlockReinforcedHDPE, ItemBlockPlastic.class, "ReinforcedPlasticBlock");
-		GameRegistry.registerBlock(MekanismBlocks.BlockRoadHDPE, ItemBlockPlastic.class, "RoadPlasticBlock");
-		GameRegistry.registerBlock(MekanismBlocks.BlockHDPEFence, "PlasticFence");
-		GameRegistry.registerBlock(MekanismBlocks.SaltBlock, "SaltBlock");
-	}
-	
+
 	/**
 	 * Registers specified items with the Ore Dictionary.
 	 */
@@ -1122,7 +1032,11 @@ public class Mekanism
 		}
 		
 		Mekanism.proxy.preInit();
-		
+
+		//Register blocks and items
+		MekanismItems.register();
+		MekanismBlocks.register();
+
 		//Register infuses
         InfuseRegistry.registerInfuseType(new InfuseType("CARBON", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 0, 0).setUnlocalizedName("infuse.carbon"));
         InfuseRegistry.registerInfuseType(new InfuseType("TIN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 4, 0).setUnlocalizedName("infuse.tin"));
@@ -1181,8 +1095,6 @@ public class Mekanism
 		}
 
 		//Load this module
-		registerItems();
-		registerBlocks();
 		addRecipes();
 		addEntities();
 		

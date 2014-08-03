@@ -351,7 +351,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.GasMask, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.ScubaTank, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.Balloon, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.FreeRunners, handler);
+		MinecraftForgeClient.registerItemRenderer(MekanismItems.FrictionBoots, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.AtomicDisassembler, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.GlowPanel, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);

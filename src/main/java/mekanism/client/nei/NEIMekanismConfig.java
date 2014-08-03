@@ -107,7 +107,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerNEIGuiHandler(new ElementBoundHandler());
 
 		API.hideItem(new ItemStack(MekanismBlocks.BoundingBlock));
-		API.hideItem(new ItemStack(MekanismItems.Proxy));
+		API.hideItem(new ItemStack(MekanismItems.ItemProxy));
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
 import mekanism.api.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
-import mekanism.tools.common.MekanismToolsItems;
+import mekanism.tools.common.ToolsItems;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -88,8 +88,8 @@ public class ItemMekanismArmor extends ItemArmor
 	@SideOnly(Side.CLIENT)
 	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
 	{
-		if(itemStack.getItem() == MekanismToolsItems.GlowstoneHelmet || itemStack.getItem() == MekanismToolsItems.GlowstoneChestplate ||
-				itemStack.getItem() == MekanismToolsItems.GlowstoneLeggings || itemStack.getItem() == MekanismToolsItems.GlowstoneBoots)
+		if(itemStack.getItem() == ToolsItems.GlowstoneHelmet || itemStack.getItem() == ToolsItems.GlowstoneChestplate ||
+				itemStack.getItem() == ToolsItems.GlowstoneLeggings || itemStack.getItem() == ToolsItems.GlowstoneBoots)
 		{
 			return ModelCustomArmor.getGlow(armorSlot);
 		}

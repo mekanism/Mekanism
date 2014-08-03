@@ -52,7 +52,6 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override

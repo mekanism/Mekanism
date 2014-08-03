@@ -21,6 +21,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	
 	public ItemFlamethrower()
 	{
+		super();
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
