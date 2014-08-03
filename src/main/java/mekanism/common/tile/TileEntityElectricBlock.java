@@ -210,7 +210,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "BuildCraftAPI|power")
 	protected void reconfigure()
 	{
-			powerHandler.configure(1, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
+			powerHandler.configure(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), 0, (float)(getMaxEnergy()*Mekanism.TO_BC));
 	}
 
 	@Override
