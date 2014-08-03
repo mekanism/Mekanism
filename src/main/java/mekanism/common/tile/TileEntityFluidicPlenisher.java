@@ -17,6 +17,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -134,6 +135,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onNeighborChange(Block block) {
+		activeNodes.clear();
+		usedNodes.clear();
+		finishedCalc = false;
 	}
 	
 	private void doPlenish()
