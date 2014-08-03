@@ -33,14 +33,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 55 + (i*38);
 
-				addSlotToContainer(new Slot(tentity, 4+i, xAxis, 13));
+				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 55 + (i*38);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+4+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
 			}
 		}
 		else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -49,14 +49,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 35 + (i*26);
 
-				addSlotToContainer(new Slot(tentity, 4+i, xAxis, 13));
+				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 35 + (i*26);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+4+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
 			}
 		}
 		else if(tileEntity.tier == FactoryTier.ELITE)
@@ -65,14 +65,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 29 + (i*19);
 
-				addSlotToContainer(new Slot(tentity, 4+i, xAxis, 13));
+				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 29 + (i*19);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+4+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
 			}
 		}
 
