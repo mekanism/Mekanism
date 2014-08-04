@@ -74,7 +74,7 @@ public class BlockReactor extends BlockContainer
 		{
 			if(meta == 0)
 			{
-				return icons[0][side == 6 ? 0 : 2];
+				return icons[0][side == 1 ? 0 : 2];
 			}
 			else {
 				return icons[meta][0];
