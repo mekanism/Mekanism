@@ -19,6 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -32,6 +33,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IConfigurable, IFluidHandler, ISustainedTank
 {
@@ -178,11 +180,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			if(coord.exists(worldObj) && canReplace(coord))
 			{
-				worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
-				
-				setEnergy(getEnergy() - Mekanism.fluidicPlenisherUsage);
-				fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
-				
+				if(shouldReplace(coord)) {
+					worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+
+					setEnergy(getEnergy() - Mekanism.fluidicPlenisherUsage);
+					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+				}
 				for(ForgeDirection dir : dirs)
 				{
 					Coord4D sideCoord = coord.getFromSide(dir);
@@ -224,8 +227,29 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			return true;
 		}
-		
 		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.xCoord, coord.yCoord, coord.zCoord);
+	}
+
+	public boolean shouldReplace(Coord4D coord){
+		Block block = worldObj.getBlock(coord.xCoord, coord.yCoord, coord.zCoord);
+		int meta = worldObj.getBlockMetadata(coord.xCoord, coord.yCoord, coord.zCoord);
+		if(fluidTank.getFluid().getFluid() == FluidRegistry.WATER){
+			if(block == Blocks.water || block == Blocks.flowing_water){
+				return meta != 0;
+			}
+		}
+		else if(fluidTank.getFluid().getFluid() == FluidRegistry.LAVA){
+			if(block == Blocks.lava || block == Blocks.flowing_lava){
+				return meta != 0;
+			}
+		}
+		else{
+			if(block == fluidTank.getFluid().getFluid().getBlock()){
+				return meta !=0;
+			}
+		}
+	return true;
+
 	}
 	
 	@Override
