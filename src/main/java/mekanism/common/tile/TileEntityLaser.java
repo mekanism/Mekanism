@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.lasers.LaserManager;
+import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.item.ItemStack;

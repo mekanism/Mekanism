@@ -1,6 +1,7 @@
-package mekanism.api.lasers;
+package mekanism.common;
 
 import mekanism.api.Coord4D;
+import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.Mekanism;
 
 import net.minecraft.tileentity.TileEntity;
