@@ -37,6 +37,7 @@ public class MekanismConfig
 		public static double FROM_IC2;
 		public static double FROM_BC;
 		public static double FROM_TE;
+		public static int laserRange = 100;
 	}
 
 	public static class usage
@@ -62,6 +63,7 @@ public class MekanismConfig
 		public static double seismicVibratorUsage;
 		public static double pressurizedReactionBaseUsage;
 		public static double fluidicPlenisherUsage;
+		public static double laserUsage;
 	}
 
 	public static class generators
