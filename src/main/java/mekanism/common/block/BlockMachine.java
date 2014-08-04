@@ -23,6 +23,7 @@ import mekanism.common.IUpgradeTile;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -83,7 +84,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
@@ -631,6 +634,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						ItemStack stack = new ItemStack(item, 1, type.meta);
 						((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
 						list.add(stack);
+					}
+				}
+				else if(type == MachineType.PORTABLE_TANK) {
+					list.add(new ItemStack(item, 1, type.meta));
+
+					ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+
+					for(Fluid f : FluidRegistry.getRegisteredFluids().values())
+					{
+						ItemStack filled = new ItemStack(item, 1, type.meta);
+						itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
+						itemMachine.setPrevScale(filled, 1);
+						list.add(filled);
 					}
 				}
 				else {
