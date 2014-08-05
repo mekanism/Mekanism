@@ -46,14 +46,22 @@ public class InventoryElectricChest extends InventoryBasic
 	public void openInventory()
 	{
 		read();
-		((IElectricChest)getStack().getItem()).setOpen(getStack(), true);
+		
+		if(getStack() != null)
+		{
+			((IElectricChest)getStack().getItem()).setOpen(getStack(), true);
+		}
 	}
 
 	@Override
 	public void closeInventory()
 	{
 		write();
-		((IElectricChest)getStack().getItem()).setOpen(getStack(), false);
+		
+		if(getStack() != null)
+		{
+			((IElectricChest)getStack().getItem()).setOpen(getStack(), false);
+		}
 	}
 
 	public void write()
