@@ -47,10 +47,10 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	{
 		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
 		{
-			final float minY = (float) MekanismGenerators.windGenerationMinY;
-			final float maxY = (float) MekanismGenerators.windGenerationMaxY;
-			final float minG = (float) MekanismGenerators.windGenerationMin;
-			final float maxG = (float) MekanismGenerators.windGenerationMax;
+			final float minY = (float)MekanismGenerators.windGenerationMinY;
+			final float maxY = (float)MekanismGenerators.windGenerationMaxY;
+			final float minG = (float)MekanismGenerators.windGenerationMin;
+			final float maxG = (float)MekanismGenerators.windGenerationMax;
 
 			final float slope = (maxG - minG) / (maxY - minY);
 			final float intercept = minG - slope * minY;
