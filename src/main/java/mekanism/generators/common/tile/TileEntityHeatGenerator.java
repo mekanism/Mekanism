@@ -322,7 +322,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return fluid == FluidRegistry.LAVA;
+			return (fluid == FluidRegistry.LAVA) && (from != ForgeDirection.getOrientation(facing));
 	}
 
 	@Override
@@ -334,6 +334,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
+		if(from == ForgeDirection.getOrientation(facing)){
+			return new FluidTankInfo[0];
+		}
 		return new FluidTankInfo[] {lavaTank.getInfo()};
 	}
 
