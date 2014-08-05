@@ -72,7 +72,7 @@ public class ContainerChemicalOxidizer extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(RecipeHandler.getItemToGasOutput(slotStack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null)
+			if(RecipeHandler.getItemToGasOutput(slotStack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null && slotID != 0)
 			{
 				if(!mergeItemStack(slotStack, 0, 1, true))
 				{
