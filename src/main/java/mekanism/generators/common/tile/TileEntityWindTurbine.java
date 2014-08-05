@@ -6,7 +6,6 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -19,7 +18,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 
 	public TileEntityWindTurbine()
 	{
-		super("WindTurbine", 200000, (generators.windGeneration*8)*2);
+		super("WindTurbine", 200000, (generators.windGenerationMax)*2);
 		inventory = new ItemStack[1];
 	}
 
@@ -35,7 +34,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + (generators.windGeneration*getMultiplier()));
+				setEnergy(electricityStored + (generators.windGenerationMin*getMultiplier()));
 			}
 			else {
 				setActive(false);
@@ -43,10 +42,27 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 		}
 	}
 
-	/** 0 - 8 **/
+	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		return worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord) ? (((float)yCoord+4)/(float)256)*8 : 0;
+		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
+		{
+			final float minY = (float) generators.windGenerationMinY;
+			final float maxY = (float) generators.windGenerationMaxY;
+			final float minG = (float) generators.windGenerationMin;
+			final float maxG = (float) generators.windGenerationMax;
+
+			final float slope = (maxG - minG) / (maxY - minY);
+			final float intercept = minG - slope * minY;
+
+			final float clampedY = Math.min(maxY, Math.max(minY, (float)(yCoord+4)));
+			final float toGen = slope * clampedY + intercept;
+
+			return toGen / minG;
+		} 
+		else {
+			return 0;
+		}
 	}
 
 	@Override

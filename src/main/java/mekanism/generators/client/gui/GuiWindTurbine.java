@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import mekanism.api.EnumColor;
@@ -29,6 +30,8 @@ public class GuiWindTurbine extends GuiMekanism
 {
 	public TileEntityWindTurbine tileEntity;
 
+	private DecimalFormat powerFormat = new DecimalFormat("0.##");
+
 	public GuiWindTurbine(InventoryPlayer inventory, TileEntityWindTurbine tentity)
 	{
 		super(new ContainerWindTurbine(inventory, tentity));
@@ -40,7 +43,7 @@ public class GuiWindTurbine extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGeneration*tileEntity.getMultiplier() : 0) + "/t",
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.getMultiplier() : 0) + "/t",
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
@@ -57,7 +60,7 @@ public class GuiWindTurbine extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.power") + ": " + generators.windGeneration*tileEntity.getMultiplier(), 51, 35, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.power") + ": " + powerFormat.format(generators.windGenerationMin*tileEntity.getMultiplier()), 51, 35, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
 
 		int size = 44;

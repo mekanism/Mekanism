@@ -148,8 +148,13 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(generators.advancedSolarGeneration);
 		dataStream.writeDouble(generators.bioGeneration);
 		dataStream.writeDouble(generators.heatGeneration);
+		dataStream.writeDouble(generators.heatGenerationLava);
+		dataStream.writeDouble(generators.heatGenerationNether);
 		dataStream.writeDouble(generators.solarGeneration);
-		dataStream.writeDouble(generators.windGeneration);
+		dataStream.writeDouble(generators.windGenerationMin);
+		dataStream.writeDouble(generators.windGenerationMax);
+		dataStream.writeInt(generators.windGenerationMinY);
+		dataStream.writeInt(generators.windGenerationMaxY);
 	}
 
 	@Override
@@ -158,8 +163,13 @@ public class MekanismGenerators implements IModule
 		generators.advancedSolarGeneration = dataStream.readDouble();
 		generators.bioGeneration = dataStream.readDouble();
 		generators.heatGeneration = dataStream.readDouble();
+		generators.heatGenerationLava = dataStream.readDouble();
+		generators.heatGenerationNether = dataStream.readDouble();
 		generators.solarGeneration = dataStream.readDouble();
-		generators.windGeneration = dataStream.readDouble();
+		generators.windGenerationMin = dataStream.readDouble();
+		generators.windGenerationMax = dataStream.readDouble();
+		generators.windGenerationMinY = dataStream.readInt();
+		generators.windGenerationMaxY = dataStream.readInt();
 	}
 
 	@SubscribeEvent

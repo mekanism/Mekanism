@@ -71,8 +71,15 @@ public class MekanismConfig
 		public static double advancedSolarGeneration;
 		public static double bioGeneration;
 		public static double heatGeneration;
+		public static double heatGenerationLava;
+		public static double heatGenerationNether;
 		public static double solarGeneration;
-		public static double windGeneration;
+
+		public static double windGenerationMin;
+		public static double windGenerationMax;
+
+		public static int windGenerationMinY;
+		public static int windGenerationMaxY;
 	}
 
 	public static class tools

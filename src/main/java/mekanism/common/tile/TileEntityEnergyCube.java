@@ -133,7 +133,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return side == 1 ? new int[] {0} : new int[] {1};
+		return side <= 1 ? new int[] {0} : new int[] {1};
 	}
 
 	@Override

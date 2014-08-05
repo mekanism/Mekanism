@@ -75,11 +75,40 @@ public class GeneratorsCommonProxy
 		generators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble(300D);
 		generators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble(350D);
 		generators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
+		generators.heatGenerationLava = Mekanism.configuration.get("generation", "HeatGenerationLava", 5D).getDouble(5D);
+		generators.heatGenerationNether = Mekanism.configuration.get("generation", "HeatGenerationNether", 100D).getDouble(100D);
 		generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
-		generators.windGeneration = Mekanism.configuration.get("generation", "WindGeneration", 60D).getDouble(60D);
+		loadWindConfiguration();
 
 		if(Mekanism.configuration.hasChanged())
+		{
 			Mekanism.configuration.save();
+		}
+	}
+	
+	private void loadWindConfiguration() 
+	{
+		if(Mekanism.configuration.hasKey("generation", "WindGeneration")) 
+		{
+			//Migrate the old wind generation config
+			final double legacyWindGeneration = Mekanism.configuration.get("generation", "WindGeneration", 60D).getDouble(60D);
+			final double windGenerationMax = legacyWindGeneration * 8D;
+			Mekanism.configuration.getCategory("generation").remove("WindGeneration");
+
+			generators.windGenerationMin = Mekanism.configuration.get("generation", "WindGenerationMin", legacyWindGeneration).getDouble(legacyWindGeneration);
+			generators.windGenerationMax = Mekanism.configuration.get("generation", "WindGenerationMax", windGenerationMax).getDouble(windGenerationMax);
+		} 
+		else {
+			generators.windGenerationMin = Mekanism.configuration.get("generation", "WindGenerationMin", 60D).getDouble(60D);
+			generators.windGenerationMax = Mekanism.configuration.get("generation", "WindGenerationMax", 480D).getDouble(480D);
+		}
+
+		//Ensure max > min to avoid division by zero later
+		final int minY = Mekanism.configuration.get("generation", "WindGenerationMinY", 24).getInt(24);
+		final int maxY = Mekanism.configuration.get("generation", "WindGenerationMaxY", 255).getInt(255);
+
+		generators.windGenerationMinY = minY;
+		generators.windGenerationMaxY = Math.max(minY + 1, maxY);
 	}
 
 	/**

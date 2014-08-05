@@ -5,13 +5,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.MekanismConfig.generators;
-import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.PipeUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -30,7 +29,7 @@ import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ILaserReceptor, ISustainedData
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
@@ -184,24 +183,26 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 	public double getBoost()
 	{
-		int boost = 0;
+		int lavaBoost = 0;
+		double netherBoost = 0D;
 
 		if(isLava(xCoord+1, yCoord, zCoord))
-			boost+=5;
+			lavaBoost+=1;
 		if(isLava(xCoord-1, yCoord, zCoord))
-			boost+=5;
+			lavaBoost+=1;
 		if(isLava(xCoord, yCoord+1, zCoord))
-			boost+=5;
+ 			lavaBoost+=1;
 		if(isLava(xCoord, yCoord-1, zCoord))
-			boost+=5;
+  			lavaBoost+=1;
 		if(isLava(xCoord, yCoord, zCoord+1))
-			boost+=5;
+ 			lavaBoost+=1;
 		if(isLava(xCoord, yCoord, zCoord-1))
-			boost+=5;
-		if(worldObj.provider.dimensionId == -1)
-			boost+=100;
+ 			lavaBoost+=1;
 
-		return boost;
+		if(worldObj.provider.dimensionId == -1)
+			netherBoost = generators.heatGenerationNether;
+
+		return (generators.heatGenerationLava * lavaBoost) + netherBoost;
 	}
 	
 	private boolean isLava(int x, int y, int z)
@@ -324,7 +325,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return fluid == FluidRegistry.LAVA;
+		return fluid == FluidRegistry.LAVA && from != ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
@@ -336,25 +337,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
+		if(from == ForgeDirection.getOrientation(facing))
+		{
+			return PipeUtils.EMPTY;
+		}
+		
 		return new FluidTankInfo[] {lavaTank.getInfo()};
-	}
-
-	@Override
-	public void receiveLaserEnergy(double energy, ForgeDirection side)
-	{
-		setEnergy(getEnergy()+energy);
-	}
-
-	@Override
-	public boolean canLasersDig()
-	{
-		return false;
-	}
-
-	@Override
-	public double energyToDig()
-	{
-		return 0;
 	}
 
 	@Override
