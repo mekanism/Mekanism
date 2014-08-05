@@ -74,9 +74,19 @@ public class ContainerChemicalOxidizer extends Container
 
 			if(RecipeHandler.getItemToGasOutput(slotStack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null)
 			{
-				if(!mergeItemStack(slotStack, 0, 1, true))
+				if(slotID != 0)
 				{
-					return null;
+					if(!mergeItemStack(slotStack, 0, 1, true))
+					{
+						return null;
+					}
+				}
+				else if(slotID == 0)
+				{
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
+					{
+						return null;
+					}
 				}
 			}
 			else if(ChargeUtils.canBeDischarged(slotStack))

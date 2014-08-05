@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -322,7 +323,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-			return (fluid == FluidRegistry.LAVA) && (from != ForgeDirection.getOrientation(facing));
+		return fluid == FluidRegistry.LAVA && from != ForgeDirection.getOrientation(facing);
 	}
 
 	@Override
@@ -334,9 +335,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(from == ForgeDirection.getOrientation(facing)){
-			return new FluidTankInfo[0];
+		if(from == ForgeDirection.getOrientation(facing))
+		{
+			return PipeUtils.EMPTY;
 		}
+		
 		return new FluidTankInfo[] {lavaTank.getInfo()};
 	}
 
