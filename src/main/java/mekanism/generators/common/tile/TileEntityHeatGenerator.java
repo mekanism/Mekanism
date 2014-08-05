@@ -183,24 +183,26 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 	public double getBoost()
 	{
-		int boost = 0;
+		int lavaBoost = 0;
+		double netherBoost = 0D;
 
 		if(isLava(xCoord+1, yCoord, zCoord))
-			boost+=5;
+			lavaBoost+=1;
 		if(isLava(xCoord-1, yCoord, zCoord))
-			boost+=5;
+			lavaBoost+=1;
 		if(isLava(xCoord, yCoord+1, zCoord))
-			boost+=5;
+ 			lavaBoost+=1;
 		if(isLava(xCoord, yCoord-1, zCoord))
-			boost+=5;
+  			lavaBoost+=1;
 		if(isLava(xCoord, yCoord, zCoord+1))
-			boost+=5;
+ 			lavaBoost+=1;
 		if(isLava(xCoord, yCoord, zCoord-1))
-			boost+=5;
-		if(worldObj.provider.dimensionId == -1)
-			boost+=100;
+ 			lavaBoost+=1;
 
-		return boost;
+		if(worldObj.provider.dimensionId == -1)
+			netherBoost = MekanismGenerators.heatGenerationNether;
+
+		return (MekanismGenerators.heatGenerationLava * lavaBoost) + netherBoost;
 	}
 	
 	private boolean isLava(int x, int y, int z)
