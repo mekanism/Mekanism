@@ -59,8 +59,15 @@ public class MekanismGenerators implements IModule
 	public static double advancedSolarGeneration;
 	public static double bioGeneration;
 	public static double heatGeneration;
+	public static double heatGenerationLava;
+	public static double heatGenerationNether;
 	public static double solarGeneration;
-	public static double windGeneration;
+
+	public static double windGenerationMin;
+	public static double windGenerationMax;
+
+	public static int windGenerationMinY;
+	public static int windGenerationMaxY;
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -168,8 +175,13 @@ public class MekanismGenerators implements IModule
 		dataStream.writeDouble(advancedSolarGeneration);
 		dataStream.writeDouble(bioGeneration);
 		dataStream.writeDouble(heatGeneration);
+		dataStream.writeDouble(heatGenerationLava);
+		dataStream.writeDouble(heatGenerationNether);
 		dataStream.writeDouble(solarGeneration);
-		dataStream.writeDouble(windGeneration);
+		dataStream.writeDouble(windGenerationMin);
+		dataStream.writeDouble(windGenerationMax);
+		dataStream.writeInt(windGenerationMinY);
+		dataStream.writeInt(windGenerationMaxY);
 	}
 
 	@Override
@@ -178,8 +190,13 @@ public class MekanismGenerators implements IModule
 		advancedSolarGeneration = dataStream.readDouble();
 		bioGeneration = dataStream.readDouble();
 		heatGeneration = dataStream.readDouble();
+		heatGenerationLava = dataStream.readDouble();
+		heatGenerationNether = dataStream.readDouble();
 		solarGeneration = dataStream.readDouble();
-		windGeneration = dataStream.readDouble();
+		windGenerationMin = dataStream.readDouble();
+		windGenerationMax = dataStream.readDouble();
+		windGenerationMinY = dataStream.readInt();
+		windGenerationMaxY = dataStream.readInt();
 	}
 
 	@SubscribeEvent
