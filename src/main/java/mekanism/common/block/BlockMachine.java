@@ -722,7 +722,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			{
 				TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
 
-				if(!entityplayer.isSneaking())
+				if(!(entityplayer.isSneaking() || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN)))
 				{
 					if(electricChest.canAccess())
 					{
