@@ -33,12 +33,17 @@ import mekanism.common.multipart.ItemPartTransmitter;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
 @ObjectHolder("Mekanism")
 public class MekanismItems
 {
-	//Items
 	public static final ItemElectricBow ElectricBow = (ItemElectricBow)new ItemElectricBow().setUnlocalizedName("ElectricBow");
 	public static final Item EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
 	public static final Item ReinforcedAlloy = new ItemMekanism().setUnlocalizedName("ReinforcedAlloy");
@@ -58,7 +63,7 @@ public class MekanismItems
 	public static final Item Configurator = new ItemConfigurator().setUnlocalizedName("Configurator");
 	public static final Item NetworkReader = new ItemNetworkReader().setUnlocalizedName("NetworkReader");
 	public static final Item WalkieTalkie = new ItemWalkieTalkie().setUnlocalizedName("WalkieTalkie");
-	public static final Item Proxy = new ItemProxy().setUnlocalizedName("ItemProxy");
+	public static final Item ItemProxy = new ItemProxy().setUnlocalizedName("ItemProxy");
 	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
 	public static final ItemJetpack Jetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("Jetpack");
@@ -71,7 +76,7 @@ public class MekanismItems
 	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
 	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
-	public static final Item FreeRunners = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
+	public static final Item FrictionBoots = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
 	public static final ItemJetpack ArmoredJetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("ArmoredJetpack");
 	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
 	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
@@ -87,4 +92,62 @@ public class MekanismItems
 	public static final Item Shard = new ItemShard();
 	public static final Item Crystal = new ItemCrystal();
 	public static final Item ControlCircuit = new ItemControlCircuit();
+
+	/**
+	 * Adds and registers all items.
+	 */
+	public static void register()
+	{
+		GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
+		GameRegistry.registerItem(ElectricBow, "ElectricBow");
+		GameRegistry.registerItem(Dust, "Dust");
+		GameRegistry.registerItem(Ingot, "Ingot");
+		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
+		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
+		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
+		GameRegistry.registerItem(Robit, "Robit");
+		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
+		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
+		GameRegistry.registerItem(ReinforcedAlloy, "ReinforcedAlloy");
+		GameRegistry.registerItem(AtomicAlloy, "AtomicAlloy");
+		GameRegistry.registerItem(ItemProxy, "ItemProxy");
+		GameRegistry.registerItem(ControlCircuit, "ControlCircuit");
+		GameRegistry.registerItem(EnrichedIron, "EnrichedIron");
+		GameRegistry.registerItem(CompressedCarbon, "CompressedCarbon");
+		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
+		GameRegistry.registerItem(CompressedDiamond, "CompressedDiamond");
+		GameRegistry.registerItem(CompressedObsidian, "CompressedObsidian");
+		GameRegistry.registerItem(PortableTeleporter, "PortableTeleporter");
+		GameRegistry.registerItem(TeleportationCore, "TeleportationCore");
+		GameRegistry.registerItem(Clump, "Clump");
+		GameRegistry.registerItem(DirtyDust, "DirtyDust");
+		GameRegistry.registerItem(Configurator, "Configurator");
+		GameRegistry.registerItem(NetworkReader, "NetworkReader");
+		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
+		GameRegistry.registerItem(Jetpack, "Jetpack");
+		GameRegistry.registerItem(Dictionary, "Dictionary");
+		GameRegistry.registerItem(GasMask, "GasMask");
+		GameRegistry.registerItem(ScubaTank, "ScubaTank");
+		GameRegistry.registerItem(Balloon, "Balloon");
+		GameRegistry.registerItem(Shard, "Shard");
+		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
+		GameRegistry.registerItem(Sawdust, "Sawdust");
+		GameRegistry.registerItem(Salt, "Salt");
+		GameRegistry.registerItem(BrineBucket, "BrineBucket");
+		GameRegistry.registerItem(Crystal, "Crystal");
+		GameRegistry.registerItem(FrictionBoots, "FrictionBoots");
+		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
+		GameRegistry.registerItem(FilterCard, "FilterCard");
+		GameRegistry.registerItem(SeismicReader, "SeismicReader");
+		GameRegistry.registerItem(Substrate, "Substrate");
+		GameRegistry.registerItem(Polyethene, "Polyethene");
+		GameRegistry.registerItem(BioFuel, "BioFuel");
+		GameRegistry.registerItem(GlowPanel, "GlowPanel");
+		GameRegistry.registerItem(Flamethrower, "Flamethrower");
+
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
+
+		MinecraftForge.EVENT_BUS.register(GasMask);
+		MinecraftForge.EVENT_BUS.register(FrictionBoots);
+	}
 }

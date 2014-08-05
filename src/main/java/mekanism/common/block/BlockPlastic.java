@@ -27,7 +27,7 @@ public class BlockPlastic extends Block
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		if(this == MekanismBlocks.BlockSlickHDPE)
+		if(this == MekanismBlocks.SlickPlasticBlock)
 		{
 			slipperiness = 0.98F;
 		}
@@ -37,23 +37,23 @@ public class BlockPlastic extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == MekanismBlocks.BlockHDPE)
+		if(this == MekanismBlocks.PlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:PlasticBlock");
 		}
-		else if(this == MekanismBlocks.BlockSlickHDPE)
+		else if(this == MekanismBlocks.SlickPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:SlickPlasticBlock");
 		}
-		else if(this == MekanismBlocks.BlockGlowHDPE)
+		else if(this == MekanismBlocks.GlowPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:GlowPlasticBlock");
 		}
-		else if(this == MekanismBlocks.BlockReinforcedHDPE)
+		else if(this == MekanismBlocks.ReinforcedPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
 		}
-		else if(this == MekanismBlocks.BlockRoadHDPE)
+		else if(this == MekanismBlocks.RoadPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
 		}
@@ -62,7 +62,7 @@ public class BlockPlastic extends Block
 	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity e)
 	{
-		if(this == MekanismBlocks.BlockRoadHDPE)
+		if(this == MekanismBlocks.RoadPlasticBlock)
 		{
 			double boost = 1.6;
 
@@ -105,7 +105,7 @@ public class BlockPlastic extends Block
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(this == MekanismBlocks.BlockGlowHDPE)
+		if(this == MekanismBlocks.GlowPlasticBlock)
 		{
 			return 10;
 		}

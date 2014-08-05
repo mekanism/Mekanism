@@ -681,6 +681,16 @@ gui.solarGenerator.sun=Sun
 gui.bioGenerator.bioFuel=BioFuel
 gui.electrolyticSeparator.dump=Dump
 
+gui.passive=Passive
+gui.active=Active
+
+gui.minInject=Min. Inject Rate
+gui.ignition=Ignition Temp
+gui.maxPlasma=Max. Plasma Temp
+gui.maxCasing=Max. Casing Temp
+gui.passiveGeneration=Passive Generation
+gui.steamProduction=Steam Production
+
 //*****//
 //TOOLS//
 //*****//

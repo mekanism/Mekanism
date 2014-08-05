@@ -251,6 +251,8 @@ public class CommonProxy
 			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
 
+		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 100).getInt(100);
+
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
 		usage.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble(100D);
 		usage.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50D).getDouble(50D);
@@ -272,6 +274,7 @@ public class CommonProxy
 		usage.seismicVibratorUsage = Mekanism.configuration.get("usage", "SeismicVibratorUsage", 50D).getDouble(50D);
 		usage.pressurizedReactionBaseUsage = Mekanism.configuration.get("usage", "PressurizedReactionBaseUsage", 5D).getDouble(5D);
 		usage.fluidicPlenisherUsage = Mekanism.configuration.get("usage", "FluidicPlenisherUsage", 100D).getDouble(100D);
+		usage.laserUsage = Mekanism.configuration.get("usage", "LaserUsage", 5000D).getDouble(5000D);
 
 		if(Mekanism.configuration.hasChanged())
 		{

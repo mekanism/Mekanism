@@ -7,6 +7,7 @@ import mekanism.generators.client.gui.GuiNeutronCapture;
 import mekanism.generators.client.gui.GuiReactorController;
 import mekanism.generators.client.gui.GuiReactorFuel;
 import mekanism.generators.client.gui.GuiReactorHeat;
+import mekanism.generators.client.gui.GuiReactorStats;
 import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiWindTurbine;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
@@ -85,6 +86,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 			case 12:
 				return new GuiReactorFuel(player.inventory, (TileEntityReactorController)tileEntity);
 			case 13:
+				return new GuiReactorStats(player.inventory, (TileEntityReactorController)tileEntity);
+			case 14:
 				return new GuiNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
 		}
 		

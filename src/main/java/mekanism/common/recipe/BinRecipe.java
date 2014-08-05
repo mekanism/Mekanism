@@ -164,7 +164,7 @@ public class BinRecipe implements IRecipe
 
 				if(testRemain != null && testRemain.stackSize > 0)
 				{
-					ItemStack proxy = new ItemStack(MekanismItems.Proxy);
+					ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
 					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());
 					event.craftMatrix.setInventorySlotContents(other, proxy);
 				}

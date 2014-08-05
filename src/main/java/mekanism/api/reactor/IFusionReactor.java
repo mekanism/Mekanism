@@ -45,4 +45,16 @@ public interface IFusionReactor
 	public boolean isBurning();
 
 	public void setBurning(boolean burn);
+
+	public int getMinInjectionRate(boolean active);
+
+	public double getMaxPlasmaTemperature(boolean active);
+
+	public double getMaxCasingTemperature(boolean active);
+
+	public double getIgnitionTemperature(boolean active);
+
+	public double getPassiveGeneration(boolean active, boolean current);
+
+	public int getSteamPerTick(boolean current);
 }

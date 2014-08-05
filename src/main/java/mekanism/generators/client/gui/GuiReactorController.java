@@ -3,16 +3,12 @@ package mekanism.generators.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.api.Coord4D;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotType;
-import mekanism.client.sound.SoundHandler;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
@@ -32,19 +28,23 @@ public class GuiReactorController extends GuiMekanism
 	{
 		super(new ContainerReactorController(inventory, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
+		if(tileEntity.isFormed())
 		{
-			@Override
-			public List<String> getInfo()
+			guiElements.add(new GuiEnergyInfo(new IInfoHandler()
 			{
-				return ListUtils.asList(
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 79, 38));
-		guiElements.add(new GuiHeatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+				@Override
+				public List<String> getInfo()
+				{
+					return tileEntity.isFormed() ? ListUtils.asList(
+							"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+							"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
+				}
+			}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+			guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 79, 38));
+			guiElements.add(new GuiHeatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+			guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+			guiElements.add(new GuiStatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		}
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class GuiReactorController extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 6, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
 		
 		if(tileEntity.getActive())
 		{

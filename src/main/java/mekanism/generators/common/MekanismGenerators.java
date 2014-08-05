@@ -14,12 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Version;
-import mekanism.common.item.ItemMekanism;
 import mekanism.common.recipe.MekanismRecipe;
-import mekanism.generators.common.block.BlockGenerator;
-import mekanism.generators.common.block.BlockReactor;
-import mekanism.generators.common.item.ItemBlockGenerator;
-import mekanism.generators.common.item.ItemBlockReactor;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -38,9 +33,9 @@ import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
@@ -56,6 +51,37 @@ public class MekanismGenerators implements IModule
 	
 	/** MekanismGenerators version number */
 	public static Version versionNumber = new Version(8, 0, 0);
+
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		GeneratorsBlocks.register();
+		GeneratorsItems.register();
+	}
+
+	@EventHandler
+	public void init(FMLInitializationEvent event)
+	{
+		//Add this module to the core list
+		Mekanism.modulesLoaded.add(this);
+
+		packetHandler.initialize();
+		
+		//Set up the GUI handler
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
+		FMLCommonHandler.instance().bus().register(this);
+
+		//Load the proxy
+		proxy.loadConfiguration();
+		proxy.registerRegularTileEntities();
+		proxy.registerSpecialTileEntities();
+		proxy.registerRenderInformation();
+		
+		addRecipes();
+		
+		//Finalization
+		Mekanism.logger.info("Loaded MekanismGenerators module.");
+	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
@@ -75,34 +101,7 @@ public class MekanismGenerators implements IModule
 			IronEngineFuel.addFuel("ethene", (float) (240 * general.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
 		}
 	}
-	
-	@EventHandler
-	public void init(FMLInitializationEvent event)
-	{
-		//Add this module to the core list
-		Mekanism.modulesLoaded.add(this);
 
-		packetHandler.initialize();
-		
-		//Set up the GUI handler
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GeneratorsGuiHandler());
-		FMLCommonHandler.instance().bus().register(this);
-
-		//Load the proxy
-		proxy.loadConfiguration();
-		proxy.registerRegularTileEntities();
-		proxy.registerSpecialTileEntities();
-		proxy.registerRenderInformation();
-		
-		//Load this module
-		registerBlocks();
-		addItems();
-		addRecipes();
-		
-		//Finalization
-		Mekanism.logger.info("Loaded MekanismGenerators module.");
-	}
-	
 	public void addRecipes()
 	{
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Generator, 1, 0), new Object[] {
@@ -129,19 +128,6 @@ public class MekanismGenerators implements IModule
 
 		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, general.FROM_H2 + generators.bioGeneration * 80); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
 
-	}
-	
-	public void registerBlocks()
-	{
-		GameRegistry.registerBlock(GeneratorsBlocks.Generator, ItemBlockGenerator.class, "Generator");
-		GameRegistry.registerBlock(GeneratorsBlocks.Reactor, ItemBlockReactor.class, "Reactor");
-		GameRegistry.registerBlock(GeneratorsBlocks.ReactorGlass, ItemBlockReactor.class, "ReactorGlass");
-	}
-	
-	public void addItems()
-	{
-		//Registrations
-		GameRegistry.registerItem(GeneratorsItems.SolarPanel, "SolarPanel");
 	}
 
 	@Override

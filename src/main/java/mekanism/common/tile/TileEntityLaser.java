@@ -5,7 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.lasers.LaserManager;
+import mekanism.api.MekanismConfig.usage;
+import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.item.ItemStack;
@@ -13,13 +14,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityLaser extends TileEntityElectricBlock
 {
-	public static final double LASER_ENERGY = 5000;
-
 	public boolean on;
 
 	public TileEntityLaser()
 	{
-		super("Laser", 2*LASER_ENERGY);
+		super("Laser", 2* usage.laserUsage);
 		inventory = new ItemStack[0];
 	}
 
@@ -37,7 +36,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 		}
 		else
 		{
-			if(getEnergy() >= LASER_ENERGY)
+			if(getEnergy() >= usage.laserUsage)
 			{
 				if(!on)
 				{
@@ -45,8 +44,8 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 				
-				LaserManager.fireLaser(Coord4D.get(this), ForgeDirection.getOrientation(facing), LASER_ENERGY, worldObj);
-				setEnergy(getEnergy() - LASER_ENERGY);
+				LaserManager.fireLaser(Coord4D.get(this), ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				setEnergy(getEnergy() - usage.laserUsage);
 			}
 			else if(on)
 			{

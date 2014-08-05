@@ -23,7 +23,6 @@ public class ItemGasMask extends ItemArmor
 	{
 		super(EnumHelper.addArmorMaterial("GASMASK", 0, new int[] {0, 0, 0, 0}, 0), 0, 0);
 		setCreativeTab(Mekanism.tabMekanism);
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
