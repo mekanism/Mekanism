@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.util.ListUtils;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.gui.GuiEnergyGauge;
@@ -17,9 +18,12 @@ import mekanism.client.gui.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.GuiProgress;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.block.BlockStaticLiquid;
@@ -150,6 +154,7 @@ public class GuiReactorHeat extends GuiMekanism
 			}
 		}, Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 115, 46));
 		guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
+		guiElements.add(new GuiStatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 	}
 
 	@Override
@@ -157,7 +162,7 @@ public class GuiReactorHeat extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 6, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
 	}
 
 	@Override
@@ -169,6 +174,36 @@ public class GuiReactorHeat extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
+		{
+			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 0, 14, 14);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, 14, 14, 14);
+		}
+
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	}
+
+	@Override
+	public void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		if(button == 0)
+		{
+			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
+			{
+				SoundHandler.playSound("gui.button.press");
+				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 10));
+			}
+
+		}
 	}
 }

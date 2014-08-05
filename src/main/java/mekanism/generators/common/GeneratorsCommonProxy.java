@@ -127,8 +127,9 @@ public class GeneratorsCommonProxy
 				return new ContainerReactorController(player.inventory, (TileEntityReactorController)tileEntity);
 			case 11:
 			case 12:
-				return new ContainerNull(player, (TileEntityReactorController)tileEntity);
 			case 13:
+				return new ContainerNull(player, (TileEntityReactorController)tileEntity);
+			case 14:
 				return new ContainerNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
 		}
 		

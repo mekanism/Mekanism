@@ -284,7 +284,7 @@ public class BlockReactor extends BlockContainer
 	{
 		CONTROLLER(GeneratorsBlocks.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
 		FRAME(GeneratorsBlocks.Reactor, 1, "ReactorFrame", -1, TileEntityReactorFrame.class),
-		NEUTRON_CAPTURE(GeneratorsBlocks.Reactor, 2, "ReactorNeutronCapturePlate", 13, TileEntityReactorNeutronCapture.class),
+		NEUTRON_CAPTURE(GeneratorsBlocks.Reactor, 2, "ReactorNeutronCapturePlate", 14, TileEntityReactorNeutronCapture.class),
 		PORT(GeneratorsBlocks.Reactor, 3, "ReactorInOutPort", -1, TileEntityReactorPort.class),
 		GLASS(GeneratorsBlocks.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class),
 		LASER_FOCUS_MATRIX(GeneratorsBlocks.ReactorGlass, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class);

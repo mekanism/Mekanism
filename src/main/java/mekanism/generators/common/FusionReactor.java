@@ -465,4 +465,33 @@ public class FusionReactor implements IFusionReactor
 	{
 		burning = burn;
 	}
+
+	@Override
+	public int getMinInjectionRate(boolean active)
+	{
+		double k = active ? caseWaterConductivity : 0;
+		double aMin = burnTemperature * burnRatio * plasmaCaseConductivity * (k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+		return (int)(2 * Math.ceil(aMin/2D));
+	}
+
+	@Override
+	public double getMaxPlasmaTemperature(boolean active)
+	{
+		double k = active ? caseWaterConductivity : 0;
+		return injectionRate * energyPerFuel/plasmaCaseConductivity * (plasmaCaseConductivity+k+caseAirConductivity) / (k+caseAirConductivity);
+	}
+
+	@Override
+	public double getMaxCasingTemperature(boolean active)
+	{
+		double k = active ? caseWaterConductivity : 0;
+		return injectionRate * energyPerFuel / (k+caseAirConductivity);
+	}
+
+	@Override
+	public double getIgnitionTemperature(boolean active)
+	{
+		double k = active ? caseWaterConductivity : 0;
+		return burnTemperature * energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
+	}
 }
