@@ -45,7 +45,8 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/
 	public float getMultiplier()
 	{
-		if (worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) {
+		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
+		{
 			final float minY = (float) MekanismGenerators.windGenerationMinY;
 			final float maxY = (float) MekanismGenerators.windGenerationMaxY;
 			final float minG = (float) MekanismGenerators.windGenerationMin;
@@ -58,7 +59,8 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			final float toGen = slope * clampedY + intercept;
 
 			return toGen / minG;
-		} else {
+		} 
+		else {
 			return 0;
 		}
 	}
