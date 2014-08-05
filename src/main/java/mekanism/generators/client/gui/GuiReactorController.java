@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.util.ListUtils;
@@ -27,20 +28,23 @@ public class GuiReactorController extends GuiMekanism
 	{
 		super(new ContainerReactorController(inventory, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiEnergyInfo(new IInfoHandler()
+		if(tileEntity.isFormed())
 		{
-			@Override
-			public List<String> getInfo()
+			guiElements.add(new GuiEnergyInfo(new IInfoHandler()
 			{
-				return ListUtils.asList(
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
-			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 79, 38));
-		guiElements.add(new GuiHeatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiStatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+				@Override
+				public List<String> getInfo()
+				{
+					return tileEntity.isFormed() ? ListUtils.asList(
+							"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+							"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
+				}
+			}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+			guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 79, 38));
+			guiElements.add(new GuiHeatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+			guiElements.add(new GuiFuelTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+			guiElements.add(new GuiStatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		}
 	}
 
 	@Override

@@ -688,6 +688,8 @@ gui.minInject=Min. Inject Rate
 gui.ignition=Ignition Temp
 gui.maxPlasma=Max. Plasma Temp
 gui.maxCasing=Max. Casing Temp
+gui.passiveGeneration=Passive Generation
+gui.steamProduction=Steam Production
 
 //*****//
 //TOOLS//

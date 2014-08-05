@@ -53,4 +53,8 @@ public interface IFusionReactor
 	public double getMaxCasingTemperature(boolean active);
 
 	public double getIgnitionTemperature(boolean active);
+
+	public double getPassiveGeneration(boolean active, boolean current);
+
+	public int getSteamPerTick(boolean current);
 }

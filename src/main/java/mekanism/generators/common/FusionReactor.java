@@ -494,4 +494,18 @@ public class FusionReactor implements IFusionReactor
 		double k = active ? caseWaterConductivity : 0;
 		return burnTemperature * energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
 	}
+
+	public double getPassiveGeneration(boolean active, boolean current)
+	{
+		double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
+
+		return thermocoupleEfficiency * caseAirConductivity * temperature;
+	}
+
+	public int getSteamPerTick(boolean current)
+	{
+		double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
+
+		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization);
+	}
 }

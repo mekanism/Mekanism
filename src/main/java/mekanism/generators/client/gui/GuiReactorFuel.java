@@ -51,9 +51,9 @@ public class GuiReactorFuel extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				return ListUtils.asList(
+				return tileEntity.isFormed() ? ListUtils.asList(
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler()

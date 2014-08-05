@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -48,9 +49,9 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				return ListUtils.asList(
+				return tileEntity.isFormed() ? ListUtils.asList(
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
@@ -76,7 +77,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Plasma: " + (int)(level+23) + "C";
+				return "Plasma: " + (int)level + "C";
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 7, 50));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
@@ -110,7 +111,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Case: " + (int)(level+23) + "C";
+				return "Case: " + (int)level + "C";
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 61, 50));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()

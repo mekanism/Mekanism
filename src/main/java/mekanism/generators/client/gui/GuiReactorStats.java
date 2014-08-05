@@ -1,6 +1,7 @@
 package mekanism.generators.client.gui;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -37,9 +38,9 @@ public class GuiReactorStats extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				return ListUtils.asList(
+				return tileEntity.isFormed() ? ListUtils.asList(
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiHeatTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
@@ -59,12 +60,15 @@ public class GuiReactorStats extends GuiMekanism
 			fontRendererObj.drawString(MekanismUtils.localize("gui.ignition") + ": " + (nf.format(tileEntity.getReactor().getIgnitionTemperature(false))), 16, 46, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.maxPlasma") + ": " + (nf.format(tileEntity.getReactor().getMaxPlasmaTemperature(false))), 16, 56, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.maxCasing") + ": " + (nf.format(tileEntity.getReactor().getMaxCasingTemperature(false))), 16, 66, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.passiveGeneration") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, false))+"/t", 16, 76, 0x404040);
 
-			fontRendererObj.drawString(MekanismUtils.localize("gui.active"), 6, 86, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.minInject") + ": " + (tileEntity.getReactor().getMinInjectionRate(true)), 16, 96, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.ignition") + ": " + (nf.format(tileEntity.getReactor().getIgnitionTemperature(true))), 16, 106, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.maxPlasma") + ": " + (nf.format(tileEntity.getReactor().getMaxPlasmaTemperature(true))), 16, 116, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.maxCasing") + ": " + (nf.format(tileEntity.getReactor().getMaxCasingTemperature(true))), 16, 126, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.active"), 6, 96, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.minInject") + ": " + (tileEntity.getReactor().getMinInjectionRate(true)), 16, 106, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.ignition") + ": " + (nf.format(tileEntity.getReactor().getIgnitionTemperature(true))), 16, 116, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.maxPlasma") + ": " + (nf.format(tileEntity.getReactor().getMaxPlasmaTemperature(true))), 16, 126, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.maxCasing") + ": " + (nf.format(tileEntity.getReactor().getMaxCasingTemperature(true))), 16, 136, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.passiveGeneration") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(true, false))+"/t", 16, 146, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.steamProduction") + ": " + nf.format(tileEntity.getReactor().getSteamPerTick(false)) + "mB/t", 16, 156, 0x404040);
 		}
 	}
 
