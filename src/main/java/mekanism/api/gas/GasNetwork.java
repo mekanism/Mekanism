@@ -45,14 +45,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	public GasNetwork(IGridTransmitter<GasNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
-		updateCapacity();
 		register();
 	}
 
 	public GasNetwork(Collection<IGridTransmitter<GasNetwork>> collection)
 	{
 		transmitters.addAll(collection);
-		updateCapacity();
 		register();
 	}
 
@@ -97,8 +95,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		gasScale = getScale();
 
-		updateCapacity();
-		fullRefresh();
 		register();
 	}
 
