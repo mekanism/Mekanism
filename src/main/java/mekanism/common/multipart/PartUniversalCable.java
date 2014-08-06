@@ -288,16 +288,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Method(modid = "CoFHAPI|energy")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
-		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
-		{
-			return false;
-		}
-
-		testingSide = from;
-		boolean unblocked = tile().canReplacePart(this, this);
-		testingSide = null;
-
-		return unblocked;
+		return canReceiveEnergy(from);
 	}
 
 	@Override
