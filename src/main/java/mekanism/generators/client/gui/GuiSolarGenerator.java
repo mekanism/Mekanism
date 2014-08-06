@@ -39,7 +39,7 @@ public class GuiSolarGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? MekanismGenerators.solarGeneration : 0) + "/t",
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? tileEntity.GENERATION_RATE : 0) + "/t",
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
