@@ -380,7 +380,7 @@ public class BlockBasic extends Block
 
 				if(bin.getItemCount() < bin.MAX_STORAGE)
 				{
-					if(bin.addTicks == 0)
+					if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
 					{
 						if(entityplayer.getCurrentEquippedItem() != null)
 						{
@@ -389,7 +389,8 @@ public class BlockBasic extends Block
 							bin.addTicks = 5;
 						}
 					}
-					else {
+					else if(bin.addTicks > 0 && bin.getItemCount() > 0)
+					{
 						ItemStack[] inv = entityplayer.inventory.mainInventory;
 
 						for(int i = 0; i < inv.length; i++)
@@ -403,6 +404,7 @@ public class BlockBasic extends Block
 							{
 								ItemStack remain = bin.add(inv[i]);
 								inv[i] = remain;
+								bin.addTicks = 5;
 							}
 
 							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());

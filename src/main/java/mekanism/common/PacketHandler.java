@@ -61,6 +61,11 @@ import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
@@ -151,6 +156,14 @@ public class PacketHandler
 				{
 					output.writeByte((Byte)data);
 				}
+				else if(data instanceof ItemStack)
+				{
+					writeStack(output, (ItemStack)data);
+				}
+				else if(data instanceof NBTTagCompound)
+				{
+					writeNBT(output, (NBTTagCompound)data);
+				}
 				else if(data instanceof int[])
 				{
 					for(int i : (int[])data)
@@ -185,6 +198,67 @@ public class PacketHandler
 	public static String readString(ByteBuf input)
 	{
 		return new String(input.readBytes(input.readInt()).array());
+	}
+	
+	public static void writeStack(ByteBuf output, ItemStack stack)
+	{
+		output.writeInt(stack != null ? Item.getIdFromItem(stack.getItem()) : -1);
+		
+		if(stack != null)
+		{
+			output.writeInt(stack.stackSize);
+			output.writeInt(stack.getItemDamage());
+			
+			if(stack.getTagCompound() != null && stack.getItem().getShareTag())
+			{
+				output.writeBoolean(true);
+				writeNBT(output, stack.getTagCompound());
+			}
+			else {
+				output.writeBoolean(false);
+			}
+		}
+	}
+	
+	public static ItemStack readStack(ByteBuf input)
+	{
+		int id = input.readInt();
+		
+		if(id >= 0)
+		{
+			ItemStack stack = new ItemStack(Item.getItemById(id), input.readInt(), input.readInt());
+			
+			if(input.readBoolean())
+			{
+				stack.setTagCompound(readNBT(input));
+			}
+			
+			return stack;
+		}
+		
+		return null;
+	}
+	
+	public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags)
+	{
+		try {
+			byte[] buffer = CompressedStreamTools.compress(nbtTags);
+			
+			output.writeInt(buffer.length);
+			output.writeBytes(buffer);
+		} catch(Exception e) {}
+	}
+	
+	public static NBTTagCompound readNBT(ByteBuf input)
+	{
+		try {
+			byte[] buffer = new byte[input.readInt()];
+			input.readBytes(buffer);
+			
+			return CompressedStreamTools.func_152457_a(buffer, new NBTSizeTracker(2097152L));
+		} catch(Exception e) {
+			return null;
+		}
 	}
 	
 	public static EntityPlayer getPlayer(MessageContext context)

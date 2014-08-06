@@ -4,10 +4,8 @@ import ic2.api.tile.IWrenchable;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.ITileComponent;
@@ -33,10 +31,10 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 	public int clientFacing;
 
-	public Set<EntityPlayer> openedThisTick = Collections.synchronizedSet(new HashSet<EntityPlayer>());
+	public HashSet<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
 
 	/** The players currently using this block. */
-	public Set<EntityPlayer> playersUsing = Collections.synchronizedSet(new HashSet<EntityPlayer>());
+	public HashSet<EntityPlayer> playersUsing = new HashSet<EntityPlayer>();
 
 	/** A timer used to send packets to clients. */
 	public int ticker;

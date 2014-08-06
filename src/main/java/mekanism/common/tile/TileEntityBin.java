@@ -9,6 +9,7 @@ import mekanism.api.IConfigurable;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.TransporterManager;
@@ -25,7 +26,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
-
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
@@ -91,11 +91,6 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public boolean isValid(ItemStack stack)
 	{
 		if(stack == null || stack.stackSize <= 0)
-		{
-			return false;
-		}
-
-		if(stack.isItemStackDamageable() && stack.isItemDamaged())
 		{
 			return false;
 		}
@@ -273,8 +268,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(getItemCount() > 0)
 		{
-			data.add(MekanismUtils.getID(itemType));
-			data.add(itemType.getItemDamage());
+			data.add(itemType);
 		}
 
 		return data;
@@ -290,7 +284,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientAmount > 0)
 		{
-			itemType = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+			itemType = PacketHandler.readStack(dataStream);
 		}
 		else {
 			itemType = null;
