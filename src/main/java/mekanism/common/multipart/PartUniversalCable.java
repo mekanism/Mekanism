@@ -288,7 +288,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Method(modid = "CoFHAPI|energy")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
-		return true;
+		return canReceiveEnergy(from);
 	}
 
 	@Override

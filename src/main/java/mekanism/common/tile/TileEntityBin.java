@@ -6,20 +6,20 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.util.StackUtils;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -90,11 +90,6 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public boolean isValid(ItemStack stack)
 	{
 		if(stack == null || stack.stackSize <= 0)
-		{
-			return false;
-		}
-
-		if(stack.isItemStackDamageable() && stack.isItemDamaged())
 		{
 			return false;
 		}
@@ -272,8 +267,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(getItemCount() > 0)
 		{
-			data.add(MekanismUtils.getID(itemType));
-			data.add(itemType.getItemDamage());
+			data.add(itemType);
 		}
 
 		return data;
@@ -289,7 +283,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientAmount > 0)
 		{
-			itemType = new ItemStack(Item.getItemById(dataStream.readInt()), 1, dataStream.readInt());
+			itemType = PacketHandler.readStack(dataStream);
 		}
 		else {
 			itemType = null;
@@ -561,12 +555,8 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		if(!worldObj.isRemote)
-		{
-			setActive(!getActive());
-			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
-		}
-		
+		setActive(!getActive());
+		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
 		return true;
 	}
 

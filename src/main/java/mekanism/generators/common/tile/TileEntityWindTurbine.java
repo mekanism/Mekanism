@@ -6,6 +6,7 @@ import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -47,10 +48,10 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	{
 		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
 		{
-			final float minY = (float) generators.windGenerationMinY;
-			final float maxY = (float) generators.windGenerationMaxY;
-			final float minG = (float) generators.windGenerationMin;
-			final float maxG = (float) generators.windGenerationMax;
+			final float minY = (float)generators.windGenerationMinY;
+			final float maxY = (float)generators.windGenerationMaxY;
+			final float minG = (float)generators.windGenerationMin;
+			final float maxG = (float)generators.windGenerationMax;
 
 			final float slope = (maxG - minG) / (maxY - minY);
 			final float intercept = minG - slope * minY;

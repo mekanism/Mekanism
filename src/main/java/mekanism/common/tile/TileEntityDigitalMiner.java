@@ -125,7 +125,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(getActive())
 		{
-			for(EntityPlayer player : playersUsing)
+			for(EntityPlayer player : (HashSet<EntityPlayer>)playersUsing.clone())
 			{
 				if(player.openContainer instanceof ContainerNull || player.openContainer instanceof ContainerFilter)
 				{

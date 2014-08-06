@@ -1,8 +1,7 @@
 package mekanism.common.inventory;
 
+import mekanism.api.util.StackUtils;
 import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -77,11 +76,6 @@ public class InventoryBin
 			return false;
 		}
 
-		if(stack.isItemStackDamageable() && stack.isItemDamaged())
-		{
-			return false;
-		}
-
 		if(stack.getItem() instanceof ItemBlockBasic && stack.getItemDamage() == 6)
 		{
 			return false;
@@ -132,16 +126,7 @@ public class InventoryBin
 			return null;
 		}
 
-		int id = bin.stackTagCompound.getInteger("itemID");
-		int meta = bin.stackTagCompound.getInteger("itemMeta");
-
-		if(getItemCount() == 0 || id == 0)
-		{
-			setItemType(null);
-			return null;
-		}
-
-		return new ItemStack(Item.getItemById(id), 1, meta);
+		return ItemStack.loadItemStackFromNBT(bin.stackTagCompound.getCompoundTag("storedItem"));
 	}
 
 	public void setItemType(ItemStack stack)
@@ -153,15 +138,12 @@ public class InventoryBin
 
 		if(stack == null)
 		{
-			bin.stackTagCompound.removeTag("itemID");
-			bin.stackTagCompound.removeTag("itemMeta");
+			bin.stackTagCompound.removeTag("storedItem");
 			return;
 		}
 
-		ItemStack ret = stack.copy();
-		ret.stackSize = 1;
+		ItemStack ret = StackUtils.size(stack, 1);
 
-		bin.stackTagCompound.setInteger("itemID", MekanismUtils.getID(stack));
-		bin.stackTagCompound.setInteger("itemMeta", stack.getItemDamage());
+		bin.stackTagCompound.setTag("storedItem", StackUtils.size(stack, 1).writeToNBT(new NBTTagCompound()));
 	}
 }
