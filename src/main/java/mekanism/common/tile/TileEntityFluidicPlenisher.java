@@ -17,6 +17,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -126,11 +127,28 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				}
 			}
 			
-			if(getEnergy() >= Mekanism.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME && !finishedCalc)
+			if(getEnergy() >= Mekanism.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 			{
 				if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 				{
-					doPlenish();
+					if(!finishedCalc)
+					{
+						doPlenish();
+					}
+					else {
+						Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+						
+						if(canReplace(below, false) && getEnergy() >= Mekanism.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+						{
+							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
+							{
+								worldObj.setBlock(below.xCoord, below.yCoord, below.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+								
+								setEnergy(getEnergy() - Mekanism.fluidicPlenisherUsage);
+								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -150,7 +168,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 				
-				if(!canReplace(below))
+				if(!canReplace(below, true))
 				{
 					finishedCalc = true;
 					return;
@@ -168,7 +186,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		for(Coord4D coord : activeNodes)
 		{
-			if(coord.exists(worldObj) && canReplace(coord))
+			if(coord.exists(worldObj) && canReplace(coord, true))
 			{
 				worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 				
@@ -179,7 +197,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				{
 					Coord4D sideCoord = coord.getFromSide(dir);
 					
-					if(coord.exists(worldObj) && canReplace(coord))
+					if(coord.exists(worldObj) && canReplace(coord, true))
 					{
 						activeNodes.add(sideCoord);
 					}
@@ -205,9 +223,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		return yCoord-1;
 	}
 	
-	public boolean canReplace(Coord4D coord)
+	public boolean canReplace(Coord4D coord, boolean checkNodes)
 	{
-		if(usedNodes.contains(coord))
+		if(checkNodes && usedNodes.contains(coord))
 		{
 			return false;
 		}
@@ -215,6 +233,11 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
 		{
 			return true;
+		}
+		
+		if(MekanismUtils.isFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
+		{
+			return false;
 		}
 		
 		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.xCoord, coord.yCoord, coord.zCoord);
@@ -400,7 +423,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
 	{
-		if(direction == ForgeDirection.getOrientation(1))
+		if(direction == ForgeDirection.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
