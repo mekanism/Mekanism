@@ -42,20 +42,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	public EnergyNetwork(IGridTransmitter<EnergyNetwork>... varCables)
 	{
 		transmitters.addAll(Arrays.asList(varCables));
-		updateCapacity();
 		register();
 	}
 
 	public EnergyNetwork(Collection<IGridTransmitter<EnergyNetwork>> collection)
 	{
 		transmitters.addAll(collection);
-		updateCapacity();
 		register();
-	}
-
-	public static double round(double d)
-	{
-		return Math.round(d * 10000)/10000;
 	}
 
 	public EnergyNetwork(Set<EnergyNetwork> networks)
@@ -79,8 +72,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			}
 		}
 
-		fullRefresh();
 		register();
+	}
+	
+	public static double round(double d)
+	{
+		return Math.round(d * 10000)/10000;
 	}
 
     @Override

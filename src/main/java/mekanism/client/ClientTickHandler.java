@@ -315,8 +315,15 @@ public class ClientTickHandler
 					{
 						if(!lastTickUpdate)
 						{
-							((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
-							Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.MODE, null, false));
+							if(mc.thePlayer.isSneaking())
+							{
+								((ItemJetpack)jetpack.getItem()).setMode(stack, JetpackMode.DISABLED);
+							}
+							else {
+								((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
+							}
+							
+							Mekanism.packetHandler.sendToServer(new JetpackDataMessage(JetpackPacket.MODE, null, mc.thePlayer.isSneaking()));
 							SoundHandler.playSound("mekanism:etc.Hydraulic");
 							lastTickUpdate = true;
 						}

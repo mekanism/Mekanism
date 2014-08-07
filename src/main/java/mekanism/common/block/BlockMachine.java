@@ -1294,4 +1294,45 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		
 		return null;
 	}
+
+	@Override
+	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		ForgeDirection[] valid = new ForgeDirection[6];
+		
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			
+			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			{
+				if(basicTile.canSetFacing(dir.ordinal()))
+				{
+					valid[dir.ordinal()] = dir;
+				}
+			}
+		}
+		
+		return valid;
+	}
+
+	@Override
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			
+			if(basicTile.canSetFacing(axis.ordinal()))
+			{
+				basicTile.setFacing((short)axis.ordinal());
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

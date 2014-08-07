@@ -43,14 +43,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public FluidNetwork(IGridTransmitter<FluidNetwork>... varPipes)
 	{
 		transmitters.addAll(Arrays.asList(varPipes));
-		updateCapacity();
 		register();
 	}
 
 	public FluidNetwork(Collection<IGridTransmitter<FluidNetwork>> collection)
 	{
 		transmitters.addAll(collection);
-		updateCapacity();
 		register();
 	}
 
@@ -95,9 +93,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		fluidScale = getScale();
 
-		updateCapacity();
-
-		fullRefresh();
 		register();
 	}
 

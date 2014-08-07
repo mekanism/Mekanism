@@ -134,7 +134,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		super.refreshTransmitterNetwork();
 
 		if(MekanismUtils.useBuildCraft())
+		{
 			reconfigure();
+		}
 	}
 
 	@Override

@@ -45,9 +45,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	/** The nodes that have full sources near them or in them */
 	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
 
-	/** The nodes that have already been sucked up, but are held on to in order to remove dead blocks */
-	public Set<Coord4D> cleaningNodes = new HashSet<Coord4D>();
-
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
@@ -130,8 +127,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
-
-				clean(true);
 			}
 		}
 
@@ -162,6 +157,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[recurringNodes.size()]));
 		Collections.shuffle(tempPumpList);
 
+		//First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
 			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
@@ -183,24 +179,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 
-		for(Coord4D wrapper : cleaningNodes)
-		{
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
-			{
-				if(fluidTank.getFluid() != null && MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
-				{
-					if(take)
-					{
-						setEnergy(getEnergy() - usage.electricPumpUsage);
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
-					}
-
-					return true;
-				}
-			}
-		}
-
+		//Finally, go over the recurring list of nodes and see if there is a fluid block available to suck - if not, will iterate around the recurring block, attempt to suck, 
+		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
@@ -218,6 +198,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				}
 			}
 
+			//Add all the blocks surrounding this recurring node to the recurring node list
 			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 			{
 				Coord4D side = wrapper.getFromSide(orientation);
@@ -242,71 +223,10 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				}
 			}
 
-			cleaningNodes.add(wrapper);
 			recurringNodes.remove(wrapper);
 		}
 
 		return false;
-	}
-
-	public boolean clean(boolean take)
-	{
-		boolean took = false;
-
-		if(!worldObj.isRemote)
-		{
-			for(Coord4D wrapper : cleaningNodes)
-			{
-				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
-				{
-					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
-					{
-						took = true;
-
-						if(take)
-						{
-							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
-						}
-					}
-				}
-			}
-
-			for(Coord4D wrapper : recurringNodes)
-			{
-				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
-				{
-					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
-					{
-						took = true;
-
-						if(take)
-						{
-							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
-						}
-					}
-				}
-			}
-
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
-
-				if(MekanismUtils.isDeadFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
-				{
-					if(fluidTank.getFluid() != null && MekanismUtils.getFluidId(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord) == fluidTank.getFluid().fluidID)
-					{
-						took = true;
-
-						if(take)
-						{
-							worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
-						}
-					}
-				}
-			}
-		}
-
-		return took;
 	}
 
 	@Override
@@ -371,18 +291,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			nbtTags.setTag("recurringNodes", recurringList);
 		}
-
-		NBTTagList cleaningList = new NBTTagList();
-
-		for(Coord4D obj : cleaningNodes)
-		{
-			cleaningList.appendTag(obj.write(new NBTTagCompound()));
-		}
-
-		if(cleaningList.tagCount() != 0)
-		{
-			nbtTags.setTag("cleaningNodes", cleaningList);
-		}
 	}
 
 	@Override
@@ -402,16 +310,6 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			for(int i = 0; i < tagList.tagCount(); i++)
 			{
 				recurringNodes.add(Coord4D.read((NBTTagCompound)tagList.getCompoundTagAt(i)));
-			}
-		}
-
-		if(nbtTags.hasKey("cleaningNodes"))
-		{
-			NBTTagList tagList = nbtTags.getTagList("cleaningNodes", NBT.TAG_COMPOUND);
-
-			for(int i = 0; i < tagList.tagCount(); i++)
-			{
-				cleaningNodes.add(Coord4D.read((NBTTagCompound)tagList.getCompoundTagAt(i)));
 			}
 		}
 	}
@@ -550,13 +448,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		if(!worldObj.isRemote)
-		{
-			recurringNodes.clear();
-			cleaningNodes.clear();
-	
-			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
-		}
+		recurringNodes.clear();
+
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.pumpReset")));
 
 		return true;
 	}

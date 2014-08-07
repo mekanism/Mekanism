@@ -118,7 +118,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  */
 @Mod(modid = "Mekanism", name = "Mekanism", version = "8.0.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraftAPI|power;after:BuildCraftAPI|tools;after:BuildCraftAPI|transport;after:IC2API;after:CoFHAPI|energy;after:ComputerCraft;after:Galacticraft API;" +
-				"after:MineFactoryReloaded;after:MetallurgyCore;after:EnderIO;after:ExtraUtilities;after:Railcraft")
+				"after:MineFactoryReloaded;after:MetallurgyCore;after:EnderIO;after:ExtraUtilities;after:Railcraft;after:Forestry")
 public class Mekanism
 {
 	/** Mekanism Packet Pipeline */
@@ -1136,7 +1136,7 @@ public class Mekanism
 	public void onEnergyTransferred(EnergyTransferEvent event)
 	{
 		try {
-			packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.ENERGY, Coord4D.get((TileEntity)event.energyNetwork.transmitters.iterator().next()), event.power), event.energyNetwork.getDimension());
+			packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.ENERGY, Coord4D.get((TileEntity)event.energyNetwork.transmitters.iterator().next()), event.power), event.energyNetwork.getWorld().provider.dimensionId);
 		} catch(Exception e) {}
 	}
 	
@@ -1144,7 +1144,7 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		try {
-			packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.GAS, Coord4D.get((TileEntity)event.gasNetwork.transmitters.iterator().next()), event.transferType, event.didTransfer), event.gasNetwork.getDimension());
+			packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.GAS, Coord4D.get((TileEntity)event.gasNetwork.transmitters.iterator().next()), event.transferType, event.didTransfer), event.gasNetwork.getWorld().provider.dimensionId);
 		} catch(Exception e) {}
 	}
 	
@@ -1152,7 +1152,7 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.FLUID, Coord4D.get((TileEntity)event.fluidNetwork.transmitters.iterator().next()), event.fluidType, event.didTransfer), event.fluidNetwork.getDimension());
+			packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.FLUID, Coord4D.get((TileEntity)event.fluidNetwork.transmitters.iterator().next()), event.fluidType, event.didTransfer), event.fluidNetwork.getWorld().provider.dimensionId);
 		} catch(Exception e) {}
 	}
 	

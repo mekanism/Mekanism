@@ -12,6 +12,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -52,8 +53,20 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			Coord4D coord = Coord4D.get(transmitter.getTile()).getFromSide(side);
-			possibleAcceptors.remove(coord);
-			acceptorDirections.remove(coord.getTileEntity(transmitter.getTile().getWorldObj()));
+			
+			if(possibleAcceptors.containsKey(coord))
+			{
+				clearIfNecessary(coord, transmitter, side.getOpposite());
+			}
+		}
+	}
+	
+	protected void clearIfNecessary(Coord4D acceptor, IGridTransmitter<N> transmitter, ForgeDirection side)
+	{
+		if(acceptor.getTileEntity(getWorld()) == null || acceptor.getTileEntity(getWorld()).isInvalid() || transmitter.canConnectToAcceptor(side, true))
+		{
+			possibleAcceptors.remove(acceptor);
+			acceptorDirections.remove(acceptor.getTileEntity(getWorld()));
 		}
 	}
 
@@ -92,14 +105,14 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		return packetRange;
 	}
 	
-	public int getDimension()
+	public World getWorld()
 	{
 		if(getSize() == 0)
 		{
-			return 0;
+			return null;
 		}
 		
-		return transmitters.iterator().next().getTile().getWorldObj().provider.dimensionId;
+		return transmitters.iterator().next().getTile().getWorldObj();
 	}
 	
 	protected AxisAlignedBB genPacketRange()
@@ -198,7 +211,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		return possibleAcceptors.size();
 	}
 
-	public synchronized void updateCapacity() {
+	public synchronized void updateCapacity() 
+	{
 		updateMeanCapacity();
 		capacity = (int)meanCapacity * transmitters.size();
 	}

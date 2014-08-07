@@ -2,7 +2,6 @@ package mekanism.generators.client.gui;
 
 import java.util.List;
 
-import mekanism.api.MekanismConfig.generators;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
@@ -39,7 +38,7 @@ public class GuiSolarGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.solarGeneration : 0) + "/t",
+						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? tileEntity.GENERATION_RATE : 0) + "/t",
 						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
 						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}

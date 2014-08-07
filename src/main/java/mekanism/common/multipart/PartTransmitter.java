@@ -100,6 +100,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			if(connectedNets.size() == 0)
 			{
 				theNetwork = createNetworkFromSingleTransmitter((IGridTransmitter<N>)tile());
+				theNetwork.fullRefresh();
+				theNetwork.updateCapacity();
 			}
 			else if(connectedNets.size() == 1)
 			{
@@ -113,6 +115,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			else {
 				theNetwork = createNetworkByMergingSet(connectedNets);
 				theNetwork.transmitters.add((IGridTransmitter<N>)tile());
+				theNetwork.fullRefresh();
+				theNetwork.updateCapacity();
 			}
 		}
 

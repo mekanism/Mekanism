@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemJetpack;
+import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,7 +40,13 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
 			if(stack != null && stack.getItem() instanceof ItemJetpack)
 			{
-				((ItemJetpack)stack.getItem()).incrementMode(stack);
+				if(!message.value)
+				{
+					((ItemJetpack)stack.getItem()).incrementMode(stack);
+				}
+				else {
+					((ItemJetpack)stack.getItem()).setMode(stack, JetpackMode.DISABLED);
+				}
 			}
 		}
 		
@@ -58,11 +65,11 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 		public JetpackDataMessage(JetpackPacket type, String name, boolean state)
 		{
 			packetType = type;
+			value = state;
 	
 			if(packetType == JetpackPacket.UPDATE)
 			{
 				username = name;
-				value = state;
 			}
 		}
 	
@@ -71,7 +78,11 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			if(packetType == JetpackPacket.UPDATE)
+			if(packetType == JetpackPacket.MODE)
+			{
+				dataStream.writeBoolean(value);
+			}
+			else if(packetType == JetpackPacket.UPDATE)
 			{
 				PacketHandler.writeString(dataStream, username);
 				dataStream.writeBoolean(value);
@@ -92,7 +103,16 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 		{
 			packetType = JetpackPacket.values()[dataStream.readInt()];
 	
-			if(packetType == JetpackPacket.FULL)
+			if(packetType == JetpackPacket.MODE)
+			{
+				value = dataStream.readBoolean();
+			}
+			else if(packetType == JetpackPacket.UPDATE)
+			{
+				username = PacketHandler.readString(dataStream);
+				value = dataStream.readBoolean();
+			}
+			else if(packetType == JetpackPacket.FULL)
 			{
 				Mekanism.jetpackOn.clear();
 	
@@ -102,11 +122,6 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 				{
 					Mekanism.jetpackOn.add(PacketHandler.readString(dataStream));
 				}
-			}
-			else if(packetType == JetpackPacket.UPDATE)
-			{
-				username = PacketHandler.readString(dataStream);
-				value = dataStream.readBoolean();
 			}
 		}
 	}
