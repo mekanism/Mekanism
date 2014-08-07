@@ -21,6 +21,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
 import buildcraft.api.tools.IToolWrench;
 
 import cpw.mods.fml.common.ModAPIManager;
@@ -234,5 +236,38 @@ public class BlockGasTank extends BlockContainer
 		inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
 
 		return itemStack;
+	}
+
+	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		ForgeDirection[] valid = new ForgeDirection[6];
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			{
+				if(basicTile.canSetFacing(dir.ordinal()))
+				{
+					valid[dir.ordinal()] = dir;
+				}
+			}
+		}
+		return valid;
+	}
+
+	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	{
+		TileEntity tile = world.getTileEntity(x, y, z);
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			if(basicTile.canSetFacing(axis.ordinal()))
+			{
+				basicTile.setFacing((short)axis.ordinal());
+				return true;
+			}
+		}
+		return false;
 	}
 }
