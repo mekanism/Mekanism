@@ -647,4 +647,18 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		}
 		return false;
 	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+
+		if(te != null && te instanceof IPeripheral)
+		{
+			return (IPeripheral)te;
+		}
+
+		return null;
+	}
 }

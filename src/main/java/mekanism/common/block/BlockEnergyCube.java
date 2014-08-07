@@ -33,8 +33,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
 import cpw.mods.fml.common.ModAPIManager;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -46,7 +50,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockEnergyCube extends BlockContainer
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
+public class BlockEnergyCube extends BlockContainer implements IPeripheralProvider
 {
 	public IIcon[][] icons = new IIcon[256][256];
 
@@ -353,5 +358,19 @@ public class BlockEnergyCube extends BlockContainer
 			}
 		}
 		return false;
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+
+		if(te != null && te instanceof IPeripheral)
+		{
+			return (IPeripheral)te;
+		}
+
+		return null;
 	}
 }
