@@ -13,10 +13,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockBounding extends Block
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
+
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
+public class BlockBounding extends Block implements IPeripheralProvider
 {
 	public BlockBounding()
 	{
@@ -52,11 +58,11 @@ public class BlockBounding extends Block
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, willHarvest);
 		} catch(Exception e) {
 			return false;
 		}
@@ -118,6 +124,20 @@ public class BlockBounding extends Block
 		else if(metadata == 1)
 		{
 			return new TileEntityAdvancedBoundingBlock();
+		}
+
+		return null;
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+
+		if(te != null && te instanceof IPeripheral)
+		{
+			return (IPeripheral)te;
 		}
 
 		return null;

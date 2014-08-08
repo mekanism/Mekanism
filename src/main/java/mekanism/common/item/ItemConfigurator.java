@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +15,8 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -65,6 +68,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	{
 		if(!world.isRemote)
 		{
+			Block block = world.getBlock(x, y, z);
 			TileEntity tile = world.getTileEntity(x, y, z);
 
 			if(tile instanceof IConfigurable)
@@ -172,27 +176,18 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 			}
 			else if(getState(stack) == 2)
 			{
-				if(tile instanceof TileEntityBasicBlock)
+				ForgeDirection axis = ForgeDirection.getOrientation(side);
+				List<ForgeDirection> l = Arrays.asList(block.getValidRotations(world, x, y, z));
+
+				if(!player.isSneaking() && l.contains(axis))
 				{
-					TileEntityBasicBlock basicBlock = (TileEntityBasicBlock)tile;
-					int newSide = basicBlock.facing;
-
-					if(!player.isSneaking())
-					{
-						newSide = side;
-					}
-					else {
-						newSide = ForgeDirection.OPPOSITES[side];
-					}
-
-					if(basicBlock.canSetFacing(newSide))
-					{
-						basicBlock.setFacing((short)newSide);
-						world.playSoundEffect(x, y, z, "random.click", 1.0F, 1.0F);
-					}
-
-					return true;
+					block.rotateBlock(world, x, y, z, axis);
 				}
+				else if(player.isSneaking() && l.contains(axis.getOpposite())) {
+					block.rotateBlock(world, x, y, z, axis.getOpposite());
+				}
+
+				return true;
 			}
 			else if(getState(stack) == 3)
 			{
