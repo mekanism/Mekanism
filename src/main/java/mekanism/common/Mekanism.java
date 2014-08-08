@@ -61,7 +61,6 @@ import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntitySalinationBlock;
 import mekanism.common.tile.TileEntitySalinationValve;
-import mekanism.common.transporter.PathfinderCache;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -980,7 +979,6 @@ public class Mekanism
 		//Reset consistent managers
 		MultiblockManager.reset();
 		TransporterManager.reset();
-		PathfinderCache.reset();
 	}
 	
 	@EventHandler

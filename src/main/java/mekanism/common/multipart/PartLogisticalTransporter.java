@@ -759,7 +759,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		super.onRemoved();
 
 		if(!world().isRemote)
-		{
+		{	
 			for(TransporterStack stack : transit)
 			{
 				TransporterUtils.drop(this, stack);
