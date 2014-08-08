@@ -22,10 +22,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.power.IPowerEmitter;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import buildcraft.api.power.PowerHandler.Type;
+import buildcraft.api.mj.IBatteryObject;
+import buildcraft.api.mj.MjAPI;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
@@ -208,19 +206,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 					else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 					{
-						double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink) acceptor).getSinkTier())*Mekanism.FROM_IC2);
+						double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)acceptor).getSinkTier())*Mekanism.FROM_IC2);
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*Mekanism.FROM_IC2);
 						sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*Mekanism.TO_IC2, 0)*Mekanism.FROM_IC2));
 					}
-					else if(MekanismUtils.useBuildCraft() && acceptor instanceof IPowerReceptor)
+					else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
 					{
-						PowerReceiver receiver = ((IPowerReceptor)acceptor).getPowerReceiver(side.getOpposite());
-
-						if(receiver != null)
-						{
-							double toSend = receiver.receiveEnergy(Type.PIPE, (float)(Math.min(receiver.powerRequest(), currentSending*Mekanism.TO_BC)), side.getOpposite());
-							sent += toSend*Mekanism.FROM_BC;
-						}
+						IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
+						double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*Mekanism.TO_BC));
+						sent += toSend*Mekanism.FROM_BC;
 					}
 				}
 			}
@@ -257,6 +251,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					if(handler.getMaxEnergy() - handler.getEnergy() > 0)
 					{
 						toReturn.add(acceptor);
+						continue;
 					}
 				}
 			}
@@ -266,9 +261,10 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 				if(handler.canConnectEnergy(side.getOpposite()))
 				{
-					if(handler.getMaxEnergyStored(side.getOpposite()) - handler.getEnergyStored(side.getOpposite()) > 0 || handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
+					if(handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
 					{
 						toReturn.add(acceptor);
+						continue;
 					}
 				}
 			}
@@ -278,27 +274,25 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 				if(handler.acceptsEnergyFrom(null, side.getOpposite()))
 				{
-					if(Math.min((handler.getDemandedEnergy()*Mekanism.FROM_IC2), (EnergyNet.instance.getPowerFromTier(handler.getSinkTier())*Mekanism.FROM_IC2)) > 0)
+					double demanded = handler.getDemandedEnergy()*Mekanism.FROM_IC2;
+					int tier = Math.min(handler.getSinkTier(), 8);
+					double max = EnergyNet.instance.getPowerFromTier(tier)*Mekanism.FROM_IC2;
+					
+					if(Math.min(demanded, max) > 0)
 					{
 						toReturn.add(acceptor);
+						continue;
 					}
 				}
 			}
-			else if(MekanismUtils.useBuildCraft() && acceptor instanceof IPowerReceptor)
+			else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
 			{
-				IPowerReceptor handler = (IPowerReceptor)acceptor;
+				IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
 
-				if(handler.getPowerReceiver(side.getOpposite()) != null)
+				if(battery.getEnergyRequested() > 0)
 				{
-					if((handler.getPowerReceiver(side.getOpposite()).powerRequest()*Mekanism.FROM_BC) > 0)
-					{
-						if(handler instanceof IPowerEmitter && ((IPowerEmitter)handler).canEmitPowerFrom(side.getOpposite()))
-						{
-							continue;
-						}
-
-						toReturn.add(acceptor);
-					}
+					toReturn.add(acceptor);
+					continue;
 				}
 			}
 		}
