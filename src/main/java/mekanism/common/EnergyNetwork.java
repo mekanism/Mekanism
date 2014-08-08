@@ -197,34 +197,28 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 					if(acceptor instanceof IStrictEnergyAcceptor)
 					{
-						double used = ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
-						sent += used;
-						if(used > 0) continue;
+						sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
 					}
-					if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
+					else if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
 					{
 						IEnergyHandler handler = (IEnergyHandler)acceptor;
-						int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending* general.TO_TE), false);
-						sent += used* general.FROM_TE;
-						if(used > 0) continue;
+						int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*general.TO_TE), false);
+						sent += used*general.FROM_TE;
 					}
-					if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
+					else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 					{
-						double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(Math.min(((IEnergySink) acceptor).getSinkTier(), 8))* general.FROM_IC2);
-						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()* general.FROM_IC2);
-						double used = toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend* general.TO_IC2, 0)* general.FROM_IC2);
-						sent += used;
-						if(used > 0) continue;
+						double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)acceptor).getSinkTier())*general.FROM_IC2);
+						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*general.FROM_IC2);
+						sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
 					}
-					if(MekanismUtils.useBuildCraft() && !retrying)
+					else if(MekanismUtils.useBuildCraft() && !retrying)
 					{
 						IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
 
 						if(battery != null)
 						{
-							double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending* general.TO_BC));
-							sent += toSend* general.FROM_BC;
-							if(toSend > 0) continue;
+							double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*general.TO_BC));
+							sent += toSend*general.FROM_BC;
 						}
 					}
 				}
@@ -266,7 +260,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
+			else if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
 			{
 				IEnergyHandler handler = (IEnergyHandler)acceptor;
 
@@ -279,15 +273,16 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
+			else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 			{
 				IEnergySink handler = (IEnergySink)acceptor;
 
 				if(handler.acceptsEnergyFrom(null, side.getOpposite()))
 				{
-					double demanded = handler.getDemandedEnergy()* general.FROM_IC2;
+					double demanded = handler.getDemandedEnergy()*general.FROM_IC2;
 					int tier = Math.min(handler.getSinkTier(), 8);
-					double max = EnergyNet.instance.getPowerFromTier(tier)* general.FROM_IC2;
+					double max = EnergyNet.instance.getPowerFromTier(tier)*general.FROM_IC2;
+					
 					if(Math.min(demanded, max) > 0)
 					{
 						toReturn.add(acceptor);
@@ -295,7 +290,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					}
 				}
 			}
-			if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
+			else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
 			{
 				IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
 
