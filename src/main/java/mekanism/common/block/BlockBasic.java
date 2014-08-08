@@ -752,7 +752,7 @@ public class BlockBasic extends Block
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{

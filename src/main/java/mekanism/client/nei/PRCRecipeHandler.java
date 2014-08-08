@@ -265,7 +265,8 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid().getFluid().getLocalizedName());
+			FluidStack stack = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
+			currenttip.add(stack.getFluid().getLocalizedName(stack));
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{

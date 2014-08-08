@@ -173,7 +173,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			currenttip.add(FluidRegistry.WATER.getLocalizedName());
+			currenttip.add(FluidRegistry.WATER.getLocalizedName(new FluidStack(FluidRegistry.WATER, 1)));
 		}
 		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
 		{

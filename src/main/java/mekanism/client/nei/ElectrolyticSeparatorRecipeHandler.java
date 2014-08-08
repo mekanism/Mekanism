@@ -25,6 +25,7 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.common.FluidSlot;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
@@ -220,7 +221,8 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidInput.getFluid().getLocalizedName());
+			FluidStack stack = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
+			currenttip.add(stack.getFluid().getLocalizedName(stack));
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
