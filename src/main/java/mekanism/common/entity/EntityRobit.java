@@ -44,7 +44,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cofh.api.energy.IEnergyContainerItem;
 
-@Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticrat API")
+@Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = "Galacticraft API")
 public class EntityRobit extends EntityCreature implements IInventory, ISustainedInventory, IEntityBreathable
 {
 	public double MAX_ELECTRICITY = 100000;
