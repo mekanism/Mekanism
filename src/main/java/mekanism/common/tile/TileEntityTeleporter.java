@@ -10,8 +10,8 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
@@ -113,7 +113,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 			if(shouldRender != prevShouldRender)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 
 			prevShouldRender = shouldRender;
@@ -282,7 +282,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 				for(Coord4D coords : Mekanism.teleporters.get(code))
 				{
-					Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
+					Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
 				}
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));

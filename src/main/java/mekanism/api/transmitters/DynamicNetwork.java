@@ -12,10 +12,9 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
-import mekanism.common.Mekanism;
+import mekanism.api.Range4D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -31,7 +30,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
-	protected AxisAlignedBB packetRange = null;
+	protected Range4D packetRange = null;
 
 	protected int ticksSinceCreate = 0;
 	
@@ -95,7 +94,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		refresh();
 	}
 	
-	public AxisAlignedBB getPacketRange()
+	public Range4D getPacketRange()
 	{
 		if(packetRange == null)
 		{
@@ -115,7 +114,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		return transmitters.iterator().next().getTile().getWorldObj();
 	}
 	
-	protected AxisAlignedBB genPacketRange()
+	protected Range4D genPacketRange()
 	{
 		if(getSize() == 0)
 		{
@@ -144,14 +143,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			if(coord.zCoord > maxZ) maxZ = coord.zCoord;
 		}
 		
-		minX -= 40;
-		minY -= 40;
-		minZ -= 40;
-		maxX += 40;
-		maxY += 40;
-		maxZ += 40;
-		
-		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, getWorld().provider.dimensionId);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.ChemicalPair;
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -161,7 +162,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
 					}
 				}
 			}
@@ -187,7 +188,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), new Range4D(Coord4D.get(this)));
 					}
 				}
 			}

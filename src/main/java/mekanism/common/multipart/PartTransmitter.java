@@ -5,6 +5,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.Range4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -191,7 +192,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
+			Mekanism.packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), new Range4D(Coord4D.get(tile())));
 		}
 	}
 
@@ -202,7 +203,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
+			Mekanism.packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), new Range4D(Coord4D.get(tile())));
 		}
 	}
 	

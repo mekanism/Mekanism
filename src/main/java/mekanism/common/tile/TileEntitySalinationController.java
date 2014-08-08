@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.ISalinationSolar;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tank.TankUpdateProtocol;
@@ -114,7 +115,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 			{
 				if(Math.abs((float)waterTank.getFluidAmount()/waterTank.getCapacity()-prevScale) > 0.01)
 				{
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 					prevScale = (float)waterTank.getFluidAmount()/waterTank.getCapacity();
 				}
 			}
@@ -150,7 +151,7 @@ public class TileEntitySalinationController extends TileEntitySalinationTank imp
 				
 				if(structured != prev)
 				{
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 				
 				if(structured)

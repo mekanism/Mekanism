@@ -1,6 +1,7 @@
 package mekanism.api;
 
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.player.EntityPlayer;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Range4D 
 {
@@ -31,15 +32,41 @@ public class Range4D
 		yMin = 0;
 		zMin = chunk.zCoord*16;
 		xMax = xMin+16;
+		yMax = 255;
+		zMax = zMin+16;
 	}
 	
-	public static Range4D getLoadedChunks(MinecraftServer server)
+	public Range4D(Coord4D coord)
 	{
-		int range = server.getConfigurationManager().getViewDistance();
+		xMin = coord.xCoord;
+		yMin = coord.yCoord;
+		zMin = coord.zCoord;
 		
+		xMax = coord.xCoord+1;
+		yMax = coord.yCoord+1;
+		zMax = coord.zCoord+1;
+	}
+	
+	public static Range4D getChunkRange(EntityPlayer player)
+	{
+		int radius = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getViewDistance();
 		
+		return new Range4D(new Chunk3D(player)).expandChunks(radius);
+	}
+	
+	public Range4D expandChunks(int chunks)
+	{
+		xMin -= chunks*16;
+		xMax += chunks*16;
+		zMin -= chunks*16;
+		zMax += chunks*16;
 		
-		return null;
+		return this;
+	}
+	
+	public boolean intersects(Range4D range)
+	{
+		return (xMax+1 - 1.E-05D > range.xMin) && (range.xMax+1 - 1.E-05D > xMin) && (yMax+1 - 1.E-05D > range.yMin) && (range.yMax+1 - 1.E-05D > yMin) && (zMax+1 - 1.E-05D > range.zMin) && (range.zMax+1 - 1.E-05D > zMin);
 	}
 	
 	@Override

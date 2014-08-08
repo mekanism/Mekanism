@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
@@ -62,7 +63,7 @@ public class PacketPortableTeleport implements IMessageHandler<PortableTeleportM
 						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 						
 						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-						Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
+						Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
 					} catch(Exception e) {}
 				}
 			}

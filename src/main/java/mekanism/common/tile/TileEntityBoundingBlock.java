@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -71,7 +72,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 				}
 
 				prevPower = power;
-				Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), tileEntity.getWorldObj().provider.dimensionId);
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}
