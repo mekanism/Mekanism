@@ -19,10 +19,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.mj.IBatteryObject;
+import buildcraft.api.mj.MjAPI;
 import buildcraft.api.power.IPowerEmitter;
 import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
-import buildcraft.api.power.PowerHandler.Type;
 import cofh.api.energy.IEnergyHandler;
 
 public final class CableUtils
@@ -61,7 +61,7 @@ public final class CableUtils
 	{
 		return (tileEntity instanceof IStrictEnergyAcceptor ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
-				(MekanismUtils.useBuildCraft() && tileEntity instanceof IPowerReceptor && !(tileEntity instanceof IGridTransmitter))  ||
+				(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(tileEntity) != null && !(tileEntity instanceof IGridTransmitter))  ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyHandler));
 	}
 
@@ -208,9 +208,9 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(MekanismUtils.useBuildCraft() && tileEntity instanceof IPowerReceptor)
+		else if(MekanismUtils.useBuildCraft())
 		{
-			if(((IPowerReceptor)tileEntity).getPowerReceiver(side.getOpposite()) != null)
+			if(MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
 			{
 				return true;
 			}
@@ -325,16 +325,12 @@ public final class CableUtils
 				sent += (toSend - rejects);
 			}
 		}
-		else if(MekanismUtils.useBuildCraft() && tileEntity instanceof IPowerReceptor)
+		else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
 		{
-			PowerReceiver receiver = ((IPowerReceptor)tileEntity).getPowerReceiver(side.getOpposite());
-
-			if(receiver != null)
-			{
-				double transferEnergy = Math.min(sendingEnergy, receiver.powerRequest()*Mekanism.FROM_BC);
-				double used = receiver.receiveEnergy(Type.STORAGE, (float)(transferEnergy*Mekanism.TO_BC), side.getOpposite());
-				sent += used*Mekanism.FROM_BC;
-			}
+			IBatteryObject battery = MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
+			double transferEnergy = Math.min(sendingEnergy, battery.getEnergyRequested()*Mekanism.FROM_BC);
+			double used = battery.addEnergy(transferEnergy*Mekanism.TO_BC);
+			sent += used*Mekanism.FROM_BC;
 		}
 
 		return sent;
