@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -68,7 +69,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	
 			if(newScale != prevScale)
 			{
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 	
 			prevScale = newScale;

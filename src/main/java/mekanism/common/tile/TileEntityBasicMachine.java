@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.IHasSound;
 import mekanism.common.IActiveState;
@@ -116,7 +117,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
 		}
@@ -231,7 +232,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

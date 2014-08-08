@@ -5,6 +5,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 import mekanism.common.network.PacketConfigSync;
@@ -268,15 +270,7 @@ public class PacketHandler
 	{
 		return Mekanism.proxy.getPlayer(context);
 	}
-	
-	/**
-	 * Send this message to everyone.
-	 * @param message - the message to send
-	 */
-	public void sendToAll(IMessage message)
-	{
-		netHandler.sendToAll(message);
-	}
+
 
 	/**
 	 * Send this message to the specified player.
@@ -333,6 +327,22 @@ public class PacketHandler
 			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
 			{
 				if(player.dimension == dimId && cuboid.isVecInside(Vec3.createVectorHelper(player.posX, player.posY, player.posZ)))
+				{
+					sendTo(message, player);
+				}
+			}
+		}
+	}
+	
+	public void sendToReceivers(IMessage message, Range4D range)
+	{
+		MinecraftServer server = MinecraftServer.getServer();
+
+		if(server != null)
+		{
+			for(EntityPlayerMP player : (List<EntityPlayerMP>)server.getConfigurationManager().playerEntityList)
+			{
+				if(player.dimension == range.dimensionId && Range4D.getChunkRange(player).intersects(range))
 				{
 					sendTo(message, player);
 				}

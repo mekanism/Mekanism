@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.ITileComponent;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
@@ -182,7 +183,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		if(!(facing == clientFacing || worldObj.isRemote))
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
 			clientFacing = facing;
 		}
@@ -233,7 +234,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 			if(redstone != power)
 			{
 				redstone = power;
-				Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), worldObj.provider.dimensionId);
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 		}
 	}

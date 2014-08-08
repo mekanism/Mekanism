@@ -9,11 +9,11 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.IEnergyCube;
 import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.Tier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -100,7 +100,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 			if(!world.isRemote)
 			{
-				Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 			}
 		}
 

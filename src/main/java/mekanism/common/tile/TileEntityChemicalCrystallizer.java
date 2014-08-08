@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -119,7 +120,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
 
@@ -342,7 +343,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;

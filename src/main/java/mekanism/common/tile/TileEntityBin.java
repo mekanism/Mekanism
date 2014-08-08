@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.Range4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
@@ -376,7 +377,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		if(!worldObj.isRemote)
 		{
 			MekanismUtils.saveChunk(this);
-			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			prevCount = getItemCount();
 			sortStacks();
 		}
@@ -488,7 +489,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 
 			clientActive = active;
 		}

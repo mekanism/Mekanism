@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IFilterAccess;
+import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.ILogisticalTransporter;
@@ -494,7 +495,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		if(!worldObj.isRemote)
 		{
-			Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getFilterPacket(new ArrayList())), new Range4D(Coord4D.get(this)));
 		}
 	}
 
@@ -517,7 +518,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		if(clientActive != active)
 		{
-			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 
 			if(active)
 			{

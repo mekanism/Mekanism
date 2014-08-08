@@ -123,10 +123,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
 			{
-				if(suck(true))
-				{
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
-				}
+				suck(true);
 			}
 		}
 

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
@@ -52,7 +53,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 					((IInvConfiguration)tile).getConfiguration()[message.configIndex] = 0;
 				}
 
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), message.coord4D.getTargetPoint(50D));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
 			}
 			else if(message.packetType == ConfigurationPacket.EJECT_COLOR)
 			{

@@ -8,6 +8,7 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.Range4D;
 import mekanism.common.IInvConfiguration;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -25,10 +26,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import buildcraft.api.tools.IToolWrench;
 
 @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
 public class ItemConfigurator extends ItemEnergized implements IToolWrench
@@ -105,7 +105,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 							if(config instanceof TileEntityBasicBlock)
 							{
 								TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)config;
-								Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), Coord4D.get(tileEntity).getTargetPoint(50D));
+								Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 							}
 
 							return true;

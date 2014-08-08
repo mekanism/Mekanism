@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.IMultiblock;
@@ -166,7 +167,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 					}
 				}
 
-				Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			}
 
 			prevStructure = structure != null;
@@ -278,7 +279,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 								structure.fluidStored = null;
 							}
 
-							Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+							Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 						}
 					}
 				}
@@ -339,7 +340,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 						markDirty();
 					}
 
-					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
 		}
@@ -483,7 +484,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
 		}

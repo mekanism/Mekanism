@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
+import mekanism.api.Range4D;
 import mekanism.common.IActiveState;
 import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
@@ -63,7 +64,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
-					Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 				}
 			}
 			
@@ -148,7 +149,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 
 		if(clientActive != active && updateDelay == 0)
 		{
-			Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())));
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 
 			updateDelay = 10;
 			clientActive = active;
