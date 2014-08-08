@@ -11,9 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.usage;
+import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.IActiveState;
 import mekanism.common.IAdvancedBoundingBlock;
@@ -65,7 +66,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 {
 	public static int[] EJECT_INV;
 
-	public BitSet oresToMine = new BitSet();
+	public Map<Chunk3D, BitSet> oresToMine = new HashMap<Chunk3D, BitSet>();
 	public Map<Integer, MinerFilter> replaceMap = new HashMap<Integer, MinerFilter>();
 
 	public HashList<MinerFilter> filters = new HashList<MinerFilter>();
@@ -150,7 +151,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			ChargeUtils.discharge(27, this);
 
-			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.cardinality() > 0)
+			if(MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0)
 			{
 				setActive(true);
 
@@ -163,74 +164,110 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 				if(delay == 0)
 				{
-					Set<Integer> toRemove = new HashSet<Integer>();
-
-					int next = 0;
-
-					while(true)
+					Set<Chunk3D> toRemove = new HashSet<Chunk3D>();
+					boolean did = false;
+					
+					for(Chunk3D chunk : oresToMine.keySet())
 					{
-						int index = oresToMine.nextSetBit(next);
-						Coord4D coord = getCoordFromIndex(index);
-
-						if(index == -1)
+						BitSet set = oresToMine.get(chunk);
+						int next = 0;
+	
+						while(true)
+						{
+							int index = set.nextSetBit(next);
+							Coord4D coord = getCoordFromIndex(index);
+	
+							if(index == -1)
+							{
+								toRemove.add(chunk);
+								break;
+							}
+	
+							if(!coord.exists(worldObj))
+							{
+								set.clear(index);
+								
+								if(set.cardinality() == 0)
+								{
+									toRemove.add(chunk);
+								}
+								
+								next = index + 1;
+								continue;
+							}
+	
+							Block block = coord.getBlock(worldObj);
+							int meta = coord.getMetadata(worldObj);
+	
+							if(block == null || coord.isAirBlock(worldObj))
+							{
+								set.clear(index);
+								
+								if(set.cardinality() == 0)
+								{
+									toRemove.add(chunk);
+								}
+								
+								next = index + 1;
+								continue;
+							}
+	
+							boolean hasFilter = false;
+	
+							for(MinerFilter filter : filters)
+							{
+								if(filter.canFilter(new ItemStack(block, 1, meta)))
+								{
+									hasFilter = true;
+									break;
+								}
+							}
+	
+							if(inverse ? hasFilter : !hasFilter)
+							{
+								set.clear(index);
+								
+								if(set.cardinality() == 0)
+								{
+									toRemove.add(chunk);
+									break;
+								}
+								
+								next = index + 1;
+								continue;
+							}
+	
+							List<ItemStack> drops = MinerUtils.getDrops(worldObj, coord, silkTouch);
+	
+							if(canInsert(drops) && setReplace(coord, index))
+							{
+								did = true;
+								add(drops);
+								set.clear(index);
+								
+								if(set.cardinality() == 0)
+								{
+									toRemove.add(chunk);
+								}
+	
+								worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
+	
+								missingStack = null;
+								delay = getDelay();
+							}
+	
+							break;
+						}
+						
+						if(did)
 						{
 							break;
 						}
-
-						if(!coord.exists(worldObj))
-						{
-							toRemove.add(index);
-							next = index + 1;
-							continue;
-						}
-
-						Block block = coord.getBlock(worldObj);
-						int meta = coord.getMetadata(worldObj);
-
-						if(block == null || coord.isAirBlock(worldObj))
-						{
-							toRemove.add(index);
-							next = index + 1;
-							continue;
-						}
-
-						boolean hasFilter = false;
-
-						for(MinerFilter filter : filters)
-						{
-							if(filter.canFilter(new ItemStack(block, 1, meta)))
-							{
-								hasFilter = true;
-								break;
-							}
-						}
-
-						if(inverse ? hasFilter : !hasFilter)
-						{
-							toRemove.add(index);
-							next = index + 1;
-							continue;
-						}
-
-						List<ItemStack> drops = MinerUtils.getDrops(worldObj, coord, silkTouch);
-
-						if(canInsert(drops) && setReplace(coord, index))
-						{
-							add(drops);
-							toRemove.add(index);
-
-							worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
-
-							missingStack = null;
-							delay = getDelay();
-						}
-
-						break;
 					}
-
-					for(Integer i : toRemove)
+					
+					for(Chunk3D chunk : toRemove)
 					{
-						oresToMine.clear(i);
+						oresToMine.remove(chunk);
 					}
 				}
 			}
@@ -544,6 +581,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		
 		return false;
 	}
+	
+	public int getSize()
+	{
+		int size = 0;
+		
+		for(Chunk3D chunk : oresToMine.keySet())
+		{
+			size += oresToMine.get(chunk).cardinality();
+		}
+		
+		return size;
+	}
 
 	@Override
 	public void openInventory()
@@ -797,7 +846,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(searcher.found);
 		}
 		else {
-			data.add(oresToMine.cardinality());
+			data.add(getSize());
 		}
 
 		data.add(controlType.ordinal());
@@ -837,7 +886,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(searcher.found);
 		}
 		else {
-			data.add(oresToMine.cardinality());
+			data.add(getSize());
 		}
 		
 		if(missingStack != null)
@@ -875,7 +924,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			data.add(searcher.found);
 		}
 		else {
-			data.add(oresToMine.cardinality());
+			data.add(getSize());
 		}
 
 		data.add(controlType.ordinal());

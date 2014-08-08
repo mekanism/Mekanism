@@ -4,8 +4,9 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.api.util.BlockInfo;
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.util.BlockInfo;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +19,7 @@ public class ThreadMinerSearch extends Thread
 
 	public State state = State.IDLE;
 
-	public BitSet oresToMine = new BitSet();
+	public Map<Chunk3D, BitSet> oresToMine = new HashMap<Chunk3D, BitSet>();
 	public Map<Integer, MinerFilter> replaceMap = new HashMap<Integer, MinerFilter>();
 
 	public Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<BlockInfo, MinerFilter>();
@@ -110,7 +111,7 @@ public class ThreadMinerSearch extends Thread
 
 				if(canFilter)
 				{
-					oresToMine.set(i);
+					set(i, new Coord4D(x, y, z, tileEntity.getWorldObj().provider.dimensionId));
 					replaceMap.put(i, filterFound);
 					
 					found++;
@@ -122,6 +123,18 @@ public class ThreadMinerSearch extends Thread
 		tileEntity.oresToMine = oresToMine;
 		tileEntity.replaceMap = replaceMap;
 		MekanismUtils.saveChunk(tileEntity);
+	}
+	
+	public void set(int i, Coord4D location)
+	{
+		Chunk3D chunk = new Chunk3D(location);
+		
+		if(oresToMine.get(chunk) == null)
+		{
+			oresToMine.put(chunk, new BitSet());
+		}
+		
+		oresToMine.get(chunk).set(i);
 	}
 
 	public void reset()
