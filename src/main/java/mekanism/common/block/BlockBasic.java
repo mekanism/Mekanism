@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Range4D;
 import mekanism.client.ClientProxy;
 import mekanism.common.ConnectedTextureRenderer;
 import mekanism.common.IActiveState;
@@ -31,7 +32,6 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -422,7 +422,7 @@ public class BlockBasic extends Block
 
 					if(!manageInventory(entityplayer, tileEntity))
 					{
-						Mekanism.packetHandler.sendToAll(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())));
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 						entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
 					}
 					else {
