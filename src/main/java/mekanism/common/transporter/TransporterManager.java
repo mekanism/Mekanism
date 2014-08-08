@@ -24,6 +24,11 @@ import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 public class TransporterManager
 {
 	public static Set<TransporterStack> flowingStacks = new HashSet<TransporterStack>();
+	
+	public static void reset()
+	{
+		flowingStacks.clear();
+	}
 
 	public static void add(TransporterStack stack)
 	{
