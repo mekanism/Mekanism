@@ -484,7 +484,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 		}

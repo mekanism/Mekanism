@@ -1,7 +1,5 @@
 package mekanism.common.util;
 
-import buildcraft.api.mj.IBatteryObject;
-import buildcraft.api.mj.MjAPI;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergySink;
@@ -21,18 +19,15 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.mj.IBatteryObject;
+import buildcraft.api.mj.MjAPI;
 import buildcraft.api.power.IPowerEmitter;
+import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyHandler;
 
 public final class CableUtils
 {
-	private static Set<ForgeDirection> allSides;
-
-	static
-	{
-		allSides = EnumSet.allOf(ForgeDirection.class);
-		allSides.remove(ForgeDirection.UNKNOWN);
-	}
+	private static Set<ForgeDirection> allSides = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
 
 	/**
 	 * Gets all the connected energy acceptors, whether IC2-based or BuildCraft-based, surrounding a specific tile entity.
@@ -151,6 +146,7 @@ public final class CableUtils
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canConnectEnergy(side.getOpposite())) ||
+				(MekanismUtils.useRF() && tileEntity instanceof IEnergyConnection && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite())) ||
 				(MekanismUtils.useBuildCraft() && tileEntity instanceof IPowerEmitter && ((IPowerEmitter)tileEntity).canEmitPowerFrom(side.getOpposite()));
 	}
 
