@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
@@ -16,11 +17,12 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.entity.player.InventoryPlayer;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorStats extends GuiMekanism
@@ -55,20 +57,20 @@ public class GuiReactorStats extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
 		if(tileEntity.isFormed())
 		{
-			fontRendererObj.drawString(MekanismUtils.localize("gui.passive"), 6, 26, 0x404040);
+			fontRendererObj.drawString(EnumColor.DARK_GREEN + MekanismUtils.localize("gui.passive"), 6, 26, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.minInject") + ": " + (tileEntity.getReactor().getMinInjectionRate(false)), 16, 36, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.ignition") + ": " + (nf.format(tileEntity.getReactor().getIgnitionTemperature(false))), 16, 46, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.maxPlasma") + ": " + (nf.format(tileEntity.getReactor().getMaxPlasmaTemperature(false))), 16, 56, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.maxCasing") + ": " + (nf.format(tileEntity.getReactor().getMaxCasingTemperature(false))), 16, 66, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.passiveGeneration") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, false))+"/t", 16, 76, 0x404040);
 
-			fontRendererObj.drawString(MekanismUtils.localize("gui.active"), 6, 96, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.minInject") + ": " + (tileEntity.getReactor().getMinInjectionRate(true)), 16, 106, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.ignition") + ": " + (nf.format(tileEntity.getReactor().getIgnitionTemperature(true))), 16, 116, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.maxPlasma") + ": " + (nf.format(tileEntity.getReactor().getMaxPlasmaTemperature(true))), 16, 126, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.maxCasing") + ": " + (nf.format(tileEntity.getReactor().getMaxCasingTemperature(true))), 16, 136, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.passiveGeneration") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(true, false))+"/t", 16, 146, 0x404040);
-			fontRendererObj.drawString(MekanismUtils.localize("gui.steamProduction") + ": " + nf.format(tileEntity.getReactor().getSteamPerTick(false)) + "mB/t", 16, 156, 0x404040);
+			fontRendererObj.drawString(EnumColor.DARK_BLUE + MekanismUtils.localize("gui.active"), 6, 92, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.minInject") + ": " + (tileEntity.getReactor().getMinInjectionRate(true)), 16, 102, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.ignition") + ": " + (nf.format(tileEntity.getReactor().getIgnitionTemperature(true))), 16, 112, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.maxPlasma") + ": " + (nf.format(tileEntity.getReactor().getMaxPlasmaTemperature(true))), 16, 122, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.maxCasing") + ": " + (nf.format(tileEntity.getReactor().getMaxCasingTemperature(true))), 16, 132, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.passiveGeneration") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(true, false))+"/t", 16, 142, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.steamProduction") + ": " + nf.format(tileEntity.getReactor().getSteamPerTick(false)) + "mB/t", 16, 152, 0x404040);
 		}
 	}
 
