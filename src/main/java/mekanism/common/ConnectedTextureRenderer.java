@@ -122,6 +122,6 @@ public class ConnectedTextureRenderer
 	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		return obj.getBlock(world) != block || metadata.contains(obj.getMetadata(world));
+		return obj.getBlock(world) != block || !metadata.contains(obj.getMetadata(world));
 	}
 }
