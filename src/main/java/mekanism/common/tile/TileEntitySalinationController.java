@@ -162,6 +162,9 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock
 					
 					temperature = Math.min(getMaxTemperature(), getTemperature());
 				}
+				else {
+					clearStructure();
+				}
 			}
 		}
 	}
@@ -381,15 +384,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock
 		structured = scanTopLayer(startPoint);
 		height = structured ? height : 0;
 		
-		worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
-		
-		for(TileEntitySalinationBlock tank : tankParts)
-		{
-			if(tank != this && tank instanceof TileEntitySalinationValve)
-			{
-				worldObj.notifyBlocksOfNeighborChange(tank.xCoord, tank.yCoord, tank.zCoord, tank.getBlockType());
-			}
-		}
+		markDirty();
 		
 		return structured;
 	}

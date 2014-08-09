@@ -40,6 +40,7 @@ import codechicken.lib.render.CCModel;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.lib.vec.Vector3;
 import codechicken.microblock.ISidedHollowConnect;
+import codechicken.multipart.INeighborTileChange;
 import codechicken.multipart.IconHitEffects;
 import codechicken.multipart.JIconHitEffects;
 import codechicken.multipart.JNormalOcclusion;
@@ -51,7 +52,7 @@ import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, ISidedHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter
+public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, JNormalOcclusion, ISidedHollowConnect, JIconHitEffects, ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, INeighborTileChange
 {
 	public static IndexedCuboid6[] smallSides = new IndexedCuboid6[7];
 	public static IndexedCuboid6[] largeSides = new IndexedCuboid6[7];
@@ -512,11 +513,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		super.onChunkLoad();
 		refreshConnections();
 	}
-
+	
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborTileChanged(int side, boolean weak) 
 	{
-		super.onNeighborChanged();
 		refreshConnections();
 	}
 
@@ -672,5 +672,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 			return values()[ordinal()+1];
 		}
+	}
+
+	@Override
+	public boolean weakTileChanges() 
+	{
+		return false;
 	}
 }

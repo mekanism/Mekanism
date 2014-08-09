@@ -161,9 +161,9 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 				{
 					Coord4D obj = Coord4D.get(this).getFromSide(side);
 
-					if(!(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
+					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
 					{
-						worldObj.notifyBlockOfNeighborChange(obj.xCoord, obj.yCoord, obj.zCoord, getBlockType());
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
 					}
 				}
 

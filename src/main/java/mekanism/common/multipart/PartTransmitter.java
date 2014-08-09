@@ -195,9 +195,9 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborTileChanged(int side, boolean weak)
 	{
-		super.onNeighborChanged();
+		super.onNeighborTileChanged(side, weak);
 
 		if(!world().isRemote)
 		{
