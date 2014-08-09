@@ -1088,6 +1088,7 @@ public class Mekanism
 		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		OreDictionary.registerOre("pulpWood", Sawdust);
+		OreDictionary.registerOre("dustWood", Sawdust);
 		OreDictionary.registerOre("blockSalt", SaltBlock);
 		
 		//Alloys!

@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -233,7 +234,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			return toReturn;
 		}
 
-		for(TileEntity acceptor : possibleAcceptors.values())
+		for(TileEntity acceptor : ((Map<Coord4D, TileEntity>)possibleAcceptors.clone()).values())
 		{
 			ForgeDirection side = acceptorDirections.get(acceptor);
 
