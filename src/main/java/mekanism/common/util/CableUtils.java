@@ -218,9 +218,9 @@ public final class CableUtils
 	{
 		if(!emitter.getWorldObj().isRemote && MekanismUtils.canFunction(emitter))
 		{
-			double sendingEnergy = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
+			double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
-			if(sendingEnergy > 0)
+			if(energyToSend > 0)
 			{
 				List<ForgeDirection> outputtingSides = new ArrayList<ForgeDirection>();
 				boolean[] connectable = getConnections(emitter, emitter.getOutputtingSides());
@@ -236,19 +236,19 @@ public final class CableUtils
 				if(outputtingSides.size() > 0)
 				{
 					double sent = 0;
-
-					boolean cont = false;
+					boolean tryAgain = false;
 
 					do {
-						cont = false;
+						tryAgain = false;
+						
 						double prev = sent;
-						sent += emit_do(emitter, outputtingSides, sendingEnergy-sent);
+						sent += emit_do(emitter, outputtingSides, energyToSend-sent, tryAgain);
 
-						if(sendingEnergy-sent > 0 && sent-prev > 0)
+						if(energyToSend-sent > 0 && sent-prev > 0)
 						{
-							cont = true;
+							tryAgain = true;
 						}
-					} while(cont);
+					} while(tryAgain);
 
 					emitter.setEnergy(emitter.getEnergy() - sent);
 				}
@@ -256,7 +256,7 @@ public final class CableUtils
 		}
 	}
 
-	private static double emit_do(TileEntityElectricBlock emitter, List<ForgeDirection> outputtingSides, double totalToSend)
+	private static double emit_do(TileEntityElectricBlock emitter, List<ForgeDirection> outputtingSides, double totalToSend, boolean tryAgain)
 	{
 		double remains = totalToSend%outputtingSides.size();
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
@@ -271,7 +271,7 @@ public final class CableUtils
 			remains = 0;
 
 			double prev = sent;
-			sent += emit_do_do(emitter, tileEntity, side, toSend);
+			sent += emit_do_do(emitter, tileEntity, side, toSend, tryAgain);
 
 			if(sent-prev == 0)
 			{
@@ -287,7 +287,7 @@ public final class CableUtils
 		return sent;
 	}
 
-	private static double emit_do_do(TileEntityElectricBlock from, TileEntity tileEntity, ForgeDirection side, double sendingEnergy)
+	private static double emit_do_do(TileEntityElectricBlock from, TileEntity tileEntity, ForgeDirection side, double currentSending, boolean tryAgain)
 	{
 		double sent = 0;
 
@@ -297,8 +297,7 @@ public final class CableUtils
 
 			if(acceptor.canReceiveEnergy(side.getOpposite()))
 			{
-				double prev = sent;
-				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), sendingEnergy);
+				sent += acceptor.transferEnergyToAcceptor(side.getOpposite(), currentSending);
 			}
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyHandler)
@@ -307,29 +306,24 @@ public final class CableUtils
 
 			if(handler.canConnectEnergy(side.getOpposite()))
 			{
-				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(sendingEnergy* general.TO_TE), false);
-				sent += used* general.FROM_TE;
+				int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*general.TO_TE), false);
+				sent += used*general.FROM_TE;
 			}
 		}
 		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
 		{
 			if(((IEnergySink)tileEntity).acceptsEnergyFrom(from, side.getOpposite()))
 			{
-				double toSend = Math.min(sendingEnergy, Math.min(EnergyNet.instance.getPowerFromTier(((IEnergySink) tileEntity).getSinkTier()), ((IEnergySink)tileEntity).getDemandedEnergy())* general.FROM_IC2);
-				double rejects = ((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend* general.TO_IC2, 0)* general.FROM_IC2;
-				sent += (toSend - rejects);
+				double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)tileEntity).getSinkTier())*general.FROM_IC2);
+				toSend = Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*general.FROM_IC2);
+				sent += (toSend - (((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
 			}
 		}
-		else if(MekanismUtils.useBuildCraft())
+		else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null && !tryAgain)
 		{
 			IBatteryObject battery = MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
-
-			if(battery != null)
-			{
-				double transferEnergy = Math.min(sendingEnergy, battery.getEnergyRequested()* general.FROM_BC);
-				double used = battery.addEnergy(transferEnergy* general.TO_BC);
-				sent += used* general.FROM_BC;
-			}
+			double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*general.TO_BC));
+			sent += toSend*general.FROM_BC;
 		}
 
 		return sent;

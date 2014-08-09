@@ -144,7 +144,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			tryAgain = false;
 
 			double prev = sent;
-			sent += doEmit(energyToSend-sent);
+			sent += doEmit(energyToSend-sent, tryAgain);
 
 			if(energyToSend-sent > 0 && sent-prev > 0)
 			{
@@ -166,7 +166,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	/**
 	 * @return sent
 	 */
-	public synchronized double doEmit(double energyToSend)
+	public synchronized double doEmit(double energyToSend, boolean tryAgain)
 	{
 		double sent = 0;
 
@@ -211,7 +211,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*general.FROM_IC2);
 						sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
 					}
-					else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
+					else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null && !tryAgain)
 					{
 						IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
 						double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*general.TO_BC));
