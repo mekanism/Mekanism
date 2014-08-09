@@ -6,14 +6,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.ListUtils;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.ListUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -279,7 +280,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		Gas type = (Gas)data[0];
 		Set<IGasHandler> toReturn = new HashSet<IGasHandler>();
 
-		for(IGasHandler acceptor : possibleAcceptors.values())
+		for(IGasHandler acceptor : ((Map<Coord4D, IGasHandler>)possibleAcceptors.clone()).values())
 		{
 			if(acceptorDirections.get(acceptor) == null)
 			{
