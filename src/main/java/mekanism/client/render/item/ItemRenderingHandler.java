@@ -464,7 +464,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			}
 			else if(type == ItemRenderType.INVENTORY)
 			{
-				GL11.glTranslatef(-0.5F, 0.0F, 0.0F);
+				GL11.glTranslatef(-0.6F, 0.0F, 0.0F);
 				GL11.glRotatef(45, 0.0F, 1.0F, 0.0F);
 			}
 			
