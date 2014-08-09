@@ -1,15 +1,16 @@
 package mekanism.generators.common.inventory.container;
 
-import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
-import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ContainerReactorController extends Container
 {
@@ -18,7 +19,7 @@ public class ContainerReactorController extends Container
 	public ContainerReactorController(InventoryPlayer inventory, TileEntityReactorController tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, 80, 39));
+		addSlotToContainer(new SlotReactor(tentity, 0, 80, 39));
 		int slotX;
 
 		for(slotX = 0; slotX < 3; slotX++)
@@ -29,7 +30,7 @@ public class ContainerReactorController extends Container
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
@@ -64,7 +65,7 @@ public class ContainerReactorController extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(ChargeUtils.canBeCharged(slotStack))
+			if(slotStack.getItem() instanceof ItemHohlraum)
 			{
 				if(slotID != 0)
 				{
@@ -121,5 +122,20 @@ public class ContainerReactorController extends Container
 		}
 
 		return stack;
+	}
+	
+	public class SlotReactor extends Slot
+	{
+		public SlotReactor(IInventory inventory, int index, int x, int y)
+		{
+			super(inventory, index, x, y);
+		}
+
+		@Override
+	    @SideOnly(Side.CLIENT)
+	    public boolean func_111238_b()
+	    {
+	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+	    }
 	}
 }
