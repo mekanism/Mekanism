@@ -48,6 +48,7 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityEntangledInventory;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityLaser;
@@ -190,6 +191,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
 			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
+			icons[15][0] = register.registerIcon("mekanism:SteelCasing");
 		}
 	}
 
@@ -465,6 +467,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return icons[meta][0];
 				}
 			}
+			else if(meta == 15)
+			{
+				return icons[meta][0];
+			}
 		}
 
 		return null;
@@ -607,6 +613,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				else {
 					return icons[metadata][0];
 				}
+			}
+			else if(metadata == 15)
+			{
+				return icons[metadata][0];
 			}
 		}
 
@@ -1201,7 +1211,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		PORTABLE_TANK(MekanismBlocks.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
 		FLUIDIC_PLENISHER(MekanismBlocks.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
 		LASER(MekanismBlocks.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
-		LASER_AMPLIFIER(MekanismBlocks.MachineBlock2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false);
+		LASER_AMPLIFIER(MekanismBlocks.MachineBlock2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false),
+		ENTANGLED_BLOCK(MekanismBlocks.MachineBlock2, 15, "EntangledBlock", 45, 0, TileEntityEntangledInventory.class, true, false, false);
 
 		public Block typeBlock;
 		public int meta;

@@ -59,6 +59,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
+import mekanism.common.tile.TileEntityEntangledInventory;
 import mekanism.common.tile.TileEntitySalinationBlock;
 import mekanism.common.tile.TileEntitySalinationValve;
 import mekanism.common.transporter.TransporterManager;
@@ -935,6 +936,7 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntityCardboardBox.class, "CardboardBox");
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySalinationBlock.class, "SalinationTank");
+		GameRegistry.registerTileEntity(TileEntityEntangledInventory.class, "EntangledBlock");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

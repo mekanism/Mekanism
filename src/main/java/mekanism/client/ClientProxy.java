@@ -479,6 +479,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
 			case 44:
 				return new GuiLaserAmplifier(player.inventory, (TileEntityLaserAmplifier)tileEntity);
+			case 45:
+				return null; //new GuiEntangledBlock(player.sharedInventory, (TileEntityEntangledInventory)tileEntity);
 		}
 
 		return null;

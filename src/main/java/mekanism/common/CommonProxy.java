@@ -439,6 +439,8 @@ public class CommonProxy
 				return new ContainerUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
 			case 44:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+			case 45:
+				return null; // new ContainerEntangledInventory(player.sharedInventory, (TileEntityEntangledInventory)tileEntity)
 		}
 
 		return null;
