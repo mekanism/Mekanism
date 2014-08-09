@@ -15,8 +15,8 @@ import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tank.SynchronizedTankData;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tank.TankUpdateProtocol;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -497,7 +497,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 				}
 			}
 		}
