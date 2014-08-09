@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import mekanism.api.Coord4D;
+import mekanism.common.util.PipeUtils;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -9,6 +11,31 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 public class TileEntitySalinationValve extends TileEntitySalinationTank implements IFluidHandler
 {
+	public boolean prevMaster = false;
+	
+	@Override
+	public void onUpdate()
+	{
+		super.onUpdate();
+		
+		if(!worldObj.isRemote)
+		{
+			if((master != null) != prevMaster)
+			{
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					Coord4D obj = Coord4D.get(this).getFromSide(side);
+
+					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySalinationTank))
+					{
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
+					}
+				}
+			}
+			
+			prevMaster = (master != null);
+		}
+	}
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
@@ -54,7 +81,7 @@ public class TileEntitySalinationValve extends TileEntitySalinationTank implemen
 	{
 		if(master == null)
 		{
-			return new FluidTankInfo[0];
+			return PipeUtils.EMPTY;
 		}
 
 		return new FluidTankInfo[] {new FluidTankInfo(master.waterTank), new FluidTankInfo(master.brineTank)};
