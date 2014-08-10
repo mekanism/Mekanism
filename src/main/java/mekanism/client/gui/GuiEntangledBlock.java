@@ -125,7 +125,6 @@ public class GuiEntangledBlock extends GuiMekanism
 		String prevFreq = frequencyField != null ? frequencyField.getText() : "";
 
 		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
-		frequencyField.setMaxStringLength(10);
 		frequencyField.setText(prevFreq);
 	}
 }
