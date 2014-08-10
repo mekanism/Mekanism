@@ -43,11 +43,11 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(isValidGas(stack.getGas()))
 		{
-			return gasTank.receive(stack, true);
+			return gasTank.receive(stack, doTransfer);
 		}
 
 		return 0;

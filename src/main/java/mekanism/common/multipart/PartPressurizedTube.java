@@ -57,6 +57,27 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 					MekanismUtils.saveChunk(tile());
 				}
 			}
+
+			IGasHandler[] connectedAcceptors = GasTransmission.getConnectedAcceptors(tile());
+
+			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			{
+				if(connectedAcceptors[side.ordinal()] != null)
+				{
+					IGasHandler container = connectedAcceptors[side.ordinal()];
+
+					if(container != null)
+					{
+						GasStack received = container.drawGas(side.getOpposite(), 100, false);
+
+						if(received != null && received.amount != 0)
+						{
+							container.drawGas(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
+						}
+					}
+				}
+			}
+
 		}
 		else {
 			float targetScale = getTransmitterNetwork().gasScale;
@@ -258,18 +279,18 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL)
 		{
-			return getTransmitterNetwork().emit(stack);
+			return getTransmitterNetwork().emit(stack, doTransfer);
 		}
 		
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount) 
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

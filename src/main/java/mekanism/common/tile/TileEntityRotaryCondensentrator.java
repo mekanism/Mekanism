@@ -192,7 +192,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					{
 						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), gasTank.getGas().getGas()))
 						{
-							gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
+							gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -481,15 +481,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		return gasTank.receive(stack, true);
+		return gasTank.receive(stack, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
-		return gasTank.draw(amount, true);
+		return gasTank.draw(amount, doTransfer);
 	}
 
 	@Override

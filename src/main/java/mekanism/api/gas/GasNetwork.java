@@ -168,7 +168,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 						remaining--;
 					}
 
-					toSend -= acceptor.receiveGas(acceptorDirections.get(acceptor).getOpposite(), new GasStack(stack.getGas(), currentSending));
+					toSend -= acceptor.receiveGas(acceptorDirections.get(acceptor).getOpposite(), new GasStack(stack.getGas(), currentSending), true);
 				}
 			}
 		}
@@ -184,7 +184,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		return sent;
 	}
 
-	public synchronized int emit(GasStack stack)
+	public synchronized int emit(GasStack stack, boolean doTransfer)
 	{
 		if(gasStored != null && gasStored.getGas() != stack.getGas())
 		{
@@ -193,13 +193,16 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		int toUse = Math.min(getGasNeeded(), stack.amount);
 
-		if(gasStored == null)
+		if(doTransfer)
 		{
-			gasStored = stack.copy();
-			gasStored.amount = toUse;
-		}
-		else {
-			gasStored.amount += toUse;
+			if(gasStored == null)
+			{
+				gasStored = stack.copy();
+				gasStored.amount = toUse;
+			}
+			else {
+				gasStored.amount += toUse;
+			}
 		}
 
 		return toUse;

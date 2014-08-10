@@ -229,11 +229,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(fuelTank.getGas() == null || fuelTank.getGas().isGasEqual(stack))
 		{
-			return fuelTank.receive(stack, true);
+			return fuelTank.receive(stack, doTransfer);
 		}
 
 		return 0;
@@ -262,7 +262,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

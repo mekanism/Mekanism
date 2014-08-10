@@ -44,6 +44,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	public void setInventory(String frequency)
 	{
 		sharedInventory = SharedInventoryManager.getInventory(frequency);
+		markDirty();
 	}
 
 	@Override
@@ -152,15 +153,15 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		return sharedInventory == null ? 0 : sharedInventory.receiveGas(side, stack);
+		return sharedInventory == null ? 0 : sharedInventory.receiveGas(side, stack, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
-		return sharedInventory == null ? null : sharedInventory.drawGas(side, amount);
+		return sharedInventory == null ? null : sharedInventory.drawGas(side, amount, doTransfer);
 	}
 
 	@Override

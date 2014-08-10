@@ -69,7 +69,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			{
 				if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), gasTank.getGas().getGas()))
 				{
-					gasTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
+					gasTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
 				}
 			}
 		}
@@ -118,13 +118,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		return gasTank.receive(stack, true);
+		return gasTank.receive(stack, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

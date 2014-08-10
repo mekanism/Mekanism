@@ -78,15 +78,15 @@ public class SharedInventory implements IStrictEnergyStorage, IFluidHandler, IGa
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		return storedGas.receive(stack, true);
+		return storedGas.receive(stack, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
-		return storedGas.draw(amount, true);
+		return storedGas.draw(amount, doTransfer);
 	}
 
 	@Override

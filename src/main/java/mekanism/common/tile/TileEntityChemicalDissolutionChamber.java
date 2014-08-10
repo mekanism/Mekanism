@@ -165,7 +165,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -409,18 +409,18 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack.getGas()))
 		{
-			return injectTank.receive(stack, true);
+			return injectTank.receive(stack, doTransfer);
 		}
 
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

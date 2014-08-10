@@ -878,11 +878,11 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack.getGas()))
 		{
-			return gasTank.receive(stack, true);
+			return gasTank.receive(stack, doTransfer);
 		}
 
 		return 0;
@@ -901,7 +901,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

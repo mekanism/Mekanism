@@ -141,7 +141,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -457,22 +457,22 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
-			return getTank(side).receive(stack, true);
+			return getTank(side).receive(stack, doTransfer);
 		}
 
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
-			return getTank(side).draw(amount, true);
+			return getTank(side).draw(amount, doTransfer);
 		}
 
 		return null;

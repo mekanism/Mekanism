@@ -154,7 +154,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					{
 						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), leftTank.getGas().getGas()))
 						{
-							leftTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
+							leftTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -180,7 +180,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					{
 						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), rightTank.getGas().getGas()))
 						{
-							rightTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
+							rightTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -645,21 +645,21 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
-			return leftTank.draw(amount, true);
+			return leftTank.draw(amount, doTransfer);
 		}
 		else if(side == MekanismUtils.getRight(facing))
 		{
-			return rightTank.draw(amount, true);
+			return rightTank.draw(amount, doTransfer);
 		}
 
 		return null;

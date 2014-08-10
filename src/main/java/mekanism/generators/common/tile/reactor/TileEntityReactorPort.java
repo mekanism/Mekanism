@@ -104,21 +104,21 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(getReactor() != null)
 		{
 			if(stack.getGas() == GasRegistry.getGas("deuterium"))
 			{
-				return getReactor().getDeuteriumTank().receive(stack, true);
+				return getReactor().getDeuteriumTank().receive(stack, doTransfer);
 			}
 			else if(stack.getGas() == GasRegistry.getGas("tritium"))
 			{
-				return getReactor().getTritiumTank().receive(stack, true);
+				return getReactor().getTritiumTank().receive(stack, doTransfer);
 			}
 			else if(stack.getGas() == GasRegistry.getGas("fusionFuelDT"))
 			{
-				return getReactor().getFuelTank().receive(stack, true);
+				return getReactor().getFuelTank().receive(stack, doTransfer);
 			}
 		}
 		
@@ -126,13 +126,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(getReactor() != null)
 		{
 			if(getReactor().getSteamTank().getFluidAmount() > 0)
 			{
-				return new GasStack(GasRegistry.getGas("steam"), getReactor().getSteamTank().drain(amount, true).amount);
+				return new GasStack(GasRegistry.getGas("steam"), getReactor().getSteamTank().drain(amount, doTransfer).amount);
 			}
 		}
 
