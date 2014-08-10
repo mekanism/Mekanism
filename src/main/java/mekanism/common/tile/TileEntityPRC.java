@@ -121,7 +121,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing), outputGasTank.getGas().getGas()))
 					{
-						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing), toSend), true);
+						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing), toSend, true), true);
 					}
 				}
 			}
@@ -401,22 +401,22 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
-			return inputGasTank.receive(stack, true);
+			return inputGasTank.receive(stack, doTransfer);
 		}
 		
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(side == MekanismUtils.getRight(facing))
 		{
-			return outputGasTank.draw(amount, true);
+			return outputGasTank.draw(amount, doTransfer);
 		}
 		
 		return null;

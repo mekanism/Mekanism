@@ -136,7 +136,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
 					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
+						centerTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -388,22 +388,22 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
-			return getTank(side).receive(stack, true);
+			return getTank(side).receive(stack, doTransfer);
 		}
 
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
-			return getTank(side).draw(amount, true);
+			return getTank(side).draw(amount, doTransfer);
 		}
 
 		return null;

@@ -14,14 +14,14 @@ public interface IGasHandler
 	 * @param stack - gas to add
 	 * @return gas added
 	 */
-	public int receiveGas(ForgeDirection side, GasStack stack);
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer);
 
 	/**
 	 * Draws a certain amount of gas from this block.
 	 * @param amount - amount to draw
 	 * @return gas drawn
 	 */
-	public GasStack drawGas(ForgeDirection side, int amount);
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer);
 
 	/**
 	 * Whether or not this block can accept gas from a certain side.
