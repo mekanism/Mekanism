@@ -24,8 +24,6 @@ public class GuiDictionary extends GuiMekanism
 	
 	public GuiScrollList scrollList;
 
-	public List<String> oreDictNames;
-
 	public GuiDictionary(InventoryPlayer inventory)
 	{
 		super(new ContainerDictionary(inventory));
@@ -144,7 +142,8 @@ public class GuiDictionary extends GuiMekanism
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = null;
-					oreDictNames = new ArrayList<String>();
+					
+					scrollList.setText(null);
 				}
 
                 SoundHandler.playSound("gui.button.press");
