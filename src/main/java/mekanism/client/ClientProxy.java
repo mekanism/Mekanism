@@ -25,6 +25,7 @@ import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnergizedSmelter;
 import mekanism.client.gui.GuiEnergyCube;
 import mekanism.client.gui.GuiEnrichmentChamber;
+import mekanism.client.gui.GuiEntangledBlock;
 import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiFluidicPlenisher;
 import mekanism.client.gui.GuiGasTank;
@@ -128,6 +129,7 @@ import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
@@ -480,7 +482,7 @@ public class ClientProxy extends CommonProxy
 			case 44:
 				return new GuiLaserAmplifier(player.inventory, (TileEntityLaserAmplifier)tileEntity);
 			case 45:
-				return null; //new GuiEntangledBlock(player.sharedInventory, (TileEntityEntangledInventory)tileEntity);
+				return new GuiEntangledBlock(player.inventory, (TileEntityEntangledBlock)tileEntity);
 		}
 
 		return null;

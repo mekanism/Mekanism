@@ -48,7 +48,7 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
-import mekanism.common.tile.TileEntityEntangledInventory;
+import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityLaser;
@@ -1212,7 +1212,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		FLUIDIC_PLENISHER(MekanismBlocks.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
 		LASER(MekanismBlocks.MachineBlock2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
 		LASER_AMPLIFIER(MekanismBlocks.MachineBlock2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false),
-		ENTANGLED_BLOCK(MekanismBlocks.MachineBlock2, 15, "EntangledBlock", 45, 0, TileEntityEntangledInventory.class, true, false, false);
+		ENTANGLED_BLOCK(MekanismBlocks.MachineBlock2, 15, "EntangledBlock", 45, 0, TileEntityEntangledBlock.class, true, false, false);
 
 		public Block typeBlock;
 		public int meta;

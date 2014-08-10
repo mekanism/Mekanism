@@ -7,6 +7,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.PacketHandler;
 import mekanism.common.teleportation.SharedInventory;
 import mekanism.common.teleportation.SharedInventoryManager;
 import mekanism.common.util.CableUtils;
@@ -18,11 +19,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityEntangledInventory extends TileEntityElectricBlock implements IFluidHandler, IGasHandler, ITubeConnection
+import io.netty.buffer.ByteBuf;
+
+public class TileEntityEntangledBlock extends TileEntityElectricBlock implements IFluidHandler, IGasHandler, ITubeConnection
 {
 	public SharedInventory sharedInventory;
 
-	public TileEntityEntangledInventory()
+	public static final EnumSet<ForgeDirection> nothing = EnumSet.noneOf(ForgeDirection.class);
+
+	public TileEntityEntangledBlock()
 	{
 		super("Entangled", 0);
 		inventory = new ItemStack[0];
@@ -41,17 +46,39 @@ public class TileEntityEntangledInventory extends TileEntityElectricBlock implem
 		sharedInventory = SharedInventoryManager.getInventory(frequency);
 	}
 
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		if(!worldObj.isRemote)
+		{
+			switch(dataStream.readInt())
+			{
+				case 0:
+					setInventory(PacketHandler.readString(dataStream));
+					return;
+			}
+		}
+
+		super.handlePacketData(dataStream);
+		setEnergy(dataStream.readDouble());
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		data.add(getEnergy());
+		return data;
+	}
+
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.UP);
+		return sharedInventory == null ? nothing : EnumSet.of(ForgeDirection.UP);
 	}
 
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.remove(ForgeDirection.UNKNOWN);
-		set.remove(ForgeDirection.UP);
-		return set;
+		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN, ForgeDirection.UP));
 	}
 
 	public double getMaxOutput()
