@@ -32,10 +32,13 @@ public class GuiEntangledBlock extends GuiMekanism
 
 	public GuiTextField frequencyField;
 
+	public boolean isCreative;
+
 	public GuiEntangledBlock(InventoryPlayer inventory, TileEntityEntangledBlock tentity)
 	{
 		super(new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
+		isCreative = inventory.player.capabilities.isCreativeMode;
 	}
 
 	@Override
@@ -108,7 +111,10 @@ public class GuiEntangledBlock extends GuiMekanism
 			data.add(0);
 			data.add(toUse);
 
-			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+			if(!toUse.startsWith("creative.") || isCreative)
+			{
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+			}
 
 			frequencyField.setText("");
 		}
