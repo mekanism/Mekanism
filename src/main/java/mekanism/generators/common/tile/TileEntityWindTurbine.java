@@ -2,8 +2,8 @@ package mekanism.generators.common.tile;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
-import mekanism.common.IBoundingBlock;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;

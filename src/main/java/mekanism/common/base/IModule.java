@@ -1,8 +1,10 @@
-package mekanism.common;
+package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+
+import mekanism.common.Version;
 
 /**
  * Implement in your main class if your mod happens to be completely reliant on Mekanism, or in other words, is a Mekanism module.

@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.base;
 
 import net.minecraftforge.fluids.FluidStack;
 

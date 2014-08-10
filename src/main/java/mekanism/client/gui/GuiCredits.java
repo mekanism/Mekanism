@@ -2,9 +2,9 @@ package mekanism.client.gui;
 
 import mekanism.api.EnumColor;
 import mekanism.client.ThreadClientUpdate;
-import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
+import mekanism.common.base.IModule;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

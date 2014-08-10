@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.common.IInvConfiguration;
 import mekanism.common.SideData;
+import mekanism.common.base.IInvConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;

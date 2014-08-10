@@ -7,7 +7,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.IInvConfiguration;
+import mekanism.common.base.IInvConfiguration;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
@@ -18,7 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Loader;
-
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 public class TransporterManager

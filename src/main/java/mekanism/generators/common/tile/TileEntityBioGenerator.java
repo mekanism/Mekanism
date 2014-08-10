@@ -8,12 +8,11 @@ import java.util.EnumSet;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.client.sound.TileSound;
 import mekanism.common.FluidSlot;
-import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;

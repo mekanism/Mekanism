@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;

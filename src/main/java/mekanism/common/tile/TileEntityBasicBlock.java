@@ -9,9 +9,9 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.common.ITileComponent;
-import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ITileComponent;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;

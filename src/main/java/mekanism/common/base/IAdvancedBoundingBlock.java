@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.base;
 
 import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;

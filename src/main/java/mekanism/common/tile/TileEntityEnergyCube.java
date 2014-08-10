@@ -7,10 +7,10 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;

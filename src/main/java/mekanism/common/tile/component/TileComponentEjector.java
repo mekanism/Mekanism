@@ -7,12 +7,12 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.IEjector;
-import mekanism.common.IInvConfiguration;
-import mekanism.common.ILogisticalTransporter;
-import mekanism.common.ITileComponent;
 import mekanism.common.SideData;
+import mekanism.common.base.IEjector;
+import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.transporter.ILogisticalTransporter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;

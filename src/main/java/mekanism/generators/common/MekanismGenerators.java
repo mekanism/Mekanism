@@ -9,13 +9,12 @@ import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.common.FuelHandler;
-import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.Version;
+import mekanism.common.base.IModule;
 import mekanism.common.recipe.MekanismRecipe;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;

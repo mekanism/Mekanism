@@ -16,9 +16,9 @@ import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
-import mekanism.common.ITileNetwork;
 import mekanism.common.MekanismItems;
 import mekanism.common.Tier;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.TransmitterType.Size;
 import net.minecraft.client.particle.EffectRenderer;
@@ -184,7 +184,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()))
+				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()) && isValidTransmitter(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -222,6 +222,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public byte getAllCurrentConnections()
 	{
 		return (byte)(currentTransmitterConnections | currentAcceptorConnections);
+	}
+	
+	protected boolean isValidTransmitter(TileEntity tileEntity)
+	{
+		return true;
 	}
 
 	@Override

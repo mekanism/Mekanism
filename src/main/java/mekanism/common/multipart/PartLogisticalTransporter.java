@@ -9,14 +9,16 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
-import mekanism.common.ILogisticalTransporter;
+import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.transporter.ILogisticalTransporter;
 import mekanism.common.transporter.InvStack;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
@@ -44,7 +46,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
-public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
+public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter, IPipeTile
 {
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
 
@@ -57,6 +59,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 
 	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
+	
+	public PartLogisticalTransporter()
+	{
+		redstoneReactive = false;
+	}
 
 	@Override
 	public String getType()
@@ -91,66 +98,18 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
 		}
 	}
-
+	
 	@Override
-	public boolean canConnect(ForgeDirection side)
+	protected boolean isValidTransmitter(TileEntity tileEntity)
 	{
-		testingSide = side;
-		boolean unblocked = tile().canReplacePart(this, this);
-		testingSide = null;
-		return unblocked;
-	}
+		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 
-	@Override
-	public byte getPossibleTransmitterConnections()
-	{
-		byte connections = 0x00;
-
-		if(world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor())
 		{
-			return connections;
+			return true;
 		}
-
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			if(canConnectMutual(side))
-			{
-				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()))
-				{
-					ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
-
-					if(getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor())
-					{
-						connections |= 1 << side.ordinal();
-					}
-				}
-			}
-		}
-
-		return connections;
-	}
-
-	@Override
-	public byte getPossibleAcceptorConnections()
-	{
-		byte connections = 0x00;
-
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			if(canConnectMutual(side))
-			{
-				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-
-				if(isValidAcceptor(tileEntity, side))
-				{
-					connections |= 1 << side.ordinal();
-				}
-			}
-		}
-
-		return connections;
+		
+		return false;
 	}
 
 	@Override
@@ -170,9 +129,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		return TransporterUtils.getConnections(this)[side.ordinal()];
 	}
-
-	@Override
-	public void onModeChange(ForgeDirection side) {}
 
 	@Override
 	public void update()
@@ -778,5 +734,47 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public boolean isWireActive(PipeWire wire)
 	{
 		return false;
+	}
+
+	@Override
+	public int getTransmitterNetworkSize()
+	{
+		return getTransmitterNetwork().getSize();
+	}
+
+	@Override
+	public int getTransmitterNetworkAcceptorSize()
+	{
+		return getTransmitterNetwork().getAcceptorSize();
+	}
+
+	@Override
+	public String getTransmitterNetworkNeeded()
+	{
+		return getTransmitterNetwork().getNeededInfo();
+	}
+
+	@Override
+	public String getTransmitterNetworkFlow()
+	{
+		return getTransmitterNetwork().getFlowInfo();
+	}
+
+	@Override
+	public int getCapacity()
+	{
+		return 0;
+	}
+
+	@Override
+	public InventoryNetwork createNetworkFromSingleTransmitter(IGridTransmitter<InventoryNetwork> transmitter) 
+	{
+		return new InventoryNetwork(transmitter);
+	}
+
+	@Override
+	public InventoryNetwork createNetworkByMergingSet(Set<InventoryNetwork> networks)
+	{
+		return new InventoryNetwork(networks);
 	}
 }

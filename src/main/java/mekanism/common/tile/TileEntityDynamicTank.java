@@ -8,8 +8,8 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

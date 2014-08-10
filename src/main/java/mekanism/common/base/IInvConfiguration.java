@@ -1,6 +1,8 @@
-package mekanism.common;
+package mekanism.common.base;
 
 import java.util.ArrayList;
+
+import mekanism.common.SideData;
 
 /**
  * Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.

@@ -5,11 +5,10 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 
 import mekanism.api.MekanismConfig.tools;
-import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
+import mekanism.common.base.IModule;
 import mekanism.common.recipe.MekanismRecipe;
-
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;

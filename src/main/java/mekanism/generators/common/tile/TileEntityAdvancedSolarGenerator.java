@@ -5,9 +5,8 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.api.MekanismConfig.generators;
-import mekanism.common.IBoundingBlock;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, ISalinationSolar

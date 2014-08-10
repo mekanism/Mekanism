@@ -6,7 +6,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.IAdvancedBoundingBlock;
+import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;

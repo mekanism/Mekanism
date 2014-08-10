@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

@@ -1,4 +1,4 @@
-package mekanism.common;
+package mekanism.common.base;
 
 import io.netty.buffer.ByteBuf;
 

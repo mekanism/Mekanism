@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
-import mekanism.common.IInvConfiguration;
+import mekanism.common.base.IInvConfiguration;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.Finder;

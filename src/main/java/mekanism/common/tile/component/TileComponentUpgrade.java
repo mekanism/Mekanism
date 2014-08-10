@@ -8,9 +8,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.common.ITileComponent;
-import mekanism.common.IUpgradeItem;
 import mekanism.common.Upgrade;
+import mekanism.common.base.ITileComponent;
+import mekanism.common.base.IUpgradeItem;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.nbt.NBTTagCompound;
 

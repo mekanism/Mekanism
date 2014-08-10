@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.IUpgradeItem;
-import mekanism.common.IUpgradeTile;
+import mekanism.common.base.IUpgradeItem;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;

@@ -6,8 +6,8 @@ import java.util.List;
 
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.IEnergyCube;
-import mekanism.common.IFactory;
+import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.util.MekanismUtils;

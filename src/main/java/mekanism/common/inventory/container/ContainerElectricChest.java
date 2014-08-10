@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.IElectricChest;
+import mekanism.common.base.IElectricChest;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;

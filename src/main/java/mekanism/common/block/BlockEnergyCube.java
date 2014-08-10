@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.IEnergyCube;
-import mekanism.common.ISustainedInventory;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.ISustainedInventory;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;

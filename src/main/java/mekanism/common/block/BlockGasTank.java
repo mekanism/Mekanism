@@ -3,10 +3,10 @@ package mekanism.common.block;
 import java.util.Random;
 
 import mekanism.api.gas.IGasItem;
-import mekanism.common.ISustainedInventory;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.base.ISustainedInventory;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.block.Block;
