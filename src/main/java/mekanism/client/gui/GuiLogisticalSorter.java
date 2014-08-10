@@ -274,9 +274,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int type)
+	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(x, y, type);
+		super.mouseMovedOrUp(mouseX, mouseY, type);
 
 		if(type == 0 && isDragging)
 		{

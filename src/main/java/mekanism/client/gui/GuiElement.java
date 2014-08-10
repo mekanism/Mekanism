@@ -98,6 +98,10 @@ public abstract class GuiElement
 		return guiObj.getFont();
 	}
 	
+	protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks) {}
+
+	protected void mouseMovedOrUp(int x, int y, int type) {}
+	
 	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 
 	public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);

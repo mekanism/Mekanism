@@ -181,6 +181,34 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 		return fontRendererObj;
 	}
 	
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks)
+	{
+		super.mouseClickMove(mouseX, mouseY, button, ticks);
+
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		for(GuiElement element : guiElements)
+		{
+			element.mouseClickMove(xAxis, yAxis, button, ticks);
+		}
+	}
+
+	@Override
+	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	{
+		super.mouseMovedOrUp(mouseX, mouseY, type);
+		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		for(GuiElement element : guiElements)
+		{
+			element.mouseMovedOrUp(xAxis, yAxis, type);
+		}
+	}
+	
 	public void handleMouse(Slot slot, int slotIndex, int button, int modifier)
 	{
 		handleMouseClick(slot, slotIndex, button, modifier);

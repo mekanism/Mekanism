@@ -26,6 +26,8 @@ public class GuiScrollList extends GuiElement
 	
 	public int scrollIndex;
 	
+	public boolean isScrolling;
+	
 	public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiScrollList.png"), gui, def);
@@ -51,7 +53,7 @@ public class GuiScrollList extends GuiElement
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
+		return new Rectangle4i(guiWidth + xPosition, guiHeight + yPosition, xSize, size*10);
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class GuiScrollList extends GuiElement
 	
 	public int getMaxScroll()
 	{
-		return textEntries.size()-size;
+		return size-2;
 	}
 	
 	public int getScroll()
@@ -109,7 +111,7 @@ public class GuiScrollList extends GuiElement
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{		
-		if((scrollIndex > 0 && textEntries.size() <= size) || (scrollIndex > 0 && getMaxScroll() < scrollIndex))
+		if((scrollIndex > 0 && textEntries.size() <= size) || (scrollIndex > 0 && textEntries.size()-size < scrollIndex))
 		{
 			scrollIndex = 0;
 		}
