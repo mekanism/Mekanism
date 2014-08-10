@@ -24,9 +24,11 @@ public class GuiScrollList extends GuiElement
 	
 	public List<String> textEntries = new ArrayList<String>();
 	
-	public int scrollIndex;
+	public int dragOffset = 0;
 	
-	public boolean isScrolling;
+	public float scroll;
+	
+	public boolean isDragging;
 	
 	public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int sizeX, int sizeY)
 	{
@@ -41,6 +43,8 @@ public class GuiScrollList extends GuiElement
 	
 	public void setText(List<String> text)
 	{
+		scroll = 0;
+		
 		if(text == null)
 		{
 			textEntries.clear();
@@ -100,27 +104,32 @@ public class GuiScrollList extends GuiElement
 	
 	public int getMaxScroll()
 	{
-		return size-2;
+		return (size*10)-2;
 	}
 	
 	public int getScroll()
 	{
-		return 0;
+		return Math.max(Math.min((int)(scroll*(getMaxScroll()-4)), (getMaxScroll()-4)), 0);
+	}
+	
+	public int getScrollIndex()
+	{
+		if(textEntries.size() <= size)
+		{
+			return 0;
+		}
+
+		return (int)((textEntries.size()*scroll) - (((float)size/(float)textEntries.size()))*scroll);
 	}
 
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
-	{		
-		if((scrollIndex > 0 && textEntries.size() <= size) || (scrollIndex > 0 && textEntries.size()-size < scrollIndex))
-		{
-			scrollIndex = 0;
-		}
-		
+	{
 		if(!textEntries.isEmpty())
 		{
 			for(int i = 0; i < size; i++)
 			{
-				int index = scrollIndex + i;
+				int index = getScrollIndex() + i;
 				
 				if(index <= textEntries.size()-1)
 				{
@@ -140,5 +149,43 @@ public class GuiScrollList extends GuiElement
 	public void preMouseClicked(int xAxis, int yAxis, int button) {}
 
 	@Override
-	public void mouseClicked(int xAxis, int yAxis, int button) {}
+	public void mouseClicked(int xAxis, int yAxis, int button) 
+	{
+		if(button == 0)
+		{
+			int xStart = xPosition + xSize - 5;
+			
+			if(xAxis >= xStart && xAxis <= xStart+4 && yAxis >= getScroll()+yPosition+1 && yAxis <= getScroll()+4+yPosition+1)
+			{
+				if(textEntries.size()>size)
+				{
+					dragOffset = yAxis - (getScroll()+yPosition+1);
+					isDragging = true;
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void mouseClickMove(int xAxis, int yAxis, int button, long ticks)
+	{
+		super.mouseClickMove(xAxis, yAxis, button, ticks);
+
+		if(isDragging)
+		{
+			scroll = Math.min(Math.max((float)(yAxis-(yPosition+1)-dragOffset)/(float)(getMaxScroll()-4), 0), 1);
+		}
+	}
+
+	@Override
+	protected void mouseMovedOrUp(int xAxis, int yAxis, int type)
+	{
+		super.mouseMovedOrUp(xAxis, yAxis, type);
+
+		if(type == 0 && isDragging)
+		{
+			dragOffset = 0;
+			isDragging = false;
+		}
+	}
 }
