@@ -164,6 +164,14 @@ public class GasTank
 	}
 
 	/**
+	 * Sets the maximum amount of gas this tank can hold
+	 */
+	public void setMaxGas(int capacity)
+	{
+		maxGas = capacity;
+	}
+
+	/**
 	 * Gets the GasStack held by this GasTank.
 	 * @return - GasStakc held by this tank
 	 */
