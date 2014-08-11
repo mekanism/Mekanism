@@ -186,8 +186,14 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
-				dragOffset = yAxis - (getScroll()+18);
-				isDragging = true;
+				if(tileEntity.filters.size()>4)
+				{
+					dragOffset = yAxis - (getScroll()+18);
+					isDragging = true;
+				}
+				else {
+					scroll = 0;
+				}
 			}
 
 			for(int i = 0; i < 4; i++)
