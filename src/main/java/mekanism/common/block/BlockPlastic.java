@@ -24,8 +24,8 @@ public class BlockPlastic extends Block
 	public BlockPlastic()
 	{
 		super(Material.wood);
-		setHardness(5F);
-		setResistance(10F);
+		setHardness(this == MekanismBlocks.ReinforcedPlasticBlock ? 50F : 5F);
+		setResistance(this == MekanismBlocks.ReinforcedPlasticBlock ? 2000F : 10F);
 		setCreativeTab(Mekanism.tabMekanism);
 		if(this == MekanismBlocks.SlickPlasticBlock)
 		{
