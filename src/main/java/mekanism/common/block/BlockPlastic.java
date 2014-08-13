@@ -103,7 +103,7 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	public int getLightValue()
 	{
 		if(this == MekanismBlocks.GlowPlasticBlock)
 		{
