@@ -458,6 +458,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	protected void onRedstoneSplit() {}
 
+	protected void onRedstoneJoin() {}
+
 	protected void onRefresh() {}
 
 	public void refreshConnections()
@@ -476,6 +478,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				if(nowPowered)
 				{
 					onRedstoneSplit();
+				}
+				else
+				{
+					onRedstoneJoin();
 				}
 
 				tile().notifyPartChange(this);

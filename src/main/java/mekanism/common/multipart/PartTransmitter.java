@@ -39,8 +39,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public void refreshTransmitterNetwork()
 	{
-		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh(this);
-		((DynamicNetwork<?,N>)getTransmitterNetwork()).refresh();
+		getTransmitterNetwork().refresh(this);
+		getTransmitterNetwork().refresh();
 	}
 
 	@Override
@@ -54,6 +54,13 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	{
 		getTransmitterNetwork().split((IGridTransmitter<N>)tile());
 		setTransmitterNetwork(null);
+	}
+
+	@Override
+	public void onRedstoneJoin()
+	{
+		setTransmitterNetwork(null);
+		getTransmitterNetwork();
 	}
 
 	@Override
