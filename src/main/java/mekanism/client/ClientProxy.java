@@ -188,6 +188,7 @@ public class ClientProxy extends CommonProxy
 		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean(true);
 		client.baseSoundVolume = Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble(1D);
 		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean(true);
+		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();

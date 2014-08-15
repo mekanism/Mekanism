@@ -503,7 +503,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderSide(ForgeDirection side, PartSidedPipe transmitter)
 	{
-		boolean connected = PartTransmitter.connectionMapContainsSide(transmitter.getAllCurrentConnections(), side);
 		IIcon renderIcon = transmitter.getIconForSide(side);
 
 		Colour c = null;

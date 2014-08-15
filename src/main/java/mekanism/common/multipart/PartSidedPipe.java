@@ -12,6 +12,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -133,6 +134,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public abstract IIcon getSideIcon();
 
+	public abstract IIcon getSideIconRotated();
+
 	@Override
 	public void update()
 	{
@@ -162,6 +165,17 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(type == ConnectionType.NONE)
 		{
+			if(client.oldTransmitterRender)
+				return getCenterIcon();
+			if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
+				return getSideIcon();
+			if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
+				return getSideIcon();
+			if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
+				return getSideIconRotated();
+			if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
+				return getSideIconRotated();
+
 			return getCenterIcon();
 		}
 		else {

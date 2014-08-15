@@ -23,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements IGasHandler
 {
-	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 1);
+	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 2);
 
 	public float currentScale;
 
@@ -199,7 +199,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	public static void registerIcons(IIconRegister register)
 	{
 		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
-		tubeIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
+		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVertical", "SmallTransmitterHorizontal"});
 	}
 
 	@Override
@@ -212,6 +212,12 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	public IIcon getSideIcon()
 	{
 		return tubeIcons.getSideIcon(0);
+	}
+
+	@Override
+	public IIcon getSideIconRotated()
+	{
+		return tubeIcons.getSideIcon(1);
 	}
 
 	@Override

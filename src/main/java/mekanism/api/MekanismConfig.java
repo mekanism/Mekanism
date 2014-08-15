@@ -44,6 +44,7 @@ public class MekanismConfig
 		public static boolean holidays = true;
 		public static double baseSoundVolume = 1;
 		public static boolean machineEffects = true;
+		public static boolean oldTransmitterRender = false;
 	}
 
 	public static class usage
