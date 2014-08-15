@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -172,6 +173,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				{
 					IFluidHandler acceptor = (IFluidHandler)obj;
 					int currentSending = sending;
+					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
 					if(remaining > 0)
 					{
@@ -179,7 +181,17 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 						remaining--;
 					}
 
-					fluidSent += acceptor.fill(acceptorDirections.get(acceptor).getOpposite(), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
+					for(ForgeDirection side : sides)
+					{
+						int prev = fluidSent;
+						
+						fluidSent += acceptor.fill(side.getOpposite(), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
+						
+						if(fluidSent > prev)
+						{
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -291,17 +303,29 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	{
 		FluidStack fluidToSend = (FluidStack)data[0];
 		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
-
-		for(IFluidHandler acceptor : ((Map<Coord4D, IFluidHandler>)possibleAcceptors.clone()).values())
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(acceptorDirections.get(acceptor) == null)
+			return toReturn;
+		}
+
+		for(Coord4D coord : ((Map<Coord4D, IFluidHandler>)possibleAcceptors.clone()).keySet())
+		{
+			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			IFluidHandler acceptor = (IFluidHandler)coord.getTileEntity(getWorld());
+			
+			if(sides == null || sides.isEmpty())
 			{
 				continue;
 			}
 
-			if(acceptor.canFill(acceptorDirections.get(acceptor).getOpposite(), fluidToSend.getFluid()))
+			for(ForgeDirection side : sides)
 			{
-				toReturn.add(acceptor);
+				if(acceptor.canFill(side.getOpposite(), fluidToSend.getFluid()))
+				{
+					toReturn.add(acceptor);
+					break;
+				}
 			}
 		}
 
@@ -350,7 +374,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
-				acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get((TileEntity)acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}

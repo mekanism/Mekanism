@@ -64,9 +64,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 
 		for(IInventory acceptor : ((Map<Coord4D, IInventory>)possibleAcceptors.clone()).values())
 		{
-			ForgeDirection side = acceptorDirections.get(acceptor);
-
-			if(side == null)
+			if(acceptorDirections.get(acceptor) == null || acceptorDirections.get(acceptor).isEmpty())
 			{
 				continue;
 			}
@@ -117,7 +115,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
-				acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get((TileEntity)acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}

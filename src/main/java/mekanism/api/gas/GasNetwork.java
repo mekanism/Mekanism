@@ -3,6 +3,7 @@ package mekanism.api.gas;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -159,8 +160,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				if(obj instanceof IGasHandler)
 				{
 					IGasHandler acceptor = (IGasHandler)obj;
-
 					int currentSending = sending;
+					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
 					if(remaining > 0)
 					{
@@ -168,7 +169,17 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 						remaining--;
 					}
 
-					toSend -= acceptor.receiveGas(acceptorDirections.get(acceptor).getOpposite(), new GasStack(stack.getGas(), currentSending), true);
+					for(ForgeDirection side : sides)
+					{
+						int prev = toSend;
+						
+						toSend -= acceptor.receiveGas(side.getOpposite(), new GasStack(stack.getGas(), currentSending), true);
+						
+						if(toSend < prev)
+						{
+							break;
+						}
+					}
 				}
 			}
 		}
@@ -282,17 +293,29 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	{
 		Gas type = (Gas)data[0];
 		Set<IGasHandler> toReturn = new HashSet<IGasHandler>();
-
-		for(IGasHandler acceptor : ((Map<Coord4D, IGasHandler>)possibleAcceptors.clone()).values())
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(acceptorDirections.get(acceptor) == null)
+			return toReturn;
+		}
+
+		for(Coord4D coord : ((Map<Coord4D, IGasHandler>)possibleAcceptors.clone()).keySet())
+		{
+			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			IGasHandler acceptor = (IGasHandler)coord.getTileEntity(getWorld());
+			
+			if(sides == null || sides.isEmpty())
 			{
 				continue;
 			}
 
-			if(acceptor.canReceiveGas(acceptorDirections.get(acceptor).getOpposite(), type))
+			for(ForgeDirection side : sides)
 			{
-				toReturn.add(acceptor);
+				if(acceptor.canReceiveGas(side.getOpposite(), type))
+				{
+					toReturn.add(acceptor);
+					break;
+				}
 			}
 		}
 
@@ -341,7 +364,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
-				acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get((TileEntity)acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}

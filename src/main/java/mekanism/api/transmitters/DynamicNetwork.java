@@ -2,6 +2,7 @@ package mekanism.api.transmitters;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,7 +27,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public LinkedHashSet<IGridTransmitter<N>> transmitters = new LinkedHashSet<IGridTransmitter<N>>();
 
 	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
-	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
+	public HashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new HashMap<Coord4D, EnumSet<ForgeDirection>>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
@@ -64,8 +65,12 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		if(acceptor.getTileEntity(getWorld()) == null || acceptor.getTileEntity(getWorld()).isInvalid() || transmitter.canConnectToAcceptor(side, true))
 		{
-			possibleAcceptors.remove(acceptor);
-			acceptorDirections.remove(acceptor.getTileEntity(getWorld()));
+			acceptorDirections.get(acceptor).remove(side.getOpposite());
+			
+			if(acceptorDirections.get(acceptor).isEmpty())
+			{
+				possibleAcceptors.remove(acceptor);
+			}
 		}
 	}
 
@@ -78,6 +83,16 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public boolean isFirst(IGridTransmitter<N> transmitter)
 	{
 		return transmitters.iterator().next().equals(transmitter);
+	}
+	
+	public void addSide(Coord4D acceptor, ForgeDirection side)
+	{
+		if(acceptorDirections.get(acceptor) == null)
+		{
+			acceptorDirections.put(acceptor, EnumSet.noneOf(ForgeDirection.class));
+		}
+		
+		acceptorDirections.get(acceptor).add(side);
 	}
 	
 	@Override

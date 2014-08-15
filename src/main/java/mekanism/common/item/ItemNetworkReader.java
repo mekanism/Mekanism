@@ -1,7 +1,12 @@
 package mekanism.common.item;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class ItemNetworkReader extends ItemEnergized
 {
@@ -26,14 +32,14 @@ public class ItemNetworkReader extends ItemEnergized
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(getEnergy(stack) >= ENERGY_PER_USE)
 			{
-				if(getEnergy(stack) >= ENERGY_PER_USE)
+				if(tileEntity instanceof IGridTransmitter)
 				{
 					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
-
+	
 					IGridTransmitter<?> transmitter = (IGridTransmitter<?>)tileEntity;
-
+	
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getAcceptorSize()));
@@ -42,6 +48,35 @@ public class ItemNetworkReader extends ItemEnergized
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlowInfo()));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getCapacity()));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+					
+					return true;
+				}
+				else if(tileEntity != null)
+				{
+					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+					
+					Set<ITransmitterNetwork> iteratedNetworks = new HashSet<ITransmitterNetwork>();
+					
+					for(ForgeDirection iterSide : ForgeDirection.VALID_DIRECTIONS)
+					{
+						Coord4D coord = Coord4D.get(tileEntity).getFromSide(iterSide);
+						
+						if(coord.getTileEntity(world) instanceof IGridTransmitter)
+						{
+							IGridTransmitter<?> transmitter = (IGridTransmitter<?>)coord.getTileEntity(world);
+							
+							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.getFromSide(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
+							{
+								player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
+								player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().acceptorDirections.get(coord.getFromSide(iterSide.getOpposite()))));
+								player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+								
+								iteratedNetworks.add(transmitter.getTransmitterNetwork());
+							}
+						}
+					}
+					
+					return true;
 				}
 			}
 
