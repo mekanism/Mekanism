@@ -12,7 +12,6 @@ public class MekanismConfig
 		public static boolean dynamicTankEasterEgg = false;
 		public static boolean voiceServerEnabled = true;
 		public static boolean cardboardSpawners = true;
-		public static boolean machineEffects = true;
 		public static boolean enableWorldRegeneration = true;
 		public static boolean creativeOverrideElectricChest = true;
 		public static boolean spawnBabySkeletons = true;
@@ -36,6 +35,15 @@ public class MekanismConfig
 		public static double FROM_BC;
 		public static double FROM_TE;
 		public static int laserRange = 100;
+	}
+
+	public static class client
+	{
+		public static boolean enableSounds = true;
+		public static boolean fancyUniversalCableRender = true;
+		public static boolean holidays = true;
+		public static double baseSoundVolume = 1;
+		public static boolean machineEffects = true;
 	}
 
 	public static class usage

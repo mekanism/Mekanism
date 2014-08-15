@@ -21,12 +21,6 @@ public class MekanismClient extends Mekanism
 
 	public static VoiceClient voiceClient;
 
-	//General Configuration
-	public static boolean enableSounds = true;
-	public static boolean fancyUniversalCableRender = true;
-	public static boolean holidays = true;
-	public static double baseSoundVolume = 1;
-
 	public static long ticksPassed = 0;
 
 	public static void updateKey(KeyBinding key, int type)

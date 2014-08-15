@@ -16,6 +16,7 @@ import java.util.Map;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -42,10 +43,8 @@ import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
-import mekanism.common.tank.DynamicTankCache;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityElectricChest;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -697,7 +696,7 @@ public final class MekanismUtils
 			world.func_147479_m(x, y, z);
 		}
 
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && general.machineEffects)
+		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && client.machineEffects)
 		{
 			updateAllLightTypes(world, x, y, z);
 		}

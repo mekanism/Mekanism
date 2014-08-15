@@ -14,8 +14,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.client;
 import mekanism.client.HolidayManager;
-import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -86,7 +86,7 @@ public class SoundHandler
 
 		Mekanism.logger.info("Preloaded " + listings.size() + " object sounds.");
 
-		if(MekanismClient.holidays)
+		if(client.holidays)
 		{
 			listings = listFiles(corePath.replace("%20", " ").replace(".jar!", ".jar").replace("file:", ""), "assets/mekanism/sounds/holiday");
 

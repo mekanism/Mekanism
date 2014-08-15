@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiChemicalCrystallizer;
@@ -182,11 +183,11 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		MekanismClient.enableSounds = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSounds", true).getBoolean(true);
-		MekanismClient.fancyUniversalCableRender = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "FancyUniversalCableRender", true).getBoolean(true);
-		MekanismClient.holidays = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Holidays", true).getBoolean(true);
-		MekanismClient.baseSoundVolume = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SoundVolume", 1D).getDouble(1D);
-		general.machineEffects = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MachineEffects", true).getBoolean(true);
+		client.enableSounds = Mekanism.configuration.get("client", "EnableSounds", true).getBoolean(true);
+		client.fancyUniversalCableRender = Mekanism.configuration.get("client", "FancyUniversalCableRender", true).getBoolean(true);
+		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean(true);
+		client.baseSoundVolume = Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble(1D);
+		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean(true);
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();
@@ -201,7 +202,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerSound(TileEntity tileEntity)
 	{
-		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
+		if(client.enableSounds && MekanismClient.audioHandler != null)
 		{
 			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
@@ -213,7 +214,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unregisterSound(TileEntity tileEntity)
 	{
-		if(MekanismClient.enableSounds && MekanismClient.audioHandler != null)
+		if(client.enableSounds && MekanismClient.audioHandler != null)
 		{
 			synchronized(MekanismClient.audioHandler.soundMaps)
 			{
@@ -512,7 +513,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void loadSoundHandler()
 	{
-		if(MekanismClient.enableSounds)
+		if(client.enableSounds)
 		{
 			MekanismClient.audioHandler = new SoundHandler();
 		}
@@ -521,7 +522,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void unloadSoundHandler()
 	{
-		if(MekanismClient.enableSounds)
+		if(client.enableSounds)
 		{
 			if(MekanismClient.audioHandler != null)
 			{

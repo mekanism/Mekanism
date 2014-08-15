@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.FlamethrowerSound;
 import mekanism.client.sound.GasMaskSound;
@@ -97,7 +98,7 @@ public class ClientTickHandler
 
 	public void tickStart()
 	{
-		if(!preloadedSounds && MekanismClient.enableSounds && MekanismClient.audioHandler != null && MekanismClient.audioHandler.isSystemLoaded())
+		if(!preloadedSounds && client.enableSounds && MekanismClient.audioHandler != null && MekanismClient.audioHandler.isSystemLoaded())
 		{
 			preloadedSounds = true;
 			

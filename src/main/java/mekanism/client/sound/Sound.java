@@ -2,6 +2,7 @@ package mekanism.client.sound;
 
 import java.net.URL;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.Pos3D;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -174,7 +175,7 @@ public abstract class Sound
 				float masterVolume = MekanismClient.audioHandler.getMasterVolume();
 				double distance = mc.thePlayer.getDistance(getLocation().xPos, getLocation().yPos, getLocation().zPos);
 				volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
-				volume *= Math.max(0, Math.min(1, MekanismClient.baseSoundVolume));
+				volume *= Math.max(0, Math.min(1, client.baseSoundVolume));
 
 				if(SoundHandler.getSoundSystem() != null)
 				{

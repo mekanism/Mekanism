@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
@@ -278,7 +278,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && general.machineEffects)
+		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
 		{
 			float xRandom = (float)x + 0.5F;
 			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -321,7 +321,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-		if(general.machineEffects && tileEntity instanceof IActiveState)
+		if(client.machineEffects && tileEntity instanceof IActiveState)
 		{
 			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 			{

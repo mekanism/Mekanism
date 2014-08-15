@@ -5,11 +5,11 @@ import ic2.api.energy.tile.IEnergySource;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.MekanismClient;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
@@ -226,7 +226,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 0 && MekanismClient.fancyUniversalCableRender)
+		if(pass == 0 && client.fancyUniversalCableRender)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

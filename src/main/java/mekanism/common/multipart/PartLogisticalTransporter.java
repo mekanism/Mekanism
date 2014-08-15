@@ -48,7 +48,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
 public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter, IPipeTile
 {
-	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
+	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 4);
 
 	public static final int SPEED = 5;
 
@@ -86,7 +86,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public static void registerIcons(IIconRegister register)
 	{
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterSide", "RestrictiveTransporterSide"});
+		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVertical", "LogisticalTransporterHorizontal", "RestrictiveTransporterVertical", "RestrictiveTransporterVertical"});
 	}
 
 	@Override
@@ -122,6 +122,12 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public IIcon getSideIcon()
 	{
 		return transporterIcons.getSideIcon(0);
+	}
+
+	@Override
+	public IIcon getSideIconRotated()
+	{
+		return transporterIcons.getSideIcon(1);
 	}
 
 	@Override

@@ -27,6 +27,7 @@ public class GuiMekanismConfig extends GuiConfig
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
 		list.add(new DummyCategoryElement("Mekanism General Settings", "mekanism.configgui.ctgy.general", GeneralEntry.class));
 		list.add(new DummyCategoryElement("Usage Settings", "mekanism.configgui.ctgy.usage", UsageEntry.class));
+		list.add(new DummyCategoryElement("Client Settings", "mekanism.configgui.ctgy.client", ClientEntry.class));
 		return list;
 	}
 
@@ -60,6 +61,23 @@ public class GuiMekanismConfig extends GuiConfig
 			return new GuiConfig(this.owningScreen,
 					new ConfigElement(Mekanism.configuration.getCategory("usage")).getChildElements(),
 					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
+					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+		}
+	}
+
+	public static class ClientEntry extends CategoryEntry
+	{
+		public ClientEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+		{
+			super(owningScreen, owningEntryList, prop);
+		}
+
+		@Override
+		protected GuiScreen buildChildScreen()
+		{
+			return new GuiConfig(this.owningScreen,
+					new ConfigElement(Mekanism.configuration.getCategory("client")).getChildElements(),
+					this.owningScreen.modID, "client", false, false,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
 		}
 	}
