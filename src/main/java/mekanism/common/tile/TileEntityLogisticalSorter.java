@@ -120,7 +120,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 									sentItems = true;
 								}
 
-								break;
+								if(!TransporterManager.didEmit(invStack.getStack(),used)) {
+									break;
+								}
 							}
 						}
 					}
