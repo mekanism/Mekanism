@@ -58,7 +58,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
 	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
