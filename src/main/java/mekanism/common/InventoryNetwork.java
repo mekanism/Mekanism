@@ -2,18 +2,23 @@ package mekanism.common;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.transporter.ILogisticalTransporter;
+import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -45,6 +50,35 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 
 		register();
 	}
+	
+	public Map<Coord4D, ItemStack> calculateAcceptors(ItemStack stack, EnumColor color)
+	{
+		Map<Coord4D, ItemStack> toReturn = new HashMap<Coord4D, ItemStack>();
+		
+		for(Coord4D coord : ((Map<Coord4D, IInventory>)possibleAcceptors.clone()).keySet())
+		{
+			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			IInventory acceptor = (IInventory)coord.getTileEntity(getWorld());
+			
+			if(sides == null || sides.isEmpty())
+			{
+				continue;
+			}
+			
+			for(ForgeDirection side : sides)
+			{
+				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.ordinal());
+				
+				if(TransporterManager.didEmit(stack, returned))
+				{
+					toReturn.put(coord, returned);
+					break;
+				}
+			}
+		}
+		
+		return toReturn;
+	}
 
 	@Override
 	public void onUpdate()
@@ -53,7 +87,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			
+			//Future!
 		}
 	}
 
@@ -61,15 +95,12 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	public synchronized Set<IInventory> getAcceptors(Object... data)
 	{
 		Set<IInventory> toReturn = new HashSet<IInventory>();
-
-		for(IInventory acceptor : ((Map<Coord4D, IInventory>)possibleAcceptors.clone()).values())
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
-			if(acceptorDirections.get(acceptor) == null || acceptorDirections.get(acceptor).isEmpty())
-			{
-				continue;
-			}
+			return toReturn;
 		}
-
+		
 		return toReturn;
 	}
 

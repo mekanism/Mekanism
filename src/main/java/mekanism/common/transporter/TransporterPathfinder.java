@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.InventoryNetwork;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -202,83 +202,6 @@ public final class TransporterPathfinder
 		}
 	}
 
-	public static class InventoryFinder
-	{
-		public World worldObj;
-
-		public Set<Coord4D> iterated = new HashSet<Coord4D>();
-
-		public Set<Coord4D> destsFound = new HashSet<Coord4D>();
-
-		public Map<Coord4D, ItemStack> rejects = new HashMap<Coord4D, ItemStack>();
-
-		public Coord4D start;
-
-		public TransporterStack transportStack;
-
-		public InventoryFinder(World world, Coord4D obj, TransporterStack stack)
-		{
-			worldObj = world;
-			start = obj;
-			transportStack = stack;
-		}
-
-		public void loop(Coord4D pointer)
-		{
-			if(pointer == null)
-			{
-				return;
-			}
-
-			iterated.add(pointer);
-
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				TileEntity tile = pointer.getFromSide(side).getTileEntity(worldObj);
-
-				if(tile != null)
-				{
-					if(Coord4D.get(tile).equals(transportStack.originalLocation))
-					{
-						continue;
-					}
-
-					if(tile instanceof IInventory)
-					{
-						if(pointer.getTileEntity(worldObj) instanceof ILogisticalTransporter)
-						{
-							ILogisticalTransporter trans = (ILogisticalTransporter)pointer.getTileEntity(worldObj);
-
-							if(!trans.canEmitTo(tile, side))
-							{
-								continue;
-							}
-						}
-
-						ItemStack stack = TransporterManager.getPredictedInsert(tile, transportStack.color, transportStack.itemStack, side.ordinal());
-
-						if(TransporterManager.didEmit(transportStack.itemStack, stack))
-						{
-							destsFound.add(Coord4D.get(tile));
-							rejects.put(Coord4D.get(tile), stack);
-						}
-					}
-					else if(transportStack.canInsertToTransporter(tile, side) && !iterated.contains(Coord4D.get(tile)))
-					{
-						loop(Coord4D.get(tile));
-					}
-				}
-			}
-		}
-
-		public Set<Coord4D> find()
-		{
-			loop(start);
-
-			return destsFound;
-		}
-	}
-
 	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
 		DestChecker checker = new DestChecker()
@@ -289,20 +212,20 @@ public final class TransporterPathfinder
 				return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, false);
 			}
 		};
-
-		InventoryFinder d = new InventoryFinder(start.getTile().getWorldObj(), Coord4D.get(start.getTile()), stack);
-		Set<Coord4D> destsFound = d.find();
+		
+		InventoryNetwork network = start.getTransmitterNetwork();
+		Map<Coord4D, ItemStack> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
 		List<Destination> paths = new ArrayList<Destination>();
 
-		for(Coord4D obj : destsFound)
+		for(Map.Entry<Coord4D, ItemStack> entry : acceptors.entrySet())
 		{
-			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), obj, Coord4D.get(start.getTile()), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), entry.getKey(), Coord4D.get(start.getTile()), stack);
 
 			if(p.getPath().size() >= 2)
 			{
-				if(TransporterManager.getToUse(stack.itemStack, d.rejects.get(obj)).stackSize >= min)
+				if(TransporterManager.getToUse(stack.itemStack, entry.getValue()).stackSize >= min)
 				{
-					paths.add(new Destination(p.getPath(), p.finalScore, false, d.rejects.get(obj)));
+					paths.add(new Destination(p.getPath(), p.finalScore, false, entry.getValue()));
 				}
 			}
 		}

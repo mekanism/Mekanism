@@ -3,12 +3,14 @@ package mekanism.common.transporter;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
+import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.InventoryNetwork;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public interface ILogisticalTransporter extends IBlockableConnection
+public interface ILogisticalTransporter extends IBlockableConnection, IGridTransmitter<InventoryNetwork>
 {
 	public ItemStack insert(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min);
 
