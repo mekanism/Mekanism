@@ -237,7 +237,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			return;
 		}
 
-		GL11.glPushMatrix();
+		push();
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
@@ -256,7 +256,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
 
-		GL11.glPopMatrix();
+		pop();
 	}
 
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
@@ -468,7 +468,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			return;
 		}
 
-		GL11.glPushMatrix();
+		push();
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
@@ -486,7 +486,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
-		GL11.glPopMatrix();
+		pop();
 	}
 
 	public void renderStatic(PartSidedPipe transmitter)
