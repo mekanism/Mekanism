@@ -110,7 +110,12 @@ public class FusionReactor implements IFusionReactor
 			if(burning)
 			{
 				injectFuel();
-				neutronFlux(burnFuel());
+				int fuelBurned = burnFuel();
+				neutronFlux(fuelBurned);
+				if(fuelBurned == 0)
+				{
+					burning = false;
+				}
 			}
 		}
 		else {
