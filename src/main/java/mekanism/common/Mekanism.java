@@ -36,8 +36,8 @@ import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.base.IModule;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.IModule;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -63,6 +63,7 @@ import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntitySalinationBlock;
 import mekanism.common.tile.TileEntitySalinationValve;
+import mekanism.common.transporter.PathfinderCache;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -983,6 +984,7 @@ public class Mekanism
 		//Reset consistent managers
 		MultiblockManager.reset();
 		TransporterManager.reset();
+		PathfinderCache.reset();
 	}
 	
 	@EventHandler

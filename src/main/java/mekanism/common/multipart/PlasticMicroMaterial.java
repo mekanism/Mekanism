@@ -1,7 +1,6 @@
 package mekanism.common.multipart;
 
 import net.minecraft.block.Block;
-
 import codechicken.microblock.BlockMicroMaterial;
 
 public class PlasticMicroMaterial extends BlockMicroMaterial
@@ -11,8 +10,9 @@ public class PlasticMicroMaterial extends BlockMicroMaterial
 		super(block, meta);
 	}
 
+	@Override
 	public int getColour(int pass)
 	{
-		return block().getRenderColor(meta())<<8|0xFF;
+		return block().getRenderColor(meta()) << 8 | 0xFF;
 	}
 }
