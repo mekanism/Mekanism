@@ -159,6 +159,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 	
+	public boolean handlesRedstone()
+	{
+		return true;
+	}
+	
 	public boolean renderCenter()
 	{
 		return false;
@@ -202,7 +207,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(handlesRedstone() && redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return connections;
 		}
@@ -227,7 +232,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(handlesRedstone() && redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
 		{
 			return connections;
 		}
@@ -381,7 +386,9 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
-		if(redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		boolean powered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		
+		if(handlesRedstone() && redstoneReactive && powered)
 		{
 			return false;
 		}
@@ -512,21 +519,24 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(possibleTransmitters != currentTransmitterConnections)
 		{
-			boolean nowPowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
-
-			if(nowPowered != redstonePowered)
+			if(handlesRedstone())
 			{
-				redstonePowered = nowPowered;
-
-				if(nowPowered)
+				boolean nowPowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
+	
+				if(nowPowered != redstonePowered)
 				{
-					onRedstoneSplit();
+					redstonePowered = nowPowered;
+	
+					if(nowPowered)
+					{
+						onRedstoneSplit();
+					}
+					else {
+						onRedstoneJoin();
+					}
+	
+					tile().notifyTileChange();
 				}
-				else {
-					onRedstoneJoin();
-				}
-
-				tile().notifyTileChange();
 			}
 		}
 
@@ -572,7 +582,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public void onNeighborChanged()
 	{
-		redstoneRefresh();
+		if(handlesRedstone())
+		{
+			redstoneRefresh();
+		}
 	}
 
 	@Override
@@ -683,7 +696,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
-		if(!world().isRemote && !(this instanceof PartLogisticalTransporter))
+		if(!world().isRemote && handlesRedstone())
 		{
 			redstoneReactive ^= true;
 			refreshConnections();

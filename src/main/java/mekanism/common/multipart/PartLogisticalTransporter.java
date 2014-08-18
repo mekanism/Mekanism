@@ -59,11 +59,6 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 
 	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
-	
-	public PartLogisticalTransporter()
-	{
-		redstoneReactive = false;
-	}
 
 	@Override
 	public String getType()
@@ -134,6 +129,12 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
 		return TransporterUtils.getConnections(this)[side.ordinal()];
+	}
+	
+	@Override
+	public boolean handlesRedstone()
+	{
+		return false;
 	}
 
 	@Override

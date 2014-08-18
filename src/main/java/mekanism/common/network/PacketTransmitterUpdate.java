@@ -7,9 +7,9 @@ import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +41,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.ENERGY)
 			{
 				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = message.power;
 			}
@@ -50,7 +50,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.GAS)
 			{
 				GasNetwork net = ((IGridTransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
 
@@ -67,7 +67,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.FLUID)
 			{
 				FluidNetwork net = ((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
 
