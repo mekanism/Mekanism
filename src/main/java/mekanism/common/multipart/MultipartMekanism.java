@@ -3,16 +3,14 @@ package mekanism.common.multipart;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.BlockMachine.MachineType;
-
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.event.FMLInterModComms;
-
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
+import cpw.mods.fml.common.event.FMLInterModComms;
 
 public class MultipartMekanism implements IPartFactory
 {
@@ -115,7 +113,7 @@ public class MultipartMekanism implements IPartFactory
 
 	public void registerMicroMaterials()
 	{
-		for(int i=0; i < 16; i++)
+		for(int i = 0; i < 16; i++)
 		{
 			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.PlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.PlasticBlock, i));
 			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.GlowPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.GlowPlasticBlock, i));
@@ -124,15 +122,18 @@ public class MultipartMekanism implements IPartFactory
 			MicroMaterialRegistry.registerMaterial(new PlasticMicroMaterial(MekanismBlocks.RoadPlasticBlock, i), BlockMicroMaterial.materialKey(MekanismBlocks.RoadPlasticBlock, i));
 
 			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
+			
 			if(!MachineType.get(MekanismBlocks.MachineBlock, i).hasModel)
 			{
 				FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock, 1, i));
 			}
+			
 			if(!MachineType.get(MekanismBlocks.MachineBlock2, i).hasModel)
 			{
 				FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock2, 1, i));
 			}
 		}
+		
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock2, 1, 0));
 		FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.CardboardBox));
 

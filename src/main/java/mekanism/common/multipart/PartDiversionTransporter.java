@@ -62,7 +62,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public void handlePacketData(ByteBuf dataStream)
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
 		super.handlePacketData(dataStream);
 		

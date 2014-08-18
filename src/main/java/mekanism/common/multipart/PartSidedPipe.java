@@ -522,8 +522,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				{
 					onRedstoneSplit();
 				}
-				else
-				{
+				else {
 					onRedstoneJoin();
 				}
 

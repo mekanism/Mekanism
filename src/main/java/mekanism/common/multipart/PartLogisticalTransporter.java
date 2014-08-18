@@ -106,7 +106,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 		if(getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor())
 		{
-			return true;
+			return super.isValidTransmitter(tileEntity);
 		}
 		
 		return false;
@@ -481,8 +481,10 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public void handlePacketData(ByteBuf dataStream)
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
+		super.handlePacketData(dataStream);
+		
 		int type = dataStream.readInt();
 
 		if(type == 0)
@@ -538,6 +540,8 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		super.getNetworkedData(data);
+		
 		data.add(0);
 
 		if(color != null)
