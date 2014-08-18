@@ -406,32 +406,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
-	protected FluidNetwork create(IGridTransmitter<FluidNetwork>... varTransmitters)
-	{
-		FluidNetwork network = new FluidNetwork(varTransmitters);
-		network.refFluid = refFluid;
-
-		if(fluidStored != null)
-		{
-			if(network.fluidStored == null)
-			{
-				network.fluidStored = fluidStored;
-			}
-			else {
-				network.fluidStored.amount += fluidStored.amount;
-			}
-		}
-
-		network.fluidScale = network.getScale();
-
-		fluidScale = 0;
-		refFluid = null;
-		fluidStored = null;
-
-		return network;
-	}
-
-	@Override
 	protected FluidNetwork create(Collection<IGridTransmitter<FluidNetwork>> collection)
 	{
 		FluidNetwork network = new FluidNetwork(collection);
@@ -478,12 +452,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 
 		return true;
-	}
-
-	@Override
-	protected FluidNetwork create(Set<FluidNetwork> networks)
-	{
-		return new FluidNetwork(networks);
 	}
 
 	@Override

@@ -42,12 +42,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	protected boolean needsUpdate = false;
 
-	protected abstract ITransmitterNetwork<A, N> create(IGridTransmitter<N>... varTransmitters);
-
 	protected abstract ITransmitterNetwork<A, N> create(Collection<IGridTransmitter<N>> collection);
 
-	protected abstract ITransmitterNetwork<A, N> create(Set<N> networks);
-	
 	protected void clearAround(IGridTransmitter<N> transmitter)
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)

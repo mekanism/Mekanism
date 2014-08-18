@@ -422,31 +422,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 
 	@Override
-	protected GasNetwork create(IGridTransmitter<GasNetwork>... varTransmitters)
-	{
-		GasNetwork network = new GasNetwork(varTransmitters);
-		network.refGas = refGas;
-
-		if(gasStored != null)
-		{
-			if(network.gasStored == null)
-			{
-				network.gasStored = gasStored;
-			}
-			else {
-				network.gasStored.amount += gasStored.amount;
-			}
-		}
-
-		network.gasScale = network.getScale();
-		gasScale = 0;
-		refGas = null;
-		gasStored = null;
-
-		return network;
-	}
-
-	@Override
 	protected GasNetwork create(Collection<IGridTransmitter<GasNetwork>> collection)
 	{
 		GasNetwork network = new GasNetwork(collection);
@@ -464,14 +439,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		}
 
 		network.gasScale = network.getScale();
-
+		network.updateCapacity();
 		return network;
-	}
-
-	@Override
-	protected GasNetwork create(Set<GasNetwork> networks)
-	{
-		return new GasNetwork(networks);
 	}
 
 	@Override

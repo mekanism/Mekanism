@@ -158,21 +158,9 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 
 	@Override
-	protected InventoryNetwork create(IGridTransmitter<InventoryNetwork>... varTransmitters)
-	{
-		return new InventoryNetwork(varTransmitters);
-	}
-
-	@Override
 	protected InventoryNetwork create(Collection<IGridTransmitter<InventoryNetwork>> collection)
 	{
 		return new InventoryNetwork(collection);
-	}
-
-	@Override
-	protected InventoryNetwork create(Set<InventoryNetwork> networks)
-	{
-		return new InventoryNetwork(networks);
 	}
 
 	@Override

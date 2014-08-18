@@ -39,7 +39,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	{
 		if(changed)
 		{
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+			worldObj.func_147453_f(xCoord, yCoord, zCoord, getBlockType());
 		}
 		
 		super.onUpdate();

@@ -430,18 +430,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	protected EnergyNetwork create(IGridTransmitter<EnergyNetwork>... varTransmitters)
-	{
-		EnergyNetwork network = new EnergyNetwork(varTransmitters);
-		network.clientEnergyScale = clientEnergyScale;
-		network.jouleBufferLastTick = jouleBufferLastTick;
-		network.joulesTransmitted = joulesTransmitted;
-		network.lastPowerScale = lastPowerScale;
-		network.electricityStored += electricityStored;
-		return network;
-	}
-
-	@Override
 	protected EnergyNetwork create(Collection<IGridTransmitter<EnergyNetwork>> collection)
 	{
 		EnergyNetwork network = new EnergyNetwork(collection);
@@ -452,12 +440,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.electricityStored += electricityStored;
 		network.updateCapacity();
 		return network;
-	}
-
-	@Override
-	protected EnergyNetwork create(Set<EnergyNetwork> networks)
-	{
-		return new EnergyNetwork(networks);
 	}
 
 	@Override
