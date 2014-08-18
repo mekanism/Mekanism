@@ -14,7 +14,6 @@ import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
 import mekanism.common.multipart.PartSidedPipe;
 import mekanism.common.multipart.PartSidedPipe.ConnectionType;
-import mekanism.common.multipart.PartTransmitter;
 import mekanism.common.multipart.PartUniversalCable;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.multipart.TransmitterType.Size;
@@ -630,7 +629,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 				icon = Blocks.redstone_torch.getIcon(0, 0);
 				break;
 			case 2:
-				icon = Blocks.redstone_torch.getIcon(0, 0);
+				icon = Blocks.unlit_redstone_torch.getIcon(0, 0);
 				break;
 		}
 

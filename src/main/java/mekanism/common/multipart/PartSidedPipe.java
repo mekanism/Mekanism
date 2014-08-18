@@ -158,6 +158,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			sendDesc = false;
 		}
 	}
+	
+	public boolean renderCenter()
+	{
+		return false;
+	}
 
 	public IIcon getIconForSide(ForgeDirection side)
 	{
@@ -165,16 +170,26 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(type == ConnectionType.NONE)
 		{
-			if(client.oldTransmitterRender)
+			if(client.oldTransmitterRender || renderCenter())
+			{
 				return getCenterIcon();
-			if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
+			}
+			else if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
+			{
 				return getSideIcon();
-			if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
+			}
+			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
+			{
 				return getSideIcon();
-			if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
+			}
+			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
+			{
 				return getSideIconRotated();
-			if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
+			}
+			else if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
+			{
 				return getSideIconRotated();
+			}
 
 			return getCenterIcon();
 		}

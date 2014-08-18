@@ -38,6 +38,12 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	{
 		return transporterIcons.getCenterIcon(2);
 	}
+	
+	@Override
+	public boolean renderCenter()
+	{
+		return true;
+	}
 
 	@Override
 	public void load(NBTTagCompound nbtTags)

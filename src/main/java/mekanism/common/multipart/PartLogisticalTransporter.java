@@ -682,12 +682,6 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public TileEntity getTile()
-	{
-		return tile();
-	}
-
-	@Override
 	public EnumColor getRenderColor()
 	{
 		return color;
