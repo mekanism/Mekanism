@@ -139,17 +139,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 		double sent = 0;
 		boolean tryAgain = false;
+		int i = 0;
 
 		do {
-			tryAgain = false;
-
 			double prev = sent;
 			sent += doEmit(energyToSend-sent, tryAgain);
 
-			if(energyToSend-sent > 0 && sent-prev > 0)
-			{
-				tryAgain = true;
-			}
+			tryAgain = energyToSend-sent > 0 && sent-prev > 0 && i < 100;
+
+			i++;
 		} while(tryAgain);
 
 		joulesTransmitted = sent;
