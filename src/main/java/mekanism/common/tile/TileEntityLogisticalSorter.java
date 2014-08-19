@@ -118,9 +118,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 									inventory.markDirty();
 									setActive(true);
 									sentItems = true;
+									
+									break;
 								}
-
-								break;
 							}
 						}
 					}
