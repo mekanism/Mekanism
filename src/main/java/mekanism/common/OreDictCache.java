@@ -6,7 +6,6 @@ import java.util.List;
 
 import mekanism.api.ItemInfo;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -56,6 +55,11 @@ public final class OreDictCache
 
 		for(String s : OreDictionary.getOreNames())
 		{
+			if(s == null)
+			{
+				continue;
+			}
+			
 			if(oreName.equals(s) || oreName.equals("*"))
 			{
 				keys.add(s);
