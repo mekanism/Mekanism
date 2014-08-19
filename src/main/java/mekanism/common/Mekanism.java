@@ -45,6 +45,8 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
+import mekanism.common.matrix.MatrixCache;
+import mekanism.common.matrix.SynchronizedMatrixData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
@@ -155,6 +157,9 @@ public class Mekanism
 	
 	/** The Dynamic Tank multiblock manager */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", DynamicTankCache.class);
+	
+	/** The Energized Induction Matrix multiblock manager */
+	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("energizedInductionMatrix", MatrixCache.class);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
