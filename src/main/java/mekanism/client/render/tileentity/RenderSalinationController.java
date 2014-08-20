@@ -8,7 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.Mekanism;
-import mekanism.common.tank.TankUpdateProtocol;
+import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntitySalinationController;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;

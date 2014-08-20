@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import mekanism.common.tank.DynamicFluidTank;
+import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.PipeUtils;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;

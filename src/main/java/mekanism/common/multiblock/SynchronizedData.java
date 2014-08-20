@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tank.SynchronizedTankData;
+import mekanism.common.content.tank.SynchronizedTankData;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class SynchronizedData<T>
