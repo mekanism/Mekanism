@@ -438,7 +438,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		}
 
 		network.gasScale = network.getScale();
-
+		network.updateCapacity();
 		return network;
 	}
 
