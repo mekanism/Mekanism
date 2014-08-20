@@ -1,8 +1,5 @@
 package mekanism.common.tank;
 
-import java.util.HashSet;
-
-import mekanism.api.Coord4D;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
@@ -14,7 +11,9 @@ import net.minecraftforge.fluids.FluidStack;
 public class DynamicTankCache extends MultiblockCache<SynchronizedTankData>
 {	
 	public ItemStack[] inventory = new ItemStack[2];
+	
 	public FluidStack fluid;
+	
 	public ContainerEditMode editMode = ContainerEditMode.BOTH;
 	
 	@Override
