@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -396,6 +397,7 @@ public class TankUpdateProtocol
 			}
 
 			DynamicTankCache cache = new DynamicTankCache();
+			List<ItemStack> rejectedItems = new ArrayList<ItemStack>();
 
 			if(!idsFound.isEmpty())
 			{
@@ -403,9 +405,33 @@ public class TankUpdateProtocol
 				{
 					if(Mekanism.tankManager.inventories.get(id) != null)
 					{
-						cache = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+						if(cache == null)
+						{
+							cache = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+						}
+						else {
+							DynamicTankCache merge = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+							
+							if(cache.fluid == null)
+							{
+								cache.fluid = merge.fluid;
+							}
+							else if(merge.fluid != null && cache.fluid.isFluidEqual(merge.fluid))
+							{
+								cache.fluid.amount += merge.fluid.amount;
+							}
+							
+							List<ItemStack> rejects = StackUtils.getMergeRejects(cache.inventory, merge.inventory);
+							
+							if(!rejects.isEmpty())
+							{
+								rejectedItems.addAll(rejects);
+							}
+							
+							StackUtils.merge(cache.inventory, merge.inventory);
+						}
+						
 						idToUse = id;
-						break;
 					}
 				}
 			}

@@ -146,4 +146,83 @@ public final class StackUtils
 	{
 		return stack != null ? stack.stackSize : 0;
 	}
+	
+	public static List<ItemStack> getMergeRejects(ItemStack[] orig, ItemStack[] toAdd)
+	{
+		List<ItemStack> ret = new ArrayList<ItemStack>();
+		
+		for(int i = 0; i < toAdd.length; i++)
+		{
+			if(toAdd[i] != null)
+			{
+				ItemStack reject = getMergeReject(orig[i], toAdd[i]);
+				
+				if(reject != null)
+				{
+					ret.add(reject);
+				}
+			}
+		}
+			
+		return ret;
+	}
+	
+	public static void merge(ItemStack[] orig, ItemStack[] toAdd)
+	{
+		for(int i = 0; i < toAdd.length; i++)
+		{
+			if(toAdd[i] != null)
+			{
+				orig[i] = merge(orig[i], toAdd[i]);
+			}
+		}
+	}
+	
+	public static ItemStack merge(ItemStack orig, ItemStack toAdd)
+	{
+		if(orig == null)
+		{
+			return toAdd;
+		}
+		
+		if(toAdd == null)
+		{
+			return orig;
+		}
+		
+		if(!orig.isItemEqual(toAdd) || !ItemStack.areItemStackTagsEqual(orig, toAdd))
+		{
+			return orig;
+		}
+		
+		return StackUtils.size(orig, Math.min(orig.getMaxStackSize(), orig.stackSize+toAdd.stackSize));
+	}
+	
+	public static ItemStack getMergeReject(ItemStack orig, ItemStack toAdd)
+	{
+		if(orig == null)
+		{
+			return null;
+		}
+		
+		if(toAdd == null)
+		{
+			return orig;
+		}
+		
+		if(!orig.isItemEqual(toAdd) || !ItemStack.areItemStackTagsEqual(orig, toAdd))
+		{
+			return orig;
+		}
+		
+		int newSize = orig.stackSize+toAdd.stackSize;
+		
+		if(newSize > orig.getMaxStackSize())
+		{
+			return StackUtils.size(orig, newSize-orig.getMaxStackSize());
+		}
+		else {
+			return StackUtils.size(orig, newSize);
+		}
+	}
 }
