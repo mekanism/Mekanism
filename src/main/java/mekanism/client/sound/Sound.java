@@ -7,7 +7,11 @@ import mekanism.api.Pos3D;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ISound.AttenuationType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
 
 public abstract class Sound
 {
@@ -77,6 +81,9 @@ public abstract class Sound
 			{
 				return;
 			}
+
+			ISound sound = ForgeHooksClient.playSound(SoundHandler.getSoundManager(), new DummySound());
+			if (!(sound instanceof DummySound)) return;
 
 			ticksSincePlay = 0;
 
@@ -182,6 +189,63 @@ public abstract class Sound
 					SoundHandler.getSoundSystem().setVolume(identifier, volume);
 				}
 			} catch(Exception e) {}
+		}
+	}
+
+	public class DummySound implements ISound
+	{
+		@Override
+		public ResourceLocation getPositionedSoundLocation()
+		{
+			return new ResourceLocation("mekanism", "sound.ogg");
+		}
+
+		@Override
+		public boolean canRepeat()
+		{
+			return false;
+		}
+
+		@Override
+		public int getRepeatDelay()
+		{
+			return 0;
+		}
+
+		@Override
+		public float getVolume()
+		{
+			return 1;
+		}
+
+		@Override
+		public float getPitch()
+		{
+			return 0;
+		}
+
+		@Override
+		public float getXPosF()
+		{
+			return (float)getLocation().xPos;
+		}
+
+		@Override
+		public float getYPosF()
+		{
+			return (float)getLocation().yPos;
+		}
+
+		@Override
+		public float getZPosF()
+		{
+			return (float)getLocation().zPos;
+		}
+
+		@Override
+		public AttenuationType getAttenuationType()
+		{
+			return AttenuationType.LINEAR;
 		}
 	}
 }
