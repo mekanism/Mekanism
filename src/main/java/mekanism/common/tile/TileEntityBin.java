@@ -11,7 +11,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
-import mekanism.common.content.transporter.ILogisticalTransporter;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;

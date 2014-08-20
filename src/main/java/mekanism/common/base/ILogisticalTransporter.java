@@ -1,10 +1,11 @@
-package mekanism.common.content.transporter;
+package mekanism.common.base;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.InventoryNetwork;
+import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

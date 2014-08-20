@@ -1,11 +1,12 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.content.transporter.ILogisticalTransporter;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
@@ -51,9 +52,9 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 		register();
 	}
 	
-	public Map<Coord4D, ItemStack> calculateAcceptors(ItemStack stack, EnumColor color)
+	public List<AcceptorData> calculateAcceptors(ItemStack stack, EnumColor color)
 	{
-		Map<Coord4D, ItemStack> toReturn = new HashMap<Coord4D, ItemStack>();
+		List<AcceptorData> toReturn = new ArrayList<AcceptorData>();
 		
 		for(Coord4D coord : ((Map<Coord4D, IInventory>)possibleAcceptors.clone()).keySet())
 		{
@@ -65,19 +66,45 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 				continue;
 			}
 			
+			AcceptorData data = null;
+			
 			for(ForgeDirection side : sides)
 			{
 				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.ordinal());
 				
 				if(TransporterManager.didEmit(stack, returned))
 				{
-					toReturn.put(coord, returned);
-					break;
+					if(data == null)
+					{
+						data = new AcceptorData(coord, returned, side);
+					}
+					else {
+						data.sides.add(side);
+					}
 				}
+			}
+			
+			if(data != null)
+			{
+				toReturn.add(data);
 			}
 		}
 		
 		return toReturn;
+	}
+	
+	public static class AcceptorData
+	{
+		public Coord4D location;
+		public ItemStack rejected;
+		public EnumSet<ForgeDirection> sides = EnumSet.noneOf(ForgeDirection.class);
+		
+		public AcceptorData(Coord4D coord, ItemStack stack, ForgeDirection side)
+		{
+			location = coord;
+			rejected = stack;
+			sides.add(side);
+		}
 	}
 
 	@Override

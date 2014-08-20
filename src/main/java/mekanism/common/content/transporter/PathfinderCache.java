@@ -38,16 +38,14 @@ public class PathfinderCache
 	
 	public static class PathData
 	{
-		public Coord4D start;
-		public ForgeDirection startSide;
+		public Coord4D startTransporter;
 		
 		public Coord4D end;
 		public ForgeDirection endSide;
 		
-		public PathData(Coord4D s, ForgeDirection ss, Coord4D e, ForgeDirection es)
+		public PathData(Coord4D s, Coord4D e, ForgeDirection es)
 		{
-			start = s;
-			startSide = ss;
+			startTransporter = s;
 			
 			end = e;
 			endSide = es;
@@ -57,8 +55,7 @@ public class PathfinderCache
 		public boolean equals(Object obj)
 		{
 			return obj instanceof PathData &&
-					((PathData)obj).start.equals(start) &&
-					((PathData)obj).startSide.equals(startSide) &&
+					((PathData)obj).startTransporter.equals(startTransporter) &&
 					((PathData)obj).end.equals(end) &&
 					((PathData)obj).endSide.equals(endSide);
 		}
@@ -67,8 +64,7 @@ public class PathfinderCache
 		public int hashCode()
 		{
 			int code = 1;
-			code = 31 * code + start.hashCode();
-			code = 31 * code + startSide.hashCode();
+			code = 31 * code + startTransporter.hashCode();
 			code = 31 * code + end.hashCode();
 			code = 31 * code + endSide.hashCode();
 			return code;

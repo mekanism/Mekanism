@@ -11,6 +11,8 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.InventoryNetwork;
+import mekanism.common.InventoryNetwork.AcceptorData;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -214,18 +216,18 @@ public final class TransporterPathfinder
 		};
 		
 		InventoryNetwork network = start.getTransmitterNetwork();
-		Map<Coord4D, ItemStack> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
+		List<AcceptorData> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
 		List<Destination> paths = new ArrayList<Destination>();
 
-		for(Map.Entry<Coord4D, ItemStack> entry : acceptors.entrySet())
+		for(AcceptorData entry : acceptors)
 		{
-			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), entry.getKey(), Coord4D.get(start.getTile()), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), entry.location, Coord4D.get(start.getTile()), stack);
 
 			if(p.getPath().size() >= 2)
 			{
-				if(TransporterManager.getToUse(stack.itemStack, entry.getValue()).stackSize >= min)
+				if(TransporterManager.getToUse(stack.itemStack, entry.rejected).stackSize >= min)
 				{
-					paths.add(new Destination(p.getPath(), p.finalScore, false, entry.getValue()));
+					paths.add(new Destination(p.getPath(), p.finalScore, false, entry.rejected));
 				}
 			}
 		}

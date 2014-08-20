@@ -15,7 +15,7 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
-import mekanism.common.content.transporter.ILogisticalTransporter;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
