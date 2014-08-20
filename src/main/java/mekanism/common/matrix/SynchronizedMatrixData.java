@@ -9,4 +9,6 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedTankDat
 	public ItemStack[] inventory = new ItemStack[2];
 	
 	public double electricityStored;
+	
+	public int capacitors;
 }

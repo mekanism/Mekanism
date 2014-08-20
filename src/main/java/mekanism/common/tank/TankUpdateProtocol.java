@@ -438,6 +438,8 @@ public class TankUpdateProtocol
 			else {
 				idToUse = Mekanism.tankManager.getUniqueInventoryID();
 			}
+			
+			//TODO someday: drop all items in rejectedItems
 
 			cache.apply(structureFound);
 
