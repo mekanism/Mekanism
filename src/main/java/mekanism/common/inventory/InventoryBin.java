@@ -18,7 +18,7 @@ public class InventoryBin
 
 	public ItemStack getStack()
 	{
-		if(getItemCount() > 0)
+		if(getItemCount() > 0 && getItemType() != null)
 		{
 			ItemStack ret = getItemType().copy();
 			ret.stackSize = Math.min(getItemType().getMaxStackSize(), getItemCount());

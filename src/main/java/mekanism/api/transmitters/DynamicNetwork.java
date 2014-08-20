@@ -59,6 +59,11 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	
 	protected void clearIfNecessary(Coord4D acceptor, IGridTransmitter<N> transmitter, ForgeDirection side)
 	{
+		if(getWorld() == null)
+		{
+			return;
+		}
+		
 		if(acceptor.getTileEntity(getWorld()) == null || acceptor.getTileEntity(getWorld()).isInvalid() || transmitter.canConnectToAcceptor(side, true))
 		{
 			acceptorDirections.get(acceptor).remove(side.getOpposite());
