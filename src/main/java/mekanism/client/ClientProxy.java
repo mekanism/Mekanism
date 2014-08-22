@@ -491,9 +491,9 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void doTankAnimation(TileEntityMultiblock<?> tileEntity)
+	public void doAnimation(TileEntityMultiblock<?> tileEntity)
 	{
-		new ThreadTankSparkle(tileEntity).start();
+		new ThreadMultiblockSparkle(tileEntity).start();
 	}
 
 	@Override

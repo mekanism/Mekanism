@@ -6,6 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -14,7 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ThreadTankSparkle extends Thread
+public class ThreadMultiblockSparkle extends Thread
 {
 	public TileEntityMultiblock<?> pointer;
 
@@ -22,7 +23,7 @@ public class ThreadTankSparkle extends Thread
 
 	public Set<TileEntity> iteratedNodes = new HashSet<TileEntity>();
 
-	public ThreadTankSparkle(TileEntityMultiblock<?> tileEntity)
+	public ThreadMultiblockSparkle(TileEntityMultiblock<?> tileEntity)
 	{
 		pointer = tileEntity;
 	}
@@ -83,7 +84,7 @@ public class ThreadTankSparkle extends Thread
 		{
 			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.getWorldObj());
 
-			if(tile instanceof TileEntityMultiblock && tile.getClass() == pointer.getClass() && !iteratedNodes.contains(tile))
+			if(MultiblockManager.areEqual(tile, pointer) && !iteratedNodes.contains(tile))
 			{
 				loop((TileEntityMultiblock<?>)tile);
 			}

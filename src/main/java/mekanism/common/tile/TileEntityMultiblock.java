@@ -55,7 +55,7 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 			{
 				if(!prevStructure)
 				{
-					Mekanism.proxy.doTankAnimation(this);
+					Mekanism.proxy.doAnimation(this);
 				}
 			}
 
@@ -122,7 +122,7 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
 		{
-			new TankUpdateProtocol(this).updateTanks();
+			new TankUpdateProtocol(this).doUpdate();
 
 			if(structure != null)
 			{
@@ -149,7 +149,7 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 	
 	protected abstract T getNewStructure();
 	
-	protected abstract MultiblockManager<T> getManager();
+	public abstract MultiblockManager<T> getManager();
 	
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)

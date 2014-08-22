@@ -256,7 +256,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	}
 	
 	@Override
-	public SynchronizedTankData getNewStructure()
+	protected SynchronizedTankData getNewStructure()
 	{
 		return new SynchronizedTankData();
 	}

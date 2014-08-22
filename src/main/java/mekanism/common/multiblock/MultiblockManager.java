@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -155,7 +155,7 @@ public class MultiblockManager<T>
 					{
 						TileEntity tileEntity = obj.getTileEntity(world);
 	
-						if(!(tileEntity instanceof TileEntityDynamicTank) || (getStructureId(((TileEntityDynamicTank)tileEntity)) != -1 && getStructureId(((TileEntityDynamicTank)tileEntity)) != inventoryID))
+						if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != manager || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != -1 && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
 						{
 							if(!tilesToKill.containsKey(inventoryID))
 							{
@@ -190,12 +190,22 @@ public class MultiblockManager<T>
 		}
 	}
 	
-	public static int getStructureId(TileEntityDynamicTank tile)
+	public static int getStructureId(TileEntityMultiblock<?> tile)
 	{
-		return tile.structure != null ? tile.structure.inventoryID : -1;
+		return tile.structure != null ? tile.getSynchronizedData().inventoryID : -1;
 	}
 	
-	public int getInventoryId(TileEntityDynamicTank tile)
+	public static boolean areEqual(TileEntity tile1, TileEntity tile2)
+	{
+		if(!(tile1 instanceof TileEntityMultiblock) || !(tile2 instanceof TileEntityMultiblock))
+		{
+			return false;
+		}
+		
+		return ((TileEntityMultiblock)tile1).getManager() == ((TileEntityMultiblock)tile2).getManager();
+	}
+	
+	public int getInventoryId(TileEntityMultiblock<T> tile)
 	{
 		Coord4D coord = Coord4D.get(tile);
 		

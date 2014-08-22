@@ -1,4 +1,4 @@
-package mekanism.common.content.tank;
+package mekanism.common.multiblock;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,31 +6,28 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.TileEntityDynamicValve;
+import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TankUpdateProtocol
+public abstract class UpdateProtocol<T>
 {
 	public static final int FLUID_PER_TANK = 16000;
 
-	/** The dynamic tank nodes that have already been iterated over. */
-	public Set<TileEntityDynamicTank> iteratedNodes = new HashSet<TileEntityDynamicTank>();
+	/** The multiblock nodes that have already been iterated over. */
+	public Set<TileEntityMultiblock<T>> iteratedNodes = new HashSet<TileEntityMultiblock<T>>();
 
 	/** The structures found, all connected by some nodes to the pointer. */
-	public SynchronizedTankData structureFound = null;
+	public SynchronizedData<T> structureFound = null;
 
 	/** The original block the calculation is getting run from. */
-	public TileEntity pointer;
+	public TileEntityMultiblock<T> pointer;
 
-	public TankUpdateProtocol(TileEntity tileEntity)
+	public UpdateProtocol(TileEntityMultiblock<T> tileEntity)
 	{
 		pointer = tileEntity;
 	}
@@ -39,7 +36,7 @@ public class TankUpdateProtocol
 	 * Recursively loops through each node connected to the given TileEntity.
 	 * @param tile - the TileEntity to loop over
 	 */
-	public void loopThrough(TileEntity tile)
+	public void loopThrough(TileEntityMultiblock<T> tile)
 	{
 		World worldObj = tile.getWorldObj();
 
@@ -183,25 +180,15 @@ public class TankUpdateProtocol
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
-				SynchronizedTankData structure = new SynchronizedTankData();
+				SynchronizedData<T> structure = getNewStructure();
 				structure.locations = locations;
 				structure.volLength = Math.abs(xmax-xmin)+1;
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
 				structure.volume = volume;
 				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
-
-				for(Coord4D obj : structure.locations)
-				{
-					if(obj.getTileEntity(pointer.getWorldObj()) instanceof TileEntityDynamicValve)
-					{
-						ValveData data = new ValveData();
-						data.location = obj;
-						data.side = getSide(obj, origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax);
-
-						structure.valves.add(data);
-					}
-				}
+				
+				onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
 
 				if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
 				{
@@ -211,17 +198,17 @@ public class TankUpdateProtocol
 			}
 		}
 
-		iteratedNodes.add((TileEntityDynamicTank)tile);
+		iteratedNodes.add(tile);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
 
-			if(tileEntity instanceof TileEntityDynamicTank)
+			if(MultiblockManager.areEqual(tileEntity, pointer))
 			{
 				if(!iteratedNodes.contains(tileEntity))
 				{
-					loopThrough(tileEntity);
+					loopThrough((TileEntityMultiblock<T>)tileEntity);
 				}
 			}
 		}
@@ -278,7 +265,9 @@ public class TankUpdateProtocol
 	 */
 	private boolean isViableNode(int x, int y, int z)
 	{
-		if(pointer.getWorldObj().getTileEntity(x, y, z) instanceof TileEntityDynamicTank)
+		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		
+		if(MultiblockManager.areEqual(tile, pointer))
 		{
 			return true;
 		}
@@ -359,6 +348,18 @@ public class TankUpdateProtocol
 	{
 		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
 	}
+	
+	protected abstract MultiblockCache<T> getNewCache();
+	
+	protected abstract SynchronizedData<T> getNewStructure();
+	
+	protected abstract MultiblockManager<T> getManager();
+	
+	protected abstract void mergeCaches(MultiblockCache<T> cache, MultiblockCache<T> merge);
+	
+	protected void onFormed() {}
+	
+	protected void onStructureCreated(SynchronizedData<T> structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 
 	/**
 	 * Runs the protocol and updates all tanks that make a part of the dynamic tank.
@@ -369,13 +370,13 @@ public class TankUpdateProtocol
 
 		if(structureFound != null)
 		{
-			for(TileEntityDynamicTank tileEntity : iteratedNodes)
+			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
 			{
 				if(!structureFound.locations.contains(Coord4D.get(tileEntity)))
 				{
 					for(TileEntity tile : iteratedNodes)
 					{
-						((TileEntityDynamicTank)tileEntity).structure = null;
+						((TileEntityMultiblock<T>)tileEntity).structure = null;
 					}
 
 					return;
@@ -387,8 +388,8 @@ public class TankUpdateProtocol
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
-				int id = Mekanism.tankManager.getInventoryId(tileEntity);
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				int id = getManager().getInventoryId(tileEntity);
 
 				if(id != -1)
 				{
@@ -396,7 +397,7 @@ public class TankUpdateProtocol
 				}
 			}
 
-			DynamicTankCache cache = new DynamicTankCache();
+			MultiblockCache<T> cache = getNewCache();
 			List<ItemStack> rejectedItems = new ArrayList<ItemStack>();
 
 			if(!idsFound.isEmpty())
@@ -407,28 +408,10 @@ public class TankUpdateProtocol
 					{
 						if(cache == null)
 						{
-							cache = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+							cache = (MultiblockCache<T>)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
 						}
 						else {
-							DynamicTankCache merge = (DynamicTankCache)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
-							
-							if(cache.fluid == null)
-							{
-								cache.fluid = merge.fluid;
-							}
-							else if(merge.fluid != null && cache.fluid.isFluidEqual(merge.fluid))
-							{
-								cache.fluid.amount += merge.fluid.amount;
-							}
-							
-							List<ItemStack> rejects = StackUtils.getMergeRejects(cache.inventory, merge.inventory);
-							
-							if(!rejects.isEmpty())
-							{
-								rejectedItems.addAll(rejects);
-							}
-							
-							StackUtils.merge(cache.inventory, merge.inventory);
+							mergeCaches(cache, (MultiblockCache<T>)getManager().pullInventory(pointer.getWorldObj(), id));
 						}
 						
 						idToUse = id;
@@ -441,26 +424,23 @@ public class TankUpdateProtocol
 			
 			//TODO someday: drop all items in rejectedItems
 
-			cache.apply(structureFound);
+			cache.apply((T)structureFound);
 
-			if(structureFound.fluidStored != null)
-			{
-				structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
-			}
+			onFormed();
 			
 			structureFound.inventoryID = idToUse;
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(pointer.getWorldObj());
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
 
-				tileEntity.structure = structureFound;
+				tileEntity.structure = (T)structureFound;
 			}
 		}
 		else {
 			for(TileEntity tileEntity : iteratedNodes)
 			{
-				((TileEntityDynamicTank)tileEntity).structure = null;
+				((TileEntityMultiblock<T>)tileEntity).structure = null;
 			}
 		}
 	}

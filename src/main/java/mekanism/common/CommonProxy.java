@@ -311,9 +311,9 @@ public class CommonProxy
 	}
 
 	/**
-	 * Does the Dynamic Tank creation animation, starting from the rendering block.
+	 * Does the multiblock creation animation, starting from the rendering block.
 	 */
-	public void doTankAnimation(TileEntityMultiblock<?> tileEntity) {}
+	public void doAnimation(TileEntityMultiblock<?> tileEntity) {}
 
 	/**
 	 * Get the actual interface for a GUI. Client-only.
