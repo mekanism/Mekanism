@@ -266,11 +266,6 @@ public final class TransporterPathfinder
 		{
 			return null;
 		}
-		
-		for(Destination d : paths)
-		{
-			Mekanism.logger.info(d.path.size());
-		}
 
 		return paths.get(0);
 	}
