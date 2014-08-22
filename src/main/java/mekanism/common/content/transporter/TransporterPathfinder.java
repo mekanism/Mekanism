@@ -12,10 +12,13 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.InventoryNetwork.AcceptorData;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.DebugUtils;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -55,7 +58,7 @@ public final class TransporterPathfinder
 				
 				transportStack.idleDir = newSide;
 				loopSide(ret, newSide);
-				return new Destination(ret, 0, true, null).setPathType(Path.NONE);
+				return new Destination(ret, true, null).setPathType(Path.NONE);
 			}
 			else {
 				TileEntity tile = start.getFromSide(transportStack.idleDir).getTileEntity(worldObj);
@@ -63,7 +66,7 @@ public final class TransporterPathfinder
 				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir))
 				{
 					loopSide(ret, transportStack.idleDir);
-					return new Destination(ret, 0, true, null).setPathType(Path.NONE);
+					return new Destination(ret, true, null).setPathType(Path.NONE);
 				}
 				else {
 					Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter)start.getTileEntity(worldObj), transportStack, 0);
@@ -84,7 +87,7 @@ public final class TransporterPathfinder
 						
 						transportStack.idleDir = newSide;
 						loopSide(ret, newSide);
-						return new Destination(ret, 0, true, null).setPathType(Path.NONE);
+						return new Destination(ret, true, null).setPathType(Path.NONE);
 					}
 				}
 			}
@@ -150,10 +153,9 @@ public final class TransporterPathfinder
 	{
 		public List<Coord4D> path = new ArrayList<Coord4D>();
 		public Path pathType;
-		public double score;
 		public ItemStack rejected;
 
-		public Destination(ArrayList<Coord4D> list, double d, boolean inv, ItemStack rejects)
+		public Destination(ArrayList<Coord4D> list, boolean inv, ItemStack rejects)
 		{
 			path = (List<Coord4D>)list.clone();
 
@@ -162,7 +164,6 @@ public final class TransporterPathfinder
 				Collections.reverse(path);
 			}
 
-			score = d;
 			rejected = rejects;
 		}
 		
@@ -177,24 +178,23 @@ public final class TransporterPathfinder
 		{
 			int code = 1;
 			code = 31 * code + path.hashCode();
-			code = 31 * code + new Double(score).hashCode();
 			return code;
 		}
 
 		@Override
 		public boolean equals(Object dest)
 		{
-			return dest instanceof Destination && ((Destination)dest).path.equals(path) && ((Destination)dest).score == score;
+			return dest instanceof Destination && ((Destination)dest).path.equals(path);
 		}
 
 		@Override
 		public int compareTo(Destination dest)
 		{
-			if(score < dest.score)
+			if(path.size() < dest.path.size())
 			{
 				return -1;
 			}
-			else if(score > dest.score)
+			else if(path.size() > dest.path.size())
 			{
 				return 1;
 			}
@@ -205,30 +205,27 @@ public final class TransporterPathfinder
 	}
 
 	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, int min)
-	{
-		DestChecker checker = new DestChecker()
-		{
-			@Override
-			public boolean isValid(TransporterStack stack, int side, TileEntity tile)
-			{
-				return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, false);
-			}
-		};
-		
+	{		
 		InventoryNetwork network = start.getTransmitterNetwork();
 		List<AcceptorData> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
 		List<Destination> paths = new ArrayList<Destination>();
 
 		for(AcceptorData entry : acceptors)
 		{
-			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), entry.location, Coord4D.get(start.getTile()), stack);
-
-			if(p.getPath().size() >= 2)
+			DestChecker checker = new DestChecker()
 			{
-				if(TransporterManager.getToUse(stack.itemStack, entry.rejected).stackSize >= min)
+				@Override
+				public boolean isValid(TransporterStack stack, int dir, TileEntity tile)
 				{
-					paths.add(new Destination(p.getPath(), p.finalScore, false, entry.rejected));
+					return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, dir, false);
 				}
+			};
+			
+			Destination d = getPath(checker, entry.sides, start, entry.location, stack, entry.rejected, min);
+			
+			if(d != null)
+			{
+				paths.add(d);
 			}
 		}
 
@@ -236,7 +233,31 @@ public final class TransporterPathfinder
 
 		return paths;
 	}
-
+	
+	public static Destination getPath(DestChecker checker, EnumSet<ForgeDirection> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack, ItemStack rejects, int min)
+	{
+		ArrayList<Coord4D> test = PathfinderCache.getCache(Coord4D.get(start.getTile()), dest, sides);
+		
+		if(test != null)
+		{
+			return new Destination(test, false, rejects);
+		}
+		
+		Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), dest, Coord4D.get(start.getTile()), stack);
+		
+		if(p.getPath().size() >= 2)
+		{
+			if(TransporterManager.getToUse(stack.itemStack, rejects).stackSize >= min)
+			{
+				PathfinderCache.cachedPaths.put(new PathData(Coord4D.get(start.getTile()), dest, p.side), p.getPath());
+				
+				return new Destination(p.getPath(), false, rejects);
+			}
+		}
+		
+		return null;
+	}
+	
 	public static Destination getNewBasePath(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
 		List<Destination> paths = getPaths(start, stack, min);
@@ -244,6 +265,11 @@ public final class TransporterPathfinder
 		if(paths.isEmpty())
 		{
 			return null;
+		}
+		
+		for(Destination d : paths)
+		{
+			Mekanism.logger.info(d.path.size());
 		}
 
 		return paths.get(0);
@@ -257,7 +283,7 @@ public final class TransporterPathfinder
 
 		for(Destination d : paths)
 		{
-			if(destPaths.get(d.path.get(0)) == null || destPaths.get(d.path.get(0)).score < d.score)
+			if(destPaths.get(d.path.get(0)) == null || destPaths.get(d.path.get(0)).path.size() < d.path.size())
 			{
 				destPaths.put(d.path.get(0), d);
 			}
@@ -316,6 +342,8 @@ public final class TransporterPathfinder
 		public final DestChecker destChecker;
 
 		public double finalScore;
+		
+		public ForgeDirection side;
 
 		public ArrayList<Coord4D> results;
 
@@ -424,6 +452,7 @@ public final class TransporterPathfinder
 					}
 					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj)))
 					{
+						side = direction;
 						results = reconstructPath(navMap, currentNode);
 						return true;
 					}

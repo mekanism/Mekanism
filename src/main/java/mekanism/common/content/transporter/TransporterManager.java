@@ -309,11 +309,6 @@ public class TransporterManager
 
 			if(slots != null && slots.length != 0)
 			{
-				/*if(sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
-				{
-					slots = sidedInventory.getAccessibleSlotsFromSide(1);
-				}*/
-
 				for(int get = 0; get <= slots.length - 1; get++)
 				{
 					int slotID = slots[get];

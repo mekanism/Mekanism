@@ -17,6 +17,7 @@ import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -91,6 +92,17 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		if(pass == 0)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
+		}
+	}
+	
+	@Override
+	public void onWorldSeparate()
+	{
+		super.onWorldSeparate();
+		
+		if(!world().isRemote)
+		{
+			PathfinderCache.onChanged(Coord4D.get(tile()));
 		}
 	}
 	
@@ -479,6 +491,9 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		{
 			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(tile())));
 		}
+		else {
+			PathfinderCache.onChanged(Coord4D.get(tile()));
+		}
 	}
 
 	@Override
@@ -660,6 +675,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		TransporterUtils.incrementColor(this);
 		refreshConnections();
 		tile().notifyTileChange();
+		PathfinderCache.onChanged(Coord4D.get(tile()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 

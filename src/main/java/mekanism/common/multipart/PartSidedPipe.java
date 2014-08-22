@@ -539,13 +539,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				}
 			}
 		}
-
+		
 		if(!world().isRemote)
 		{
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
 		}
-
+		
 		onRefresh();
 
 		if(!world().isRemote)

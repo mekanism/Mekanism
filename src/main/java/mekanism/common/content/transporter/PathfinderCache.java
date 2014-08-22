@@ -1,12 +1,13 @@
 package mekanism.common.content.transporter;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class PathfinderCache 
@@ -15,20 +16,27 @@ public class PathfinderCache
 	
 	public static void onChanged(Coord4D location)
 	{
-		Set<PathData> toKill = new HashSet<PathData>();
+		reset();
+	}
+	
+	public static ArrayList<Coord4D> getCache(Coord4D start, Coord4D end, EnumSet<ForgeDirection> sides)
+	{
+		ArrayList<Coord4D> ret = null;
 		
 		for(Map.Entry<PathData, List<Coord4D>> entry : cachedPaths.entrySet())
 		{
-			if(entry.getValue().contains(entry))
+			PathData data = entry.getKey();
+			
+			if(data.startTransporter.equals(start) && data.end.equals(end) && sides.contains(data.endSide))
 			{
-				toKill.add(entry.getKey());
+				if(ret == null || entry.getValue().size() < ret.size())
+				{
+					ret = (ArrayList)entry.getValue();
+				}
 			}
 		}
 		
-		for(PathData path : toKill)
-		{
-			cachedPaths.remove(path);
-		}
+		return ret;
 	}
 	
 	public static void reset()
