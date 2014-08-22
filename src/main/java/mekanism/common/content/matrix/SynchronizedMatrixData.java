@@ -10,5 +10,11 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedTankDat
 	
 	public double electricityStored;
 	
+	public double heat;
+	
 	public int capacitors;
+	
+	public int outputters;
+	
+	public int coolants;
 }

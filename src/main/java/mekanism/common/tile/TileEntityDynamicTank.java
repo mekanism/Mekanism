@@ -11,45 +11,26 @@ import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.tank.SynchronizedTankData;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.IMultiblock;
-import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager, IMultiblock<SynchronizedTankData>
+public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager, IMultiblock<SynchronizedTankData>
 {
-	/** The tank data for this structure. */
-	public SynchronizedTankData structure;
-
-	/** Whether or not to send this tank's structure in the next update packet. */
-	public boolean sendStructure;
-
-	/** This tank's previous "has structure" state. */
-	public boolean prevStructure;
-
-	/** Whether or not this tank has it's structure, for the client side mechanics. */
-	public boolean clientHasStructure;
-
 	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
 
 	/** The capacity this tank has on the client-side. */
 	public int clientCapacity;
-
-	/** Whether or not this tank segment is rendering the structure. */
-	public boolean isRendering;
 
 	public float prevScale;
 
@@ -64,29 +45,13 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		inventory = new ItemStack[2];
 	}
 
-	public void update()
-	{
-		if(!worldObj.isRemote && (structure == null || !structure.didTick))
-		{
-			new TankUpdateProtocol(this).updateTanks();
-
-			if(structure != null)
-			{
-				structure.didTick = true;
-			}
-		}
-	}
-
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote)
 		{
-			if(structure == null)
-			{
-				structure = new SynchronizedTankData();
-			}
-
 			if(structure != null && clientHasStructure && isRendering)
 			{
 				for(ValveData data : valveViewing.keySet())
@@ -97,11 +62,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 					}
 				}
 
-				if(!prevStructure)
-				{
-					Mekanism.proxy.doTankAnimation(this);
-				}
-
 				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
 
 				if(Math.abs(prevScale - targetScale) > 0.01)
@@ -109,8 +69,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 					prevScale = (9*prevScale + targetScale)/10;
 				}
 			}
-
-			prevStructure = clientHasStructure;
 
 			if(!clientHasStructure || !isRendering)
 			{
@@ -128,59 +86,10 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 			}
 		}
 
-		if(playersUsing.size() > 0 && ((worldObj.isRemote && !clientHasStructure) || (!worldObj.isRemote && structure == null)))
-		{
-			for(EntityPlayer player : playersUsing)
-			{
-				player.closeScreen();
-			}
-		}
-
 		if(!worldObj.isRemote)
 		{
-			if(structure == null)
-			{
-				isRendering = false;
-			}
-
-			if(structure == null && ticker == 5)
-			{
-				update();
-			}
-
-			if(prevStructure != (structure != null))
-			{
-				if(structure != null && !structure.hasRenderer)
-				{
-					structure.hasRenderer = true;
-					isRendering = true;
-					sendStructure = true;
-				}
-
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
-
-					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
-					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
-					}
-				}
-
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			}
-
-			prevStructure = structure != null;
-
 			if(structure != null)
 			{
-				structure.didTick = false;
-
-				if(structure.inventoryID != -1)
-				{
-					Mekanism.tankManager.updateCache(this);
-				}
-
 				manageInventory();
 			}
 		}
@@ -345,14 +254,23 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 			}
 		}
 	}
+	
+	@Override
+	public SynchronizedTankData getNewStructure()
+	{
+		return new SynchronizedTankData();
+	}
+	
+	@Override
+	public MultiblockManager<SynchronizedTankData> getManager()
+	{
+		return Mekanism.tankManager;
+	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-
-		data.add(isRendering);
-		data.add(structure != null);
 		
 		if(structure != null)
 		{
@@ -372,22 +290,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 		if(structure != null && isRendering)
 		{
-			if(sendStructure)
-			{
-				sendStructure = false;
-
-				data.add(true);
-
-				data.add(structure.volHeight);
-				data.add(structure.volWidth);
-				data.add(structure.volLength);
-
-				structure.renderLocation.write(data);
-			}
-			else {
-				data.add(false);
-			}
-
 			data.add(structure.valves.size());
 
 			for(ValveData valveData : structure.valves)
@@ -406,14 +308,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-
-		if(structure == null)
-		{
-			structure = new SynchronizedTankData();
-		}
-
-		isRendering = dataStream.readBoolean();
-		clientHasStructure = dataStream.readBoolean();
 		
 		if(clientHasStructure)
 		{
@@ -431,15 +325,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 		if(clientHasStructure && isRendering)
 		{
-			if(dataStream.readBoolean())
-			{
-				structure.volHeight = dataStream.readInt();
-				structure.volWidth = dataStream.readInt();
-				structure.volLength = dataStream.readInt();
-
-				structure.renderLocation = Coord4D.read(dataStream);
-			}
-
 			int size = dataStream.readInt();
 
 			for(int i = 0; i < size; i++)
@@ -474,22 +359,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		}
 	}
 
-	public void sendPacketToRenderer()
-	{
-		if(structure != null)
-		{
-			for(Coord4D obj : structure.locations)
-			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(worldObj);
-
-				if(tileEntity != null && tileEntity.isRendering)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
-				}
-			}
-		}
-	}
-
 	public int getScaledFluidLevel(int i)
 	{
 		if(clientCapacity == 0 || structure.fluidStored == null)
@@ -498,33 +367,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		}
 
 		return structure.fluidStored.amount*i / clientCapacity;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slotID)
-	{
-		return structure != null ? structure.inventory[slotID] : null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
-	{
-		if(structure != null)
-		{
-			structure.inventory[slotID] = itemstack;
-
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-			{
-				itemstack.stackSize = getInventoryStackLimit();
-			}
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		return INFINITE_EXTENT_AABB;
 	}
 
 	@Override
@@ -547,17 +389,5 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		}
 		
 		structure.editMode = mode;
-	}
-	
-	@Override
-	public boolean handleInventory()
-	{
-		return false;
-	}
-
-	@Override
-	public SynchronizedData<SynchronizedTankData> getSynchronizedData() 
-	{
-		return structure;
 	}
 }

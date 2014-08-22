@@ -138,6 +138,7 @@ import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
@@ -157,7 +158,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -491,7 +491,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void doTankAnimation(TileEntityDynamicTank tileEntity)
+	public void doTankAnimation(TileEntityMultiblock<?> tileEntity)
 	{
 		new ThreadTankSparkle(tileEntity).start();
 	}

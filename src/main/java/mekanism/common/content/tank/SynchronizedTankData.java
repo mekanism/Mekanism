@@ -18,13 +18,13 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
 	public ItemStack[] inventory = new ItemStack[2];
 
-	public boolean didTick;
-
-	public boolean hasRenderer;
-
-	public Coord4D renderLocation;
-
 	public Set<ValveData> valves = new HashSet<ValveData>();
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return inventory;
+	}
 
 	public static class ValveData
 	{

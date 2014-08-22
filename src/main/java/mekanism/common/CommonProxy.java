@@ -73,6 +73,7 @@ import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
@@ -312,7 +313,7 @@ public class CommonProxy
 	/**
 	 * Does the Dynamic Tank creation animation, starting from the rendering block.
 	 */
-	public void doTankAnimation(TileEntityDynamicTank tileEntity) {}
+	public void doTankAnimation(TileEntityMultiblock<?> tileEntity) {}
 
 	/**
 	 * Get the actual interface for a GUI. Client-only.

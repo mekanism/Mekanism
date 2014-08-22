@@ -4,8 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.common.content.tank.SynchronizedTankData;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.ItemStack;
 
 public abstract class SynchronizedData<T>
 {
@@ -20,6 +19,17 @@ public abstract class SynchronizedData<T>
 	public int volume;
 	
 	public int inventoryID;
+	
+	public boolean didTick;
+
+	public boolean hasRenderer;
+
+	public Coord4D renderLocation;
+	
+	public ItemStack[] getInventory()
+	{
+		return null;
+	}
 	
 	@Override
 	public int hashCode()

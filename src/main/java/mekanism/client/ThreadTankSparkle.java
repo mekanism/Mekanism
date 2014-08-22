@@ -6,7 +6,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,13 +16,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ThreadTankSparkle extends Thread
 {
-	public TileEntityDynamicTank pointer;
+	public TileEntityMultiblock<?> pointer;
 
 	public Random random = new Random();
 
 	public Set<TileEntity> iteratedNodes = new HashSet<TileEntity>();
 
-	public ThreadTankSparkle(TileEntityDynamicTank tileEntity)
+	public ThreadTankSparkle(TileEntityMultiblock<?> tileEntity)
 	{
 		pointer = tileEntity;
 	}
@@ -40,7 +40,7 @@ public class ThreadTankSparkle extends Thread
 		} catch(Exception e) {}
 	}
 
-	public void loop(TileEntityDynamicTank tileEntity)
+	public void loop(TileEntityMultiblock<?> tileEntity)
 	{
 		World world = pointer.getWorldObj();
 
@@ -83,9 +83,9 @@ public class ThreadTankSparkle extends Thread
 		{
 			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.getWorldObj());
 
-			if(tile instanceof TileEntityDynamicTank && !iteratedNodes.contains(tile))
+			if(tile instanceof TileEntityMultiblock && tile.getClass() == pointer.getClass() && !iteratedNodes.contains(tile))
 			{
-				loop((TileEntityDynamicTank)tile);
+				loop((TileEntityMultiblock<?>)tile);
 			}
 		}
 	}
