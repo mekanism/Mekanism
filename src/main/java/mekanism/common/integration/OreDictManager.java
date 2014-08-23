@@ -511,7 +511,9 @@ public final class OreDictManager
 	@Method(modid = "IC2API")
 	public static void addIC2BronzeRecipe()
 	{
-		Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+		try {
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotBronze"), null, MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
+		} catch(Exception e) {}
 	}
 
 

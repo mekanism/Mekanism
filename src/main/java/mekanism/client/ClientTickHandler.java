@@ -318,7 +318,7 @@ public class ClientTickHandler
 						{
 							if(mc.thePlayer.isSneaking())
 							{
-								((ItemJetpack)jetpack.getItem()).setMode(stack, JetpackMode.DISABLED);
+								((ItemJetpack)jetpack.getItem()).setMode(jetpack, JetpackMode.DISABLED);
 							}
 							else {
 								((ItemJetpack)jetpack.getItem()).incrementMode(jetpack);
