@@ -262,6 +262,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	}
 	
 	@Override
+	protected TankUpdateProtocol getProtocol()
+	{
+		return new TankUpdateProtocol(this);
+	}
+	
+	@Override
 	public MultiblockManager<SynchronizedTankData> getManager()
 	{
 		return Mekanism.tankManager;

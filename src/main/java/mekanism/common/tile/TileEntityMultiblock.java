@@ -11,6 +11,7 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -122,7 +123,7 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote && (structure == null || !getSynchronizedData().didTick))
 		{
-			new TankUpdateProtocol(this).doUpdate();
+			getProtocol().doUpdate();
 
 			if(structure != null)
 			{
@@ -148,6 +149,8 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 	}
 	
 	protected abstract T getNewStructure();
+	
+	protected abstract UpdateProtocol<T> getProtocol();
 	
 	public abstract MultiblockManager<T> getManager();
 	

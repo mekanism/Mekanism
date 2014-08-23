@@ -7,7 +7,6 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -16,8 +15,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class UpdateProtocol<T>
 {
-	public static final int FLUID_PER_TANK = 16000;
-
 	/** The multiblock nodes that have already been iterated over. */
 	public Set<TileEntityMultiblock<T>> iteratedNodes = new HashSet<TileEntityMultiblock<T>>();
 
@@ -344,10 +341,7 @@ public abstract class UpdateProtocol<T>
 	 * @param z - z coordinate
 	 * @return
 	 */
-	private boolean isValidFrame(int x, int y, int z)
-	{
-		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock && pointer.getWorldObj().getBlockMetadata(x, y, z) == 9;
-	}
+	protected abstract boolean isValidFrame(int x, int y, int z);
 	
 	protected abstract MultiblockCache<T> getNewCache();
 	
@@ -355,7 +349,7 @@ public abstract class UpdateProtocol<T>
 	
 	protected abstract MultiblockManager<T> getManager();
 	
-	protected abstract void mergeCaches(MultiblockCache<T> cache, MultiblockCache<T> merge);
+	protected abstract void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<T> cache, MultiblockCache<T> merge);
 	
 	protected void onFormed() {}
 	
@@ -411,7 +405,7 @@ public abstract class UpdateProtocol<T>
 							cache = (MultiblockCache<T>)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
 						}
 						else {
-							mergeCaches(cache, (MultiblockCache<T>)getManager().pullInventory(pointer.getWorldObj(), id));
+							mergeCaches(rejectedItems, cache, (MultiblockCache<T>)getManager().pullInventory(pointer.getWorldObj(), id));
 						}
 						
 						idToUse = id;
