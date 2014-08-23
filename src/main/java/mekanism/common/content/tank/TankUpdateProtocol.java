@@ -33,9 +33,9 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	}
 	
 	@Override
-	protected DynamicTankCache getNewCache()
+	protected TankCache getNewCache()
 	{
-		return new DynamicTankCache();
+		return new TankCache();
 	}
 	
 	@Override
@@ -53,23 +53,23 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	@Override
 	protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache, MultiblockCache<SynchronizedTankData> merge)
 	{
-		if(((DynamicTankCache)cache).fluid == null)
+		if(((TankCache)cache).fluid == null)
 		{
-			((DynamicTankCache)cache).fluid = ((DynamicTankCache)merge).fluid;
+			((TankCache)cache).fluid = ((TankCache)merge).fluid;
 		}
-		else if(((DynamicTankCache)merge).fluid != null && ((DynamicTankCache)cache).fluid.isFluidEqual(((DynamicTankCache)merge).fluid))
+		else if(((TankCache)merge).fluid != null && ((TankCache)cache).fluid.isFluidEqual(((TankCache)merge).fluid))
 		{
-			((DynamicTankCache)cache).fluid.amount += ((DynamicTankCache)merge).fluid.amount;
+			((TankCache)cache).fluid.amount += ((TankCache)merge).fluid.amount;
 		}
 		
-		List<ItemStack> rejects = StackUtils.getMergeRejects(((DynamicTankCache)cache).inventory, ((DynamicTankCache)merge).inventory);
+		List<ItemStack> rejects = StackUtils.getMergeRejects(((TankCache)cache).inventory, ((TankCache)merge).inventory);
 		
 		if(!rejects.isEmpty())
 		{
 			rejectedItems.addAll(rejects);
 		}
 		
-		StackUtils.merge(((DynamicTankCache)cache).inventory, ((DynamicTankCache)merge).inventory);
+		StackUtils.merge(((TankCache)cache).inventory, ((TankCache)merge).inventory);
 	}
 	
 	@Override

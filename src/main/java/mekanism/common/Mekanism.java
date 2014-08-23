@@ -38,12 +38,16 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
+import mekanism.common.content.boiler.BoilerCache;
+import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
-import mekanism.common.content.tank.DynamicTankCache;
 import mekanism.common.content.tank.SynchronizedTankData;
+import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.turbine.SynchronizedTurbineData;
+import mekanism.common.content.turbine.TurbineCache;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -155,11 +159,11 @@ public class Mekanism
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
 	
-	/** The Dynamic Tank multiblock manager */
-	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", DynamicTankCache.class);
-	
-	/** The Energized Induction Matrix multiblock manager */
+	/** MultiblockManagers for various structrures */
+	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", TankCache.class);
 	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("energizedInductionMatrix", MatrixCache.class);
+	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine", TurbineCache.class);
+	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler", BoilerCache.class);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();

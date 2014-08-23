@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class DynamicTankCache extends MultiblockCache<SynchronizedTankData>
+public class TankCache extends MultiblockCache<SynchronizedTankData>
 {	
 	public ItemStack[] inventory = new ItemStack[2];
 	
