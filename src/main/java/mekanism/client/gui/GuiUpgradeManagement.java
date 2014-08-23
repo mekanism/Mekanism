@@ -33,12 +33,31 @@ public class GuiUpgradeManagement extends GuiMekanism
 
 	public int dragOffset = 0;
 	
+	public int supportedIndex;
+	
+	public int delay;
+	
 	public float scroll;
 	
 	public GuiUpgradeManagement(InventoryPlayer inventory, IUpgradeTile tile) 
 	{
 		super(new ContainerUpgradeManagement(inventory, tile));
 		tileEntity = tile;
+	}
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		if(delay < 40)
+		{
+			delay++;
+		}
+		else {
+			delay = 0;
+			supportedIndex = ++supportedIndex%tileEntity.getComponent().getSupportedTypes().size();
+		}
 	}
 	
 	@Override
@@ -72,11 +91,15 @@ public class GuiUpgradeManagement extends GuiMekanism
 			}
 		}
 		
-		int rendered = 0;
-		
-		for(Upgrade upgrade : tileEntity.getComponent().getSupportedTypes())
+		if(!tileEntity.getComponent().getSupportedTypes().isEmpty())
 		{
-			renderUpgrade(upgrade, 80 + (rendered++*12), 57, 0.8F, true);
+			Upgrade[] supported = tileEntity.getComponent().getSupportedTypes().toArray(new Upgrade[tileEntity.getComponent().getSupportedTypes().size()]);
+			
+			if(supported.length > supportedIndex)
+			{
+				renderUpgrade(supported[supportedIndex], 80, 57, 0.8F, true);
+				fontRendererObj.drawString(supported[supportedIndex].getName(), 96, 59, 0x404040);
+			}
 		}
 		
 		Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[getCurrentUpgrades().size()]);
@@ -93,7 +116,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			Upgrade upgrade = upgrades[index];
 			
 			int xPos = 25;
-			int yPos = 7 + (i++*12);
+			int yPos = 7 + (i*12);
 			int yRender = 0;
 			
 			fontRendererObj.drawString(upgrade.getName(), xPos + 12, yPos + 2, 0x404040);
@@ -168,12 +191,21 @@ public class GuiUpgradeManagement extends GuiMekanism
 			selectedType = null;
 		}
 		
-		int rendered = 0;
+		Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[getCurrentUpgrades().size()]);
 		
-		for(Upgrade upgrade : getCurrentUpgrades())
+		for(int i = 0; i < 4; i++)
 		{
+			int index = getUpgradeIndex()+i;
+			
+			if(index > upgrades.length-1)
+			{
+				break;
+			}
+			
+			Upgrade upgrade = upgrades[index];
+			
 			int xPos = 25;
-			int yPos = 7 + (rendered++*12);
+			int yPos = 7 + (i*12);
 			int yRender = 0;
 			
 			if(upgrade == selectedType)
@@ -196,7 +228,6 @@ public class GuiUpgradeManagement extends GuiMekanism
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 	
-	/* Here for scrolling in the future */
 	private Set<Upgrade> getCurrentUpgrades()
 	{
 		return tileEntity.getComponent().getInstalledTypes();

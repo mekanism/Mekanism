@@ -518,7 +518,7 @@ public final class OreDictManager
 
 
 	/**
-	 * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Taken from CofhCore.
+	 * Handy method for retrieving all log items, finding their corresponding planks, and making recipes with them. Credit to CofhCore.
 	 */
 	public static void addLogRecipes()
 	{
