@@ -5,7 +5,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +31,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
 		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IPowerReceptor, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess, IConfigurable
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IPowerReceptor, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess, IConfigurable
 {
 	@Override
 	public int getSizeInventory()
@@ -94,7 +93,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return "null";
 		}
 
 		return getInv().getInventoryName();
@@ -305,7 +304,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return new PowerHandler(this, PowerHandler.Type.STORAGE).getPowerReceiver();
 		}
 
 		return getInv().getPowerReceiver(side);
@@ -329,7 +328,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return worldObj;
 		}
 
 		return getInv().getWorld();
@@ -395,6 +394,11 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	public IAdvancedBoundingBlock getInv()
 	{
+		if(!receivedCoords)
+		{
+			return null;
+		}
+		
 		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
@@ -446,7 +450,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return new String[] {"null"};
 		}
 
 		return getInv().getMethodNames();
@@ -458,7 +462,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return new Object[] {};
 		}
 
 		return getInv().callMethod(computer, context, method, arguments);
@@ -500,7 +504,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	{
 		if(getInv() == null)
 		{
-			return null;
+			return new NBTTagCompound();
 		}
 		
 		return getInv().getFilterData(nbtTags);

@@ -17,7 +17,6 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
@@ -1070,7 +1069,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					}
 
 					MekanismUtils.makeAdvancedBoundingBlock(worldObj, x, y, z, Coord4D.get(this));
-					worldObj.notifyBlocksOfNeighborChange(x, y, z, MekanismBlocks.BoundingBlock);
+		            worldObj.func_147453_f(x, y, z, getBlockType());
 				}
 			}
 		}

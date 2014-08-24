@@ -19,11 +19,15 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	public int mainX;
 	public int mainY;
 	public int mainZ;
+	
+	public boolean receivedCoords;
 
 	public boolean prevPower;
 
 	public void setMainLocation(int x, int y, int z)
 	{
+		receivedCoords = true;
+		
 		if(!worldObj.isRemote)
 		{
 			mainX = x;
@@ -99,6 +103,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		mainY = nbtTags.getInteger("mainY");
 		mainZ = nbtTags.getInteger("mainZ");
 		prevPower = nbtTags.getBoolean("prevPower");
+		receivedCoords = nbtTags.getBoolean("receivedCoords");
 	}
 
 	@Override
@@ -110,6 +115,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		nbtTags.setInteger("mainY", mainY);
 		nbtTags.setInteger("mainZ", mainZ);
 		nbtTags.setBoolean("prevPower", prevPower);
+		nbtTags.setBoolean("receivedCoords", receivedCoords);
 	}
 
 	@Override

@@ -258,7 +258,11 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			}
 		}
 
-		MekanismRenderer.renderObject(toReturn);
+		if(fluid.getFlowingIcon() != null)
+		{
+			MekanismRenderer.renderObject(toReturn);
+		}
+		
 		display.endList();
 
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
