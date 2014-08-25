@@ -36,17 +36,19 @@ public enum Direction {
 	 */
 	ZP(5);
 
-	Direction(int dir1) {
-		this.dir = dir1;
+	public static Direction fromSideValue(int side) {
+		return directions[(side + 2) % 6];
 	}
 
-	/*public CoordinateTuple ApplyToCoordinates(CoordinateTuple coordinates) {
-		CoordinateTuple ret = new CoordinateTuple(coordinates);
+	public static Direction fromForgeDirection(ForgeDirection dir) {
+		if (dir == ForgeDirection.UNKNOWN) return null;
 
-		ret.coords[dir/2] += GetSign();
+		return fromSideValue(dir.ordinal());
+	}
 
-		return ret;
-	}*/
+	private Direction(int dir1) {
+		this.dir = dir1;
+	}
 
 	/**
 	 * Get the tile entity next to a tile entity following this direction.

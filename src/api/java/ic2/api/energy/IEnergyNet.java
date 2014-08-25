@@ -42,7 +42,9 @@ public interface IEnergyNet {
 	 * @note call this twice with x ticks delay to get the avg. emitted power p = (call2 - call1) / x EU/tick
 	 *
 	 * @param tileEntity energy emitter
+	 * @deprecated Discontinued, use getNodeStats instead.
 	 */
+	@Deprecated
 	double getTotalEnergyEmitted(TileEntity tileEntity);
 
 	/**
@@ -51,8 +53,20 @@ public interface IEnergyNet {
 	 * @note call this twice with x ticks delay to get the avg. sunken power p = (call2 - call1) / x EU/tick
 	 *
 	 * @param tileEntity energy emitter
+	 * @deprecated Discontinued, use getNodeStats instead.
 	 */
+	@Deprecated
 	double getTotalEnergySunken(TileEntity tileEntity);
+
+	/**
+	 * Retrieve statistics for the tile entity specified.
+	 * 
+	 * The statistics apply to the last simulated tick.
+	 * 
+	 * @param te Tile entity to check.
+	 * @return Statistics for the tile entity.
+	 */
+	NodeStats getNodeStats(TileEntity te);
 
 	/**
 	 * Determine the typical power used by the specific tier, e.g. 128 eu/t for tier 2.
