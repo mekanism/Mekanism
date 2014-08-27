@@ -6,5 +6,6 @@
    "etc.GasMask": {"category": "master","sounds": [{"name": "etc/GasMask","stream": false}]},
    "etc.Hydraulic": {"category": "master","sounds": [{"name": "etc/Hydraulic","stream": false}]},
    "etc.Pop": {"category": "master","sounds": [{"name": "etc/Pop","stream": false}]},
-   "etc.Success": {"category": "master","sounds": [{"name": "etc/Success","stream": false}]}
+   "etc.Success": {"category": "master","sounds": [{"name": "etc/Success","stream": false}]},
+   "tile.machine.crusher": {"category": "block", "sounds": [{"name": "Crusher","stream": false}]}
 }

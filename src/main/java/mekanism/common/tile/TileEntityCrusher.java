@@ -3,12 +3,20 @@ package mekanism.common.tile;
 import java.util.Map;
 
 import mekanism.api.MekanismConfig.usage;
+import mekanism.client.sound.TestSound;
+import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
+import net.minecraft.client.audio.ISound.AttenuationType;
+import net.minecraft.client.audio.PositionedSound;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.client.FMLClientHandler;
+
 public class TileEntityCrusher extends TileEntityElectricMachine
 {
-	public float crushMatrix = 0;
+	public TestSound sfx;
 
 	public TileEntityCrusher()
 	{
@@ -22,28 +30,20 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 
 		if(worldObj.isRemote)
 		{
-			if(crushMatrix < 6)
+			if(isActive && sfx.isDonePlaying())
 			{
-				crushMatrix+=0.2F;
+				Mekanism.logger.info("Playing Crusher noise");
+				sfx.finished = false;
+				FMLClientHandler.instance().getClient().getSoundHandler().playSound(sfx);
 			}
-			else {
-				crushMatrix = 0;
+			else if(!(isActive || sfx.isDonePlaying()))
+			{
+				Mekanism.logger.info("Stopping Crusher noise");
+				sfx.finished = true;
 			}
 		}
 	}
 
-	public float getMatrix()
-	{
-		float matrix = 0;
-
-		if(crushMatrix <= 3)
-		{
-			return crushMatrix;
-		}
-		else {
-			return 3 - (crushMatrix-3);
-		}
-	}
 
 	@Override
 	public Map getRecipes()
@@ -55,5 +55,19 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	public float getVolumeMultiplier()
 	{
 		return 0.5F;
+	}
+
+	@Override
+	public void validate()
+	{
+		super.validate();
+		sfx = new TestSound(new ResourceLocation("mekanism", "tile.machine.crusher"), this);
+	}
+
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		sfx.finished = true;
 	}
 }

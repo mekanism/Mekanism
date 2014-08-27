@@ -49,7 +49,7 @@ public class TileSound extends Sound
 
 	@Override
 	public boolean update(World world)
-	{
+	{/*
 		if(!super.update(world))
 		{
 			return false;
@@ -84,7 +84,7 @@ public class TileSound extends Sound
 		{
 			ticksSincePlay++;
 		}
-
+*/
 		return true;
 	}
 }
