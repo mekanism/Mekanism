@@ -150,12 +150,6 @@ public class CommonProxy
 	}
 
 	/**
-	 * Registers a client-side sound, assigned to a TileEntity.
-	 * @param tileEntity - TileEntity who is registering the sound
-	 */
-	public void registerSound(TileEntity tileEntity) {}
-
-	/**
 	 * Unregisters a client-side sound, assigned to a TileEntity;
 	 * @param tileEntity - TileEntity who is unregistering the sound
 	 */

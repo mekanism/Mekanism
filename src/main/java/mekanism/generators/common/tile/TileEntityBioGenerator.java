@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.MekanismConfig.generators;
-import mekanism.client.sound.TileSound;
 import mekanism.common.FluidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -23,8 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 

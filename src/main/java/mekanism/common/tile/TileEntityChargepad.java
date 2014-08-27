@@ -51,8 +51,8 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 		if(!worldObj.isRemote)
 		{
 			isActive = false;
-			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
-			
+			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 0.2, zCoord + 1));
+
 			for(EntityLivingBase entity : entities)
 			{
 				if(entity instanceof EntityPlayer || entity instanceof EntityRobit)
@@ -64,17 +64,16 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 				{
 					if(entity instanceof EntityRobit)
 					{
-						EntityRobit robit = (EntityRobit)entity;
+						EntityRobit robit = (EntityRobit) entity;
 
 						double canGive = Math.min(getEnergy(), 1000);
-						double toGive = Math.min(robit.MAX_ELECTRICITY-robit.getEnergy(), canGive);
+						double toGive = Math.min(robit.MAX_ELECTRICITY - robit.getEnergy(), canGive);
 
 						robit.setEnergy(robit.getEnergy() + toGive);
 						setEnergy(getEnergy() - toGive);
-					}
-					else if(entity instanceof EntityPlayer)
+					} else if(entity instanceof EntityPlayer)
 					{
-						EntityPlayer player = (EntityPlayer)entity;
+						EntityPlayer player = (EntityPlayer) entity;
 
 						double prevEnergy = getEnergy();
 
@@ -107,13 +106,9 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 				setActive(isActive);
 			}
 		}
-		else {
-			Mekanism.proxy.registerSound(this);
-
-			if(isActive)
-			{
-				worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
-			}
+		else if(isActive)
+		{
+			worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
 		}
 	}
 

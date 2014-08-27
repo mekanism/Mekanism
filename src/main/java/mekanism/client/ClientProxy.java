@@ -201,33 +201,6 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void registerSound(TileEntity tileEntity)
-	{
-		if(client.enableSounds && MekanismClient.audioHandler != null)
-		{
-			synchronized(MekanismClient.audioHandler.soundMaps)
-			{
-				MekanismClient.audioHandler.registerTileSound(tileEntity);
-			}
-		}
-	}
-
-	@Override
-	public void unregisterSound(TileEntity tileEntity)
-	{
-		if(client.enableSounds && MekanismClient.audioHandler != null)
-		{
-			synchronized(MekanismClient.audioHandler.soundMaps)
-			{
-				if(MekanismClient.audioHandler.getMap(tileEntity) != null)
-				{
-					MekanismClient.audioHandler.getMap(tileEntity).kill();
-				}
-			}
-		}
-	}
-
-	@Override
 	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z)
 	{
 		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getTileEntity(x, y, z);

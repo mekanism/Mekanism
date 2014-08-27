@@ -275,19 +275,6 @@ public class SoundHandler
 	}
 
 	/**
-	 * Create and return an instance of a Sound.
-	 * @param tileEntity - the holder of this sound.
-	 * @return Sound instance
-	 */
-	public void registerTileSound(TileEntity tile)
-	{
-		if(!(tile instanceof IHasSound))
-		{
-			return;
-		}
-	}
-
-	/**
 	 * Get a unique identifier for a sound effect instance by combining the mod's name,
 	 * Mekanism, the new sound's unique position on the 'sounds' ArrayList, and a random
 	 * number between 0 and 10,000. Example: "Mekanism_6_6123"
