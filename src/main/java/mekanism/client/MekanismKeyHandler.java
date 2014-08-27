@@ -67,7 +67,6 @@ public class MekanismKeyHandler extends MekKeyHandler
 	@Override
 	public void keyDown(Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat)
 	{
-		Mekanism.logger.info(isRepeat ? "Repeating" : "Not Repeating");
 		if(kb == modeSwitchKey)
 		{
 			EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
