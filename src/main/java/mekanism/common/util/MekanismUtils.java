@@ -621,6 +621,17 @@ public final class MekanismUtils
 	}
 
 	/**
+	 * Gets the secondary energy required per tick for a machine via upgrades.
+	 * @param mgmt - tile containing upgrades
+	 * @param def - the original, default secondary energy required
+	 * @return max secondary energy per tick
+	 */
+	public static int getSecondaryEnergyPerTick(IUpgradeTile mgmt, int def)
+	{
+		return def * (int)Math.pow(general.maxUpgradeMultiplier, mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax());
+	}
+
+	/**
 	 * Gets the maximum energy for a machine via it's upgrades.
 	 * @param energyUpgrade - number of energy upgrades
 	 * @param def - original, default max energy
