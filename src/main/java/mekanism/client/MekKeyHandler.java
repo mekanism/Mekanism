@@ -2,6 +2,8 @@ package mekanism.client;
 
 import java.util.EnumSet;
 
+import mekanism.common.Mekanism;
+
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
@@ -23,8 +25,8 @@ public abstract class MekKeyHandler
 	/**
 	 * Pass an array of keybindings and a repeat flag for each one
 	 *
-	 * @param keyBindings
-	 * @param repeatings
+	 * @param bindings
+	 * @param rep
 	 */
 	public MekKeyHandler(KeyBinding[] bindings, boolean[] rep)
 	{
@@ -38,7 +40,7 @@ public abstract class MekKeyHandler
 	 * Register the keys into the system. You will do your own keyboard
 	 * management elsewhere. No events will fire if you use this method
 	 *
-	 * @param keyBindings
+	 * @param  bindings
 	 */
 	public MekKeyHandler(KeyBinding[] bindings)
 	{
@@ -56,14 +58,13 @@ public abstract class MekKeyHandler
 		for(int i = 0; i < keyBindings.length; i++)
 		{
 			KeyBinding keyBinding = keyBindings[i];
-			int keyCode = keyBinding.getKeyCode();
-			boolean state = (keyCode < 0 ? Mouse.isButtonDown(keyCode + 100) : Keyboard.isKeyDown(keyCode));
-			
+			boolean state = keyBinding.getIsKeyPressed();
+
 			if(state != keyDown[i] || (state && repeatings[i]))
 			{
 				if(state)
 				{
-					keyDown(type, keyBinding, tickEnd, state != keyDown[i]);
+					keyDown(type, keyBinding, tickEnd, state == keyDown[i]);
 				}
 				else {
 					keyUp(type, keyBinding, tickEnd);
@@ -78,11 +79,10 @@ public abstract class MekKeyHandler
 	}
 
 	/**
-	 * Called when the key is first in the down position on any tick from the
-	 * {@link #ticks()} set. Will be called subsequently with isRepeat set to
-	 * true
+	 * Called when the key is first in the down position. Will be called
+	 * subsequently with isRepeat set to true
 	 *
-	 * @see #keyUp(EnumSet, KeyBinding, boolean)
+	 * @see #keyUp(Type, KeyBinding, boolean)
 	 *
 	 * @param types
 	 * the type(s) of tick that fired when this key was first down
@@ -96,7 +96,7 @@ public abstract class MekKeyHandler
 	/**
 	 * Fired once when the key changes state from down to up
 	 *
-	 * @see #keyDown(EnumSet, KeyBinding, boolean, boolean)
+	 * @see #keyDown(Type, KeyBinding, boolean, boolean)
 	 *
 	 * @param types
 	 * the type(s) of tick that fired when this key was first down
