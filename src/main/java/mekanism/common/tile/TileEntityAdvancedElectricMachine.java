@@ -96,7 +96,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
 			boolean changed = false;
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= SECONDARY_ENERGY_PER_TICK)
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= (int)MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK))
 			{
 				setActive(true);
 
@@ -109,7 +109,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 					operatingTicks = 0;
 				}
 
-				gasTank.draw(SECONDARY_ENERGY_PER_TICK, true);
+				gasTank.draw(MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK), true);
 				electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 			}
 			else {

@@ -353,7 +353,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 	public int getSecondaryEnergyPerTick()
 	{
-		return RecipeType.values()[recipeType].getSecondaryEnergyPerTick();
+		return MekanismUtils.getSecondaryEnergyPerTick(this, RecipeType.values()[recipeType].getSecondaryEnergyPerTick());
 	}
 
 	public void handleSecondaryFuel()
