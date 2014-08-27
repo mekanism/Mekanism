@@ -1,5 +1,7 @@
 package mekanism.client.sound;
 
+import net.minecraft.client.audio.ISound;
+
 /**
  * Implement this if your TileEntity has a specific sound.
  * @author AidanBrady
@@ -7,15 +9,7 @@ package mekanism.client.sound;
  */
 public interface IHasSound
 {
-	/**
-	 * Gets the sound path of this block's sound.
-	 * @return sound path
-	 */
-	public String getSoundPath();
+	public ISound getSound();
 
-	/**
-	 * Gets the multiplier to play this sound by.
-	 * @return sound multiplier
-	 */
-	public float getVolumeMultiplier();
+	public boolean shouldPlaySound();
 }

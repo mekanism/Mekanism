@@ -22,7 +22,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("PurificationChamber.ogg", "PurificationChamber", usage.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
+		super("purification", "PurificationChamber", usage.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import mekanism.api.util.StackUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -47,7 +48,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityFactory extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl, IGasHandler, ITubeConnection
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -114,7 +115,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super(type.name + "Factory", machine.baseEnergy);
+		super("null", type.name + "Factory", machine.baseEnergy);
 
 		tier = type;
 		inventory = new ItemStack[5+type.processes*2];
@@ -829,15 +830,9 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 	}
 
 	@Override
-	public String getSoundPath()
+	public ResourceLocation getSoundLocation()
 	{
 		return RecipeType.values()[recipeType].getSound();
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

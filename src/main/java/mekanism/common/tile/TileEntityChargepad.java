@@ -29,7 +29,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyContainerItem;
 
-public class TileEntityChargepad extends TileEntityElectricBlock implements IActiveState, IHasSound
+public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 {
 	public boolean isActive;
 
@@ -39,7 +39,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 
 	public TileEntityChargepad()
 	{
-		super("Chargepad", MachineType.CHARGEPAD.baseEnergy);
+		super("chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 
@@ -217,13 +217,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 
 	@Override
-	public String getSoundPath()
-	{
-		return "Chargepad.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
+	public float getVolume()
 	{
 		return 0.4F;
 	}

@@ -6,18 +6,26 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Pos3D;
 import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.IHasSound;
+import mekanism.client.sound.ISoundSource;
+import mekanism.client.sound.SoundTile;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -27,7 +35,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityGenerator extends TileEntityElectricBlock implements IPeripheral, IActiveState, IHasSound, IRedstoneControl
+public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock implements IPeripheral, IActiveState, IHasSound, ISoundSource, IRedstoneControl
 {
 	/** Output per tick this generator can transfer. */
 	public double output;
@@ -49,9 +57,9 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	 * @param name - full name of this generator
 	 * @param maxEnergy - how much energy this generator can store
 	 */
-	public TileEntityGenerator(String name, double maxEnergy, double out)
+	public TileEntityGenerator(String soundPath, String name, double maxEnergy, double out)
 	{
-		super(name, maxEnergy);
+		super("gen." + soundPath, name, maxEnergy);
 
 		if(MekanismUtils.useBuildCraft())
 		{
@@ -123,14 +131,11 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public void invalidate()
+	public void validate()
 	{
-		super.invalidate();
+		super.validate();
 
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
+		sound = new SoundTile(this, this);
 	}
 
 	/**
@@ -237,18 +242,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return fullName.replace("Advanced", "") + ".ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

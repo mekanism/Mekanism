@@ -36,12 +36,6 @@ public class TileSound extends Sound
 	}
 
 	@Override
-	public float getMultiplier()
-	{
-		return super.getMultiplier()*((IHasSound)tileEntity).getVolumeMultiplier();
-	}
-
-	@Override
 	public Pos3D getLocation()
 	{
 		return new Pos3D(tileEntity);

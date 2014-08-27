@@ -34,7 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler, IUpgradeTile, ISustainedData
+public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
@@ -65,7 +65,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 
@@ -394,18 +394,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "ChemicalDissolutionChamber.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

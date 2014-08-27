@@ -41,7 +41,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IInvConfiguration, IUpgradeTile, ISustainedData
+public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IInvConfiguration, IUpgradeTile, ISustainedData
 {
 	public static final int MAX_GAS = 10000;
 	public static final int MAX_FLUID = 10000;
@@ -82,7 +82,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 
 	public TileEntityChemicalCrystallizer()
 	{
-		super("ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
+		super("crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {0}));
@@ -467,18 +467,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityElectricBlock impl
 		}
 
 		return InventoryUtils.EMPTY;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "ChemicalCrystallizer.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

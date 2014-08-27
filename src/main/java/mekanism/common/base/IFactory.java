@@ -14,6 +14,7 @@ import mekanism.api.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -39,16 +40,16 @@ public interface IFactory
 
 	public static enum RecipeType
 	{
-		SMELTING("smelting", "Smelter.ogg", MachineType.ENERGIZED_SMELTER.getStack(), false, null),
-		ENRICHING("enriching", "Chamber.ogg", MachineType.ENRICHMENT_CHAMBER.getStack(), false, Recipe.ENRICHMENT_CHAMBER),
-		CRUSHING("crushing", "Crusher.ogg", MachineType.CRUSHER.getStack(), false, Recipe.CRUSHER),
-		COMPRESSING("compressing", "Compressor.ogg", MachineType.OSMIUM_COMPRESSOR.getStack(), true, Recipe.OSMIUM_COMPRESSOR),
-		COMBINING("combining", "Combiner.ogg", MachineType.COMBINER.getStack(), true, Recipe.COMBINER),
-		PURIFYING("purifying", "PurificationChamber.ogg", MachineType.PURIFICATION_CHAMBER.getStack(), true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("injecting", "ChemicalInjectionChamber.ogg", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, Recipe.CHEMICAL_INJECTION_CHAMBER);
+		SMELTING("smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, null),
+		ENRICHING("enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("crushing", "crusher", MachineType.CRUSHER.getStack(), false, Recipe.CRUSHER),
+		COMPRESSING("compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("combining", "combiner", MachineType.COMBINER.getStack(), true, Recipe.COMBINER),
+		PURIFYING("purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, Recipe.CHEMICAL_INJECTION_CHAMBER);
 
 		private String name;
-		private String sound;
+		private ResourceLocation sound;
 		private ItemStack stack;
 		private boolean usesFuel;
 		private Recipe recipe;
@@ -188,7 +189,7 @@ public interface IFactory
 			return MekanismUtils.localize("gui.factory." + name);
 		}
 
-		public String getSound()
+		public ResourceLocation getSound()
 		{
 			return sound;
 		}
@@ -201,7 +202,7 @@ public interface IFactory
 		private RecipeType(String s, String s1, ItemStack is, boolean b, Recipe r)
 		{
 			name = s;
-			sound = s1;
+			sound = new ResourceLocation("mekanism", s1);
 			stack = is;
 			usesFuel = b;
 			recipe = r;

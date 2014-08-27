@@ -42,7 +42,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
@@ -88,7 +88,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 	public TileEntityMetallurgicInfuser()
 	{
-		super("MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
+		super("metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
@@ -546,18 +546,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "MetallurgicInfuser.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

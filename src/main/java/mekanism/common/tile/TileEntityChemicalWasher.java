@@ -43,7 +43,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityChemicalWasher extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, IFluidHandler, ISustainedData
+public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IFluidHandler, ISustainedData
 {
 	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
 	public GasTank inputTank = new GasTank(MAX_GAS);
@@ -71,7 +71,7 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 
 	public TileEntityChemicalWasher()
 	{
-		super("ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
+		super("washer", "ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 
@@ -531,18 +531,6 @@ public class TileEntityChemicalWasher extends TileEntityElectricBlock implements
 		}
 
 		return InventoryUtils.EMPTY;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "ChemicalWasher.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

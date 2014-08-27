@@ -285,14 +285,6 @@ public class SoundHandler
 		{
 			return;
 		}
-
-		synchronized(soundMaps)
-		{
-			if(getMap(tile) == null)
-			{
-				new TileSound(getIdentifier(tile), HolidayManager.filterSound(((IHasSound)tile).getSoundPath()), CHANNEL_TILE_DEFAULT, tile);
-			}
-		}
 	}
 
 	/**

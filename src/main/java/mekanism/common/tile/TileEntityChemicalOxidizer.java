@@ -33,7 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IUpgradeTile, ISustainedData
+public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
@@ -61,7 +61,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
+		super("machine.oxidiser", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 
@@ -295,11 +295,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
 	}
 
-	public int getScaledGasLevel(int i)
-	{
-		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_GAS : 0;
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{
@@ -349,18 +344,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "ChemicalInfuser.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override
