@@ -681,7 +681,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						{
 							TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
 
-							if(tileEntity instanceof IInventory)
+							if(tile instanceof IInventory)
 							{
 								change = dir.getOpposite().ordinal();
 								break;
