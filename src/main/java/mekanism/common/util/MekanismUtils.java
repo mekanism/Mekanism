@@ -628,9 +628,9 @@ public final class MekanismUtils
 	 * @param def - the original, default secondary energy required
 	 * @return max secondary energy per tick
 	 */
-	public static int getSecondaryEnergyPerTick(IUpgradeTile mgmt, int def)
+	public static int getSecondaryEnergyPerTick(IUpgradeManagement mgmt, int def)
 	{
-		return def * (int)Math.pow(general.maxUpgradeMultiplier, mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax());
+		return def * (int)Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getSpeedMultiplier()/8.0);
 	}
 
 	/**
@@ -822,25 +822,22 @@ public final class MekanismUtils
 		Block block = world.getBlock(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(block == null)
+		if(block == null || meta == 0)
 		{
 			return false;
 		}
 
-		if((block == Blocks.water || block == Blocks.flowing_water) && meta != 0)
+		if((block == Blocks.water || block == Blocks.flowing_water))
 		{
 			return true;
 		}
-		else if((block == Blocks.lava || block == Blocks.flowing_lava) && meta != 0)
+		else if((block == Blocks.lava || block == Blocks.flowing_lava))
 		{
 			return true;
 		}
 		else if(block instanceof IFluidBlock)
 		{
-			if(meta != 0)
-			{
-				return true;
-			}
+			return true;
 		}
 
 		return false;

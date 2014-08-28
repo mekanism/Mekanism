@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.ChargeUtils;
@@ -60,18 +59,21 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			
 			if(inventory[0] != null)
 			{
-				if(inventory[0].getItem() instanceof IFluidContainerItem)
+				if(inventory[0].getItem() instanceof IFluidContainerItem && ((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) != null)
 				{
-					fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
-					
-					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
+					if(((IFluidContainerItem)inventory[0].getItem()).getFluid(inventory[0]).getFluid().canBePlacedInWorld())
 					{
-						if(inventory[1] == null)
+						fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, inventory[0]), true);
+
+						if(((IFluidContainerItem) inventory[0].getItem()).getFluid(inventory[0]) == null || fluidTank.getFluidAmount() == fluidTank.getCapacity())
 						{
-							inventory[1] = inventory[0].copy();
-							inventory[0] = null;
-							
-							markDirty();
+							if(inventory[1] == null)
+							{
+								inventory[1] = inventory[0].copy();
+								inventory[0] = null;
+
+								markDirty();
+							}
 						}
 					}
 				}
@@ -81,7 +83,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 					if((fluidTank.getFluid() == null && itemFluid.amount <= fluidTank.getCapacity()) || fluidTank.getFluid().amount+itemFluid.amount <= fluidTank.getCapacity())
 					{
-						if(fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid))
+						if((fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(itemFluid)) || !itemFluid.getFluid().canBePlacedInWorld())
 						{
 							return;
 						}
@@ -138,7 +140,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 					else {
 						Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 						
-						if(canReplace(below, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
@@ -168,12 +170,12 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 				
-				if(!canReplace(below, true))
+				if(!canReplace(below, true, true))
 				{
 					finishedCalc = true;
 					return;
 				}
-				
+
 				activeNodes.add(below);
 			}
 			else {
@@ -186,18 +188,22 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		for(Coord4D coord : activeNodes)
 		{
-			if(coord.exists(worldObj) && canReplace(coord, true))
+			if(coord.exists(worldObj))
 			{
-				worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
-				
-				setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
-				fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+				if(canReplace(coord, true, false))
+				{
+					worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+
+					setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
+					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
+
+				}
 				
 				for(ForgeDirection dir : dirs)
 				{
 					Coord4D sideCoord = coord.getFromSide(dir);
 					
-					if(coord.exists(worldObj) && canReplace(coord, true))
+					if(sideCoord.exists(worldObj) && canReplace(sideCoord, true, true))
 					{
 						activeNodes.add(sideCoord);
 					}
@@ -223,7 +229,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		return yCoord-1;
 	}
 	
-	public boolean canReplace(Coord4D coord, boolean checkNodes)
+	public boolean canReplace(Coord4D coord, boolean checkNodes, boolean isPathfinding)
 	{
 		if(checkNodes && usedNodes.contains(coord))
 		{
@@ -237,7 +243,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		
 		if(MekanismUtils.isFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
 		{
-			return false;
+			return isPathfinding;
 		}
 		
 		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.xCoord, coord.yCoord, coord.zCoord);
@@ -279,11 +285,6 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		}
 
 		return data;
-	}
-
-	public int getScaledFluidLevel(int i)
-	{
-		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / 10000 : 0;
 	}
 
 	@Override
@@ -452,7 +453,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.getOrientation(1))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.UP)
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -463,7 +464,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(from == ForgeDirection.UP)
+		if(from == ForgeDirection.UP && resource.getFluid().canBePlacedInWorld())
 		{
 			return fluidTank.fill(resource, true);
 		}
@@ -480,7 +481,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return from == ForgeDirection.UP;
+		return from == ForgeDirection.UP && fluid.canBePlacedInWorld();
 	}
 
 	@Override
