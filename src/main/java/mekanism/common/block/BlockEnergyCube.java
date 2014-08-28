@@ -152,71 +152,68 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		{
 			return true;
 		}
-		else {
-			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
-			int metadata = world.getBlockMetadata(x, y, z);
 
-			if(entityplayer.getCurrentEquippedItem() != null)
+		TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(x, y, z);
+
+		if(entityplayer.getCurrentEquippedItem() != null)
+		{
+			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+
+			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				Item tool = entityplayer.getCurrentEquippedItem().getItem();
-
-				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+				if(entityplayer.isSneaking())
 				{
-					if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
-					{
-						if(entityplayer.isSneaking())
-						{
-							dismantleBlock(world, x, y, z, false);
-							return true;
-						}
-
-						((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-
-						int change = 0;
-
-						switch(tileEntity.facing)
-						{
-							case 3:
-								change = 5;
-								break;
-							case 5:
-								change = 2;
-								break;
-							case 2:
-								change = 4;
-								break;
-							case 4:
-								change = 1;
-								break;
-							case 1:
-								change = 0;
-								break;
-							case 0:
-								change = 3;
-								break;
-						}
-
-						tileEntity.setFacing((short)change);
-						world.notifyBlocksOfNeighborChange(x, y, z, this);
-						return true;
-					}
-				}
-			}
-
-			if(tileEntity != null)
-			{
-				if(!entityplayer.isSneaking())
-				{
-					entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
+					dismantleBlock(world, x, y, z, false);
 					return true;
 				}
+
+				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
+					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+
+				int change = 0;
+
+				switch(tileEntity.facing)
+				{
+					case 3:
+						change = 5;
+						break;
+					case 5:
+						change = 2;
+						break;
+					case 2:
+						change = 4;
+						break;
+					case 4:
+						change = 1;
+						break;
+					case 1:
+						change = 0;
+						break;
+					case 0:
+						change = 3;
+						break;
+				}
+
+				tileEntity.setFacing((short)change);
+				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				return true;
 			}
 		}
+
+		if(tileEntity != null)
+		{
+			if(!entityplayer.isSneaking())
+			{
+				entityplayer.openGui(Mekanism.instance, 8, world, x, y, z);
+				return true;
+			}
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{

@@ -440,10 +440,10 @@ gui.digitalMiner.inverse=Inverse mode
 recipe.mekanismShaped=Shaped
 
 //Item and block tooltip text
-tooltip.configurator.modify=Modify
+tooltip.configurator.configurate=Configurate
 tooltip.configurator.empty=Empty
+tooltip.configurator.rotate=Rotate
 tooltip.configurator.wrench=Wrench
-tooltip.configurator.link=Link
 tooltip.configurator.pumpReset=Reset Electric Pump calculation
 tooltip.configurator.toggleDiverter=Diverter mode changed to
 tooltip.configurator.toggleColor=Color bumped to

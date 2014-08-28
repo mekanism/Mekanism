@@ -8,6 +8,8 @@ import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -94,46 +96,43 @@ public class BlockGasTank extends BlockContainer
 		}
 
 		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
-		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
+				if(entityplayer.isSneaking())
 				{
-					if(entityplayer.isSneaking())
-					{
-						dismantleBlock(world, x, y, z, false);
-						return true;
-					}
-
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
-
-					int change = 0;
-
-					switch(tileEntity.facing)
-					{
-						case 3:
-							change = 5;
-							break;
-						case 5:
-							change = 2;
-							break;
-						case 2:
-							change = 4;
-							break;
-						case 4:
-							change = 3;
-							break;
-					}
-
-					tileEntity.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(x, y, z, this);
+					dismantleBlock(world, x, y, z, false);
 					return true;
 				}
+
+				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
+					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+
+				int change = 0;
+
+				switch(tileEntity.facing)
+				{
+					case 3:
+						change = 5;
+						break;
+					case 5:
+						change = 2;
+						break;
+					case 2:
+						change = 4;
+						break;
+					case 4:
+						change = 3;
+						break;
+				}
+
+				tileEntity.setFacing((short)change);
+				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				return true;
 			}
 		}
 
