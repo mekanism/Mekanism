@@ -628,9 +628,9 @@ public final class MekanismUtils
 	 * @param def - the original, default secondary energy required
 	 * @return max secondary energy per tick
 	 */
-	public static int getSecondaryEnergyPerTick(IUpgradeManagement mgmt, int def)
+	public static int getSecondaryEnergyPerTick(IUpgradeTile mgmt, int def)
 	{
-		return def * (int)Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getSpeedMultiplier()/8.0);
+		return def * (int)Math.pow(general.maxUpgradeMultiplier, mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax());
 	}
 
 	/**
