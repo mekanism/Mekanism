@@ -148,7 +148,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -237,6 +237,7 @@ public class BlockGasTank extends BlockContainer
 		return itemStack;
 	}
 
+	@Override
 	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
@@ -255,6 +256,7 @@ public class BlockGasTank extends BlockContainer
 		return valid;
 	}
 
+	@Override
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);

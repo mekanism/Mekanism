@@ -750,11 +750,10 @@ public class BlockBasic extends Block
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -803,6 +802,7 @@ public class BlockBasic extends Block
 		}
 	}
 
+	@Override
 	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
@@ -821,6 +821,7 @@ public class BlockBasic extends Block
 		return valid;
 	}
 
+	@Override
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);

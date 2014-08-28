@@ -324,6 +324,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		return true;
 	}
 
+	@Override
 	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
@@ -342,6 +343,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		return valid;
 	}
 
+	@Override
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);

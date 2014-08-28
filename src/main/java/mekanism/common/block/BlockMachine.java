@@ -827,7 +827,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -1278,6 +1278,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return null;
 	}
 
+	@Override
 	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
@@ -1296,6 +1297,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return valid;
 	}
 
+	@Override
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
