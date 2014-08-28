@@ -641,7 +641,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float posX, float posY, float posZ)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float posX, float posY, float posZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -671,23 +671,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = 0;
-
-				switch(tileEntity.facing)
-				{
-					case 3:
-						change = 5;
-						break;
-					case 5:
-						change = 2;
-						break;
-					case 2:
-						change = 4;
-						break;
-					case 4:
-						change = 3;
-						break;
-				}
+				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
 				if(tileEntity instanceof TileEntityLogisticalSorter)
 				{

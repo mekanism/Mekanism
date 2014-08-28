@@ -33,8 +33,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockGasTank extends BlockContainer
 {
-	public Random machineRand = new Random();
-
 	public BlockGasTank()
 	{
 		super(Material.iron);
@@ -83,7 +81,7 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -112,23 +110,7 @@ public class BlockGasTank extends BlockContainer
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = 0;
-
-				switch(tileEntity.facing)
-				{
-					case 3:
-						change = 5;
-						break;
-					case 5:
-						change = 2;
-						break;
-					case 2:
-						change = 4;
-						break;
-					case 4:
-						change = 3;
-						break;
-				}
+				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);

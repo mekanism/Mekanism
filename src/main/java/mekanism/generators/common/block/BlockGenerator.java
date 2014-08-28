@@ -295,7 +295,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -325,23 +325,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = 0;
-
-				switch(tileEntity.facing)
-				{
-					case 3:
-						change = 5;
-						break;
-					case 5:
-						change = 2;
-						break;
-					case 2:
-						change = 4;
-						break;
-					case 4:
-						change = 3;
-						break;
-				}
+				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
@@ -351,7 +335,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 
 		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(MekanismGenerators.Generator, 1, 2)))
 		{
-			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != facing)
+			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != side)
 			{
 				return false;
 			}
