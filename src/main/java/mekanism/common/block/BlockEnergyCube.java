@@ -141,7 +141,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float f1, float f2, float f3)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -170,29 +170,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = 0;
-
-				switch(tileEntity.facing)
-				{
-					case 3:
-						change = 5;
-						break;
-					case 5:
-						change = 2;
-						break;
-					case 2:
-						change = 4;
-						break;
-					case 4:
-						change = 1;
-						break;
-					case 1:
-						change = 0;
-						break;
-					case 0:
-						change = 3;
-						break;
-				}
+				int change = ForgeDirection.ROTATION_MATRIX[side][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
