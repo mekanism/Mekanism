@@ -33,6 +33,6 @@
 
 	"item.flamethrower.idle": {"category": "player", "sounds": [{"name": "FlamethrowerIdle","stream": false}]},
 	"item.flamethrower.active": {"category": "player", "sounds": [{"name": "FlamethrowerActive","stream": false}]},
-	"item.gasmask": {"category": "player", "sounds": [{"name": "GasMask","stream": false}]}
+	"item.gasmask": {"category": "player", "sounds": [{"name": "GasMask","stream": false}]},
 	"item.jetpack": {"category": "player", "sounds": [{"name": "Jetpack","stream": false}]}
 }

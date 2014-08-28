@@ -288,7 +288,9 @@ public class ClientTickHandler
 					{
 						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_JETPACK) == null)
 						{
-							new JetpackSound(MekanismClient.audioHandler.getIdentifier(player), player);
+							//player.worldObj.playSoundAtEntity(player, "mekanism:item.jetpack", 1F, 1F);
+							player.worldObj.playSound(player.posX, player.posY, player.posZ, "mekanism:item.jetpack", 1, 1, false);
+							//new JetpackSound(MekanismClient.audioHandler.getIdentifier(player), player);
 						}
 					}
 				}
