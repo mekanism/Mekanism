@@ -296,7 +296,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float playerX, float playerY, float playerZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -313,7 +313,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
-			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
+			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+
+			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
 				if(entityplayer.isSneaking())
 				{
@@ -321,25 +323,10 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 					return true;
 				}
 
-				((IToolWrench)entityplayer.getCurrentEquippedItem().getItem()).wrenchUsed(entityplayer, x, y, z);
+				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
+					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = 0;
-
-				switch(tileEntity.facing)
-				{
-					case 3:
-						change = 5;
-						break;
-					case 5:
-						change = 2;
-						break;
-					case 2:
-						change = 4;
-						break;
-					case 4:
-						change = 3;
-						break;
-				}
+				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
@@ -349,7 +336,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 
 		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(GeneratorsBlocks.Generator, 1, 2)))
 		{
-			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != facing)
+			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != side)
 			{
 				return false;
 			}
@@ -437,8 +424,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
-			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
-
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
@@ -467,7 +452,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		electricItem.setEnergy(itemStack, tileEntity.electricityStored);
 
 		ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
-		inventory.setInventory(((ISustainedInventory)tileEntity).getInventory(), itemStack);
+		inventory.setInventory(tileEntity.getInventory(), itemStack);
 		
 		if(tileEntity instanceof ISustainedData)
 		{

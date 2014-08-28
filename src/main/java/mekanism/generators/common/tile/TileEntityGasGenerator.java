@@ -291,6 +291,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		fuelTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("fuelTank")));
+		fuelTank.read(itemStack.stackTagCompound.getCompoundTag("fuelTank"));
 	}
 }

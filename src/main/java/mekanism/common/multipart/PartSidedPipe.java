@@ -22,6 +22,8 @@ import mekanism.common.Tier;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.TransmitterType.Size;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -464,7 +466,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return false;
 		}
 
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && item.getItem() instanceof IToolWrench && !(item.getItem() instanceof ItemConfigurator) && player.isSneaking())
+		if(MekanismUtils.hasUsableWrench(player, x(), y(), z()) && player.isSneaking())
 		{
 			if(!world().isRemote)
 			{

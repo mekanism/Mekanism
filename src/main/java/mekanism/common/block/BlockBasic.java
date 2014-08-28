@@ -756,7 +756,6 @@ public class BlockBasic extends Block
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;

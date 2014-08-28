@@ -8,6 +8,7 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
+import mekanism.api.IMekWrench;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IInvConfiguration;
@@ -30,7 +31,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
 @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
-public class ItemConfigurator extends ItemEnergized implements IToolWrench
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -47,19 +48,6 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 		list.add(EnumColor.PINK + MekanismUtils.localize("gui.state") + ": " + EnumColor.GREY + getStateDisplay(getState(itemstack)));
-
-		if(getState(itemstack) == 3)
-		{
-			if(hasLink(itemstack))
-			{
-				Coord4D obj = getLink(itemstack);
-
-				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.linkMsg") + " " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", " + MekanismUtils.localize("tooltip.configurator.dim") + " " + EnumColor.INDIGO + obj.dimensionId);
-			}
-			else {
-				list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.noLink"));
-			}
-		}
 	}
 
 	@Override
@@ -70,20 +58,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 			Block block = world.getBlock(x, y, z);
 			TileEntity tile = world.getTileEntity(x, y, z);
 
-			if(tile instanceof IConfigurable)
-			{
-				IConfigurable config = (IConfigurable)tile;
-
-				if(player.isSneaking())
-				{
-					config.onSneakRightClick(player, side);
-				}
-				else {
-					config.onRightClick(player, side);
-				}
-			}
-
-			if(getState(stack) == 0)
+			if(getState(stack) == 0) //Configurate
 			{
 				if(tile instanceof IInvConfiguration)
 				{
@@ -111,12 +86,23 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 						}
 					}
 				}
+				else if(tile instanceof IConfigurable)
+				{
+					IConfigurable config = (IConfigurable)tile;
+
+					if(player.isSneaking())
+					{
+						return config.onSneakRightClick(player, side);
+					}
+					else {
+						return config.onRightClick(player, side);
+					}
+				}
 			}
-			else if(getState(stack) == 1)
+			else if(getState(stack) == 1) //Empty
 			{
 				if(tile instanceof IInventory)
 				{
-					int itemAmount = 0;
 					IInventory inv = (IInventory)tile;
 
 					if(!(inv instanceof TileEntityElectricChest) || (((TileEntityElectricChest)inv).canAccess()))
@@ -173,7 +159,7 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 					}
 				}
 			}
-			else if(getState(stack) == 2)
+			else if(getState(stack) == 2) //Rotate
 			{
 				ForgeDirection axis = ForgeDirection.getOrientation(side);
 				List<ForgeDirection> l = Arrays.asList(block.getValidRotations(world, x, y, z));
@@ -189,16 +175,9 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 
 				return true;
 			}
-			else if(getState(stack) == 3)
+			else if(getState(stack) == 3) //Wrench
 			{
-				if(!world.isRemote && player.isSneaking())
-				{
-					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
-					player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.setLink") + " " + EnumColor.INDIGO + MekanismUtils.getCoordDisplay(obj) + EnumColor.GREY + ", " + MekanismUtils.localize("tooltip.configurator.dim") + " " + EnumColor.INDIGO + obj.dimensionId));
-					setLink(stack, obj);
-
-					return true;
-				}
+				return false;
 			}
 		}
 
@@ -210,13 +189,13 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 		switch(state)
 		{
 			case 0:
-				return MekanismUtils.localize("tooltip.configurator.modify");
+				return MekanismUtils.localize("tooltip.configurator.configurate");
 			case 1:
 				return MekanismUtils.localize("tooltip.configurator.empty");
 			case 2:
-				return MekanismUtils.localize("tooltip.configurator.wrench");
+				return MekanismUtils.localize("tooltip.configurator.rotate");
 			case 3:
-				return MekanismUtils.localize("tooltip.configurator.link");
+				return MekanismUtils.localize("tooltip.configurator.wrench");
 		}
 
 		return "unknown";
@@ -266,36 +245,6 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 		return state;
 	}
 
-	public boolean hasLink(ItemStack itemStack)
-	{
-		return getLink(itemStack) != null;
-	}
-
-	public Coord4D getLink(ItemStack itemStack)
-	{
-		if(itemStack.stackTagCompound == null || !itemStack.getTagCompound().hasKey("position"))
-		{
-			return null;
-		}
-
-		return Coord4D.read(itemStack.getTagCompound().getCompoundTag("position"));
-	}
-
-	public void setLink(ItemStack itemStack, Coord4D obj)
-	{
-		if(itemStack.getTagCompound() == null)
-		{
-			itemStack.setTagCompound(new NBTTagCompound());
-		}
-
-		itemStack.getTagCompound().setTag("position", obj.write(new NBTTagCompound()));
-	}
-
-	public void clearLink(ItemStack itemStack)
-	{
-		itemStack.getTagCompound().removeTag("position");
-	}
-
 	@Override
 	public boolean canSend(ItemStack itemStack)
 	{
@@ -306,10 +255,22 @@ public class ItemConfigurator extends ItemEnergized implements IToolWrench
 	@Method(modid = "BuildCraftAPI|tools")
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
-		return !(player.worldObj.getTileEntity(x, y, z) instanceof TileEntityBasicBlock);
+		return canUseWrench(player, x, y, z);
 	}
 
 	@Override
 	@Method(modid = "BuildCraftAPI|tools")
 	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
+
+	@Override
+	public boolean canUseWrench(EntityPlayer player, int x, int y, int z)
+	{
+		return getState(player.getCurrentEquippedItem()) == 3;
+	}
+
+	@Override
+	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+	{
+		return getState(player.getCurrentEquippedItem()) == 3;
+	}
 }

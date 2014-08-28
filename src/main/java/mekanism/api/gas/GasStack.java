@@ -84,7 +84,7 @@ public class GasStack
 		GasStack stack = new GasStack();
 		stack.read(nbtTags);
 
-		if(stack.getGas() == null)
+		if(stack.getGas() == null || stack.amount <= 0)
 		{
 			return null;
 		}
