@@ -632,7 +632,7 @@ public final class MekanismUtils
 	 */
 	public static int getSecondaryEnergyPerTick(IUpgradeManagement mgmt, int def)
 	{
-		return def * (int)Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getSpeedMultiplier()/8.0);
+		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getSpeedMultiplier()/8.0));
 	}
 
 	/**
