@@ -39,7 +39,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
 	public TileEntityGasGenerator()
 	{
-		super("GasGenerator", general.FROM_H2*100, general.FROM_H2*2);
+		super("gas", "GasGenerator", general.FROM_H2*100, general.FROM_H2*2);
 		inventory = new ItemStack[2];
 		fuelTank = new GasTank(MAX_GAS);
 	}

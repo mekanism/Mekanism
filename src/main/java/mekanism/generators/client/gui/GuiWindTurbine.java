@@ -81,7 +81,7 @@ public class GuiWindTurbine extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, (tileEntity.getVolumeMultiplier() > 0 ? 52 : 64), 12, 12);
+		drawTexturedModalRect(guiWidth + 20, guiHeight + 37, 176, (tileEntity.getActive() ? 52 : 64), 12, 12);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

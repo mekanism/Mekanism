@@ -1,90 +1,103 @@
 package mekanism.client.sound;
 
-import mekanism.api.Pos3D;
-import mekanism.client.HolidayManager;
-import mekanism.common.base.IActiveState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.ResourceLocation;
 
-/**
- * Sound -- an object that is created in SoundHandler. A 'Sound' object runs off of
- * PaulsCode's SoundSystem. It has several methods; play(), for looping the clip,
- * stop(), for stopping the loop, remove(), for removing the sound from PaulsCode,
- * and updateVolume() for updating the volume based on where the player is.
- * @author AidanBrady
- *
- */
-@SideOnly(Side.CLIENT)
-public class TileSound extends Sound
-{
-	/** The TileEntity this sound is associated with. */
-	public TileEntity tileEntity;
+public class TileSound extends Sound implements IResettableSound {
 
-	/**
-	 * A sound that runs off of the PaulsCode sound system.
-	 * @param id - unique identifier
-	 * @param sound - bundled path to the sound
-	 * @param tileentity - the tile this sound is playing from.
-	 */
-	public TileSound(String id, String sound, String chan, TileEntity tileentity)
+	IHasSound source;
+	boolean beginFadeOut;
+	boolean donePlaying = true;
+	int ticks = 0;
+	int fadeIn = 50;
+	int fadeOut = 50;
+	float baseVolume = 1.0F;
+
+	public TileSound(IHasSound source, ISoundSource values)
 	{
-		super(id, sound, chan, tileentity, new Pos3D(tileentity));
-
-		tileEntity = tileentity;
+		this(source, values.getSoundLocation(), values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
 	}
 
-	@Override
-	public float getMultiplier()
-	{
-		return super.getMultiplier()*((IHasSound)tileEntity).getVolumeMultiplier();
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
+
+		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	@Override
-	public Pos3D getLocation()
-	{
-		return new Pos3D(tileEntity);
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
+					 AttenuationType attenuation) {
+
+		this(source, new ResourceLocation(sound), volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
 	}
 
+	public TileSound(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
+
+		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
+	}
+
+	public TileSound(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
+					 AttenuationType attenuation) {
+
+		super(sound, volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
+		this.source = source;
+		this.baseVolume = volume;
+	}
+
+	public TileSound setFadeIn(int fadeIn) {
+
+		this.fadeIn = Math.min(0, fadeIn);
+		return this;
+	}
+
+	public TileSound setFadeOut(int fadeOut) {
+
+		this.fadeOut = Math.min(0, fadeOut);
+		return this;
+	}
+
+	public float getFadeInMultiplier() {
+
+		return ticks >= fadeIn ? 1 : (float) (ticks / (float) fadeIn);
+	}
+
+	public float getFadeOutMultiplier() {
+
+		return ticks >= fadeOut ? 0 : (float) ((fadeOut - ticks) / (float) fadeOut);
+	}
+
+	/* ITickableSound */
 	@Override
-	public boolean update(World world)
-	{
-		if(!super.update(world))
-		{
-			return false;
-		}
-		else if(!(tileEntity instanceof IHasSound))
-		{
-			return false;
-		}
-		else if(world.getTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) != tileEntity)
-		{
-			return false;
-		}
-		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(prevSoundPath))
-		{
-			return false;
-		}
-		else if(tileEntity instanceof IActiveState)
-		{
-			if(((IActiveState)tileEntity).getActive() != isPlaying)
-			{
-				if(((IActiveState)tileEntity).getActive())
-				{
-					play();
-				}
-				else {
-					stopLoop();
-				}
+	public void update() {
+
+		if (!beginFadeOut) {
+			if (ticks < fadeIn) {
+				ticks++;
 			}
+			if (!source.shouldPlaySound()) {
+				beginFadeOut = true;
+				ticks = 0;
+			}
+		} else {
+			ticks++;
 		}
+		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
+		volume = baseVolume * multiplier;
 
-		if(isPlaying)
-		{
-			ticksSincePlay++;
+		if (multiplier <= 0) {
+			donePlaying = true;
 		}
+	}
 
-		return true;
+	@Override
+	public boolean isDonePlaying()
+	{
+		return donePlaying;
+	}
+
+	@Override
+	public void reset()
+	{
+		donePlaying = false;
+		beginFadeOut = false;
+		volume = baseVolume;
+		ticks = 0;
 	}
 }

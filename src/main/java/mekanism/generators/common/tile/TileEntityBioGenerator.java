@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.MekanismConfig.generators;
-import mekanism.client.sound.TileSound;
 import mekanism.common.FluidSlot;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -23,23 +22,18 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
-	/** The Sound instance for this machine. */
-	@SideOnly(Side.CLIENT)
-	public TileSound audio;
-
 	/** The FluidSlot biofuel instance for this generator. */
 	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
 
 	public TileEntityBioGenerator()
 	{
-		super("BioGenerator", 160000, generators.bioGeneration*2);
+		super("bio", "BioGenerator", 160000, generators.bioGeneration*2);
 		inventory = new ItemStack[2];
 	}
 

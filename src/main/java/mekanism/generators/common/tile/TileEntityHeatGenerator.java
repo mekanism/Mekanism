@@ -36,7 +36,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
 	public TileEntityHeatGenerator()
 	{
-		super("HeatGenerator", 160000, generators.heatGeneration*2);
+		super("heat", "HeatGenerator", 160000, generators.heatGeneration*2);
 		inventory = new ItemStack[2];
 	}
 

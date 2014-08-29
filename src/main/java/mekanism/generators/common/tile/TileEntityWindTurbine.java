@@ -19,7 +19,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 
 	public TileEntityWindTurbine()
 	{
-		super("WindTurbine", 200000, (generators.windGenerationMax)*2);
+		super("wind", "WindTurbine", 200000, (generators.windGenerationMax)*2);
 		inventory = new ItemStack[1];
 	}
 
@@ -67,7 +67,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	public float getVolume()
 	{
 		return 1.5F;
 	}

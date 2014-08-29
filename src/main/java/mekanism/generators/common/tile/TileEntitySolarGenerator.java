@@ -29,14 +29,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public TileEntitySolarGenerator()
 	{
-		super("SolarGenerator", 96000, generators.solarGeneration*2);
+		this("SolarGenerator", 96000, generators.solarGeneration*2);
 		GENERATION_RATE = generators.solarGeneration;
-		inventory = new ItemStack[1];
 	}
 
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output)
 	{
-		super(name, maxEnergy, output);
+		super("solar", name, maxEnergy, output);
 		inventory = new ItemStack[1];
 	}
 
@@ -47,7 +46,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	public float getVolume()
 	{
 		return 0.05F;
 	}

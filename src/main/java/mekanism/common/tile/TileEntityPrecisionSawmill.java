@@ -12,7 +12,7 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 {
 	public TileEntityPrecisionSawmill()
 	{
-		super("PrecisionSawmill.ogg", "PrecisionSawmill", MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), usage.precisionSawmillUsage, 200, MachineType.PRECISION_SAWMILL.baseEnergy);
+		super("sawmill", "PrecisionSawmill", MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), usage.precisionSawmillUsage, 200, MachineType.PRECISION_SAWMILL.baseEnergy);
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class TileEntityPrecisionSawmill extends TileEntityChanceMachine
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	public float getVolume()
 	{
 		return 0.7F;
 	}

@@ -10,7 +10,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 {
 	public TileEntityEnrichmentChamber()
 	{
-		super("Chamber.ogg", "EnrichmentChamber", usage.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
+		super("enrichment", "EnrichmentChamber", usage.enrichmentChamberUsage, 200, MachineType.ENRICHMENT_CHAMBER.baseEnergy);
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	public float getVolume()
 	{
 		return 0.3F;
 	}

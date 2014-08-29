@@ -17,7 +17,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
 {
 	public TileEntityCombiner()
 	{
-		super("Combiner.ogg", "Combiner", usage.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
+		super("combiner", "Combiner", usage.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
 	}
 
 	@Override

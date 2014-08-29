@@ -13,7 +13,7 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
 
 	public TileEntityEnergizedSmelter()
 	{
-		super("Smelter.ogg", "EnergizedSmelter", usage.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
+		super("smelter", "EnergizedSmelter", usage.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
 	}
 
 	@Override

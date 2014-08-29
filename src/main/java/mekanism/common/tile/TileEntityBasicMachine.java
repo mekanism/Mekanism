@@ -5,9 +5,9 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.Pos3D;
 import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.client.sound.IHasSound;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IActiveState;
@@ -20,24 +20,25 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
+public abstract class TileEntityBasicMachine extends TileEntityNoisyElectricBlock implements IElectricMachine, IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;
 
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-
-	/** The bundled URL of this machine's sound effect */
-	public String soundURL;
 
 	/** How much energy this machine uses per tick. */
 	public double ENERGY_PER_TICK;
@@ -80,10 +81,9 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
 	{
-		super(name, maxEnergy);
+		super("machine." + soundPath, name, maxEnergy);
 		ENERGY_PER_TICK = perTick;
 		TICKS_REQUIRED = ticksRequired;
-		soundURL = soundPath;
 		guiLocation = location;
 		isActive = false;
 	}
@@ -93,19 +93,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote)
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -289,18 +284,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return soundURL;
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override

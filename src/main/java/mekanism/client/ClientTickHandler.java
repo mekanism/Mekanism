@@ -7,45 +7,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mekanism.api.EnumColor;
 import mekanism.api.IClientTicker;
-import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.FlamethrowerSound;
 import mekanism.client.sound.GasMaskSound;
 import mekanism.client.sound.JetpackSound;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
-import mekanism.common.block.BlockMachine.MachineType;
-import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
-import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketJetpackData.JetpackPacket;
-import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
-import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StringUtils;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -53,6 +38,10 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
+import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
+import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -90,27 +79,10 @@ public class ClientTickHandler
 		{
 			tickStart();
 		}
-		else if(event.phase == Phase.END)
-		{
-			tickEnd();
-		}
 	}
 
 	public void tickStart()
 	{
-		if(!preloadedSounds && client.enableSounds && MekanismClient.audioHandler != null && MekanismClient.audioHandler.isSystemLoaded())
-		{
-			preloadedSounds = true;
-			
-			new Thread(new Runnable() {
-				@Override
-				public void run()
-				{
-					MekanismClient.audioHandler.preloadSounds();
-				}
-			}).start();
-		}
-
 		MekanismClient.ticksPassed++;
 
 		if(!hasNotified && mc.theWorld != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
@@ -286,10 +258,11 @@ public class ClientTickHandler
 					
 					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_JETPACK) == null)
+						if(!MekanismClient.audioHandler.hasSound(player, JETPACK))
 						{
-							new JetpackSound(MekanismClient.audioHandler.getIdentifier(player), player);
+							MekanismClient.audioHandler.addSound(player, JETPACK, new JetpackSound(player), false);
 						}
+						MekanismClient.audioHandler.playSound(player, JETPACK);
 					}
 				}
 
@@ -299,10 +272,11 @@ public class ClientTickHandler
 					
 					if(player != null)
 					{
-						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_GASMASK) == null)
+						if(!MekanismClient.audioHandler.hasSound(player, GASMASK))
 						{
-							new GasMaskSound(MekanismClient.audioHandler.getIdentifier(player), player);
+							MekanismClient.audioHandler.addSound(player, GASMASK, new GasMaskSound(player), false);
 						}
+						MekanismClient.audioHandler.playSound(player, GASMASK);
 					}
 				}
 				
@@ -310,10 +284,11 @@ public class ClientTickHandler
 				{
 					if(hasFlamethrower(player))
 					{
-						if(MekanismClient.audioHandler.getSound(player, SoundHandler.CHANNEL_FLAMETHROWER) == null)
+						if(!MekanismClient.audioHandler.hasSound(player, FLAMETHROWER))
 						{
-							new FlamethrowerSound(MekanismClient.audioHandler.getIdentifier(player), player);
+							MekanismClient.audioHandler.addSound(player, FLAMETHROWER, new FlamethrowerSound(player), false);
 						}
+						MekanismClient.audioHandler.playSound(player, FLAMETHROWER);
 					}
 				}
 			}
@@ -483,16 +458,5 @@ public class ClientTickHandler
 		}
 		
 		return false;
-	}
-
-	public void tickEnd()
-	{
-		if(MekanismClient.audioHandler != null)
-		{
-			synchronized(MekanismClient.audioHandler.soundMaps)
-			{
-				MekanismClient.audioHandler.onTick();
-			}
-		}
 	}
 }

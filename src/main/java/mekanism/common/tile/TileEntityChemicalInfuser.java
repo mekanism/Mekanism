@@ -33,7 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalInfuser extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, ISustainedData
+public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -58,26 +58,21 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 	public TileEntityChemicalInfuser()
 	{
-		super("ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
+		super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -315,21 +310,6 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		return null;
 	}
 
-	public int getScaledLeftGasLevel(int i)
-	{
-		return leftTank != null ? leftTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledRightGasLevel(int i)
-	{
-		return rightTank != null ? rightTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledCenterGasLevel(int i)
-	{
-		return centerTank != null ? centerTank.getStored()*i / MAX_GAS : 0;
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{
@@ -466,18 +446,6 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		}
 
 		return InventoryUtils.EMPTY;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "ChemicalInfuser.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override
