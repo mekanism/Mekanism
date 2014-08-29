@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import java.io.File;
-import java.util.HashMap;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
@@ -90,7 +89,6 @@ import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.sound.SoundHandler;
-import mekanism.client.sound.SoundMap;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -490,29 +488,6 @@ public class ClientProxy extends CommonProxy
 		if(client.enableSounds)
 		{
 			MekanismClient.audioHandler = new SoundHandler();
-		}
-	}
-
-	@Override
-	public void unloadSoundHandler()
-	{
-		if(client.enableSounds)
-		{
-			if(MekanismClient.audioHandler != null)
-			{
-				synchronized(MekanismClient.audioHandler.soundMaps)
-				{
-					HashMap<Object, SoundMap> mapsCopy = new HashMap<Object, SoundMap>();
-					mapsCopy.putAll(MekanismClient.audioHandler.soundMaps);
-
-					for(SoundMap map : mapsCopy.values())
-					{
-						map.kill();
-					}
-
-					MekanismClient.audioHandler.soundMaps.clear();
-				}
-			}
 		}
 	}
 

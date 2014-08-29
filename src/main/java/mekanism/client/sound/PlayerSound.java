@@ -1,53 +1,114 @@
 package mekanism.client.sound;
 
-import mekanism.api.Pos3D;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import mekanism.common.Mekanism;
 
-public abstract class PlayerSound extends Sound
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+
+public abstract class PlayerSound extends Sound implements IResettableSound
 {
-	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
 
-	public PlayerSound(String id, String sound, String chan, EntityPlayer entity)
-	{
-		super(id, sound, chan, entity, new Pos3D(entity));
+	boolean beginFadeOut;
+	boolean donePlaying = true;
+	int ticks = 0;
+	int fadeIn = 50;
+	int fadeOut = 50;
+	float baseVolume = 0.3F;
 
-		player = entity;
+
+	public PlayerSound(EntityPlayer player, ResourceLocation location)
+	{
+		super(location, 0.3F, 1, true, 0, (float) player.posX, (float) player.posY, (float) player.posZ, AttenuationType.LINEAR);
+		this.player = player;
 	}
 
 	@Override
-	public float getMultiplier()
+	public float getXPosF()
 	{
-		return super.getMultiplier()*0.3F;
+
+		return (float) player.posX;
 	}
 
 	@Override
-	public boolean update(World world)
+	public float getYPosF()
 	{
-		if(!super.update(world))
-		{
-			return false;
-		}
-		else if(player.isDead)
-		{
-			return false;
-		}
-		else if(player.worldObj != world)
-		{
-			return false;
-		}
-		else if(!world.loadedEntityList.contains(player))
-		{
-			return false;
-		}
 
-		return true;
+		return (float) player.posY;
 	}
 
 	@Override
-	public Pos3D getLocation()
+	public float getZPosF()
 	{
-		return new Pos3D(player);
+
+		return (float) player.posZ;
+	}
+
+	public PlayerSound setFadeIn(int fadeIn) {
+
+		this.fadeIn = Math.min(0, fadeIn);
+		return this;
+	}
+
+	public PlayerSound setFadeOut(int fadeOut) {
+
+		this.fadeOut = Math.min(0, fadeOut);
+		return this;
+	}
+
+	public float getFadeInMultiplier() {
+
+		return ticks >= fadeIn ? 1 : (float) (ticks / (float) fadeIn);
+	}
+
+	public float getFadeOutMultiplier() {
+
+		return ticks >= fadeOut ? 0 : (float) ((fadeOut - ticks) / (float) fadeOut);
+	}
+
+	@Override
+	public void update()
+	{
+
+		if(!beginFadeOut)
+		{
+			if(ticks < fadeIn)
+			{
+				ticks++;
+			}
+			if(!shouldPlaySound())
+			{
+				beginFadeOut = true;
+				ticks = 0;
+			}
+		} else
+		{
+			ticks++;
+		}
+		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
+		volume = baseVolume * multiplier;
+
+		if(multiplier <= 0)
+		{
+			Mekanism.logger.info("Sound Stopping. " + this);
+			donePlaying = true;
+		}
+	}
+
+	@Override
+	public boolean isDonePlaying()
+	{
+		return donePlaying;
+	}
+
+	public abstract boolean shouldPlaySound();
+
+	@Override
+	public void reset()
+	{
+		donePlaying = false;
+		beginFadeOut = false;
+		volume = baseVolume;
+		ticks = 0;
 	}
 }

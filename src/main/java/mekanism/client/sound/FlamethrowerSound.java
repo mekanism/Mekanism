@@ -1,60 +1,58 @@
 package mekanism.client.sound;
 
 import mekanism.client.ClientTickHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 
 public class FlamethrowerSound extends PlayerSound
 {
-	public boolean inUse = false;
-	
-	public FlamethrowerSound(String id, EntityPlayer entity)
+	public boolean inUse;
+
+	public ResourceLocation onSound;
+	public ResourceLocation offSound;
+
+	public FlamethrowerSound(EntityPlayer player)
 	{
-		super(id, getSound(ClientTickHandler.isFlamethrowerOn(entity)), SoundHandler.CHANNEL_FLAMETHROWER, entity);
-		
-		inUse = ClientTickHandler.isFlamethrowerOn(entity);
+		super(player, new ResourceLocation("mekanism", "item.flamethrower.idle"));
+		onSound = new ResourceLocation("mekanism", "item.flamethrower.active");
+		offSound = new ResourceLocation("mekanism", "item.flamethrower.idle");
+		setFadeIn(0);
+		setFadeOut(0);
 	}
 
 	@Override
-	public boolean update(World world)
+	public boolean isDonePlaying()
 	{
-		if(!super.update(world))
-		{
-			return false;
-		}
-		else if(!ClientTickHandler.hasFlamethrower(player))
-		{
-			return false;
-		}
-		else if(inUse != ClientTickHandler.isFlamethrowerOn(player))
-		{
-			return false;
-		}
-		
-		if(!isPlaying)
-		{
-			play();
-		}
+		return donePlaying;
+	}
 
-		ticksSincePlay++;
-
+	@Override
+	public boolean shouldPlaySound()
+	{
 		return true;
 	}
-	
+
 	@Override
-	public float getMultiplier()
+	public float getVolume()
 	{
-		return super.getMultiplier() * (inUse ? 2 : 1);
+		return super.getVolume() * (inUse ? 2 : 1);
 	}
-	
+
 	@Override
-	public boolean doGradualEffect()
+	public void update()
 	{
-		return false;
-	}
-	
-	private static String getSound(boolean inUse)
-	{
-		return inUse ? "FlamethrowerActive.ogg" : "FlamethrowerIdle.ogg";
+		if(!ClientTickHandler.hasFlamethrower(player))
+		{
+			donePlaying = true;
+
+			return;
+		}
+		if(inUse != ClientTickHandler.isFlamethrowerOn(player))
+		{
+			inUse = ClientTickHandler.isFlamethrowerOn(player);
+			sound = inUse ? onSound : offSound;
+			donePlaying = true;
+		}
 	}
 }

@@ -34,7 +34,7 @@ public class ThreadMultiblockSparkle extends Thread
 		try {
 			if(general.dynamicTankEasterEgg)
 			{
-				MekanismClient.audioHandler.quickPlay("cj/CJ_" + (random.nextInt(8)+1) + ".ogg", pointer.getWorldObj(), Coord4D.get(pointer));
+				pointer.getWorldObj().playSound(pointer.xCoord, pointer.yCoord, pointer.zCoord, "mekanism:etc.cj", 1F, 1F, false);
 			}
 
 			loop(pointer);

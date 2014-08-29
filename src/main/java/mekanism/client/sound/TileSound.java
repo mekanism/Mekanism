@@ -1,9 +1,8 @@
 package mekanism.client.sound;
 
-import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.util.ResourceLocation;
 
-public class SoundTile extends SoundBase implements ITickableSound {
+public class TileSound extends Sound implements IResettableSound {
 
 	IHasSound source;
 	boolean beginFadeOut;
@@ -13,28 +12,28 @@ public class SoundTile extends SoundBase implements ITickableSound {
 	int fadeOut = 50;
 	float baseVolume = 1.0F;
 
-	public SoundTile(IHasSound source, ISoundSource values)
+	public TileSound(IHasSound source, ISoundSource values)
 	{
 		this(source, values.getSoundLocation(), values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
 	}
 
-	public SoundTile(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
 
 		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public SoundTile(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
 					 AttenuationType attenuation) {
 
 		this(source, new ResourceLocation(sound), volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
 	}
 
-	public SoundTile(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
+	public TileSound(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
 
 		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public SoundTile(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
+	public TileSound(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
 					 AttenuationType attenuation) {
 
 		super(sound, volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
@@ -42,13 +41,13 @@ public class SoundTile extends SoundBase implements ITickableSound {
 		this.baseVolume = volume;
 	}
 
-	public SoundTile setFadeIn(int fadeIn) {
+	public TileSound setFadeIn(int fadeIn) {
 
 		this.fadeIn = Math.min(0, fadeIn);
 		return this;
 	}
 
-	public SoundTile setFadeOut(int fadeOut) {
+	public TileSound setFadeOut(int fadeOut) {
 
 		this.fadeOut = Math.min(0, fadeOut);
 		return this;
@@ -93,10 +92,12 @@ public class SoundTile extends SoundBase implements ITickableSound {
 		return donePlaying;
 	}
 
+	@Override
 	public void reset()
 	{
 		donePlaying = false;
 		beginFadeOut = false;
+		volume = baseVolume;
 		ticks = 0;
 	}
 }

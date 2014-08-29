@@ -6,26 +6,21 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.Pos3D;
 import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.IHasSound;
 import mekanism.client.sound.ISoundSource;
-import mekanism.client.sound.SoundTile;
+import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -130,7 +125,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		super.validate();
 
-		sound = new SoundTile(this, this);
+		sound = new TileSound(this, this);
 	}
 
 	/**

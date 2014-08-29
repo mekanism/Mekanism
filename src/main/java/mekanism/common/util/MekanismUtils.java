@@ -608,7 +608,7 @@ public final class MekanismUtils
 	 */
 	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
-		return def * (int)Math.pow(general.maxUpgradeMultiplier, (float)-mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax());
+		return (int)(def * Math.pow(general.maxUpgradeMultiplier, (float)-mgmt.getComponent().getUpgrades(Upgrade.SPEED)/(float)Upgrade.SPEED.getMax()));
 	}
 
 	/**
