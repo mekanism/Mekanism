@@ -145,6 +145,15 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
+			if(type == MachineType.PORTABLE_TANK)
+			{
+				FluidStack fluidStack = getFluidStack(itemstack);
+				if(fluidStack != null)
+				{
+					list.add(EnumColor.PINK + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+				}
+			}
+
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " and " + EnumColor.AQUA + Keyboard.getKeyName(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
 		}
@@ -171,7 +180,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
 			}
 
-			if(hasTank(itemstack))
+			if(hasTank(itemstack) && type != MachineType.PORTABLE_TANK)
 			{
 				FluidStack fluidStack = getFluidStack(itemstack);
 				if(fluidStack != null)
