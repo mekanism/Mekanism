@@ -110,6 +110,7 @@ public class SoundHandler
 			map = new HashMap<String, IResettableSound>();
 			soundMaps.put(name, map);
 		}
+
 		return map;
 	}
 
@@ -126,13 +127,15 @@ public class SoundHandler
 	public static Map<ISound, String> getSoundMap()
 	{
 		if(invPlayingSounds == null)
-		try {
-			invPlayingSounds = (Map<ISound, String>)MekanismUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, ObfuscatedNames.SoundManager_invPlayingSounds);
-		} catch(Exception e) {
-			invPlayingSounds = null;
-		}
+			try
+			{
+				invPlayingSounds = (Map<ISound, String>)MekanismUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, ObfuscatedNames.SoundManager_invPlayingSounds);
+			} catch(Exception e)
+			{
+				invPlayingSounds = null;
+			}
+		
 		return invPlayingSounds;
-
 	}
 
 	public static boolean canRestartSound(ITickableSound sound)
