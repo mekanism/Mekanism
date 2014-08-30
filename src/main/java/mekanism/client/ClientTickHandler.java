@@ -259,7 +259,7 @@ public class ClientTickHandler
 					{
 						if(!SoundHandler.soundPlaying(player, JETPACK))
 						{
-							SoundHandler.addSound(player, JETPACK, true);
+							SoundHandler.addSound(player, JETPACK, client.replaceSoundsWhenResuming);
 						}
 						SoundHandler.playSound(player, JETPACK);
 					}
@@ -273,7 +273,7 @@ public class ClientTickHandler
 					{
 						if(!SoundHandler.soundPlaying(player, GASMASK))
 						{
-							SoundHandler.addSound(player, GASMASK, true);
+							SoundHandler.addSound(player, GASMASK, client.replaceSoundsWhenResuming);
 						}
 						SoundHandler.playSound(player, GASMASK);
 					}
@@ -285,7 +285,7 @@ public class ClientTickHandler
 					{
 						if(!SoundHandler.soundPlaying(player, FLAMETHROWER))
 						{
-							SoundHandler.addSound(player, FLAMETHROWER, true);
+							SoundHandler.addSound(player, FLAMETHROWER, client.replaceSoundsWhenResuming);
 						}
 						SoundHandler.playSound(player, FLAMETHROWER);
 					}
