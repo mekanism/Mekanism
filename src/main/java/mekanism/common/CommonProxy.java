@@ -150,12 +150,6 @@ public class CommonProxy
 	}
 
 	/**
-	 * Unregisters a client-side sound, assigned to a TileEntity;
-	 * @param tileEntity - TileEntity who is unregistering the sound
-	 */
-	public void unregisterSound(TileEntity tileEntity) {}
-
-	/**
 	 * Handles an ELECTRIC_CHEST_CLIENT_OPEN packet via the proxy, not handled on the server-side.
 	 * @param entityplayer - player the packet was sent from
 	 * @param id - the electric chest gui ID to open
@@ -285,16 +279,6 @@ public class CommonProxy
 	{
 		FMLCommonHandler.instance().bus().register(Mekanism.worldTickHandler);
 	}
-
-	/**
-	 * Set up and load the sound handler.
-	 */
-	public void loadSoundHandler() {}
-
-	/**
-	 * Unload the sound handler.
-	 */
-	public void unloadSoundHandler() {}
 
 	/**
 	 * Whether or not the game is paused.

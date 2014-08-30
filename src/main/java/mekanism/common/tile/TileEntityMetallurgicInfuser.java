@@ -322,17 +322,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
-	}
-
-	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);

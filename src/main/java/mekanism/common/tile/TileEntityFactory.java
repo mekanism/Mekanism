@@ -467,17 +467,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		return false;
 	}
 
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
-	}
-
 	public int getScaledProgress(int i, int process)
 	{
 		return progress[process]*i / MekanismUtils.getTicks(this, TICKS_REQUIRED);

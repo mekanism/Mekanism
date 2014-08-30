@@ -1128,7 +1128,6 @@ public class Mekanism
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{		
-		proxy.loadSoundHandler();
 		hooks = new MekanismHooks();
 		hooks.hook();
 		

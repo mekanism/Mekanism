@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.IClientTicker;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.gas.GasStack;
-import mekanism.client.sound.FlamethrowerSound;
-import mekanism.client.sound.GasMaskSound;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
@@ -249,45 +249,45 @@ public class ClientTickHandler
 				Mekanism.packetHandler.sendToServer(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, mc.thePlayer.getCommandSenderName(), isGasMaskOn(mc.thePlayer)));
 			}
 
-			if(MekanismClient.audioHandler != null)
+			if(client.enablePlayerSounds)
 			{
 				for(String username : Mekanism.jetpackOn)
 				{
 					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
-					
+
 					if(player != null)
 					{
-						if(!MekanismClient.audioHandler.soundPlaying(player, JETPACK))
+						if(!SoundHandler.soundPlaying(player, JETPACK))
 						{
-							MekanismClient.audioHandler.addSound(player, JETPACK, true);
+							SoundHandler.addSound(player, JETPACK, true);
 						}
-						MekanismClient.audioHandler.playSound(player, JETPACK);
+						SoundHandler.playSound(player, JETPACK);
 					}
 				}
 
 				for(String username : Mekanism.gasmaskOn)
 				{
 					EntityPlayer player = mc.theWorld.getPlayerEntityByName(username);
-					
+
 					if(player != null)
 					{
-						if(!MekanismClient.audioHandler.soundPlaying(player, GASMASK))
+						if(!SoundHandler.soundPlaying(player, GASMASK))
 						{
-							MekanismClient.audioHandler.addSound(player, GASMASK, true);
+							SoundHandler.addSound(player, GASMASK, true);
 						}
-						MekanismClient.audioHandler.playSound(player, GASMASK);
+						SoundHandler.playSound(player, GASMASK);
 					}
 				}
-				
-				for(EntityPlayer player : (List<EntityPlayer>)mc.theWorld.playerEntities)
+
+				for(EntityPlayer player : (List<EntityPlayer>) mc.theWorld.playerEntities)
 				{
 					if(hasFlamethrower(player))
 					{
-						if(!MekanismClient.audioHandler.soundPlaying(player, FLAMETHROWER))
+						if(!SoundHandler.soundPlaying(player, FLAMETHROWER))
 						{
-							MekanismClient.audioHandler.addSound(player, FLAMETHROWER, true);
+							SoundHandler.addSound(player, FLAMETHROWER, true);
 						}
-						MekanismClient.audioHandler.playSound(player, FLAMETHROWER);
+						SoundHandler.playSound(player, FLAMETHROWER);
 					}
 				}
 			}

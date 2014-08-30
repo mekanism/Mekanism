@@ -138,17 +138,6 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
-	}
-
-	@Override
 	protected EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing).getOpposite());

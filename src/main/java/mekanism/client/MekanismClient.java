@@ -15,10 +15,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class MekanismClient extends Mekanism
 {
-	@SideOnly(Side.CLIENT)
-	/** The main SoundHandler instance that is used by all audio sources */
-	public static SoundHandler audioHandler;
-
 	public static VoiceClient voiceClient;
 
 	public static long ticksPassed = 0;
@@ -46,7 +42,6 @@ public class MekanismClient extends Mekanism
 		}
 
 		ClientTickHandler.tickingSet.clear();
-		Mekanism.proxy.unloadSoundHandler();
 
 		MekanismAPI.getBoxIgnore().clear();
 		MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());

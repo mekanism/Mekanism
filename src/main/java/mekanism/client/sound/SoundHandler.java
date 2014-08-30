@@ -18,20 +18,20 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * SoundHandler - a class that handles all Sounds used by Mekanism.
- * Runs off of PaulsCode's SoundSystem.
- * @author AidanBrady
+ * Runs off of PaulsCode's SoundSystem through Minecraft.
+ * @author AidanBrady rewritten by unpairedbracket
  *
  */
 @SideOnly(Side.CLIENT)
 public class SoundHandler
 {
-	public Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<String, Map<String, IResettableSound>>();
+	public static Map<String, Map<String, IResettableSound>> soundMaps = new HashMap<String, Map<String, IResettableSound>>();
 
 	public static Map<ISound, String> invPlayingSounds;
 
 	public static Minecraft mc = Minecraft.getMinecraft();
 
-	public enum Channel
+	public static enum Channel
 	{
 		JETPACK("jetpack", JetpackSound.class),
 		GASMASK("gasMask", GasMaskSound.class),
@@ -64,7 +64,7 @@ public class SoundHandler
 		}
 	}
 
-	public boolean soundPlaying(EntityPlayer player, Channel channel)
+	public static boolean soundPlaying(EntityPlayer player, Channel channel)
 	{
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
@@ -73,7 +73,7 @@ public class SoundHandler
 		return !(sound == null || sound.isDonePlaying());
 	}
 
-	public void addSound(EntityPlayer player, Channel channel, boolean replace)
+	public static void addSound(EntityPlayer player, Channel channel, boolean replace)
 	{
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
@@ -85,7 +85,7 @@ public class SoundHandler
 		}
 	}
 
-	public boolean playSound(EntityPlayer player, Channel channel)
+	public static boolean playSound(EntityPlayer player, Channel channel)
 	{
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
@@ -102,7 +102,7 @@ public class SoundHandler
 		return false;
 	}
 
-	public Map<String, IResettableSound> getMap(String name)
+	public static Map<String, IResettableSound> getMap(String name)
 	{
 		Map<String, IResettableSound> map = soundMaps.get(name);
 		if(map == null)

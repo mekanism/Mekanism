@@ -5,12 +5,10 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.api.Pos3D;
 import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.IInvConfiguration;
@@ -21,13 +19,11 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
+
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -186,17 +182,6 @@ public abstract class TileEntityBasicMachine extends TileEntityNoisyElectricBloc
 		data.add(sideConfig);
 
 		return data;
-	}
-
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
 	}
 
 	/**

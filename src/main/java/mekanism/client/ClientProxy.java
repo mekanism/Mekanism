@@ -88,7 +88,6 @@ import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -181,12 +180,14 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		client.enableSounds = Mekanism.configuration.get("client", "EnableSounds", true).getBoolean(true);
+		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnableSounds", true).getBoolean(true);
 		client.fancyUniversalCableRender = Mekanism.configuration.get("client", "FancyUniversalCableRender", true).getBoolean(true);
 		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean(true);
 		client.baseSoundVolume = Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble(1D);
 		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean(true);
 		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
+		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
+				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();
@@ -480,15 +481,6 @@ public class ClientProxy extends CommonProxy
 		new MekanismKeyHandler();
 
 		HolidayManager.init();
-	}
-
-	@Override
-	public void loadSoundHandler()
-	{
-		if(client.enableSounds)
-		{
-			MekanismClient.audioHandler = new SoundHandler();
-		}
 	}
 
 	@Override
