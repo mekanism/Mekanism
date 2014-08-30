@@ -32,7 +32,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public static final int MAX_GAS = 96000;
 
 	/** How fast this tank can output gas. */
-	public int output = 16;
+	public int output = 256;
 
 	public boolean dumping;
 
