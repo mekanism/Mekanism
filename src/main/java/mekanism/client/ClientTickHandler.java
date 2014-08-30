@@ -11,7 +11,6 @@ import mekanism.api.IClientTicker;
 import mekanism.api.gas.GasStack;
 import mekanism.client.sound.FlamethrowerSound;
 import mekanism.client.sound.GasMaskSound;
-import mekanism.client.sound.JetpackSound;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
@@ -258,9 +257,9 @@ public class ClientTickHandler
 					
 					if(player != null)
 					{
-						if(!MekanismClient.audioHandler.hasSound(player, JETPACK))
+						if(!MekanismClient.audioHandler.soundPlaying(player, JETPACK))
 						{
-							MekanismClient.audioHandler.addSound(player, JETPACK, new JetpackSound(player), false);
+							MekanismClient.audioHandler.addSound(player, JETPACK, true);
 						}
 						MekanismClient.audioHandler.playSound(player, JETPACK);
 					}
@@ -272,9 +271,9 @@ public class ClientTickHandler
 					
 					if(player != null)
 					{
-						if(!MekanismClient.audioHandler.hasSound(player, GASMASK))
+						if(!MekanismClient.audioHandler.soundPlaying(player, GASMASK))
 						{
-							MekanismClient.audioHandler.addSound(player, GASMASK, new GasMaskSound(player), false);
+							MekanismClient.audioHandler.addSound(player, GASMASK, true);
 						}
 						MekanismClient.audioHandler.playSound(player, GASMASK);
 					}
@@ -284,9 +283,9 @@ public class ClientTickHandler
 				{
 					if(hasFlamethrower(player))
 					{
-						if(!MekanismClient.audioHandler.hasSound(player, FLAMETHROWER))
+						if(!MekanismClient.audioHandler.soundPlaying(player, FLAMETHROWER))
 						{
-							MekanismClient.audioHandler.addSound(player, FLAMETHROWER, new FlamethrowerSound(player), false);
+							MekanismClient.audioHandler.addSound(player, FLAMETHROWER, true);
 						}
 						MekanismClient.audioHandler.playSound(player, FLAMETHROWER);
 					}

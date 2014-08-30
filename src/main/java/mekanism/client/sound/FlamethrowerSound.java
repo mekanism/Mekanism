@@ -17,6 +17,8 @@ public class FlamethrowerSound extends PlayerSound
 		super(player, new ResourceLocation("mekanism", "item.flamethrower.idle"));
 		onSound = new ResourceLocation("mekanism", "item.flamethrower.active");
 		offSound = new ResourceLocation("mekanism", "item.flamethrower.idle");
+		inUse = ClientTickHandler.isFlamethrowerOn(player);
+		sound = inUse ? onSound : offSound;
 		setFadeIn(0);
 		setFadeOut(0);
 	}

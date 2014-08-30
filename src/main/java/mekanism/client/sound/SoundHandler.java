@@ -33,39 +33,54 @@ public class SoundHandler
 
 	public enum Channel
 	{
-		JETPACK("jetpack"),
-		GASMASK("gasMask"),
-		FLAMETHROWER("flamethrower");
+		JETPACK("jetpack", JetpackSound.class),
+		GASMASK("gasMask", GasMaskSound.class),
+		FLAMETHROWER("flamethrower", FlamethrowerSound.class);
 
 		String channelName;
+		Class<? extends PlayerSound> soundClass;
 
-		private Channel(String name)
+		private Channel(String name, Class<? extends PlayerSound> clazz)
 		{
 			channelName = name;
+			soundClass = clazz;
 		}
 
 		public String getName()
 		{
 			return channelName;
 		}
+
+		public PlayerSound getNewSound(EntityPlayer player)
+		{
+			try
+			{
+				return soundClass.getDeclaredConstructor(EntityPlayer.class).newInstance(player);
+			}
+			catch(Exception e)
+			{
+				return null;
+			}
+		}
 	}
 
-	public boolean hasSound(EntityPlayer player, Channel channel)
+	public boolean soundPlaying(EntityPlayer player, Channel channel)
 	{
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 
-		return sound != null;
+		return !(sound == null || sound.isDonePlaying());
 	}
 
-	public void addSound(EntityPlayer player, Channel channel, IResettableSound newSound, boolean replace)
+	public void addSound(EntityPlayer player, Channel channel, boolean replace)
 	{
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 		if(sound == null || replace)
 		{
+			PlayerSound newSound = channel.getNewSound(player);
 			map.put(channel.getName(), newSound);
 		}
 	}
@@ -77,10 +92,9 @@ public class SoundHandler
 		IResettableSound sound = map.get(channel.getName());
 		if(sound != null)
 		{
-			if(sound.isDonePlaying() && !getSoundMap().containsKey(sound))
+			if(canRestartSound(sound))
 			{
 				sound.reset();
-				Mekanism.logger.info("Playing sound " + sound);
 				playSound(sound);
 			}
 			return true;
