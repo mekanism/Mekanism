@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -52,10 +53,10 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	{
 		if(dummy)
 		{
-			return dummyType.getLocalizedName();
+			return dummyType.getLocalizedName(null);
 		}
 		
-		return infoHandler.getTank().getFluid() != null ? infoHandler.getTank().getFluid().getFluid().getLocalizedName(infoHandler.getTank().getFluid()) + ": " + infoHandler.getTank().getFluidAmount() + "mB" : MekanismUtils.localize("gui.empty");
+		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + infoHandler.getTank().getFluidAmount() + "mB" : MekanismUtils.localize("gui.empty");
 	}
 
 	public static interface IFluidInfoHandler

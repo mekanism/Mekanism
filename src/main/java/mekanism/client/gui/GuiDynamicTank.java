@@ -4,6 +4,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
 import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -35,7 +36,7 @@ public class GuiDynamicTank extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity/TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
-		fontRendererObj.drawString(tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.getFluid().getName() + ":" : MekanismUtils.localize("gui.noFluid"), 53, 44, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ":" : MekanismUtils.localize("gui.noFluid"), 53, 44, 0x00CD00);
 
 		if(tileEntity.structure.fluidStored != null)
 		{
@@ -44,7 +45,7 @@ public class GuiDynamicTank extends GuiMekanism
 
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? tileEntity.structure.fluidStored.getFluid().getLocalizedName() + ": " + tileEntity.structure.fluidStored.amount + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

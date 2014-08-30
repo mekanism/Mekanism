@@ -28,6 +28,7 @@ import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.FluidSlot;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -221,8 +222,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
-			FluidStack stack = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
-			currenttip.add(stack.getFluid().getLocalizedName(stack));
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).fluidInput));
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{

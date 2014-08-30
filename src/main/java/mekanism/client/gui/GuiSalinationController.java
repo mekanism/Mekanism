@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerSalinationController;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -47,12 +48,12 @@ public class GuiSalinationController extends GuiMekanism
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.waterTank.getFluid() != null ? tileEntity.waterTank.getFluid().getFluid().getLocalizedName(tileEntity.waterTank.getFluid()) + ": " + tileEntity.waterTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.waterTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.waterTank.getFluid()) + ": " + tileEntity.waterTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.brineTank.getFluid() != null ? tileEntity.brineTank.getFluid().getFluid().getLocalizedName(tileEntity.brineTank.getFluid()) + ": " + tileEntity.brineTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.brineTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.brineTank.getFluid()) + ": " + tileEntity.brineTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72)

@@ -12,7 +12,7 @@ import java.util.Set;
 
 import mekanism.client.gui.GuiSalinationController;
 import mekanism.common.ObfuscatedNames;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -164,11 +164,11 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidInput.getFluid().getLocalizedName());
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe) arecipes.get(recipe)).fluidInput));
 		}
 		else if(xAxis >= 153 && xAxis <= 169 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidOutput.getFluid().getLocalizedName());
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe) arecipes.get(recipe)).fluidOutput));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);

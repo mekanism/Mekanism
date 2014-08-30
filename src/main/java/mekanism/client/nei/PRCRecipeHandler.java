@@ -28,6 +28,7 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -265,8 +266,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			FluidStack stack = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
-			currenttip.add(stack.getFluid().getLocalizedName(stack));
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid()));
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{

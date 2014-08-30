@@ -13,6 +13,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fluids.FluidStack;
@@ -184,11 +185,11 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).gasStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localiseGasStack(((CachedIORecipe) arecipes.get(recipe)).gasStack));
 		}
 		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidStack.getFluid().getLocalizedName());
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe) arecipes.get(recipe)).fluidStack));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);

@@ -1,6 +1,10 @@
 package mekanism.common.util;
 
-public final class LangUtils 
+import mekanism.api.gas.GasStack;
+
+import net.minecraftforge.fluids.FluidStack;
+
+public final class LangUtils
 {
 	public static String transOnOff(boolean b)
 	{
@@ -10,5 +14,15 @@ public final class LangUtils
 	public static String transYesNo(boolean b)
 	{
 		return MekanismUtils.localize("tooltip." + (b ? "yes" : "no"));
+	}
+
+	public static String localizeFluidStack(FluidStack fluidStack)
+	{
+		return (fluidStack == null || fluidStack.getFluid() == null ) ? null : fluidStack.getFluid().getLocalizedName(fluidStack);
+	}
+
+	public static String localiseGasStack(GasStack gasStack)
+	{
+		return (gasStack == null || gasStack.getGas() == null ) ? null : gasStack.getGas().getLocalizedName();
 	}
 }

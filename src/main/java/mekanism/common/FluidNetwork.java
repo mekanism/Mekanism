@@ -16,6 +16,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.ListUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -469,7 +470,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getStoredInfo()
 	{
-		return fluidStored != null ? fluidStored.getFluid().getLocalizedName(fluidStored) + " (" + fluidStored.amount + " mB)" : "None";
+		return fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + " (" + fluidStored.amount + " mB)" : "None";
 	}
 
 	@Override
