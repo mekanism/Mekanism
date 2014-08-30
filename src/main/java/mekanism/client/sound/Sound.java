@@ -1,5 +1,7 @@
 package mekanism.client.sound;
 
+import mekanism.api.MekanismConfig.client;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -136,7 +138,7 @@ public class Sound implements ISound {
 	@Override
 	public float getVolume() {
 
-		return volume;
+		return volume * client.baseSoundVolume;
 	}
 
 	@Override

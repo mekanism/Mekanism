@@ -40,9 +40,10 @@ public class MekanismConfig
 	public static class client
 	{
 		public static boolean enablePlayerSounds = true;
+		public static boolean enableMachineSounds = true;
 		public static boolean fancyUniversalCableRender = true;
 		public static boolean holidays = true;
-		public static double baseSoundVolume = 1;
+		public static float baseSoundVolume = 1F;
 		public static boolean machineEffects = true;
 		public static boolean oldTransmitterRender = false;
 		public static boolean replaceSoundsWhenResuming = true;

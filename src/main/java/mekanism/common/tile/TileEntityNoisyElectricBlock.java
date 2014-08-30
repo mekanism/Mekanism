@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.Pos3D;
 import mekanism.client.sound.IHasSound;
 import mekanism.client.sound.IResettableSound;
@@ -104,7 +105,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(sound))
+		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(sound) && client.enableMachineSounds)
 		{
 			sound.reset();
 			SoundHandler.playSound(sound);
