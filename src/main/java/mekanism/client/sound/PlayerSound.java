@@ -1,7 +1,5 @@
 package mekanism.client.sound;
 
-import mekanism.common.Mekanism;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
@@ -12,8 +10,8 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 	boolean beginFadeOut;
 	boolean donePlaying = true;
 	int ticks = 0;
-	int fadeIn = 50;
-	int fadeOut = 50;
+	int fadeIn;
+	int fadeOut;
 	float baseVolume = 0.3F;
 
 
@@ -58,12 +56,12 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 
 	public float getFadeInMultiplier() {
 
-		return ticks >= fadeIn ? 1 : (float) (ticks / (float) fadeIn);
+		return ticks >= fadeIn ? 1 : (ticks / (float) fadeIn);
 	}
 
 	public float getFadeOutMultiplier() {
 
-		return ticks >= fadeOut ? 0 : (float) ((fadeOut - ticks) / (float) fadeOut);
+		return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float) fadeOut);
 	}
 
 	@Override
@@ -90,7 +88,6 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 
 		if(multiplier <= 0)
 		{
-			Mekanism.logger.info("Sound Stopping. " + this);
 			donePlaying = true;
 		}
 	}

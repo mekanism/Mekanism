@@ -8,8 +8,8 @@ public class TileSound extends Sound implements IResettableSound {
 	boolean beginFadeOut;
 	boolean donePlaying = true;
 	int ticks = 0;
-	int fadeIn = 50;
-	int fadeOut = 50;
+	int fadeIn = 30;
+	int fadeOut = 10;
 	float baseVolume = 1.0F;
 
 	public TileSound(IHasSound source, ISoundSource values)
