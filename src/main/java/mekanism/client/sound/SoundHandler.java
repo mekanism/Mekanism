@@ -53,12 +53,9 @@ public class SoundHandler
 
 		public PlayerSound getNewSound(EntityPlayer player)
 		{
-			try
-			{
+			try {
 				return soundClass.getDeclaredConstructor(EntityPlayer.class).newInstance(player);
-			}
-			catch(Exception e)
-			{
+			} catch(Exception e) {
 				return null;
 			}
 		}
@@ -78,6 +75,7 @@ public class SoundHandler
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
+		
 		if(sound == null || replace)
 		{
 			PlayerSound newSound = channel.getNewSound(player);
@@ -90,6 +88,7 @@ public class SoundHandler
 		String name = player.getCommandSenderName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
+		
 		if(sound != null)
 		{
 			if(canRestartSound(sound))
@@ -97,14 +96,17 @@ public class SoundHandler
 				sound.reset();
 				playSound(sound);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 
 	public static Map<String, IResettableSound> getMap(String name)
 	{
 		Map<String, IResettableSound> map = soundMaps.get(name);
+		
 		if(map == null)
 		{
 			map = new HashMap<String, IResettableSound>();
@@ -127,13 +129,13 @@ public class SoundHandler
 	public static Map<ISound, String> getSoundMap()
 	{
 		if(invPlayingSounds == null)
-			try
-			{
+		{
+			try {
 				invPlayingSounds = (Map<ISound, String>)MekanismUtils.getPrivateValue(getSoundManager(), net.minecraft.client.audio.SoundManager.class, ObfuscatedNames.SoundManager_invPlayingSounds);
-			} catch(Exception e)
-			{
+			} catch(Exception e) {
 				invPlayingSounds = null;
 			}
+		}
 		
 		return invPlayingSounds;
 	}

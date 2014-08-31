@@ -22,159 +22,165 @@ import net.minecraft.util.ResourceLocation;
 public class Sound implements ISound {
 
 	protected AttenuationType attenuation;
+	
 	protected ResourceLocation sound;
+	
 	protected float volume;
+	
 	protected float pitch;
+	
 	protected float x;
+	
 	protected float y;
+	
 	protected float z;
+	
 	protected boolean repeat;
+	
 	protected int repeatDelay;
 
-	public Sound(String sound) {
-
+	public Sound(String sound) 
+	{
 		this(sound, 0);
 	}
 
-	public Sound(String sound, float volume) {
-
+	public Sound(String sound, float volume) 
+	{
 		this(sound, volume, 0);
 	}
 
-	public Sound(String sound, float volume, float pitch) {
-
+	public Sound(String sound, float volume, float pitch)
+	{
 		this(sound, volume, pitch, false, 0);
 	}
 
-	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay) {
-
+	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay) 
+	{
 		this(sound, volume, pitch, repeat, repeatDelay, 0, 0, 0, AttenuationType.NONE);
 	}
 
-	public Sound(String sound, float volume, float pitch, double x, double y, double z) {
-
+	public Sound(String sound, float volume, float pitch, double x, double y, double z)
+	{
 		this(sound, volume, pitch, false, 0, x, y, z);
 	}
 
-	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
-
+	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	{
 		this(sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation) {
-
+	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation) 
+	{
 		this(new ResourceLocation(sound), volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
 	}
 
-	public Sound(ResourceLocation sound) {
-
+	public Sound(ResourceLocation sound)
+	{
 		this(sound, 0);
 	}
 
-	public Sound(ResourceLocation sound, float volume) {
-
+	public Sound(ResourceLocation sound, float volume)
+	{
 		this(sound, volume, 0);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch) {
-
+	public Sound(ResourceLocation sound, float volume, float pitch) 
+	{
 		this(sound, volume, pitch, false, 0);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay) {
-
+	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay) 
+	{
 		this(sound, volume, pitch, repeat, repeatDelay, 0, 0, 0, AttenuationType.NONE);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, double x, double y, double z) {
-
+	public Sound(ResourceLocation sound, float volume, float pitch, double x, double y, double z) 
+	{
 		this(sound, volume, pitch, false, 0, x, y, z);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) {
-
+	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	{
 		this(sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z,
-				 AttenuationType attenuation) {
-
-		this.attenuation = attenuation;
-		this.sound = sound;
-		this.volume = volume;
-		this.pitch = pitch;
-		this.x = (float) x;
-		this.y = (float) y;
-		this.z = (float) z;
-		this.repeat = repeat;
-		this.repeatDelay = repeatDelay;
+	public Sound(ResourceLocation resource, float v, float p, boolean rep, int delay, double xPos, double yPos, double zPos, AttenuationType att)
+	{
+		attenuation = att;
+		sound = resource;
+		volume = v;
+		pitch = p;
+		x = (float)xPos;
+		y = (float)yPos;
+		z = (float)zPos;
+		repeat = rep;
+		repeatDelay = delay;
 	}
 
-	public Sound(Sound other) {
-
-		this.attenuation = other.attenuation;
-		this.sound = other.sound;
-		this.volume = other.volume;
-		this.pitch = other.pitch;
-		this.x = other.x;
-		this.y = other.y;
-		this.z = other.z;
-		this.repeat = other.repeat;
-		this.repeatDelay = other.repeatDelay;
+	public Sound(Sound other) 
+	{
+		attenuation = other.attenuation;
+		sound = other.sound;
+		volume = other.volume;
+		pitch = other.pitch;
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		repeat = other.repeat;
+		repeatDelay = other.repeatDelay;
 	}
 
 	@Override
-	public AttenuationType getAttenuationType() {
-
+	public AttenuationType getAttenuationType() 
+	{
 		return attenuation;
 	}
 
 	@Override
-	public ResourceLocation getPositionedSoundLocation() {
-
+	public ResourceLocation getPositionedSoundLocation() 
+	{
 		return sound;
 	}
 
 	@Override
-	public float getVolume() {
-
+	public float getVolume() 
+	{
 		return volume * client.baseSoundVolume;
 	}
 
 	@Override
-	public float getPitch() {
-
+	public float getPitch() 
+	{
 		return pitch;
 	}
 
 	@Override
-	public float getXPosF() {
-
+	public float getXPosF() 
+	{
 		return x;
 	}
 
 	@Override
-	public float getYPosF() {
-
+	public float getYPosF() 
+	{
 		return y;
 	}
 
 	@Override
-	public float getZPosF() {
-
+	public float getZPosF() 
+	{
 		return z;
 	}
 
 	@Override
-	public boolean canRepeat() {
-
+	public boolean canRepeat()
+	{
 		return repeat;
 	}
 
 	@Override
-	public int getRepeatDelay() {
-
+	public int getRepeatDelay() 
+	{
 		return repeatDelay;
 	}
-
 }

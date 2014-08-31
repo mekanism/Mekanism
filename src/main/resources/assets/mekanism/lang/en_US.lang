@@ -584,6 +584,13 @@ tooltip.BioGenerator=A generator that burns organic materials of !nthe world to 
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
 tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 
+tooltip.ReactorGlass=
+tooltip.ReactorLaserFocusMatrix=
+tooltip.ReactorController=
+tooltip.ReactorFrame=
+tooltip.ReactorNeutronCapturePlate=
+tooltip.ReactorPort=
+
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
@@ -669,11 +676,11 @@ tile.Generator.WindTurbine.name=Wind Turbine
 
 tile.Reactor.ReactorController.name=Reactor Controller
 tile.Reactor.ReactorFrame.name=Reactor Frame
-tile.Reactor.ReactorLaserFocusMatrix.name=Laser Focus Matrix
 tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
 tile.Reactor.ReactorInOutPort.name=Reactor Port
 
 tile.ReactorGlass.ReactorGlass.name=Reactor Glass
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix
 
 //Gui text
 gui.heatGenerator.fuel=Fuel

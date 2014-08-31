@@ -68,6 +68,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 			float speedUpgrades = ((IUpgradeTile)this).getComponent().getUpgrades(Upgrade.SPEED);
 			return 1F + 20 * speedUpgrades / (float)Upgrade.SPEED.getMax();
 		}
+		
 		return 1F;
 	}
 
@@ -99,12 +100,15 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	public void validate()
 	{
 		super.validate();
+		
 		sound = new TileSound(this, this);
 	}
 
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(sound) && client.enableMachineSounds)
 		{
 			sound.reset();

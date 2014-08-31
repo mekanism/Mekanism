@@ -15,10 +15,12 @@ public class FlamethrowerSound extends PlayerSound
 	public FlamethrowerSound(EntityPlayer player)
 	{
 		super(player, new ResourceLocation("mekanism", "item.flamethrower.idle"));
+		
 		onSound = new ResourceLocation("mekanism", "item.flamethrower.active");
 		offSound = new ResourceLocation("mekanism", "item.flamethrower.idle");
 		inUse = ClientTickHandler.isFlamethrowerOn(player);
 		sound = inUse ? onSound : offSound;
+		
 		setFadeIn(0);
 		setFadeOut(0);
 	}
@@ -47,9 +49,9 @@ public class FlamethrowerSound extends PlayerSound
 		if(!ClientTickHandler.hasFlamethrower(player))
 		{
 			donePlaying = true;
-
 			return;
 		}
+		
 		if(inUse != ClientTickHandler.isFlamethrowerOn(player))
 		{
 			inUse = ClientTickHandler.isFlamethrowerOn(player);

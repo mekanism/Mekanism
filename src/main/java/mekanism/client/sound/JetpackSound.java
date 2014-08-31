@@ -11,6 +11,7 @@ public class JetpackSound extends PlayerSound
 	public JetpackSound(EntityPlayer player)
 	{
 		super(player, new ResourceLocation("mekanism", "item.jetpack"));
+		
 		setFadeIn(30);
 		setFadeOut(10);
 	}

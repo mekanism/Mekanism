@@ -8,81 +8,84 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 	public EntityPlayer player;
 
 	boolean beginFadeOut;
+	
 	boolean donePlaying = true;
+	
 	int ticks = 0;
+	
 	int fadeIn;
+	
 	int fadeOut;
+	
 	float baseVolume = 0.3F;
 
-
-	public PlayerSound(EntityPlayer player, ResourceLocation location)
+	public PlayerSound(EntityPlayer p, ResourceLocation location)
 	{
-		super(location, 0.3F, 1, true, 0, (float) player.posX, (float) player.posY, (float) player.posZ, AttenuationType.LINEAR);
-		this.player = player;
+		super(location, 0.3F, 1, true, 0, (float)p.posX, (float)p.posY, (float)p.posZ, AttenuationType.LINEAR);
+		player = p;
 	}
 
 	@Override
 	public float getXPosF()
 	{
-
 		return (float) player.posX;
 	}
 
 	@Override
 	public float getYPosF()
 	{
-
 		return (float) player.posY;
 	}
 
 	@Override
 	public float getZPosF()
 	{
-
 		return (float) player.posZ;
 	}
 
-	public PlayerSound setFadeIn(int fadeIn) {
-
-		this.fadeIn = Math.min(0, fadeIn);
+	public PlayerSound setFadeIn(int fade) 
+	{
+		fadeIn = Math.min(0, fade);
 		return this;
 	}
 
-	public PlayerSound setFadeOut(int fadeOut) {
+	public PlayerSound setFadeOut(int fade) 
+	{
 
-		this.fadeOut = Math.min(0, fadeOut);
+		fadeOut = Math.min(0, fade);
 		return this;
 	}
 
-	public float getFadeInMultiplier() {
-
-		return ticks >= fadeIn ? 1 : (ticks / (float) fadeIn);
+	public float getFadeInMultiplier()
+	{
+		return ticks >= fadeIn ? 1 : (ticks / (float)fadeIn);
 	}
 
-	public float getFadeOutMultiplier() {
-
-		return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float) fadeOut);
+	public float getFadeOutMultiplier() 
+	{
+		return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float)fadeOut);
 	}
 
 	@Override
 	public void update()
 	{
-
 		if(!beginFadeOut)
 		{
 			if(ticks < fadeIn)
 			{
 				ticks++;
 			}
+			
 			if(!shouldPlaySound())
 			{
 				beginFadeOut = true;
 				ticks = 0;
 			}
-		} else
-		{
+		} 
+		else {
 			ticks++;
 		}
+		
 		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
 		volume = baseVolume * multiplier;
 
