@@ -5,20 +5,20 @@ import ic2.api.recipe.Recipes;
 
 import java.util.ArrayList;
 
-import mekanism.api.recipe.AdvancedInput;
-import mekanism.api.recipe.ChanceOutput;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionInput;
+import mekanism.api.recipe.AdvancedInput;
+import mekanism.api.recipe.ChanceOutput;
+import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.util.StackUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -347,6 +347,20 @@ public final class OreDictManager
 		for(ItemStack ore : OreDictionary.getOres("oreQuartz"))
 		{
 			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Items.quartz, 6));
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("crystalFluix"))
+		{
+			try {
+				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("dustFluix").get(0), 1));
+			} catch(Exception e) {}
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustFluix"))
+		{
+			try {
+				RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), StackUtils.size(OreDictionary.getOres("crystalFluix").get(0), 1));
+			} catch(Exception e) {}
 		}
 		
 		for(ItemStack ore : OreDictionary.getOres("ingotCopper"))
