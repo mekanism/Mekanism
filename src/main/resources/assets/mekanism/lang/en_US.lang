@@ -584,12 +584,12 @@ tooltip.BioGenerator=A generator that burns organic materials of !nthe world to 
 tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
 tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 
-tooltip.ReactorGlass=
-tooltip.ReactorLaserFocusMatrix=
-tooltip.ReactorController=
-tooltip.ReactorFrame=
-tooltip.ReactorNeutronCapturePlate=
-tooltip.ReactorPort=
+tooltip.ReactorGlass=Reinforced glass that can be used in !nthe Fusion Reactor multiblock.
+tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !n is capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
+tooltip.ReactorController=The controlling block for the entire !nFusion Reactor structure.
+tooltip.ReactorFrame=Reinforced framing that can be used in !nthe Fusion Reactor multiblock.
+tooltip.ReactorNeutronCapturePlate=A block that can be used to !nboth block Fusion Reactor radiation and assist !nin the production of Tritium.
+tooltip.ReactorPort=A block of reinforced framing that is capable !nof managing both the gas and energy transfer !nof the Fusion Reactor.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
