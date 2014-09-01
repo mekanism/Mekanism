@@ -2,7 +2,9 @@ package mekanism.client.render;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.world.IBlockAccess;
@@ -81,55 +83,51 @@ public class CTM
 			{},
 	};
 
-	public static int[] getSubmapIndices(IBlockAccess world, int x, int y, int z, int side, List<Integer> metas)
+	public static int[] getSubmapIndices(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
 	{
-		int index = getTexture(world, x, y, z, side, metas);
+		int index = getTexture(world, x, y, z, side, blockMetas);
 
 		return submaps[index];
 	}
 
-	public static int getTexture(IBlockAccess world, int x, int y, int z, int side, List<Integer> metas)
+	public static int getTexture(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
 	{
 		if(world == null)
 			return 0;
 
 		int texture = 0;
-		Block block = world.getBlock(x, y, z);
-
-		if(metas == null || metas.size() <= 0)
-			metas = Arrays.asList(world.getBlockMetadata(x, y, z));
 
 		boolean b[] = new boolean[6];
 		if(side <= 1)
 		{
-			b[0] = isConnected(world, x - 1, y, z, side, block, metas);
-			b[1] = isConnected(world, x + 1, y, z, side, block, metas);
-			b[2] = isConnected(world, x, y, z + 1, side, block, metas);
-			b[3] = isConnected(world, x, y, z - 1, side, block, metas);
+			b[0] = isConnected(world, x - 1, y, z, side, blockMetas);
+			b[1] = isConnected(world, x + 1, y, z, side, blockMetas);
+			b[2] = isConnected(world, x, y, z + 1, side, blockMetas);
+			b[3] = isConnected(world, x, y, z - 1, side, blockMetas);
 		} else if(side == 2)
 		{
-			b[0] = isConnected(world, x + 1, y, z, side, block, metas);
-			b[1] = isConnected(world, x - 1, y, z, side, block, metas);
-			b[2] = isConnected(world, x, y - 1, z, side, block, metas);
-			b[3] = isConnected(world, x, y + 1, z, side, block, metas);
+			b[0] = isConnected(world, x + 1, y, z, side, blockMetas);
+			b[1] = isConnected(world, x - 1, y, z, side, blockMetas);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
 		} else if(side == 3)
 		{
-			b[0] = isConnected(world, x - 1, y, z, side, block, metas);
-			b[1] = isConnected(world, x + 1, y, z, side, block, metas);
-			b[2] = isConnected(world, x, y - 1, z, side, block, metas);
-			b[3] = isConnected(world, x, y + 1, z, side, block, metas);
+			b[0] = isConnected(world, x - 1, y, z, side, blockMetas);
+			b[1] = isConnected(world, x + 1, y, z, side, blockMetas);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
 		} else if(side == 4)
 		{
-			b[0] = isConnected(world, x, y, z - 1, side, block, metas);
-			b[1] = isConnected(world, x, y, z + 1, side, block, metas);
-			b[2] = isConnected(world, x, y - 1, z, side, block, metas);
-			b[3] = isConnected(world, x, y + 1, z, side, block, metas);
+			b[0] = isConnected(world, x, y, z - 1, side, blockMetas);
+			b[1] = isConnected(world, x, y, z + 1, side, blockMetas);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
 		} else if(side == 5)
 		{
-			b[0] = isConnected(world, x, y, z + 1, side, block, metas);
-			b[1] = isConnected(world, x, y, z - 1, side, block, metas);
-			b[2] = isConnected(world, x, y - 1, z, side, block, metas);
-			b[3] = isConnected(world, x, y + 1, z, side, block, metas);
+			b[0] = isConnected(world, x, y, z + 1, side, blockMetas);
+			b[1] = isConnected(world, x, y, z - 1, side, blockMetas);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
 		}
 		if(b[0] & !b[1] & !b[2] & !b[3])
 			texture = 3;
@@ -165,34 +163,34 @@ public class CTM
 		boolean b2[] = new boolean[6];
 		if(side <= 1)
 		{
-			b2[0] = !isConnected(world, x + 1, y, z + 1, side, block, metas);
-			b2[1] = !isConnected(world, x - 1, y, z + 1, side, block, metas);
-			b2[2] = !isConnected(world, x + 1, y, z - 1, side, block, metas);
-			b2[3] = !isConnected(world, x - 1, y, z - 1, side, block, metas);
+			b2[0] = !isConnected(world, x + 1, y, z + 1, side, blockMetas);
+			b2[1] = !isConnected(world, x - 1, y, z + 1, side, blockMetas);
+			b2[2] = !isConnected(world, x + 1, y, z - 1, side, blockMetas);
+			b2[3] = !isConnected(world, x - 1, y, z - 1, side, blockMetas);
 		} else if(side == 2)
 		{
-			b2[0] = !isConnected(world, x - 1, y - 1, z, side, block, metas);
-			b2[1] = !isConnected(world, x + 1, y - 1, z, side, block, metas);
-			b2[2] = !isConnected(world, x - 1, y + 1, z, side, block, metas);
-			b2[3] = !isConnected(world, x + 1, y + 1, z, side, block, metas);
+			b2[0] = !isConnected(world, x - 1, y - 1, z, side, blockMetas);
+			b2[1] = !isConnected(world, x + 1, y - 1, z, side, blockMetas);
+			b2[2] = !isConnected(world, x - 1, y + 1, z, side, blockMetas);
+			b2[3] = !isConnected(world, x + 1, y + 1, z, side, blockMetas);
 		} else if(side == 3)
 		{
-			b2[0] = !isConnected(world, x + 1, y - 1, z, side, block, metas);
-			b2[1] = !isConnected(world, x - 1, y - 1, z, side, block, metas);
-			b2[2] = !isConnected(world, x + 1, y + 1, z, side, block, metas);
-			b2[3] = !isConnected(world, x - 1, y + 1, z, side, block, metas);
+			b2[0] = !isConnected(world, x + 1, y - 1, z, side, blockMetas);
+			b2[1] = !isConnected(world, x - 1, y - 1, z, side, blockMetas);
+			b2[2] = !isConnected(world, x + 1, y + 1, z, side, blockMetas);
+			b2[3] = !isConnected(world, x - 1, y + 1, z, side, blockMetas);
 		} else if(side == 4)
 		{
-			b2[0] = !isConnected(world, x, y - 1, z + 1, side, block, metas);
-			b2[1] = !isConnected(world, x, y - 1, z - 1, side, block, metas);
-			b2[2] = !isConnected(world, x, y + 1, z + 1, side, block, metas);
-			b2[3] = !isConnected(world, x, y + 1, z - 1, side, block, metas);
+			b2[0] = !isConnected(world, x, y - 1, z + 1, side, blockMetas);
+			b2[1] = !isConnected(world, x, y - 1, z - 1, side, blockMetas);
+			b2[2] = !isConnected(world, x, y + 1, z + 1, side, blockMetas);
+			b2[3] = !isConnected(world, x, y + 1, z - 1, side, blockMetas);
 		} else if(side == 5)
 		{
-			b2[0] = !isConnected(world, x, y - 1, z - 1, side, block, metas);
-			b2[1] = !isConnected(world, x, y - 1, z + 1, side, block, metas);
-			b2[2] = !isConnected(world, x, y + 1, z - 1, side, block, metas);
-			b2[3] = !isConnected(world, x, y + 1, z + 1, side, block, metas);
+			b2[0] = !isConnected(world, x, y - 1, z - 1, side, blockMetas);
+			b2[1] = !isConnected(world, x, y - 1, z + 1, side, blockMetas);
+			b2[2] = !isConnected(world, x, y + 1, z - 1, side, blockMetas);
+			b2[3] = !isConnected(world, x, y + 1, z + 1, side, blockMetas);
 		}
 
 		if(texture == 17 && b2[0])
@@ -269,7 +267,7 @@ public class CTM
 		return texture;
 	}
 
-	public static boolean isConnected(IBlockAccess world, int x, int y, int z, int side, Block block, List<Integer> metas)
+	public static boolean isConnected(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
 	{
 		int x2 = x, y2 = y, z2 = z;
 
@@ -295,12 +293,22 @@ public class CTM
 				break;
 		}
 
-		int meta = world.getBlockMetadata(x, y, z);
+		Block block1 = world.getBlock(x, y, z);
+		Block block2 = world.getBlock(x2, y2, z2);
+
+		int meta1 = world.getBlockMetadata(x, y, z);
 		int meta2 = world.getBlockMetadata(x2, y2, z2);
 
-		boolean validMeta = metas.contains(meta);
-		boolean validMeta2 = metas.contains(meta2);
+		boolean validBlockMeta1 = false;
+		boolean invalidBlockMeta2 = true;
 
-		return world.getBlock(x, y, z).equals(block) && validMeta && !(world.getBlock(x2, y2, z2).equals(block) && validMeta2);
+		for(Entry<Block, List<Integer>> entry : blockMetas.entrySet())
+		{
+			validBlockMeta1 |= block1.equals(entry.getKey()) && entry.getValue().contains(meta1);
+
+			invalidBlockMeta2 &= !(block2.equals(entry.getKey()) && entry.getValue().contains(meta2));
+		}
+
+		return validBlockMeta1 && invalidBlockMeta2;
 	}
 }

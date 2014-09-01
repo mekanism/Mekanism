@@ -43,7 +43,7 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 
 			rendererCTM.submap = blockCTM.submap;
 			rendererCTM.submapSmall = blockCTM.submapSmall;
-			rendererCTM.metas = blockCTM.acceptableMetas;
+			rendererCTM.blockMetas = blockCTM.acceptableBlockMetas;
 
 			rendererCTM.rendererOld = rendererOld;
 

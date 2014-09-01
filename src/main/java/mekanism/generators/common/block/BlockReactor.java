@@ -46,9 +46,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 {
 	public IIcon[][] icons = new IIcon[16][16];
 
-	public CTMData reactorGlassCTM = new CTMData("ctm/ReactorGlass", Arrays.asList(0, 1));
-
-	public CTMData reactorLaserFocusCTM = new CTMData("ctm/ReactorLaserFocus", Arrays.asList(1, 0));
+	public CTMData[] ctms = new CTMData[16];
 
 	public BlockReactor()
 	{
@@ -76,8 +74,8 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			icons[0][0] = register.registerIcon("mekanism:ReactorGlass");
 			icons[1][0] = register.registerIcon("mekanism:ReactorLaserFocus");
 
-			reactorGlassCTM.registerIcons(register);
-			reactorLaserFocusCTM.registerIcons(register);
+			ctms[0] = new CTMData("ctm/ReactorGlass", this, Arrays.asList(0, 1)).registerIcons(register);
+			ctms[1] = new CTMData("ctm/ReactorLaserFocus", this, Arrays.asList(1, 0)).registerIcons(register);
 		}
 	}
 
@@ -304,17 +302,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@Override
 	public CTMData getCTMData(int meta)
 	{
-		if(this == GeneratorsBlocks.ReactorGlass)
-		{
-			switch(meta)
-			{
-				case 0:
-					return reactorGlassCTM;
-				case 1:
-					return reactorLaserFocusCTM;
-			}
-		}
-		return null;
+		return ctms[meta];
 	}
 
 	@Override
@@ -324,12 +312,12 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
-			switch(obj.getMetadata(world))
+			int metadata = obj.getMetadata(world);
+			switch(metadata)
 			{
 				case 0:
-					return reactorGlassCTM.shouldRenderSide(world, x, y, z, side, this);
 				case 1:
-					return reactorLaserFocusCTM.shouldRenderSide(world, x, y, z, side, this);
+					return ctms[metadata].shouldRenderSide(world, x, y, z, side);
 				default:
 					return super.shouldSideBeRendered(world, x, y, z, side);
 			}

@@ -77,9 +77,7 @@ public class BlockBasic extends Block implements IBlockCTM
 {
 	public IIcon[][] icons = new IIcon[256][6];
 
-	public CTMData dynamicTankCTM = new CTMData("ctm/DynamicTank", Arrays.asList(9, 11));
-	public CTMData dynamicGlassCTM = new CTMData("ctm/DynamicGlass",Arrays.asList(10));
-	public CTMData dynamicValveCTM = new CTMData("ctm/DynamicValve", Arrays.asList(11, 9));
+	public CTMData[] ctms = new CTMData[16];
 
 	public BlockBasic()
 	{
@@ -137,13 +135,17 @@ public class BlockBasic extends Block implements IBlockCTM
 			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
 			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
 
-			dynamicTankCTM.registerIcons(register);
-			dynamicGlassCTM.registerIcons(register);
-			dynamicValveCTM.registerIcons(register);
+			ctms[9] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
+			ctms[10] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+			ctms[11] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
+
+			ctms[15] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 		}
 		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
+
+			ctms[0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(15)).registerIcons(register);
 		}
 	}
 
@@ -173,11 +175,9 @@ public class BlockBasic extends Block implements IBlockCTM
 						return icons[6][0];
 					}
 				case 9:
-					return dynamicTankCTM.icon;
 				case 10:
-					return dynamicGlassCTM.icon;
 				case 11:
-					return dynamicValveCTM.icon;
+					return ctms[metadata].icon;
 				case 14:
 					TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
 
@@ -805,7 +805,7 @@ public class BlockBasic extends Block implements IBlockCTM
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
 		if(this == MekanismBlocks.BasicBlock && obj.getMetadata(world) == 10)
 		{
-			return dynamicGlassCTM.shouldRenderSide(world, x, y, z, side, this);
+			return ctms[10].shouldRenderSide(world, x, y, z, side);
 		}
 		else {
 			return super.shouldSideBeRendered(world, x, y, z, side);
@@ -855,18 +855,6 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public CTMData getCTMData(int meta)
 	{
-		if(this == MekanismBlocks.BasicBlock)
-		{
-			switch(meta)
-			{
-				case 9:
-					return dynamicTankCTM;
-				case 10:
-					return dynamicGlassCTM;
-				case 11:
-					return dynamicValveCTM;
-			}
-		}
-		return null;
+		return ctms[meta];
 	}
 }

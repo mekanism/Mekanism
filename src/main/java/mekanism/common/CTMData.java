@@ -1,6 +1,8 @@
 package mekanism.common;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import mekanism.api.Coord4D;
 import mekanism.client.render.block.TextureSubmap;
@@ -22,26 +24,42 @@ public class CTMData
 
 	public String texture;
 
-	public List<Integer> acceptableMetas;
+	public HashMap<Block, List<Integer>> acceptableBlockMetas = new HashMap<Block, List<Integer>>();
 
-	public CTMData(String textureName, List<Integer> connectableMeta)
+	public CTMData(String textureName, Block block, List<Integer> connectableMeta)
 	{
 		texture = textureName;
-		acceptableMetas = connectableMeta;
+		acceptableBlockMetas.put(block, connectableMeta);
 	}
 
-	public void registerIcons(IIconRegister register)
+	public CTMData registerIcons(IIconRegister register)
 	{
 		icon = register.registerIcon("mekanism:" + texture);
 		submap = new TextureSubmap(register.registerIcon("mekanism:" + texture + "-ctm"), 4, 4);
 		submapSmall = new TextureSubmap(icon, 2, 2);
+
+		return this;
+	}
+
+	public CTMData addOtherBlockConnectivities(Block block, List<Integer> connectableMeta)
+	{
+		acceptableBlockMetas.put(block, connectableMeta);
+		return this;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side, Block block)
+	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z);
-		return !(obj.getBlock(world).equals(block) && acceptableMetas.contains(obj.getMetadata(world)));
+		Block coordBlock = obj.getBlock(world);
+		int coordMeta = obj.getMetadata(world);
+		boolean valid = false;
+
+		for(Entry<Block, List<Integer>> entry : acceptableBlockMetas.entrySet())
+		{
+			valid |= entry.getKey().equals(coordBlock) && entry.getValue().contains(coordMeta);
+		}
+		return !valid;
 	}
 
 }
