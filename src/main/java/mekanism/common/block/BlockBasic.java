@@ -75,7 +75,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockBasic extends Block implements IBlockCTM
 {
-	public IIcon[][] icons = new IIcon[256][6];
+	public IIcon[][] icons = new IIcon[16][6];
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
@@ -112,6 +112,14 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		if(this == MekanismBlocks.BasicBlock)
 		{
+			ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
+			ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+			ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
+
+			ctms[14][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationController").registerIcons(register);
+			ctms[14][1] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationControllerOn").registerIcons(register);
+			ctms[15][0] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+
 			icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
 			icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
 			icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
@@ -125,29 +133,21 @@ public class BlockBasic extends Block implements IBlockCTM
 			icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
 			icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
 			icons[8][0] = register.registerIcon("mekanism:SteelCasing");
-			icons[9][0] = register.registerIcon("mekanism:DynamicTank");
-			icons[10][0] = register.registerIcon("mekanism:DynamicGlass");
-			icons[11][0] = register.registerIcon("mekanism:DynamicValve");
+			icons[9][0] = ctms[9][0].mainTextureData.icon;
+			icons[10][0] = ctms[10][0].mainTextureData.icon;
+			icons[11][0] = ctms[11][0].mainTextureData.icon;
 			icons[12][0] = register.registerIcon("mekanism:CopperBlock");
 			icons[13][0] = register.registerIcon("mekanism:TinBlock");
-			icons[14][0] = register.registerIcon("mekanism:SalinationController");
-			icons[14][1] = register.registerIcon("mekanism:SalinationControllerOn");
-			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
-			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
-
-			ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
-			ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
-			ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
-
-			ctms[14][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationController").registerIcons(register);
-			ctms[14][1] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationControllerOn").registerIcons(register);
-			ctms[15][0] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+			icons[14][0] = ctms[14][0].facingOverride.icon;
+			icons[14][1] = ctms[14][1].facingOverride.icon;
+			icons[14][2] = ctms[14][0].mainTextureData.icon;
+			icons[15][0] = ctms[15][0].mainTextureData.icon;
 		}
 		else if(this == MekanismBlocks.BasicBlock2)
 		{
-			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
-
 			ctms[0][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
+
+			icons[0][0] = ctms[0][0].mainTextureData.icon;
 		}
 	}
 

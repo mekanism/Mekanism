@@ -46,7 +46,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 {
 	public IIcon[][] icons = new IIcon[16][16];
 
-	public CTMData[] ctms = new CTMData[16];
+	public CTMData[][] ctms = new CTMData[16][2];
 
 	public BlockReactor()
 	{
@@ -62,20 +62,26 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	{
 		if(this == GeneratorsBlocks.Reactor)
 		{
-			icons[0][0] = register.registerIcon("mekanism:ReactorControllerOff");
-			icons[0][1] = register.registerIcon("mekanism:ReactorControllerOn");
-			icons[0][2] = register.registerIcon("mekanism:ReactorFrame");
-			icons[1][0] = register.registerIcon("mekanism:ReactorFrame");
-			icons[2][0] = register.registerIcon("mekanism:ReactorNeutronCapture");
-			icons[3][0] = register.registerIcon("mekanism:ReactorPort");
+			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOff").registerIcons(register);
+			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOn").registerIcons(register);
+			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
+			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
+			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
+
+			icons[0][0] = ctms[0][0].sideOverrides[1].icon;
+			icons[0][1] = ctms[0][1].sideOverrides[1].icon;
+			icons[0][2] = ctms[0][0].mainTextureData.icon;
+			icons[1][0] = ctms[1][0].mainTextureData.icon;
+			icons[2][0] = ctms[2][0].mainTextureData.icon;
+			icons[3][0] = ctms[3][0].mainTextureData.icon;
 		}
 		else if(this == GeneratorsBlocks.ReactorGlass)
 		{
-			icons[0][0] = register.registerIcon("mekanism:ReactorGlass");
-			icons[1][0] = register.registerIcon("mekanism:ReactorLaserFocus");
+			ctms[0][0] = new CTMData("ctm/ReactorGlass", this, Arrays.asList(0, 1)).registerIcons(register);
+			ctms[1][0] = new CTMData("ctm/ReactorLaserFocus", this, Arrays.asList(1, 0)).registerIcons(register);
 
-			ctms[0] = new CTMData("ctm/ReactorGlass", this, Arrays.asList(0, 1)).registerIcons(register);
-			ctms[1] = new CTMData("ctm/ReactorLaserFocus", this, Arrays.asList(1, 0)).registerIcons(register);
+			icons[0][0] = ctms[0][0].mainTextureData.icon;
+			icons[1][0] = ctms[1][0].mainTextureData.icon;
 		}
 	}
 
@@ -302,7 +308,12 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@Override
 	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
 	{
-		return ctms[meta];
+		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
+		{
+			return ctms[meta][1];
+		}
+
+		return ctms[meta][0];
 	}
 
 	@Override
@@ -317,7 +328,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			{
 				case 0:
 				case 1:
-					return ctms[metadata].shouldRenderSide(world, x, y, z, side);
+					return ctms[metadata][0].shouldRenderSide(world, x, y, z, side);
 				default:
 					return super.shouldSideBeRendered(world, x, y, z, side);
 			}
