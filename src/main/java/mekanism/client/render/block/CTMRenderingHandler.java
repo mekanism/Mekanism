@@ -5,9 +5,12 @@ import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.CTMData;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -32,18 +35,21 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		CTMData blockCTM = ((IBlockCTM)block).getCTMData(meta);
+		CTMData blockCTM = ((IBlockCTM)block).getCTMData(world, x, y, z, meta);
 
 		if(MekanismConfig.client.renderCTM && blockCTM != null)
 		{
+			if(blockCTM.hasFacingOverride() && world.getTileEntity(x, y, z) instanceof TileEntityBasicBlock)
+			{
+				TileEntityBasicBlock tile = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+				blockCTM.setFacing(tile.facing);
+			}
 			rendererCTM.blockAccess = world;
 			rendererCTM.renderMaxX = 1.0;
 			rendererCTM.renderMaxY = 1.0;
 			rendererCTM.renderMaxZ = 1.0;
 
-			rendererCTM.submap = blockCTM.submap;
-			rendererCTM.submapSmall = blockCTM.submapSmall;
-			rendererCTM.blockMetas = blockCTM.acceptableBlockMetas;
+			rendererCTM.dataCTM = blockCTM;
 
 			rendererCTM.rendererOld = rendererOld;
 

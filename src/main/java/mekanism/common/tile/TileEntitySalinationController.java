@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +27,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySalinationController extends TileEntitySalinationBlock
+public class TileEntitySalinationController extends TileEntitySalinationBlock implements IActiveState
 {
 	public static final int MAX_BRINE = 10000;
 	public static final int MAX_SOLARS = 4;
@@ -754,5 +755,29 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return structured;
+	}
+
+	@Override
+	public void setActive(boolean active)
+	{
+
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
+	{
+		return false;
 	}
 }

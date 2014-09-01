@@ -77,7 +77,7 @@ public class BlockBasic extends Block implements IBlockCTM
 {
 	public IIcon[][] icons = new IIcon[256][6];
 
-	public CTMData[] ctms = new CTMData[16];
+	public CTMData[][] ctms = new CTMData[16][2];
 
 	public BlockBasic()
 	{
@@ -135,17 +135,19 @@ public class BlockBasic extends Block implements IBlockCTM
 			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
 			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
 
-			ctms[9] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
-			ctms[10] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
-			ctms[11] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
+			ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
+			ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+			ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
-			ctms[15] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+			ctms[14][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationController").registerIcons(register);
+			ctms[14][1] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationControllerOn").registerIcons(register);
+			ctms[15][0] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 		}
 		else if(this == MekanismBlocks.BasicBlock2)
 		{
 			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
 
-			ctms[0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(15)).registerIcons(register);
+			ctms[0][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
 		}
 	}
 
@@ -177,7 +179,7 @@ public class BlockBasic extends Block implements IBlockCTM
 				case 9:
 				case 10:
 				case 11:
-					return ctms[metadata].icon;
+					return ctms[metadata][0].getIcon(side);
 				case 14:
 					TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
 
@@ -805,7 +807,7 @@ public class BlockBasic extends Block implements IBlockCTM
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
 		if(this == MekanismBlocks.BasicBlock && obj.getMetadata(world) == 10)
 		{
-			return ctms[10].shouldRenderSide(world, x, y, z, side);
+			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
 		}
 		else {
 			return super.shouldSideBeRendered(world, x, y, z, side);
@@ -853,8 +855,13 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public CTMData getCTMData(int meta)
+	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
 	{
-		return ctms[meta];
+		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
+		{
+			return ctms[meta][1];
+		}
+
+		return ctms[meta][0];
 	}
 }

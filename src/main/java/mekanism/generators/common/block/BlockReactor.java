@@ -300,7 +300,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	}
 
 	@Override
-	public CTMData getCTMData(int meta)
+	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
 	{
 		return ctms[meta];
 	}
