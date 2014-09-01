@@ -47,6 +47,7 @@ public class MekanismConfig
 		public static boolean machineEffects = true;
 		public static boolean oldTransmitterRender = false;
 		public static boolean replaceSoundsWhenResuming = true;
+		public static boolean renderCTM = true;
 	}
 
 	public static class usage

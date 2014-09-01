@@ -1,10 +1,16 @@
 package mekanism.generators.common.block;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import mekanism.api.Coord4D;
+import mekanism.client.ClientProxy;
+import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.base.IBlockCTM;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
@@ -29,14 +35,18 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
 import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockReactor extends BlockContainer
+public class BlockReactor extends BlockContainer implements IBlockCTM
 {
 	public IIcon[][] icons = new IIcon[16][16];
+
+	public CTMData[] ctms = new CTMData[16];
 
 	public BlockReactor()
 	{
@@ -63,6 +73,9 @@ public class BlockReactor extends BlockContainer
 		{
 			icons[0][0] = register.registerIcon("mekanism:ReactorGlass");
 			icons[1][0] = register.registerIcon("mekanism:ReactorLaserFocus");
+
+			ctms[0] = new CTMData("ctm/ReactorGlass", this, Arrays.asList(0, 1)).registerIcons(register);
+			ctms[1] = new CTMData("ctm/ReactorLaserFocus", this, Arrays.asList(1, 0)).registerIcons(register);
 		}
 	}
 
@@ -254,6 +267,12 @@ public class BlockReactor extends BlockContainer
 	}
 
 	@Override
+	public int getRenderType()
+	{
+		return ClientProxy.CTM_RENDER_ID;
+	}
+
+	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
@@ -278,6 +297,34 @@ public class BlockReactor extends BlockContainer
 	public TileEntity createNewTileEntity(World world, int meta)
 	{
 		return null;
+	}
+
+	@Override
+	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		return ctms[meta];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	{
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		if(this == GeneratorsBlocks.ReactorGlass)
+		{
+			int metadata = obj.getMetadata(world);
+			switch(metadata)
+			{
+				case 0:
+				case 1:
+					return ctms[metadata].shouldRenderSide(world, x, y, z, side);
+				default:
+					return super.shouldSideBeRendered(world, x, y, z, side);
+			}
+		}
+		else {
+			return super.shouldSideBeRendered(world, x, y, z, side);
+		}
 	}
 
 	public static enum ReactorBlockType

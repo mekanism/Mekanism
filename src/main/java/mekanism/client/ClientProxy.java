@@ -55,6 +55,7 @@ import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
+import mekanism.client.render.block.CTMRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
@@ -174,6 +175,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
 	@Override
 	public void loadConfiguration()
@@ -189,6 +191,7 @@ public class ClientProxy extends CommonProxy
 		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
+		client.renderCTM = Mekanism.configuration.get("client", "Use CTM Renderer", true).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 			Mekanism.configuration.save();
@@ -336,6 +339,7 @@ public class ClientProxy extends CommonProxy
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
+		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
