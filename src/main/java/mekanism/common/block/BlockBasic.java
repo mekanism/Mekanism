@@ -8,7 +8,8 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.client.ClientProxy;
-import mekanism.common.ConnectedTextureRenderer;
+import mekanism.common.base.IBlockCTM;
+import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -72,11 +73,13 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block
+public class BlockBasic extends Block implements IBlockCTM
 {
 	public IIcon[][] icons = new IIcon[256][6];
 
-	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", this, Arrays.asList(10));
+	public CTMData dynamicTankCTM = new CTMData("ctm/DynamicTank", Arrays.asList(9, 11));
+	public CTMData dynamicGlassCTM = new CTMData("ctm/DynamicGlass",Arrays.asList(10));
+	public CTMData dynamicValveCTM = new CTMData("ctm/DynamicValve", Arrays.asList(11, 9));
 
 	public BlockBasic()
 	{
@@ -134,7 +137,9 @@ public class BlockBasic extends Block
 			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
 			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
 
-			glassRenderer.registerIcons(register);
+			dynamicTankCTM.registerIcons(register);
+			dynamicGlassCTM.registerIcons(register);
+			dynamicValveCTM.registerIcons(register);
 		}
 		else if(this == MekanismBlocks.BasicBlock2)
 		{
@@ -150,40 +155,42 @@ public class BlockBasic extends Block
 
 		if(this == MekanismBlocks.BasicBlock)
 		{
-			if(metadata == 6)
+			switch(metadata)
 			{
-				TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+				case 6:
+					TileEntityBasicBlock tileEntity6 = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-				if(side == 0 || side == 1)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
-				}
-				else if(side == tileEntity.facing)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[6][4] : icons[6][2];
-				}
-				else {
-					return icons[6][0];
-				}
-			}
-			else if(metadata == 10)
-			{
-				return glassRenderer.getIcon(world, x, y, z, side);
-			}
-			else if(metadata == 14)
-			{
-				TileEntitySalinationController tileEntity = (TileEntitySalinationController)world.getTileEntity(x, y, z);
+					if(side == 0 || side == 1)
+					{
+						return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
+					}
+					else if(side == tileEntity6.facing)
+					{
+						return MekanismUtils.isActive(world, x, y, z) ? icons[6][4] : icons[6][2];
+					}
+					else
+					{
+						return icons[6][0];
+					}
+				case 9:
+					return dynamicTankCTM.icon;
+				case 10:
+					return dynamicGlassCTM.icon;
+				case 11:
+					return dynamicValveCTM.icon;
+				case 14:
+					TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
 
-				if(side == tileEntity.facing)
-				{
-					return tileEntity.structured ? icons[14][1] : icons[14][0];
-				}
-				else {
-					return icons[14][2];
-				}
-			}
-			else {
-				return getIcon(side, metadata);
+					if(side == tileEntity14.facing)
+					{
+						return tileEntity14.structured ? icons[14][1] : icons[14][0];
+					}
+					else
+					{
+						return icons[14][2];
+					}
+				default:
+					return getIcon(side, metadata);
 			}
 		}
 		else if(this == MekanismBlocks.BasicBlock2)
@@ -583,7 +590,7 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.BASIC_RENDER_ID;
+		return ClientProxy.CTM_RENDER_ID;
 	}
 
 	@Override
@@ -795,9 +802,10 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(this == MekanismBlocks.BasicBlock && world.getBlockMetadata(x, y, z) == 10)
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		if(this == MekanismBlocks.BasicBlock && obj.getMetadata(world) == 10)
 		{
-			return glassRenderer.shouldRenderSide(world, x, y, z, side);
+			return dynamicGlassCTM.shouldRenderSide(world, x, y, z, side, this);
 		}
 		else {
 			return super.shouldSideBeRendered(world, x, y, z, side);
@@ -842,5 +850,23 @@ public class BlockBasic extends Block
 		}
 		
 		return false;
+	}
+
+	@Override
+	public CTMData getCTMData(int meta)
+	{
+		if(this == MekanismBlocks.BasicBlock)
+		{
+			switch(meta)
+			{
+				case 9:
+					return dynamicTankCTM;
+				case 10:
+					return dynamicGlassCTM;
+				case 11:
+					return dynamicValveCTM;
+			}
+		}
+		return null;
 	}
 }
