@@ -490,38 +490,6 @@ public class MekanismRenderer
     	return null;
     }
     
-    public static class BooleanArray
-    {
-    	private final boolean[] boolArray;
-    	
-    	public BooleanArray(boolean[] array)
-		{
-			boolArray = array.clone();
-		}
-    	
-    	@Override
-    	public boolean equals(Object o)
-    	{
-    		if(o instanceof BooleanArray)
-    		{
-    			return Arrays.equals(boolArray, ((BooleanArray)o).boolArray);
-    		}
-    		else if(o instanceof boolean[]) 
-    		{
-    			return Arrays.equals(boolArray, (boolean[])o);
-    		}
-    		else {
-    			return false;
-    		}
-    	}
-    	
-    	@Override
-    	public int hashCode()
-    	{
-    		return Arrays.hashCode(boolArray);
-    	}
-    }
-    
     public static float getPartialTick()
     {
     	try {
