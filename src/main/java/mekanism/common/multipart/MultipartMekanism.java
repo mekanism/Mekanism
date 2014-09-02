@@ -12,6 +12,8 @@ import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
+import static mekanism.common.block.BlockMachine.MachineBlock.*;
+
 public class MultipartMekanism implements IPartFactory
 {
 	public MultipartMekanism()
@@ -123,12 +125,12 @@ public class MultipartMekanism implements IPartFactory
 
 			FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.BasicBlock, 1, i));
 			
-			if(!MachineType.get(MekanismBlocks.MachineBlock, i).hasModel)
+			if(!MachineType.get(MACHINE_BLOCK_1, i).hasModel)
 			{
 				FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock, 1, i));
 			}
 			
-			if(!MachineType.get(MekanismBlocks.MachineBlock2, i).hasModel)
+			if(!MachineType.get(MACHINE_BLOCK_2, i).hasModel)
 			{
 				FMLInterModComms.sendMessage("ForgeMicroblock", "microMaterial", new ItemStack(MekanismBlocks.MachineBlock2, 1, i));
 			}

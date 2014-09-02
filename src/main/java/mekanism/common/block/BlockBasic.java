@@ -79,12 +79,15 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
-	public BlockBasic()
+	public BasicBlock blockType;
+
+	public BlockBasic(BasicBlock type)
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
+		blockType = type;
 	}
 
 	@Override
@@ -110,44 +113,45 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
-			ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
-			ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
+			case BASIC_BLOCK_1:
+				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
+				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
-			ctms[14][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationController").registerIcons(register);
-			ctms[14][1] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationControllerOn").registerIcons(register);
-			ctms[15][0] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+				ctms[14][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationController").registerIcons(register);
+				ctms[14][1] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationControllerOn").registerIcons(register);
+				ctms[15][0] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
-			icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
-			icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
-			icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
-			icons[3][0] = register.registerIcon("mekanism:CoalBlock");
-			icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
-			icons[5][0] = register.registerIcon("mekanism:SteelBlock");
-			icons[6][0] = register.registerIcon("mekanism:BinSide");
-			icons[6][1] = register.registerIcon("mekanism:BinTop");
-			icons[6][2] = register.registerIcon("mekanism:BinFront");
-			icons[6][3] = register.registerIcon("mekanism:BinTopOn");
-			icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
-			icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
-			icons[8][0] = register.registerIcon("mekanism:SteelCasing");
-			icons[9][0] = ctms[9][0].mainTextureData.icon;
-			icons[10][0] = ctms[10][0].mainTextureData.icon;
-			icons[11][0] = ctms[11][0].mainTextureData.icon;
-			icons[12][0] = register.registerIcon("mekanism:CopperBlock");
-			icons[13][0] = register.registerIcon("mekanism:TinBlock");
-			icons[14][0] = ctms[14][0].facingOverride.icon;
-			icons[14][1] = ctms[14][1].facingOverride.icon;
-			icons[14][2] = ctms[14][0].mainTextureData.icon;
-			icons[15][0] = ctms[15][0].mainTextureData.icon;
-		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-			ctms[0][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
+				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
+				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
+				icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
+				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
+				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
+				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
+				icons[6][0] = register.registerIcon("mekanism:BinSide");
+				icons[6][1] = register.registerIcon("mekanism:BinTop");
+				icons[6][2] = register.registerIcon("mekanism:BinFront");
+				icons[6][3] = register.registerIcon("mekanism:BinTopOn");
+				icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
+				icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
+				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[9][0] = ctms[9][0].mainTextureData.icon;
+				icons[10][0] = ctms[10][0].mainTextureData.icon;
+				icons[11][0] = ctms[11][0].mainTextureData.icon;
+				icons[12][0] = register.registerIcon("mekanism:CopperBlock");
+				icons[13][0] = register.registerIcon("mekanism:TinBlock");
+				icons[14][0] = ctms[14][0].facingOverride.icon;
+				icons[14][1] = ctms[14][1].facingOverride.icon;
+				icons[14][2] = ctms[14][0].mainTextureData.icon;
+				icons[15][0] = ctms[15][0].mainTextureData.icon;
+				break;
+			case BASIC_BLOCK_2:
+				ctms[0][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
 
-			icons[0][0] = ctms[0][0].mainTextureData.icon;
+				icons[0][0] = ctms[0][0].mainTextureData.icon;
+				break;
 		}
 	}
 
@@ -155,49 +159,49 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			switch(metadata)
-			{
-				case 6:
-					TileEntityBasicBlock tileEntity6 = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			case BASIC_BLOCK_1:
+				switch(meta)
+				{
+					case 6:
+						TileEntityBasicBlock tileEntity6 = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-					if(side == 0 || side == 1)
-					{
-						return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
-					}
-					else if(side == tileEntity6.facing)
-					{
-						return MekanismUtils.isActive(world, x, y, z) ? icons[6][4] : icons[6][2];
-					}
-					else
-					{
-						return icons[6][0];
-					}
-				case 9:
-				case 10:
-				case 11:
-					return ctms[metadata][0].getIcon(side);
-				case 14:
-					TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
+						if(side == 0 || side == 1)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][3] : icons[meta][1];
+						} else if(side == tileEntity6.facing)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][4] : icons[meta][2];
+						} else
+						{
+							return icons[meta][0];
+						}
+					case 9:
+					case 10:
+					case 11:
+						return ctms[meta][0].getIcon(side);
+					case 14:
+						TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
 
-					if(side == tileEntity14.facing)
-					{
-						return tileEntity14.structured ? icons[14][1] : icons[14][0];
-					}
-					else
-					{
-						return icons[14][2];
-					}
-				default:
-					return getIcon(side, metadata);
-			}
-		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-			return getIcon(side, metadata);
+						if(side == tileEntity14.facing)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
+						} else
+						{
+							return icons[meta][2];
+						}
+					default:
+						return getIcon(side, meta);
+				}
+			case BASIC_BLOCK_2:
+				switch(meta)
+				{
+					default:
+						return getIcon(side, meta);
+				}
 		}
 
 		return null;
@@ -207,43 +211,38 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			if(meta != 6 && meta != 14)
-			{
+			case BASIC_BLOCK_1:
+				switch(meta)
+				{
+					case 6:
+						if(side == 0 || side == 1)
+						{
+							return icons[meta][1];
+						} else if(side == 3)
+						{
+							return icons[meta][2];
+						} else
+						{
+							return icons[meta][0];
+						}
+					case 14:
+						if(side == 3)
+						{
+							return icons[meta][0];
+						} else
+						{
+							return icons[meta][2];
+						}
+					default:
+						return icons[meta][0];
+				}
+			case BASIC_BLOCK_2:
 				return icons[meta][0];
-			}
-			else if(meta == 6)
-			{
-				if(side == 0 || side == 1)
-				{
-					return icons[6][1];
-				}
-				else if(side == 3)
-				{
-					return icons[6][2];
-				}
-				else {
-					return icons[6][0];
-				}
-			}
-			else if(meta == 14)
-			{
-				if(side == 3)
-				{
-					return icons[14][0];
-				}
-				else {
-					return icons[14][2];
-				}
-			}
+			default:
+				return icons[meta][0];
 		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-			return icons[meta][0];
-		}
-
-		return null;
 	}
 
 	@Override
@@ -256,28 +255,32 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			list.add(new ItemStack(item, 1, 0));
-			list.add(new ItemStack(item, 1, 1));
-			list.add(new ItemStack(item, 1, 2));
-			list.add(new ItemStack(item, 1, 3));
-			list.add(new ItemStack(item, 1, 4));
-			list.add(new ItemStack(item, 1, 5));
-			list.add(new ItemStack(item, 1, 6));
-			list.add(new ItemStack(item, 1, 7));
-			list.add(new ItemStack(item, 1, 8));
-			list.add(new ItemStack(item, 1, 9));
-			list.add(new ItemStack(item, 1, 10));
-			list.add(new ItemStack(item, 1, 11));
-			list.add(new ItemStack(item, 1, 12));
-			list.add(new ItemStack(item, 1, 13));
-			list.add(new ItemStack(item, 1, 14));
-			list.add(new ItemStack(item, 1, 15));
-		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-			list.add(new ItemStack(item, 1, 0));
+			case BASIC_BLOCK_1:
+				for(int i = 0; i < 16; i++)
+				{
+					list.add(new ItemStack(item, 1, 0));
+					list.add(new ItemStack(item, 1, 1));
+					list.add(new ItemStack(item, 1, 2));
+					list.add(new ItemStack(item, 1, 3));
+					list.add(new ItemStack(item, 1, 4));
+					list.add(new ItemStack(item, 1, 5));
+					list.add(new ItemStack(item, 1, 6));
+					list.add(new ItemStack(item, 1, 7));
+					list.add(new ItemStack(item, 1, 8));
+					list.add(new ItemStack(item, 1, 9));
+					list.add(new ItemStack(item, 1, 10));
+					list.add(new ItemStack(item, 1, 11));
+					list.add(new ItemStack(item, 1, 12));
+					list.add(new ItemStack(item, 1, 13));
+					list.add(new ItemStack(item, 1, 14));
+					list.add(new ItemStack(item, 1, 15));
+				}
+				break;
+			case BASIC_BLOCK_2:
+				list.add(new ItemStack(item, 1, 0));
+				break;
 		}
 	}
 
@@ -286,36 +289,38 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			if(meta == 9 || meta == 10 || meta == 11)
-			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
-
-				if(tileEntity != null)
+			case BASIC_BLOCK_1:
+				switch(meta)
 				{
-					if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-					{
-						if(tileEntity.structure != null)
+					case 9:
+					case 10:
+					case 11:
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
+
+						if(tileEntity != null)
 						{
-							return false;
+							if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+							{
+								if(tileEntity.structure != null)
+								{
+									return false;
+								}
+							} else
+							{
+								if(tileEntity.clientHasStructure)
+								{
+									return false;
+								}
+							}
 						}
-					}
-					else {
-						if(tileEntity.clientHasStructure)
-						{
-							return false;
-						}
-					}
 				}
-			}
+			case BASIC_BLOCK_2:
+				return super.canCreatureSpawn(type, world, x, y, z);
+			default:
+				return super.canCreatureSpawn(type, world, x, y, z);
 		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-
-		}
-
-		return super.canCreatureSpawn(type, world, x, y, z);
 	}
 
 	@Override
@@ -323,7 +328,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == MekanismBlocks.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(!world.isRemote && meta == 6)
 			{
@@ -352,7 +357,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(this == MekanismBlocks.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(metadata != 6)
 			{
@@ -452,7 +457,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		return !(this == MekanismBlocks.BasicBlock && world.getBlockMetadata(x, y, z) == 10);
+		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(x, y, z) == 10);
 	}
 
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -609,7 +614,7 @@ public class BlockBasic extends Block implements IBlockCTM
 			}
 		}
 
-		if(this == MekanismBlocks.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			switch(metadata)
 			{
@@ -628,49 +633,69 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 12 || metadata == 14 || metadata == 15;
+			case BASIC_BLOCK_1:
+				switch(metadata)
+				{
+					case 6:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+					case 14:
+					case 15:
+						return true;
+					default:
+						return false;
+				}
+			case BASIC_BLOCK_2:
+				switch(metadata)
+				{
+					case 0:
+						return true;
+					default:
+						return false;
+				}
+			default:
+				return false;
 		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-			return metadata == 0;
-		}
-
-		return false;
 	}
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		if(this == MekanismBlocks.BasicBlock)
+		switch(blockType)
 		{
-			switch(metadata)
-			{
-				case 6:
-					return new TileEntityBin();
-				case 9:
-					return new TileEntityDynamicTank();
-				case 10:
-					return new TileEntityDynamicTank();
-				case 11:
-					return new TileEntityDynamicValve();
-				case 14:
-					return new TileEntitySalinationController();
-				case 15:
-					return new TileEntitySalinationValve();
-			}
+			case BASIC_BLOCK_1:
+				switch(metadata)
+				{
+					case 6:
+						return new TileEntityBin();
+					case 9:
+						return new TileEntityDynamicTank();
+					case 10:
+						return new TileEntityDynamicTank();
+					case 11:
+						return new TileEntityDynamicValve();
+					case 14:
+						return new TileEntitySalinationController();
+					case 15:
+						return new TileEntitySalinationValve();
+					default:
+						return null;
+				}
+			case BASIC_BLOCK_2:
+				switch(metadata)
+				{
+					case 0:
+						return new TileEntitySalinationBlock();
+					default:
+						return null;
+				}
+			default:
+				return null;
 		}
-		else if(this == MekanismBlocks.BasicBlock2)
-		{
-			switch(metadata)
-			{
-				case 0:
-					return new TileEntitySalinationBlock();
-			}
-		}
-
-		return null;
 	}
 
 	@Override
@@ -735,7 +760,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		ItemStack ret = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
-		if(this == MekanismBlocks.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(ret.getItemDamage() == 6)
 			{
@@ -805,7 +830,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
-		if(this == MekanismBlocks.BasicBlock && obj.getMetadata(world) == 10)
+		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
 		}
@@ -863,5 +888,11 @@ public class BlockBasic extends Block implements IBlockCTM
 		}
 
 		return ctms[meta][0];
+	}
+
+	public static enum BasicBlock
+	{
+		BASIC_BLOCK_1,
+		BASIC_BLOCK_2;
 	}
 }

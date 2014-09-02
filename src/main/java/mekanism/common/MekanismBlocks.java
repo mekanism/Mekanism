@@ -18,20 +18,22 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
-import mekanism.common.item.ItemBlockPlasticFence;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlockWithMetadata;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+
+import static mekanism.common.block.BlockBasic.BasicBlock.*;
+import static mekanism.common.block.BlockMachine.MachineBlock.*;
 
 @ObjectHolder("Mekanism")
 public class MekanismBlocks
 {
-	public static final Block BasicBlock = new BlockBasic().setBlockName("BasicBlock");
-	public static final Block BasicBlock2 = new BlockBasic().setBlockName("BasicBlock2");
-	public static final Block MachineBlock = new BlockMachine().setBlockName("MachineBlock");
-	public static final Block MachineBlock2 = new BlockMachine().setBlockName("MachineBlock2");
+	public static final Block BasicBlock = new BlockBasic(BASIC_BLOCK_1).setBlockName("BasicBlock");
+	public static final Block BasicBlock2 = new BlockBasic(BASIC_BLOCK_2).setBlockName("BasicBlock2");
+	public static final Block MachineBlock = new BlockMachine(MACHINE_BLOCK_1).setBlockName("MachineBlock");
+	public static final Block MachineBlock2 = new BlockMachine(MACHINE_BLOCK_2).setBlockName("MachineBlock2");
+	public static final Block MachineBlock3 = new BlockMachine(MACHINE_BLOCK_3).setBlockName("MachineBlock3");
 	public static final Block OreBlock = new BlockOre().setBlockName("OreBlock");
 	public static final Block ObsidianTNT = new BlockObsidianTNT().setBlockName("ObsidianTNT").setCreativeTab(Mekanism.tabMekanism);
 	public static final Block EnergyCube = new BlockEnergyCube().setBlockName("EnergyCube");
@@ -55,6 +57,7 @@ public class MekanismBlocks
 		GameRegistry.registerBlock(BasicBlock2, ItemBlockBasic.class, "BasicBlock2");
 		GameRegistry.registerBlock(MachineBlock, ItemBlockMachine.class, "MachineBlock");
 		GameRegistry.registerBlock(MachineBlock2, ItemBlockMachine.class, "MachineBlock2");
+		GameRegistry.registerBlock(MachineBlock3, ItemBlockMachine.class, "MachineBlock3");
 		GameRegistry.registerBlock(OreBlock, ItemBlockOre.class, "OreBlock");
 		GameRegistry.registerBlock(EnergyCube, ItemBlockEnergyCube.class, "EnergyCube");
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
