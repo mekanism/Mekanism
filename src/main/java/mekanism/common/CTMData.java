@@ -87,6 +87,7 @@ public class CTMData
 		{
 			return sideOverrides[side];
 		}
+		
 		return mainTextureData;
 	}
 
@@ -123,6 +124,7 @@ public class CTMData
 		{
 			valid |= entry.getKey().equals(coordBlock) && entry.getValue().contains(coordMeta);
 		}
+		
 		return !valid;
 	}
 

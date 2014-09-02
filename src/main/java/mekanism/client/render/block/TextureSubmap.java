@@ -13,7 +13,9 @@ import net.minecraftforge.common.MinecraftForge;
 public class TextureSubmap
 {
 	public int width, height;
+	
 	public IIcon icon;
+	
 	public IIcon icons[];
 
 	public TextureSubmap(IIcon i, int w, int h)
@@ -29,7 +31,6 @@ public class TextureSubmap
 	@SubscribeEvent
 	public void TexturesStitched(TextureStitchEvent.Post event)
 	{
-
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
@@ -38,5 +39,4 @@ public class TextureSubmap
 			}
 		}
 	}
-
 }
