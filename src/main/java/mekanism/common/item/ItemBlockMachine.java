@@ -964,8 +964,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		if(MachineType.get(container) == MachineType.PORTABLE_TANK && resource != null)
 		{
 			FluidStack stored = getFluidStack(container);
-			int toFill = 0;
-			
+			int toFill;
+
 			if(stored != null && stored.getFluid() != resource.getFluid())
 			{
 				return 0;
@@ -981,7 +981,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(doFill)
 			{
-				setFluidStack(new FluidStack(resource.getFluid(), toFill), container);
+				int fillAmount = toFill + (stored == null ? 0 : stored.amount);
+				setFluidStack(new FluidStack(resource.getFluid(), fillAmount), container);
 			}
 			
 			return toFill;
