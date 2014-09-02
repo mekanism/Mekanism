@@ -58,4 +58,10 @@ public class BlockPlasticFence extends BlockFence
         }
         return false;
     }
+
+	@Override
+	public int damageDropped(int i)
+	{
+		return i;
+	}
 }

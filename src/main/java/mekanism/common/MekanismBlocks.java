@@ -18,8 +18,10 @@ import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
+import mekanism.common.item.ItemBlockPlasticFence;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlockWithMetadata;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
@@ -64,7 +66,7 @@ public class MekanismBlocks
 		GameRegistry.registerBlock(GlowPlasticBlock, ItemBlockPlastic.class, "GlowPlasticBlock");
 		GameRegistry.registerBlock(ReinforcedPlasticBlock, ItemBlockPlastic.class, "ReinforcedPlasticBlock");
 		GameRegistry.registerBlock(RoadPlasticBlock, ItemBlockPlastic.class, "RoadPlasticBlock");
-		GameRegistry.registerBlock(PlasticFence, "PlasticFence");
+		GameRegistry.registerBlock(PlasticFence, ItemBlockPlastic.class, "PlasticFence");
 		GameRegistry.registerBlock(SaltBlock, "SaltBlock");
 	}
 }
