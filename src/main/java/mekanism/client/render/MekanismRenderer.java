@@ -8,6 +8,9 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
+import mekanism.client.render.tileentity.RenderDynamicTank;
+import mekanism.client.render.tileentity.RenderPortableTank;
+import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
@@ -105,6 +108,14 @@ public class MekanismRenderer
 			}
 
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
+
+			if(RenderPartTransmitter.getInstance() != null)
+			{
+				RenderPartTransmitter.getInstance().resetDisplayInts();
+			}
+			RenderDynamicTank.resetDisplayInts();
+			RenderSalinationController.resetDisplayInts();
+			RenderPortableTank.resetDisplayInts();
 		}
 	}
     

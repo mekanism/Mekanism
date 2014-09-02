@@ -204,4 +204,9 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 					((SalinationRenderData)data).side == side;
 		}
 	}
+
+	public static void resetDisplayInts()
+	{
+		cachedCenterFluids.clear();
+	}
 }

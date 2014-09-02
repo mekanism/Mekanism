@@ -7,6 +7,7 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.Mekanism;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
@@ -357,5 +358,11 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			code = 31 * code + valveLocation.hashCode();
 			return code;
 		}
+	}
+
+	public static void resetDisplayInts()
+	{
+		cachedCenterFluids.clear();
+		cachedValveFluids.clear();
 	}
 }

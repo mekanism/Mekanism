@@ -728,4 +728,10 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		return display;
 	}
+
+	public void resetDisplayInts()
+	{
+		cachedLiquids.clear();
+		cachedOverlays.clear();
+	}
 }

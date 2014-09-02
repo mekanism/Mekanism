@@ -193,4 +193,10 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 
 		return displays;
 	}
+
+	public static void resetDisplayInts()
+	{
+		cachedCenterFluids.clear();
+		cachedValveFluids.clear();
+	}
 }
