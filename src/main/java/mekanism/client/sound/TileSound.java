@@ -38,10 +38,11 @@ public class TileSound extends Sound implements IResettableSound {
 		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	public TileSound(IHasSound source, ResourceLocation resource, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation)
+	public TileSound(IHasSound soundSource, ResourceLocation resource, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation)
 	{
 		super(resource, volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
-		
+
+		source = soundSource;
 		sound = resource;
 		baseVolume = volume;
 	}

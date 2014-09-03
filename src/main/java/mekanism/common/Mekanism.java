@@ -1093,6 +1093,7 @@ public class Mekanism
 		
 		//Load configuration
 		proxy.loadConfiguration();
+		proxy.onConfigSync();
 		
 		//Add baby skeleton spawner
 		if(general.spawnBabySkeletons)

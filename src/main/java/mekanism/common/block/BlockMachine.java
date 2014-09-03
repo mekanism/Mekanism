@@ -5,6 +5,7 @@ import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.ClientProxy;
@@ -1031,39 +1032,39 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 0, "EnrichmentChamber", 3, usage.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, true, false, true),
-		OSMIUM_COMPRESSOR(MachineBlock.MACHINE_BLOCK_1, 1, "OsmiumCompressor", 4, usage.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, true, false, true),
-		COMBINER(MachineBlock.MACHINE_BLOCK_1, 2, "Combiner", 5, usage.combinerUsage*400, TileEntityCombiner.class, true, false, true),
-		CRUSHER(MachineBlock.MACHINE_BLOCK_1, 3, "Crusher", 6, usage.crusherUsage*400, TileEntityCrusher.class, true, false, true),
-		DIGITAL_MINER(MachineBlock.MACHINE_BLOCK_1, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true, true, true),
-		BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "BasicFactory", 11, usage.factoryUsage*3*400, TileEntityFactory.class, true, false, true),
-		ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "AdvancedFactory", 11, usage.factoryUsage*5*400, TileEntityAdvancedFactory.class, true, false, true),
-		ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "EliteFactory", 11, usage.factoryUsage*7*400, TileEntityEliteFactory.class, true, false, true),
-		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12, usage.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true, true, true),
-		PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15, usage.purificationChamberUsage*400, TileEntityPurificationChamber.class, true, false, true),
-		ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, usage.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, true, false, true),
-		TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, true, false, false),
-		ELECTRIC_PUMP(MachineBlock.MACHINE_BLOCK_1, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true, true, false),
-		ELECTRIC_CHEST(MachineBlock.MACHINE_BLOCK_1, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true, true, false),
-		CHARGEPAD(MachineBlock.MACHINE_BLOCK_1, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true, true, false),
-		LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, false, true, false),
-		ROTARY_CONDENSENTRATOR(MachineBlock.MACHINE_BLOCK_2, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, true, false),
-		CHEMICAL_OXIDIZER(MachineBlock.MACHINE_BLOCK_2, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, true, true),
-		CHEMICAL_INFUSER(MachineBlock.MACHINE_BLOCK_2, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, true, false),
-		CHEMICAL_INJECTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 3, "ChemicalInjectionChamber", 31, usage.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, true, false, true),
-		ELECTROLYTIC_SEPARATOR(MachineBlock.MACHINE_BLOCK_2, 4, "ElectrolyticSeparator", 32, 400000, TileEntityElectrolyticSeparator.class, true, true, false),
-		PRECISION_SAWMILL(MachineBlock.MACHINE_BLOCK_2, 5, "PrecisionSawmill", 34, usage.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, true, false, true),
-		CHEMICAL_DISSOLUTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, true, true),
-		CHEMICAL_WASHER(MachineBlock.MACHINE_BLOCK_2, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, true, false),
-		CHEMICAL_CRYSTALLIZER(MachineBlock.MACHINE_BLOCK_2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, true, true),
-		SEISMIC_VIBRATOR(MachineBlock.MACHINE_BLOCK_2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, true, false),
-		PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
-		PORTABLE_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
-		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
-		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
-		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_2, 15, "EntangledBlock", 45, 0, TileEntityEntangledBlock.class, true, false, false),
-		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, 0, TileEntityAmbientAccumulator.class, true, false, false);
+		ENRICHMENT_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 0, "EnrichmentChamber", 3, TileEntityEnrichmentChamber.class, true, false, true),
+		OSMIUM_COMPRESSOR(MachineBlock.MACHINE_BLOCK_1, 1, "OsmiumCompressor", 4, TileEntityOsmiumCompressor.class, true, false, true),
+		COMBINER(MachineBlock.MACHINE_BLOCK_1, 2, "Combiner", 5, TileEntityCombiner.class, true, false, true),
+		CRUSHER(MachineBlock.MACHINE_BLOCK_1, 3, "Crusher", 6, TileEntityCrusher.class, true, false, true),
+		DIGITAL_MINER(MachineBlock.MACHINE_BLOCK_1, 4, "DigitalMiner", 2, TileEntityDigitalMiner.class, true, true, true),
+		BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "BasicFactory", 11, TileEntityFactory.class, true, false, true),
+		ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "AdvancedFactory", 11, TileEntityAdvancedFactory.class, true, false, true),
+		ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "EliteFactory", 11, TileEntityEliteFactory.class, true, false, true),
+		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12, TileEntityMetallurgicInfuser.class, true, true, true),
+		PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15, TileEntityPurificationChamber.class, true, false, true),
+		ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, TileEntityEnergizedSmelter.class, true, false, true),
+		TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, TileEntityTeleporter.class, true, false, false),
+		ELECTRIC_PUMP(MachineBlock.MACHINE_BLOCK_1, 12, "ElectricPump", 17, TileEntityElectricPump.class, true, true, false),
+		ELECTRIC_CHEST(MachineBlock.MACHINE_BLOCK_1, 13, "ElectricChest", -1, TileEntityElectricChest.class, true, true, false),
+		CHARGEPAD(MachineBlock.MACHINE_BLOCK_1, 14, "Chargepad", -1, TileEntityChargepad.class, true, true, false),
+		LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", -1, TileEntityLogisticalSorter.class, false, true, false),
+		ROTARY_CONDENSENTRATOR(MachineBlock.MACHINE_BLOCK_2, 0, "RotaryCondensentrator", 7, TileEntityRotaryCondensentrator.class, true, true, false),
+		CHEMICAL_OXIDIZER(MachineBlock.MACHINE_BLOCK_2, 1, "ChemicalOxidizer", 29, TileEntityChemicalOxidizer.class, true, true, true),
+		CHEMICAL_INFUSER(MachineBlock.MACHINE_BLOCK_2, 2, "ChemicalInfuser", 30, TileEntityChemicalInfuser.class, true, true, false),
+		CHEMICAL_INJECTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 3, "ChemicalInjectionChamber", 31, TileEntityChemicalInjectionChamber.class, true, false, true),
+		ELECTROLYTIC_SEPARATOR(MachineBlock.MACHINE_BLOCK_2, 4, "ElectrolyticSeparator", 32, TileEntityElectrolyticSeparator.class, true, true, false),
+		PRECISION_SAWMILL(MachineBlock.MACHINE_BLOCK_2, 5, "PrecisionSawmill", 34, TileEntityPrecisionSawmill.class, true, false, true),
+		CHEMICAL_DISSOLUTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 6, "ChemicalDissolutionChamber", 35, TileEntityChemicalDissolutionChamber.class, true, true, true),
+		CHEMICAL_WASHER(MachineBlock.MACHINE_BLOCK_2, 7, "ChemicalWasher", 36, TileEntityChemicalWasher.class, true, true, false),
+		CHEMICAL_CRYSTALLIZER(MachineBlock.MACHINE_BLOCK_2, 8, "ChemicalCrystallizer", 37, TileEntityChemicalCrystallizer.class, true, true, true),
+		SEISMIC_VIBRATOR(MachineBlock.MACHINE_BLOCK_2, 9, "SeismicVibrator", 39, TileEntitySeismicVibrator.class, true, true, false),
+		PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40, TileEntityPRC.class, true, true, false),
+		PORTABLE_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "PortableTank", 41, TileEntityPortableTank.class, false, true, false),
+		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false),
+		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false),
+		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
+		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_2, 15, "EntangledBlock", 45, TileEntityEntangledBlock.class, true, false, false),
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -1075,13 +1076,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		public boolean hasModel;
 		public boolean supportsUpgrades;
 
-		private MachineType(MachineBlock block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
+		private MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
 		{
 			typeBlock = block;
 			meta = i;
 			name = s;
 			guiId = j;
-			baseEnergy = k;
 			tileEntityClass = tileClass;
 			isElectric = electric;
 			hasModel = model;
@@ -1120,6 +1120,95 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				e.printStackTrace();
 				return null;
 			}
+		}
+
+		/** Used for getting the base energy storage. */
+		public double getUsage()
+		{
+			switch(this)
+			{
+				case ENRICHMENT_CHAMBER:
+					return usage.enrichmentChamberUsage;
+				case OSMIUM_COMPRESSOR:
+					return usage.osmiumCompressorUsage;
+				case COMBINER:
+					return usage.combinerUsage;
+				case CRUSHER:
+					return usage.crusherUsage;
+				case DIGITAL_MINER:
+					return usage.digitalMinerUsage;
+				case BASIC_FACTORY:
+					return usage.factoryUsage * 3;
+				case ADVANCED_FACTORY:
+					return usage.factoryUsage * 5;
+				case ELITE_FACTORY:
+					return usage.factoryUsage * 7;
+				case METALLURGIC_INFUSER:
+					return usage.metallurgicInfuserUsage;
+				case PURIFICATION_CHAMBER:
+					return usage.purificationChamberUsage;
+				case ENERGIZED_SMELTER:
+					return usage.energizedSmelterUsage;
+				case TELEPORTER:
+					return 12500;
+				case ELECTRIC_PUMP:
+					return usage.electricPumpUsage;
+				case ELECTRIC_CHEST:
+					return 30;
+				case CHARGEPAD:
+					return 25;
+				case LOGISTICAL_SORTER:
+					return 0;
+				case ROTARY_CONDENSENTRATOR:
+					return usage.rotaryCondensentratorUsage;
+				case CHEMICAL_OXIDIZER:
+					return usage.oxidationChamberUsage;
+				case CHEMICAL_INFUSER:
+					return usage.chemicalInfuserUsage;
+				case CHEMICAL_INJECTION_CHAMBER:
+					return usage.chemicalInjectionChamberUsage;
+				case ELECTROLYTIC_SEPARATOR:
+					return general.FROM_H2 * 2;
+				case PRECISION_SAWMILL:
+					return usage.precisionSawmillUsage;
+				case CHEMICAL_DISSOLUTION_CHAMBER:
+					return usage.chemicalDissolutionChamberUsage;
+				case CHEMICAL_WASHER:
+					return usage.chemicalWasherUsage;
+				case CHEMICAL_CRYSTALLIZER:
+					return usage.chemicalCrystallizerUsage;
+				case SEISMIC_VIBRATOR:
+					return usage.seismicVibratorUsage;
+				case PRESSURIZED_REACTION_CHAMBER:
+					return usage.pressurizedReactionBaseUsage;
+				case PORTABLE_TANK:
+					return 0;
+				case FLUIDIC_PLENISHER:
+					return usage.fluidicPlenisherUsage;
+				case LASER:
+					return usage.laserUsage;
+				case LASER_AMPLIFIER:
+					return 0;
+				case ENTANGLED_BLOCK:
+					return 0;
+				case AMBIENT_ACCUMULATOR:
+					return 0;
+				default:
+					return 0;
+			}
+		}
+
+		public static void updateAllUsages()
+		{
+			for(MachineType type : values())
+			{
+				type.updateUsage();
+			}
+		}
+
+		public void updateUsage()
+		{
+			baseEnergy = 400 * getUsage();
 		}
 
 		public String getDescription()

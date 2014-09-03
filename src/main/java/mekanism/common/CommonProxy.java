@@ -8,6 +8,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.util.EnergyUtils.EnergyType;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -235,14 +236,6 @@ public class CommonProxy
 		general.TO_TE = general.TO_BC*10;
 		general.FROM_TE = general.FROM_BC/10;
 
-		if(general.cardboardSpawners)
-		{
-			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);
-		}
-		else {
-			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
-		}
-
 		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 100).getInt(100);
 
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
@@ -458,6 +451,7 @@ public class CommonProxy
 		else {
 			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
+		MachineType.updateAllUsages();
 
 		Mekanism.logger.info("Received config from server.");
 	}

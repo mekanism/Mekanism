@@ -63,12 +63,6 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	@Override
 	public float getPitch()
 	{
-		if(this instanceof IUpgradeTile)
-		{
-			float speedUpgrades = ((IUpgradeTile)this).getComponent().getUpgrades(Upgrade.SPEED);
-			return 1F + 20 * speedUpgrades / (float)Upgrade.SPEED.getMax();
-		}
-		
 		return 1F;
 	}
 
