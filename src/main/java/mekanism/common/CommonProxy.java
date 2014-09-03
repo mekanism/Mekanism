@@ -43,6 +43,7 @@ import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
+import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.tile.TileEntityChargepad;
@@ -147,6 +148,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
 		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
+		GameRegistry.registerTileEntityWithAlternatives(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
 	}
 
 	/**
@@ -419,6 +421,7 @@ public class CommonProxy
 				return new ContainerUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
 			case 44:
 			case 45:
+			case 46:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 

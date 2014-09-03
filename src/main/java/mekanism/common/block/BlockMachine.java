@@ -29,6 +29,7 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.tile.TileEntityAdvancedFactory;
+import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -132,6 +133,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 1:13: Laser
  * 1:14: Laser Amplifier
  * 1:15: Entangled Block
+ * 2:0: Ambient Accumulator
  * @author AidanBrady
  *
  */
@@ -1060,7 +1062,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false),
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, 100000, TileEntityLaser.class, true, true, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, 0, TileEntityLaserAmplifier.class, false, true, false),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_2, 15, "EntangledBlock", 45, 0, TileEntityEntangledBlock.class, true, false, false);
+		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_2, 15, "EntangledBlock", 45, 0, TileEntityEntangledBlock.class, true, false, false),
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, 0, TileEntityAmbientAccumulator.class, true, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
