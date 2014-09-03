@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;

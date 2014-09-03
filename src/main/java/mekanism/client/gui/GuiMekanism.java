@@ -9,6 +9,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;

@@ -2,8 +2,9 @@ package mekanism.common.asm;
 
 import java.util.Map;
 
-import codechicken.core.launch.DepLoader;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+
+import codechicken.core.launch.DepLoader;
 
 public class LoadingHook implements IFMLLoadingPlugin
 {

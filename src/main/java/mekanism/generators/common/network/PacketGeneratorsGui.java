@@ -1,9 +1,8 @@
 package mekanism.generators.common.network;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
-import mekanism.generators.common.GeneratorsPacketHandler;
 import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.generators.common.GeneratorsPacketHandler;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
 
@@ -17,6 +16,8 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import io.netty.buffer.ByteBuf;
 
 public class PacketGeneratorsGui implements IMessageHandler<GeneratorsGuiMessage, IMessage>
 {

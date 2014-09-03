@@ -1,16 +1,17 @@
 package mekanism.common.util;
 
-import ic2.api.item.ElectricItem;
-import ic2.api.item.IElectricItem;
-
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityElectricBlock;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+
 import cofh.api.energy.IEnergyContainerItem;
+import ic2.api.item.ElectricItem;
+import ic2.api.item.IElectricItem;
 
 public final class ChargeUtils
 {

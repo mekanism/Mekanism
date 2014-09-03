@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import mekanism.common.entity.EntityRobit;
+
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNavigate;

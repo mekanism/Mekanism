@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.util.PipeUtils;
+
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

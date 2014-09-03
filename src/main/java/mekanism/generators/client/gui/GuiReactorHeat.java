@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.util.ListUtils;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyGauge;
 import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.GuiEnergyInfo;
@@ -33,6 +33,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)

@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.reactor;
 
 import mekanism.api.lasers.ILaserReceptor;
-import mekanism.api.reactor.IFusionReactor;
 
 import net.minecraftforge.common.util.ForgeDirection;
 

@@ -2,6 +2,7 @@ package mekanism.common.content.matrix;
 
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.multiblock.SynchronizedData;
+
 import net.minecraft.item.ItemStack;
 
 public class SynchronizedMatrixData extends SynchronizedData<SynchronizedTankData>

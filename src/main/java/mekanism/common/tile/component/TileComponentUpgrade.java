@@ -1,7 +1,5 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +10,10 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.tile.TileEntityContainerBlock;
+
 import net.minecraft.nbt.NBTTagCompound;
+
+import io.netty.buffer.ByteBuf;
 
 public class TileComponentUpgrade implements ITileComponent
 {

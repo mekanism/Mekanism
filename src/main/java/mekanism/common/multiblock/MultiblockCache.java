@@ -3,6 +3,7 @@ package mekanism.common.multiblock;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class MultiblockCache<T>

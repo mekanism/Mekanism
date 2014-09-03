@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
 import mekanism.api.MekanismConfig.general;
@@ -15,6 +13,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.MekanismRecipe;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -22,7 +21,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import buildcraft.api.fuels.IronEngineFuel;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -35,6 +33,10 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+
+import io.netty.buffer.ByteBuf;
+
+import buildcraft.api.fuels.IronEngineFuel;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule

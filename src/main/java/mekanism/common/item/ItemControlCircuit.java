@@ -4,6 +4,7 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.BaseTier;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;

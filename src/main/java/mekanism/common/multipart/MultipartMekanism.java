@@ -3,16 +3,19 @@ package mekanism.common.multipart;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier;
 import mekanism.common.block.BlockMachine.MachineType;
+
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.event.FMLInterModComms;
+
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;
 import codechicken.multipart.MultiPartRegistry;
 import codechicken.multipart.MultiPartRegistry.IPartFactory;
 import codechicken.multipart.MultipartGenerator;
 import codechicken.multipart.TMultiPart;
-import cpw.mods.fml.common.event.FMLInterModComms;
 
-import static mekanism.common.block.BlockMachine.MachineBlock.*;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
 
 public class MultipartMekanism implements IPartFactory
 {

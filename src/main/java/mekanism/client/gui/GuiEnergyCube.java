@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.List;
 
-import mekanism.api.util.ListUtils;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
@@ -12,12 +12,12 @@ import mekanism.common.inventory.container.ContainerEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyCube extends GuiMekanism

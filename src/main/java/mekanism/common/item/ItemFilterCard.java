@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.IFilterAccess;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

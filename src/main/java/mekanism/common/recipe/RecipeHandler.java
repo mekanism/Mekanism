@@ -4,18 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import mekanism.api.gas.GasRegistry;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.infuse.InfusionInput;
+import mekanism.api.infuse.InfusionOutput;
 import mekanism.api.recipe.AdvancedInput;
 import mekanism.api.recipe.ChanceOutput;
 import mekanism.api.recipe.ChemicalPair;
 import mekanism.api.recipe.PressurizedProducts;
 import mekanism.api.recipe.PressurizedReactants;
 import mekanism.api.recipe.PressurizedRecipe;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.infuse.InfusionInput;
-import mekanism.api.infuse.InfusionOutput;
 import mekanism.api.util.StackUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

@@ -3,12 +3,13 @@ package mekanism.common;
 import java.util.HashMap;
 
 import mekanism.api.MekanismConfig.general;
-
 import mekanism.api.gas.Gas;
+
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import cpw.mods.fml.common.ModAPIManager;
+
 import buildcraft.api.fuels.IronEngineFuel;
 import buildcraft.api.fuels.IronEngineFuel.Fuel;
-import cpw.mods.fml.common.ModAPIManager;
 
 public class FuelHandler
 {

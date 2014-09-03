@@ -1,8 +1,8 @@
 package mekanism.generators.client;
 
 import mekanism.generators.client.gui.GuiBioGenerator;
-import mekanism.generators.client.gui.GuiHeatGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
+import mekanism.generators.client.gui.GuiHeatGenerator;
 import mekanism.generators.client.gui.GuiNeutronCapture;
 import mekanism.generators.client.gui.GuiReactorController;
 import mekanism.generators.client.gui.GuiReactorFuel;
@@ -12,16 +12,16 @@ import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiWindTurbine;
 import mekanism.generators.client.render.RenderAdvancedSolarGenerator;
 import mekanism.generators.client.render.RenderBioGenerator;
-import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderGasGenerator;
+import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderReactor;
 import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderWindTurbine;
 import mekanism.generators.common.GeneratorsCommonProxy;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;

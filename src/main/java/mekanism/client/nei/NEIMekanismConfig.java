@@ -21,6 +21,7 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 
 import net.minecraft.item.ItemStack;
+
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.guihook.GuiContainerManager;

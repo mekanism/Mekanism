@@ -1,6 +1,7 @@
 package mekanism.generators.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 

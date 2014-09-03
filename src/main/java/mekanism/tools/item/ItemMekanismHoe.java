@@ -2,9 +2,10 @@ package mekanism.tools.item;
 
 import java.util.List;
 
+import mekanism.api.util.StackUtils;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.util.StackUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

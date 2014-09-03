@@ -1,13 +1,11 @@
 package mekanism.generators.common.tile;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.client.sound.IHasSound;
 import mekanism.client.sound.ISoundSource;
 import mekanism.client.sound.TileSound;
@@ -26,6 +24,9 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import io.netty.buffer.ByteBuf;
+
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 

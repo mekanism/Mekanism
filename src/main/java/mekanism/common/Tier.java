@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.api.EnumColor;
 import mekanism.common.multipart.TransmitterType;
+
 import net.minecraft.util.ResourceLocation;
 
 /**

@@ -1,8 +1,8 @@
 package mekanism.api.gas;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;

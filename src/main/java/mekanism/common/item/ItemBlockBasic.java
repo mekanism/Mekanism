@@ -6,6 +6,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tile.TileEntityBin;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;

@@ -5,11 +5,11 @@ import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiGauge.Type;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
-import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.entity.player.EntityPlayer;
+
 import org.lwjgl.opengl.GL11;
 
 public class GuiAmbientAccumulator extends GuiMekanism

@@ -23,8 +23,11 @@ import net.minecraft.block.Block;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 
-import static mekanism.common.block.BlockBasic.BasicBlock.*;
-import static mekanism.common.block.BlockMachine.MachineBlock.*;
+import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_1;
+import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_2;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_1;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_2;
+import static mekanism.common.block.BlockMachine.MachineBlock.MACHINE_BLOCK_3;
 
 @ObjectHolder("Mekanism")
 public class MekanismBlocks

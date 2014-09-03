@@ -2,7 +2,6 @@ package mekanism.generators.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 
 import net.minecraft.entity.player.EntityPlayer;

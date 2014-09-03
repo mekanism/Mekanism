@@ -1,8 +1,5 @@
 package mekanism.common;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,14 +19,18 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.ListUtils;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event;
+
 import buildcraft.api.mj.IBatteryObject;
 import buildcraft.api.mj.MjAPI;
 import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergySink;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {

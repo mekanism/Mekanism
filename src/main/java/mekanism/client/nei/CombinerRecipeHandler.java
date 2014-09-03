@@ -3,12 +3,13 @@ package mekanism.client.nei;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.api.util.ListUtils;
 import mekanism.api.gas.Gas;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 

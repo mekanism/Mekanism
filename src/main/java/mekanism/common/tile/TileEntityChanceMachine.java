@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.recipe.ChanceOutput;
 import mekanism.api.EnumColor;
+import mekanism.api.recipe.ChanceOutput;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
@@ -12,9 +12,11 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.Optional.Method;
+
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 

@@ -19,6 +19,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)

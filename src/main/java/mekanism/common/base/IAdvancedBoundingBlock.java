@@ -1,18 +1,20 @@
 package mekanism.common.base;
 
-import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
+
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import buildcraft.api.power.IPowerReceptor;
-import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
+
+import buildcraft.api.power.IPowerReceptor;
+import cofh.api.energy.IEnergyHandler;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import ic2.api.energy.tile.IEnergySink;
 
 @InterfaceList({
 		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),

@@ -16,18 +16,18 @@ import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemCoal;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import static java.lang.Math.min;
+
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class FusionReactor implements IFusionReactor
 {

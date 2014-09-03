@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
+
 import net.minecraft.item.ItemStack;
 
 public class TileEntityEnergizedSmelter extends TileEntityElectricMachine

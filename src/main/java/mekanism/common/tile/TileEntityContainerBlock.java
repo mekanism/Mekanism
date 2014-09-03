@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;

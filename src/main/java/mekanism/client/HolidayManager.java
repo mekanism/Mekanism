@@ -7,6 +7,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
 import mekanism.common.Mekanism;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;

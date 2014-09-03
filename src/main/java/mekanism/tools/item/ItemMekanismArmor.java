@@ -2,11 +2,11 @@ package mekanism.tools.item;
 
 import java.util.List;
 
+import mekanism.api.util.StackUtils;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
-import mekanism.api.util.StackUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItems;
 

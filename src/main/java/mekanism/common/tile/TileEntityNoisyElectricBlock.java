@@ -7,9 +7,7 @@ import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.ISoundSource;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.sound.TileSound;
-import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IUpgradeTile;
 
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISound.AttenuationType;

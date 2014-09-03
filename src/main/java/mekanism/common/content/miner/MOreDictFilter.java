@@ -1,14 +1,15 @@
 package mekanism.common.content.miner;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
 import mekanism.common.content.transporter.Finder.OreDictFinder;
+
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import io.netty.buffer.ByteBuf;
 
 public class MOreDictFilter extends MinerFilter
 {

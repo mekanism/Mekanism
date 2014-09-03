@@ -1,14 +1,12 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import mekanism.api.Coord4D;
 import mekanism.common.multiblock.MultiblockManager;
+
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

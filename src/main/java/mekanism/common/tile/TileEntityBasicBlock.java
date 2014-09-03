@@ -1,8 +1,5 @@
 package mekanism.common.tile;
 
-import ic2.api.tile.IWrenchable;
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +12,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +21,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
+
+import io.netty.buffer.ByteBuf;
+
+import ic2.api.tile.IWrenchable;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork

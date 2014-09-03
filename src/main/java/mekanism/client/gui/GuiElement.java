@@ -4,13 +4,15 @@ import java.util.List;
 
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement

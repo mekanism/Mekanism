@@ -18,6 +18,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.util.TransporterUtils;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;

@@ -7,6 +7,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;

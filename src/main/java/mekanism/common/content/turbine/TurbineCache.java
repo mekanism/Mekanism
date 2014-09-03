@@ -1,6 +1,7 @@
 package mekanism.common.content.turbine;
 
 import mekanism.common.multiblock.MultiblockCache;
+
 import net.minecraft.nbt.NBTTagCompound;
 
 public class TurbineCache extends MultiblockCache<SynchronizedTurbineData>

@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

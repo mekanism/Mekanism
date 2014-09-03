@@ -4,6 +4,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemProxy;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;

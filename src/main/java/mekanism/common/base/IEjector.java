@@ -1,6 +1,7 @@
 package mekanism.common.base;
 
 import mekanism.api.EnumColor;
+
 import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IEjector

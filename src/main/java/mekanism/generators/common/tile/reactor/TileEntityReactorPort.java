@@ -2,8 +2,6 @@ package mekanism.generators.common.tile.reactor;
 
 import java.util.EnumSet;
 
-import mekanism.api.energy.ICableOutputter;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;

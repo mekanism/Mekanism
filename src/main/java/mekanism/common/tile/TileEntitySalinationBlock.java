@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySalinationBlock extends TileEntityContainerBlock

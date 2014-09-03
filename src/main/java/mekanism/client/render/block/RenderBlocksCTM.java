@@ -1,8 +1,5 @@
 package mekanism.client.render.block;
 
-import java.util.HashMap;
-import java.util.List;
-
 import mekanism.client.render.CTM;
 import mekanism.common.CTMData;
 

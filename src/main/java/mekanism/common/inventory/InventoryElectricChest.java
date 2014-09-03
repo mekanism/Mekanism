@@ -2,6 +2,7 @@ package mekanism.common.inventory;
 
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.ISustainedInventory;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;

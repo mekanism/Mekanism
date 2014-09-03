@@ -1,7 +1,7 @@
 package mekanism.api.recipe;
 
-import mekanism.api.util.StackUtils;
 import mekanism.api.gas.Gas;
+import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
 

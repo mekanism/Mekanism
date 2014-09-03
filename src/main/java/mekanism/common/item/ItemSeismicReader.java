@@ -4,6 +4,7 @@ import mekanism.api.Chunk3D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;

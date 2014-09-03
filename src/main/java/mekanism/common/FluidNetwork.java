@@ -18,6 +18,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.ListUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;

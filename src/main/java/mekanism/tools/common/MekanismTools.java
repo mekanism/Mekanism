@@ -1,7 +1,5 @@
 package mekanism.tools.common;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
 import mekanism.api.MekanismConfig.tools;
@@ -9,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.MekanismRecipe;
+
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.init.Items;
@@ -28,6 +27,8 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import io.netty.buffer.ByteBuf;
 
 @Mod(modid = "MekanismTools", name = "MekanismTools", version = "8.0.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 public class MekanismTools implements IModule

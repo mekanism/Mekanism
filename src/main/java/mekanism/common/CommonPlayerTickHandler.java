@@ -11,6 +11,7 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.network.PacketStatusUpdate.StatusUpdateMessage;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;

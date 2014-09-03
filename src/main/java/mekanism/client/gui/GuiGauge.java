@@ -1,11 +1,13 @@
 package mekanism.client.gui;
 
-import codechicken.lib.vec.Rectangle4i;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+
+import codechicken.lib.vec.Rectangle4i;
 
 public abstract class GuiGauge<T> extends GuiElement
 {

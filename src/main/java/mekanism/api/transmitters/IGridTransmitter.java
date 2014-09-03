@@ -1,6 +1,5 @@
 package mekanism.api.transmitters;
 
-import mekanism.api.Coord4D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 

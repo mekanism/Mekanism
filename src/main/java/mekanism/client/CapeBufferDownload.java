@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;

@@ -1,8 +1,8 @@
 package mekanism.api.recipe;
 
-import mekanism.api.util.StackUtils;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

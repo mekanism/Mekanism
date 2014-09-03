@@ -3,7 +3,6 @@ package mekanism.common.base;
 import mekanism.common.CTMData;
 
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 
 public interface IBlockCTM
 {
