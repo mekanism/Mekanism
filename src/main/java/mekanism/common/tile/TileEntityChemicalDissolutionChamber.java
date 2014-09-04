@@ -119,7 +119,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 					injectTank.draw(INJECT_USAGE, true);
 				}
 				else {
-					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], true, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
+					GasStack stack = RecipeHandler.getDissolutionOutput(inventory[1], true);
 
 					outputTank.receive(stack, true);
 					injectTank.draw(INJECT_USAGE, true);
@@ -171,7 +171,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		if(slotID == 1)
 		{
-			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) != null;
+			return RecipeHandler.getDissolutionOutput(itemstack, false) != null;
 		}
 		else if(slotID == 3)
 		{
@@ -223,7 +223,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			return false;
 		}
 
-		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
+		GasStack stack = RecipeHandler.getDissolutionOutput(inventory[1], false);
 
 		if(stack == null || (outputTank.getGas() != null && (outputTank.getGas().getGas() != stack.getGas() || outputTank.getNeeded() < stack.amount)))
 		{

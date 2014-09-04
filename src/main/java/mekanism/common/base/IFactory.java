@@ -4,7 +4,7 @@ import java.util.Map;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipe.AdvancedInput;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.api.util.StackUtils;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
@@ -82,7 +82,7 @@ public interface IFactory
 
 			if(usesFuel())
 			{
-				return RecipeHandler.getOutput(new AdvancedInput(input, gas), stackDecrease, recipe.get());
+				return RecipeHandler.getOutput(new AdvancedMachineInput(input, gas), stackDecrease, recipe.get());
 			}
 			else {
 				return RecipeHandler.getOutput(input, stackDecrease, recipe.get());
@@ -148,11 +148,11 @@ public interface IFactory
 
 			for(Object obj : recipe.get().entrySet())
 			{
-				if(((Map.Entry)obj).getKey() instanceof AdvancedInput)
+				if(((Map.Entry)obj).getKey() instanceof AdvancedMachineInput)
 				{
 					Map.Entry entry = (Map.Entry)obj;
 
-					ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
+					ItemStack stack = ((AdvancedMachineInput)entry.getKey()).itemStack;
 
 					if(StackUtils.equalsWildcard(stack, itemStack))
 					{

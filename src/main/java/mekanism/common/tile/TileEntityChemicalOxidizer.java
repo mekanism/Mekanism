@@ -107,7 +107,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 					operatingTicks++;
 				}
 				else {
-					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], true, Recipe.CHEMICAL_OXIDIZER.get());
+					GasStack stack = RecipeHandler.getOxidizerOutput(inventory[0], true);
 
 					gasTank.receive(stack, true);
 					operatingTicks = 0;
@@ -151,7 +151,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		if(slotID == 0)
 		{
-			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null;
+			return RecipeHandler.getOxidizerOutput(itemstack, false) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -203,7 +203,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			return false;
 		}
 
-		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], false, Recipe.CHEMICAL_OXIDIZER.get());
+		GasStack stack = RecipeHandler.getOxidizerOutput(inventory[0], false);
 
 		if(stack == null || (gasTank.getGas() != null && (gasTank.getGas().getGas() != stack.getGas() || gasTank.getNeeded() < stack.amount)))
 		{

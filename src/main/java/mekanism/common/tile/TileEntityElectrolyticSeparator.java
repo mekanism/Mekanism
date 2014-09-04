@@ -13,7 +13,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.recipe.ChemicalPair;
+import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -204,7 +204,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= general.FROM_H2*2;
 	}
 
-	public boolean canFillWithSwap(ChemicalPair gases)
+	public boolean canFillWithSwap(ChemicalPairOutput gases)
 	{
 		if(gases == null)
 		{
@@ -214,13 +214,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return canFill(gases) || canFill(gases.swap());
 	}
 
-	public boolean canFill(ChemicalPair gases)
+	public boolean canFill(ChemicalPairOutput gases)
 	{
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
 	}
 
-	public void fillTanks(ChemicalPair gases)
+	public void fillTanks(ChemicalPairOutput gases)
 	{
 		if(gases == null) return;
 

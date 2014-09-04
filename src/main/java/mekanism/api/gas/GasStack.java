@@ -116,4 +116,10 @@ public class GasStack
 	{
 		return "[" + type + ", " + amount + "]";
 	}
+
+	@Override
+	public int hashCode()
+	{
+		return type == null ? 0 : type.getID();
+	}
 }

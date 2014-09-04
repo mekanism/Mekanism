@@ -1,16 +1,18 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipe.ChemicalPair;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -62,9 +64,9 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicalinfuser";
 	}
 
-	public Set<Entry<ChemicalPair, GasStack>> getRecipes()
+	public Collection<ChemicalInfuserRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_INFUSER.get().entrySet();
+		return Recipe.CHEMICAL_INFUSER.get().values();
 	}
 
 	@Override
@@ -119,16 +121,16 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(ChemicalInfuserRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<ChemicalPair, GasStack> irecipe : getRecipes())
+			for(ChemicalInfuserRecipe irecipe : getRecipes())
 			{
-				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
+				if(((GasStack)results[0]).isGasEqual(irecipe.getOutput().output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -144,9 +146,9 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<ChemicalPair, GasStack> irecipe : getRecipes())
+			for(ChemicalInfuserRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getKey().containsType((GasStack)ingredients[0]))
+				if(irecipe.getInput().containsType((GasStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -283,7 +285,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public ChemicalPair chemicalInput;
+		public ChemicalPairInput chemicalInput;
 		public GasStack outputStack;
 
 		@Override
@@ -292,15 +294,15 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(ChemicalPair input, GasStack output)
+		public CachedIORecipe(ChemicalPairInput input, GasStack output)
 		{
 			chemicalInput = input;
 			outputStack = output;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(ChemicalInfuserRecipe recipe)
 		{
-			this((ChemicalPair)recipe.getKey(), (GasStack)recipe.getValue());
+			this(recipe.getInput(), recipe.getOutput().output);
 		}
 	}
 }

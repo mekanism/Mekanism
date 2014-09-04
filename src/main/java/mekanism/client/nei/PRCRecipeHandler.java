@@ -7,8 +7,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipe.PressurizedReactants;
-import mekanism.api.recipe.PressurizedRecipe;
+import mekanism.common.recipe.inputs.PressurizedReactants;
+import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiFluidGauge;
 import mekanism.client.gui.GuiGasGauge;
@@ -159,21 +159,21 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 		
-		if(recipe.pressurizedRecipe.reactants.getFluid() != null)
+		if(recipe.pressurizedRecipe.getInput().getFluid() != null)
 		{
-			fluidInput.setDummyType(recipe.pressurizedRecipe.reactants.getFluid().getFluid());
+			fluidInput.setDummyType(recipe.pressurizedRecipe.getInput().getFluid().getFluid());
 			fluidInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
-		if(recipe.pressurizedRecipe.reactants.getGas() != null)
+		if(recipe.pressurizedRecipe.getInput().getGas() != null)
 		{
-			gasInput.setDummyType(recipe.pressurizedRecipe.reactants.getGas().getGas());
+			gasInput.setDummyType(recipe.pressurizedRecipe.getInput().getGas().getGas());
 			gasInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
-		if(recipe.pressurizedRecipe.products.getGasOutput() != null)
+		if(recipe.pressurizedRecipe.getOutput().getGasOutput() != null)
 		{
-			gasOutput.setDummyType(recipe.pressurizedRecipe.products.getGasOutput().getGas());
+			gasOutput.setDummyType(recipe.pressurizedRecipe.getOutput().getGasOutput().getGas());
 			gasOutput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 	}
@@ -192,7 +192,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		{
 			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
 			{
-				if(irecipe.getValue().reactants.containsType((GasStack)results[0]))
+				if(irecipe.getValue().getInput().containsType((GasStack)results[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -208,7 +208,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	{
 		for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().products.getItemOutput(), result))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().getOutput().getItemOutput(), result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -266,15 +266,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid()));
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getFluid()));
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas().getGas().getLocalizedName());
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas().getGas().getLocalizedName());
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput().getGas().getLocalizedName());
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput().getGas().getLocalizedName());
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -294,15 +294,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
+			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getFluid();
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas();
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput();
 		}
 
 		if(gas != null)
@@ -357,15 +357,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
+			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getFluid();
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas();
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput();
 		}
 
 		if(gas != null)
@@ -431,8 +431,8 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 			
 			pressurizedRecipe = recipe;
 			
-			input = new PositionedStack(recipe.reactants.getSolid(), 54-xOffset, 35-yOffset);
-			output = new PositionedStack(recipe.products.getItemOutput(), 116-xOffset, 35-yOffset);
+			input = new PositionedStack(recipe.getInput().getSolid(), 54-xOffset, 35-yOffset);
+			output = new PositionedStack(recipe.getOutput().getItemOutput(), 116-xOffset, 35-yOffset);
 		}
 
 		public CachedIORecipe(Map.Entry recipe)

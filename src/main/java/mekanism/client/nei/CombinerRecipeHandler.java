@@ -1,5 +1,6 @@
 package mekanism.client.nei;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.init.Blocks;
@@ -34,9 +36,9 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 
 	@Override
-	public Set getRecipes()
+	public Collection<CombinerRecipe> getRecipes()
 	{
-		return Recipe.COMBINER.get().entrySet();
+		return Recipe.COMBINER.get().values();
 	}
 	
 	@Override

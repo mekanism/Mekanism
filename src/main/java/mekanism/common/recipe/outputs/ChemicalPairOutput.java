@@ -1,4 +1,4 @@
-package mekanism.api.recipe;
+package mekanism.common.recipe.outputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -8,7 +8,7 @@ import mekanism.api.gas.GasTank;
  * @author aidancbrady
  *
  */
-public class ChemicalPair
+public class ChemicalPairOutput extends MachineOutput
 {
 	/** The left gas of this chemical input */
 	public GasStack leftGas;
@@ -21,7 +21,7 @@ public class ChemicalPair
 	 * @param left - left gas
 	 * @param right - right gas
 	 */
-	public ChemicalPair(GasStack left, GasStack right)
+	public ChemicalPairOutput(GasStack left, GasStack right)
 	{
 		leftGas = left;
 		rightGas = right;
@@ -41,7 +41,7 @@ public class ChemicalPair
 	 * @param input - input to check
 	 * @return if the input meets this input's requirements
 	 */
-	public boolean meetsInput(ChemicalPair input)
+	public boolean meetsInput(ChemicalPairOutput input)
 	{
 		return meets(input) || meets(input.swap());
 	}
@@ -50,9 +50,9 @@ public class ChemicalPair
 	 * Swaps the right gas and left gas of this input.
 	 * @return a swapped ChemicalInput
 	 */
-	public ChemicalPair swap()
+	public ChemicalPairOutput swap()
 	{
-		return new ChemicalPair(rightGas, leftGas);
+		return new ChemicalPairOutput(rightGas, leftGas);
 	}
 
 	/**
@@ -62,12 +62,12 @@ public class ChemicalPair
 	 */
 	public void draw(GasTank leftTank, GasTank rightTank)
 	{
-		if(meets(new ChemicalPair(leftTank.getGas(), rightTank.getGas())))
+		if(meets(new ChemicalPairOutput(leftTank.getGas(), rightTank.getGas())))
 		{
 			leftTank.draw(leftGas.amount, true);
 			rightTank.draw(rightGas.amount, true);
 		}
-		else if(meets(new ChemicalPair(rightTank.getGas(), leftTank.getGas())))
+		else if(meets(new ChemicalPairOutput(rightTank.getGas(), leftTank.getGas())))
 		{
 			leftTank.draw(rightGas.amount, true);
 			rightTank.draw(leftGas.amount, true);
@@ -94,7 +94,7 @@ public class ChemicalPair
 	 * @param input - input to check
 	 * @return if the input meets this input's requirements
 	 */
-	private boolean meets(ChemicalPair input)
+	private boolean meets(ChemicalPairOutput input)
 	{
 		if(input == null || !input.isValid())
 		{
@@ -109,8 +109,8 @@ public class ChemicalPair
 		return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
 	}
 
-	public ChemicalPair copy()
+	public ChemicalPairOutput copy()
 	{
-		return new ChemicalPair(leftGas.copy(), rightGas.copy());
+		return new ChemicalPairOutput(leftGas.copy(), rightGas.copy());
 	}
 }

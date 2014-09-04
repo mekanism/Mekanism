@@ -1,11 +1,14 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.recipe.ChanceOutput;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
@@ -36,7 +39,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract String getRecipeId();
 
-	public abstract Set<Entry<ItemStack, ChanceOutput>> getRecipes();
+	public abstract Collection<? extends ChanceMachineRecipe> getRecipes();
 	
 	public abstract ProgressBar getProgressType();
 	
@@ -106,7 +109,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(ChanceMachineRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -119,13 +122,13 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry<ItemStack, ChanceOutput> irecipe : getRecipes())
+		for(ChanceMachineRecipe irecipe : getRecipes())
 		{
-			if(irecipe.getValue().hasPrimary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().primaryOutput, result))
+			if(irecipe.getOutput().hasPrimary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().primaryOutput, result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
-			else if(irecipe.getValue().hasSecondary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().secondaryOutput, result))
+			else if(irecipe.getOutput().hasSecondary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().secondaryOutput, result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -141,9 +144,9 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(ChanceMachineRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getInput().ingredient, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -189,9 +192,9 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			output = chance;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(ChanceMachineRecipe recipe)
 		{
-			this((ItemStack)recipe.getKey(), (ChanceOutput)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput());
 		}
 	}
 }

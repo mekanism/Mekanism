@@ -1,6 +1,7 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -14,6 +15,7 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
@@ -34,7 +36,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract String getRecipeId();
 
-	public abstract Set<Entry<ItemStack, ItemStack>> getRecipes();
+	public abstract Collection<? extends BasicMachineRecipe> getRecipes();
 
 	public abstract ProgressBar getProgressType();
 
@@ -93,7 +95,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(BasicMachineRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -106,9 +108,9 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(BasicMachineRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getValue(), result))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().output, result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -124,9 +126,9 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(BasicMachineRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().ingredient, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -158,9 +160,9 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 			output = new PositionedStack(itemstack1, 100, 30);
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(BasicMachineRecipe recipe)
 		{
-			this((ItemStack)recipe.getKey(), (ItemStack)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

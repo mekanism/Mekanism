@@ -1,6 +1,7 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +11,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -63,9 +65,9 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicalcrystallizer";
 	}
 
-	public Set<Entry<GasStack, ItemStack>> getRecipes()
+	public Collection<CrystallizerRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_CRYSTALLIZER.get().entrySet();
+		return Recipe.CHEMICAL_CRYSTALLIZER.get().values();
 	}
 
 	@Override
@@ -109,7 +111,7 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(CrystallizerRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -122,9 +124,9 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(CrystallizerRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getValue(), result))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().output, result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -230,9 +232,9 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<GasStack, ItemStack> irecipe : getRecipes())
+			for(CrystallizerRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getKey().isGasEqual((GasStack)ingredients[0]))
+				if(irecipe.getInput().ingredient.isGasEqual((GasStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -266,9 +268,9 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 			outputStack = new PositionedStack(output, 131-xOffset, 57-yOffset);
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(CrystallizerRecipe recipe)
 		{
-			this((GasStack)recipe.getKey(), (ItemStack)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

@@ -1,11 +1,11 @@
-package mekanism.api.recipe;
+package mekanism.common.recipe.outputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 
 import net.minecraft.item.ItemStack;
 
-public class PressurizedProducts
+public class PressurizedProducts extends MachineOutput
 {
 	private ItemStack itemOutput;
 	private GasStack gasOutput;

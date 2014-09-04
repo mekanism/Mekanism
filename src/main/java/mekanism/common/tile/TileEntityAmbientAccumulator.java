@@ -11,6 +11,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -21,16 +23,10 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 {
 	public GasTank collectedGas = new GasTank(1000);
 
-	public static Map<Integer, String> dimensionGases = new HashMap<Integer, String>();
+	public int cachedDimensionId = 0;
+	public GasStack cachedGas;
 
 	public static Random gasRand = new Random();
-
-	static
-	{
-		dimensionGases.put(-1, "sulfurDioxideGas");
-		dimensionGases.put(+0, "oxygen");
-		dimensionGases.put(+1, "tritium");
-	}
 
 	public TileEntityAmbientAccumulator()
 	{
@@ -43,11 +39,15 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	{
 		if(!worldObj.isRemote)
 		{
-			Gas gasToCollect = GasRegistry.getGas(dimensionGases.get(worldObj.provider.dimensionId));
-
-			if(gasToCollect != null && gasRand.nextDouble() < 0.05)
+			if(cachedGas == null || worldObj.provider.dimensionId != cachedDimensionId)
 			{
-				collectedGas.receive(new GasStack(gasToCollect, 1), true);
+				cachedDimensionId = worldObj.provider.dimensionId;
+				cachedGas = RecipeHandler.getDimensionGas(cachedDimensionId);
+			}
+
+			if(cachedGas != null && gasRand.nextDouble() < 0.05)
+			{
+				collectedGas.receive(cachedGas, true);
 			}
 		}
 	}

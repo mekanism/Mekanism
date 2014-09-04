@@ -22,12 +22,12 @@ import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionInput;
-import mekanism.api.recipe.AdvancedInput;
-import mekanism.api.recipe.ChanceOutput;
-import mekanism.api.recipe.ChemicalPair;
-import mekanism.api.recipe.PressurizedProducts;
-import mekanism.api.recipe.PressurizedReactants;
+import mekanism.common.recipe.inputs.InfusionInput;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
+import mekanism.common.recipe.outputs.ChanceOutput;
+import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.recipe.outputs.PressurizedProducts;
+import mekanism.common.recipe.inputs.PressurizedReactants;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
@@ -680,44 +680,44 @@ public class Mekanism
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.gravel), new ItemStack(Items.flint));
         
         //Chemical Injection Chamber Recipes
-        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Blocks.obsidian), GasRegistry.getGas("hydrogenChloride")), new ItemStack(MekanismItems.Shard, 4, 6));
-        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Blocks.dirt), GasRegistry.getGas("water")), new ItemStack(Blocks.clay));
-        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Items.gunpowder), GasRegistry.getGas("hydrogenChloride")), new ItemStack(MekanismItems.Dust, 1, 10));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.obsidian), "hydrogenChloride", new ItemStack(MekanismItems.Shard, 4, 6));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.dirt), "water", new ItemStack(Blocks.clay));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.gunpowder), "hydrogenChloride", new ItemStack(MekanismItems.Dust, 1, 10));
 		
 		//Precision Sawmill Recipes
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ladder, 3), new ChanceOutput(new ItemStack(Items.stick, 7)));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.chest), new ChanceOutput(new ItemStack(Blocks.planks, 8)));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.trapdoor), new ChanceOutput(new ItemStack(Blocks.planks, 3)));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.boat), new ChanceOutput(new ItemStack(Blocks.planks, 5)));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.bed), new ChanceOutput(new ItemStack(Blocks.planks, 3), new ItemStack(Blocks.wool, 3), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.jukebox), new ChanceOutput(new ItemStack(Blocks.planks, 8), new ItemStack(Items.diamond), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.bookshelf), new ChanceOutput(new ItemStack(Blocks.planks, 6), new ItemStack(Items.book, 3), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.wooden_pressure_plate), new ChanceOutput(new ItemStack(Blocks.planks, 2)));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence), new ChanceOutput(new ItemStack(Items.stick, 3)));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence_gate), new ChanceOutput(new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.noteblock), new ChanceOutput(new ItemStack(Blocks.planks, 8), new ItemStack(Items.redstone, 1), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.redstone_torch), new ChanceOutput(new ItemStack(Items.stick, 1), new ItemStack(Items.redstone), 1));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.crafting_table), new ChanceOutput(new ItemStack(Blocks.planks, 4)));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ladder, 3), new ItemStack(Items.stick, 7));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.chest), new ItemStack(Blocks.planks, 8));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.trapdoor), new ItemStack(Blocks.planks, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.boat), new ItemStack(Blocks.planks, 5));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Items.bed), new ItemStack(Blocks.planks, 3), new ItemStack(Blocks.wool, 3), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.jukebox), new ItemStack(Blocks.planks, 8), new ItemStack(Items.diamond), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.bookshelf), new ItemStack(Blocks.planks, 6), new ItemStack(Items.book, 3), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.wooden_pressure_plate), new ItemStack(Blocks.planks, 2));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.noteblock), new ItemStack(Blocks.planks, 8), new ItemStack(Items.redstone), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.redstone_torch), new ItemStack(Items.stick), new ItemStack(Items.redstone), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.crafting_table), new ItemStack(Blocks.planks, 4));
 		
         //Metallurgic Infuser Recipes
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(MekanismItems.EnrichedIron));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(MekanismItems.EnrichedIron)), new ItemStack(MekanismItems.Dust, 1, 5));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("REDSTONE"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(MekanismItems.EnrichedAlloy));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Blocks.dirt)), new ItemStack(Blocks.mycelium));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone)), new ItemStack(Blocks.mossy_cobblestone));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.stonebrick, 1, 0)), new ItemStack(Blocks.stonebrick, 1, 1));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.sand)), new ItemStack(Blocks.dirt));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("DIAMOND"), 10, new ItemStack(MekanismItems.EnrichedAlloy)), new ItemStack(MekanismItems.ReinforcedAlloy));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("OBSIDIAN"), 10, new ItemStack(MekanismItems.ReinforcedAlloy)), new ItemStack(MekanismItems.AtomicAlloy));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.iron_ingot), new ItemStack(MekanismItems.EnrichedIron));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(MekanismItems.EnrichedIron), new ItemStack(MekanismItems.Dust, 1, 5));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, new ItemStack(Items.iron_ingot), new ItemStack(MekanismItems.EnrichedAlloy));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Blocks.dirt), new ItemStack(Blocks.mycelium));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone), new ItemStack(Blocks.mossy_cobblestone));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.stonebrick, 1, 0), new ItemStack(Blocks.stonebrick, 1, 1));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.sand), new ItemStack(Blocks.dirt));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("DIAMOND"), 10, new ItemStack(MekanismItems.EnrichedAlloy), new ItemStack(MekanismItems.ReinforcedAlloy));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("OBSIDIAN"), 10, new ItemStack(MekanismItems.ReinforcedAlloy), new ItemStack(MekanismItems.AtomicAlloy));
         
         //Chemical Infuser Recipes
-        RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2)), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
-		RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1)), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
-		RecipeHandler.addChemicalInfuserRecipe(new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)), new GasStack(GasRegistry.getGas("hydrogenChloride"), 1));
+        RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("oxygen"), 1), new GasStack(GasRegistry.getGas("sulfurDioxideGas"), 2), new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 2));
+		RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("sulfurTrioxideGas"), 1), new GasStack(GasRegistry.getGas("water"), 1), new GasStack(GasRegistry.getGas("sulfuricAcid"), 1));
+		RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1), new GasStack(GasRegistry.getGas("hydrogenChloride"), 1));
 
 		//Electrolytic Separator Recipes
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new ChemicalPair(new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1)));
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new ChemicalPair(new GasStack(GasRegistry.getGas("sodium"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1)));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new GasStack(GasRegistry.getGas("sodium"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1));
 		
 		//T4 Processing Recipes
 		for(Gas gas : GasRegistry.getRegisteredGasses())
@@ -736,15 +736,15 @@ public class Mekanism
 
 		//Pressurized Reaction Chamber Recipes
 		RecipeHandler.addPRCRecipe(
-				new PressurizedReactants(new ItemStack(MekanismItems.BioFuel, 2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(GasRegistry.getGas("hydrogen"), 100)),
-				new PressurizedProducts(new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("ethene"), 100)),
+				new ItemStack(MekanismItems.BioFuel, 2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(GasRegistry.getGas("hydrogen"), 100),
+				new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("ethene"), 100),
 				0,
 				100
 		);
 
 		RecipeHandler.addPRCRecipe(
-				new PressurizedReactants(new ItemStack(MekanismItems.Substrate), new FluidStack(FluidRegistry.getFluid("ethene"), 50), new GasStack(GasRegistry.getGas("oxygen"), 10)),
-				new PressurizedProducts(new ItemStack(MekanismItems.Polyethene), new GasStack(GasRegistry.getGas("oxygen"), 5)),
+				new ItemStack(MekanismItems.Substrate), new FluidStack(FluidRegistry.getFluid("ethene"), 50), new GasStack(GasRegistry.getGas("oxygen"), 10),
+				new ItemStack(MekanismItems.Polyethene), new GasStack(GasRegistry.getGas("oxygen"), 5),
 				1000,
 				60
 		);

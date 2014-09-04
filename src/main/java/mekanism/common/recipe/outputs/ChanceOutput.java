@@ -1,4 +1,4 @@
-package mekanism.api.recipe;
+package mekanism.common.recipe.outputs;
 
 import java.util.Random;
 
@@ -6,7 +6,7 @@ import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
 
-public class ChanceOutput
+public class ChanceOutput extends MachineOutput
 {
 	private static Random rand = new Random();
 

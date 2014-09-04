@@ -1,6 +1,7 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +20,7 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
@@ -94,9 +96,9 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicaloxidizer";
 	}
 
-	public Set<Entry<ItemStack, GasStack>> getRecipes()
+	public Collection<OxidationRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_OXIDIZER.get().entrySet();
+		return Recipe.CHEMICAL_OXIDIZER.get().values();
 	}
 
 	@Override
@@ -143,16 +145,16 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(OxidationRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<ItemStack, GasStack> irecipe : getRecipes())
+			for(OxidationRecipe irecipe : getRecipes())
 			{
-				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
+				if(((GasStack)results[0]).isGasEqual(irecipe.getOutput().output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -253,9 +255,9 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(OxidationRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().ingredient, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -285,9 +287,9 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 			outputStack = output;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(OxidationRecipe recipe)
 		{
-			this((ItemStack)recipe.getKey(), (GasStack)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

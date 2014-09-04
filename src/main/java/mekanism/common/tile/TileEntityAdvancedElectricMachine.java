@@ -9,7 +9,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.recipe.AdvancedInput;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -140,11 +140,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
 		for(Object obj : getRecipes().entrySet())
 		{
-			if(((Map.Entry)obj).getKey() instanceof AdvancedInput)
+			if(((Map.Entry)obj).getKey() instanceof AdvancedMachineInput)
 			{
 				Map.Entry entry = (Map.Entry)obj;
 
-				ItemStack stack = ((AdvancedInput)entry.getKey()).itemStack;
+				ItemStack stack = ((AdvancedMachineInput)entry.getKey()).itemStack;
 
 				if(StackUtils.equalsWildcard(stack, itemStack))
 				{
@@ -207,7 +207,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 	@Override
 	public void operate()
 	{
-		ItemStack itemstack = RecipeHandler.getOutput(new AdvancedInput(inventory[0], gasTank.getGas().getGas()), true, getRecipes());
+		ItemStack itemstack = RecipeHandler.getOutput(new AdvancedMachineInput(inventory[0], gasTank.getGas().getGas()), true, getRecipes());
 
 		if(inventory[0].stackSize <= 0)
 		{
@@ -234,7 +234,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 			return false;
 		}
 
-		ItemStack itemstack = RecipeHandler.getOutput(new AdvancedInput(inventory[0], gasTank.getGas().getGas()), false, getRecipes());
+		ItemStack itemstack = RecipeHandler.getOutput(new AdvancedMachineInput(inventory[0], gasTank.getGas().getGas()), false, getRecipes());
 
 		if(itemstack == null)
 		{

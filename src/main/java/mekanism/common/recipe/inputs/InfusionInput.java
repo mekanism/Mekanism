@@ -1,4 +1,7 @@
-package mekanism.api.infuse;
+package mekanism.common.recipe.inputs;
+
+import mekanism.api.infuse.InfuseType;
+import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
 
@@ -7,7 +10,7 @@ import net.minecraft.item.ItemStack;
  * @author AidanBrady
  *
  */
-public class InfusionInput
+public class InfusionInput extends MachineInput
 {
 	/** The type of this infusion */
 	public InfuseType infusionType;
@@ -28,5 +31,22 @@ public class InfusionInput
 	public static InfusionInput getInfusion(InfuseType type, int stored, ItemStack itemstack)
 	{
 		return new InfusionInput(type, stored, itemstack);
+	}
+
+	@Override
+	public int hashIngredients()
+	{
+		return infusionType.unlocalizedName.hashCode() << 8 | StackUtils.hashItemStack(inputStack);
+	}
+
+	@Override
+	public boolean testEquality(MachineInput other)
+	{
+		if(other instanceof InfusionInput)
+		{
+			InfusionInput ii = (InfusionInput)other;
+			return infusionType == ii.infusionType && StackUtils.equalsWildcardWithNBT(inputStack, ii.inputStack);
+		}
+		return false;
 	}
 }

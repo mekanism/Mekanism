@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipe.ChemicalPair;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiFluidGauge;
@@ -110,7 +110,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		return "mekanism.electrolyticseparator";
 	}
 
-	public Set<Entry<FluidStack, ChemicalPair>> getRecipes()
+	public Set<Entry<FluidStack, ChemicalPairInput>> getRecipes()
 	{
 		return Recipe.ELECTROLYTIC_SEPARATOR.get().entrySet();
 	}
@@ -180,7 +180,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<FluidStack, ChemicalPair> irecipe : getRecipes())
+			for(Map.Entry<FluidStack, ChemicalPairInput> irecipe : getRecipes())
 			{
 				if(irecipe.getValue().containsType((GasStack)results[0]))
 				{
@@ -198,7 +198,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(Map.Entry<FluidStack, ChemicalPair> irecipe : getRecipes())
+			for(Map.Entry<FluidStack, ChemicalPairInput> irecipe : getRecipes())
 			{
 				if(irecipe.getKey().isFluidEqual((FluidStack)ingredients[0]))
 				{
@@ -368,7 +368,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public FluidStack fluidInput;
-		public ChemicalPair outputPair;
+		public ChemicalPairInput outputPair;
 
 		@Override
 		public PositionedStack getResult()
@@ -376,7 +376,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(FluidStack input, ChemicalPair pair)
+		public CachedIORecipe(FluidStack input, ChemicalPairInput pair)
 		{
 			fluidInput = input;
 			outputPair = pair;
@@ -384,7 +384,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		public CachedIORecipe(Map.Entry recipe)
 		{
-			this((FluidStack)recipe.getKey(), (ChemicalPair)recipe.getValue());
+			this((FluidStack)recipe.getKey(), (ChemicalPairInput)recipe.getValue());
 		}
 	}
 }

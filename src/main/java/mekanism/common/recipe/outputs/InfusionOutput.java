@@ -1,4 +1,6 @@
-package mekanism.api.infuse;
+package mekanism.common.recipe.outputs;
+
+import mekanism.common.recipe.inputs.InfusionInput;
 
 import net.minecraft.item.ItemStack;
 
@@ -7,7 +9,7 @@ import net.minecraft.item.ItemStack;
  * @author AidanBrady
  *
  */
-public class InfusionOutput
+public class InfusionOutput extends MachineOutput
 {
 	/** The input infusion */
 	public InfusionInput infusionInput;

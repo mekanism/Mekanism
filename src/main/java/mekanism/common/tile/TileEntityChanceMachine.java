@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.api.recipe.ChanceOutput;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;

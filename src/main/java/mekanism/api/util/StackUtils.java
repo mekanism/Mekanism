@@ -58,6 +58,11 @@ public final class StackUtils
 		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 
+	public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check)
+	{
+		return equalsWildcard(wild, check) && (wild.stackTagCompound == null ? check.stackTagCompound == null : (wild.stackTagCompound == check.stackTagCompound || wild.stackTagCompound.equals(check.stackTagCompound)));
+	}
+
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)
 	{
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
@@ -224,5 +229,10 @@ public final class StackUtils
 		else {
 			return StackUtils.size(orig, newSize);
 		}
+	}
+
+	public static int hashItemStack(ItemStack stack)
+	{
+		return Item.getIdFromItem(stack.getItem()) << 8 | stack.getItemDamage();
 	}
 }

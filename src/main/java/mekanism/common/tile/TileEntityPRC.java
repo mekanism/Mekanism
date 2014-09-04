@@ -12,8 +12,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.api.recipe.PressurizedProducts;
-import mekanism.api.recipe.PressurizedRecipe;
+import mekanism.common.recipe.outputs.PressurizedProducts;
+import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.SideData;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -154,16 +154,16 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	{
 		PressurizedRecipe recipe = getRecipe();
 
-		recipe.reactants.use(inventory[0], inputFluidTank, inputGasTank);
+		recipe.getInput().use(inventory[0], inputFluidTank, inputGasTank);
 
 		if(inventory[0].stackSize <= 0)
 		{
 			inventory[0] = null;
 		}
 
-		recipe.products.fillTank(outputGasTank);
+		recipe.getOutput().fillTank(outputGasTank);
 
-		recipe.products.addProducts(inventory, 2);
+		recipe.getOutput().addProducts(inventory, 2);
 
 		markDirty();
 		ejectorComponent.onOutput();
@@ -179,7 +179,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 			return false;
 		}
 
-		PressurizedProducts products = recipe.products;
+		PressurizedProducts products = recipe.getOutput();
 
 		if(products.getItemOutput() != null)
 		{

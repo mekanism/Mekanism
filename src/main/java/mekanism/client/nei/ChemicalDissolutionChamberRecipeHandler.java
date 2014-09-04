@@ -1,6 +1,7 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +12,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalDissolutionChamber;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -64,9 +66,9 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicaldissolutionchamber";
 	}
 
-	public Set<Entry<ItemStack, GasStack>> getRecipes()
+	public Collection<DissolutionRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get().entrySet();
+		return Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get().values();
 	}
 
 	@Override
@@ -112,16 +114,16 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(DissolutionRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<ItemStack, GasStack> irecipe : getRecipes())
+			for(DissolutionRecipe irecipe : getRecipes())
 			{
-				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
+				if(((GasStack)results[0]).isGasEqual(irecipe.getOutput().output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -241,9 +243,9 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(DissolutionRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getInput().ingredient, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -279,9 +281,9 @@ public class ChemicalDissolutionChamberRecipeHandler extends BaseRecipeHandler
 			outputStack = output;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(DissolutionRecipe recipe)
 		{
-			this((ItemStack)recipe.getKey(), (GasStack)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

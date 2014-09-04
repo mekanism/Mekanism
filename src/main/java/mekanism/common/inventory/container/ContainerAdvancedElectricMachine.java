@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import java.util.Map;
 
-import mekanism.api.recipe.AdvancedInput;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
@@ -170,7 +170,7 @@ public class ContainerAdvancedElectricMachine extends Container
 
 	private boolean isInputItem(ItemStack itemstack)
 	{
-		for(Map.Entry<AdvancedInput, ItemStack> entry : ((Map<AdvancedInput, ItemStack>)tileEntity.getRecipes()).entrySet())
+		for(Map.Entry<AdvancedMachineInput, ItemStack> entry : ((Map<AdvancedMachineInput, ItemStack>)tileEntity.getRecipes()).entrySet())
 		{
 			if(entry.getKey().itemStack.isItemEqual(itemstack))
 			{

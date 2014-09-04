@@ -1,5 +1,6 @@
 package mekanism.client.nei;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.MekanismItems;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.item.ItemStack;
@@ -34,9 +36,9 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	}
 
 	@Override
-	public Set getRecipes()
+	public Collection<OsmiumCompressorRecipe> getRecipes()
 	{
-		return Recipe.OSMIUM_COMPRESSOR.get().entrySet();
+		return Recipe.OSMIUM_COMPRESSOR.get().values();
 	}
 	
 	@Override

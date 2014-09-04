@@ -1,4 +1,4 @@
-package mekanism.api.recipe;
+package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
  */
-public class PressurizedReactants
+public class PressurizedReactants extends MachineInput
 {
 	private ItemStack theSolid;
 	private FluidStack theFluid;
@@ -103,7 +103,7 @@ public class PressurizedReactants
 	 * @param input - input to check
 	 * @return if the input meets this input's requirements
 	 */
-	private boolean meets(PressurizedReactants input)
+	public boolean meets(PressurizedReactants input)
 	{
 		if(input == null || !input.isValid())
 		{
@@ -136,5 +136,22 @@ public class PressurizedReactants
 	public GasStack getGas()
 	{
 		return theGas;
+	}
+
+	@Override
+	public int hashIngredients()
+	{
+		return StackUtils.hashItemStack(theSolid) << 16 | theFluid.hashCode() << 8 | theGas.hashCode();
+	}
+
+	@Override
+	public boolean testEquality(MachineInput other)
+	{
+		if(other instanceof PressurizedReactants)
+		{
+			PressurizedReactants pr = (PressurizedReactants)other;
+			return pr.containsType(theSolid) && pr.containsType(theFluid) && pr.containsType(theGas);
+		}
+		return false;
 	}
 }

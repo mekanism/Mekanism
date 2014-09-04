@@ -71,7 +71,7 @@ public class ContainerChemicalDissolutionChamber extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(RecipeHandler.getItemToGasOutput(slotStack, false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) != null)
+			if(RecipeHandler.getDissolutionOutput(slotStack, false) != null)
 			{
 				if(slotID != 1)
 				{
