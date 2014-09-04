@@ -379,11 +379,9 @@ public final class RecipeHandler
 	{
 		if(itemstack != null)
 		{
-			ItemStackInput input = new ItemStackInput(itemstack);
-
 			HashMap<ItemStackInput, DissolutionRecipe> recipes = Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get();
 
-			DissolutionRecipe recipe = recipes.get(input);
+			DissolutionRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
 
 			if(recipe != null)
 			{
@@ -414,11 +412,9 @@ public final class RecipeHandler
 	{
 		if(itemstack != null)
 		{
-			ItemStackInput input = new ItemStackInput(itemstack);
-
 			HashMap<ItemStackInput, OxidationRecipe> recipes = Recipe.CHEMICAL_OXIDIZER.get();
 
-			OxidationRecipe recipe = recipes.get(input);
+			OxidationRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
 
 			if(recipe != null)
 			{
@@ -450,9 +446,7 @@ public final class RecipeHandler
 	{
 		if(itemstack != null)
 		{
-			ItemStackInput input = new ItemStackInput(itemstack);
-
-			ChanceMachineRecipe recipe = recipes.get(input);
+			ChanceMachineRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
 
 			if(recipe != null)
 			{
@@ -484,9 +478,7 @@ public final class RecipeHandler
 	{
 		if(itemstack != null)
 		{
-			ItemStackInput input = new ItemStackInput(itemstack);
-
-			BasicMachineRecipe recipe = recipes.get(input);
+			BasicMachineRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
 
 			if(recipe != null)
 			{
@@ -631,6 +623,17 @@ public final class RecipeHandler
 		}
 
 		return false;
+	}
+
+	public static <RECIPE extends MachineRecipe<ItemStackInput, ?>> RECIPE getRecipeTryWildcard(ItemStack stack, Map<ItemStackInput, RECIPE> recipes)
+	{
+		ItemStackInput input = new ItemStackInput(stack);
+		RECIPE recipe = recipes.get(input);
+		if(recipe == null)
+		{
+			recipe = recipes.get(input.wildCopy());
+		}
+		return recipe;
 	}
 
 	public static enum Recipe

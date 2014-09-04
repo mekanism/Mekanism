@@ -3,6 +3,7 @@ package mekanism.common.recipe.inputs;
 import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemStackInput extends MachineInput
 {
@@ -11,6 +12,11 @@ public class ItemStackInput extends MachineInput
 	public ItemStackInput(ItemStack stack)
 	{
 		ingredient = stack;
+	}
+
+	public ItemStackInput wildCopy()
+	{
+		return new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.stackSize, OreDictionary.WILDCARD_VALUE));
 	}
 
 	@Override
