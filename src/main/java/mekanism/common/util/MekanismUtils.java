@@ -15,6 +15,7 @@ import java.util.List;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IMekWrench;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.EnergyDisplay;
@@ -70,8 +71,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
+
+import buildcraft.api.tools.IToolWrench;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -628,7 +632,7 @@ public final class MekanismUtils
 	 */
 	public static int getSecondaryEnergyPerTick(IUpgradeManagement mgmt, int def)
 	{
-		return def * (int)Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getSpeedMultiplier()/8.0);
+		return (int)(def * Math.pow(Mekanism.maxUpgradeMultiplier, mgmt.getSpeedMultiplier()/8.0));
 	}
 
 	/**
@@ -1343,6 +1347,16 @@ public final class MekanismUtils
 		}
 		
 		return Item.getIdFromItem(itemStack.getItem());
+	}
+
+	public static boolean hasUsableWrench(EntityPlayer player, int x, int y, int z)
+	{
+		ItemStack tool = player.getCurrentEquippedItem();
+		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, x, y, z))
+			return true;
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool.getItem() instanceof IToolWrench && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
+			return true;
+		return false;
 	}
 
 	public static enum ResourceType

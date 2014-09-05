@@ -641,7 +641,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float posX, float posY, float posZ)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float posX, float posY, float posZ)
 	{
 		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
 		{
@@ -660,57 +660,39 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		{
 			Item tool = entityplayer.getCurrentEquippedItem().getItem();
 
-			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench && !tool.getUnlocalizedName().contains("omniwrench"))
+			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(((IToolWrench)tool).canWrench(entityplayer, x, y, z))
+				if(entityplayer.isSneaking() && metadata != 13)
 				{
-					if(entityplayer.isSneaking() && metadata != 13)
-					{
-						dismantleBlock(world, x, y, z, false);
-						return true;
-					}
+					dismantleBlock(world, x, y, z, false);
+					return true;
+				}
 
+				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-					int change = 0;
+				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
-					switch(tileEntity.facing)
+				if(tileEntity instanceof TileEntityLogisticalSorter)
+				{
+					if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
 					{
-						case 3:
-							change = 5;
-							break;
-						case 5:
-							change = 2;
-							break;
-						case 2:
-							change = 4;
-							break;
-						case 4:
-							change = 3;
-							break;
-					}
-
-					if(tileEntity instanceof TileEntityLogisticalSorter)
-					{
-						if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
+						for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 						{
-							for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-							{
-								TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+							TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
 
-								if(tileEntity instanceof IInventory)
-								{
-									change = dir.getOpposite().ordinal();
-									break;
-								}
+							if(tile instanceof IInventory)
+							{
+								change = dir.getOpposite().ordinal();
+								break;
 							}
 						}
 					}
-
-					tileEntity.setFacing((short)change);
-					world.notifyBlocksOfNeighborChange(x, y, z, this);
-					return true;
 				}
+
+				tileEntity.setFacing((short)change);
+				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				return true;
 			}
 		}
 
@@ -829,7 +811,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z)
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
 		{
@@ -1280,6 +1262,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return null;
 	}
 
+	@Override
 	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
@@ -1298,6 +1281,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return valid;
 	}
 
+	@Override
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
