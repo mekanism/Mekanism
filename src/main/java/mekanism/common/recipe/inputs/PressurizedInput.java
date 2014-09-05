@@ -1,7 +1,5 @@
 package mekanism.common.recipe.inputs;
 
-import java.util.Stack;
-
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.util.StackUtils;

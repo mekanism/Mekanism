@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiPowerBar;
@@ -23,6 +20,7 @@ import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 

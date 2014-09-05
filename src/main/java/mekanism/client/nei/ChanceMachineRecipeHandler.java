@@ -2,13 +2,7 @@ package mekanism.client.nei;
 
 import java.awt.*;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.ChanceMachineRecipe;
-import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
@@ -18,6 +12,8 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiSlot;
 import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 

@@ -6,8 +6,6 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;

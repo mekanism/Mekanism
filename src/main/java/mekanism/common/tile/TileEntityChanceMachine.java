@@ -3,12 +3,12 @@ package mekanism.common.tile;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.machines.ChanceMachineRecipe;
-import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;

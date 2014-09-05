@@ -3,15 +3,12 @@ package mekanism.client.nei;
 import java.awt.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.client.gui.GuiChemicalInfuser;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 

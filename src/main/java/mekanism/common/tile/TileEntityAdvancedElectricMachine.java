@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
@@ -9,13 +8,11 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
-import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.component.TileComponentEjector;

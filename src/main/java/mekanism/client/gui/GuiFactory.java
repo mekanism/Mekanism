@@ -7,7 +7,6 @@ import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;

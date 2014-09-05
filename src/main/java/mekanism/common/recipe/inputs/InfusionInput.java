@@ -1,12 +1,10 @@
 package mekanism.common.recipe.inputs;
 
-import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.util.StackUtils;
 import mekanism.common.InfuseStorage;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidTank;
 
 /**
  * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.

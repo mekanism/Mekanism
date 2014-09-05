@@ -7,8 +7,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.common.recipe.inputs.PressurizedInput;
-import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiFluidGauge;
 import mekanism.client.gui.GuiGasGauge;
@@ -24,6 +22,8 @@ import mekanism.client.gui.GuiSlot.SlotOverlay;
 import mekanism.client.gui.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.PressurizedInput;
+import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

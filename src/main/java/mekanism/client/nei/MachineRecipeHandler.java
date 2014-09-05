@@ -2,9 +2,6 @@ package mekanism.client.nei;
 
 import java.awt.*;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiPowerBar;

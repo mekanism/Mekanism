@@ -1,7 +1,6 @@
 package mekanism.client.nei;
 
 import java.util.Collection;
-import java.util.Set;
 
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiProgress.ProgressBar;

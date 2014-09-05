@@ -3,9 +3,6 @@ package mekanism.client.nei;
 import java.awt.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;

@@ -1,12 +1,10 @@
 package mekanism.client.nei;
 
 import java.util.Collection;
-import java.util.Set;
 
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.machines.ChanceMachineRecipe;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.util.MekanismUtils;
 
