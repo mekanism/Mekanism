@@ -242,6 +242,6 @@ public final class StackUtils
 
 	public static int hashItemStack(ItemStack stack)
 	{
-		return Item.getIdFromItem(stack.getItem()) << 8 | stack.getItemDamage();
+		return stack.getItem().getUnlocalizedName(stack).hashCode() << 8 | stack.getItemDamage();
 	}
 }
