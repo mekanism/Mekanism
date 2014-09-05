@@ -57,11 +57,14 @@ import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.recipe.BinRecipe;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.SmeltingRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntitySalinationBlock;
 import mekanism.common.tile.TileEntitySalinationValve;
@@ -960,12 +963,13 @@ public class Mekanism
 		}
 		
 		//Load cached furnace recipes
-		TileEntityEnergizedSmelter.furnaceRecipes.clear();
+		Recipe.ENERGIZED_SMELTER.get().clear();
 		
 		for(Object obj : FurnaceRecipes.smelting().getSmeltingList().entrySet())
 		{
 			Map.Entry<ItemStack, ItemStack> entry = (Map.Entry<ItemStack, ItemStack>)obj;
-			TileEntityEnergizedSmelter.furnaceRecipes.put(entry.getKey(), entry.getValue());
+			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
+			Recipe.ENERGIZED_SMELTER.put(recipe);
 		}
 		
 		event.registerServerCommand(new CommandMekanism());

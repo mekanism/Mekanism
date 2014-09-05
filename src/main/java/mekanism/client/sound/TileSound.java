@@ -23,7 +23,12 @@ public class TileSound extends Sound implements IResettableSound {
 		this(source, values.getSoundLocation(), values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
 	}
 
-	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	public TileSound(IHasSound source, ISoundSource values, ResourceLocation location)
+	{
+		this(source, location, values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
+	}
+
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z)
 	{
 		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
@@ -80,7 +85,7 @@ public class TileSound extends Sound implements IResettableSound {
 				ticks++;
 			}
 			
-			if(!source.shouldPlaySound()) 
+			if(!(source.shouldPlaySound() && source.getSound() == this))
 			{
 				beginFadeOut = true;
 				ticks = 0;

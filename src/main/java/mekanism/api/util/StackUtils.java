@@ -242,6 +242,7 @@ public final class StackUtils
 
 	public static int hashItemStack(ItemStack stack)
 	{
-		return stack.getItem().getUnlocalizedName(stack).hashCode() << 8 | stack.getItemDamage();
+		String name = stack.getItemDamage() == OreDictionary.WILDCARD_VALUE ? stack.getItem().getUnlocalizedName() : stack.getItem().getUnlocalizedName(stack);
+		return name.hashCode() << 8 | stack.getItemDamage();
 	}
 }

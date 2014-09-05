@@ -16,6 +16,8 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.util.StackUtils;
+import mekanism.client.sound.IResettableSound;
+import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
@@ -29,7 +31,6 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
-import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -39,7 +40,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -87,7 +87,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public int updateDelay;
 
 	/** This machine's recipe type. */
-	public RecipeType recipeType;
+	public RecipeType recipeType = RecipeType.SMELTING;
 
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
@@ -95,6 +95,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public GasTank gasTank;
 
 	public boolean sorting;
+
+	public IResettableSound[] sounds = new IResettableSound[RecipeType.values().length];
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -646,7 +648,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super.getNetworkedData(data);
 
 		data.add(isActive);
-		data.add(recipeType);
+		data.add(recipeType.ordinal());
 		data.add(recipeTicks);
 		data.add(controlType.ordinal());
 		data.add(sorting);
@@ -816,9 +818,18 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public ResourceLocation getSoundLocation()
+	public IResettableSound getSound()
 	{
-		return recipeType.getSound();
+		return sounds[recipeType.ordinal()];
+	}
+
+	@Override
+	public void initSounds()
+	{
+		for(RecipeType type : RecipeType.values())
+		{
+			sounds[type.ordinal()] = new TileSound(this, this, type.getSound());
+		}
 	}
 
 	@Override

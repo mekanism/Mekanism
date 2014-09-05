@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.util.StackUtils;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -36,6 +35,7 @@ import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.recipe.machines.SeparatorRecipe;
+import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
 
 import net.minecraft.item.ItemStack;
@@ -483,6 +483,7 @@ public final class RecipeHandler
 
 	public static enum Recipe
 	{
+		ENERGIZED_SMELTER(new HashMap<ItemStackInput, SmeltingRecipe>()),
 		ENRICHMENT_CHAMBER(new HashMap<ItemStackInput, EnrichmentRecipe>()),
 		OSMIUM_COMPRESSOR(new HashMap<AdvancedMachineInput, OsmiumCompressorRecipe>()),
 		COMBINER(new HashMap<AdvancedMachineInput, CombinerRecipe>()),

@@ -4,24 +4,20 @@ import java.util.Map;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.api.util.StackUtils;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
-import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
-import mekanism.common.recipe.outputs.ItemStackOutput;
-import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -48,7 +44,7 @@ public interface IFactory
 
 	public static enum RecipeType
 	{
-		SMELTING("smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, null),
+		SMELTING("smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, Recipe.ENERGIZED_SMELTER),
 		ENRICHING("enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, Recipe.ENRICHMENT_CHAMBER),
 		CRUSHING("crushing", "crusher", MachineType.CRUSHER.getStack(), false, Recipe.CRUSHER),
 		COMPRESSING("compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, Recipe.OSMIUM_COMPRESSOR),
@@ -65,11 +61,6 @@ public interface IFactory
 
 		public BasicMachineRecipe getRecipe(ItemStackInput input)
 		{
-			if(this == SMELTING)
-			{
-				return null;
-			}
-
 			return RecipeHandler.getRecipe(input, recipe.get());
 		}
 
@@ -80,7 +71,7 @@ public interface IFactory
 
 		public AdvancedMachineRecipe getRecipe(AdvancedMachineInput input)
 		{
-				return RecipeHandler.getRecipe(input, recipe.get());
+			return RecipeHandler.getRecipe(input, recipe.get());
 		}
 
 		public AdvancedMachineRecipe getRecipe(ItemStack input, Gas gas)
@@ -211,7 +202,7 @@ public interface IFactory
 		private RecipeType(String s, String s1, ItemStack is, boolean b, Recipe r)
 		{
 			name = s;
-			sound = new ResourceLocation("mekanism", s1);
+			sound = new ResourceLocation("mekanism", "tile.machine." + s1);
 			stack = is;
 			usesFuel = b;
 			recipe = r;

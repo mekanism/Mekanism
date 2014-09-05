@@ -9,7 +9,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.client.sound.TileSound;
 import mekanism.common.base.IActiveState;
 
-import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
 
@@ -35,7 +34,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	}
 
 	@Override
-	public ISound getSound()
+	public IResettableSound getSound()
 	{
 		return sound;
 	}
@@ -92,7 +91,12 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	public void validate()
 	{
 		super.validate();
-		
+
+		initSounds();
+	}
+
+	public void initSounds()
+	{
 		sound = new TileSound(this, this);
 	}
 
@@ -101,10 +105,10 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(sound) && client.enableMachineSounds)
+		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
 		{
-			sound.reset();
-			SoundHandler.playSound(sound);
+			getSound().reset();
+			SoundHandler.playSound(getSound());
 		}
 	}
 }
