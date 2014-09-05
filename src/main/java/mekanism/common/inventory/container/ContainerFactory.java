@@ -143,7 +143,7 @@ public class ContainerFactory extends Container
 					return null;
 				}
 			}
-			else if(RecipeType.values()[tileEntity.recipeType].getCopiedOutput(slotStack, tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas() : null, false) != null)
+			else if(tileEntity.recipeType.getAnyRecipe(slotStack, tileEntity.gasTank.getGasType()) != null)
 			{
 				if(!isInputSlot(slotID))
 				{
@@ -176,7 +176,7 @@ public class ContainerFactory extends Container
 					}
 				}
 			}
-			else if(RecipeType.values()[tileEntity.recipeType].getItemGas(slotStack) != null)
+			else if(tileEntity.recipeType.getItemGas(slotStack) != null)
 			{
 				if(slotID > tileEntity.inventory.length-1)
 				{

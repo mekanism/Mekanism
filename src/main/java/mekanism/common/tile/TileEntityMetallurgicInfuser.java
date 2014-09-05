@@ -9,9 +9,9 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
+import mekanism.common.InfuseStorage;
 import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.recipe.outputs.InfusionOutput;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
@@ -50,9 +50,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 
-	/** The type of infuse this machine stores. */
-	public InfuseType type = null;
-
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
 
@@ -63,7 +60,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public int TICKS_REQUIRED = 200;
 
 	/** The amount of infuse this machine has stored. */
-	public int infuseStored;
+	public InfuseStorage infuseStored = new InfuseStorage();
 
 	/** How many ticks this machine has been operating for. */
 	public int operatingTicks;
@@ -137,12 +134,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 				{
 					InfuseObject infuse = InfuseRegistry.getObject(inventory[1]);
 
-					if(type == null || type == infuse.type)
+					if(infuseStored.type == null || infuseStored.type == infuse.type)
 					{
-						if(infuseStored+infuse.stored <= MAX_INFUSE)
+						if(infuseStored.amount + infuse.stored <= MAX_INFUSE)
 						{
-							infuseStored+=infuse.stored;
-							type = infuse.type;
+							infuseStored.amount += infuse.stored;
+							infuseStored.type = infuse.type;
 							inventory[1].stackSize--;
 
 							if(inventory[1].stackSize <= 0)
@@ -154,21 +151,23 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 				}
 			}
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(getInput());
+
+			if(MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
 			{
-				setActive(true);
-
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if(canOperate(recipe))
 				{
-					operatingTicks++;
+					setActive(true);
 					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
-				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
-				{
-					operate();
 
-					operatingTicks = 0;
-					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
+					if((operatingTicks + 1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+					{
+						operatingTicks++;
+					} else
+					{
+						operate(recipe);
+						operatingTicks = 0;
+					}
 				}
 			}
 			else {
@@ -178,15 +177,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 				}
 			}
 
-			if(!canOperate())
+			if(!canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
 
-			if(infuseStored <= 0)
+			if(infuseStored.amount <= 0)
 			{
-				infuseStored = 0;
-				type = null;
+				infuseStored.amount = 0;
+				infuseStored.type = null;
 			}
 
 			prevEnergy = getEnergy();
@@ -217,7 +216,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 		else if(slotID == 1)
 		{
-			return InfuseRegistry.getObject(itemstack) != null && (type == null || type == InfuseRegistry.getObject(itemstack).type);
+			return InfuseRegistry.getObject(itemstack) != null && (infuseStored.type == null || infuseStored.type == InfuseRegistry.getObject(itemstack).type);
 		}
 		else if(slotID == 0)
 		{
@@ -225,9 +224,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 		else if(slotID == 2)
 		{
-			if(type != null)
+			if(infuseStored.type != null)
 			{
-				if(RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, itemstack), false) != null)
+				if(RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null)
 				{
 					return true;
 				}
@@ -251,69 +250,27 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		return false;
 	}
 
-	public void operate()
+	public InfusionInput getInput()
 	{
-		if(!canOperate())
-		{
-			return;
-		}
+		return new InfusionInput(infuseStored, inventory[2]);
+	}
 
-		InfusionOutput output = RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true);
+	public void operate(MetallurgicInfuserRecipe recipe)
+	{
+		recipe.output(inventory, infuseStored);
 
-		infuseStored -= output.getInfuseRequired();
-
-		if(inventory[2].stackSize <= 0)
-		{
-			inventory[2] = null;
-		}
-
-		if(inventory[3] == null)
-		{
-			inventory[3] = output.resource.copy();
-		}
-		else {
-			inventory[3].stackSize += output.resource.stackSize;
-		}
-
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 
-	public boolean canOperate()
+	public boolean canOperate(MetallurgicInfuserRecipe recipe)
 	{
-		if(inventory[2] == null)
-		{
-			return false;
-		}
-
-		InfusionOutput output = RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false);
-
-		if(output == null)
-		{
-			return false;
-		}
-
-		if(infuseStored-output.getInfuseRequired() < 0)
-		{
-			return false;
-		}
-
-		if(inventory[3] == null)
-		{
-			return true;
-		}
-
-		if(!inventory[3].isItemEqual(output.resource))
-		{
-			return false;
-		}
-		else {
-			return inventory[3].stackSize + output.resource.stackSize <= inventory[3].getMaxStackSize();
-		}
+		return recipe != null && recipe.canOperate(inventory, infuseStored);
 	}
 
 	public int getScaledInfuseLevel(int i)
 	{
-		return infuseStored*i / MAX_INFUSE;
+		return infuseStored.amount * i / MAX_INFUSE;
 	}
 
 	public double getScaledProgress()
@@ -328,9 +285,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		clientActive = isActive = nbtTags.getBoolean("isActive");
 		operatingTicks = nbtTags.getInteger("operatingTicks");
-		infuseStored = nbtTags.getInteger("infuseStored");
+		infuseStored.amount = nbtTags.getInteger("infuseStored");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-		type = InfuseRegistry.get(nbtTags.getString("type"));
+		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
 
 		if(nbtTags.hasKey("sideDataStored"))
 		{
@@ -348,12 +305,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("operatingTicks", operatingTicks);
-		nbtTags.setInteger("infuseStored", infuseStored);
+		nbtTags.setInteger("infuseStored", infuseStored.amount);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 
-		if(type != null)
+		if(infuseStored.type != null)
 		{
-			nbtTags.setString("type", type.name);
+			nbtTags.setString("type", infuseStored.type.name);
 		}
 		else {
 			nbtTags.setString("type", "null");
@@ -372,7 +329,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			infuseStored = dataStream.readInt();
+			infuseStored.amount = dataStream.readInt();
 			return;
 		}
 
@@ -380,9 +337,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		clientActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
-		infuseStored = dataStream.readInt();
+		infuseStored.amount = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-		type = InfuseRegistry.get(PacketHandler.readString(dataStream));
+		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
 
 		for(int i = 0; i < 6; i++)
 		{
@@ -407,9 +364,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		data.add(infuseStored);
 		data.add(controlType.ordinal());
 
-		if(type != null)
+		if(infuseStored.type != null)
 		{
-			data.add(type.name);
+			data.add(infuseStored.type.name);
 		}
 		else {
 			data.add("null");
@@ -446,7 +403,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			case 2:
 				return new Object[] {facing};
 			case 3:
-				return new Object[] {canOperate()};
+				return new Object[] {canOperate(RecipeHandler.getMetallurgicInfuserRecipe(getInput()))};
 			case 4:
 				return new Object[] {getMaxEnergy()};
 			case 5:
@@ -454,7 +411,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			case 6:
 				return new Object[] {infuseStored};
 			case 7:
-				return new Object[] {MAX_INFUSE-infuseStored};
+				return new Object[] {MAX_INFUSE-infuseStored.amount};
 			default:
 				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

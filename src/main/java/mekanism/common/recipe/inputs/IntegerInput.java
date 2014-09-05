@@ -1,6 +1,6 @@
 package mekanism.common.recipe.inputs;
 
-public class IntegerInput extends MachineInput
+public class IntegerInput extends MachineInput<IntegerInput>
 {
 	public int ingredient;
 
@@ -9,6 +9,17 @@ public class IntegerInput extends MachineInput
 		ingredient = integer;
 	}
 
+	@Override
+	public IntegerInput copy()
+	{
+		return new IntegerInput(ingredient);
+	}
+
+	@Override
+	public boolean isValid()
+	{
+		return true;
+	}
 
 	@Override
 	public int hashIngredients()
@@ -17,8 +28,14 @@ public class IntegerInput extends MachineInput
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(IntegerInput other)
 	{
-		return other instanceof IntegerInput && ingredient == ((IntegerInput)other).ingredient;
+		return ingredient == other.ingredient;
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof IntegerInput;
 	}
 }

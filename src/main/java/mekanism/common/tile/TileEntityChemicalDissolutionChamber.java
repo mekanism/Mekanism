@@ -20,7 +20,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -84,6 +85,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 		if(!worldObj.isRemote)
 		{
+			DissolutionRecipe recipe = getRecipe();
+
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -108,30 +111,19 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			boolean changed = false;
 
-			if(canOperate() && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
+				minorOperate();
 
-				if(operatingTicks < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					injectTank.draw(INJECT_USAGE, true);
 				}
 				else {
-					GasStack stack = RecipeHandler.getDissolutionOutput(inventory[1], true);
-
-					outputTank.receive(stack, true);
-					injectTank.draw(INJECT_USAGE, true);
-
+					operate(recipe);
 					operatingTicks = 0;
-
-					if(inventory[1].stackSize <= 0)
-					{
-						inventory[1] = null;
-					}
-
-					markDirty();
 				}
 			}
 			else {
@@ -142,7 +134,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 				}
 			}
 
-			if(changed && !canOperate())
+			if(changed && !canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
@@ -171,7 +163,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		if(slotID == 1)
 		{
-			return RecipeHandler.getDissolutionOutput(itemstack, false) != null;
+			return RecipeHandler.getDissolutionRecipe(new ItemStackInput(itemstack)) != null;
 		}
 		else if(slotID == 3)
 		{
@@ -216,21 +208,31 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);
 	}
 
-	public boolean canOperate()
+	public DissolutionRecipe getRecipe()
 	{
-		if(inventory[1] == null)
-		{
-			return false;
-		}
+		return RecipeHandler.getDissolutionRecipe(getInput());
+	}
 
-		GasStack stack = RecipeHandler.getDissolutionOutput(inventory[1], false);
+	public ItemStackInput getInput()
+	{
+		return new ItemStackInput(inventory[1]);
+	}
 
-		if(stack == null || (outputTank.getGas() != null && (outputTank.getGas().getGas() != stack.getGas() || outputTank.getNeeded() < stack.amount)))
-		{
-			return false;
-		}
+	public boolean canOperate(DissolutionRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(inventory, outputTank);
+	}
 
-		return true;
+	public void operate(DissolutionRecipe recipe)
+	{
+		recipe.operate(inventory, outputTank);
+
+		markDirty();
+	}
+
+	public void minorOperate()
+	{
+		injectTank.draw(INJECT_USAGE, true);
 	}
 
 	@Override

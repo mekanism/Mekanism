@@ -1,7 +1,11 @@
 package mekanism.common.recipe.inputs;
 
-public abstract class MachineInput
+public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 {
+	public abstract boolean isValid();
+
+	public abstract INPUT copy();
+
 	public abstract int hashIngredients();
 
 	/**
@@ -12,7 +16,7 @@ public abstract class MachineInput
 	 * @param other
 	 * @return
 	 */
-	public abstract boolean testEquality(MachineInput other);
+	public abstract boolean testEquality(INPUT other);
 
 	@Override
 	public int hashCode()
@@ -23,12 +27,12 @@ public abstract class MachineInput
 	@Override
 	public boolean equals(Object other)
 	{
-		if(other instanceof MachineInput)
+		if(isInstance(other))
 		{
-			return testEquality((MachineInput)other);
+			return testEquality((INPUT)other);
 		}
 		return false;
 	}
 
-
+	public abstract boolean isInstance(Object other);
 }

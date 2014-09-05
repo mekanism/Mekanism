@@ -181,15 +181,16 @@ public final class RecipeHelper
 	/**
 	 * Add an Electrolytic Separator recipe.
 	 * @param input - input FluidStack
+	 * @param energy - required energy
 	 * @param leftOutput - left output GasStack
 	 * @param rightOutput - right output GasStack
 	 */
-	public static void addElectrolyticSeparatorRecipe(FluidStack input, GasStack leftOutput, GasStack rightOutput)
+	public static void addElectrolyticSeparatorRecipe(FluidStack input, double energy, GasStack leftOutput, GasStack rightOutput)
 	{
 		try {
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
-			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, GasStack.class, GasStack.class);
-			m.invoke(null, input, leftOutput, rightOutput);
+			Method m = recipeClass.getMethod("addElectrolyticSeparatorRecipe", FluidStack.class, Double.TYPE, GasStack.class, GasStack.class);
+			m.invoke(null, input, energy, leftOutput, rightOutput);
 		} catch(Exception e) {
 			System.err.println("Error while adding recipe: " + e.getMessage());
 		}

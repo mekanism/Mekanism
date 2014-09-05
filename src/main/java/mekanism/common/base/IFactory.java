@@ -9,6 +9,13 @@ import mekanism.api.util.StackUtils;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.inputs.MachineInput;
+import mekanism.common.recipe.machines.AdvancedMachineRecipe;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.MekanismUtils;
 
@@ -56,37 +63,38 @@ public interface IFactory
 		private Recipe recipe;
 		private TileEntityAdvancedElectricMachine cacheTile;
 
-		public ItemStack getCopiedOutput(ItemStack input, Gas gas, boolean stackDecrease)
+		public BasicMachineRecipe getRecipe(ItemStackInput input)
 		{
-			if(input == null)
-			{
-				return null;
-			}
-
 			if(this == SMELTING)
 			{
-				if(FurnaceRecipes.smelting().getSmeltingResult(input) != null)
-				{
-					ItemStack toReturn = FurnaceRecipes.smelting().getSmeltingResult(input).copy();
-
-					if(stackDecrease)
-					{
-						input.stackSize--;
-					}
-
-					return toReturn;
-				}
-
 				return null;
 			}
 
+			return RecipeHandler.getRecipe(input, recipe.get());
+		}
+
+		public BasicMachineRecipe getRecipe(ItemStack input)
+		{
+			return getRecipe(new ItemStackInput(input));
+		}
+
+		public AdvancedMachineRecipe getRecipe(AdvancedMachineInput input)
+		{
+				return RecipeHandler.getRecipe(input, recipe.get());
+		}
+
+		public AdvancedMachineRecipe getRecipe(ItemStack input, Gas gas)
+		{
+			return getRecipe(new AdvancedMachineInput(input, gas));
+		}
+
+		public MachineRecipe getAnyRecipe(ItemStack slotStack, Gas gasType)
+		{
 			if(usesFuel())
 			{
-				return RecipeHandler.getOutput(new AdvancedMachineInput(input, gas), stackDecrease, recipe.get());
+				return getRecipe(slotStack,gasType);
 			}
-			else {
-				return RecipeHandler.getOutput(input, stackDecrease, recipe.get());
-			}
+			return getRecipe(slotStack);
 		}
 
 		public GasStack getItemGas(ItemStack itemstack)

@@ -24,6 +24,8 @@ import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.GasInput;
+import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -108,6 +110,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 		if(!worldObj.isRemote)
 		{
+			CrystallizerRecipe recipe = getRecipe();
+
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -125,21 +129,19 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE))
 			{
 				setActive(true);
 
+				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
 				{
 					operatingTicks++;
-					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				else
 				{
-					operate();
-
+					operate(recipe);
 					operatingTicks = 0;
-					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
 				}
 			}
 			else {
@@ -149,7 +151,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 				}
 			}
 
-			if(!canOperate())
+			if(!canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
@@ -158,45 +160,24 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		}
 	}
 
-	public boolean canOperate()
+	public GasInput getInput()
 	{
-		if(inputTank.getGas() == null)
-		{
-			return false;
-		}
-
-		ItemStack itemstack = RecipeHandler.getChemicalCrystallizerOutput(inputTank, false);
-
-		if(itemstack == null)
-		{
-			return false;
-		}
-
-		if(inventory[1] == null)
-		{
-			return true;
-		}
-
-		if(!inventory[1].isItemEqual(itemstack))
-		{
-			return false;
-		}
-		else {
-			return inventory[1].stackSize + itemstack.stackSize <= inventory[1].getMaxStackSize();
-		}
+		return new GasInput(inputTank.getGas());
 	}
 
-	public void operate()
+	public CrystallizerRecipe getRecipe()
 	{
-		ItemStack itemstack = RecipeHandler.getChemicalCrystallizerOutput(inputTank, true);
+		return RecipeHandler.getChemicalCrystallizerRecipe(getInput());
+	}
 
-		if(inventory[1] == null)
-		{
-			inventory[1] = itemstack;
-		}
-		else {
-			inventory[1].stackSize += itemstack.stackSize;
-		}
+	public boolean canOperate(CrystallizerRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(inputTank, inventory);
+	}
+
+	public void operate(CrystallizerRecipe recipe)
+	{
+		recipe.operate(inputTank, inventory);
 
 		markDirty();
 		ejectorComponent.onOutput();

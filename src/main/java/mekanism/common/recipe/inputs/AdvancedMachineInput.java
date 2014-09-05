@@ -1,11 +1,12 @@
 package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasTank;
 import mekanism.api.util.StackUtils;
 
 import net.minecraft.item.ItemStack;
 
-public class AdvancedMachineInput extends MachineInput
+public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 {
 	public ItemStack itemStack;
 
@@ -17,9 +18,39 @@ public class AdvancedMachineInput extends MachineInput
 		gasType = gas;
 	}
 
+	@Override
+	public AdvancedMachineInput copy()
+	{
+		return new AdvancedMachineInput(itemStack.copy(), gasType);
+	}
+
+	@Override
 	public boolean isValid()
 	{
 		return itemStack != null && gasType != null;
+	}
+
+	public boolean useItem(ItemStack[] inventory, int index, boolean deplete)
+	{
+		if(StackUtils.contains(inventory[index], itemStack))
+		{
+			if(deplete)
+			{
+				inventory[index] = StackUtils.subtract(inventory[index], itemStack);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public boolean useSecondary(GasTank gasTank, int amountToUse, boolean deplete)
+	{
+		if(gasTank.getGasType() == gasType && gasTank.getStored() >= amountToUse)
+		{
+			gasTank.draw(amountToUse, deplete);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean matches(AdvancedMachineInput input)
@@ -30,12 +61,19 @@ public class AdvancedMachineInput extends MachineInput
 	@Override
 	public int hashIngredients()
 	{
-		return StackUtils.hashItemStack(itemStack) << 8 | gasType.getID();
+		int hash = StackUtils.hashItemStack(itemStack) << 8 | gasType.getID();
+		return hash;
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(AdvancedMachineInput other)
 	{
-		return other instanceof AdvancedMachineInput && StackUtils.equalsWildcardWithNBT(itemStack, ((AdvancedMachineInput)other).itemStack) && gasType.getID() == ((AdvancedMachineInput)other).gasType.getID();
+		return StackUtils.equalsWildcardWithNBT(itemStack, other.itemStack) && gasType.getID() == other.gasType.getID();
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof AdvancedMachineInput;
 	}
 }

@@ -12,6 +12,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.outputs.PressurizedProducts;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.SideData;
@@ -44,7 +45,7 @@ import io.netty.buffer.ByteBuf;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData
+public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedProducts, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData
 {
 	public FluidTank inputFluidTank = new FluidTank(10000);
 	public GasTank inputGasTank = new GasTank(10000);
@@ -76,11 +77,12 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 
 		if(!worldObj.isRemote)
 		{
+			PressurizedRecipe recipe = getRecipe();
+
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
 			{
-				PressurizedRecipe recipe = getRecipe();
 				TICKS_REQUIRED = recipe.ticks;
 				setActive(true);
 
@@ -91,7 +93,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 				}
 				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED) && electricityStored >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK + recipe.extraEnergy))
 				{
-					operate();
+					operate(recipe);
 
 					operatingTicks = 0;
 					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK + recipe.extraEnergy);
@@ -106,7 +108,7 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 				}
 			}
 
-			if(!canOperate())
+			if(!canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
@@ -150,76 +152,36 @@ public class TileEntityPRC extends TileEntityBasicMachine implements IFluidHandl
 	}
 
 	@Override
-	public void operate()
+	public PressurizedRecipe getRecipe()
 	{
-		PressurizedRecipe recipe = getRecipe();
+		return RecipeHandler.getPRCRecipe(getInput());
+	}
 
-		recipe.getInput().use(inventory[0], inputFluidTank, inputGasTank);
+	@Override
+	public PressurizedInput getInput()
+	{
+		return new PressurizedInput(inventory[0], inputFluidTank.getFluid(), inputGasTank.getGas());
+	}
 
-		if(inventory[0].stackSize <= 0)
-		{
-			inventory[0] = null;
-		}
-
-		recipe.getOutput().fillTank(outputGasTank);
-
-		recipe.getOutput().addProducts(inventory, 2);
+	@Override
+	public void operate(PressurizedRecipe recipe)
+	{
+		recipe.operate(inventory, inputFluidTank, inputGasTank, outputGasTank);
 
 		markDirty();
 		ejectorComponent.onOutput();
 	}
 
 	@Override
-	public boolean canOperate()
+	public boolean canOperate(PressurizedRecipe recipe)
 	{
-		PressurizedRecipe recipe = getRecipe();
-
-		if(recipe == null)
-		{
-			return false;
-		}
-
-		PressurizedProducts products = recipe.getOutput();
-
-		if(products.getItemOutput() != null)
-		{
-			if(inventory[2] != null)
-			{
-				if(!inventory[2].isItemEqual(products.getItemOutput()))
-				{
-					return false;
-				}
-				else {
-					if(inventory[2].stackSize + products.getItemOutput().stackSize > inventory[2].getMaxStackSize())
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		if(products.getGasOutput() != null && outputGasTank.getGas() != null)
-		{
-			return products.getGasOutput().isGasEqual(outputGasTank.getGas()) && products.getGasOutput().amount <= outputGasTank.getNeeded();
-		}
-
-		return true;
+		return recipe != null && recipe.canOperate(inventory, inputFluidTank, inputGasTank, outputGasTank);
 	}
 	
 	@Override
 	public double getMaxEnergy()
 	{
 		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	public PressurizedRecipe getRecipe()
-	{
-		if(inventory[0] == null)
-		{
-			return null;
-		}
-
-		return RecipeHandler.getPRCOutput(inventory[0], inputFluidTank, inputGasTank);
 	}
 
 	@Override

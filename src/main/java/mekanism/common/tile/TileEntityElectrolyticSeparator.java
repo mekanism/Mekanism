@@ -13,6 +13,8 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.common.recipe.inputs.FluidInput;
+import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
@@ -87,6 +89,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			ChargeUtils.discharge(3, this);
 
+			SeparatorRecipe recipe = getRecipe();
+
 			if(inventory[0] != null)
 			{
 				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
@@ -98,7 +102,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					else {
 						FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 	
-						if(fluid != null && fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity())
+						if(fluid != null && (fluidTank.getFluid() == null || fluid.isFluidEqual(fluidTank.getFluid()) && fluidTank.getFluid().amount+fluid.amount <= fluidTank.getCapacity()))
 						{
 							fluidTank.fill(fluid, true);
 	
@@ -119,26 +123,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				}
 			}
 
-			if(!worldObj.isRemote)
+			if(inventory[1] != null && leftTank.getStored() > 0)
 			{
-				if(inventory[1] != null && leftTank.getStored() > 0)
-				{
-					leftTank.draw(GasTransmission.addGas(inventory[1], leftTank.getGas()), true);
-					MekanismUtils.saveChunk(this);
-				}
-
-				if(inventory[2] != null && rightTank.getStored() > 0)
-				{
-					rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
-					MekanismUtils.saveChunk(this);
-				}
+				leftTank.draw(GasTransmission.addGas(inventory[1], leftTank.getGas()), true);
+				MekanismUtils.saveChunk(this);
 			}
 
-			if(canOperate())
+			if(inventory[2] != null && rightTank.getStored() > 0)
+			{
+				rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
+				MekanismUtils.saveChunk(this);
+			}
+
+			if(canOperate(recipe) && getEnergy() >= recipe.extraEnergy)
 			{
 				setActive(true);
-				fillTanks(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, true));
-				setEnergy(getEnergy() - general.FROM_H2*2);
+				operate(recipe);
+				setEnergy(getEnergy() - recipe.extraEnergy);
 			}
 			else {
 				setActive(false);
@@ -199,41 +200,30 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 	}
 
-	public boolean canOperate()
+	public SeparatorRecipe getRecipe()
 	{
-		return canFillWithSwap(RecipeHandler.getElectrolyticSeparatorOutput(fluidTank, false)) && getEnergy() >= general.FROM_H2*2;
+		return RecipeHandler.getElectrolyticSeparatorRecipe(getInput());
 	}
 
-	public boolean canFillWithSwap(ChemicalPairOutput gases)
+	public FluidInput getInput()
 	{
-		if(gases == null)
-		{
-			return false;
-		}
+		return new FluidInput(fluidTank.getFluid());
+	}
 
-		return canFill(gases) || canFill(gases.swap());
+	public boolean canOperate(SeparatorRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(fluidTank, leftTank, rightTank);
+	}
+
+	public void operate(SeparatorRecipe recipe)
+	{
+		recipe.operate(fluidTank, leftTank, rightTank);
 	}
 
 	public boolean canFill(ChemicalPairOutput gases)
 	{
 		return (leftTank.canReceive(gases.leftGas.getGas()) && leftTank.getNeeded() >= gases.leftGas.amount
 				&& rightTank.canReceive(gases.rightGas.getGas()) && rightTank.getNeeded() >= gases.rightGas.amount);
-	}
-
-	public void fillTanks(ChemicalPairOutput gases)
-	{
-		if(gases == null) return;
-
-		if(canFill(gases))
-		{
-			leftTank.receive(gases.leftGas, true);
-			rightTank.receive(gases.rightGas, true);
-		}
-		else if(canFill(gases.swap()))
-		{
-			leftTank.receive(gases.rightGas, true);
-			rightTank.receive(gases.leftGas, true);
-		}
 	}
 
 	public void spawnParticle(int type)
@@ -324,36 +314,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 
 		return InventoryUtils.EMPTY;
-	}
-
-	/**
-	 * Gets the scaled hydrogen level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getLeftScaledLevel(int i)
-	{
-		return leftTank.getStored()*i / MAX_GAS;
-	}
-
-	/**
-	 * Gets the scaled oxygen level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getRightScaledLevel(int i)
-	{
-		return rightTank.getStored()*i / MAX_GAS;
-	}
-
-	/**
-	 * Gets the scaled water level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getScaledFluidLevel(int i)
-	{
-		return fluidTank.getFluid() != null ? fluidTank.getFluid().amount*i / fluidTank.getCapacity() : 0;
 	}
 
 	/**

@@ -3,7 +3,7 @@ package mekanism.common.recipe.machines;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.outputs.MachineOutput;
 
-public abstract class MachineRecipe<INPUT extends MachineInput, OUTPUT extends MachineOutput>
+public abstract class MachineRecipe<INPUT extends MachineInput, OUTPUT extends MachineOutput, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>>
 {
 	public INPUT recipeInput;
 	public OUTPUT recipeOutput;
@@ -23,4 +23,6 @@ public abstract class MachineRecipe<INPUT extends MachineInput, OUTPUT extends M
 	{
 		return recipeOutput;
 	}
+
+	public abstract RECIPE copy();
 }

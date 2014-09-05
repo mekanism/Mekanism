@@ -1,5 +1,7 @@
 package mekanism.common.recipe.inputs;
 
+import java.util.Stack;
+
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.util.StackUtils;
@@ -11,13 +13,13 @@ import net.minecraftforge.fluids.FluidTank;
 /**
  * An input of a gas, a fluid and an item for the pressurized reaction chamber
  */
-public class PressurizedReactants extends MachineInput
+public class PressurizedInput extends MachineInput<PressurizedInput>
 {
 	private ItemStack theSolid;
 	private FluidStack theFluid;
 	private GasStack theGas;
 
-	public PressurizedReactants(ItemStack solid, FluidStack fluid, GasStack gas)
+	public PressurizedInput(ItemStack solid, FluidStack fluid, GasStack gas)
 	{
 		theSolid = solid;
 		theFluid = fluid;
@@ -27,25 +29,25 @@ public class PressurizedReactants extends MachineInput
 	/**
 	 * If this is a valid PressurizedReactants
 	 */
+	@Override
 	public boolean isValid()
 	{
 		return theSolid != null && theFluid != null && theGas != null;
 	}
 
-	/**
-	 * Draws the needed amount of gas from each tank.
-	 * @param item - ItemStack to draw from
-	 * @param fluidTank - fluid tank to draw from
-	 * @param gasTank - gas tank to draw from
-	 */
-	public void use(ItemStack item, FluidTank fluidTank, GasTank gasTank)
+	public boolean use(ItemStack[] inventory, int index, FluidTank fluidTank, GasTank gasTank, boolean deplete)
 	{
-		if(meets(new PressurizedReactants(item, fluidTank.getFluid(), gasTank.getGas())))
+		if(meets(new PressurizedInput(inventory[index], fluidTank.getFluid(), gasTank.getGas())))
 		{
-			item.stackSize -= theSolid.stackSize;
-			fluidTank.drain(theFluid.amount, true);
-			gasTank.draw(theGas.amount, true);
+			if(deplete)
+			{
+				inventory[index] = StackUtils.subtract(inventory[index], theSolid);
+				fluidTank.drain(theFluid.amount, true);
+				gasTank.draw(theGas.amount, true);
+			}
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -93,17 +95,12 @@ public class PressurizedReactants extends MachineInput
 		return stack.isGasEqual(theGas);
 	}
 
-	public boolean meetsInput(ItemStack itemStack, FluidStack fluidStack, GasStack gasStack)
-	{
-		return meets(new PressurizedReactants(itemStack, fluidStack, gasStack));
-	}
-
 	/**
 	 * Actual implementation of meetsInput(), performs the checks.
 	 * @param input - input to check
 	 * @return if the input meets this input's requirements
 	 */
-	public boolean meets(PressurizedReactants input)
+	public boolean meets(PressurizedInput input)
 	{
 		if(input == null || !input.isValid())
 		{
@@ -118,9 +115,10 @@ public class PressurizedReactants extends MachineInput
 		return input.theSolid.stackSize >= theSolid.stackSize && input.theFluid.amount >= theFluid.amount && input.theGas.amount >= theGas.amount;
 	}
 
-	public PressurizedReactants copy()
+	@Override
+	public PressurizedInput copy()
 	{
-		return new PressurizedReactants(theSolid.copy(), theFluid.copy(), theGas.copy());
+		return new PressurizedInput(theSolid.copy(), theFluid.copy(), theGas.copy());
 	}
 	
 	public ItemStack getSolid()
@@ -145,13 +143,14 @@ public class PressurizedReactants extends MachineInput
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(PressurizedInput other)
 	{
-		if(other instanceof PressurizedReactants)
-		{
-			PressurizedReactants pr = (PressurizedReactants)other;
-			return pr.containsType(theSolid) && pr.containsType(theFluid) && pr.containsType(theGas);
-		}
-		return false;
+		return other.containsType(theSolid) && other.containsType(theFluid) && other.containsType(theGas);
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof PressurizedInput;
 	}
 }

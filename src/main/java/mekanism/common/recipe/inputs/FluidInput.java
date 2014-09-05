@@ -1,8 +1,9 @@
 package mekanism.common.recipe.inputs;
 
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
-public class FluidInput extends MachineInput
+public class FluidInput extends MachineInput<FluidInput>
 {
 	public FluidStack ingredient;
 
@@ -12,14 +13,42 @@ public class FluidInput extends MachineInput
 	}
 
 	@Override
+	public FluidInput copy()
+	{
+		return new FluidInput(ingredient.copy());
+	}
+
+	@Override
+	public boolean isValid()
+	{
+		return ingredient != null;
+	}
+
+	public boolean useFluid(FluidTank fluidTank, boolean deplete)
+	{
+		if(fluidTank.getFluid().containsFluid(ingredient))
+		{
+			fluidTank.drain(ingredient.amount, deplete);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public int hashIngredients()
 	{
 		return ingredient.hashCode();
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(FluidInput other)
 	{
-		return other instanceof FluidInput && ingredient.equals(((FluidInput)other).ingredient);
+		return ingredient.equals(other.ingredient);
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof FluidInput;
 	}
 }

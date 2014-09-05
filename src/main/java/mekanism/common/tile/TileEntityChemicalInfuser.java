@@ -19,6 +19,8 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
+import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -77,6 +79,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 		if(!worldObj.isRemote)
 		{
+			ChemicalInfuserRecipe recipe = getRecipe();
+
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -104,14 +108,12 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
 			}
 
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				GasStack stack = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, true);
-
-				centerTank.receive(stack, true);
-
 				setEnergy(getEnergy() - ENERGY_USAGE);
+
+				operate(recipe);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -139,26 +141,26 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		}
 	}
 
-	public boolean canOperate()
+	public ChemicalPairInput getInput()
 	{
-		if(leftTank.getGas() == null || rightTank.getGas() == null || centerTank.getNeeded() == 0)
-		{
-			return false;
-		}
+		return new ChemicalPairInput(leftTank.getGas(), rightTank.getGas());
+	}
 
-		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
+	public ChemicalInfuserRecipe getRecipe()
+	{
+		return RecipeHandler.getChemicalInfuserRecipe(getInput());
+	}
 
-		if(out == null || centerTank.getGas() != null && centerTank.getGas().getGas() != out.getGas())
-		{
-			return false;
-		}
+	public boolean canOperate(ChemicalInfuserRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(leftTank, rightTank, centerTank);
+	}
 
-		if(centerTank.getNeeded() < out.amount)
-		{
-			return false;
-		}
+	public void operate(ChemicalInfuserRecipe recipe)
+	{
+		recipe.operate(leftTank, rightTank, centerTank);
 
-		return true;
+		markDirty();
 	}
 
 	@Override

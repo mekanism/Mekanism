@@ -4,7 +4,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotStorageTank;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.ChargeUtils;
 
@@ -70,7 +70,7 @@ public class ContainerChemicalOxidizer extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(RecipeHandler.getOxidizerOutput(slotStack, false) != null)
+			if(RecipeHandler.getOxidizerRecipe(new ItemStackInput(slotStack)) != null)
 			{
 				if(slotID != 0)
 				{

@@ -8,7 +8,7 @@ import mekanism.api.gas.GasTank;
  * @author aidancbrady
  *
  */
-public class ChemicalPairOutput extends MachineOutput
+public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput>
 {
 	/** The left gas of this chemical input */
 	public GasStack leftGas;
@@ -53,6 +53,28 @@ public class ChemicalPairOutput extends MachineOutput
 	public ChemicalPairOutput swap()
 	{
 		return new ChemicalPairOutput(rightGas, leftGas);
+	}
+
+	public boolean applyOutputs(GasTank leftTank, GasTank rightTank, boolean doEmit)
+	{
+		if(leftTank.canReceive(leftGas.getGas()) && rightTank.canReceive(rightGas.getGas()))
+		{
+			if(leftTank.getNeeded() >= leftGas.amount && rightTank.getNeeded() >= rightGas.amount)
+			{
+				leftTank.receive(leftGas, doEmit);
+				rightTank.receive(rightGas, doEmit);
+				return true;
+			}
+		} else if(leftTank.canReceive(rightGas.getGas()) && rightTank.canReceive(leftGas.getGas()))
+		{
+			if(leftTank.getNeeded() >= rightGas.amount && rightTank.getNeeded() >= leftGas.amount)
+			{
+				leftTank.receive(rightGas, doEmit);
+				rightTank.receive(leftGas, doEmit);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

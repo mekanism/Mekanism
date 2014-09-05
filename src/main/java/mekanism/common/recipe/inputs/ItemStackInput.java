@@ -5,7 +5,7 @@ import mekanism.api.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class ItemStackInput extends MachineInput
+public class ItemStackInput extends MachineInput<ItemStackInput>
 {
 	public ItemStack ingredient;
 
@@ -14,9 +14,34 @@ public class ItemStackInput extends MachineInput
 		ingredient = stack;
 	}
 
+	@Override
+	public ItemStackInput copy()
+	{
+		return new ItemStackInput(ingredient.copy());
+	}
+
+	@Override
+	public boolean isValid()
+	{
+		return ingredient != null;
+	}
+
 	public ItemStackInput wildCopy()
 	{
 		return new ItemStackInput(new ItemStack(ingredient.getItem(), ingredient.stackSize, OreDictionary.WILDCARD_VALUE));
+	}
+
+	public boolean useItemStackFromInventory(ItemStack[] inventory, int index, boolean deplete)
+	{
+		if(StackUtils.contains(inventory[index], ingredient))
+		{
+			if(deplete)
+			{
+				inventory[index] = StackUtils.subtract(inventory[index], ingredient);
+			}
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -26,8 +51,14 @@ public class ItemStackInput extends MachineInput
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(ItemStackInput other)
 	{
-		return other instanceof ItemStackInput && StackUtils.equalsWildcardWithNBT(ingredient, ((ItemStackInput)other).ingredient);
+		return StackUtils.equalsWildcardWithNBT(ingredient, other.ingredient);
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof ItemStackInput;
 	}
 }

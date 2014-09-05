@@ -923,7 +923,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		if(tileEntity instanceof TileEntityFactory)
 		{
 			IFactory factoryItem = (IFactory)itemStack.getItem();
-			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
+			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType.ordinal(), itemStack);
 		}
 
 		return itemStack;

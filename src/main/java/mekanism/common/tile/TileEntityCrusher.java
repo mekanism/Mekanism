@@ -5,8 +5,9 @@ import java.util.Map;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.CrusherRecipe;
 
-public class TileEntityCrusher extends TileEntityElectricMachine
+public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 {
 	public TileEntityCrusher()
 	{

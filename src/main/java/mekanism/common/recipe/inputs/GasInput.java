@@ -1,8 +1,9 @@
 package mekanism.common.recipe.inputs;
 
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 
-public class GasInput extends MachineInput
+public class GasInput extends MachineInput<GasInput>
 {
 	public GasStack ingredient;
 
@@ -12,14 +13,42 @@ public class GasInput extends MachineInput
 	}
 
 	@Override
+	public GasInput copy()
+	{
+		return new GasInput(ingredient.copy());
+	}
+
+	@Override
+	public boolean isValid()
+	{
+		return ingredient != null;
+	}
+
+	public boolean useGas(GasTank gasTank, boolean deplete)
+	{
+		if(gasTank.getGasType() == ingredient.getGas() && gasTank.getStored() >= ingredient.amount)
+		{
+			gasTank.draw(ingredient.amount, deplete);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public int hashIngredients()
 	{
 		return ingredient.hashCode();
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(GasInput other)
 	{
-		return other instanceof GasInput && ((GasInput)other).ingredient.hashCode() == ingredient.hashCode();
+		return other.ingredient.hashCode() == ingredient.hashCode();
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof GasInput;
 	}
 }

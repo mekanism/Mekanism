@@ -119,7 +119,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(AdvancedMachineRecipe irecipe : getRecipes())
+			for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getInput().gasType)));
 			}
@@ -132,7 +132,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(AdvancedMachineRecipe irecipe : getRecipes())
+		for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().output, result))
 			{
@@ -152,7 +152,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(AdvancedMachineRecipe irecipe : getRecipes())
+			for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 			{
 				if(irecipe.getInput().gasType == ((GasStack)ingredients[0]).getGas())
 				{
@@ -168,7 +168,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(AdvancedMachineRecipe irecipe : getRecipes())
+		for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().itemStack, ingredient))
 			{
@@ -301,7 +301,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 			fuelStacks = fuels;
 		}
 
-		public CachedIORecipe(AdvancedMachineRecipe recipe, List<ItemStack> fuels)
+		public CachedIORecipe(AdvancedMachineRecipe<?> recipe, List<ItemStack> fuels)
 		{
 			this(recipe.getInput(), recipe.getOutput().output, fuels);
 		}

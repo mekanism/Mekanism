@@ -298,7 +298,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(tileEntity instanceof TileEntityFactory)
 			{
-				((TileEntityFactory)tileEntity).recipeType = getRecipeType(stack);
+				((TileEntityFactory)tileEntity).recipeType = RecipeType.values()[getRecipeType(stack)];
 				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType());
 			}
 

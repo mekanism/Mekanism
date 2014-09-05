@@ -108,7 +108,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(BasicMachineRecipe irecipe : getRecipes())
+		for(BasicMachineRecipe<?> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().output, result))
 			{
@@ -126,7 +126,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(BasicMachineRecipe irecipe : getRecipes())
+		for(BasicMachineRecipe<?> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().ingredient, ingredient))
 			{
@@ -160,7 +160,7 @@ public abstract class MachineRecipeHandler extends BaseRecipeHandler
 			output = new PositionedStack(itemstack1, 100, 30);
 		}
 
-		public CachedIORecipe(BasicMachineRecipe recipe)
+		public CachedIORecipe(BasicMachineRecipe<?> recipe)
 		{
 			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}

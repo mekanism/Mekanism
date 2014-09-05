@@ -1,13 +1,15 @@
 package mekanism.common.recipe.machines;
 
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.outputs.PressurizedProducts;
-import mekanism.common.recipe.inputs.PressurizedReactants;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
-public class PressurizedRecipe extends MachineRecipe<PressurizedReactants, PressurizedProducts>
+public class PressurizedRecipe extends MachineRecipe<PressurizedInput, PressurizedProducts, PressurizedRecipe>
 {
 	public double extraEnergy;
 
@@ -15,12 +17,12 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedReactants, Press
 
 	public PressurizedRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double energy, int duration)
 	{
-		this(new PressurizedReactants(inputSolid, inputFluid, inputGas), new PressurizedProducts(outputSolid, outputGas), energy, duration);
+		this(new PressurizedInput(inputSolid, inputFluid, inputGas), new PressurizedProducts(outputSolid, outputGas), energy, duration);
 	}
 
-	public PressurizedRecipe(PressurizedReactants pressurizedReactants, PressurizedProducts pressurizedProducts, double energy, int duration)
+	public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedProducts pressurizedProducts, double energy, int duration)
 	{
-		super(pressurizedReactants, pressurizedProducts);
+		super(pressurizedInput, pressurizedProducts);
 
 		extraEnergy = energy;
 		ticks = duration;
@@ -29,5 +31,18 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedReactants, Press
 	public PressurizedRecipe copy()
 	{
 		return new PressurizedRecipe(getInput().copy(), getOutput().copy(), extraEnergy, ticks);
+	}
+
+	public boolean canOperate(ItemStack[] inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank)
+	{
+		return getInput().use(inventory, 0, inputFluidTank, inputGasTank, false) &&	getOutput().applyOutputs(inventory, 2, outputGasTank, false);
+	}
+
+	public void operate(ItemStack[] inventory, FluidTank inputFluidTank, GasTank inputGasTank, GasTank outputGasTank)
+	{
+		if(getInput().use(inventory, 0, inputFluidTank, inputGasTank, true))
+		{
+			getOutput().applyOutputs(inventory, 2, outputGasTank, true);
+		}
 	}
 }

@@ -73,7 +73,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 
 		if(xAxis >= 7 && xAxis <= 11 && yAxis >= 17 && yAxis <= 69)
 		{
-			drawCreativeTabHoveringText(tileEntity.type != null ? tileEntity.type.getLocalizedName() + ": " + tileEntity.infuseStored : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.infuseStored.type != null ? tileEntity.infuseStored.type.getLocalizedName() + ": " + tileEntity.infuseStored : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -88,14 +88,11 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-
-		if(tileEntity.type != null)
+		if(tileEntity.infuseStored.type != null)
 		{
 			int displayInt = tileEntity.getScaledInfuseLevel(52);
-			mc.renderEngine.bindTexture(tileEntity.type.texture);
-			drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.type.texX, tileEntity.type.texY + 52 - displayInt, 4, displayInt);
+			mc.renderEngine.bindTexture(tileEntity.infuseStored.type.texture);
+			drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, tileEntity.infuseStored.type.texX, tileEntity.infuseStored.type.texY + 52 - displayInt, 4, displayInt);
 		}
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);

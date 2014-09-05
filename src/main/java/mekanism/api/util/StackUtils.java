@@ -55,6 +55,10 @@ public final class StackUtils
 
 	public static boolean equalsWildcard(ItemStack wild, ItemStack check)
 	{
+		if(wild == null || check == null)
+		{
+			return check == wild;
+		}
 		return wild.getItem() == check.getItem() && (wild.getItemDamage() == OreDictionary.WILDCARD_VALUE || wild.getItemDamage() == check.getItemDamage());
 	}
 
@@ -229,6 +233,11 @@ public final class StackUtils
 		else {
 			return StackUtils.size(orig, newSize);
 		}
+	}
+
+	public static boolean contains(ItemStack container, ItemStack contained)
+	{
+		return equalsWildcardWithNBT(contained, container) && container.stackSize >= contained.stackSize;
 	}
 
 	public static int hashItemStack(ItemStack stack)

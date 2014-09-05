@@ -8,7 +8,7 @@ import mekanism.api.gas.GasTank;
  * @author aidancbrady
  *
  */
-public class ChemicalPairInput extends MachineInput
+public class ChemicalPairInput extends MachineInput<ChemicalPairInput>
 {
 	/** The left gas of this chemical input */
 	public GasStack leftGas;
@@ -27,10 +27,33 @@ public class ChemicalPairInput extends MachineInput
 		rightGas = right;
 	}
 
+	public boolean useGas(GasTank leftTank, GasTank rightTank, boolean deplete)
+	{
+		if(leftTank.canDraw(leftGas.getGas()) && rightTank.canDraw(rightGas.getGas()))
+		{
+			if(leftTank.getStored() >= leftGas.amount && rightTank.getStored() >= rightGas.amount)
+			{
+				leftTank.draw(leftGas.amount, deplete);
+				rightTank.draw(rightGas.amount, deplete);
+				return true;
+			}
+		} else if(leftTank.canDraw(rightGas.getGas()) && rightTank.canDraw(leftGas.getGas()))
+		{
+			if(leftTank.getStored() >= rightGas.amount && rightTank.getStored() >= leftGas.amount)
+			{
+				leftTank.draw(rightGas.amount, deplete);
+				rightTank.draw(leftGas.amount, deplete);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * If this is a valid ChemicalPair
 	 * @return
 	 */
+	@Override
 	public boolean isValid()
 	{
 		return leftGas != null && rightGas != null;
@@ -109,6 +132,7 @@ public class ChemicalPairInput extends MachineInput
 		return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
 	}
 
+	@Override
 	public ChemicalPairInput copy()
 	{
 		return new ChemicalPairInput(leftGas.copy(), rightGas.copy());
@@ -121,14 +145,15 @@ public class ChemicalPairInput extends MachineInput
 	}
 
 	@Override
-	public boolean testEquality(MachineInput other)
+	public boolean testEquality(ChemicalPairInput other)
 	{
-		if(other instanceof ChemicalPairInput)
-		{
-			int leftID = ((ChemicalPairInput)other).leftGas.hashCode();
-			int rightID = ((ChemicalPairInput)other).rightGas.hashCode();
-			return (leftID == leftGas.hashCode() && rightID == rightGas.hashCode()) || (leftID == rightGas.hashCode() && rightID == leftGas.hashCode());
-		}
-		return false;
+			return (other.leftGas.hashCode() == leftGas.hashCode() && other.rightGas.hashCode() == rightGas.hashCode())
+				|| (other.leftGas.hashCode() == rightGas.hashCode() && other.rightGas.hashCode() == leftGas.hashCode());
+	}
+
+	@Override
+	public boolean isInstance(Object other)
+	{
+		return other instanceof ChemicalPairInput;
 	}
 }

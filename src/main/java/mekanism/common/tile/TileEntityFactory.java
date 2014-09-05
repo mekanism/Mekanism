@@ -27,6 +27,9 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.machines.AdvancedMachineRecipe;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -84,7 +87,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public int updateDelay;
 
 	/** This machine's recipe type. */
-	public int recipeType;
+	public RecipeType recipeType;
 
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
@@ -176,7 +179,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 					}
 				}
 
-				if(toSet != null && recipeType != toSet.ordinal())
+				if(toSet != null && recipeType != toSet)
 				{
 					if(recipeTicks < RECIPE_TICKS_REQUIRED)
 					{
@@ -198,7 +201,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						inventory[2] = null;
 						inventory[3] = returnStack;
 
-						recipeType = toSet.ordinal();
+						recipeType = toSet;
 						gasTank.setGas(null);
 
 						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
@@ -236,7 +239,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 				if(!canOperate(getInputSlot(process), getOutputSlot(process)))
 				{
-					if(!RecipeType.values()[recipeType].usesFuel() || !RecipeType.values()[recipeType].hasRecipe(inventory[getInputSlot(process)]))
+					if(!recipeType.usesFuel() || !recipeType.hasRecipe(inventory[getInputSlot(process)]))
 					{
 						progress[process] = 0;
 					}
@@ -349,18 +352,18 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public int getSecondaryEnergyPerTick()
 	{
-		return MekanismUtils.getSecondaryEnergyPerTick(this, RecipeType.values()[recipeType].getSecondaryEnergyPerTick());
+		return MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
 	}
 
 	public void handleSecondaryFuel()
 	{
-		if(inventory[4] != null && RecipeType.values()[recipeType].usesFuel() && gasTank.getNeeded() > 0)
+		if(inventory[4] != null && recipeType.usesFuel() && gasTank.getNeeded() > 0)
 		{
 			if(inventory[4].getItem() instanceof IGasItem)
 			{
 				GasStack gas = ((IGasItem)inventory[4].getItem()).getGas(inventory[4]);
 
-				if(gas != null && RecipeType.values()[recipeType].isValidGas(gas.getGas()))
+				if(gas != null && recipeType.isValidGas(gas.getGas()))
 				{
 					GasStack removed = GasTransmission.removeGas(inventory[4], gasTank.getGasType(), gasTank.getNeeded());
 					gasTank.receive(removed, true);
@@ -369,7 +372,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				return;
 			}
 
-			GasStack stack = RecipeType.values()[recipeType].getItemGas(inventory[4]);
+			GasStack stack = recipeType.getItemGas(inventory[4]);
 			int gasNeeded = gasTank.getNeeded();
 
 			if(stack != null && stack.amount <= gasNeeded)
@@ -388,7 +391,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public ItemStack getMachineStack()
 	{
-		return RecipeType.values()[recipeType].getStack();
+		return recipeType.getStack();
 	}
 
 	@Override
@@ -425,7 +428,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(slotID >= 5 && slotID <= 7)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false) != null;
+				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType()) != null;
 			}
 		}
 		else if(tier == FactoryTier.ADVANCED)
@@ -436,7 +439,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(slotID >= 5 && slotID <= 9)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false) != null;
+				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType()) != null;
 			}
 		}
 		else if(tier == FactoryTier.ELITE)
@@ -447,7 +450,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 			else if(slotID >= 5 && slotID <= 11)
 			{
-				return RecipeType.values()[recipeType].getCopiedOutput(itemstack, gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false) != null;
+				return recipeType.getAnyRecipe(itemstack, gasTank.getGasType()) != null;
 			}
 		}
 
@@ -461,7 +464,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 		else if(slotID == 4)
 		{
-			return RecipeType.values()[recipeType].getItemGas(itemstack) != null;
+			return recipeType.getItemGas(itemstack) != null;
 		}
 
 		return false;
@@ -489,25 +492,26 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			return false;
 		}
 
-		ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, false);
+		if(recipeType.usesFuel())
+		{
+			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
-		if(itemstack == null)
+			if(recipe == null)
+			{
+				return false;
+			}
+
+			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick()));
+		}
+
+		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
+
+		if(recipe == null)
 		{
 			return false;
 		}
 
-		if(inventory[outputSlot] == null)
-		{
-			return true;
-		}
-
-		if(!inventory[outputSlot].isItemEqual(itemstack))
-		{
-			return false;
-		}
-		else {
-			return inventory[outputSlot].stackSize + itemstack.stackSize <= inventory[outputSlot].getMaxStackSize();
-		}
+		return recipe.canOperate(inventory, inputSlot, outputSlot);
 	}
 
 	public void operate(int inputSlot, int outputSlot)
@@ -517,19 +521,17 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			return;
 		}
 
-		ItemStack itemstack = RecipeType.values()[recipeType].getCopiedOutput(inventory[inputSlot], gasTank.getGas() != null ? gasTank.getGas().getGas() : null, true);
-
-		if(inventory[inputSlot].stackSize <= 0)
+		if(recipeType.usesFuel())
 		{
-			inventory[inputSlot] = null;
-		}
+			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
-		if(inventory[outputSlot] == null)
-		{
-			inventory[outputSlot] = itemstack;
+			recipe.operate(inventory, inputSlot, outputSlot, gasTank, MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick()));
 		}
-		else {
-			inventory[outputSlot].stackSize += itemstack.stackSize;
+		else
+		{
+			BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
+
+			recipe.operate(inventory, inputSlot, outputSlot);
 		}
 
 		markDirty();
@@ -554,7 +556,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super.handlePacketData(dataStream);
 
 		clientActive = dataStream.readBoolean();
-		recipeType = dataStream.readInt();
+		recipeType = RecipeType.values()[dataStream.readInt()];
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
@@ -591,7 +593,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super.readFromNBT(nbtTags);
 
 		clientActive = isActive = nbtTags.getBoolean("isActive");
-		recipeType = nbtTags.getInteger("recipeType");
+		recipeType = RecipeType.values()[nbtTags.getInteger("recipeType")];
 		recipeTicks = nbtTags.getInteger("recipeTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		sorting = nbtTags.getBoolean("sorting");
@@ -618,7 +620,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
-		nbtTags.setInteger("recipeType", recipeType);
+		nbtTags.setInteger("recipeType", recipeType.ordinal());
 		nbtTags.setInteger("recipeTicks", recipeTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		nbtTags.setBoolean("sorting", sorting);
@@ -816,7 +818,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public ResourceLocation getSoundLocation()
 	{
-		return RecipeType.values()[recipeType].getSound();
+		return recipeType.getSound();
 	}
 
 	@Override
@@ -870,13 +872,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return RecipeType.values()[recipeType].canReceiveGas(side, type);
+		return recipeType.canReceiveGas(side, type);
 	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return RecipeType.values()[recipeType].canTubeConnect(side);
+		return recipeType.canTubeConnect(side);
 	}
 
 	@Override

@@ -13,6 +13,9 @@ import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.inputs.MachineInput;
+import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.MachineOutput;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +31,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityBasicMachine extends TileEntityNoisyElectricBlock implements IElectricMachine, IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl
+public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl
 {
 	/** This machine's side configuration. */
 	public byte[] sideConfig;

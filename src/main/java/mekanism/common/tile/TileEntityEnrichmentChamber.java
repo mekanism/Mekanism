@@ -5,8 +5,9 @@ import java.util.Map;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.EnrichmentRecipe;
 
-public class TileEntityEnrichmentChamber extends TileEntityElectricMachine
+public class TileEntityEnrichmentChamber extends TileEntityElectricMachine<EnrichmentRecipe>
 {
 	public TileEntityEnrichmentChamber()
 	{

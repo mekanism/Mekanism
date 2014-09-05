@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.common.recipe.inputs.PressurizedReactants;
+import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiFluidGauge;
@@ -88,7 +88,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		return ProgressBar.MEDIUM;
 	}
 	
-	public Set<Entry<PressurizedReactants, PressurizedRecipe>> getRecipes()
+	public Set<Entry<PressurizedInput, PressurizedRecipe>> getRecipes()
 	{
 		return Recipe.PRESSURIZED_REACTION_CHAMBER.get().entrySet();
 	}
@@ -190,7 +190,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
 				if(irecipe.getValue().getInput().containsType((GasStack)results[0]))
 				{
@@ -206,7 +206,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+		for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().getOutput().getItemOutput(), result))
 			{
@@ -220,7 +220,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
 				if(irecipe.getKey().containsType((GasStack)ingredients[0]))
 				{
@@ -230,7 +230,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		}
 		else if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
 				if(irecipe.getKey().containsType((FluidStack)ingredients[0]))
 				{
@@ -246,7 +246,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+		for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getKey().getSolid(), ingredient))
 			{

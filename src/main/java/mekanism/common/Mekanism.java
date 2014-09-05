@@ -22,12 +22,6 @@ import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.common.recipe.inputs.InfusionInput;
-import mekanism.common.recipe.inputs.ChemicalPairInput;
-import mekanism.common.recipe.outputs.ChanceOutput;
-import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.recipe.outputs.PressurizedProducts;
-import mekanism.common.recipe.inputs.PressurizedReactants;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
@@ -716,8 +710,8 @@ public class Mekanism
 		RecipeHandler.addChemicalInfuserRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1), new GasStack(GasRegistry.getGas("hydrogenChloride"), 1));
 
 		//Electrolytic Separator Recipes
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1));
-		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), new GasStack(GasRegistry.getGas("sodium"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("water", 2), 2 * general.FROM_H2, new GasStack(GasRegistry.getGas("hydrogen"), 2), new GasStack(GasRegistry.getGas("oxygen"), 1));
+		RecipeHandler.addElectrolyticSeparatorRecipe(FluidRegistry.getFluidStack("brine", 10), 2 * general.FROM_H2, new GasStack(GasRegistry.getGas("sodium"), 1), new GasStack(GasRegistry.getGas("chlorine"), 1));
 		
 		//T4 Processing Recipes
 		for(Gas gas : GasRegistry.getRegisteredGasses())

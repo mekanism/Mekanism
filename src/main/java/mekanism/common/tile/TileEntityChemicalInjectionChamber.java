@@ -13,13 +13,14 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine implements IGasHandler, ITubeConnection
+public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> implements IGasHandler, ITubeConnection
 {
 	public TileEntityChemicalInjectionChamber()
 	{

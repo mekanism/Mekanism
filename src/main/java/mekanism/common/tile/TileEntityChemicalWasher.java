@@ -19,6 +19,8 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.GasInput;
+import mekanism.common.recipe.machines.WasherRecipe;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
@@ -90,6 +92,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 		if(!worldObj.isRemote)
 		{
+			WasherRecipe recipe = getRecipe();
+
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -108,13 +112,11 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
 			}
 
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				GasStack stack = RecipeHandler.getChemicalWasherOutput(inputTank, true);
 
-				outputTank.receive(stack, true);
-				fluidTank.drain(WATER_USAGE, true);
+				operate(recipe);
 
 				setEnergy(getEnergy() - ENERGY_USAGE);
 			}
@@ -144,26 +146,24 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		}
 	}
 
-	public boolean canOperate()
+	public WasherRecipe getRecipe()
 	{
-		if(fluidTank.getFluidAmount() < WATER_USAGE || inputTank.getGas() == null || outputTank.getNeeded() == 0)
-		{
-			return false;
-		}
+		return RecipeHandler.getChemicalWasherRecipe(getInput());
+	}
 
-		GasStack out = RecipeHandler.getChemicalWasherOutput(inputTank, false);
+	public GasInput getInput()
+	{
+		return new GasInput(inputTank.getGas());
+	}
 
-		if(out == null || (outputTank.getGas() != null && outputTank.getGas().getGas() != out.getGas()))
-		{
-			return false;
-		}
+	public boolean canOperate(WasherRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(inputTank, fluidTank, outputTank);
+	}
 
-		if(outputTank.getNeeded() < out.amount)
-		{
-			return false;
-		}
-
-		return true;
+	public void operate(WasherRecipe recipe)
+	{
+		recipe.operate(inputTank, fluidTank, outputTank);
 	}
 
 	private void manageBuckets()

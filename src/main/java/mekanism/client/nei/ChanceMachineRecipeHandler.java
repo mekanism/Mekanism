@@ -122,7 +122,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(ChanceMachineRecipe irecipe : getRecipes())
+		for(ChanceMachineRecipe<?> irecipe : getRecipes())
 		{
 			if(irecipe.getOutput().hasPrimary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().primaryOutput, result))
 			{
@@ -144,7 +144,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(ChanceMachineRecipe irecipe : getRecipes())
+		for(ChanceMachineRecipe<?> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getInput().ingredient, ingredient))
 			{
@@ -192,7 +192,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			output = chance;
 		}
 
-		public CachedIORecipe(ChanceMachineRecipe recipe)
+		public CachedIORecipe(ChanceMachineRecipe<?> recipe)
 		{
 			this(recipe.getInput().ingredient, recipe.getOutput());
 		}

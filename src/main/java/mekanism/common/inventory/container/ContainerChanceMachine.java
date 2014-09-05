@@ -3,6 +3,7 @@ package mekanism.common.inventory.container;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.inventory.slot.SlotOutput;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityChanceMachine;
 import mekanism.common.util.ChargeUtils;
 
@@ -92,7 +93,7 @@ public class ContainerChanceMachine extends Container
 					}
 				}
 			}
-			else if(RecipeHandler.getChanceOutput(slotStack, false, tileEntity.getRecipes()) != null)
+			else if(RecipeHandler.getChanceRecipe(new ItemStackInput(slotStack), tileEntity.getRecipes()) != null)
 			{
 				if(slotID != 0 && slotID != 1 && slotID != 2 && slotID != 3)
 				{

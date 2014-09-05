@@ -7,6 +7,7 @@ import java.util.Set;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfuseType;
+import mekanism.api.util.StackUtils;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.inputs.FluidInput;
@@ -15,12 +16,7 @@ import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.inputs.IntegerInput;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.inputs.MachineInput;
-import mekanism.common.recipe.inputs.PressurizedReactants;
-import mekanism.common.recipe.outputs.ChanceOutput;
-import mekanism.common.recipe.outputs.ChemicalPairOutput;
-import mekanism.common.recipe.outputs.InfusionOutput;
-import mekanism.common.recipe.outputs.MachineOutput;
-import mekanism.api.util.StackUtils;
+import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.AmbientGasRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -45,11 +41,10 @@ import mekanism.common.recipe.machines.WasherRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 
 /**
- * Class used to handle machine recipes. This is used for both adding recipes and checking outputs.
- * @author AidanBrady
+ * Class used to handle machine recipes. This is used for both adding and fetching recipes.
+ * @author AidanBrady, unpairedbracket
  *
  */
 public final class RecipeHandler
@@ -158,9 +153,9 @@ public final class RecipeHandler
 	 * @param leftOutput - left gas to produce when the fluid is electrolyzed
 	 * @param rightOutput - right gas to produce when the fluid is electrolyzed
 	 */
-	public static void addElectrolyticSeparatorRecipe(FluidStack fluid, GasStack leftOutput, GasStack rightOutput)
+	public static void addElectrolyticSeparatorRecipe(FluidStack fluid, double energy, GasStack leftOutput, GasStack rightOutput)
 	{
-		addRecipe(Recipe.ELECTROLYTIC_SEPARATOR, new SeparatorRecipe(fluid, leftOutput, rightOutput));
+		addRecipe(Recipe.ELECTROLYTIC_SEPARATOR, new SeparatorRecipe(fluid, energy, leftOutput, rightOutput));
 	}
 
 	/**
@@ -236,370 +231,216 @@ public final class RecipeHandler
 	}
 
 	/**
-	 * Gets the InfusionOutput of the InfusionInput in the parameters.
-	 * @param infusion - input Infusion
-	 * @param stackDecrease - whether or not to decrease the input slot's stack size AND the infuse amount
-	 * @return InfusionOutput
+	 * Gets the Metallurgic Infuser Recipe for the InfusionInput in the parameters.
+	 * @param input - input Infusion
+	 * @return MetallurgicInfuserRecipe
 	 */
-	public static InfusionOutput getMetallurgicInfuserOutput(InfusionInput infusion, boolean stackDecrease)
+	public static MetallurgicInfuserRecipe getMetallurgicInfuserRecipe(InfusionInput input)
 	{
-		if(infusion != null && infusion.inputStack != null)
+		if(input.isValid())
 		{
 			HashMap<InfusionInput, MetallurgicInfuserRecipe> recipes = Recipe.METALLURGIC_INFUSER.get();
 
-			MetallurgicInfuserRecipe recipe = recipes.get(infusion);
-
-			if(recipe != null)
-			{
-				if(StackUtils.equalsWildcard(recipe.getInput().inputStack, infusion.inputStack) && infusion.inputStack.stackSize >= recipe.getInput().inputStack.stackSize)
-				{
-					if(infusion.infusionType == recipe.getInput().infusionType)
-					{
-						if(stackDecrease)
-						{
-							infusion.inputStack.stackSize -= recipe.getInput().inputStack.stackSize;
-						}
-
-						return recipe.getOutput().copy();
-					}
-				}
-			}
+			MetallurgicInfuserRecipe recipe = recipes.get(input);
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the GasStack of the ChemicalInput in the parameters.
-	 * @param leftTank - first GasTank
-	 * @param rightTank - second GasTank
-	 * @param doRemove - actually remove the gases
-	 * @return output GasStack
+	 * Gets the Chemical Infuser Recipe of the ChemicalPairInput in the parameters.
+	 * @param input - the pair of gases to infuse
+	 * @return ChemicalInfuserRecipe
 	 */
-	public static GasStack getChemicalInfuserOutput(GasTank leftTank, GasTank rightTank, boolean doRemove)
+	public static ChemicalInfuserRecipe getChemicalInfuserRecipe(ChemicalPairInput input)
 	{
-		ChemicalPairInput input = new ChemicalPairInput(leftTank.getGas(), rightTank.getGas());
-
 		if(input.isValid())
 		{
 			HashMap<ChemicalPairInput, ChemicalInfuserRecipe> recipes = Recipe.CHEMICAL_INFUSER.get();
 
 			ChemicalInfuserRecipe recipe = recipes.get(input);
-
-			if(recipe != null)
-			{
-				ChemicalPairInput required = recipe.getInput();
-
-				if(required.meetsInput(input))
-				{
-					if(doRemove)
-					{
-						required.draw(leftTank, rightTank);
-					}
-
-					return recipe.getOutput().output.copy();
-				}
-			}
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the Chemical Crystallizer ItemStack output of the defined GasTank input.
-	 * @param gasTank - input GasTank
-	 * @param removeGas - whether or not to use gas in the gas tank
-	 * @return output ItemStack
+	 * Gets the Chemical Crystallizer Recipe for the defined Gas input.
+	 * @param input - GasInput
+	 * @return CrystallizerRecipe
 	 */
-	public static ItemStack getChemicalCrystallizerOutput(GasTank gasTank, boolean removeGas)
+	public static CrystallizerRecipe getChemicalCrystallizerRecipe(GasInput input)
 	{
-		GasInput input = new GasInput(gasTank.getGas());
-
-		if(input.ingredient != null)
+		if(input.isValid())
 		{
 			HashMap<GasInput, CrystallizerRecipe> recipes = Recipe.CHEMICAL_CRYSTALLIZER.get();
 
 			CrystallizerRecipe recipe = recipes.get(input);
-
-			if(recipe != null)
-			{
-				GasStack key = recipe.getInput().ingredient;
-
-				if(key != null && key.getGas() == input.ingredient.getGas() && input.ingredient.amount >= key.amount)
-				{
-					gasTank.draw(key.amount, removeGas);
-
-					return recipe.getOutput().output.copy();
-				}
-			}
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the Chemical Washer GasStack output of the defined GasTank input.
-	 * @param gasTank - input GasTank
-	 * @param removeGas - whether or not to use gas in the gas tank
-	 * @return output GasStack
+	 * Gets the Chemical Washer Recipe for the defined Gas input.
+	 * @param input - GasInput
+	 * @return WasherRecipe
 	 */
-	public static GasStack getChemicalWasherOutput(GasTank gasTank, boolean removeGas)
+	public static WasherRecipe getChemicalWasherRecipe(GasInput input)
 	{
-		GasInput input = new GasInput(gasTank.getGas());
-
-		if(input.ingredient != null)
+		if(input.isValid())
 		{
 			HashMap<GasInput, WasherRecipe> recipes = Recipe.CHEMICAL_WASHER.get();
 
 			WasherRecipe recipe = recipes.get(input);
-
-			if(recipe != null)
-			{
-				GasStack key = recipe.getInput().ingredient;
-
-				if(key != null && key.getGas() == input.ingredient.getGas() && input.ingredient.amount >= key.amount)
-				{
-					gasTank.draw(key.amount, removeGas);
-
-					return recipe.getOutput().output.copy();
-				}
-			}
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the GasStack of the ItemStack in the parameters using a defined map.
-	 * @param itemstack - input ItemStack
-	 * @param stackDecrease - whether or not to decrease the input slot's stack size
-	 * @return output GasStack
+	 * Gets the Chemical Dissolution Chamber of the ItemStackInput in the parameters
+	 * @param input - ItemStackInput
+	 * @return DissolutionRecipe
 	 */
-	public static GasStack getDissolutionOutput(ItemStack itemstack, boolean stackDecrease)
+	public static DissolutionRecipe getDissolutionRecipe(ItemStackInput input)
 	{
-		if(itemstack != null)
+		if(input.isValid())
 		{
 			HashMap<ItemStackInput, DissolutionRecipe> recipes = Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get();
 
-			DissolutionRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
-
-			if(recipe != null)
-			{
-				ItemStack stack = recipe.getInput().ingredient;
-
-				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
-				{
-					if(stackDecrease)
-					{
-						itemstack.stackSize -= stack.stackSize;
-					}
-
-					return recipe.getOutput().output.copy();
-				}
-			}
+			DissolutionRecipe recipe = getRecipeTryWildcard(input, recipes);
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the GasStack of the ItemStack in the parameters using a defined map.
-	 * @param itemstack - input ItemStack
-	 * @param stackDecrease - whether or not to decrease the input slot's stack size
-	 * @return output GasStack
+	 * Gets the Chemical Oxidizer Recipe for the ItemStackInput in the parameters.
+	 * @param input - ItemStackInput
+	 * @return OxidationRecipe
 	 */
-	public static GasStack getOxidizerOutput(ItemStack itemstack, boolean stackDecrease)
+	public static OxidationRecipe getOxidizerRecipe(ItemStackInput input)
 	{
-		if(itemstack != null)
+		if(input.isValid())
 		{
 			HashMap<ItemStackInput, OxidationRecipe> recipes = Recipe.CHEMICAL_OXIDIZER.get();
 
-			OxidationRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
-
-			if(recipe != null)
-			{
-				ItemStack stack = recipe.getInput().ingredient;
-
-				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
-				{
-					if(stackDecrease)
-					{
-						itemstack.stackSize -= stack.stackSize;
-					}
-
-					return recipe.getOutput().output.copy();
-				}
-			}
+			OxidationRecipe recipe = getRecipeTryWildcard(input, recipes);
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the output ChanceOutput of the ItemStack in the parameters.
-	 * @param itemstack - input ItemStack
-	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * Gets the ChanceMachineRecipe of the ItemStackInput in the parameters, using the map in the parameters.
+	 * @param input - ItemStackInput
 	 * @param recipes - Map of recipes
-	 * @return output ChanceOutput
+	 * @return ChanceRecipe
 	 */
-	public static ChanceOutput getChanceOutput(ItemStack itemstack, boolean stackDecrease, Map<ItemStackInput, ? extends ChanceMachineRecipe> recipes)
+	public static <RECIPE extends ChanceMachineRecipe<RECIPE>> RECIPE getChanceRecipe(ItemStackInput input, Map<ItemStackInput, RECIPE> recipes)
 	{
-		if(itemstack != null)
+		if(input.isValid())
 		{
-			ChanceMachineRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
-
-			if(recipe != null)
-			{
-				ItemStack stack = recipe.getInput().ingredient;
-
-				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
-				{
-					if(stackDecrease)
-					{
-						itemstack.stackSize -= stack.stackSize;
-					}
-
-					return recipe.getOutput().copy();
-				}
-			}
+			RECIPE recipe = getRecipeTryWildcard(input, recipes);
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Gets the output ItemStack of the ItemStack in the parameters.
-	 * @param itemstack - input ItemStack
-	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * Gets the BasicMachineRecipe of the ItemStackInput in the parameters, using the map in the parameters.
+	 * @param input - ItemStackInput
 	 * @param recipes - Map of recipes
-	 * @return output ItemStack
+	 * @return BasicMachineRecipe
 	 */
-	public static ItemStack getOutput(ItemStack itemstack, boolean stackDecrease, Map<ItemStackInput, ? extends BasicMachineRecipe> recipes)
+	public static <RECIPE extends BasicMachineRecipe<RECIPE>> RECIPE getRecipe(ItemStackInput input, Map<ItemStackInput, RECIPE> recipes)
 	{
-		if(itemstack != null)
+		if(input.isValid())
 		{
-			BasicMachineRecipe recipe = getRecipeTryWildcard(itemstack, recipes);
-
-			if(recipe != null)
-			{
-				ItemStack stack = recipe.getInput().ingredient;
-
-				if(StackUtils.equalsWildcard(stack, itemstack) && itemstack.stackSize >= stack.stackSize)
-				{
-					if(stackDecrease)
-					{
-						itemstack.stackSize -= stack.stackSize;
-					}
-
-					return recipe.getOutput().output.copy();
-				}
-			}
+			RECIPE recipe = getRecipeTryWildcard(input, recipes);
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 	/**
-	 * Gets the output ItemStack of the AdvancedInput in the parameters.
-	 * @param input - input AdvancedInput
-	 * @param stackDecrease - whether or not to decrease the input slot's stack size
+	 * Gets the AdvancedMachineRecipe of the AdvancedInput in the parameters, using the map in the paramaters.
+	 * @param input - AdvancedInput
 	 * @param recipes - Map of recipes
-	 * @return output ItemStack
+	 * @return AdvancedMachineRecipe
 	 */
-	public static ItemStack getOutput(AdvancedMachineInput input, boolean stackDecrease, Map<AdvancedMachineInput, ? extends AdvancedMachineRecipe> recipes)
+	public static <RECIPE extends AdvancedMachineRecipe<RECIPE>> RECIPE getRecipe(AdvancedMachineInput input, Map<AdvancedMachineInput, RECIPE> recipes)
 	{
-		if(input != null && input.isValid())
+		if(input.isValid())
 		{
-			AdvancedMachineRecipe recipe = recipes.get(input);
-
-			if(recipe != null && recipe.getInput().matches(input))
-			{
-				if(stackDecrease)
-				{
-					input.itemStack.stackSize -= recipe.getInput().itemStack.stackSize;
-				}
-
-				return recipe.getOutput().output.copy();
-			}
+			RECIPE recipe = recipes.get(input);
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
 	/**
-	 * Get the result of electrolysing a given fluid
-	 * @param fluidTank - the FluidTank to electrolyse fluid from
+	 * Get the Electrolytic Separator Recipe corresponding to electrolysing a given fluid.
+	 * @param input - the FluidInput to electrolyse fluid from
+	 * @return SeparatorRecipe
 	 */
-	public static ChemicalPairOutput getElectrolyticSeparatorOutput(FluidTank fluidTank, boolean doRemove)
+	public static SeparatorRecipe getElectrolyticSeparatorRecipe(FluidInput input)
 	{
-		FluidStack fluid = fluidTank.getFluid();
-
-		if(fluid != null)
+		if(input.isValid())
 		{
-			FluidInput input = new FluidInput(fluid);
-
 			HashMap<FluidInput, SeparatorRecipe> recipes = Recipe.ELECTROLYTIC_SEPARATOR.get();
 
 			SeparatorRecipe recipe = recipes.get(input);
-
-			if(recipe != null)
-			{
-				FluidStack key = recipe.getInput().ingredient;
-
-				if(fluid.containsFluid(key))
-				{
-					fluidTank.drain(key.amount, doRemove);
-
-					return recipe.getOutput().copy();
-				}
-			}
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
-	public static PressurizedRecipe getPRCOutput(ItemStack inputItem, FluidTank inputFluidTank, GasTank inputGasTank)
+	public static PressurizedRecipe getPRCRecipe(PressurizedInput input)
 	{
-		FluidStack inputFluid = inputFluidTank.getFluid();
-		GasStack inputGas = inputGasTank.getGas();
-
-		if(inputItem != null && inputFluid != null && inputGas != null)
+		if(input.isValid())
 		{
-			PressurizedReactants input = new PressurizedReactants(inputItem, inputFluid, inputGas);
-
-			HashMap<PressurizedReactants, PressurizedRecipe> recipes = Recipe.PRESSURIZED_REACTION_CHAMBER.get();
+			HashMap<PressurizedInput, PressurizedRecipe> recipes = Recipe.PRESSURIZED_REACTION_CHAMBER.get();
 
 			PressurizedRecipe recipe = recipes.get(input);
-
-			if(recipe.getInput().meets(input))
-			{
-				return recipe.copy();
-			}
+			return recipe == null ? null : recipe.copy();
 		}
 
 		return null;
 	}
 
-	public static GasStack getDimensionGas(Integer dimensionID)
+	public static AmbientGasRecipe getDimensionGas(IntegerInput input)
 	{
 		HashMap<IntegerInput, AmbientGasRecipe> recipes = Recipe.AMBIENT_ACCUMULATOR.get();
-		return recipes.get(new IntegerInput(dimensionID)).getOutput().output;
+		AmbientGasRecipe recipe = recipes.get(input);
+		return recipe == null ? null : recipe.copy();
 	}
 
 	/**
-	 * Gets the output ItemStack of the ItemStack in the parameters.
+	 * Gets the whether the input ItemStack is in a recipe
 	 * @param itemstack - input ItemStack
 	 * @param recipes - Map of recipes
 	 * @return whether the item can be used in a recipe
 	 */
-	public static boolean isInRecipe(ItemStack itemstack, Map<ItemStack, ItemStack> recipes)
+	public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> boolean isInRecipe(ItemStack itemstack, Map<ItemStackInput, RECIPE> recipes)
 	{
 		if(itemstack != null)
 		{
-			for(Map.Entry entry : recipes.entrySet())
+			for(RECIPE recipe : recipes.values())
 			{
-				ItemStack stack = (ItemStack)entry.getKey();
+				ItemStackInput required = recipe.getInput();
 
-				if(StackUtils.equalsWildcard(stack, itemstack))
+				if(required.useItemStackFromInventory(new ItemStack[]{itemstack}, 0, false))
 				{
 					return true;
 				}
@@ -613,7 +454,7 @@ public final class RecipeHandler
 	{
 		if(stack != null)
 		{
-			for(PressurizedReactants key : (Set<PressurizedReactants>)Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet())
+			for(PressurizedInput key : (Set<PressurizedInput>)Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet())
 			{
 				if(key.containsType(stack))
 				{
@@ -625,9 +466,13 @@ public final class RecipeHandler
 		return false;
 	}
 
-	public static <RECIPE extends MachineRecipe<ItemStackInput, ?>> RECIPE getRecipeTryWildcard(ItemStack stack, Map<ItemStackInput, RECIPE> recipes)
+	public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(ItemStack stack, Map<ItemStackInput, RECIPE> recipes)
 	{
-		ItemStackInput input = new ItemStackInput(stack);
+		return getRecipeTryWildcard(new ItemStackInput(stack), recipes);
+	}
+
+	public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(ItemStackInput input, Map<ItemStackInput, RECIPE> recipes)
+	{
 		RECIPE recipe = recipes.get(input);
 		if(recipe == null)
 		{
@@ -652,17 +497,17 @@ public final class RecipeHandler
 		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStackInput, DissolutionRecipe>()),
 		CHEMICAL_WASHER(new HashMap<GasInput, WasherRecipe>()),
 		CHEMICAL_CRYSTALLIZER(new HashMap<GasInput, CrystallizerRecipe>()),
-		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedReactants, PressurizedRecipe>()),
+		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedInput, PressurizedRecipe>()),
 		AMBIENT_ACCUMULATOR(new HashMap<IntegerInput, AmbientGasRecipe>());
 
 		private HashMap recipes;
 
-		private Recipe(HashMap<? extends MachineInput, ? extends MachineRecipe> map)
+		private <INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(HashMap<INPUT, RECIPE> map)
 		{
 			recipes = map;
 		}
 
-		public void put(MachineRecipe<? extends MachineInput, ? extends MachineOutput> recipe)
+		public <RECIPE extends MachineRecipe<?, ?, RECIPE>>void put(RECIPE recipe)
 		{
 			recipes.put(recipe.getInput(), recipe);
 		}

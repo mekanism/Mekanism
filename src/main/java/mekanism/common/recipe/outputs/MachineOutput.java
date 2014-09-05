@@ -1,5 +1,6 @@
 package mekanism.common.recipe.outputs;
 
-public class MachineOutput
+public abstract class MachineOutput<OUTPUT extends MachineOutput<OUTPUT>>
 {
+	public abstract OUTPUT copy();
 }
