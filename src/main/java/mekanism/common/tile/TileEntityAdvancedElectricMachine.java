@@ -145,7 +145,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			GasStack stack = getItemGas(inventory[1]);
 			int gasNeeded = gasTank.getNeeded();
 
-			if(stack != null && stack.amount <= gasNeeded)
+			if(stack != null && gasTank.canReceive(stack.getGas()) && gasNeeded >= stack.amount)
 			{
 				gasTank.receive(stack, true);
 

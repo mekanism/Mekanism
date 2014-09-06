@@ -79,7 +79,7 @@ public class GasTank
 	 */
 	public int receive(GasStack amount, boolean doReceive)
 	{
-		if(amount == null || (stored != null && stored.amount == getMaxGas()))
+		if(amount == null || (stored != null && !(stored.amount != getMaxGas() && stored.isGasEqual(amount))))
 		{
 			return 0;
 		}
