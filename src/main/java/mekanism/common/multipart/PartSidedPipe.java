@@ -464,6 +464,16 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	protected void onRefresh() {}
 
+	public void redstoneRefresh()
+	{
+		boolean nowPowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
+
+		if(nowPowered != redstonePowered)
+		{
+			refreshConnections();
+		}
+	}
+
 	public void refreshConnections()
 	{
 		byte possibleTransmitters = getPossibleTransmitterConnections();
@@ -486,7 +496,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 					onRedstoneJoin();
 				}
 
-				tile().notifyPartChange(this);
+				tile().notifyTileChange();
 			}
 		}
 
@@ -527,6 +537,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onNeighborTileChanged(int side, boolean weak) 
 	{
 		refreshConnections();
+	}
+
+	@Override
+	public void onNeighborChanged()
+	{
+		redstoneRefresh();
 	}
 
 	@Override

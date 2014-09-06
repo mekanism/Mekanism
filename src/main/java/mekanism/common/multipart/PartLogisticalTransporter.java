@@ -692,7 +692,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		TransporterUtils.incrementColor(this);
 		refreshConnections();
-		tile().notifyPartChange(this);
+		tile().notifyTileChange();
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (color != null ? color.getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
 
