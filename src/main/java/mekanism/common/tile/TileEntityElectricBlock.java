@@ -10,7 +10,9 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +49,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public double electricityStored;
 
 	/** Maximum amount of energy this machine can hold. */
-	public double MAX_ELECTRICITY;
+	public double BASE_MAX_ENERGY;
+
+	/** Actual maximum energy storage, including upgrades */
+	public double maxEnergy;
 
 	/** BuildCraft power handler. */
 	public PowerHandler powerHandler;
@@ -56,12 +61,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
 	 * and a current amount of stored energy.
 	 * @param name - full name of this block
-	 * @param maxEnergy - how much energy this block can store
+	 * @param baseMaxEnergy - how much energy this block can store
 	 */
-	public TileEntityElectricBlock(String name, double maxEnergy)
+	public TileEntityElectricBlock(String name, double baseMaxEnergy)
 	{
 		super(name);
-		MAX_ELECTRICITY = maxEnergy;
+		BASE_MAX_ENERGY = baseMaxEnergy;
+		maxEnergy = BASE_MAX_ENERGY;
 
 		if(MekanismUtils.useBuildCraft())
 			configure();
@@ -144,7 +150,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double getMaxEnergy()
 	{
-		return MAX_ELECTRICITY;
+		return maxEnergy;
 	}
 
 	@Override
@@ -214,6 +220,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setDouble("electricityStored", getEnergy());
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		if(this instanceof IUpgradeTile && upgrade == Upgrade.ENERGY)
+		{
+			maxEnergy = MekanismUtils.getMaxEnergy(((IUpgradeTile)this), BASE_MAX_ENERGY);
+		}
 	}
 
 	@Override

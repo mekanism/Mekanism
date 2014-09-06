@@ -7,6 +7,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.IInvConfiguration;
@@ -39,14 +40,20 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	/** An arraylist of SideData for this machine. */
 	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 
-	/** How much energy this machine uses per tick. */
-	public double ENERGY_PER_TICK;
+	/** How much energy this machine uses per tick, un-upgraded. */
+	public double BASE_ENERGY_PER_TICK;
+
+	/**	How much energy this machine uses per tick including upgrades */
+	public double energyPerTick;
 
 	/** How many ticks this machine has operated for. */
 	public int operatingTicks = 0;
 
-	/** Ticks required to operate -- or smelt an item. */
-	public int TICKS_REQUIRED;
+	/** Un-upgraded ticks required to operate -- or smelt an item. */
+	public int BASE_TICKS_REQUIRED;
+
+	/** Ticks required including upgrades */
+	public int ticksRequired;
 
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
@@ -66,6 +73,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
 
+	public RECIPE cachedRecipe = null;
+
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
 
@@ -75,14 +84,16 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	 * @param name - full name of this machine
 	 * @param location - GUI texture path of this machine
 	 * @param perTick - the energy this machine consumes every tick in it's active state
-	 * @param ticksRequired - how many ticks it takes to run a cycle
+	 * @param baseTicksRequired - how many ticks it takes to run a cycle
 	 * @param maxEnergy - how much energy this machine can store
 	 */
-	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int baseTicksRequired, double maxEnergy)
 	{
 		super("machine." + soundPath, name, maxEnergy);
-		ENERGY_PER_TICK = perTick;
-		TICKS_REQUIRED = ticksRequired;
+		BASE_ENERGY_PER_TICK = perTick;
+		energyPerTick = perTick;
+		BASE_TICKS_REQUIRED = baseTicksRequired;
+		ticksRequired = baseTicksRequired;
 		guiLocation = location;
 		isActive = false;
 	}
@@ -193,13 +204,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	 */
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	@Override
@@ -219,6 +224,20 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
 			updateDelay = 10;
 			clientActive = active;
+		}
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY: //and SPEED fall-through.
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 		}
 	}
 

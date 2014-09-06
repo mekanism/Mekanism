@@ -11,6 +11,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -34,8 +35,11 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection
 {
-	/** How much secondary energy (fuel) this machine uses per tick. */
-	public int SECONDARY_ENERGY_PER_TICK;
+	/** How much secondary energy (fuel) this machine uses per tick, not including upgrades. */
+	public int BASE_SECONDARY_ENERGY_PER_TICK;
+
+	/** How much secondary energy this machine uses per tick, including upgrades. */
+	public int secondaryEnergyPerTick;
 
 	public static int MAX_GAS = 200;
 
@@ -70,7 +74,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 		inventory = new ItemStack[5];
 
-		SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
+		BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
+		secondaryEnergyPerTick = secondaryPerTick;
 
 		upgradeComponent = new TileComponentUpgrade(this, 4);
 		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
@@ -98,23 +103,23 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 			boolean changed = false;
 
-			RECIPE recipe = RecipeHandler.getRecipe(getInput(), getRecipes());
+			RECIPE recipe = getRecipe();
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= (int)MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyPerTick)
 			{
 				setActive(true);
 
 				operatingTicks++;
 
-				if(operatingTicks >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if(operatingTicks >= ticksRequired)
 				{
 					operate(recipe);
 
 					operatingTicks = 0;
 				}
 
-				gasTank.draw(MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK), true);
-				electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
+				gasTank.draw(secondaryEnergyPerTick, true);
+				electricityStored -= energyPerTick;
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -124,7 +129,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 				}
 			}
 
-			if(changed && !canOperate(recipe) && RecipeHandler.getRecipe(getInput(), getRecipes()) == null)
+			if(changed && !canOperate(recipe) && getRecipe() == null)
 			{
 				operatingTicks = 0;
 			}
@@ -135,7 +140,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 	public void handleSecondaryFuel()
 	{
-		if(inventory[1] != null)
+		if(inventory[1] != null && gasTank.getNeeded() > 0)
 		{
 			GasStack stack = getItemGas(inventory[1]);
 			int gasNeeded = gasTank.getNeeded();
@@ -190,13 +195,18 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	@Override
 	public RECIPE getRecipe()
 	{
-		return RecipeHandler.getRecipe(getInput(), getRecipes());
+		AdvancedMachineInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
+		}
+		return cachedRecipe;
 	}
 
 	@Override
 	public void operate(RECIPE recipe)
 	{
-		recipe.operate(inventory, 0, 2, gasTank, MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK));
+		recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyPerTick);
 
 		markDirty();
 		ejectorComponent.onOutput();
@@ -205,7 +215,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	@Override
 	public boolean canOperate(RECIPE recipe)
 	{
-		return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK));
+		return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, secondaryEnergyPerTick);
 	}
 
 	@Override
@@ -312,6 +322,17 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	}
 
 	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		if(upgrade == Upgrade.SPEED)
+		{
+			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, BASE_SECONDARY_ENERGY_PER_TICK);
+		}
+	}
+
+	@Override
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
@@ -337,9 +358,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			case 5:
 				return new Object[] {canOperate(RecipeHandler.getRecipe(getInput(), getRecipes()))};
 			case 6:
-				return new Object[] {MekanismUtils.getMaxEnergy(this, getMaxEnergy())};
+				return new Object[] {maxEnergy};
 			case 7:
-				return new Object[] {(MekanismUtils.getMaxEnergy(this, getMaxEnergy())-getEnergy())};
+				return new Object[] {maxEnergy-getEnergy()};
 			default:
 				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};

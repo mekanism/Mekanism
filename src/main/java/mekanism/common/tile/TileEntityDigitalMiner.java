@@ -15,6 +15,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
@@ -74,7 +75,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
-	public final double ENERGY_USAGE = usage.digitalMinerUsage;
+	public final double BASE_ENERGY_USAGE = usage.digitalMinerUsage;
+
+	public double energyUsage = usage.digitalMinerUsage;
 
 	public int radius;
 
@@ -89,6 +92,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public ItemStack missingStack = null;
 
 	public int delay;
+
+	public int delayLength;
 
 	public int clientToMine;
 
@@ -318,7 +323,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public double getPerTick()
 	{
-		double ret = MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE);
+		double ret = energyUsage;
 
 		if(silkTouch)
 		{
@@ -336,7 +341,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public int getDelay()
 	{
-		return MekanismUtils.getTicks(this, 80);
+		return delayLength;
 	}
 
 	/*
@@ -988,12 +993,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	@Override
 	public boolean isPowered()
 	{
 		return redstone || numPowering > 0;
@@ -1457,6 +1456,20 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					filters.add(MinerFilter.readFromNBT((NBTTagCompound)tagList.getCompoundTagAt(i)));
 				}
 			}
+		}
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				delayLength = MekanismUtils.getTicks(this, 80);
+			case ENERGY:
+				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 		}
 	}
 }

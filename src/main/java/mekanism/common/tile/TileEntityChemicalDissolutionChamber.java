@@ -14,6 +14,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
@@ -41,7 +42,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public static final int MAX_GAS = 10000;
 
-	public static final int INJECT_USAGE = 1;
+	public static final int BASE_INJECT_USAGE = 1;
+
+	public int injectUsage = 1;
 
 	public int updateDelay;
 
@@ -55,9 +58,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public int operatingTicks = 0;
 
-	public int TICKS_REQUIRED = 100;
+	public int BASE_TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
+	public int ticksRequired = 100;
+
+	public final double BASE_ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
+
+	public double energyUsage = usage.chemicalDissolutionChamberUsage;
+
+	public DissolutionRecipe cachedRecipe;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
@@ -99,7 +108,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			ChargeUtils.discharge(3, this);
 
-			if(inventory[0] != null && (injectTank.getGas() == null || injectTank.getStored() < injectTank.getMaxGas()))
+			if(inventory[0] != null && injectTank.getNeeded() > 0)
 			{
 				injectTank.receive(GasTransmission.removeGas(inventory[0], GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
 			}
@@ -111,13 +120,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 			boolean changed = false;
 
-			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsage && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
+				setEnergy(getEnergy() - energyUsage);
 				minorOperate();
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
 				}
@@ -205,12 +214,17 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);
+		return ((double)operatingTicks) / ((double)BASE_TICKS_REQUIRED);
 	}
 
 	public DissolutionRecipe getRecipe()
 	{
-		return RecipeHandler.getDissolutionRecipe(getInput());
+		ItemStackInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getDissolutionRecipe(getInput());
+		}
+		return cachedRecipe;
 	}
 
 	public ItemStackInput getInput()
@@ -232,7 +246,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public void minorOperate()
 	{
-		injectTank.draw(INJECT_USAGE, true);
+		injectTank.draw(injectUsage, true);
 	}
 
 	@Override
@@ -325,22 +339,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		return i != 0 && i != 1;
 	}
 	
-	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	public int getScaledInjectGasLevel(int i)
-	{
-		return injectTank.getGas() != null ? injectTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledOutputGasLevel(int i)
-	{
-		return outputTank.getGas() != null ? outputTank.getStored()*i / MAX_GAS : 0;
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{
@@ -446,5 +444,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		injectTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("injectTank")));
 		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				injectUsage = MekanismUtils.getSecondaryEnergyPerTick(this, BASE_INJECT_USAGE);
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+		}
 	}
 }

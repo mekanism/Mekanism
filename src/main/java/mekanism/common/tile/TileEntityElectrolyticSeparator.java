@@ -73,6 +73,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public boolean isActive = false;
 
+	public SeparatorRecipe cachedRecipe;
+
 	public TileEntityElectrolyticSeparator()
 	{
 		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
@@ -201,7 +203,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public SeparatorRecipe getRecipe()
 	{
-		return RecipeHandler.getElectrolyticSeparatorRecipe(getInput());
+		FluidInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getElectrolyticSeparatorRecipe(getInput());
+		}
+		return cachedRecipe;
 	}
 
 	public FluidInput getInput()
@@ -322,7 +329,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	 */
 	public int getScaledEnergyLevel(int i)
 	{
-		return (int)(electricityStored*i / MAX_ELECTRICITY);
+		return (int)(electricityStored*i / BASE_MAX_ENERGY);
 	}
 
 	@Override
@@ -495,9 +502,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {BASE_MAX_ENERGY};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
 			case 4:
 				return new Object[] {fluidTank.getFluid() != null ? fluidTank.getFluid().amount : 0};
 			case 5:

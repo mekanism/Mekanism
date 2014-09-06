@@ -16,4 +16,13 @@ public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<REC
 	{
 		return getInput().useItemStackFromInventory(inventory, inputIndex, false) && getOutput().applyOutputs(inventory, primaryIndex, secondaryIndex, false);
 	}
+
+	public void operate(ItemStack[] inventory)
+	{
+		if(getInput().useItemStackFromInventory(inventory, 0, true))
+		{
+			getOutput().applyOutputs(inventory, 2, 4, true);
+		}
+
+	}
 }

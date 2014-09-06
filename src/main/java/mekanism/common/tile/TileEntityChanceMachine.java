@@ -54,21 +54,21 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 
 			RECIPE recipe = getRecipe();
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
 				setActive(true);
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				electricityStored -= energyPerTick;
+
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				else
 				{
 					operate(recipe);
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
 			}
 			else {
@@ -115,10 +115,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	@Override
 	public void operate(RECIPE recipe)
 	{
-		if(recipe.getInput().useItemStackFromInventory(inventory, 0, true))
-		{
-			recipe.getOutput().applyOutputs(inventory, 2, 4, true);
-		}
+		recipe.operate(inventory);
 
 		markDirty();
 		ejectorComponent.onOutput();
@@ -148,7 +145,12 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	@Override
 	public RECIPE getRecipe()
 	{
-		return RecipeHandler.getChanceRecipe(getInput(), getRecipes());
+		ItemStackInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getChanceRecipe(input, getRecipes());
+		}
+		return cachedRecipe;
 	}
 
 	@Override

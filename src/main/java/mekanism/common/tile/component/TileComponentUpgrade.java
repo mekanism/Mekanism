@@ -107,16 +107,8 @@ public class TileComponentUpgrade implements ITileComponent
 	public void addUpgrade(Upgrade upgrade)
 	{
 		upgrades.put(upgrade, Math.min(upgrade.getMax(), getUpgrades(upgrade)+1));
-	}
-	
-	public void setUpgrades(Upgrade upgrade, int amount)
-	{
-		upgrades.put(upgrade, amount);
-	
-		if(upgrades.get(upgrade) == 0)
-		{
-			upgrades.remove(upgrade);
-		}
+
+		tileEntity.recalculateUpgradables(upgrade);
 	}
 	
 	public void removeUpgrade(Upgrade upgrade)
@@ -127,6 +119,8 @@ public class TileComponentUpgrade implements ITileComponent
 		{
 			upgrades.remove(upgrade);
 		}
+
+		tileEntity.recalculateUpgradables(upgrade);
 	}
 	
 	public void setSupported(Upgrade upgrade)
@@ -162,6 +156,11 @@ public class TileComponentUpgrade implements ITileComponent
 		}
 		
 		upgradeTicks = dataStream.readInt();
+
+		for(Upgrade upgrade : getSupportedTypes())
+		{
+			tileEntity.recalculateUpgradables(upgrade);
+		}
 	}
 	
 	@Override
@@ -182,6 +181,10 @@ public class TileComponentUpgrade implements ITileComponent
 	public void read(NBTTagCompound nbtTags)
 	{
 		upgrades = Upgrade.buildMap(nbtTags);
+		for(Upgrade upgrade : getSupportedTypes())
+		{
+			tileEntity.recalculateUpgradables(upgrade);
+		}
 	}
 
 	@Override

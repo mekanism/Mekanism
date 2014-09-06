@@ -62,21 +62,20 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 
 			RECIPE recipe = getRecipe();
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
 				setActive(true);
+				electricityStored -= energyPerTick;
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				else if((operatingTicks+1) >= ticksRequired)
 				{
 					operate(recipe);
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
 			}
 			else {
@@ -118,14 +117,21 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		return false;
 	}
 
+	@Override
 	public ItemStackInput getInput()
 	{
 		return new ItemStackInput(inventory[0]);
 	}
 
+	@Override
 	public RECIPE getRecipe()
 	{
-		return RecipeHandler.getRecipe(getInput(), getRecipes());
+		ItemStackInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
+		}
+		return cachedRecipe;
 	}
 
 	@Override

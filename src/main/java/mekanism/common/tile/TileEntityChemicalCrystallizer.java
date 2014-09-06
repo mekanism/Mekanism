@@ -16,6 +16,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
@@ -45,7 +46,6 @@ import io.netty.buffer.ByteBuf;
 public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IInvConfiguration, IUpgradeTile, ISustainedData
 {
 	public static final int MAX_GAS = 10000;
-	public static final int MAX_FLUID = 10000;
 
 	public byte[] sideConfig = new byte[] {0, 3, 0, 0, 1, 2};
 
@@ -53,15 +53,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public GasTank inputTank = new GasTank(MAX_GAS);
 
-	public static int WATER_USAGE = 5;
-
 	public int updateDelay;
-
-	public int gasOutput = 16;
 
 	public int operatingTicks;
 
-	public int TICKS_REQUIRED = 200;
+	public int BASE_TICKS_REQUIRED = 200;
+
+	public int ticksRequired = 200;
 
 	public boolean isActive;
 
@@ -73,7 +71,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public float spin;
 
-	public final double ENERGY_USAGE = usage.chemicalCrystallizerUsage;
+	public final double BASE_ENERGY_USAGE = usage.chemicalCrystallizerUsage;
+
+	public double energyUsage = usage.chemicalCrystallizerUsage;
+
+	public CrystallizerRecipe cachedRecipe;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -129,12 +131,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyUsage)
 			{
 				setActive(true);
 
-				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				setEnergy(getEnergy() - energyUsage);
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
 				}
@@ -167,7 +169,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public CrystallizerRecipe getRecipe()
 	{
-		return RecipeHandler.getChemicalCrystallizerRecipe(getInput());
+		GasInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getChemicalCrystallizerRecipe(getInput());
+		}
+		return cachedRecipe;
 	}
 
 	public boolean canOperate(CrystallizerRecipe recipe)
@@ -295,22 +302,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		return i != 0 && i != 1;
 	}
 
-	public int getScaledInputGasLevel(int i)
-	{
-		return inputTank != null ? inputTank.getStored()*i / MAX_GAS : 0;
-	}
-
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
+		return ((double)operatingTicks) / (double)ticksRequired;
 	}
 	
-	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{
@@ -487,5 +483,19 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		inputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputTank")));
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+		}
 	}
 }

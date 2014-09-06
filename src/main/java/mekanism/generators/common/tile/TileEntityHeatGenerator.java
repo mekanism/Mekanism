@@ -143,7 +143,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
+		return electricityStored < BASE_MAX_ENERGY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
 	}
 
 	@Override
@@ -288,9 +288,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {BASE_MAX_ENERGY};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
 			case 4:
 				return new Object[] {lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
 			case 5:

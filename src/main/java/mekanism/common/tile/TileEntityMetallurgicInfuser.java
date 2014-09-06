@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
@@ -54,10 +55,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public int MAX_INFUSE = 1000;
 
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = usage.metallurgicInfuserUsage;
+	public double BASE_ENERGY_PER_TICK = usage.metallurgicInfuserUsage;
+
+	public double energyPerTick = BASE_ENERGY_PER_TICK;
 
 	/** How many ticks it takes to run an operation. */
-	public int TICKS_REQUIRED = 200;
+	public int BASE_TICKS_REQUIRED = 200;
+
+	public int ticksRequired = BASE_TICKS_REQUIRED;
 
 	/** The amount of infuse this machine has stored. */
 	public InfuseStorage infuseStored = new InfuseStorage();
@@ -153,14 +158,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(getInput());
 
-			if(MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
 				if(canOperate(recipe))
 				{
 					setActive(true);
-					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
+					setEnergy(getEnergy() - energyPerTick);
 
-					if((operatingTicks + 1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+					if((operatingTicks + 1) < ticksRequired)
 					{
 						operatingTicks++;
 					} else
@@ -275,7 +280,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	@Override
@@ -440,12 +445,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	@Override
 	public boolean canSetFacing(int side)
 	{
 		return side != 0 && side != 1;
@@ -524,5 +523,19 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public IEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+		}
 	}
 }

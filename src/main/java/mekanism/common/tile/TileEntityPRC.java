@@ -81,26 +81,26 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
-				TICKS_REQUIRED = recipe.ticks;
+				BASE_TICKS_REQUIRED = recipe.ticks;
 				setActive(true);
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
+					electricityStored -= energyPerTick;
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED) && electricityStored >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK + recipe.extraEnergy))
+				else if((operatingTicks+1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy))
 				{
 					operate(recipe);
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK + recipe.extraEnergy);
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
 				}
 			}
 			else {
-				TICKS_REQUIRED = 100;
+				BASE_TICKS_REQUIRED = 100;
 				
 				if(prevEnergy >= getEnergy())
 				{
@@ -154,7 +154,12 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public PressurizedRecipe getRecipe()
 	{
-		return RecipeHandler.getPRCRecipe(getInput());
+		PressurizedInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getPRCRecipe(input);
+		}
+		return cachedRecipe;
 	}
 
 	@Override
@@ -178,12 +183,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		return recipe != null && recipe.canOperate(inventory, inputFluidTank, inputGasTank, outputGasTank);
 	}
 	
-	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{

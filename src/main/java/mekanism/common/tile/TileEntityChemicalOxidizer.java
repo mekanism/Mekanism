@@ -13,6 +13,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
@@ -51,9 +52,15 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public int operatingTicks = 0;
 
-	public int TICKS_REQUIRED = 100;
+	public int BASE_TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = usage.rotaryCondensentratorUsage;
+	public int ticksRequired = BASE_TICKS_REQUIRED;
+
+	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
+
+	public double energyUsage = BASE_ENERGY_USAGE;
+
+	public OxidationRecipe cachedRecipe;
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -99,12 +106,12 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
 			}
 
-			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyUsage && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
+				setEnergy(getEnergy() - energyUsage);
 
-				if(operatingTicks < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if(operatingTicks < ticksRequired)
 				{
 					operatingTicks++;
 				}
@@ -188,12 +195,17 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	public OxidationRecipe getRecipe()
 	{
-		return RecipeHandler.getOxidizerRecipe(getInput());
+		ItemStackInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
+		}
+		return cachedRecipe;
 	}
 
 	public ItemStackInput getInput()
@@ -284,12 +296,6 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 	
 	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	@Override
 	public void setActive(boolean active)
 	{
 		isActive = active;
@@ -359,5 +365,19 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -40,7 +41,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 
 			for(int tagCount = 0; tagCount < tagList.tagCount(); tagCount++)
 			{
-				NBTTagCompound tagCompound = (NBTTagCompound)tagList.getCompoundTagAt(tagCount);
+				NBTTagCompound tagCompound = tagList.getCompoundTagAt(tagCount);
 				byte slotID = tagCompound.getByte("Slot");
 
 				if(slotID >= 0 && slotID < getSizeInventory())
@@ -243,4 +244,6 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	{
 		return true;
 	}
+
+	public void recalculateUpgradables(Upgrade upgradeType) {}
 }

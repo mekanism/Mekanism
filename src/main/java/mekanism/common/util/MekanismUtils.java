@@ -1034,7 +1034,6 @@ public final class MekanismUtils
 			return true;
 		}
 
-		World world = tileEntity.getWorldObj();
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 
 		if(control.getControlType() == RedstoneControl.DISABLED)

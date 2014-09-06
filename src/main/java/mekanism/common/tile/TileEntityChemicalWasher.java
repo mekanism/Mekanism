@@ -67,6 +67,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	public final double ENERGY_USAGE = usage.chemicalWasherUsage;
 
+	public WasherRecipe cachedRecipe;
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
@@ -148,7 +150,12 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	public WasherRecipe getRecipe()
 	{
-		return RecipeHandler.getChemicalWasherRecipe(getInput());
+		GasInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getChemicalWasherRecipe(getInput());
+		}
+		return cachedRecipe;
 	}
 
 	public GasInput getInput()

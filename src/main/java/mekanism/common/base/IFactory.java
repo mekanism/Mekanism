@@ -102,7 +102,7 @@ public interface IFactory
 		{
 			if(usesFuel)
 			{
-				return getTile().SECONDARY_ENERGY_PER_TICK;
+				return getTile().BASE_SECONDARY_ENERGY_PER_TICK;
 			}
 
 			return 0;

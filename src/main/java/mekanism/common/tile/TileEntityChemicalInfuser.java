@@ -54,6 +54,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public final double ENERGY_USAGE = usage.chemicalInfuserUsage;
 
+	public ChemicalInfuserRecipe cachedRecipe;
+
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
@@ -148,7 +150,12 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public ChemicalInfuserRecipe getRecipe()
 	{
-		return RecipeHandler.getChemicalInfuserRecipe(getInput());
+		ChemicalPairInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getChemicalInfuserRecipe(getInput());
+		}
+		return cachedRecipe;
 	}
 
 	public boolean canOperate(ChemicalInfuserRecipe recipe)

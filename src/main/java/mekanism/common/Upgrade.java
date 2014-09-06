@@ -98,7 +98,7 @@ public enum Upgrade
 			
 			for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
 			{
-				NBTTagCompound compound = (NBTTagCompound)list.getCompoundTagAt(tagCount);
+				NBTTagCompound compound = list.getCompoundTagAt(tagCount);
 				
 				Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
 				upgrades.put(upgrade, compound.getInteger("amount"));

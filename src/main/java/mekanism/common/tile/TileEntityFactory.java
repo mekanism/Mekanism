@@ -22,6 +22,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IInvConfiguration;
@@ -66,10 +67,19 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public int[] progress;
 
 	/** How many ticks it takes, by default, to run an operation. */
-	public int TICKS_REQUIRED = 200;
+	public int BASE_TICKS_REQUIRED = 200;
+
+	/** How many ticks it takes, with upgrades, to run an operation */
+	public int ticksRequired = 200;
+
+	/** How much energy each operation consumes per tick, without upgrades. */
+	public double BASE_ENERGY_PER_TICK = usage.factoryUsage;
 
 	/** How much energy each operation consumes per tick. */
-	public double ENERGY_PER_TICK = usage.factoryUsage;
+	public double energyPerTick = usage.factoryUsage;
+
+	/** How much secondary energy each operation consumes per tick */
+	public int secondaryEnergyPerTick = 0;
 
 	/** How long it takes this factory to switch recipe types. */
 	public int RECIPE_TICKS_REQUIRED = 40;
@@ -187,7 +197,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 					{
 						recipeTicks++;
 					}
-					else if(recipeTicks == RECIPE_TICKS_REQUIRED)
+					else
 					{
 						recipeTicks = 0;
 						
@@ -206,6 +216,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						recipeType = toSet;
 						gasTank.setGas(null);
 
+						secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+
 						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 
 						MekanismUtils.saveChunk(this);
@@ -221,21 +233,21 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= getSecondaryEnergyPerTick())
 				{
-					if((progress[process]+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+					if((progress[process]+1) < ticksRequired)
 					{
 						progress[process]++;
 						gasTank.draw(getSecondaryEnergyPerTick(), true);
-						electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
+						electricityStored -= energyPerTick;
 					}
-					else if((progress[process]+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+					else if((progress[process]+1) >= ticksRequired)
 					{
 						operate(getInputSlot(process), getOutputSlot(process));
 
 						progress[process] = 0;
 						gasTank.draw(getSecondaryEnergyPerTick(), true);
-						electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
+						electricityStored -= energyPerTick;
 					}
 				}
 
@@ -259,7 +271,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				}
 			}
 
-			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= getSecondaryEnergyPerTick())
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= getSecondaryEnergyPerTick())
 			{
 				setActive(true);
 			}
@@ -354,7 +366,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public int getSecondaryEnergyPerTick()
 	{
-		return MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+		return secondaryEnergyPerTick;
 	}
 
 	public void handleSecondaryFuel()
@@ -474,7 +486,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public int getScaledProgress(int i, int process)
 	{
-		return progress[process]*i / MekanismUtils.getTicks(this, TICKS_REQUIRED);
+		return progress[process]*i / ticksRequired;
 	}
 
 	public int getScaledGasLevel(int i)
@@ -503,7 +515,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				return false;
 			}
 
-			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick()));
+			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyPerTick);
 		}
 
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
@@ -527,7 +539,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
-			recipe.operate(inventory, inputSlot, outputSlot, gasTank, MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick()));
+			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyPerTick);
 		}
 		else
 		{
@@ -558,7 +570,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super.handlePacketData(dataStream);
 
 		clientActive = dataStream.readBoolean();
+		RecipeType oldRecipe = recipeType;
 		recipeType = RecipeType.values()[dataStream.readInt()];
+
+		if(recipeType != oldRecipe)
+		{
+			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+		}
+		
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
@@ -595,7 +614,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		super.readFromNBT(nbtTags);
 
 		clientActive = isActive = nbtTags.getBoolean("isActive");
+		RecipeType oldRecipe = recipeType;
 		recipeType = RecipeType.values()[nbtTags.getInteger("recipeType")];
+
+		if(recipeType != oldRecipe)
+		{
+			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+		}
+
 		recipeTicks = nbtTags.getInteger("recipeTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		sorting = nbtTags.getBoolean("sorting");
@@ -762,12 +788,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	@Override
 	public void setActive(boolean active)
 	{
 		isActive = active;
@@ -902,5 +922,20 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+				secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+		}
 	}
 }
