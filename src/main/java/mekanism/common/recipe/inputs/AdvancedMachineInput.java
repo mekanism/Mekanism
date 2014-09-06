@@ -61,13 +61,16 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 	@Override
 	public int hashIngredients()
 	{
-		int hash = StackUtils.hashItemStack(itemStack) << 8 | gasType.getID();
-		return hash;
+		return StackUtils.hashItemStack(itemStack) << 8 | gasType.getID();
 	}
 
 	@Override
 	public boolean testEquality(AdvancedMachineInput other)
 	{
+		if(!isValid())
+		{
+			return !other.isValid();
+		}
 		return StackUtils.equalsWildcardWithNBT(itemStack, other.itemStack) && gasType.getID() == other.gasType.getID();
 	}
 

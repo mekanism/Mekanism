@@ -43,6 +43,10 @@ public class FluidInput extends MachineInput<FluidInput>
 	@Override
 	public boolean testEquality(FluidInput other)
 	{
+		if(!isValid())
+		{
+			return !other.isValid();
+		}
 		return ingredient.equals(other.ingredient);
 	}
 

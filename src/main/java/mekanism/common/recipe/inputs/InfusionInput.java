@@ -65,6 +65,10 @@ public class InfusionInput extends MachineInput<InfusionInput>
 	@Override
 	public boolean testEquality(InfusionInput other)
 	{
+		if(!isValid())
+		{
+			return !other.isValid();
+		}
 		return infuse.type == other.infuse.type && StackUtils.equalsWildcardWithNBT(inputStack, other.inputStack);
 	}
 

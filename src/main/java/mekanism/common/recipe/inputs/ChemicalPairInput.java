@@ -147,8 +147,12 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput>
 	@Override
 	public boolean testEquality(ChemicalPairInput other)
 	{
-			return (other.leftGas.hashCode() == leftGas.hashCode() && other.rightGas.hashCode() == rightGas.hashCode())
-				|| (other.leftGas.hashCode() == rightGas.hashCode() && other.rightGas.hashCode() == leftGas.hashCode());
+		if(!isValid())
+		{
+			return !other.isValid();
+		}
+		return (other.leftGas.hashCode() == leftGas.hashCode() && other.rightGas.hashCode() == rightGas.hashCode())
+			|| (other.leftGas.hashCode() == rightGas.hashCode() && other.rightGas.hashCode() == leftGas.hashCode());
 	}
 
 	@Override

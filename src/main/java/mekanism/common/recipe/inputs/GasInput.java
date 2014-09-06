@@ -43,6 +43,10 @@ public class GasInput extends MachineInput<GasInput>
 	@Override
 	public boolean testEquality(GasInput other)
 	{
+		if(!isValid())
+		{
+			return !other.isValid();
+		}
 		return other.ingredient.hashCode() == ingredient.hashCode();
 	}
 
