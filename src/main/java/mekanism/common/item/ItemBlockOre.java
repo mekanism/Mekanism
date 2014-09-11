@@ -3,8 +3,11 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismKeyHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -38,9 +41,9 @@ public class ItemBlockOre extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
-			list.add("Hold " + EnumColor.AQUA + "shift" + EnumColor.GREY + " for details.");
+			list.add("Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " for details.");
 		}
 		else {
 			list.addAll(MekanismUtils.splitLines(MekanismUtils.localize("tooltip." + getUnlocalizedName(itemstack).replace("tile.OreBlock.", ""))));

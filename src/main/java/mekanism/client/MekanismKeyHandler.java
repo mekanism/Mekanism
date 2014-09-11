@@ -1,9 +1,12 @@
 package mekanism.client;
 
 import mekanism.common.util.MekanismUtils;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -20,6 +23,8 @@ public class MekanismKeyHandler extends MekKeyHandler
 	public static final String keybindCategory = "Mekanism";
 	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + MekanismUtils.localize("key.mode"), Keyboard.KEY_M, keybindCategory);
 	public static KeyBinding voiceKey = new KeyBinding("Mekanism " + MekanismUtils.localize("key.voice"), Keyboard.KEY_U, keybindCategory);
+	public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
+	public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
 
 	public MekanismKeyHandler()
 	{
