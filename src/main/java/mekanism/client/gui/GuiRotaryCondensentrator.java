@@ -1,9 +1,12 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.ListUtils;
 import mekanism.api.gas.GasTank;
+import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
@@ -43,7 +46,15 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 154, 55));
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 154, 4).with(SlotOverlay.POWER));
-
+		
+		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
+			@Override
+			public List<String> getInfo()
+			{
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.ENERGY_USAGE);
+				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+			}
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
 			@Override
 			public FluidTank getTank()
