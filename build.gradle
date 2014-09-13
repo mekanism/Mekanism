@@ -74,10 +74,10 @@ task coreJar(type: Jar) {
 
     from('etc/core') {
         include '*.info'
-        expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
+        expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'fmp_version': config.FMP_version
     }
 
-    from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         exclude 'mekanism/tools/**', 'mekanism/generators/**', 'mcmod.info'
     }
 }
@@ -90,7 +90,7 @@ task toolsJar(type: Jar) {
         expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
     }
 
-    from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/tools/**'
     }
 }
@@ -103,7 +103,7 @@ task generatorsJar(type: Jar) {
         expand 'version':config.mod_version,'mc_version':config.minecraft_version,'fmp_version':config.FMP_version
     }
 
-    from zipTree(reobf.outputs.getFiles().getSingleFile()).matching {
+    from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/generators/**'
     }
 }
@@ -129,6 +129,6 @@ task releaseJars(type: Copy) {
 }
 
 task fullBuild(type: Delete) {
-    delete reobf
+    delete jar
 }
 fullBuild.dependsOn('releaseJars')
