@@ -238,7 +238,7 @@ public class CommonProxy
 		general.FROM_TE = general.FROM_BC/10;
 
 		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 100).getInt(100);
-		general.laserEnergyNeededPerHardness = Mekanism.configuration.get("general", "LaserRange", 100000).getInt(100000);
+		general.laserEnergyNeededPerHardness = Mekanism.configuration.get("general", "LaserDiggingEnergy", 100000).getInt(100000);
 
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
 		usage.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble(100D);
