@@ -675,7 +675,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z) != 13)
+		if(!(blockType == MachineBlock.MACHINE_BLOCK_1 && world.getBlockMetadata(x, y, z) == 13))
 		{
 			return blockHardness;
 		}
