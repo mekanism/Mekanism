@@ -26,10 +26,4 @@ public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock im
 	{
 		return false;
 	}
-
-	@Override
-	public double energyToDig()
-	{
-		return Double.MAX_VALUE;
-	}
 }

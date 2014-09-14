@@ -34,7 +34,8 @@ public class MekanismConfig
 		public static double FROM_IC2;
 		public static double FROM_BC;
 		public static double FROM_TE;
-		public static int laserRange = 100;
+		public static int laserRange;
+		public static double laserEnergyNeededPerHardness;
 	}
 
 	public static class client

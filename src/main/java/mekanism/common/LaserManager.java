@@ -7,6 +7,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -16,14 +17,15 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class LaserManager
 {
-	public static void fireLaser(TileEntity from, ForgeDirection direction, double energy, World world)
+	public static MovingObjectPosition fireLaser(TileEntity from, ForgeDirection direction, double energy, World world)
 	{
-		fireLaser(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
+		return fireLaser(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
 	}
 
-	public static void fireLaser(Pos3D from, ForgeDirection direction, double energy, World world)
+	public static MovingObjectPosition fireLaser(Pos3D from, ForgeDirection direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange);
+
 		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
 
 		if(mop != null)
@@ -34,11 +36,7 @@ public class LaserManager
 
 			if(tile instanceof ILaserReceptor)
 			{
-				if(((ILaserReceptor)tile).canLasersDig() && energy > ((ILaserReceptor)tile).energyToDig())
-				{
-
-				}
-				else
+				if(!(((ILaserReceptor)tile).canLasersDig()))
 				{
 					((ILaserReceptor)tile).receiveLaserEnergy(energy, ForgeDirection.getOrientation(mop.sideHit));
 				}
@@ -52,6 +50,8 @@ public class LaserManager
 		{
 			if(!e.isImmuneToFire()) e.setFire((int)(energy / 1000));
 		}
+
+		return mop;
 	}
 
 	public static void fireLaserClient(TileEntity from, ForgeDirection direction, double energy, World world)

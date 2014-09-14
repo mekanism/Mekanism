@@ -7,6 +7,4 @@ public interface ILaserReceptor
 	public void receiveLaserEnergy(double energy, ForgeDirection side);
 
 	public boolean canLasersDig();
-
-	public double energyToDig();
 }
