@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
@@ -16,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -31,8 +33,6 @@ import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import org.lwjgl.input.Keyboard;
 
 import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.IElectricItemManager;
@@ -95,12 +95,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
 		
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " and " + EnumColor.AQUA + Keyboard.getKeyName(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " and " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
 		}
-		else if(!Keyboard.isKeyDown(MekanismKeyHandler.modeSwitchKey.getKeyCode()))
+		else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
 		{
 			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 

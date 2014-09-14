@@ -25,8 +25,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import org.lwjgl.input.Keyboard;
-
 public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory
 {
 	public Block metaBlock;
@@ -95,9 +93,9 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
 		}
 		else {
 			list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));

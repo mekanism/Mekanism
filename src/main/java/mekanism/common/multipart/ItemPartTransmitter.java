@@ -8,11 +8,14 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -22,8 +25,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import org.lwjgl.input.Keyboard;
 
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
@@ -86,7 +87,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
 			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.ENERGY)
 			{
@@ -99,7 +100,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipePullAmount + "mB/t");
 			}
 
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
 		}
 		else {
 			switch(itemstack.getItemDamage())

@@ -59,8 +59,6 @@ import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import org.lwjgl.input.Keyboard;
-
 import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
@@ -143,7 +141,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		MachineType type = MachineType.get(itemstack);
 
-		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
 			if(type == MachineType.PORTABLE_TANK)
 			{
@@ -154,10 +152,10 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " and " + EnumColor.AQUA + Keyboard.getKeyName(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
+			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " and " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
 		}
-		else if(!Keyboard.isKeyDown(MekanismKeyHandler.modeSwitchKey.getKeyCode()))
+		else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
 		{
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
