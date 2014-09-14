@@ -7,6 +7,8 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.tile.TileEntityGasTank;
@@ -14,6 +16,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

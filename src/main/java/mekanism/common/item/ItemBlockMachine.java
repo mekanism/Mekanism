@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
@@ -35,6 +36,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;

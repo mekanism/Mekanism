@@ -8,6 +8,8 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.client.MekKeyHandler;
+import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IEnergyCube;
@@ -19,6 +21,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;

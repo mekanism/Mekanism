@@ -33,6 +33,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Type;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -61,13 +62,13 @@ public class MekanismKeyHandler extends MekKeyHandler
 	}
 	
 	@SubscribeEvent
-	public void onTick(KeyInputEvent event)
+	public void onTick(InputEvent event)
 	{
-		keyTick(Type.CLIENT, false);
+		keyTick();
 	}
 
 	@Override
-	public void keyDown(Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat)
+	public void keyDown(KeyBinding kb, boolean isRepeat)
 	{
 		if(kb == modeSwitchKey)
 		{
@@ -148,5 +149,5 @@ public class MekanismKeyHandler extends MekKeyHandler
 	}
 
 	@Override
-	public void keyUp(Type types, KeyBinding kb, boolean tickEnd) {}
+	public void keyUp(KeyBinding kb) {}
 }

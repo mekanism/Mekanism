@@ -3,6 +3,9 @@ package mekanism.client;
 import net.minecraft.client.settings.KeyBinding;
 import cpw.mods.fml.common.gameevent.TickEvent.Type;
 
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 public abstract class MekKeyHandler
 {
 	public KeyBinding[] keyBindings;
@@ -47,7 +50,7 @@ public abstract class MekKeyHandler
 		return keyBindings;
 	}
 
-	public void keyTick(Type type, boolean tickEnd)
+	public void keyTick()
 	{
 		for(int i = 0; i < keyBindings.length; i++)
 		{
@@ -58,44 +61,18 @@ public abstract class MekKeyHandler
 			{
 				if(state)
 				{
-					keyDown(type, keyBinding, tickEnd, state == keyDown[i]);
+					keyDown(keyBinding, state == keyDown[i]);
 				}
 				else {
-					keyUp(type, keyBinding, tickEnd);
+					keyUp(keyBinding);
 				}
 				
-				if(tickEnd)
-				{
-					keyDown[i] = state;
-				}
+				keyDown[i] = state;
 			}
 		}
 	}
 
-	/**
-	 * Called when the key is first in the down position. Will be called
-	 * subsequently with isRepeat set to true
-	 *
-	 * @see #keyUp(Type, KeyBinding, boolean)
-	 *
-	 * @param types
-	 * the type(s) of tick that fired when this key was first down
-	 * @param tickEnd
-	 * was it an end or start tick which fired the key
-	 * @param isRepeat
-	 * is it a repeat key event
-	 */
-	public abstract void keyDown(Type types, KeyBinding kb, boolean tickEnd, boolean isRepeat);
+	public abstract void keyDown(KeyBinding kb, boolean isRepeat);
 
-	/**
-	 * Fired once when the key changes state from down to up
-	 *
-	 * @see #keyDown(Type, KeyBinding, boolean, boolean)
-	 *
-	 * @param types
-	 * the type(s) of tick that fired when this key was first down
-	 * @param tickEnd
-	 * was it an end or start tick which fired the key
-	 */
-	public abstract void keyUp(Type types, KeyBinding kb, boolean tickEnd);
+	public abstract void keyUp(KeyBinding kb);
 }
