@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import net.minecraft.client.settings.KeyBinding;
-import cpw.mods.fml.common.gameevent.TickEvent.Type;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
