@@ -5,6 +5,7 @@ import java.io.File;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Pos3D;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiChemicalCrystallizer;
@@ -553,8 +554,8 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction)
+	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy)
 	{
-		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction));
+		Minecraft.getMinecraft().effectRenderer.addEffect(new EntityLaser(world, from, to, direction, energy));
 	}
 }

@@ -17,6 +17,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
+	public double lastFired = 0;
 
 	public double threshold = 0;
 	public int ticks = 0;
@@ -58,7 +59,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(Coord4D.get(this), ForgeDirection.getOrientation(facing), worldObj);
+				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), toFire(), worldObj);
 			}
 		}
 		else
@@ -76,14 +77,15 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 			if(shouldFire() && toFire() > 0)
 			{
-				if(!on)
+				if(!on || toFire() != lastFired)
 				{
 					on = true;
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				LaserManager.fireLaser(Coord4D.get(this), ForgeDirection.getOrientation(facing), toFire(), worldObj);
+				LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), toFire(), worldObj);
 				setEnergy(getEnergy() - toFire());
+				lastFired = toFire();
 			}
 			else if(on)
 			{

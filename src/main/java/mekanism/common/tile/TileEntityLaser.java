@@ -32,7 +32,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(Coord4D.get(this), ForgeDirection.getOrientation(facing), worldObj);
+				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
 			}
 		}
 		else
@@ -45,7 +45,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 				
-				LaserManager.fireLaser(Coord4D.get(this), ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
 				setEnergy(getEnergy() - usage.laserUsage);
 			}
 			else if(on)

@@ -2,10 +2,10 @@ package mekanism.common;
 
 import java.io.File;
 
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
+import mekanism.api.Pos3D;
 import mekanism.api.util.EnergyUtils.EnergyType;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -462,5 +462,5 @@ public class CommonProxy
 		return context.getServerHandler().playerEntity;
 	}
 
-	public void renderLaser(World world, Coord4D from, Coord4D to, ForgeDirection direction) {}
+	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy) {}
 }

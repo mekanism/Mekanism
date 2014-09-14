@@ -2,8 +2,10 @@ package mekanism.api;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Pos3D - a way of performing operations on objects in a three dimensional environment.
@@ -81,6 +83,14 @@ public class Pos3D
 	}
 
 	/**
+	 * Centres a block-derived Pos3D
+	 */
+	public Pos3D centre()
+	{
+		return translate(0.5, 0.5, 0.5);
+	}
+
+	/**
 	 * Translates this Pos3D by the defined values.
 	 * @param x - amount to translate on the x axis
 	 * @param y - amount to translate on the y axis
@@ -104,6 +114,26 @@ public class Pos3D
 	public Pos3D translate(Pos3D pos)
 	{
 		return translate(pos.xPos, pos.yPos, pos.zPos);
+	}
+
+	/**
+	 * Performs the same operation as translate(x, y, z), but by a set amount in a ForgeDirection
+	 */
+	public Pos3D translate(ForgeDirection direction, double amount)
+	{
+		return translate(direction.offsetX * amount, direction.offsetY * amount, direction.offsetZ * amount);
+	}
+
+	/**
+	 * Performs the same operation as translate(x, y, z), but by a set amount in a ForgeDirection
+	 */
+	public Pos3D translateExcludingSide(ForgeDirection direction, double amount)
+	{
+		if(direction.offsetX == 0) xPos += amount;
+		if(direction.offsetY == 0) yPos += amount;
+		if(direction.offsetZ == 0) zPos += amount;
+
+		return this;
 	}
 
 	/**
@@ -205,6 +235,18 @@ public class Pos3D
 	public Pos3D scale(double scale)
 	{
 		return scale(scale, scale, scale);
+	}
+
+	public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2)
+	{
+		return AxisAlignedBB.getBoundingBox(
+				Math.min(pos1.xPos, pos2.xPos),
+				Math.min(pos1.yPos, pos2.yPos),
+				Math.min(pos1.zPos, pos2.zPos),
+				Math.max(pos1.xPos, pos2.xPos),
+				Math.max(pos1.yPos, pos2.yPos),
+				Math.max(pos1.zPos, pos2.zPos)
+		);
 	}
 
 	@Override

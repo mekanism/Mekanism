@@ -1,6 +1,5 @@
 package mekanism.client.entity;
 
-import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
 
@@ -21,16 +20,16 @@ public class EntityLaser extends EntityFX
 	double length;
 	ForgeDirection direction;
 
-	public EntityLaser(World world, Coord4D start, Coord4D end, ForgeDirection dir)
+	public EntityLaser(World world, Pos3D start, Pos3D end, ForgeDirection dir, double energy)
 	{
-		super(world, (start.xCoord + end.xCoord)/2D + 0.5D, (start.yCoord + end.yCoord)/2D + 0.5D, (start.zCoord+end.zCoord)/2D + 0.5D);
+		super(world, (start.xPos + end.xPos)/2D, (start.yPos + end.yPos)/2D, (start.zPos+end.zPos)/2D);
 		particleMaxAge = 5;
 		particleRed = 1;
 		particleGreen = 0;
 		particleBlue = 0;
 		particleAlpha = 0.1F;
-		particleScale = 0.1F;
-		length = new Pos3D(end).distance(new Pos3D(start));
+		particleScale = (float) Math.min(energy / 50000, 0.5);
+		length = end.distance(start);
 		direction = dir;
 	}
 
