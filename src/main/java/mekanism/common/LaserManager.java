@@ -7,7 +7,9 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -51,6 +53,24 @@ public class LaserManager
 		}
 
 		return mop;
+	}
+
+	public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world)
+	{
+		List<ItemStack> ret = null;
+		Block blockHit = blockCoord.getBlock(world);
+		if(dropAtBlock)
+		{
+			blockHit.dropBlockAsItem(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
+		}
+		else
+		{
+			ret = blockHit.getDrops(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
+		}
+		blockHit.breakBlock(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockHit, blockCoord.getMetadata(world));
+		world.setBlockToAir(blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord);
+		world.playAuxSFX(2001, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, Block.getIdFromBlock(blockHit));
+		return ret;
 	}
 
 	public static void fireLaserClient(TileEntity from, ForgeDirection direction, double energy, World world)

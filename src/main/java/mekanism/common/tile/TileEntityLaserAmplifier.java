@@ -88,7 +88,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				MovingObjectPosition mop =LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -108,11 +108,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 						if(diggingProgress >= hardness * general.laserEnergyNeededPerHardness)
 						{
-							blockHit.dropBlockAsItem(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, hitCoord.getMetadata(worldObj), 0);
-							blockHit.breakBlock(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, blockHit, hitCoord.getMetadata(worldObj));
-							worldObj.setBlockToAir(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+							LaserManager.breakBlock(hitCoord, true, worldObj);
 							diggingProgress = 0;
-							Minecraft.getMinecraft().effectRenderer.addBlockDestroyEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, blockHit, hitCoord.getMetadata(worldObj));
 						}
 						else
 						{

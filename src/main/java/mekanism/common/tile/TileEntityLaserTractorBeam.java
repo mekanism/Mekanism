@@ -96,12 +96,9 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 
 						if(diggingProgress >= hardness * general.laserEnergyNeededPerHardness)
 						{
-							List<ItemStack> drops = blockHit.getDrops(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, hitCoord.getMetadata(worldObj), 0);
+							List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, worldObj);
 							if(drops != null) receiveDrops(drops);
-							blockHit.breakBlock(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, blockHit, hitCoord.getMetadata(worldObj));
-							worldObj.setBlockToAir(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
 							diggingProgress = 0;
-							Minecraft.getMinecraft().effectRenderer.addBlockDestroyEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, blockHit, hitCoord.getMetadata(worldObj));
 						}
 						else
 						{

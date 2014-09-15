@@ -73,11 +73,8 @@ public class TileEntityLaser extends TileEntityElectricBlock
 
 						if(diggingProgress >= hardness * general.laserEnergyNeededPerHardness)
 						{
-							blockHit.dropBlockAsItem(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, hitCoord.getMetadata(worldObj), 0);
-							blockHit.breakBlock(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, blockHit, hitCoord.getMetadata(worldObj));
-							worldObj.setBlockToAir(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+							LaserManager.breakBlock(hitCoord, true, worldObj);
 							diggingProgress = 0;
-							Minecraft.getMinecraft().effectRenderer.addBlockDestroyEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, blockHit, hitCoord.getMetadata(worldObj));
 						}
 						else
 						{
