@@ -25,7 +25,7 @@ public class LaserManager
 
 	public static MovingObjectPosition fireLaser(Pos3D from, ForgeDirection direction, double energy, World world)
 	{
-		Pos3D to = from.clone().translate(direction, general.laserRange);
+		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 
 		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
 
@@ -80,7 +80,7 @@ public class LaserManager
 
 	public static void fireLaserClient(Pos3D from, ForgeDirection direction, double energy, World world)
 	{
-		Pos3D to = from.clone().translate(direction, general.laserRange);
+		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
 
 		if(mop != null)

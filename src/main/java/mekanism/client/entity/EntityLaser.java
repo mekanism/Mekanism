@@ -28,7 +28,7 @@ public class EntityLaser extends EntityFX
 		particleGreen = 0;
 		particleBlue = 0;
 		particleAlpha = 0.1F;
-		particleScale = (float) Math.min(energy / 50000, 0.5);
+		particleScale = (float) Math.min(energy / 50000, 0.6);
 		length = end.distance(start);
 		direction = dir;
 	}
