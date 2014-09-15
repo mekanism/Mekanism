@@ -71,6 +71,11 @@ public class GuiChemicalOxidizer extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		
+		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
