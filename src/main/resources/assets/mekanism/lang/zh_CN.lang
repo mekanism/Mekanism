@@ -122,7 +122,7 @@ tile.GlowPlasticBlock.name=塑料荧光方块
 tile.ReinforcedPlasticBlock.name=强化塑料方块
 tile.RoadPlasticBlock.name=塑料路
 
-tile.PlasticFence.name=塑料障碍
+tile.PlasticFence.name=塑料栅栏
 
 //Infuse types
 infuse.carbon=碳
@@ -174,14 +174,14 @@ item.leadDust.name=铅粉
 item.sulfurDust.name=硫磺粉
 
 //Clumps
-item.ironClump.name=铁疙瘩
-item.goldClump.name=金疙瘩
-item.osmiumClump.name=锇疙瘩
-item.copperClump.name=铜疙瘩
-item.tinClump.name=锡疙瘩
-item.silverClump.name=银疙瘩
-item.obsidianClump.name=黑曜石疙瘩
-item.leadClump.name=铅疙瘩
+item.ironClump.name=铁碎块
+item.goldClump.name=金碎块
+item.osmiumClump.name=锇碎块
+item.copperClump.name=铜碎块
+item.tinClump.name=锡碎块
+item.silverClump.name=银碎块
+item.obsidianClump.name=黑曜石碎块
+item.leadClump.name=铅碎块
 
 //Shards
 item.ironShard.name=铁碎片
@@ -256,7 +256,7 @@ gas.cleanObsidian=纯净黑曜石浆液
 gas.cleanLead=纯净铅浆液
 
 //BC Fuel Gases
-gas.fuel=气化燃料
+gas.fuel=气化燃油
 gas.oil=气化石油
 
 //Fluids
@@ -286,7 +286,7 @@ update.consider=考虑升级到最新版
 update.newFeatures=新特性
 update.visit=访问
 update.toDownload=下载
-update.devBuild=正在使用developer build版本
+update.devBuild=正在使用开发者构建版本
 update.outdated=正在使用过期版本的一两个模块
 
 //Key description text
@@ -345,6 +345,7 @@ gui.finished=已完成
 
 gui.chemicalInfuser.short=化学灌注器
 gui.chemicalDissolutionChamber.short=化学溶解室
+
 gui.dictionary.noKey=无关键字.
 
 gui.configuration=配置
@@ -376,6 +377,7 @@ gui.oredictFilter.sameKey=关键字相同
 gui.modIDFilter=Mod ID过滤器
 gui.modIDFilter.noID=无ID
 gui.modIDFilter.sameID=相同ID
+
 gui.itemFilter=物品过滤器
 gui.itemFilter.noItem=无物品
 gui.itemFilter.details=物品堆叠详情
@@ -438,10 +440,10 @@ gui.digitalMiner.inverse=反选模式
 recipe.mekanismShaped=有序
 
 //Item and block tooltip text
-tooltip.configurator.modify=改装
+tooltip.configurator.configurate=配置
 tooltip.configurator.empty=空
+tooltip.configurator.rotate=旋转
 tooltip.configurator.wrench=扳手
-tooltip.configurator.link=链接
 tooltip.configurator.pumpReset=重置电力泵计数
 tooltip.configurator.toggleDiverter=分流模式更改为
 tooltip.configurator.toggleColor=颜色切换为
@@ -509,6 +511,7 @@ tooltip.filterCard.logisticalSorter=物流分类器
 tooltip.filterCard.digitalMiner=数字型采矿机
 
 tooltip.balloon=气球
+
 tooltip.jetpack.regular=标准
 tooltip.jetpack.hover=悬浮
 tooltip.jetpack.disabled=禁用
