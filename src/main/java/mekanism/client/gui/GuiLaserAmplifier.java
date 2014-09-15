@@ -60,7 +60,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			{
 				return "Stored: " + MekanismUtils.getEnergyDisplay(level);
 			}
-		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 16));
+		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
 	}
 
 	@Override

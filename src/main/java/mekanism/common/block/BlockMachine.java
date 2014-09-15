@@ -55,6 +55,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -135,8 +136,9 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 1:12: Fluidic Plenisher
  * 1:13: Laser
  * 1:14: Laser Amplifier
- * 1:15: Entangled Block
- * 2:0: Ambient Accumulator
+ * 1:15: Laser Tractor Beam
+ * 2:0: Entangled Block
+ * 2:1: Ambient Accumulator
  * @author AidanBrady
  *
  */
@@ -199,10 +201,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 				icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
 				icons[5][2] = register.registerIcon("mekanism:SteelCasing");
-				icons[15][0] = register.registerIcon("mekanism:SteelCasing");
 				break;
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
+				icons[1][0] = register.registerIcon("mekanism:SteelCasing");
 				break;
 		}
 
@@ -1065,8 +1067,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false),
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_2, 15, "EntangledBlock", 45, TileEntityEntangledBlock.class, true, false, false),
-		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false);
+		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false),
+		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 1, "EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -1191,9 +1194,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return usage.laserUsage;
 				case LASER_AMPLIFIER:
 					return 0;
-				case ENTANGLED_BLOCK:
+				case LASER_TRACTOR_BEAM:
 					return 0;
 				case AMBIENT_ACCUMULATOR:
+					return 0;
+				case ENTANGLED_BLOCK:
 					return 0;
 				default:
 					return 0;

@@ -32,6 +32,7 @@ import mekanism.client.gui.GuiFactory;
 import mekanism.client.gui.GuiFluidicPlenisher;
 import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiLaserAmplifier;
+import mekanism.client.gui.GuiLaserTractorBeam;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
@@ -82,6 +83,7 @@ import mekanism.client.render.tileentity.RenderFluidicPlenisher;
 import mekanism.client.render.tileentity.RenderGasTank;
 import mekanism.client.render.tileentity.RenderLaser;
 import mekanism.client.render.tileentity.RenderLaserAmplifier;
+import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
@@ -137,6 +139,7 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -304,6 +307,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher", new RenderFluidicPlenisher());
 		ClientRegistry.registerTileEntity(TileEntityLaser.class, "Laser", new RenderLaser());
 		ClientRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier", new RenderLaserAmplifier());
+		ClientRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam", new RenderLaserTractorBeam());
 		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
 	}
 
@@ -467,9 +471,11 @@ public class ClientProxy extends CommonProxy
 			case 44:
 				return new GuiLaserAmplifier(player.inventory, (TileEntityLaserAmplifier)tileEntity);
 			case 45:
-				return new GuiEntangledBlock(player.inventory, (TileEntityEntangledBlock)tileEntity);
+				return new GuiLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam)tileEntity);
 			case 46:
 				return new GuiAmbientAccumulator(player, (TileEntityAmbientAccumulator)tileEntity);
+			case 47:
+				return new GuiEntangledBlock(player.inventory, (TileEntityEntangledBlock)tileEntity);
 		}
 
 		return null;

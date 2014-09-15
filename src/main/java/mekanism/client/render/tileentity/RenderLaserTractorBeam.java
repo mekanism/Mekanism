@@ -2,34 +2,31 @@ package mekanism.client.render.tileentity;
 
 import mekanism.client.model.ModelLaserAmplifier;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-@SideOnly(Side.CLIENT)
-public class RenderLaserAmplifier extends TileEntitySpecialRenderer
+public class RenderLaserTractorBeam extends TileEntitySpecialRenderer
 {
 	private ModelLaserAmplifier model = new ModelLaserAmplifier();
 
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntityLaserAmplifier)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntityLaserTractorBeam)tileEntity, x, y, z, partialTick);
 	}
 
-	private void renderAModelAt(TileEntityLaserAmplifier tileEntity, double x, double y, double z, float partialTick)
+	private void renderAModelAt(TileEntityLaserTractorBeam tileEntity, double x, double y, double z, float partialTick)
 	{
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserAmplifier.png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserTractorBeam.png"));
 
 		switch(tileEntity.facing)
 		{

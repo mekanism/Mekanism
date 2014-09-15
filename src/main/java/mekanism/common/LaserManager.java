@@ -7,7 +7,6 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;

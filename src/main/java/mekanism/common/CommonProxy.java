@@ -28,6 +28,8 @@ import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerFluidicPlenisher;
 import mekanism.common.inventory.container.ContainerGasTank;
+import mekanism.common.inventory.container.ContainerLaserAmplifier;
+import mekanism.common.inventory.container.ContainerLaserTractorBeam;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerPRC;
@@ -73,6 +75,7 @@ import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
@@ -150,7 +153,8 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityFluidicPlenisher.class, "FluidicPlenisher");
 		GameRegistry.registerTileEntity(TileEntityLaser.class, "Laser");
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
-		GameRegistry.registerTileEntityWithAlternatives(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
+		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
+		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
 	}
 
 	/**
@@ -415,8 +419,11 @@ public class CommonProxy
 			case 43:
 				return new ContainerUpgradeManagement(player.inventory, (IUpgradeTile)tileEntity);
 			case 44:
+				return new ContainerLaserAmplifier(player.inventory, (TileEntityLaserAmplifier)tileEntity);
 			case 45:
+				return new ContainerLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam)tileEntity);
 			case 46:
+			case 47:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 

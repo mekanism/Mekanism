@@ -117,6 +117,7 @@ tile.MachineBlock2.PortableTank.name=Portable Tank
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 tile.MachineBlock2.Laser.name=Laser
 tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
+tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
 
 //Plastic
 tile.PlasticBlock.name=Plastic Block
@@ -574,8 +575,9 @@ tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide info
 tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
 tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
-tooltip.Laser=An advanced form of linear energy transfer that utilizes !nan extremely compressed beam of !nlight.
-tooltip.LaserAmplifier=A block that can be used to both merge !nand amplify laser beams.
+tooltip.Laser=An advanced form of linear energy!ntransfer that utilizes an extremely!ncollimated beam of light.
+tooltip.LaserAmplifier=A block that can be used to merge,!nredirect and amplify laser beams,!nwith fine controls over when to fire
+tooltip.LaserTractorBeam=A block used to merge and!nredirect laser beams. Collects!ndrops from blocks it has broken.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.

@@ -203,6 +203,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserAmplifier.png"));
 			laserAmplifier.render(0.0560F);
 		}
+		else if(type == MachineType.LASER_TRACTOR_BEAM)
+		{
+			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
+			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserTractorBeam.png"));
+			laserAmplifier.render(0.0560F);
+		}
 		else {
 			MekanismRenderer.renderItem(renderer, metadata, block);
 		}

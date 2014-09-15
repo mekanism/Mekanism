@@ -20,6 +20,18 @@ public final class InventoryUtils
 {
 	public static final int[] EMPTY = new int[] {};
 
+	public static int[] getIntRange(int start, int end)
+	{
+		int[] ret = new int[1 + end - start];
+
+		for(int i = start; i <= end; i++)
+		{
+			ret[i - start] = i;
+		}
+
+		return ret;
+	}
+
 	public static IInventory checkChestInv(IInventory inv)
 	{
 		if(inv instanceof TileEntityChest)
