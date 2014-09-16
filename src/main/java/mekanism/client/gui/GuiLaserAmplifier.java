@@ -27,7 +27,8 @@ public class GuiLaserAmplifier extends GuiMekanism
 {
 	public TileEntityLaserAmplifier tileEntity;
 
-	public GuiTextField thresholdField;
+	public GuiTextField minField;
+	public GuiTextField maxField;
 	public GuiTextField timerField;
 
 	public GuiLaserAmplifier(InventoryPlayer inventory, TileEntityLaserAmplifier tentity)
@@ -61,6 +62,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 				return "Stored: " + MekanismUtils.getEnergyDisplay(level);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 	}
 
 	@Override
@@ -72,7 +74,9 @@ public class GuiLaserAmplifier extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 55, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.threshold" + ": " + MekanismUtils.getEnergyDisplay(tileEntity.threshold)), 75, 45, 0x404040);
+		fontRendererObj.drawString(tileEntity.time > 0 ? MekanismUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : MekanismUtils.localize("gui.noDelay"), 26, 30, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.min") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.minThreshold), 26, 45, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.max") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.maxThreshold), 26, 60, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -88,7 +92,8 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
-		thresholdField.drawTextBox();
+		minField.drawTextBox();
+		maxField.drawTextBox();
 		timerField.drawTextBox();
 	}
 
@@ -97,7 +102,8 @@ public class GuiLaserAmplifier extends GuiMekanism
 	{
 		super.updateScreen();
 
-		thresholdField.updateCursorCounter();
+		minField.updateCursorCounter();
+		maxField.updateCursorCounter();
 		timerField.updateCursorCounter();
 	}
 
@@ -106,23 +112,28 @@ public class GuiLaserAmplifier extends GuiMekanism
 	{
 		super.mouseClicked(mouseX, mouseY, button);
 
-		thresholdField.mouseClicked(mouseX, mouseY, button);
+		minField.mouseClicked(mouseX, mouseY, button);
+		maxField.mouseClicked(mouseX, mouseY, button);
 		timerField.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
 	public void keyTyped(char c, int i)
 	{
-		if(!(thresholdField.isFocused() || timerField.isFocused()) || i == Keyboard.KEY_ESCAPE)
+		if(!(minField.isFocused() || maxField.isFocused() || timerField.isFocused()) || i == Keyboard.KEY_ESCAPE)
 		{
 			super.keyTyped(c, i);
 		}
 
 		if(i == Keyboard.KEY_RETURN)
 		{
-			if(thresholdField.isFocused())
+			if(minField.isFocused())
 			{
-				setThreshold();
+				setMinThreshold();
+			}
+			if(maxField.isFocused())
+			{
+				setMaxThreshold();
 			}
 			if(timerField.isFocused())
 			{
@@ -132,24 +143,52 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 		if(Character.isDigit(c) || c == '.' || c == 'E' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
-			thresholdField.textboxKeyTyped(c, i);
+			minField.textboxKeyTyped(c, i);
+			maxField.textboxKeyTyped(c, i);
 			timerField.textboxKeyTyped(c, i);
 		}
 	}
 
-	private void setThreshold()
+	private void setMinThreshold()
 	{
-		if(!thresholdField.getText().isEmpty())
+		if(!minField.getText().isEmpty())
 		{
 			double toUse;
 
 			try
 			{
-				toUse = Math.max(0, Double.parseDouble(thresholdField.getText()));
+				toUse = Math.max(0, Double.parseDouble(minField.getText()));
 			}
 			catch(Exception e)
 			{
-				toUse = 0;
+				minField.setText("");
+				return;
+			}
+
+			ArrayList data = new ArrayList();
+			data.add(0);
+			data.add(toUse);
+
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+
+			minField.setText("");
+		}
+	}
+
+	private void setMaxThreshold()
+	{
+		if(!maxField.getText().isEmpty())
+		{
+			double toUse;
+
+			try
+			{
+				toUse = Math.max(0, Double.parseDouble(maxField.getText()));
+			}
+			catch(Exception e)
+			{
+				maxField.setText("");
+				return;
 			}
 
 			ArrayList data = new ArrayList();
@@ -158,7 +197,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 
-			thresholdField.setText("");
+			maxField.setText("");
 		}
 	}
 
@@ -186,16 +225,21 @@ public class GuiLaserAmplifier extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 
-		String prevThresh = thresholdField != null ? thresholdField.getText() : "";
-
-		thresholdField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
-		thresholdField.setMaxStringLength(10);
-		thresholdField.setText(prevThresh);
-
 		String prevTime = timerField != null ? timerField.getText() : "";
 
-		timerField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 15, 26, 11);
+		timerField = new GuiTextField(fontRendererObj, guiWidth + 96, guiHeight + 28, 36, 11);
 		timerField.setMaxStringLength(4);
 		timerField.setText(prevTime);
+
+		String prevMin = minField != null ? minField.getText() : "";
+		minField = new GuiTextField(fontRendererObj, guiWidth + 96, guiHeight + 43, 72, 11);
+		minField.setMaxStringLength(10);
+		minField.setText(prevMin);
+
+		String prevMax = maxField != null ? maxField.getText() : "";
+
+		maxField = new GuiTextField(fontRendererObj, guiWidth + 96, guiHeight + 58, 72, 11);
+		maxField.setMaxStringLength(10);
+		maxField.setText(prevMax);
 	}
 }

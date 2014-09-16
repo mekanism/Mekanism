@@ -360,6 +360,10 @@ gui.finished=Finished
 gui.well=All is well!
 gui.upgrade=Upgrade
 gui.infinite=Infinite
+gui.min=Min
+gui.max=Max
+gui.delay=Delay
+gui.noDelay=No Delay
 
 gui.upgrades=Upgrades
 gui.upgrades.supported=Supported

@@ -7,7 +7,10 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -18,19 +21,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import io.netty.buffer.ByteBuf;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
 	public double lastFired = 0;
 
-	public double threshold = 0;
+	public double minThreshold = 0;
+	public double maxThreshold = 5E9;
 	public int ticks = 0;
 	public int time = 0;
 
-	public LaserEmitterMode mode = LaserEmitterMode.THRESHOLD;
-	public boolean poweredNow = false;
-	public boolean poweredLastTick = false;
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
+
 	public boolean on = false;
 
 	public Coord4D digging;
@@ -66,8 +69,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		}
 		else
 		{
-			poweredNow = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
-
 			if(ticks < time)
 			{
 				ticks++;
@@ -77,7 +78,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				ticks = 0;
 			}
 
-			if(shouldFire() && toFire() > 0)
+			if(toFire() > 0)
 			{
 				double firing = toFire();
 
@@ -125,8 +126,6 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				on = false;
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 			}
-
-			poweredLastTick = poweredNow;
 		}
 	}
 
@@ -142,34 +141,12 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 	public boolean shouldFire()
 	{
-		switch(mode)
-		{
-			case THRESHOLD:
-				return collectedEnergy >= threshold;
-			case REDSTONE:
-				return poweredNow;
-			case REDSTONE_PULSE:
-				return poweredNow && !poweredLastTick;
-			case TIMER:
-				return ticks == time;
-		}
-		return false;
+		return collectedEnergy >= minThreshold && ticks >= time && MekanismUtils.canFunction(this);
 	}
 
 	public double toFire()
 	{
-		switch(mode)
-		{
-			case THRESHOLD:
-				return collectedEnergy;
-			case REDSTONE:
-				return collectedEnergy;
-			case REDSTONE_PULSE:
-				return collectedEnergy;
-			case TIMER:
-				return collectedEnergy;
-		}
-		return 0;
+		return shouldFire() ? Math.min(collectedEnergy, maxThreshold) : 0;
 	}
 
 	@Override
@@ -178,11 +155,12 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		super.getNetworkedData(data);
 
 		data.add(on);
-		data.add(mode.ordinal());
-		data.add(threshold);
+		data.add(minThreshold);
+		data.add(maxThreshold);
 		data.add(time);
 		data.add(collectedEnergy);
 		data.add(lastFired);
+		data.add(controlType.ordinal());
 
 		return data;
 	}
@@ -196,35 +174,45 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 			on = dataStream.readBoolean();
 
-			mode = LaserEmitterMode.values()[dataStream.readInt()];
-
-			threshold = dataStream.readDouble();
+			minThreshold = dataStream.readDouble();
+			maxThreshold = dataStream.readDouble();
 			time = dataStream.readInt();
 			collectedEnergy = dataStream.readDouble();
 			lastFired = dataStream.readDouble();
+			controlType = RedstoneControl.values()[dataStream.readInt()];
 
 			return;
 		}
 
 		switch(dataStream.readInt())
 		{
-			case(0):
-				mode = LaserEmitterMode.values()[dataStream.readInt()];
+			case 0:
+				minThreshold = dataStream.readDouble();
 				break;
-			case(1):
-				threshold = dataStream.readDouble();
+			case 1:
+				maxThreshold = dataStream.readDouble();
 				break;
-			case(2):
+			case 2:
 				time = dataStream.readInt();
 				break;
 		}
 	}
 
-	public static enum LaserEmitterMode
+	@Override
+	public RedstoneControl getControlType()
 	{
-		THRESHOLD,
-		REDSTONE,
-		REDSTONE_PULSE,
-		TIMER;
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type)
+	{
+		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return true;
 	}
 }
