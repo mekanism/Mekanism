@@ -88,6 +88,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 			else if(on)
 			{
 				on = false;
+				diggingProgress = 0;
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 			}
 		}
