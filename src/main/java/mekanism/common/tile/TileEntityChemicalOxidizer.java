@@ -347,6 +347,12 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public TileComponentUpgrade getComponent() 
 	{
 		return upgradeComponent;

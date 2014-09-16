@@ -8,7 +8,8 @@ public interface IRedstoneControl
 	{
 		DISABLED("control.disabled"),
 		HIGH("control.high"),
-		LOW("control.low");
+		LOW("control.low"),
+		PULSE("control.pulse");
 
 		private String display;
 
@@ -40,4 +41,15 @@ public interface IRedstoneControl
 	 * @return if the block is getting powered indirectly
 	 */
 	public boolean isPowered();
+
+	/**
+	 * If the block was getting powered or not by redstone, last tick.
+	 * Used for PULSE mode.
+	 */
+	public boolean wasPowered();
+
+	/**
+	 * If the machine can be pulsed.
+	 */
+	public boolean canPulse();
 }

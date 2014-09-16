@@ -601,9 +601,11 @@ tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found sl
 control.disabled=Disabled
 control.high=High
 control.low=Low
+control.pulse=Pulse
 control.disabled.desc=Always active
 control.high.desc=Active with signal
 control.low.desc=Active without signal
+control.pulse.desc=Only active upon first receiving signal
 
 //Container edit modes
 fluidedit.both=Both

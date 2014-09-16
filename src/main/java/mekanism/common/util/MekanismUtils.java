@@ -1036,17 +1036,16 @@ public final class MekanismUtils
 
 		IRedstoneControl control = (IRedstoneControl)tileEntity;
 
-		if(control.getControlType() == RedstoneControl.DISABLED)
+		switch(control.getControlType())
 		{
-			return true;
-		}
-		else if(control.getControlType() == RedstoneControl.HIGH)
-		{
-			return control.isPowered();
-		}
-		else if(control.getControlType() == RedstoneControl.LOW)
-		{
-			return !control.isPowered();
+			case DISABLED:
+				return true;
+			case HIGH:
+				return control.isPowered();
+			case LOW:
+				return !control.isPowered();
+			case PULSE:
+				return control.isPowered() && !control.wasPowered();
 		}
 
 		return false;

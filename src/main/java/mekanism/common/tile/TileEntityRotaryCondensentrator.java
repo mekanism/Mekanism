@@ -594,4 +594,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		controlType = type;
 		MekanismUtils.saveChunk(this);
 	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
 }

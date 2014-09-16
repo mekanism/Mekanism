@@ -81,6 +81,7 @@ public class GuiRedstoneControl extends GuiElement
 			{
 				RedstoneControl current = control.getControlType();
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
+				if(ordinalToSet == RedstoneControl.PULSE.ordinal() && !control.canPulse()) ordinalToSet = 0;
 
 				SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new RedstoneControlMessage(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));

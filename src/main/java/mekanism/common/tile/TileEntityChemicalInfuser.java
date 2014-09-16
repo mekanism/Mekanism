@@ -376,6 +376,12 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))

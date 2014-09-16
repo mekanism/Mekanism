@@ -514,6 +514,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;

@@ -319,6 +319,12 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;

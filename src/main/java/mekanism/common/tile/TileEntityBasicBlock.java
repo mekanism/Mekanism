@@ -43,6 +43,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public int ticker;
 
 	public boolean redstone = false;
+	public boolean redstoneLastTick = false;
 
 	public boolean doAutoSync = true;
 
@@ -72,6 +73,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		}
 
 		ticker++;
+		redstoneLastTick = redstone;
 	}
 
 	public void open(EntityPlayer player)
@@ -225,6 +227,11 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	public boolean isPowered()
 	{
 		return redstone;
+	}
+
+	public boolean wasPowered()
+	{
+		return redstoneLastTick;
 	}
 
 	public void onNeighborChange(Block block)

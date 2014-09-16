@@ -199,4 +199,10 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 		controlType = type;
 		MekanismUtils.saveChunk(this);
 	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
 }

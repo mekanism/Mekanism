@@ -878,6 +878,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;

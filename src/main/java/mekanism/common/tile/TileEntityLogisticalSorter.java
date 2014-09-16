@@ -513,6 +513,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return true;
+	}
+
+	@Override
 	public void setActive(boolean active)
 	{
 		isActive = active;

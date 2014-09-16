@@ -247,4 +247,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		controlType = type;
 	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
 }

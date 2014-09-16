@@ -999,6 +999,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public RedstoneControl getControlType()
 	{
 		return controlType;

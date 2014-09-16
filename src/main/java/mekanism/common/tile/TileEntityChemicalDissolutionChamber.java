@@ -391,6 +391,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack.getGas()))

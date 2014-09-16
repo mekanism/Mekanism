@@ -281,4 +281,10 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		controlType = type;
 	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
 }

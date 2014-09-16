@@ -261,6 +261,12 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	@Method(modid = "BuildCraftAPI|power")
 	protected void reconfigure()
 	{
