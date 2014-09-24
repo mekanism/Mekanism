@@ -207,7 +207,8 @@ public class CommonProxy
 		Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123, null, 1, 65535).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
 		Mekanism.maxUpgradeMultiplier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10, null, 1, Integer.MAX_VALUE).getInt();
-		
+		Mekanism.salinationPlantWaterUsage = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SalinationPlantSpeed", 40.0, "Millibuckets of water turned into brine by the plant per tick", 1.0, 9000.0).getDouble();
+
 		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
 
 		if(s != null)
