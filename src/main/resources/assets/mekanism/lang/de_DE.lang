@@ -338,6 +338,7 @@ gui.newFilter=Neuer Filter
 gui.energy=Energie
 gui.gas=Gas
 gui.dumping=Ausleeren
+gui.dumping_excess=Ausleeren Über
 gui.modID=Mod-ID
 gui.key=Key
 gui.id=ID

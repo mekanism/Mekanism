@@ -338,6 +338,7 @@ gui.newFilter=New Filter
 gui.energy=Energy
 gui.gas=Gas
 gui.dumping=Dumping
+gui.dumping_excess=Dumping Excess
 gui.modID=Mod ID
 gui.key=Key
 gui.id=ID
