@@ -126,7 +126,7 @@ public class TransporterManager
 					testInv[i] = toInsert;
 					return;
 				}
-				else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 				{
 					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -182,7 +182,7 @@ public class TransporterManager
 						testInv[slotID] = toInsert;
 						return;
 					}
-					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 					{
 						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 						{
@@ -282,7 +282,7 @@ public class TransporterManager
 				{
 					return null;
 				}
-				else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 				{
 					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -325,7 +325,7 @@ public class TransporterManager
 					{
 						return null;
 					}
-					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(InventoryUtils.areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 					{
 						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 						{
