@@ -33,7 +33,6 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 	public static final int MAX_BRINE = 10000;
 	public static final int MAX_SOLARS = 4;
 	public static final int WARMUP = 10000;
-	public static final double WATER_USAGE = 40;
 
 	public FluidTank waterTank = new FluidTank(0);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
@@ -93,14 +92,14 @@ public class TileEntitySalinationController extends TileEntitySalinationTank
 				int brineNeeded = brineTank.getCapacity()-brineTank.getFluidAmount();
 				int waterStored = waterTank.getFluidAmount();
 				
-				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*WATER_USAGE);
+				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*Mekanism.salinationPlantWaterUsage);
 				
 				if(partialWater >= 1)
 				{
 					int waterInt = (int)Math.floor(partialWater);
 					waterTank.drain(waterInt, true);
 					partialWater %= 1;
-					partialBrine += ((double)waterInt)/WATER_USAGE;
+					partialBrine += ((double)waterInt)/Mekanism.salinationPlantWaterUsage;
 				}
 				
 				if(partialBrine >= 1)
