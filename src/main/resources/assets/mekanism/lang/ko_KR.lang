@@ -4,28 +4,28 @@
 
 //Items
 tile.ObsidianTNT.name=옵시디언 TNT
-item.EnrichedAlloy.name=Enriched Alloy
-item.ReinforcedAlloy.name=Reinforced Alloy
-item.AtomicAlloy.name=Atomic Alloy
+item.EnrichedAlloy.name=강화 합금
+item.ReinforcedAlloy.name=강화된 합금
+item.AtomicAlloy.name=Atomic 합금
 item.EnergyTablet.name=Energy Tablet
 item.SpeedUpgrade.name=Speed Upgrade
 item.EnergyUpgrade.name=Energy Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
-item.ElectricBow.name=Electric Bow
-item.EnrichedIron.name=Enriched Iron
-item.CompressedCarbon.name=Compressed Carbon
-item.CompressedRedstone.name=Compressed Redstone
-item.CompressedDiamond.name=Compressed Diamond
-item.CompressedObsidian.name=Compressed 옵시디언
+item.ElectricBow.name=전기 Bow
+item.EnrichedIron.name=Enriched 철
+item.CompressedCarbon.name=압축된 Carbon
+item.CompressedRedstone.name=압축된 Redstone
+item.CompressedDiamond.name=압축된 다이아몬드
+item.CompressedObsidian.name=압축된 옵시디언
 item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
 item.NetworkReader.name=Network Reader
 item.WalkieTalkie.name=Walkie-Talkie
-item.Jetpack.name=Jetpack
-item.ScubaTank.name=Scuba Tank
-item.GasMask.name=Gas Mask
+item.Jetpack.name=제트팩
+item.ScubaTank.name=Scuba 탱크
+item.GasMask.name=가스 마스크
 item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
 item.Sawdust.name=Sawdust
@@ -36,67 +36,67 @@ item.ArmoredJetpack.name=Armored Jetpack
 item.FilterCard.name=Filter Card
 item.SeismicReader.name=Seismic Reader
 item.HDPEPellet.name=HDPE Pellet
-item.HDPERod.name=HDPE Rod
+item.HDPERod.name=HDPE 길
 item.HDPESheet.name=HDPE Sheet
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 
 //Control Circuits
-item.BasicControlCircuit.name=Basic Control Circuit
-item.AdvancedControlCircuit.name=고급 Control Circuit
-item.EliteControlCircuit.name=Elite Control Circuit
-item.UltimateControlCircuit.name=Ultimate Control Circuit
+item.BasicControlCircuit.name=기본 조작 회로
+item.AdvancedControlCircuit.name=고급 조작 회로
+item.EliteControlCircuit.name=엘리트 조작 회로
+item.UltimateControlCircuit.name=울티베이트 조작 회로
 
 //Gas Tank
-tile.GasTank.GasTank.name=Gas Tank
+tile.GasTank.GasTank.name=Gas 탱크
 
 //Cardboard Box
 tile.CardboardBox.name=Cardboard Box
 
 //Bounding Block
-tile.BoundingBlock.name=Bounding Block
+tile.BoundingBlock.name=Bounding 블럭
 
 //Salt
-tile.SaltBlock.name=Salt Block
+tile.SaltBlock.name=소금 블럭
 
 //Basic Block
-tile.BasicBlock.OsmiumBlock.name=오스뮴 Block
-tile.BasicBlock.BronzeBlock.name=청동 Block
-tile.BasicBlock.RefinedObsidian.name=Refined 옵시디언
-tile.BasicBlock.CharcoalBlock.name=Charcoal Block
-tile.BasicBlock.RefinedGlowstone.name=Refined 발광석
-tile.BasicBlock.SteelBlock.name=강철 Block
+tile.BasicBlock.OsmiumBlock.name=오스뮴 블럭
+tile.BasicBlock.BronzeBlock.name=청동 블럭
+tile.BasicBlock.RefinedObsidian.name=강화된 옵시디언
+tile.BasicBlock.CharcoalBlock.name=목탄 블럭
+tile.BasicBlock.RefinedGlowstone.name=강화된 발광석
+tile.BasicBlock.SteelBlock.name=강철 블럭
 tile.BasicBlock.Bin.name=Bin
 tile.BasicBlock.TeleporterFrame.name=Teleporter Frame
 tile.BasicBlock.SteelCasing.name=강철 Casing
-tile.BasicBlock.DynamicTank.name=Dynamic Tank
-tile.BasicBlock.DynamicGlass.name=Dynamic Glass
-tile.BasicBlock.DynamicValve.name=Dynamic Valve
-tile.BasicBlock.CopperBlock.name=Copper Block
-tile.BasicBlock.TinBlock.name=Tin Block
-tile.BasicBlock.SalinationController.name=Salination Controller
-tile.BasicBlock.SalinationValve.name=Salination Valve
+tile.BasicBlock.DynamicTank.name=다이나믹 탱크
+tile.BasicBlock.DynamicGlass.name=다이나믹 유리
+tile.BasicBlock.DynamicValve.name=다이나믹 밸브
+tile.BasicBlock.CopperBlock.name=구리 블럭
+tile.BasicBlock.TinBlock.name=주석 블럭
+tile.BasicBlock.SalinationController.name=Salination 제어기
+tile.BasicBlock.SalinationValve.name=Salination 밸브
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SalinationBlock.name=Salination Block
+tile.BasicBlock2.SalinationBlock.name=Salination 블럭
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
 tile.MachineBlock.OsmiumCompressor.name=오스뮴 Compressor
 tile.MachineBlock.Combiner.name=Combiner
 tile.MachineBlock.Crusher.name=Crusher
-tile.MachineBlock.BasicFactory.name=Basic Factory
-tile.MachineBlock.AdvancedFactory.name=고급 Factory
-tile.MachineBlock.EliteFactory.name=Elite Factory
+tile.MachineBlock.BasicFactory.name=기본 팩토리
+tile.MachineBlock.AdvancedFactory.name=고급 팩토리
+tile.MachineBlock.EliteFactory.name=엘리트 팩토리
 tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
 tile.MachineBlock.PurificationChamber.name=Purification Chamber
 tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
-tile.MachineBlock.Teleporter.name=Teleporter
-tile.MachineBlock.ElectricPump.name=Electric Pump
-tile.MachineBlock.ElectricChest.name=Electric Chest
-tile.MachineBlock.Chargepad.name=Chargepad
-tile.MachineBlock.LogisticalSorter.name=Logistical Sorter
-tile.MachineBlock.DigitalMiner.name=Digital Miner
+tile.MachineBlock.Teleporter.name=텔레포터
+tile.MachineBlock.ElectricPump.name=전기 펌프
+tile.MachineBlock.ElectricChest.name=전기 상자
+tile.MachineBlock.Chargepad.name=차지패드
+tile.MachineBlock.LogisticalSorter.name=논리 정렬기
+tile.MachineBlock.DigitalMiner.name=디지털 마이너
 
 //Machine Block 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
@@ -112,186 +112,186 @@ tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
 tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
-tile.MachineBlock2.PortableTank.name=Portable Tank
+tile.MachineBlock2.PortableTank.name=Portable 탱크
 tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
 
 //Plastic
-tile.PlasticBlock.name=Plastic Block
-tile.SlickPlasticBlock.name=Slick Plastic Block
-tile.GlowPlasticBlock.name=Plastic Glow Block
-tile.ReinforcedPlasticBlock.name=Reinforced Plastic Block
-tile.RoadPlasticBlock.name=Plastic Road
+tile.PlasticBlock.name=플라스틱 블럭
+tile.SlickPlasticBlock.name=끈적거리는 플라스틱 블럭
+tile.GlowPlasticBlock.name=빛나는 플라스틱 블럭
+tile.ReinforcedPlasticBlock.name=강화된 플라스틱 블럭
+tile.RoadPlasticBlock.name=플라스틱 길
 
-tile.PlasticFence.name=Plastic Barrier
+tile.PlasticFence.name=플라스틱 배리어
 
 //Infuse types
-infuse.carbon=Carbon
-infuse.tin=Tin
-infuse.diamond=Diamond
-infuse.redstone=Redstone
-infuse.fungi=Fungi
+infuse.carbon=탄소
+infuse.tin=주석
+infuse.diamond=다이아몬드
+infuse.redstone=레드스톤
+infuse.fungi=균류
 infuse.obsidian=옵시디언
 
 //Ore Block
-tile.OreBlock.OsmiumOre.name=오스뮴 Ore
-tile.OreBlock.CopperOre.name=Copper Ore
-tile.OreBlock.TinOre.name=Tin Ore
+tile.OreBlock.OsmiumOre.name=오스뮴 광석
+tile.OreBlock.CopperOre.name=구리 광석
+tile.OreBlock.TinOre.name=주석 광석
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
-item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Cable
-item.MultipartTransmitter.AdvancedUniversalCable.name=고급 Universal Cable
-item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Cable
-item.MultipartTransmitter.UltimateUniversalCable.name=Ultimate Universal Cable
-item.MultipartTransmitter.BasicMechanicalPipe.name=Basic Mechanical Pipe
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=고급 Mechanical Pipe
-item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mechanical Pipe
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimate Mechanical Pipe
-item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
-item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
+item.MultipartTransmitter.PressurizedTube.name=가압 튜브
+item.MultipartTransmitter.BasicUniversalCable.name=기본 범용 케이블
+item.MultipartTransmitter.AdvancedUniversalCable.name=고급 범용 케이블
+item.MultipartTransmitter.EliteUniversalCable.name=엘리트 범용 케이블
+item.MultipartTransmitter.UltimateUniversalCable.name=궁극의 범용 케이블
+item.MultipartTransmitter.BasicMechanicalPipe.name=기본 기계적 파이프
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=고급 기계적 파이프
+item.MultipartTransmitter.EliteMechanicalPipe.name=엘리트 기계적 파이프
+item.MultipartTransmitter.UltimateMechanicalPipe.name=궁극의 기계적 파이프
+item.MultipartTransmitter.LogisticalTransporter.name=논리적 수송기
+item.MultipartTransmitter.RestrictiveTransporter.name=제한적 수송기
+item.MultipartTransmitter.DiversionTransporter.name=우회적 수송기
 
 //Glow Panel
-item.GlowPanel.name=Glow Panel
+item.GlowPanel.name=발광 패널
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Basic Energy Cube
-tile.EnergyCube.고급.name=고급 Energy Cube
-tile.EnergyCube.Elite.name=Elite Energy Cube
-tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
+tile.EnergyCube.Basic.name=기본 에너지 큐브
+tile.EnergyCube.Advanced.name=고급 에너지 큐브
+tile.EnergyCube.Elite.name=엘리트 에너지 큐브
+tile.EnergyCube.Ultimate.name=궁극의 에너지 큐브
 
-//Dust
-item.ironDust.name=Iron Dust
-item.goldDust.name=Gold Dust
-item.osmiumDust.name=오스뮴 Dust
-item.obsidianDust.name=Refined 옵시디언 Dust
-item.diamondDust.name=Diamond Dust
-item.steelDust.name=강철 Dust
-item.copperDust.name=Copper Dust
-item.tinDust.name=Tin Dust
-item.silverDust.name=Silver Dust
-item.leadDust.name=Lead Dust
-item.sulfurDust.name=Sulfur Dust
+//가루
+item.ironDust.name=철 가루
+item.goldDust.name=금 가루
+item.osmiumDust.name=오스뮴 가루
+item.obsidianDust.name=강화된 옵시디언 가루
+item.diamondDust.name=다이아몬드 가루
+item.steelDust.name=강철 가루
+item.copperDust.name=구리 가루
+item.tinDust.name=주석 가루
+item.silverDust.name=은 가루
+item.leadDust.name=납 가루
+item.sulfurDust.name=유황 가루
 
 //Clumps
-item.ironClump.name=Iron Clump
-item.goldClump.name=Gold Clump
-item.osmiumClump.name=오스뮴 Clump
-item.copperClump.name=Copper Clump
-item.tinClump.name=Tin Clump
-item.silverClump.name=Silver Clump
-item.obsidianClump.name=옵시디언 Clump
-item.leadClump.name=Lead Clump
+item.ironClump.name=철 덩어리
+item.goldClump.name=금 덩어리
+item.osmiumClump.name=오스뮴 덩어리
+item.copperClump.name=구리 덩어리
+item.tinClump.name=주석 덩어리
+item.silverClump.name=은 덩어리
+item.obsidianClump.name=옵시디언 덩어리
+item.leadClump.name=납 덩어리
 
 //Shards
-item.ironShard.name=Iron Shard
-item.goldShard.name=Gold Shard
-item.osmiumShard.name=오스뮴 Shard
-item.copperShard.name=Copper Shard
-item.tinShard.name=Tin Shard
-item.silverShard.name=Silver Shard
-item.obsidianShard.name=옵시디언 Shard
-item.leadShard.name=Lead Shard
+item.ironShard.name=철 조각
+item.goldShard.name=금 조각
+item.osmiumShard.name=오스뮴 조각
+item.copperShard.name=구리 조각
+item.tinShard.name=주석 조각
+item.silverShard.name=은 조각
+item.obsidianShard.name=옵시디언 조각
+item.leadShard.name=납 조각
 
 //Crystals
-item.ironCrystal.name=Iron Crystal
-item.goldCrystal.name=Gold Crystal
-item.osmiumCrystal.name=오스뮴 Crystal
-item.copperCrystal.name=Copper Crystal
-item.tinCrystal.name=Tin Crystal
-item.silverCrystal.name=Silver Crystal
-item.obsidianCrystal.name=옵시디언 Crystal
-item.leadCrystal.name=Lead Crystal
+item.ironCrystal.name=철 수정
+item.goldCrystal.name=금 수정
+item.osmiumCrystal.name=오스뮴 수정
+item.copperCrystal.name=구리 수정
+item.tinCrystal.name=주석 수정
+item.silverCrystal.name=은 수정
+item.obsidianCrystal.name=옵시디언 수정
+item.leadCrystal.name=납 수정
 
 //Dirty Dust
-item.dirtyIronDust.name=Dirty Iron Dust
-item.dirtyGoldDust.name=Dirty Gold Dust
-item.dirtyOsmiumDust.name=Dirty 오스뮴 Dust
-item.dirtyCopperDust.name=Dirty Copper Dust
-item.dirtyTinDust.name=Dirty Tin Dust
-item.dirtySilverDust.name=Dirty Silver Dust
-item.dirtyObsidianDust.name=Dirty 옵시디언 Dust
-item.dirtyLeadDust.name=Dirty Lead Dust
+item.dirtyIronDust.name=더러운 철 가루
+item.dirtyGoldDust.name=더러운 금 가루
+item.dirtyOsmiumDust.name=더러운 오스뮴 가루
+item.dirtyCopperDust.name=더러운 구리 가루
+item.dirtyTinDust.name=더러운 주석 가루
+item.dirtySilverDust.name=더러운 은 가루
+item.dirtyObsidianDust.name=더러운 옵시디언 가루
+item.dirtyLeadDust.name=더러운 납 가루
 
 //Ingots
-item.obsidianIngot.name=옵시디언 Ingot
-item.osmiumIngot.name=오스뮴 Ingot
-item.bronzeIngot.name=청동 Ingot
-item.glowstoneIngot.name=발광석 Ingot
-item.steelIngot.name=강철 Ingot
-item.copperIngot.name=Copper Ingot
-item.tinIngot.name=Tin Ingot
+item.obsidianIngot.name=옵시디언 주괴
+item.osmiumIngot.name=오스뮴 주괴
+item.bronzeIngot.name=청동 주괴
+item.glowstoneIngot.name=발광석 주괴
+item.steelIngot.name=강철 주괴
+item.copperIngot.name=구리 주괴
+item.tinIngot.name=주석 주괴
 
 //Gasses
-gas.hydrogen=Hydrogen
-gas.oxygen=Oxygen
-gas.water=Water Vapor
-gas.chlorine=Chlorine
-gas.sulfurDioxideGas=Sulfur Dioxide
-gas.sulfurTrioxideGas=Sulfur Trioxide
-gas.sulfuricAcid=Sulfuric Acid
-gas.hydrogenChloride=Hydrogen Chloride
-gas.liquidOsmium=Liquid 오스뮴
-gas.liquidStone=Liquid Stone
-gas.ethene=Ethylene
-gas.sodium=Sodium
-gas.brine=Gaseous Brine
+gas.hydrogen=수소
+gas.oxygen=산소
+gas.water=증류수
+gas.chlorine=염소
+gas.sulfurDioxideGas=이산화 황
+gas.sulfurTrioxideGas=산산화 황
+gas.sulfuricAcid=황산
+gas.hydrogenChloride=염화 수소
+gas.liquidOsmium=액화 오스뮴
+gas.liquidStone=액화 돌
+gas.ethene=에틸렌
+gas.sodium=나트륨
+gas.brine=기체 소금물
 
-gas.iron=Iron Slurry
-gas.gold=Gold Slurry
-gas.osmium=오스뮴 Slurry
-gas.copper=Copper Slurry
-gas.tin=Tin Slurry
-gas.silver=Silver Slurry
-gas.obsidian=옵시디언 Slurry
-gas.lead=Lead Slurry
+gas.iron=철 슬러리
+gas.gold=금 슬러리
+gas.osmium=오스뮴 슬러리
+gas.copper=구리 슬러리
+gas.tin=주석 슬러리
+gas.silver=은 슬러리
+gas.obsidian=옵시디언 슬러리
+gas.lead=납 슬러리
 
-gas.cleanIron=Clean Iron Slurry
-gas.cleanGold=Clean Gold Slurry
-gas.cleanOsmium=Clean 오스뮴 Slurry
-gas.cleanCopper=Clean Copper Slurry
-gas.cleanTin=Clean Tin Slurry
-gas.cleanSilver=Clean Silver Slurry
-gas.cleanObsidian=Clean 옵시디언 Slurry
-gas.cleanLead=Clean Lead Slurry
+gas.cleanIron=깨끗한 철 슬러리
+gas.cleanGold=깨끗한 금 슬러리
+gas.cleanOsmium=깨끗한 오스뮴 슬러리
+gas.cleanCopper=깨끗한 구리 슬러리
+gas.cleanTin=깨끗한 주석 슬러리
+gas.cleanSilver=깨끗한 은 슬러리
+gas.cleanObsidian=깨끗한 옵시디언 슬러리
+gas.cleanLead=깨끗한 납 슬러리
 
 //BC Fuel Gases
-gas.fuel=Vaporized Fuel
-gas.oil=Vaporized Oil
+gas.fuel=증류 정제유
+gas.oil=증류 석유
 
 //Fluids
-fluid.hydrogen=Liquid Hydrogen
-fluid.oxygen=Liquid Oxygen
-fluid.chlorine=Liquid Chlorine
-fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
-fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
-fluid.sulfuricAcid=Liquid Sulfuric Acid
-fluid.hydrogenChloride=Liquid Hydrogen Chloride
-fluid.brine=Brine
-fluid.ethene=Liquid Ethylene
-fluid.sodium=Liquid Sodium
+fluid.hydrogen=액화 수소
+fluid.oxygen=액화 산소
+fluid.chlorine=액화 염소
+fluid.sulfurDioxideGas=액화 이산화황
+fluid.sulfurTrioxideGas=액화 삼산화황
+fluid.sulfuricAcid=액화 황산
+fluid.hydrogenChloride=액화 염화수소
+fluid.brine=소금물
+fluid.ethene=액화 에틸렌
+fluid.sodium=액화 나트륨
 
 //OreGas names
-oregas.iron=Iron Ore
-oregas.gold=Gold Ore
-oregas.osmium=오스뮴 Ore
-oregas.copper=Copper Ore
-oregas.tin=Tin Ore
-oregas.silver=Silver Ore
-oregas.obsidian=옵시디언 Ore
-oregas.lead=Lead Ore
+oregas.iron=철 광석
+oregas.gold=금 광석
+oregas.osmium=오스뮴 광석
+oregas.copper=구리 광석
+oregas.tin=주석 광석
+oregas.silver=은 광석
+oregas.obsidian=옵시디언 광석
+oregas.lead=납 광석
 
 //Update handler text
 update.consider=Consider updating to version
 update.newFeatures=New features
 update.visit=Visit
-update.toDownload=to download
-update.devBuild=Using developer build
+update.toDownload=다운로드 하러가기
+update.devBuild=개발버전이 빌드되었습니다
 update.outdated=Using outdated version on one or more modules
 
 //Key description text
-key.mode=Mode Switch
-key.voice=Voice
+key.mode=모드 스위치
+key.voice=소리
 
 //Config Gui
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
@@ -442,10 +442,10 @@ recipe.mekanismShaped=Shaped
 
 //Item and block tooltip text
 tooltip.configurator.configurate=Configurate
-tooltip.configurator.empty=Empty
+tooltip.configurator.empty=비어있음
 tooltip.configurator.rotate=Rotate
-tooltip.configurator.wrench=Wrench
-tooltip.configurator.pumpReset=Reset Electric Pump calculation
+tooltip.configurator.wrench=렌치
+tooltip.configurator.pumpReset=Reset 전기 Pump calculation
 tooltip.configurator.toggleDiverter=Diverter mode changed to
 tooltip.configurator.toggleColor=Color bumped to
 tooltip.configurator.viewColor=Current color
@@ -460,36 +460,36 @@ tooltip.upgrade.speed=속도
 tooltip.upgrade.energy=에너지
 
 tooltip.inventory=인벤토리
-tooltip.storedEnergy=Stored energy
+tooltip.storedEnergy=저장 전력
 tooltip.auth=Authenticated
-tooltip.locked=Locked
-tooltip.recipeType=Recipe type
+tooltip.locked=잠겨 있음
+tooltip.recipeType=레시피 속성
 tooltip.hold=Hold
 tooltip.forDesc=for a description
-tooltip.forDetails=for details
-tooltip.fireMode=Fire Mode
+tooltip.forDetails=더 자세한 정도
+tooltip.fireMode=파이어 모드
 tooltip.capacity=Capacity
 tooltip.pumpRate=Pump Rate
-tooltip.items=Items
-tooltip.blocks=Blocks
-tooltip.universal=universal
-tooltip.fluids=Fluids
-tooltip.gasses=Gasses
+tooltip.items=아이템
+tooltip.blocks=블럭
+tooltip.universal=범용
+tooltip.fluids=액체
+tooltip.gasses=가스
 tooltip.capableTrans=Capable of transferring
 tooltip.restrictiveDesc=Only used if no other paths available
 tooltip.diversionDesc=Controllable by redstone
-tooltip.noGas=No gas stored
+tooltip.noGas=가스가 저장되어있지 않습니다
 tooltip.stored=Stored
-tooltip.channel=Channel
-tooltip.mode=Mode
-tooltip.efficiency=Efficiency
+tooltip.channel=채널
+tooltip.mode=모드
+tooltip.efficiency=효율
 tooltip.modeToggle=Mode toggled to
 tooltip.flowing=Flowing
-tooltip.yes=yes
-tooltip.no=no
+tooltip.yes=예
+tooltip.no=아니오
 tooltip.name=Name
-tooltip.blockData=Block data
-tooltip.block=Block
+tooltip.blockData=블럭 data
+tooltip.block=블럭
 tooltip.meta=Metadata
 tooltip.tile=Tile
 tooltip.keysFound=Key(s) found
@@ -499,23 +499,23 @@ tooltip.configureState=Configure State
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=slow
-tooltip.disassembler.fast=fast
+tooltip.disassembler.normal=기본
+tooltip.disassembler.slow=느림
+tooltip.disassembler.fast=빠름
 tooltip.disassembler.vein=vein
-tooltip.disassembler.off=off
+tooltip.disassembler.off=꺼짐
 
 tooltip.filterCard.got=Retrieved filter data from %s
 tooltip.filterCard.set=Injected filter data of type %s
 tooltip.filterCard.unequal=Unequal filter data formats
-tooltip.filterCard.logisticalSorter=Logistical Sorter
+tooltip.filterCard.logisticalSorter=논리적 Sorter
 tooltip.filterCard.digitalMiner=Digital Miner
 
-tooltip.balloon=Balloon
+tooltip.balloon=풍선
 
 tooltip.jetpack.regular=Regular
 tooltip.jetpack.hover=Hover
-tooltip.jetpack.disabled=Disabled
+tooltip.jetpack.disabled=비활성화
 
 tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations
@@ -535,7 +535,7 @@ tooltip.Teleporter=A machine capable of teleporting players to various !nlocatio
 tooltip.ElectricPump=An advanced pump capable of pumping !nout an entire lava lake.
 tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitself from others by means of password protection.
 tooltip.Chargepad=A universal chargepad that can charge !nany energized item from any mod.
-tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
+tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and 논리적 Transporters.
 tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
 tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
 tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
@@ -559,7 +559,7 @@ tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce 
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
-tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
+tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than 구리.
 
 //Redstone control
 control.disabled=비활성화
@@ -570,8 +570,8 @@ control.high.desc=신호가 있으면 실행
 control.low.desc=신호가 없는 실행
 
 //Container edit modes
-fluidedit.both=Both
-fluidedit.fill=Fill
+fluidedit.both=양방향
+fluidedit.fill=가득
 fluidedit.empty=비어있음
 
 //Colors
