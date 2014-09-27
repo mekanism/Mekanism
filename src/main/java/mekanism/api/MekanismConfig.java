@@ -36,6 +36,7 @@ public class MekanismConfig
 		public static double FROM_TE;
 		public static int laserRange;
 		public static double laserEnergyNeededPerHardness;
+		public static double minerSilkMultiplier = 6;
 	}
 
 	public static class client
