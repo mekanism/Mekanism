@@ -220,6 +220,19 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+	{
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		return tileEntity.getRedstoneLevel();
+	}
+	
+	@Override
 	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
