@@ -95,7 +95,7 @@ public final class InventoryUtils
 					inventory.setInventorySlotContents(i, toInsert);
 					return null;
 				}
-				else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 				{
 					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -151,7 +151,7 @@ public final class InventoryUtils
 						inventory.setInventorySlotContents(slotID, toInsert);
 						return null;
 					}
-					else if(inSlot.isItemEqual(toInsert) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 					{
 						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 						{
@@ -182,7 +182,11 @@ public final class InventoryUtils
 		return toInsert;
 	}
 
-	public static InvStack takeTopItem(IInventory inventory, int side)
+	public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
+    		return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
+  	}
+
+  	public static InvStack takeTopItem(IInventory inventory, int side)
 	{
 		inventory = checkChestInv(inventory);
 
@@ -394,7 +398,7 @@ public final class InventoryUtils
 				{
 					return true;
 				}
-				else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 				{
 					if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -440,7 +444,7 @@ public final class InventoryUtils
 					{
 						return true;
 					}
-					else if(inSlot.isItemEqual(itemStack) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
 					{
 						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize())
 						{

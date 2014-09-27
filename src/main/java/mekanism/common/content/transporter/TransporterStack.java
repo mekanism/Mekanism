@@ -1,23 +1,21 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TransporterStack
 {
@@ -66,9 +64,7 @@ public class TransporterStack
 
 		getPrev(tileEntity).write(data);
 
-		data.add(MekanismUtils.getID(itemStack));
-		data.add(itemStack.stackSize);
-		data.add(itemStack.getItemDamage());
+		data.add(itemStack);
 	}
 
 	public void read(ByteBuf dataStream)
@@ -94,7 +90,7 @@ public class TransporterStack
 
 		clientPrev = Coord4D.read(dataStream);
 
-		itemStack = new ItemStack(Item.getItemById(dataStream.readInt()), dataStream.readInt(), dataStream.readInt());
+		itemStack = PacketHandler.readStack(dataStream);
 	}
 
 	public void write(NBTTagCompound nbtTags)

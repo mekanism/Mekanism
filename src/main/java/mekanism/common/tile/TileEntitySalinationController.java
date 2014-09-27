@@ -1,18 +1,20 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,14 +28,11 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import io.netty.buffer.ByteBuf;
-
 public class TileEntitySalinationController extends TileEntitySalinationBlock implements IActiveState
 {
 	public static final int MAX_BRINE = 10000;
 	public static final int MAX_SOLARS = 4;
 	public static final int WARMUP = 10000;
-	public static final double WATER_USAGE = 40;
 
 	public FluidTank waterTank = new FluidTank(0);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
@@ -92,14 +91,14 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 				int brineNeeded = brineTank.getCapacity()-brineTank.getFluidAmount();
 				int waterStored = waterTank.getFluidAmount();
 				
-				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*WATER_USAGE);
+				partialWater += Math.min(waterTank.getFluidAmount(), getTemperature()*usage.salinationPlantWaterUsage);
 				
 				if(partialWater >= 1)
 				{
 					int waterInt = (int)Math.floor(partialWater);
 					waterTank.drain(waterInt, true);
 					partialWater %= 1;
-					partialBrine += ((double)waterInt)/WATER_USAGE;
+					partialBrine += ((double)waterInt)/usage.salinationPlantWaterUsage;
 				}
 				
 				if(partialBrine >= 1)

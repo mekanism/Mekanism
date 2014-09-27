@@ -210,7 +210,7 @@ public class CommonProxy
 		general.TO_IC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EUToJoules", .1D).getDouble(.1D);
 		general.FROM_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "JoulesToMJ", 25D).getDouble(25D);
 		general.TO_BC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MJToJoules", .04D).getDouble(.04D);
-		general.FROM_H2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HydrogenEnergyDensity", 200D, "THIS DETERMINES ELECTROLYTIC SEPARATOR USAGE").getDouble(200D);
+		general.FROM_H2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HydrogenEnergyDensity", 200D, "Determines Electrolytic Separator usage").getDouble(200D);
 		general.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
 		general.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123, null, 1, 65535).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
@@ -266,6 +266,7 @@ public class CommonProxy
 		usage.pressurizedReactionBaseUsage = Mekanism.configuration.get("usage", "PressurizedReactionBaseUsage", 5D).getDouble(5D);
 		usage.fluidicPlenisherUsage = Mekanism.configuration.get("usage", "FluidicPlenisherUsage", 100D).getDouble(100D);
 		usage.laserUsage = Mekanism.configuration.get("usage", "LaserUsage", 5000D).getDouble(5000D);
+		usage.salinationPlantWaterUsage = Mekanism.configuration.get("usage", "SalinationPlantSpeed", 40.0, "Millibuckets of water turned into brine by the plant per tick", 1.0, 9000.0).getDouble();
 
 		if(Mekanism.configuration.hasChanged())
 		{
