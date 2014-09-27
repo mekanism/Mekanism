@@ -92,14 +92,15 @@ public class GuiGasTank extends GuiMekanism
 		{
 			return idleOption;
 		}
-		if(dumping.equals(TileEntityGasTank.Mode.DUMPING))
+		else if(dumping.equals(TileEntityGasTank.Mode.DUMPING))
 		{
 			return dumpingOption;
 		}
-		if(dumping.equals(TileEntityGasTank.Mode.DUMPING_EXCESS))
+		else if(dumping.equals(TileEntityGasTank.Mode.DUMPING_EXCESS))
 		{
 			return dumpingExcessOption;
 		}
+		
 		return idleOption; //should not happen;
 	}
 }
