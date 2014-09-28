@@ -338,6 +338,7 @@ gui.newFilter=Новый фильтр
 gui.energy=Энергия
 gui.gas=Газ
 gui.dumping=Дамп
+gui.dumping_excess=Избыточный дамп
 gui.modID=ID мода
 gui.key=Ключ
 gui.id=ID
