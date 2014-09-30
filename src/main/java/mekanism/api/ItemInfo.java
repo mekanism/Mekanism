@@ -31,8 +31,8 @@ public class ItemInfo
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + item.getUnlocalizedName().hashCode();
-		code = 31 * code + meta;
+		code = 31 * code + System.identityHashCode(item);
+		code = 7 * code + meta;
 		return code;
 	}
 }
