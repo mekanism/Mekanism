@@ -7,6 +7,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -73,6 +74,11 @@ public final class PipeUtils
 					{
 						connectable[side] = true;
 					}
+				}
+				else if(container.canDrain(ForgeDirection.getOrientation(side).getOpposite(), FluidRegistry.WATER)
+						|| container.canFill(ForgeDirection.getOrientation(side).getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
+				{
+					connectable[side] = true;
 				}
 			}
 		}
