@@ -1,8 +1,10 @@
 package mekanism.common.tile;
 
+import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
 import ic2.api.tile.IEnergyStorage;
 import io.netty.buffer.ByteBuf;
 
@@ -14,6 +16,7 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
@@ -50,6 +53,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	/** BuildCraft power handler. */
 	public PowerHandler powerHandler;
 
+	/** Is this registered with IC2 */
+	public boolean ic2Registered = false;
+
 	/**
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
 	 * and a current amount of stored energy.
@@ -79,10 +85,18 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			if(!Mekanism.ic2Registered.contains(Coord4D.get(this)))
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			if(registered != this)
 			{
-				Mekanism.ic2Registered.add(Coord4D.get(this));
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+				if(registered instanceof IEnergyTile)
+				{
+					MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
+				}
+				else if(registered == null)
+				{
+					MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+					ic2Registered = true;
+				}
 			}
 		}
 	}
@@ -92,10 +106,10 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			if(Mekanism.ic2Registered.contains(Coord4D.get(this)))
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			if(registered instanceof IEnergyTile)
 			{
-				Mekanism.ic2Registered.remove(Coord4D.get(this));
-				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
 			}
 		}
 	}
@@ -105,6 +119,8 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(MekanismUtils.useBuildCraft())
 			reconfigure();
+		if(!ic2Registered && MekanismUtils.useIC2())
+			register();
 	}
 
 	public EnumSet<ForgeDirection> getOutputtingSides()
