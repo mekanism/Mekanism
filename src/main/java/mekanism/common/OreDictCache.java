@@ -24,10 +24,11 @@ public final class OreDictCache
 		}
 
 		ItemInfo info = ItemInfo.get(check);
+		List<String> cached = cachedKeys.get(info);
 
-		if(cachedKeys.get(info) != null)
+		if(cached != null)
 		{
-			return cachedKeys.get(info);
+			return cached;
 		}
 
 		int[] idsFound = OreDictionary.getOreIDs(check);
