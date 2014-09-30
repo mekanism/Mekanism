@@ -22,7 +22,7 @@ public class ItemInfo
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof BlockInfo &&
+		return obj instanceof ItemInfo &&
 				((ItemInfo)obj).item == item &&
 				((ItemInfo)obj).meta == meta;
 	}
