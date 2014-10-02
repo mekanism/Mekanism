@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyConductor;
 import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
@@ -375,7 +376,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
 	{
-		return getOutputtingSides().contains(direction);
+		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
 	}
 
 	@Override
