@@ -118,7 +118,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 
-		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
+		if(!worldObj.isRemote && ticker % 20 == 0)
 		{
 			if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
 			{

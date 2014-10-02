@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +20,7 @@ public class ItemElectricBow extends ItemEnergized
 	public ItemElectricBow()
 	{
 		super(120000);
+		setFull3D();
 	}
 
 	@Override

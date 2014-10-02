@@ -37,6 +37,9 @@ public class MekanismConfig
 		public static int laserRange;
 		public static double laserEnergyNeededPerHardness;
 		public static double minerSilkMultiplier = 6;
+		public static boolean blacklistBC;
+		public static boolean blacklistIC2;
+		public static boolean blacklistRF;
 	}
 
 	public static class client

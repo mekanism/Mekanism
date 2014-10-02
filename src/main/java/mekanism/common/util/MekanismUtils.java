@@ -37,7 +37,6 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockEnergyCube;
@@ -47,7 +46,6 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityElectricChest;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -75,11 +73,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
-
-import buildcraft.api.tools.IToolWrench;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1124,7 +1121,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useBuildCraft()
 	{
-		return Mekanism.hooks.BuildCraftPowerLoaded;
+		return Mekanism.hooks.BuildCraftPowerLoaded && !general.blacklistBC;
 	}
 
 	/**
@@ -1134,7 +1131,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useIC2()
 	{
-		return Mekanism.hooks.IC2Loaded;
+		return Mekanism.hooks.IC2Loaded && !general.blacklistIC2;
 	}
 
 	/**
@@ -1144,7 +1141,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.RedstoneFluxLoaded;
+		return Mekanism.hooks.RedstoneFluxLoaded && !general.blacklistRF;
 	}
 
 	/**
