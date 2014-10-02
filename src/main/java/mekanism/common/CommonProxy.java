@@ -234,6 +234,10 @@ public class CommonProxy
 		Mekanism.TO_TE = Mekanism.TO_BC*10;
 		Mekanism.FROM_TE = Mekanism.FROM_BC/10;
 
+		Mekanism.blacklistBC = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistBuildCraftPower", false).getBoolean();
+		Mekanism.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
+		Mekanism.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();
+
 		if(Mekanism.cardboardSpawners)
 		{
 			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);

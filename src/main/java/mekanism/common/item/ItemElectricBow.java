@@ -20,6 +20,7 @@ public class ItemElectricBow extends ItemEnergized
 	public ItemElectricBow()
 	{
 		super(120000);
+		this.setFull3D;
 	}
 
 	@Override

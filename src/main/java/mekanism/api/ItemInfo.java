@@ -22,7 +22,7 @@ public class ItemInfo
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof BlockInfo &&
+		return obj instanceof ItemInfo &&
 				((ItemInfo)obj).item == item &&
 				((ItemInfo)obj).meta == meta;
 	}
@@ -31,8 +31,8 @@ public class ItemInfo
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * code + item.getUnlocalizedName().hashCode();
-		code = 31 * code + meta;
+		code = 31 * code + System.identityHashCode(item);
+		code = 7 * code + meta;
 		return code;
 	}
 }

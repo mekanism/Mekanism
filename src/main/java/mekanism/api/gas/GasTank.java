@@ -218,7 +218,7 @@ public class GasTank
 			stored = GasStack.readFromNBT(nbtTags.getCompoundTag("stored"));
 		}
 
-		if(nbtTags.hasKey("maxGas"))
+		if(nbtTags.hasKey("maxGas") && nbtTags.getInteger("maxGas") != 0)
 		{
 			maxGas = nbtTags.getInteger("maxGas");
 		}

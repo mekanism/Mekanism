@@ -333,6 +333,10 @@ public class Mekanism
 	public static double FROM_TE;
 	public static double FROM_UE = 1/TO_UE;
 
+	public static boolean blacklistBC;
+	public static boolean blacklistIC2;
+	public static boolean blacklistRF;
+
 	//Usage Configuration
 	public static double enrichmentChamberUsage;
 	public static double osmiumCompressorUsage;

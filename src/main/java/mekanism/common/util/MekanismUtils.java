@@ -1198,7 +1198,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useBuildCraft()
 	{
-		return Mekanism.hooks.BuildCraftPowerLoaded;
+		return Mekanism.hooks.BuildCraftPowerLoaded && !Mekanism.blacklistBC;
 	}
 
 	/**
@@ -1208,7 +1208,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useIC2()
 	{
-		return Mekanism.hooks.IC2Loaded;
+		return Mekanism.hooks.IC2Loaded && !Mekanism.blacklistIC2;
 	}
 
 	/**
@@ -1218,7 +1218,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.RedstoneFluxLoaded;
+		return Mekanism.hooks.RedstoneFluxLoaded && !Mekanism.blacklistRF;
 	}
 
 	/**
