@@ -251,17 +251,6 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		return itemStack;
 	}
 
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(!world.isRemote && MekanismUtils.useIC2())
-		{
-			((TileEntityElectricBlock)tileEntity).register();
-		}
-	}
-
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
 		ItemStack itemStack = getPickBlock(null, world, x, y, z);

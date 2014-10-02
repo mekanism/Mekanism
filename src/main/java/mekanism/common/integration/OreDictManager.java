@@ -398,7 +398,7 @@ public final class OreDictManager
 		try {
 			RecipeHandler.addCrusherRecipe(new ItemStack(Mekanism.Ingot, 1, 2), MekanismUtils.size(OreDictionary.getOres("dustBronze").get(0), 1));
 			
-			if(Mekanism.hooks.IC2APILoaded)
+			if(Mekanism.hooks.IC2Loaded)
 			{
 				addIC2BronzeRecipe();
 			}
@@ -506,7 +506,7 @@ public final class OreDictManager
 
 	}
 	
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public static void addIC2BronzeRecipe()
 	{
 		try {

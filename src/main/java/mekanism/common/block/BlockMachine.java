@@ -1124,20 +1124,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return true;
 	}
 
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
-			{
-				((TileEntityElectricBlock)tileEntity).register();
-			}
-		}
-	}
-
 	public static enum MachineType
 	{
 		ENRICHMENT_CHAMBER(Mekanism.MachineBlock, 0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, true, false, true),
