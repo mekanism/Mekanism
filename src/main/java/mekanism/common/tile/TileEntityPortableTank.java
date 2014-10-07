@@ -553,7 +553,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(fluidTank != null)
 		{
-			if(fluid == null || fluidTank.getFluid().getFluid() == fluid)
+			if(fluid == null || fluidTank.getFluid() == null || fluidTank.getFluid().getFluid() == fluid)
 			{
 				if(isActive)
 				{
