@@ -497,20 +497,6 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
-		}
-	}
-
-	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);

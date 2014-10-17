@@ -998,20 +998,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return true;
 	}
 
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(!world.isRemote)
-		{
-			if(tileEntity instanceof TileEntityBasicBlock)
-			{
-				((TileEntityBasicBlock)tileEntity).onAdded();
-			}
-		}
-	}
-
 	public static enum MachineBlock
 	{
 		MACHINE_BLOCK_1,

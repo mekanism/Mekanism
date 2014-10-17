@@ -19,7 +19,7 @@ public class NodeStats {
 		return voltage;
 	}
 
-	private final double energyIn;
-	private final double energyOut;
-	private final double voltage;
+	protected double energyIn;
+	protected double energyOut;
+	protected double voltage;
 }

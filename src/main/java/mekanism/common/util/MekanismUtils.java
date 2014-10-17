@@ -1,5 +1,7 @@
 package mekanism.common.util;
 
+import ic2.api.energy.EnergyNet;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -1131,7 +1133,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useIC2()
 	{
-		return Mekanism.hooks.IC2Loaded && !general.blacklistIC2;
+		return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !general.blacklistIC2;
 	}
 
 	/**

@@ -12,29 +12,29 @@ public enum Direction {
 	/**
 	 * -X
 	 */
-	XN(0),
+	XN,
 	/**
 	 * +X
 	 */
-	XP(1),
+	XP,
 
 	/**
 	 * -Y
 	 */
-	YN(2), //MC-Code starts with 0 here
+	YN, //MC-Code starts with 0 here
 	/**
 	 * +Y
 	 */
-	YP(3), // 1...
+	YP, // 1...
 
 	/**
 	 * -Z
 	 */
-	ZN(4),
+	ZN,
 	/**
 	 * +Z
 	 */
-	ZP(5);
+	ZP;
 
 	public static Direction fromSideValue(int side) {
 		return directions[(side + 2) % 6];
@@ -44,10 +44,6 @@ public enum Direction {
 		if (dir == ForgeDirection.UNKNOWN) return null;
 
 		return fromSideValue(dir.ordinal());
-	}
-
-	private Direction(int dir1) {
-		this.dir = dir1;
 	}
 
 	/**
@@ -72,7 +68,7 @@ public enum Direction {
 	public TileEntity applyTo(World world, int x, int y, int z) {
 		int coords[] = { x, y, z };
 
-		coords[dir/2] += getSign();
+		coords[ordinal() / 2] += getSign();
 
 		if (world != null && world.blockExists(coords[0], coords[1], coords[2])) {
 			try {
@@ -91,13 +87,7 @@ public enum Direction {
 	 * @return Inverse direction
 	 */
 	public Direction getInverse() {
-		int inverseDir = dir - getSign();
-
-		for (Direction direction : directions) {
-			if (direction.dir == inverseDir) return direction;
-		}
-
-		return this;
+		return directions[ordinal() ^ 1];
 	}
 
 	/**
@@ -106,7 +96,7 @@ public enum Direction {
 	 * @return Minecraft side value
 	 */
 	public int toSideValue() {
-		return (dir + 4) % 6;
+		return (ordinal() + 4) % 6;
 	}
 
 	/**
@@ -115,14 +105,13 @@ public enum Direction {
 	 * @return -1 if the direction is negative, +1 if the direction is positive
 	 */
 	private int getSign() {
-		return (dir % 2) * 2 - 1;
+		return (ordinal() % 2) * 2 - 1;
 	}
 
 	public ForgeDirection toForgeDirection() {
 		return ForgeDirection.getOrientation(toSideValue());
 	}
 
-	private int dir;
 	public static final Direction[] directions = Direction.values();
 }
 

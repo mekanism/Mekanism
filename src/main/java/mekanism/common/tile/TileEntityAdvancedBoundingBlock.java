@@ -29,7 +29,7 @@ import ic2.api.energy.tile.IEnergySink;
 
 @InterfaceList({
 		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2API", striprefs = true),
+		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
 		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
@@ -196,7 +196,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
 	{
 		if(getInv() == null)
@@ -359,7 +359,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public double getDemandedEnergy()
 	{
 		if(getInv() == null)
@@ -371,7 +371,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
 	{
 		if(getInv() == null)
@@ -383,7 +383,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public int getSinkTier()
 	{
 		if(getInv() == null)
