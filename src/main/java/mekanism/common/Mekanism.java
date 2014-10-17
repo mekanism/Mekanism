@@ -228,8 +228,6 @@ public class Mekanism
 	public static Set<String> jetpackOn = new HashSet<String>();
 	public static Set<String> gasmaskOn = new HashSet<String>();
 	
-	public static Set<Coord4D> ic2Registered = new HashSet<Coord4D>();
-	
 	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
 
 	//Items
@@ -1286,7 +1284,6 @@ public class Mekanism
 		//Clear all cache data
 		teleporters.clear();
 		dynamicInventories.clear();
-		ic2Registered.clear();
 		jetpackOn.clear();
 		gasmaskOn.clear();
 		activeVibrators.clear();

@@ -24,6 +24,7 @@ public interface IEnergySink extends IEnergyAcceptor {
 	 * 1 = LV, 2 = MV, 3 = HV, 4 = EV etc.
 	 * 
 	 * @note Modifying the energy net from this method is disallowed.
+	 * @note Return Integer.MAX_VALUE to allow any voltage.
 	 *
 	 * @return tier of this energy sink
 	 */

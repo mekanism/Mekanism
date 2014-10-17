@@ -30,8 +30,6 @@ import ic2.api.recipe.Recipes;
  */
 public final class MekanismHooks
 {
-	private Class BasicComponents;
-
 	private Class BuildCraftEnergy;
 
 	public boolean IC2Loaded = false;
@@ -80,7 +78,7 @@ public final class MekanismHooks
 		
 	}
 
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public void hookIC2Recipes()
 	{
 		for(Map.Entry<IRecipeInput, RecipeOutput> entry : Recipes.macerator.getRecipes().entrySet())

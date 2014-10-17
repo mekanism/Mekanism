@@ -90,4 +90,6 @@ public interface IElectricItemManager {
 	 * @return tool tip string or null for none
 	 */
 	String getToolTip(ItemStack stack);
+
+	// TODO: add tier getter
 }

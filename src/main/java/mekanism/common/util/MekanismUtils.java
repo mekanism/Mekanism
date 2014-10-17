@@ -76,6 +76,7 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
 
 import buildcraft.api.tools.IToolWrench;
+import ic2.api.energy.EnergyNet;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -1208,7 +1209,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useIC2()
 	{
-		return Mekanism.hooks.IC2Loaded && !Mekanism.blacklistIC2;
+		return Mekanism.hooks.IC2Loaded && EnergyNet.instance != null && !Mekanism.blacklistIC2;
 	}
 
 	/**
