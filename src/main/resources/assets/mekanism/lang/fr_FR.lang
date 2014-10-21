@@ -22,6 +22,19 @@ item.NetworkReader.name=Analyseur de Réseaux
 item.ManganeseAlloy.name=Alliage de Manganèse
 item.WalkieTalkie.name=Talkie-Walkie
 item.ElectrolyticCore.name=Noyau Electrolytique
+item.Jetpack.name=Jetpack
+item.ScubaTank.name=Scuba Tank
+item.GasMask.name=Masque à Gaz
+item.Dictionary.name=Dictionnaire
+item.Sawdust.name=Sciure
+item.Salt.name=Sel
+item.BrineBucket.name=Seau de Saumure
+item.FreeRunners.name=Bottes rapides
+item.ArmoredJetpack.name=Jetpack blindé
+item.FilterCard.name=Carte à filtre
+item.SeismicReader.name=Lecteur sismique
+item.PlaStick.name=Plastique
+item.Substrate.name=Substrate
 
 //Gas Tank
 tile.GasTank.GasTank.name=Réservoir de Gaz
@@ -42,6 +55,8 @@ tile.BasicBlock.SteelCasing.name=Boîtier en Acier
 tile.BasicBlock.DynamicTank.name=Réservoir Dynamique
 tile.BasicBlock.DynamicGlass.name=Vitre Dynamique
 tile.BasicBlock.DynamicValve.name=Valve Dynamique
+tile.BasicBlock.CopperBlock.name=Bloc de Copper
+tile.BasicBlock.TinBlock.name=Bloc de Tin
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Chambre d'Enrichissement
@@ -60,6 +75,21 @@ tile.MachineBlock.ElectricChest.name=Coffre Electrique
 tile.MachineBlock.Chargepad.name=Plaque de Chargement
 tile.MachineBlock.LogisticalSorter.name=Trieur Logistique
 tile.MachineBlock.DigitalMiner.name=Mineur Digital
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Condensentrator rotatif
+tile.MachineBlock2.ChemicalOxidizer.name=Oxydation chimique
+tile.MachineBlock2.ChemicalInfuser.name=Infuser chimique
+tile.MachineBlock2.ChemicalCombiner.name=Combiner chimique
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chambre d'injection de produits chimiques
+tile.MachineBlock2.ElectrolyticSeparator.name=Separateur électrolytique
+tile.MachineBlock2.PrecisionSawmill.name=Scierie préciese
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chambre de dissolution chimique
+tile.MachineBlock2.ChemicalWasher.name=Laveuse chimique
+tile.MachineBlock2.ChemicalCrystallizer.name=Crystallizer chimique
+tile.MachineBlock2.PressurizedReactionChamber.name=Chambre sous Pression de Réaction
+tile.MachineBlock2.PressurizedReactionChamber.short.name=CPR
+tile.MachineBlock2.PortableTank.name=Réservoir portable
 
 tile.MachineBlock2.ElectrolyticSeparator.name=Séparateur Electrolytique
 
@@ -99,6 +129,7 @@ item.copperClump.name=Tesson de Cuivre
 item.tinClump.name=Tesson d'Etain
 item.silverClump.name=Tesson d'Argent
 item.obsidianClump.name=Tesson d'Obsidienne
+item.leadClump.name=Tesson de Plomb
 
 //Dirty Dust
 item.dirtyIronDust.name=Poussière de Fer Sale
@@ -108,6 +139,7 @@ item.dirtyCopperDust.name=Poussière de Cuivre Sale
 item.dirtyTinDust.name=Poussière d'Etain Sale
 item.dirtySilverDust.name=Poussière d'Argent Sale
 item.dirtyObsidianDust.name=Poussière d'Obsidienne Sale
+item.dirtyLeadDust.name=Poussière de Plomb Sale
 
 //Ingots
 item.obsidianIngot.name=Lingot d'Obsidienne
@@ -115,9 +147,25 @@ item.osmiumIngot.name=Lingot d'Osmium
 item.bronzeIngot.name=Lingot de Bronze
 item.glowstoneIngot.name=Lingot de Pierre Lumineuse
 item.steelIngot.name=Lingot d'Acier
+item.leadIngot.name=Lingot de Plomb
+
+//Shards
+item.ironShard.name=Eclat de fer
+item.goldShard.name=Eclat d'or
+item.osmiumShard.name=Eclat d' Osmium
+item.copperShard.name=Eclat de Cuivre
+item.tinShard.name=Eclat d'Etain
+item.silverShard.name=Eclat d'Argent
+item.obsidianShard.name=Eclat d'Obsidienne 
+item.leadShard.name=Eclat de Plomb
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Minerai d'Osmium
+tile.OreBlock.CopperOre.name=Minerai de Copper
+tile.OreBlock.TinOre.name=Minerai de Tin
 
 //**********//
 //GENERATORS//
