@@ -39,6 +39,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class ItemBlockBasic extends ItemBlock
 {
+	//The indices for the blocks defined here
+	public static final int R_OBSIDIAN = 0;
+	public static final int CHARCOAL = 1;
+	public static final int R_GLOWSTONE = 2;
+	
 	public Block metaBlock;
 
 	public ItemBlockBasic(Block block)
@@ -171,23 +176,14 @@ public class ItemBlockBasic extends ItemBlock
 		{
 			switch(itemstack.getItemDamage())
 			{
-				case 0:
-					name = "OsmiumBlock";
-					break;
-				case 1:
-					name = "BronzeBlock";
-					break;
-				case 2:
+				case R_OBSIDIAN:
 					name = "RefinedObsidian";
 					break;
-				case 3:
+				case CHARCOAL:
 					name = "CharcoalBlock";
 					break;
-				case 4:
+				case R_GLOWSTONE:
 					name = "RefinedGlowstone";
-					break;
-				case 5:
-					name = "SteelBlock";
 					break;
 				case 6:
 					name = "Bin";
@@ -206,12 +202,6 @@ public class ItemBlockBasic extends ItemBlock
 					break;
 				case 11:
 					name = "DynamicValve";
-					break;
-				case 12:
-					name = "CopperBlock";
-					break;
-				case 13:
-					name = "TinBlock";
 					break;
 				case 14:
 					name = "SalinationController";

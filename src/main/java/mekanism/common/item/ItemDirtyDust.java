@@ -3,7 +3,6 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-import mekanism.common.Resource;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -12,6 +11,11 @@ import net.minecraft.util.IIcon;
 
 public class ItemDirtyDust extends ItemMekanism
 {
+	public static final int OBSIDIAN = 0;
+	public static final int LEAD = 1;
+	
+	private static final String[] values = {"Obsidian", "Lead"};
+	
 	public IIcon[] icons = new IIcon[256];
 
 	public ItemDirtyDust()
@@ -24,9 +28,9 @@ public class ItemDirtyDust extends ItemMekanism
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
-		for(int i = 0; i < Resource.values().length; i++)
+		for(int i = 0; i < values.length; i++)
 		{
-			icons[i] = register.registerIcon("mekanism:Dirty" + Resource.values()[i].getName() + "Dust");
+			icons[i] = register.registerIcon("mekanism:Dirty" + values[i] + "Dust");
 		}
 	}
 
@@ -39,15 +43,15 @@ public class ItemDirtyDust extends ItemMekanism
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter < Resource.values().length; counter++)
+		for(int i = 0; i < values.length; i++)
 		{
-			itemList.add(new ItemStack(item, 1, counter));
+			itemList.add(new ItemStack(item, 1, i));
 		}
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item.dirty" + Resource.values()[item.getItemDamage()].getName() + "Dust";
+		return "item.dirty" + values[item.getItemDamage()] + "Dust";
 	}
 }
