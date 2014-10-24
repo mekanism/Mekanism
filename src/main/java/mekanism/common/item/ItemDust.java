@@ -12,14 +12,11 @@ import net.minecraft.util.IIcon;
 public class ItemDust extends ItemMekanism
 {
 	//The indices for the types of dust defined here.
-	public static final int R_OBSIDIAN = 0;
-	public static final int DIAMOND = 1;
-	public static final int LEAD = 2;
-	public static final int SULFUR = 3;
+	public static final int SULFUR = 0;
 
 	public IIcon[] icons = new IIcon[256];
 
-	public static String[] en_USNames = { "Obsidian", "Diamond", "Lead", "Sulfur" };
+	public static String[] en_USNames = { "Sulfur" };
 
 	public ItemDust()
 	{

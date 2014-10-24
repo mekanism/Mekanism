@@ -7,10 +7,10 @@ import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import ca.bradj.orecore.item.OreCoreItems;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 {
@@ -47,7 +47,7 @@ public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public List<ItemStack> getFuelStacks(Gas gasType)
 	{
-		return ListUtils.asList(new ItemStack(Mekanism.Ingot, 1, 1));
+		return ListUtils.asList(new ItemStack(OreCoreItems.osmiumIngot, 1));
 	}
 
 	@Override

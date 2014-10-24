@@ -12,12 +12,11 @@ import net.minecraft.util.IIcon;
 public class ItemIngot extends ItemMekanism {
 	
 	//The indices for the types of ingots defined here.
-	public static final int R_OBSIDIAN = 0;
-	public static final int R_GLOWSTONE = 1;
+	public static final int R_GLOWSTONE = 0;
 
 	public IIcon[] icons = new IIcon[256];
 
-	public static String[] en_USNames = { "Obsidian", "Glowstone" };
+	public static String[] en_USNames = { "Glowstone" };
 
 	public ItemIngot() {
 		super();
