@@ -194,9 +194,13 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 			{
 				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
 			}
+			
 			List<ItemStack> infuses;
-			for(ItemStack stack : getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType)) {
-				if(NEIServerUtils.areStacksSameTypeCrafting(stack, ingredient)) {
+			
+			for(ItemStack stack : getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType)) 
+			{
+				if(NEIServerUtils.areStacksSameTypeCrafting(stack, ingredient))
+				{
 					infuses = new ArrayList<ItemStack>();
 					infuses.add(stack);
 					arecipes.add(new CachedIORecipe(irecipe, infuses, ((InfusionInput)irecipe.getKey()).infusionType));
