@@ -31,6 +31,7 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 		{
 			return testEquality((INPUT)other);
 		}
+		
 		return false;
 	}
 
