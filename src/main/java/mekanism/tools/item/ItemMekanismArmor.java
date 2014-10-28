@@ -2,8 +2,11 @@ package mekanism.tools.item;
 
 import java.util.List;
 
+import ca.bradj.orecore.item.OreCoreItems;
+import ca.bradj.orecoreext.item.OreCoreExtendedItems;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemIngot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.api.StackUtils;
 import mekanism.tools.common.MekanismTools;
@@ -55,7 +58,7 @@ public class ItemMekanismArmor extends ItemArmor
     {
     	if(getArmorMaterial() == MekanismTools.armorOBSIDIAN)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 0);
+    		return new ItemStack(OreCoreExtendedItems.obsidianIngot, 1);
     	}
     	else if(getArmorMaterial() == MekanismTools.armorLAZULI)
     	{
@@ -63,19 +66,19 @@ public class ItemMekanismArmor extends ItemArmor
     	}
     	else if(getArmorMaterial() == MekanismTools.armorOSMIUM)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 1);
+    		return new ItemStack(OreCoreItems.osmiumIngot, 1);
     	}
     	else if(getArmorMaterial() == MekanismTools.armorBRONZE)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 2);
+    		return new ItemStack(OreCoreItems.bronzeIngot, 1);
     	}
     	else if(getArmorMaterial() == MekanismTools.armorGLOWSTONE)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 3);
+    		return new ItemStack(Mekanism.GlowstoneIngot, 1, ItemIngot.R_GLOWSTONE);
     	}
     	else if(getArmorMaterial() == MekanismTools.armorSTEEL)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 4);
+    		return new ItemStack(OreCoreItems.steelIngot, 1);
     	}
     	
     	return new ItemStack(getArmorMaterial().func_151685_b());

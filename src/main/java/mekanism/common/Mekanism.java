@@ -44,7 +44,6 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.block.BlockObsidianTNT;
-import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPlastic;
 import mekanism.common.block.BlockPlasticFence;
 import mekanism.common.block.BlockSalt;
@@ -60,14 +59,10 @@ import mekanism.common.item.ItemBlockCardboardBox;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.item.ItemBlockMachine;
-import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
-import mekanism.common.item.ItemClump;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemControlCircuit;
-import mekanism.common.item.ItemCrystal;
 import mekanism.common.item.ItemDictionary;
-import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
@@ -85,7 +80,6 @@ import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemSeismicReader;
-import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
@@ -134,8 +128,12 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Optional;
+
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
+import ca.bradj.orecore.item.OreCoreItems;
+import ca.bradj.orecoreext.item.OreCoreExtendedItems;
 import codechicken.multipart.handler.MultipartProxy;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -275,7 +273,6 @@ public class Mekanism
 	public static Block BasicBlock2;
 	public static Block MachineBlock;
 	public static Block MachineBlock2;
-	public static Block OreBlock;
 	public static Block ObsidianTNT;
 	public static Block EnergyCube;
 	public static Block BoundingBlock;
@@ -290,12 +287,8 @@ public class Mekanism
 	public static Block SaltBlock;
 
 	//Multi-ID Items
-	public static Item Dust;
-	public static Item Ingot;
-	public static Item Clump;
-	public static Item DirtyDust;
-	public static Item Shard;
-	public static Item Crystal;
+	public static Item SulfurDust;
+	public static Item GlowstoneIngot;
 	public static Item ControlCircuit;
 
 	//General Configuration
@@ -365,53 +358,17 @@ public class Mekanism
 	public void addRecipes()
 	{
 		//Storage Recipes
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 3), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, ItemBlockBasic.CHARCOAL), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), new ItemStack(Items.coal, 1, 1)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Items.coal, 9, 1), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 3)
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Items.coal, 9), new Object[] {
+			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, ItemBlockBasic.CHARCOAL)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 2), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotRefinedObsidian"
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, ItemBlockBasic.R_OBSIDIAN), new Object[] {
+			"***", "***", "***", Character.valueOf('*'), "ingotObsidian"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 0), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 2)	
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 4), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, ItemBlockBasic.R_GLOWSTONE), new Object[] {
 			"***", "***", "***", Character.valueOf('*'), "ingotRefinedGlowstone"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 3), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 0), new Object[] {
-			"XXX", "XXX", "XXX", Character.valueOf('X'), "ingotOsmium"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 1), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 0)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 1), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotBronze"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 2), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 1)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 5), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotSteel"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 4), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 5)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 12), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotCopper"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 5), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 12)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BasicBlock, 1, 13), new Object[] {
-			"***", "***", "***", Character.valueOf('*'), "ingotTin"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Ingot, 9, 6), new Object[] {
-			"*", Character.valueOf('*'), new ItemStack(BasicBlock, 1, 13)
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(SaltBlock), new Object[] {
 			"**", "**", Character.valueOf('*'), Salt
@@ -742,7 +699,7 @@ public class Mekanism
 				new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(BlockHDPE, 1, i), new ItemStack(Items.glowstone_dust)
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockReinforcedHDPE, 4, i), new Object[] {
-				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(Dust, 1, 2)
+				" P ", "POP", " P ", Character.valueOf('P'), new ItemStack(BlockHDPE, 1, i), Character.valueOf('O'), new ItemStack(OreCoreItems.osmiumDust, 1)
 			}));
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockRoadHDPE, 3, i), new Object[] {
 				"SSS", "PPP", "SSS", Character.valueOf('S'), Blocks.sand, Character.valueOf('P'), new ItemStack(BlockSlickHDPE, 1, i)
@@ -750,19 +707,11 @@ public class Mekanism
         }
 	
 		//Furnace Recipes
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(OreBlock, 1, 0), new ItemStack(Ingot, 1, 1), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(OreBlock, 1, 1), new ItemStack(Ingot, 1, 5), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(OreBlock, 1, 2), new ItemStack(Ingot, 1, 6), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Dust, 1, 2), new ItemStack(Ingot, 1, 1), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Dust, 1, 0), new ItemStack(Items.iron_ingot), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Dust, 1, 1), new ItemStack(Items.gold_ingot), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Dust, 1, 5), new ItemStack(Ingot, 1, 4), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Dust, 1, 6), new ItemStack(Ingot, 1, 5), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Dust, 1, 7), new ItemStack(Ingot, 1, 6), 0.0F);
+		FurnaceRecipes.smelting().func_151394_a(new ItemStack(Items.glowstone_dust, 1), new ItemStack(GlowstoneIngot, 1, ItemIngot.R_GLOWSTONE), 0.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.redstone_ore), new ItemStack(Items.redstone, 12));
-        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.obsidian), new ItemStack(DirtyDust, 2, 6));
+        RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.obsidian), new ItemStack(OreCoreExtendedItems.obsidianDirtyDust, 2));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.coal, 1, 0), new ItemStack(CompressedCarbon));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.coal, 1, 1), new ItemStack(CompressedCarbon));
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Items.redstone), new ItemStack(CompressedRedstone));
@@ -793,12 +742,12 @@ public class Mekanism
 		RecipeHandler.addCombinerRecipe(new ItemStack(Items.flint), new ItemStack(Blocks.gravel));
 		
 		//Osmium Compressor Recipes
-		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.glowstone_dust), new ItemStack(Ingot, 1, 3));
+		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.glowstone_dust), new ItemStack(GlowstoneIngot, 1, 3));
 		
 		//Crusher Recipes
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.diamond), new ItemStack(Dust, 1, 4));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Items.iron_ingot), new ItemStack(Dust, 1, 0));
-        RecipeHandler.addCrusherRecipe(new ItemStack(Items.gold_ingot), new ItemStack(Dust, 1, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.diamond), new ItemStack(OreCoreExtendedItems.diamondDust, 1));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Items.iron_ingot), new ItemStack(OreCoreItems.ironDust, 1));
+        RecipeHandler.addCrusherRecipe(new ItemStack(Items.gold_ingot), new ItemStack(OreCoreItems.goldDust, 1));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.gravel), new ItemStack(Blocks.sand));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.stone), new ItemStack(Blocks.cobblestone));
         RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.cobblestone), new ItemStack(Blocks.gravel));
@@ -827,13 +776,14 @@ public class Mekanism
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.rotten_flesh), new ItemStack(BioFuel, 2));
 
 		//Purification Chamber Recipes
-        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.obsidian), new ItemStack(Clump, 3, 6));
+		
+        RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.obsidian), new ItemStack(OreCoreExtendedItems.obsidianClump, 3)); 
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.gravel), new ItemStack(Items.flint));
         
         //Chemical Injection Chamber Recipes
-        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Blocks.obsidian), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Shard, 4, 6));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Blocks.obsidian), GasRegistry.getGas("hydrogenChloride")), new ItemStack(OreCoreExtendedItems.obsidianShard, 4));
         RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Blocks.dirt), GasRegistry.getGas("water")), new ItemStack(Blocks.clay));
-        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Items.gunpowder), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.Dust, 1, 10));
+        RecipeHandler.addChemicalInjectionChamberRecipe(new AdvancedInput(new ItemStack(Items.gunpowder), GasRegistry.getGas("hydrogenChloride")), new ItemStack(Mekanism.SulfurDust, 1, ItemDust.SULFUR));
 		
 		//Precision Sawmill Recipes
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ladder, 3), new ChanceOutput(new ItemStack(Items.stick, 7)));
@@ -852,7 +802,7 @@ public class Mekanism
 		
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(EnrichedIron));
-        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(Dust, 1, 5));
+        RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("CARBON"), 10, new ItemStack(EnrichedIron)), new ItemStack(OreCoreItems.steelDust, 1));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("REDSTONE"), 10, new ItemStack(Items.iron_ingot)), new ItemStack(EnrichedAlloy));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Blocks.dirt)), new ItemStack(Blocks.mycelium));
         RecipeHandler.addMetallurgicInfuserRecipe(InfusionInput.getInfusion(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone)), new ItemStack(Blocks.mossy_cobblestone));
@@ -878,7 +828,10 @@ public class Mekanism
 				OreGas oreGas = (OreGas)gas;
 				
 				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
-				RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+				Optional<Item> crystal = OreCoreExtendedItems.getCrystalByName(oreGas.getName());
+				if (crystal.isPresent()) {
+					RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(crystal.get(), 1));
+				}
 			}
 		}
 		
@@ -973,12 +926,8 @@ public class Mekanism
 		BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
 		Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 		Salt = new ItemMekanism().setUnlocalizedName("Salt");
-		Ingot = new ItemIngot();
-		DirtyDust = new ItemDirtyDust();
-		Clump = new ItemClump();
-		Shard = new ItemShard();
-		Crystal = new ItemCrystal();
-		Dust = new ItemDust();
+		GlowstoneIngot = new ItemIngot();
+		SulfurDust = new ItemDust();
 		Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
 		Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
 		ItemProxy = new ItemProxy().setUnlocalizedName("ItemProxy");
@@ -993,8 +942,8 @@ public class Mekanism
 		//Registrations
 		GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
-		GameRegistry.registerItem(Dust, "Dust");
-		GameRegistry.registerItem(Ingot, "Ingot");
+		GameRegistry.registerItem(SulfurDust, "Dust");
+		GameRegistry.registerItem(GlowstoneIngot, "Ingot");
 		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
@@ -1012,8 +961,6 @@ public class Mekanism
 		GameRegistry.registerItem(CompressedObsidian, "CompressedObsidian");
 		GameRegistry.registerItem(PortableTeleporter, "PortableTeleporter");
 		GameRegistry.registerItem(TeleportationCore, "TeleportationCore");
-		GameRegistry.registerItem(Clump, "Clump");
-		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
 		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
@@ -1022,12 +969,10 @@ public class Mekanism
 		GameRegistry.registerItem(GasMask, "GasMask");
 		GameRegistry.registerItem(ScubaTank, "ScubaTank");
 		GameRegistry.registerItem(Balloon, "Balloon");
-		GameRegistry.registerItem(Shard, "Shard");
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 		GameRegistry.registerItem(Sawdust, "Sawdust");
 		GameRegistry.registerItem(Salt, "Salt");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
-		GameRegistry.registerItem(Crystal, "Crystal");
 		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 		GameRegistry.registerItem(FilterCard, "FilterCard");
@@ -1048,7 +993,6 @@ public class Mekanism
 		BasicBlock2 = new BlockBasic().setBlockName("BasicBlock2");
 		MachineBlock = new BlockMachine().setBlockName("MachineBlock");
 		MachineBlock2 = new BlockMachine().setBlockName("MachineBlock2");
-		OreBlock = new BlockOre().setBlockName("OreBlock");
 		EnergyCube = new BlockEnergyCube().setBlockName("EnergyCube");
 		ObsidianTNT = new BlockObsidianTNT().setBlockName("ObsidianTNT").setCreativeTab(tabMekanism);
 		BoundingBlock = (BlockBounding)new BlockBounding().setBlockName("BoundingBlock");
@@ -1067,7 +1011,6 @@ public class Mekanism
 		GameRegistry.registerBlock(BasicBlock2, ItemBlockBasic.class, "BasicBlock2");
 		GameRegistry.registerBlock(MachineBlock, ItemBlockMachine.class, "MachineBlock");
 		GameRegistry.registerBlock(MachineBlock2, ItemBlockMachine.class, "MachineBlock2");
-		GameRegistry.registerBlock(OreBlock, ItemBlockOre.class, "OreBlock");
 		GameRegistry.registerBlock(EnergyCube, ItemBlockEnergyCube.class, "EnergyCube");
 		GameRegistry.registerBlock(ObsidianTNT, "ObsidianTNT");
 		GameRegistry.registerBlock(BoundingBlock, "BoundingBlock");
@@ -1100,53 +1043,19 @@ public class Mekanism
 		OreDictionary.registerOre("alloyElite", new ItemStack(ReinforcedAlloy));
 		OreDictionary.registerOre("alloyUltimate", new ItemStack(AtomicAlloy));
 		
-		//for RailCraft/IC2.
-		OreDictionary.registerOre("dustObsidian", new ItemStack(DirtyDust, 1, 6));
-		
 		//GregoriousT?
 		OreDictionary.registerOre("itemSalt", Salt);
 		OreDictionary.registerOre("dustSalt", Salt);
 		
-		OreDictionary.registerOre("dustIron", new ItemStack(Dust, 1, 0));
-		OreDictionary.registerOre("dustGold", new ItemStack(Dust, 1, 1));
-		OreDictionary.registerOre("dustOsmium", new ItemStack(Dust, 1, 2));
-		OreDictionary.registerOre("dustRefinedObsidian", new ItemStack(Dust, 1, 3));
-		OreDictionary.registerOre("dustDiamond", new ItemStack(Dust, 1, 4));
-		OreDictionary.registerOre("dustSteel", new ItemStack(Dust, 1, 5));
-		OreDictionary.registerOre("dustCopper", new ItemStack(Dust, 1, 6));
-		OreDictionary.registerOre("dustTin", new ItemStack(Dust, 1, 7));
-		OreDictionary.registerOre("dustSilver", new ItemStack(Dust, 1, 8));
-		OreDictionary.registerOre("dustLead", new ItemStack(Dust, 1, 9));
-		OreDictionary.registerOre("dustSulfur", new ItemStack(Dust, 1, 10));
+		OreDictionary.registerOre("dustRefinedObsidian", new ItemStack(OreCoreExtendedItems.obsidianDust, 1));
+		OreDictionary.registerOre("dustSulfur", new ItemStack(SulfurDust, 1, ItemDust.SULFUR));
 		
-		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(Ingot, 1, 0));
-		OreDictionary.registerOre("ingotOsmium", new ItemStack(Ingot, 1, 1));
-		OreDictionary.registerOre("ingotBronze", new ItemStack(Ingot, 1, 2));
-		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(Ingot, 1, 3));
-		OreDictionary.registerOre("ingotSteel", new ItemStack(Ingot, 1, 4));
-		OreDictionary.registerOre("ingotCopper", new ItemStack(Ingot, 1, 5));
-		OreDictionary.registerOre("ingotTin", new ItemStack(Ingot, 1, 6));
+		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(OreCoreExtendedItems.obsidianIngot, 1));
+		OreDictionary.registerOre("ingotRefinedGlowstone", new ItemStack(GlowstoneIngot, 1, ItemIngot.R_GLOWSTONE));
 		
-		OreDictionary.registerOre("blockOsmium", new ItemStack(BasicBlock, 1, 0));
-		OreDictionary.registerOre("blockBronze", new ItemStack(BasicBlock, 1, 1));
-		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(BasicBlock, 1, 2));
-		OreDictionary.registerOre("blockCharcoal", new ItemStack(BasicBlock, 1, 3));
-		OreDictionary.registerOre("blockRefinedGlowstone", new ItemStack(BasicBlock, 1, 4));
-		OreDictionary.registerOre("blockSteel", new ItemStack(BasicBlock, 1, 5));
-		OreDictionary.registerOre("blockCopper", new ItemStack(BasicBlock, 1, 12));
-		OreDictionary.registerOre("blockTin", new ItemStack(BasicBlock, 1, 13));
-		
-		for(Resource resource : Resource.values())
-		{
-			OreDictionary.registerOre("dustDirty" + resource.getName(), new ItemStack(DirtyDust, 1, resource.ordinal()));
-			OreDictionary.registerOre("clump" + resource.getName(), new ItemStack(Clump, 1, resource.ordinal()));
-			OreDictionary.registerOre("shard" + resource.getName(), new ItemStack(Shard, 1, resource.ordinal()));
-			OreDictionary.registerOre("crystal" + resource.getName(), new ItemStack(Crystal, 1, resource.ordinal()));
-		}
-		
-		OreDictionary.registerOre("oreOsmium", new ItemStack(OreBlock, 1, 0));
-		OreDictionary.registerOre("oreCopper", new ItemStack(OreBlock, 1, 1));
-		OreDictionary.registerOre("oreTin", new ItemStack(OreBlock, 1, 2));
+		OreDictionary.registerOre("blockRefinedObsidian", new ItemStack(BasicBlock, 1, ItemBlockBasic.R_OBSIDIAN));
+		OreDictionary.registerOre("blockCharcoal", new ItemStack(BasicBlock, 1, ItemBlockBasic.CHARCOAL));
+		OreDictionary.registerOre("blockRefinedGlowstone", new ItemStack(BasicBlock, 1, ItemBlockBasic.R_GLOWSTONE));
 		
 		//MC stuff
 		OreDictionary.registerOre("oreCoal", new ItemStack(Blocks.coal_ore));
@@ -1323,7 +1232,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("sodium").registerFluid());
 		GasRegistry.register(new Gas("brine").registerFluid());
 		
-		for(Resource resource : Resource.values())
+		for(GassableResources resource : GassableResources.values())
 		{
 			String name = resource.getName();
 			

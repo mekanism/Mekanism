@@ -17,3 +17,13 @@ MDK.zip
 *.blend1
 *.blend2
 /bin
+/asm
+/config
+/logs
+/saves
+/crash-reports
+/src/main/resources/assets/mekanism/textures/items/Thumbs.db
+/options.txt
+/gradlew
+/eclipse
+/src/main/resources/assets/mekanism/gui

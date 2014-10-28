@@ -3,6 +3,8 @@ package mekanism.common.integration;
 import java.util.List;
 import java.util.Map;
 
+import ca.bradj.orecore.item.OreCoreItems;
+import ca.bradj.orecoreext.item.OreCoreExtendedItems;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.recipe.RecipeHandler;
@@ -106,25 +108,25 @@ public final class MekanismHooks
 		}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(OreCoreItems.osmiumDust, 2));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(OreCoreItems.osmiumDust, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(OreCoreExtendedItems.obsidianDust, 1));
 			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone_dust));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(OreCoreItems.steelDust, 1));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(OreCoreExtendedItems.ironDirtyDust, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(OreCoreExtendedItems.goldDirtyDust, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(OreCoreExtendedItems.osmiumDirtyDust, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(OreCoreExtendedItems.copperDirtyDust, 1));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(OreCoreExtendedItems.tinDirtyDust));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(OreCoreExtendedItems.silverDirtyDust));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(OreCoreExtendedItems.obsidianDirtyDust));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(OreCoreExtendedItems.leadDirtyDust));
 		} catch(Exception e) {}
 
 		NBTTagCompound tag = new NBTTagCompound();
