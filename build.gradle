@@ -4,12 +4,12 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            name="forge"
+            url="http://files.minecraftforge.net/maven"
         }
         maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+            name="sonatype"
+            url="https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
     dependencies {
@@ -25,34 +25,44 @@ repositories {
     maven {
         name 'ForgeFS'
         url 'http://files.minecraftforge.net/maven'
-     }
+	}
+ 	maven {
+        name 'BradJ'
+        url 'http://bradj.ca:8081/nexus/content/repositories/releases/'
+ 	}
+ 	maven {
+        name 'BradJ'
+        url 'http://bradj.ca:8081/nexus/content/repositories/snapshots/'
+ 	}
 }
 
 apply plugin: 'forge'
 
 // Define properties file
-ext.configFile = file "build.properties"
+ext.configFile=file "build.properties"
 
 configFile.withReader {
     // Load config. It shall from now be referenced as simply config or project.config
-    def prop = new Properties()
+    def prop=new Properties()
     prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
+    project.ext.config=new ConfigSlurper().parse prop
 }
 
 dependencies {
     compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
     compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
     compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
+    compile "ca.bradj:OreCore:${config.minecraft_version}-${config.ORECORE_version}"
+    compile "ca.bradj:OreCoreExtended:${config.minecraft_version}-${config.ORECOREX_version}"
 }
 
-version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
-archivesBaseName = "MekanismAll"
-libsDirName = "../output"
-distsDirName = "../output"
+version="${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
+archivesBaseName="MekanismAll"
+libsDirName="../output"
+distsDirName="../output"
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version=config.minecraft_version + "-" + config.forge_version
 }
 
 processResources
@@ -65,7 +75,7 @@ processResources
 }
 
 task coreJar(type: Jar) {
-    baseName = 'Mekanism'
+    baseName='Mekanism'
 
     manifest {
         attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
@@ -83,7 +93,7 @@ task coreJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    baseName = 'MekanismTools'
+    baseName='MekanismTools'
 
     from('etc/tools') {
         include '*.info'
@@ -96,7 +106,7 @@ task toolsJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    baseName = 'MekanismGenerators'
+    baseName='MekanismGenerators'
 
     from('etc/generators') {
         include '*.info'
@@ -113,7 +123,7 @@ toolsJar.dependsOn('reobf')
 generatorsJar.dependsOn('reobf')
 
 task MDKZip(type: Zip) {
-    baseName = 'MDK'
+    baseName='MDK'
     from sourceSets.main.java.srcDirs
     include 'mekanism/api/**'
 }

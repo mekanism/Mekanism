@@ -16,11 +16,11 @@ public class GenHandler implements IWorldGenerator
 	{
 		if(!(chunkGenerator instanceof ChunkProviderHell) && !(chunkGenerator instanceof ChunkProviderEnd))
 		{
-			for(int i = 0; i < Mekanism.saltPerChunk; i++)
+			for(int i=0; i < Mekanism.saltPerChunk; i++)
 			{
-				int randPosX = (chunkX*16) + random.nextInt(16);
-				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				int randPosY = world.getTopSolidOrLiquidBlock(randPosX, randPosZ);
+				int randPosX=(chunkX*16) + random.nextInt(16);
+				int randPosZ=(chunkZ*16) + random.nextInt(16);
+				int randPosY=world.getTopSolidOrLiquidBlock(randPosX, randPosZ);
 				new WorldGenSalt(6).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 		}

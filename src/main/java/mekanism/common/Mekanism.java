@@ -128,6 +128,8 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.base.Optional;
+
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import ca.bradj.orecore.item.OreCoreItems;
@@ -826,8 +828,10 @@ public class Mekanism
 				OreGas oreGas = (OreGas)gas;
 				
 				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
-				//TODO: Bring this back -BJ
-//				RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(Crystal, 1, GassableResources.getFromName(oreGas.getName()).ordinal()));
+				Optional<Item> crystal = OreCoreExtendedItems.getCrystalByName(oreGas.getName());
+				if (crystal.isPresent()) {
+					RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(crystal.get(), 1));
+				}
 			}
 		}
 		
