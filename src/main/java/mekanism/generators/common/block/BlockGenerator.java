@@ -65,8 +65,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
 public class BlockGenerator extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
-	public Random machineRand = new Random();
-
 	public BlockGenerator()
 	{
 		super(Material.iron);
