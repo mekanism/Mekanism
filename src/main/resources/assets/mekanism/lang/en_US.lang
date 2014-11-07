@@ -309,8 +309,14 @@ entity.Robit.name=Robit
 entity.BabySkeleton.name=Baby Skeleton
 
 //Config Gui
+mekanism.configgui.ctgy.general=Mekanism General Settings
+mekanism.configgui.ctgy.usage=Usage Settings
+mekanism.configgui.ctgy.client=Client Settings
+
+//Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
+mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
 //Gui text
 gui.removeSpeedUpgrade=Remove speed upgrade
@@ -791,6 +797,11 @@ item.SteelHoe.name=Steel Hoe
 item.SteelSword.name=Steel Sword
 
 //Config Gui
+mekanism.configgui.ctgy.tools.general=General
+mekanism.configgui.ctgy.tools.armor=Armor Balance
+mekanism.configgui.ctgy.tools.tools=Tools Balance
+
+//Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
