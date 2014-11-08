@@ -89,7 +89,7 @@ public class MekanismGenerators implements IModule
 				}
 			}
 
-			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("Ethene"), (int) (2400 * Mekanism.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("Ethene"), (int) (240 * Mekanism.TO_TE), 40 * FluidContainerRegistry.BUCKET_VOLUME);
 		}
 	}
 	
