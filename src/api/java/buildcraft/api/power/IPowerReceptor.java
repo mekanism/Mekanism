@@ -16,6 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
  * This interface should be implemented by any Tile Entity that wishes to be
  * able to receive power.
  */
+@Deprecated
 public interface IPowerReceptor {
 
 	/**
@@ -28,6 +29,7 @@ public interface IPowerReceptor {
 	 * engines to eventually explode.
 	 *
 	 * @param side
+	 * @return
 	 */
 	PowerHandler.PowerReceiver getPowerReceiver(ForgeDirection side);
 

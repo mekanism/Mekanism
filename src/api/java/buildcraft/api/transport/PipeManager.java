@@ -15,10 +15,15 @@ import net.minecraft.world.World;
 
 public abstract class PipeManager {
 
+	public static List<IStripesHandler> stripesHandlers = new ArrayList<IStripesHandler>();
 	public static List<IExtractionHandler> extractionHandlers = new ArrayList<IExtractionHandler>();
 
 	public static void registerExtractionHandler(IExtractionHandler handler) {
 		extractionHandlers.add(handler);
+	}
+	
+	public static void registerStripesHandler(IStripesHandler handler) {
+		stripesHandlers.add(handler);
 	}
 
 	/**

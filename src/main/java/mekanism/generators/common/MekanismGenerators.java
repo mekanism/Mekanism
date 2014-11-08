@@ -1,7 +1,7 @@
 package mekanism.generators.common;
 
 import io.netty.buffer.ByteBuf;
-
+import java.util.*;
 import java.io.IOException;
 
 import mekanism.api.gas.Gas;
@@ -23,7 +23,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import buildcraft.api.fuels.IronEngineFuel;
+import buildcraft.api.fuels.BuildcraftFuelRegistry;
+import buildcraft.api.fuels.IFuel;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -74,17 +75,21 @@ public class MekanismGenerators implements IModule
 	{
 		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels"))
 		{
-			for(String s : IronEngineFuel.fuels.keySet())
+			Collection <IFuel> fuels = BuildcraftFuelRegistry.fuel.getFuels();
+			Iterator <IFuel> itor = fuels.iterator();
+			while(itor.hasNext())
 			{
-				Fluid f = FluidRegistry.getFluid(s);
+				IFuel s = itor.next();
+				Fluid f = s.getFluid();
+				String g = f.getName();
 
-				if(!(f == null || GasRegistry.containsGas(s)))
+				if(!(f == null || GasRegistry.containsGas(g)))
 				{
-					GasRegistry.register(new Gas(f));
+					GasRegistry.register(new Gas(g));
 				}
 			}
 
-			IronEngineFuel.addFuel("ethene", (float) (240 * Mekanism.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("Ethene"), (int) (2400 * Mekanism.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
 		}
 	}
 	

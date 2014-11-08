@@ -19,8 +19,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.mj.IBatteryObject;
-import buildcraft.api.mj.MjAPI;
 import buildcraft.api.power.IPowerEmitter;
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyHandler;
@@ -55,7 +53,6 @@ public final class CableUtils
 	{
 		return (tileEntity instanceof IStrictEnergyAcceptor ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
-				(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(tileEntity) != null && !(tileEntity instanceof IGridTransmitter))  ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyHandler));
 	}
 
@@ -203,13 +200,6 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(MekanismUtils.useBuildCraft())
-		{
-			if(MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
-			{
-				return true;
-			}
-		}
 
 		return false;
 	}
@@ -316,12 +306,6 @@ public final class CableUtils
 				toSend = Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*Mekanism.FROM_IC2);
 				sent += (toSend - (((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend*Mekanism.TO_IC2, 0)*Mekanism.FROM_IC2));
 			}
-		}
-		else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null && !tryAgain)
-		{
-			IBatteryObject battery = MjAPI.getMjBattery(tileEntity, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
-			double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*Mekanism.TO_BC));
-			sent += toSend*Mekanism.FROM_BC;
 		}
 
 		return sent;
