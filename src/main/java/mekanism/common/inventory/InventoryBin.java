@@ -2,8 +2,7 @@ package mekanism.common.inventory;
 
 import mekanism.api.StackUtils;
 import mekanism.common.item.ItemBlockBasic;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.Item;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

@@ -14,6 +14,7 @@ import mekanism.client.gui.GuiCredits;
 import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

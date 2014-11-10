@@ -18,7 +18,9 @@ import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSalinationController;
 import mekanism.common.Mekanism;
+
 import net.minecraft.item.ItemStack;
+
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.guihook.GuiContainerManager;

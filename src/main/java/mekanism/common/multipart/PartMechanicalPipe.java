@@ -9,6 +9,7 @@ import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -20,9 +21,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
-import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import codechicken.lib.vec.Vector3;
 
 public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements IFluidHandler
 {

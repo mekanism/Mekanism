@@ -11,6 +11,7 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 

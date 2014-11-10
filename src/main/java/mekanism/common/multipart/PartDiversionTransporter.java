@@ -1,7 +1,5 @@
 package mekanism.common.multipart;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -11,11 +9,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import io.netty.buffer.ByteBuf;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
 {

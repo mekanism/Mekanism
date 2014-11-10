@@ -5,6 +5,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterStack;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;

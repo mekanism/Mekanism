@@ -1,12 +1,11 @@
 package mekanism.common.entity;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
@@ -19,6 +18,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import io.netty.buffer.ByteBuf;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {

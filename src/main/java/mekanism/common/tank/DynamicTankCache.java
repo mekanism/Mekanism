@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import mekanism.api.Coord4D;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

@@ -11,10 +11,12 @@ import mekanism.common.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.OreDictionary;
+
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 

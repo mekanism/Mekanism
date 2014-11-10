@@ -1,15 +1,16 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import io.netty.buffer.ByteBuf;
 
 public class TileEntityElectricChest extends TileEntityElectricBlock
 {

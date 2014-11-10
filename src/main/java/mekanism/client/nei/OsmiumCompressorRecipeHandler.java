@@ -10,6 +10,7 @@ import mekanism.client.gui.GuiProgress.ProgressBar;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.item.ItemStack;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler

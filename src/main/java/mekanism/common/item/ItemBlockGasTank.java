@@ -14,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,8 +27,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-
-import org.lwjgl.input.Keyboard;
 
 public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedInventory
 {

@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -10,9 +8,12 @@ import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+
+import io.netty.buffer.ByteBuf;
 
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 {

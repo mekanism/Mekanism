@@ -1,14 +1,15 @@
 package mekanism.common.tile.component;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 
 import mekanism.common.ITileComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityContainerBlock;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import io.netty.buffer.ByteBuf;
 
 public class TileComponentUpgrade implements ITileComponent
 {
