@@ -9,8 +9,9 @@
 package buildcraft.api.transport;
 
 import net.minecraft.item.ItemStack;
-
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.core.EnumColor;
 
 public interface IPipeTile {
 
@@ -29,7 +30,15 @@ public interface IPipeTile {
 	 * @param doAdd If false no actual addition should take place. Implementors
 	 * should simulate.
 	 * @param from Orientation the ItemStack is offered from.
+	 * @param color The color of the item to be added to the pipe, or null for no color.
 	 * @return Amount of items used from the passed stack.
+	 */
+	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, EnumColor color);
+
+	/**
+	 * Same as
+	 * {@link #injectItem(ItemStack, boolean, ForgeDirection, EnumColor)}
+	 * but with no color attribute.
 	 */
 	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from);
 
@@ -41,11 +50,7 @@ public interface IPipeTile {
 	 */
 	boolean isPipeConnected(ForgeDirection with);
 
-	/**
-	 * True if the pipe has a powered wire of the specified color.
-	 *
-	 * @param wire
-	 * @return true if powered
-	 */
-	boolean isWireActive(PipeWire wire);
+	TileEntity getAdjacentTile(ForgeDirection dir);
+	
+	IPipe getPipe();
 }

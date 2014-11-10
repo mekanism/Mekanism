@@ -35,6 +35,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.transport.IPipe;
 import buildcraft.api.transport.IPipeTile;
 import buildcraft.api.transport.PipeWire;
 import codechicken.lib.vec.Vector3;
@@ -46,6 +47,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
 {
+	
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
 
 	public static final int SPEED = 5;
@@ -666,7 +668,22 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	{
 		return PipeType.ITEM;
 	}
+	
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, buildcraft.api.core.EnumColor color)
+	{
+		if(doAdd)
+		{
+			TileEntity tile = Coord4D.get(tile()).getFromSide(from).getTileEntity(world());
 
+			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
+			return TransporterManager.getToUse(stack, rejects).stackSize;
+		}
+
+		return 0;
+	}
+	
 	@Override
 	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from)
 	{
@@ -680,11 +697,24 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 		return 0;
 	}
-
+	
 	@Override
 	public boolean isPipeConnected(ForgeDirection with)
 	{
 		return true;
+	}
+
+	@Override
+	public TileEntity getAdjacentTile(ForgeDirection dir)
+	{
+		return tile();
+	}
+	
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+ 	public IPipe getPipe()
+	{
+ 		return null; 
 	}
 
 	@Override
@@ -773,10 +803,4 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		return 1;
 	}
 
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public boolean isWireActive(PipeWire wire)
-	{
-		return false;
-	}
 }

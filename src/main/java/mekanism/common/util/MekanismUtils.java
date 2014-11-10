@@ -1175,8 +1175,6 @@ public final class MekanismUtils
 				return Math.round(energy*Mekanism.TO_TE) + " RF";
 			case EU:
 				return Math.round(energy*Mekanism.TO_IC2) + " EU";
-			case MJ:
-				return (Math.round((energy*Mekanism.TO_BC)*100)/100) + " MJ";
 		}
 
 		return "error";
@@ -1190,16 +1188,6 @@ public final class MekanismUtils
 	public static String getPowerDisplay(double energy)
 	{
 		return EnergyDisplay.getDisplayShort(energy, ElectricUnit.WATT);
-	}
-
-	/**
-	 * Whether or not BuildCraft power should be used, taking into account whether it is installed or another mod is
-	 * providing its API.
-	 * @return if BuildCraft power should be used
-	 */
-	public static boolean useBuildCraft()
-	{
-		return Mekanism.hooks.BuildCraftPowerLoaded && !Mekanism.blacklistBC;
 	}
 
 	/**

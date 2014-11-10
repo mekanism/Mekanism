@@ -23,7 +23,7 @@ public interface ILaserTarget {
 	 *
 	 * @param energy
 	 */
-	void receiveLaserEnergy(double energy);
+	void receiveLaserEnergy(int energy);
 
 	/**
 	 * Return true if the Tile Entity object is no longer a valid target. For
@@ -33,9 +33,9 @@ public interface ILaserTarget {
 	 */
 	boolean isInvalidTarget();
 
-	int getXCoord();
+	double getXCoord();
 
-	int getYCoord();
+	double getYCoord();
 
-	int getZCoord();
+	double getZCoord();
 }

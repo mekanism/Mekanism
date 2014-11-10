@@ -64,6 +64,13 @@ public class Position {
 		orientation = ForgeDirection.UNKNOWN;
 	}
 
+	public Position(BlockIndex index) {
+		x = index.x;
+		y = index.y;
+		z = index.z;
+		orientation = ForgeDirection.UNKNOWN;
+	}
+
 	public void moveRight(double step) {
 		switch (orientation) {
 		case SOUTH:
@@ -171,5 +178,4 @@ public class Position {
 
 		return !(sqrDis > f * f);
 	}
-
 }

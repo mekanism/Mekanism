@@ -23,8 +23,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.mj.IBatteryObject;
-import buildcraft.api.mj.MjAPI;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
@@ -209,12 +207,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*Mekanism.FROM_IC2);
 						sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*Mekanism.TO_IC2, 0)*Mekanism.FROM_IC2));
 					}
-					else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null && !tryAgain)
-					{
-						IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
-						double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*Mekanism.TO_BC));
-						sent += toSend*Mekanism.FROM_BC;
-					}
 				}
 			}
 		}
@@ -282,16 +274,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						toReturn.add(acceptor);
 						continue;
 					}
-				}
-			}
-			else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
-			{
-				IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
-
-				if(battery.getEnergyRequested() > 0)
-				{
-					toReturn.add(acceptor);
-					continue;
 				}
 			}
 		}

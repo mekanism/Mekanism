@@ -14,9 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
 import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
@@ -26,12 +23,11 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @InterfaceList({
-		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
 		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IPowerReceptor, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess
 {
 	@Override
 	public int getSizeInventory()
@@ -296,42 +292,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 
 		return getInv().getMaxEnergy();
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public PowerReceiver getPowerReceiver(ForgeDirection side)
-	{
-		if(getInv() == null)
-		{
-			return new PowerHandler(this, PowerHandler.Type.STORAGE).getPowerReceiver();
-		}
-
-		return getInv().getPowerReceiver(side);
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public void doWork(PowerHandler workProvider)
-	{
-		if(getInv() == null)
-		{
-			return;
-		}
-
-		getInv().doWork(workProvider);
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public World getWorld()
-	{
-		if(getInv() == null)
-		{
-			return worldObj;
-		}
-
-		return getInv().getWorld();
 	}
 
 	@Override

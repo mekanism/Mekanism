@@ -8,13 +8,11 @@
  */
 package buildcraft.api.core;
 
-public interface IBox {
+public interface IBox extends IZone {
 
 	IBox expand(int amount);
 
 	IBox contract(int amount);
-
-	boolean contains(double x, double y, double z);
 
 	Position pMin();
 

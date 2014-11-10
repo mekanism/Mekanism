@@ -36,8 +36,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(Mekanism.UPDATE_DELAY);
 			dataStream.writeDouble(Mekanism.FROM_IC2);
 			dataStream.writeDouble(Mekanism.TO_IC2);
-			dataStream.writeDouble(Mekanism.FROM_BC);
-			dataStream.writeDouble(Mekanism.TO_BC);
+			dataStream.writeDouble(Mekanism.FROM_TE);
+			dataStream.writeDouble(Mekanism.TO_TE);
 			dataStream.writeDouble(Mekanism.FROM_H2);
 			dataStream.writeDouble(Mekanism.ENERGY_PER_REDSTONE);
 			dataStream.writeInt(Mekanism.VOICE_PORT);
@@ -90,16 +90,13 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			Mekanism.UPDATE_DELAY = dataStream.readInt();
 			Mekanism.FROM_IC2 = dataStream.readDouble();
 			Mekanism.TO_IC2 = dataStream.readDouble();
-			Mekanism.FROM_BC = dataStream.readDouble();
-			Mekanism.TO_BC = dataStream.readDouble();
+			Mekanism.FROM_TE = dataStream.readDouble();
+			Mekanism.TO_TE = dataStream.readDouble();
 			Mekanism.FROM_H2 = dataStream.readDouble();
 			Mekanism.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			Mekanism.VOICE_PORT = dataStream.readInt();
 			Mekanism.maxUpgradeMultiplier = dataStream.readInt();
 			Mekanism.activeType = EnergyType.values()[dataStream.readInt()];
-	
-			Mekanism.TO_TE = Mekanism.TO_BC*10;
-			Mekanism.FROM_TE = Mekanism.FROM_BC/10;
 	
 			Mekanism.enrichmentChamberUsage = dataStream.readDouble();
 			Mekanism.osmiumCompressorUsage = dataStream.readDouble();
