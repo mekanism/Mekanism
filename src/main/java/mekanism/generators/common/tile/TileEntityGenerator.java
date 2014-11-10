@@ -52,11 +52,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		super(name, maxEnergy);
 
-		if(MekanismUtils.useBuildCraft())
-		{
-			powerHandler.configure(0, 0, 0, 0);
-		}
-
 		output = out;
 		isActive = false;
 		controlType = RedstoneControl.DISABLED;
@@ -273,12 +268,5 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	protected void reconfigure()
-	{
-		powerHandler.configure(0, 0, 0, 0);
 	}
 }

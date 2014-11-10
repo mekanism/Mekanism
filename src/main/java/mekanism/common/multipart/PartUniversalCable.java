@@ -21,9 +21,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
 
@@ -35,14 +32,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @InterfaceList({
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
-		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),
 })
-public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler, IPowerReceptor
+public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
 	public Tier.CableTier tier;
 
 	/** A fake power handler used to initiate energy transfer calculations. */
-	public PowerHandler powerHandler;
 
 	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 1);
 
@@ -55,10 +50,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		tier = cableTier;
 
-		if(MekanismUtils.useBuildCraft())
-		{
-			configure();
-		}
 	}
 
 	@Override
@@ -133,10 +124,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	{
 		super.refreshTransmitterNetwork();
 
-		if(MekanismUtils.useBuildCraft())
-		{
-			reconfigure();
-		}
 	}
 
 	@Override
@@ -330,7 +317,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
+		return getConnectionType(side) != ConnectionType.PUSH;
 	}
 
 	@Override
@@ -351,50 +338,4 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		getTransmitterNetwork().electricityStored = energy;
 	}
 
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public PowerReceiver getPowerReceiver(ForgeDirection side)
-	{
-		if(getTransmitterNetwork().getEnergyNeeded() == 0)
-		{
-			return null;
-		}
-
-		return powerHandler.getPowerReceiver();
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public World getWorld()
-	{
-		return world();
-	}
-
-	@Method(modid = "BuildCraftAPI|power")
-	private void configure()
-	{
-		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
-		powerHandler.configurePowerPerdition(0, 0);
-		powerHandler.configure(0, 0, 0, 0);
-	}
-
-	@Method(modid = "BuildCraftAPI|power")
-	private void reconfigure()
-	{
-		float needed = (float)(getTransmitterNetwork().getEnergyNeeded()*Mekanism.TO_BC);
-		powerHandler.configure(1, needed, 0, needed);
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public void doWork(PowerHandler workProvider)
-	{
-		if(powerHandler.getEnergyStored() > 0)
-		{
-			getTransmitterNetwork().emit(powerHandler.getEnergyStored()*Mekanism.FROM_BC);
-		}
-
-		powerHandler.setEnergy(0);
-		reconfigure();
-	}
 }
