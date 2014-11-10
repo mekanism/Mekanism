@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 public final class BuildCraftAPI {
 
@@ -20,18 +20,23 @@ public final class BuildCraftAPI {
 
 	public static final Set<Block> softBlocks = new HashSet<Block>();
 
+	public static IWorldProperty isSoftProperty;
+	public static IWorldProperty isWoodProperty;
+	public static IWorldProperty isLeavesProperty;
+	public static IWorldProperty[] isOreProperty;
+	public static IWorldProperty isHarvestableProperty;
+	public static IWorldProperty isFarmlandProperty;
+	public static IWorldProperty isDirtProperty;
+	public static IWorldProperty isShoveled;
+	public static IWorldProperty isFluidSource;
+
 	/**
 	 * Deactivate constructor
 	 */
 	private BuildCraftAPI() {
 	}
 
-	public static boolean isSoftBlock(IBlockAccess world, int x, int y, int z) {
-		return isSoftBlock(world.getBlock(x, y, z), world, x, y, z);
+	public static boolean isSoftBlock(World world, int x, int y, int z) {
+		return isSoftProperty.get(world, x, y, z);
 	}
-
-	public static boolean isSoftBlock(Block block, IBlockAccess world, int x, int y, int z) {
-		return block == null || BuildCraftAPI.softBlocks.contains(block) || block.isReplaceable(world, x, y, z) || block.isAir(world, x, y, z);
-	}
-
 }

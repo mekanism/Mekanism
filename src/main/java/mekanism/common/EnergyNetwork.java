@@ -26,9 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 
-import buildcraft.api.mj.IBatteryObject;
-import buildcraft.api.mj.MjAPI;
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.tile.IEnergySink;
 
@@ -157,10 +155,13 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return sent;
 	}
 
-	public synchronized double emit(double energyToSend)
+	public synchronized double emit(double energyToSend, boolean doEmit)
 	{
 		double toUse = Math.min(getEnergyNeeded(), energyToSend);
-		electricityStored += toUse;
+		if(doEmit)
+		{
+			electricityStored += toUse;
+		}
 		return energyToSend-toUse;
 	}
 
@@ -202,9 +203,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						{
 							sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
 						}
-						else if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
+						else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
 						{
-							IEnergyHandler handler = (IEnergyHandler)acceptor;
+							IEnergyReceiver handler = (IEnergyReceiver)acceptor;
 							int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*general.TO_TE), false);
 							sent += used*general.FROM_TE;
 						}
@@ -213,12 +214,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 							double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)acceptor).getSinkTier())*general.FROM_IC2);
 							toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*general.FROM_IC2);
 							sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
-						}
-						else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null && !tryAgain)
-						{
-							IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
-							double toSend = battery.addEnergy(Math.min(battery.getEnergyRequested(), currentSending*general.TO_BC));
-							sent += toSend*general.FROM_BC;
 						}
 						
 						if(sent > prev)
@@ -268,9 +263,9 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 						}
 					}
 				}
-				else if(MekanismUtils.useRF() && acceptor instanceof IEnergyHandler)
+				else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
 				{
-					IEnergyHandler handler = (IEnergyHandler)acceptor;
+					IEnergyReceiver handler = (IEnergyReceiver)acceptor;
 	
 					if(handler.canConnectEnergy(side.getOpposite()))
 					{
@@ -296,16 +291,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 							toReturn.add(acceptor);
 							break;
 						}
-					}
-				}
-				else if(MekanismUtils.useBuildCraft() && MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite()) != null)
-				{
-					IBatteryObject battery = MjAPI.getMjBattery(acceptor, MjAPI.DEFAULT_POWER_FRAMEWORK, side.getOpposite());
-	
-					if(battery.getEnergyRequested() > 0)
-					{
-						toReturn.add(acceptor);
-						break;
 					}
 				}
 			}

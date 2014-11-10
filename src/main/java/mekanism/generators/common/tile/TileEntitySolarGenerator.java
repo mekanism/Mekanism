@@ -17,6 +17,7 @@ import cpw.mods.fml.common.Optional.Method;
 import io.netty.buffer.ByteBuf;
 
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import micdoodle8.mods.galacticraft.api.world.ISolarLevel;
 
@@ -152,7 +153,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	@Override
 	@Method(modid = "ComputerCraft")
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
 	{
 		switch(method)
 		{

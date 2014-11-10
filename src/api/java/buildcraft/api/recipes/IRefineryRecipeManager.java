@@ -8,30 +8,22 @@
  */
 package buildcraft.api.recipes;
 
-import java.util.SortedSet;
+import java.util.Collection;
 
 import net.minecraftforge.fluids.FluidStack;
 
 public interface IRefineryRecipeManager {
 
-	void addRecipe(FluidStack ingredient, FluidStack result, int energy, int delay);
+	void addRecipe(String id, FluidStack ingredient, FluidStack result, int energy, int delay);
 
-	void addRecipe(FluidStack ingredient1, FluidStack ingredient2, FluidStack result, int energy, int delay);
+	void addRecipe(String id, FluidStack ingredient1, FluidStack ingredient2, FluidStack result, int energy, int delay);
 
-	SortedSet<? extends IRefineryRecipe> getRecipes();
+	void removeRecipe(String id);
+	
+	void removeRecipe(IFlexibleRecipe<FluidStack> recipe);
 
-	IRefineryRecipe findRefineryRecipe(FluidStack ingredient1, FluidStack ingredient2);
+	Collection<IFlexibleRecipe<FluidStack>> getRecipes();
 
-	public interface IRefineryRecipe {
+	IFlexibleRecipe<FluidStack> getRecipe(String currentRecipeId);
 
-		FluidStack getIngredient1();
-
-		FluidStack getIngredient2();
-
-		FluidStack getResult();
-
-		int getEnergyCost();
-
-		int getTimeRequired();
-	}
 }

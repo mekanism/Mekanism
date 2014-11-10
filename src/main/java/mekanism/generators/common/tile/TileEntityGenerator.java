@@ -57,11 +57,6 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		super("gen." + soundPath, name, maxEnergy);
 
-		if(MekanismUtils.useBuildCraft())
-		{
-			powerHandler.configure(0, 0, 0, 0);
-		}
-
 		output = out;
 		isActive = false;
 		controlType = RedstoneControl.DISABLED;
@@ -258,18 +253,5 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean canPulse()
-	{
-		return false;
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	protected void reconfigure()
-	{
-		powerHandler.configure(0, 0, 0, 0);
 	}
 }

@@ -41,15 +41,14 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.UPDATE_DELAY);
 			dataStream.writeDouble(general.FROM_IC2);
 			dataStream.writeDouble(general.TO_IC2);
-			dataStream.writeDouble(general.FROM_BC);
-			dataStream.writeDouble(general.TO_BC);
+			dataStream.writeDouble(general.FROM_TE);
+			dataStream.writeDouble(general.TO_TE);
 			dataStream.writeDouble(general.FROM_H2);
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
 			dataStream.writeInt(general.VOICE_PORT);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
 			dataStream.writeInt(general.activeType.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
-			dataStream.writeBoolean(general.blacklistBC);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
 	
@@ -101,20 +100,16 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.UPDATE_DELAY = dataStream.readInt();
 			general.FROM_IC2 = dataStream.readDouble();
 			general.TO_IC2 = dataStream.readDouble();
-			general.FROM_BC = dataStream.readDouble();
-			general.TO_BC = dataStream.readDouble();
+			general.FROM_TE = dataStream.readDouble();
+			general.TO_TE = dataStream.readDouble();
 			general.FROM_H2 = dataStream.readDouble();
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			general.VOICE_PORT = dataStream.readInt();
 			general.maxUpgradeMultiplier = dataStream.readInt();
 			general.activeType = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
-			general.blacklistBC = dataStream.readBoolean();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
-	
-			general.TO_TE = general.TO_BC*10;
-			general.FROM_TE = general.FROM_BC/10;
 	
 			usage.enrichmentChamberUsage = dataStream.readDouble();
 			usage.osmiumCompressorUsage = dataStream.readDouble();

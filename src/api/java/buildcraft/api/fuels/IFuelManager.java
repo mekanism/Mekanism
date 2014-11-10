@@ -6,6 +6,18 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-@API(apiVersion = "1.1", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|power")
-package buildcraft.api.power;
-import cpw.mods.fml.common.API;
+package buildcraft.api.fuels;
+
+import java.util.Collection;
+
+import net.minecraftforge.fluids.Fluid;
+
+public interface IFuelManager {
+	IFuel addFuel(IFuel fuel);
+
+	IFuel addFuel(Fluid fluid, int powerPerCycle, int totalBurningTime);
+
+	Collection<IFuel> getFuels();
+
+	IFuel getFuel(Fluid fluid);
+}

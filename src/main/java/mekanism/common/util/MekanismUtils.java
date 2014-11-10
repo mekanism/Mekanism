@@ -48,6 +48,7 @@ import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityElectricChest;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -1110,7 +1111,7 @@ public final class MekanismUtils
 			case EU:
 				return EnergyUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return EnergyUtils.getDisplayShort(energy * general.TO_BC, ElectricUnit.MINECRAFT_JOULES);
+				return EnergyUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
 		}
 
 		return "error";
