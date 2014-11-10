@@ -1,7 +1,5 @@
 package mekanism.common.multipart;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +22,7 @@ import mekanism.common.transporter.TransporterStack.Path;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -35,13 +34,18 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.transport.IPipeTile;
-import buildcraft.api.transport.PipeWire;
-import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import io.netty.buffer.ByteBuf;
+
+import buildcraft.api.gates.IGate;
+import buildcraft.api.transport.IPipe;
+import buildcraft.api.transport.IPipeTile;
+import buildcraft.api.transport.PipeWire;
+import codechicken.lib.vec.Vector3;
 
 @Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter, IPipeTile
@@ -57,6 +61,8 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 
 	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
+
+	public TransporterPipeProxy pipe = new TransporterPipeProxy();
 
 	@Override
 	public String getType()
@@ -668,6 +674,11 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
+	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, buildcraft.api.core.EnumColor color) {
+		return 0;
+	}
+
+	@Override
 	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from)
 	{
 		if(doAdd)
@@ -679,12 +690,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		}
 
 		return 0;
-	}
-
-	@Override
-	public boolean isPipeConnected(ForgeDirection with)
-	{
-		return true;
 	}
 
 	@Override
@@ -775,8 +780,64 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 
 	@Override
 	@Method(modid = "BuildCraftAPI|transport")
-	public boolean isWireActive(PipeWire wire)
+	public boolean isPipeConnected(ForgeDirection with)
 	{
-		return false;
+		return connectionMapContainsSide(getAllCurrentConnections(), with);
+	}
+
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+	public TileEntity getAdjacentTile(ForgeDirection dir) {
+		return Coord4D.get(tile()).getFromSide(dir).getTileEntity(world());
+	}
+
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+	public IPipe getPipe() {
+		return pipe;
+	}
+
+	public class TransporterPipeProxy implements IPipe
+	{
+
+		@Override
+		public int x() {
+			return PartLogisticalTransporter.this.x();
+		}
+
+		@Override
+		public int y() {
+			return PartLogisticalTransporter.this.y();
+		}
+
+		@Override
+		public int z() {
+			return PartLogisticalTransporter.this.y();
+		}
+
+		@Override
+		public IPipeTile getTile() {
+			return (IPipeTile)tile();
+		}
+
+		@Override
+		public IGate getGate(ForgeDirection side) {
+			return null;
+		}
+
+		@Override
+		public boolean hasGate(ForgeDirection side) {
+			return false;
+		}
+
+		@Override
+		public boolean isWired(PipeWire wire) {
+			return false;
+		}
+
+		@Override
+		public boolean isWireActive(PipeWire wire) {
+			return false;
+		}
 	}
 }

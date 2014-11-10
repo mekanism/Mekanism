@@ -109,6 +109,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -130,13 +131,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import rebelkeithy.mods.metallurgy.api.IOreInfo;
-import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
-import codechicken.multipart.handler.MultipartProxy;
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
@@ -153,6 +147,12 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import codechicken.multipart.handler.MultipartProxy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import rebelkeithy.mods.metallurgy.api.IOreInfo;
+import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 
 /**
  * Mekanism - a Minecraft mod
@@ -322,12 +322,10 @@ public class Mekanism
 	public static EnergyType activeType = EnergyType.J;
 
 	public static double TO_IC2;
-	public static double TO_BC;
 	public static double TO_TE;
 	public static double TO_UE = .001;
 	public static double FROM_H2;
 	public static double FROM_IC2;
-	public static double FROM_BC;
 	public static double FROM_TE;
 	public static double FROM_UE = 1/TO_UE;
 

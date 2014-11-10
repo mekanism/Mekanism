@@ -1,15 +1,5 @@
 package mekanism.common.tile;
 
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.tile.IEnergyStorage;
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -21,38 +11,39 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.ITileNetwork;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 
-import buildcraft.api.power.IPowerEmitter;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler;
-import buildcraft.api.power.PowerHandler.PowerReceiver;
+import io.netty.buffer.ByteBuf;
+
 import cofh.api.energy.IEnergyHandler;
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyConductor;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.tile.IEnergyStorage;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 		@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
-		@Interface(iface = "buildcraft.api.power.IPowerReceptor", modid = "BuildCraftAPI|power"),
-		@Interface(iface = "buildcraft.api.power.IPowerEmitter", modid = "BuildCraftAPI|power")
 })
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IPowerEmitter, IPowerReceptor, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
 
 	/** Maximum amount of energy this machine can hold. */
 	public double MAX_ELECTRICITY;
-
-	/** BuildCraft power handler. */
-	public PowerHandler powerHandler;
 
 	/** Is this registered with IC2 */
 	public boolean ic2Registered = false;
@@ -67,19 +58,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		super(name);
 		MAX_ELECTRICITY = maxEnergy;
-
-		if(MekanismUtils.useBuildCraft())
-			configure();
 	}
-
-	@Method(modid = "BuildCraftAPI|power")
-	public void configure()
-	{
-		powerHandler = new PowerHandler(this, PowerHandler.Type.STORAGE);
-		powerHandler.configurePowerPerdition(0, 0);
-		powerHandler.configure(0, 0, 0, 0);
-	}
-
 
 	@Method(modid = "IC2")
 	public void register()
@@ -118,8 +97,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public void onUpdate()
 	{
-		if(MekanismUtils.useBuildCraft())
-			reconfigure();
 		if(!ic2Registered && MekanismUtils.useIC2())
 			register();
 	}
@@ -199,9 +176,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.readFromNBT(nbtTags);
 
 		electricityStored = nbtTags.getDouble("electricityStored");
-
-		if(MekanismUtils.useBuildCraft())
-			reconfigure();
 	}
 
 	@Override
@@ -210,48 +184,6 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setDouble("electricityStored", getEnergy());
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public PowerReceiver getPowerReceiver(ForgeDirection side)
-	{
-		if(getConsumingSides().contains(side))
-		{
-			return powerHandler.getPowerReceiver();
-		}
-
-		return null;
-	}
-
-	@Method(modid = "BuildCraftAPI|power")
-	protected void reconfigure()
-	{
-			powerHandler.configure(0, (float)((getMaxEnergy() - getEnergy()) * Mekanism.TO_BC), 0, (float)(getMaxEnergy() * Mekanism.TO_BC));
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public void doWork(PowerHandler workProvider)
-	{
-		if(powerHandler.getEnergyStored() > 0)
-		{
-			if(getEnergy() < getMaxEnergy())
-			{
-				setEnergy(getEnergy() + powerHandler.useEnergy(0, (float)((getMaxEnergy()-getEnergy())*Mekanism.TO_BC), true)*Mekanism.FROM_BC);
-			}
-
-			powerHandler.setEnergy(0);
-		}
-
-		reconfigure();
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public World getWorld()
-	{
-		return worldObj;
 	}
 
 	/**
@@ -458,12 +390,5 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		setEnergy(getEnergy() + toUse);
 
 		return toUse;
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	public boolean canEmitPowerFrom(ForgeDirection side)
-	{
-		return getOutputtingSides().contains(side);
 	}
 }

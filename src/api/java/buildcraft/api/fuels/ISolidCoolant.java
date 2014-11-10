@@ -6,6 +6,11 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-@API(apiVersion = "1.1", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|mj")
-package buildcraft.api.mj;
-import cpw.mods.fml.common.API;
+package buildcraft.api.fuels;
+
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+
+public interface ISolidCoolant {
+	FluidStack getFluidFromSolidCoolant(ItemStack stack);
+}

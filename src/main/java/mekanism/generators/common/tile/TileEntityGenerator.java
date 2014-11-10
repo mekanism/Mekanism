@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -15,6 +13,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -22,6 +21,9 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import io.netty.buffer.ByteBuf;
+
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -51,11 +53,6 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	public TileEntityGenerator(String name, double maxEnergy, double out)
 	{
 		super(name, maxEnergy);
-
-		if(MekanismUtils.useBuildCraft())
-		{
-			powerHandler.configure(0, 0, 0, 0);
-		}
 
 		output = out;
 		isActive = false;
@@ -273,12 +270,5 @@ public abstract class TileEntityGenerator extends TileEntityElectricBlock implem
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|power")
-	protected void reconfigure()
-	{
-		powerHandler.configure(0, 0, 0, 0);
 	}
 }
