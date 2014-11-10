@@ -322,16 +322,13 @@ public class Mekanism
 	public static EnergyType activeType = EnergyType.J;
 
 	public static double TO_IC2;
-	public static double TO_BC;
 	public static double TO_TE;
 	public static double TO_UE = .001;
 	public static double FROM_H2;
 	public static double FROM_IC2;
-	public static double FROM_BC;
 	public static double FROM_TE;
 	public static double FROM_UE = 1/TO_UE;
 
-	public static boolean blacklistBC;
 	public static boolean blacklistIC2;
 	public static boolean blacklistRF;
 

@@ -30,12 +30,9 @@ import ic2.api.recipe.Recipes;
  */
 public final class MekanismHooks
 {
-	private Class BuildCraftEnergy;
-
 	public boolean IC2Loaded = false;
 	public boolean IC2APILoaded = false;
 	public boolean RailcraftLoaded = false;
-	public boolean BuildCraftPowerLoaded = false;
 	public boolean RedstoneFluxLoaded = false;
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
@@ -46,7 +43,6 @@ public final class MekanismHooks
 	public void hook()
 	{
 		if(ModAPIManager.INSTANCE.hasAPI("IC2API")) IC2APILoaded = true;
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|power")) BuildCraftPowerLoaded = true;
 		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI|energy")) RedstoneFluxLoaded = true;
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
@@ -64,11 +60,6 @@ public final class MekanismHooks
 		{
 			hookIC2Recipes();
 			Mekanism.logger.info("Hooked into IC2 successfully.");
-		}
-
-		if(BuildCraftPowerLoaded)
-		{
-			Mekanism.logger.info("Hooked into BuildCraft successfully.");
 		}
 		
 		if(CCLoaded)
@@ -151,29 +142,5 @@ public final class MekanismHooks
 		nbtTags.setTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
 
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
-	}
-
-	public ItemStack getBuildCraftItem(String name)
-	{
-		try {
-			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("buildcraft.BuildCraftEnergy");
-			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("net.minecraft.src.buildcraft.BuildCraftEnergy");
-			Object ret = BuildCraftEnergy.getField(name).get(null);
-
-			if(ret instanceof Item)
-			{
-				return new ItemStack((Item)ret);
-			}
-			else if(ret instanceof Block)
-			{
-				return new ItemStack((Block)ret);
-			}
-			else {
-				throw new Exception("not instanceof ItemStack");
-			}
-		} catch(Exception e) {
-			Mekanism.logger.error("Unable to retrieve BuildCraft item " + name + ".");
-			return null;
-		}
 	}
 }

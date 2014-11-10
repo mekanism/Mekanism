@@ -143,8 +143,7 @@ public final class CableUtils
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyHandler && ((IEnergyHandler)tileEntity).canConnectEnergy(side.getOpposite())) ||
-				(MekanismUtils.useRF() && tileEntity instanceof IEnergyConnection && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite())) ||
-				(MekanismUtils.useBuildCraft() && tileEntity instanceof IPowerEmitter && ((IPowerEmitter)tileEntity).canEmitPowerFrom(side.getOpposite()));
+				(MekanismUtils.useRF() && tileEntity instanceof IEnergyConnection && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()));
 	}
 
 	/**
