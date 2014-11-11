@@ -10,16 +10,17 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-import codechicken.lib.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import codechicken.lib.vec.Vector3;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements IGasHandler
 {

@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

@@ -8,11 +8,15 @@
  */
 package buildcraft.api.recipes;
 
+import net.minecraft.item.ItemStack;
+
 public interface IFlexibleRecipe<T> {
 
 	boolean canBeCrafted(IFlexibleCrafter crafter);
 
 	CraftingResult<T> craft(IFlexibleCrafter crafter, boolean preview);
+
+	CraftingResult<T> canCraft(ItemStack expectedOutput);
 
 	String getId();
 }

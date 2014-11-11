@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.common.multipart.TransmitterType;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 

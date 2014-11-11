@@ -6,6 +6,7 @@ import mekanism.common.IModule;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import cpw.mods.fml.relauncher.Side;

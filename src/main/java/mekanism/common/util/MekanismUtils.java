@@ -44,6 +44,7 @@ import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityElectricChest;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -1176,7 +1177,7 @@ public final class MekanismUtils
 			case EU:
 				return Math.round(energy*Mekanism.TO_IC2) + " EU";
 			case MJ:
-				return (Math.round((energy*Mekanism.TO_BC)*100)/100) + " MJ";
+				return (Math.round((energy*Mekanism.TO_TE)*10)/100) + " MJ";
 		}
 
 		return "error";

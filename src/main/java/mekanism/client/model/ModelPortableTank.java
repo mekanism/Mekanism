@@ -1,6 +1,7 @@
 package mekanism.client.model;
 
 import mekanism.client.render.MekanismRenderer;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import cpw.mods.fml.relauncher.Side;

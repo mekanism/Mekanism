@@ -2,8 +2,6 @@ package mekanism.generators.client.gui;
 
 import java.util.Set;
 
-import mekanism.client.gui.GuiMekanismConfig;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import cpw.mods.fml.client.IModGuiFactory;

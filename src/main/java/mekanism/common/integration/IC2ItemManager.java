@@ -1,10 +1,12 @@
 package mekanism.common.integration;
 
-import ic2.api.item.IElectricItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+
+import ic2.api.item.IElectricItemManager;
 
 public class IC2ItemManager implements IElectricItemManager
 {

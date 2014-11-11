@@ -11,6 +11,7 @@ import mekanism.common.ILogisticalTransporter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.transporter.TransporterManager;
 import mekanism.common.transporter.TransporterStack;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -18,8 +19,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.power.IPowerReceptor;
-import buildcraft.api.power.PowerHandler.Type;
 
 public final class TransporterUtils
 {
@@ -77,16 +76,6 @@ public final class TransporterUtils
 				}
 
 				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
-
-				//Immature BuildCraft inv check
-				if(MekanismUtils.useBuildCraft() && inventory instanceof IPowerReceptor)
-				{
-					if(((IPowerReceptor)inventory).getPowerReceiver(forgeSide) != null && ((IPowerReceptor)inventory).getPowerReceiver(forgeSide).getType() == Type.MACHINE)
-					{
-						connectable[side] = true;
-						continue;
-					}
-				}
 
 				if(inventory.getSizeInventory() > 0)
 				{

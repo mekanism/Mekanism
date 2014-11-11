@@ -1,7 +1,5 @@
 package mekanism.generators.common;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 
 import mekanism.api.gas.Gas;
@@ -14,6 +12,7 @@ import mekanism.common.item.ItemMekanism;
 import mekanism.common.recipe.MekanismRecipe;
 import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.item.ItemBlockGenerator;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -23,7 +22,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
-import buildcraft.api.fuels.IronEngineFuel;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -36,6 +34,11 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+
+import io.netty.buffer.ByteBuf;
+
+import buildcraft.api.fuels.BuildcraftFuelRegistry;
+import buildcraft.api.fuels.IFuel;
 
 @Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "7.1.1", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
@@ -72,19 +75,18 @@ public class MekanismGenerators implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels"))
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && BuildcraftFuelRegistry.fuel != null)
 		{
-			for(String s : IronEngineFuel.fuels.keySet())
+			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
 			{
-				Fluid f = FluidRegistry.getFluid(s);
 
-				if(!(f == null || GasRegistry.containsGas(s)))
+				if(!(s.getFluid() == null || GasRegistry.containsGas(s.getFluid().getName())))
 				{
-					GasRegistry.register(new Gas(f));
+					GasRegistry.register(new Gas(s.getFluid()));
 				}
 			}
 
-			IronEngineFuel.addFuel("ethene", (float) (240 * Mekanism.TO_BC), 40 * FluidContainerRegistry.BUCKET_VOLUME);
+			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("ethene"), (int)(240 * Mekanism.TO_TE), 40 * FluidContainerRegistry.BUCKET_VOLUME);
 		}
 	}
 	

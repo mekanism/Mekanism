@@ -3,6 +3,7 @@ package mekanism.common.world;
 import java.util.Random;
 
 import mekanism.common.Mekanism;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;

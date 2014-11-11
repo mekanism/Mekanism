@@ -4,6 +4,7 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

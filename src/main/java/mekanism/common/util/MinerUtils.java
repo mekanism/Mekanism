@@ -5,6 +5,7 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ListUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;

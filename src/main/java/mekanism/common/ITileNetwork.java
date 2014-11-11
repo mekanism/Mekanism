@@ -1,8 +1,8 @@
 package mekanism.common;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Internal interface used for blocks that send data between clients and the server

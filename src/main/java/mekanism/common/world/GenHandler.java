@@ -3,6 +3,7 @@ package mekanism.common.world;
 import java.util.Random;
 
 import mekanism.common.Mekanism;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;

@@ -1,13 +1,15 @@
 package mekanism.common.network;
 
-import io.netty.buffer.ByteBuf;
 import mekanism.common.PacketHandler;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketStatusUpdate.StatusUpdateMessage;
+
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
+import io.netty.buffer.ByteBuf;
 
 public class PacketStatusUpdate implements IMessageHandler<StatusUpdateMessage, IMessage>
 {

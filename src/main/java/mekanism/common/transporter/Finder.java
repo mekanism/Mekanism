@@ -2,8 +2,9 @@ package mekanism.common.transporter;
 
 import java.util.List;
 
-import mekanism.common.util.MekanismUtils;
 import mekanism.api.StackUtils;
+import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;

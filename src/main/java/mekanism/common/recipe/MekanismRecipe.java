@@ -10,6 +10,7 @@ import mekanism.common.IEnergyCube;
 import mekanism.common.IFactory;
 import mekanism.common.IUpgradeManagement;
 import mekanism.common.block.BlockMachine.MachineType;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;

@@ -3,6 +3,7 @@ package mekanism.generators.common.inventory.container;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

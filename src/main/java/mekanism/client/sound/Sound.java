@@ -5,6 +5,7 @@ import java.net.URL;
 import mekanism.api.Pos3D;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
 

@@ -11,12 +11,12 @@ import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
+
 import net.minecraft.entity.player.InventoryPlayer;
-
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class GuiFactory extends GuiMekanism

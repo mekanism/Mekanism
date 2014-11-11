@@ -8,9 +8,8 @@
  */
 package buildcraft.api.transport;
 
-import net.minecraft.tileentity.TileEntity;
-
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.gates.IGate;
 
 public interface IPipe {
 
@@ -22,5 +21,11 @@ public interface IPipe {
 
 	IPipeTile getTile();
 
-	TileEntity getAdjacentTile(ForgeDirection dir);
+	IGate getGate(ForgeDirection side);
+	
+	boolean hasGate(ForgeDirection side);
+	
+	boolean isWired(PipeWire wire);
+	
+	boolean isWireActive(PipeWire wire);
 }

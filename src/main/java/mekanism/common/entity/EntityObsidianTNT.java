@@ -1,6 +1,7 @@
 package mekanism.common.entity;
 
 import mekanism.common.Mekanism;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

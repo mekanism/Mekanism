@@ -18,6 +18,10 @@ public interface IRefineryRecipeManager {
 
 	void addRecipe(String id, FluidStack ingredient1, FluidStack ingredient2, FluidStack result, int energy, int delay);
 
+	void removeRecipe(String id);
+	
+	void removeRecipe(IFlexibleRecipe<FluidStack> recipe);
+
 	Collection<IFlexibleRecipe<FluidStack>> getRecipes();
 
 	IFlexibleRecipe<FluidStack> getRecipe(String currentRecipeId);
