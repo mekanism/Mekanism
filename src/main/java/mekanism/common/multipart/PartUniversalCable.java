@@ -5,7 +5,9 @@ import java.util.Set;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
@@ -27,6 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyProvider;
 import ic2.api.energy.tile.IEnergySource;
 
 @InterfaceList({
@@ -42,6 +45,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
 	public double cacheEnergy = 0;
 	public double lastWrite = 0;
+
+	public double drawAmount = 100;
 
 	public PartUniversalCable(Tier.CableTier cableTier)
 	{
@@ -77,8 +82,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 				cacheEnergy = 0;
 			}
 
-			if(MekanismUtils.useIC2())
-			{
 				List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
 				
 				if(!sides.isEmpty())
@@ -89,24 +92,52 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 					{
 						if(connectedOutputters[side.ordinal()] != null)
 						{
-							TileEntity acceptor = connectedOutputters[side.ordinal()];
+							TileEntity outputter = connectedOutputters[side.ordinal()];
 
-							if(acceptor instanceof IEnergySource)
+							if(outputter instanceof ICableOutputter && outputter instanceof IStrictEnergyStorage)
 							{
-								double received = ((IEnergySource) acceptor).getOfferedEnergy()*general.FROM_IC2;
+								if(((ICableOutputter)outputter).canOutputTo(side.getOpposite()))
+								{
+									double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), drawAmount);
+									double toDraw = received;
+
+									if(received > 0)
+									{
+										toDraw -= getTransmitterNetwork().emit(received, true);
+									}
+									((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
+								}
+							}
+							else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
+							{
+								double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)drawAmount, true) * Mekanism.FROM_TE;
 								double toDraw = received;
 
 								if(received > 0)
 								{
 									toDraw -= getTransmitterNetwork().emit(received, true);
 								}
+<<<<<<< HEAD
 								
 								((IEnergySource)acceptor).drawEnergy(toDraw*general.TO_IC2);
+=======
+								((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)toDraw, false);
+							}
+							else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
+							{
+								double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * Mekanism.FROM_IC2, drawAmount);
+								double toDraw = received;
+
+								if(received > 0)
+								{
+									toDraw -= getTransmitterNetwork().emit(received, true);
+								}
+								((IEnergySource)outputter).drawEnergy(toDraw * Mekanism.TO_IC2);
+>>>>>>> 92f1579... Make PULL mode actually, and exclusively, pull.
 							}
 						}
 					}
 				}
-			}
 		}
 
 		super.update();
@@ -309,7 +340,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side)
 	{
-		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
+		return getConnectionType(side) == ConnectionType.NORMAL;
 	}
 
 	@Override
