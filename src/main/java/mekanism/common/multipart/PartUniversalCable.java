@@ -286,7 +286,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Method(modid = "CoFHAPI|energy")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
-		return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive * general.FROM_TE, !simulate)*general.TO_TE);
+		if(canReceiveEnergy(from))
+		{
+			return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive * general.FROM_TE, !simulate) * general.TO_TE);
+		}
+		return 0;
 	}
 
 	@Override
