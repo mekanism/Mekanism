@@ -110,7 +110,6 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
-					list.add("- " + EnumColor.PURPLE + "MJ " + EnumColor.GREY +  "(BuildCraft)");
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
 					break;
 				}
