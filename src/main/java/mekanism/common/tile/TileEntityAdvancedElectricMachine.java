@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 
 import mekanism.api.EnumColor;
-import mekanism.api.StackUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;

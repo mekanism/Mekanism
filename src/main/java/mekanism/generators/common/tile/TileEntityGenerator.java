@@ -254,4 +254,10 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 		controlType = type;
 		MekanismUtils.saveChunk(this);
 	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
 }

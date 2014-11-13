@@ -110,30 +110,26 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 							}
 							else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 							{
-								double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)drawAmount, true) * Mekanism.FROM_TE;
+								double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)drawAmount, true) * general.FROM_TE;
 								double toDraw = received;
 
 								if(received > 0)
 								{
 									toDraw -= getTransmitterNetwork().emit(received, true);
 								}
-<<<<<<< HEAD
-								
-								((IEnergySource)acceptor).drawEnergy(toDraw*general.TO_IC2);
-=======
+
 								((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)toDraw, false);
 							}
 							else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
 							{
-								double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * Mekanism.FROM_IC2, drawAmount);
+								double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, drawAmount);
 								double toDraw = received;
 
 								if(received > 0)
 								{
 									toDraw -= getTransmitterNetwork().emit(received, true);
 								}
-								((IEnergySource)outputter).drawEnergy(toDraw * Mekanism.TO_IC2);
->>>>>>> 92f1579... Make PULL mode actually, and exclusively, pull.
+								((IEnergySource)outputter).drawEnergy(toDraw * general.TO_IC2);
 							}
 						}
 					}
