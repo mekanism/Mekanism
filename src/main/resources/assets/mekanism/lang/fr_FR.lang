@@ -3,29 +3,31 @@
 //********//
 
 //Items
-tile.ObsidianTNT.name=TNT en obsidienne
+tile.ObsidianTNT.name=TNT d'obsidienne
 item.EnrichedAlloy.name=Alliage enrichi
+item.ReinforcedAlloy.name=Alliage renforcé
+item.AtomicAlloy.name=Alliage atomique
 item.EnergyTablet.name=Tablette énergétique
 item.SpeedUpgrade.name=Amélioration de vitesse
 item.EnergyUpgrade.name=Amélioration d'énergie
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Désassembleur atomique
-item.AtomicCore.name=Noyau atomique
 item.ElectricBow.name=Arc électrique
-item.ControlCircuit.name=Circuit de contrôle
 item.EnrichedIron.name=Fer enrichi
-item.CompressedCarbon.name=Carbone compressé
+item.CompressedCarbon.name=Charbon compressé
+item.CompressedRedstone.name=Redstone compressée
+item.CompressedDiamond.name=Diamant compressé
+item.CompressedObsidian.name=Obsidienne compressée
 item.PortableTeleporter.name=Téléporteur portable
 item.TeleportationCore.name=Noyau de téléportation
 item.Configurator.name=Configurateur
 item.NetworkReader.name=Analyseur de réseaux
-item.ManganeseAlloy.name=Alliage de manganèse
-item.WalkieTalkie.name=Walkie-Talkie
-item.ElectrolyticCore.name=Noyau électrolytique
+item.WalkieTalkie.name=Talkie-walkie
 item.Jetpack.name=Propulseur à réaction
 item.ScubaTank.name=Réservoire de scaphandre
 item.GasMask.name=Masque à gaz
 item.Dictionary.name=Dictionnaire
+item.ElectrolyticCore.name=Noyau électrolytique
 item.Sawdust.name=Sciure
 item.Salt.name=Sel
 item.BrineBucket.name=Seau de saumure
@@ -33,6 +35,9 @@ item.FreeRunners.name=Bottes rapides
 item.ArmoredJetpack.name=Propulseur blindé
 item.FilterCard.name=Carte à filtre
 item.SeismicReader.name=Lecteur sismique
+item.HDPEPellet.name=Boulette de PEHD
+item.HDPERod.name=Tige de PEHD
+item.HDPESheet.name=Feuille de PEHD
 item.PlaStick.name=Plastique
 item.Substrate.name=Substrat
 
