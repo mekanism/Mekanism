@@ -338,6 +338,7 @@ gui.newFilter=Новый фильтр
 gui.energy=Энергия
 gui.gas=Газ
 gui.dumping=Дамп
+gui.dumping_excess=Превышение дампов
 gui.modID=ID мода
 gui.key=Ключ
 gui.id=ID
@@ -440,10 +441,10 @@ gui.digitalMiner.inverse="Обратный" режим
 recipe.mekanismShaped=Форменное
 
 //Item and block tooltip text
-tooltip.configurator.modify=Модифицируемый
+tooltip.configurator.configurate=Конфигурировать
 tooltip.configurator.empty=Пусто
+tooltip.configurator.rotate=Вращать
 tooltip.configurator.wrench=Ключ
-tooltip.configurator.link=Link
 tooltip.configurator.pumpReset=Сбросить расчёт электропомпы
 tooltip.configurator.toggleDiverter=Режим "отклонение" изменён на
 tooltip.configurator.toggleColor=Цвет установлен на
