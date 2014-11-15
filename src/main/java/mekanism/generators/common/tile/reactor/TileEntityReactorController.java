@@ -236,7 +236,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			tritiumTank.setGas(new GasStack(GasRegistry.getGas("tritium"), dataStream.readInt()));
 			waterTank.setFluid(new FluidStack(FluidRegistry.getFluid("water"), dataStream.readInt()));
 			steamTank.setFluid(new FluidStack(FluidRegistry.getFluid("steam"), dataStream.readInt()));
-
 		}
 		else if(getReactor() != null)
 		{

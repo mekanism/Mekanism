@@ -71,7 +71,8 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 						robit.setEnergy(robit.getEnergy() + toGive);
 						setEnergy(getEnergy() - toGive);
-					} else if(entity instanceof EntityPlayer)
+					} 
+					else if(entity instanceof EntityPlayer)
 					{
 						EntityPlayer player = (EntityPlayer) entity;
 
@@ -122,7 +123,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 			}
 			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()* general.TO_IC2), 4, true, false)* general.FROM_IC2;
+				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*general.TO_IC2), 4, true, false)*general.FROM_IC2;
 				setEnergy(getEnergy() - sent);
 			}
 			else if(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem)
@@ -130,9 +131,9 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()* general.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*general.TO_TE)));
 
-				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)* general.FROM_TE));
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_TE));
 			}
 		}
 	}

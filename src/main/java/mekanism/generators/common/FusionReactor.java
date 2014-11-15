@@ -312,8 +312,6 @@ public class FusionReactor implements IFusionReactor
 	public void formMultiblock()
 	{
 		updatedThisTick = true;
-		
-		Mekanism.logger.info("Attempting to form multiblock");
 
 		Coord4D controllerPosition = Coord4D.get(controller);
 		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
@@ -322,31 +320,23 @@ public class FusionReactor implements IFusionReactor
 
 		reactorBlocks.add(controller);
 
-		Mekanism.logger.info("Centre at " + centreOfReactor.toString());
 		if(!createFrame(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.info("Reactor failed: Frame not complete.");
 			return;
 		}
 		
-		Mekanism.logger.info("Frame valid");
 		if(!addSides(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.info("Reactor failed: Sides not complete.");
 			return;
 		}
 		
-		Mekanism.logger.info("Side Blocks Valid");
 		if(!centreIsClear(centreOfReactor))
 		{
 			unformMultiblock();
-			Mekanism.logger.info("Blocks in chamber.");
 			return;
 		}
-		
-		Mekanism.logger.info("Centre is clear");
 		
 		formed = true;
 		
