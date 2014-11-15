@@ -6,16 +6,8 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.core;
+package buildcraft.api.power;
 
-import java.util.Random;
-
-public interface IZone {
-
-	double distanceTo(BlockIndex index);
-
-	boolean contains(double x, double y, double z);
-
-	BlockIndex getRandomBlockIndex(Random rand);
+public interface ILaserTargetBlock {
 
 }

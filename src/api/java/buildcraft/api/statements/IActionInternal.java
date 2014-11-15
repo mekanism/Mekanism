@@ -6,17 +6,10 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.recipes;
+package buildcraft.api.statements;
 
-import net.minecraft.item.ItemStack;
+public interface IActionInternal extends IStatement {
 
-public interface IFlexibleRecipe<T> {
-
-	boolean canBeCrafted(IFlexibleCrafter crafter);
-
-	CraftingResult<T> craft(IFlexibleCrafter crafter, boolean preview);
-
-	CraftingResult<T> canCraft(ItemStack expectedOutput);
-
-	String getId();
+	void actionActivate(IStatementContainer source, IStatementParameter[] parameters);
+	
 }

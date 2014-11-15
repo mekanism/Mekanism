@@ -6,26 +6,13 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.transport;
+package buildcraft.api.statements;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.gates.IGate;
 
-public interface IPipe {
+public interface IActionExternal extends IStatement {
 
-	int x();
-
-	int y();
-
-	int z();
-
-	IPipeTile getTile();
-
-	IGate getGate(ForgeDirection side);
+	void actionActivate(TileEntity target, ForgeDirection side, IStatementContainer source, IStatementParameter[] parameters);
 	
-	boolean hasGate(ForgeDirection side);
-	
-	boolean isWired(PipeWire wire);
-	
-	boolean isWireActive(PipeWire wire);
 }

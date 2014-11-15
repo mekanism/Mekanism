@@ -6,16 +6,7 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.core;
+@API(apiVersion = "1.0", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|statements")
+package buildcraft.api.statements;
+import cpw.mods.fml.common.API;
 
-import java.util.Random;
-
-public interface IZone {
-
-	double distanceTo(BlockIndex index);
-
-	boolean contains(double x, double y, double z);
-
-	BlockIndex getRandomBlockIndex(Random rand);
-
-}

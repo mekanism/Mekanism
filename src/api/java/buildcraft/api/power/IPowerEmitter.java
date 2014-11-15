@@ -6,26 +6,18 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.transport;
+package buildcraft.api.power;
 
 import net.minecraftforge.common.util.ForgeDirection;
-import buildcraft.api.gates.IGate;
 
-public interface IPipe {
+/**
+ * Essentially only used for Wooden Power Pipe connection rules.
+ *
+ * This Tile Entity interface allows you to indicate that a block can emit power
+ * from a specific side.
+ */
+@Deprecated
+public interface IPowerEmitter {
 
-	int x();
-
-	int y();
-
-	int z();
-
-	IPipeTile getTile();
-
-	IGate getGate(ForgeDirection side);
-	
-	boolean hasGate(ForgeDirection side);
-	
-	boolean isWired(PipeWire wire);
-	
-	boolean isWireActive(PipeWire wire);
+	boolean canEmitPowerFrom(ForgeDirection side);
 }

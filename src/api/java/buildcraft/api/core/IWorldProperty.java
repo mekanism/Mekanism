@@ -8,14 +8,11 @@
  */
 package buildcraft.api.core;
 
-import java.util.Random;
+import net.minecraft.world.World;
 
-public interface IZone {
+public interface IWorldProperty {
 
-	double distanceTo(BlockIndex index);
+	boolean get(World world, int x, int y, int z);
 
-	boolean contains(double x, double y, double z);
-
-	BlockIndex getRandomBlockIndex(Random rand);
-
+	void clear();
 }

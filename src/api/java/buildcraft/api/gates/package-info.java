@@ -6,14 +6,7 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.recipes;
+@API(apiVersion = "3.0", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|gates")
+package buildcraft.api.gates;
+import cpw.mods.fml.common.API;
 
-public final class BuildcraftRecipes {
-
-	public static IAssemblyRecipeManager assemblyTable;
-	public static IIntegrationRecipeManager integrationTable;
-	public static IRefineryRecipeManager refinery;
-
-	private BuildcraftRecipes() {
-	}
-}

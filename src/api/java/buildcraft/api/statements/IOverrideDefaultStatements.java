@@ -6,16 +6,11 @@
  * License 1.0, or MMPL. Please check the contents of the license located in
  * http://www.mod-buildcraft.com/MMPL-1.0.txt
  */
-package buildcraft.api.core;
+package buildcraft.api.statements;
 
-import java.util.Random;
+import java.util.List;
 
-public interface IZone {
-
-	double distanceTo(BlockIndex index);
-
-	boolean contains(double x, double y, double z);
-
-	BlockIndex getRandomBlockIndex(Random rand);
-
+public interface IOverrideDefaultStatements {
+	List<ITriggerExternal> overrideTriggers();
+	List<IActionExternal> overrideActions();
 }

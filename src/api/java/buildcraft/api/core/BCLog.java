@@ -31,7 +31,7 @@ public final class BCLog {
 		logger.info("http://www.mod-buildcraft.com");
 	}
 
-	public static void logErrorAPI(String mod, Throwable error, Class classFile) {
+	public static void logErrorAPI(String mod, Throwable error, Class<?> classFile) {
 		StringBuilder msg = new StringBuilder(mod);
 		msg.append(" API error, please update your mods. Error: ").append(error);
 		StackTraceElement[] stackTrace = error.getStackTrace();
