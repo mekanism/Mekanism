@@ -18,10 +18,11 @@ public final class ItemAttacher
 		attachable.add(new ItemStack(Blocks.redstone_torch));
 		attachable.add(new ItemStack(Blocks.torch));
 
-		for(TransmitterType type : TransmitterType.values())
-		{
-			attachable.add(new ItemStack(Mekanism.PartTransmitter, 1, type.ordinal()));
-		}
+        if (Mekanism.PartTransmitter != null) {
+            for (TransmitterType type : TransmitterType.values()) {
+                attachable.add(new ItemStack(Mekanism.PartTransmitter, 1, type.ordinal()));
+            }
+        }
 	}
 
 	public static boolean canAttach(ItemStack itemStack)

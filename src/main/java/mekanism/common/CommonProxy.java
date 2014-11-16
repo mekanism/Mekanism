@@ -183,6 +183,7 @@ public class CommonProxy
 	 */
 	public void loadConfiguration()
 	{
+        Mekanism.disableFMP = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisableMultiparts", false, "WARNING: THIS OPTION IS UNSUPPORTED. Disable ForgeMultipart integration.").getBoolean(false);
 		Mekanism.updateNotifications = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpdateNotifications", true).getBoolean(true);
 		Mekanism.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean(true);
 		Mekanism.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean(false);
