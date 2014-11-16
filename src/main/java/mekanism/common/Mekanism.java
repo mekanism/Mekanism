@@ -329,6 +329,7 @@ public class Mekanism
 	public static double FROM_TE;
 	public static double FROM_UE = 1/TO_UE;
 
+    public static boolean disableFMP;
 	public static boolean blacklistBC;
 	public static boolean blacklistIC2;
 	public static boolean blacklistRF;
@@ -643,43 +644,45 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new BinRecipe());
 		
         //Transmitters
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 0), new Object[] {
-			"SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Items.redstone
-		}));
-        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 1), new Object[] {
-            "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 0)
-        }));
-        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 2), new Object[] {
-            "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 1)
-        }));
-        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 3), new Object[] {
-            "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 2)
-        }));
-        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 4), new Object[] {
-            "SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Items.bucket
-        }));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 5), new Object[] {
-			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 4)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 6), new Object[] {
-			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 5)
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 7), new Object[] {
-			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 6)
-		}));
-        CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 8), new Object[] {
-            "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass"
-        }));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 9), new Object[] {
-			"SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "circuitBasic"
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 2, 10), new Object[] {
-			"SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.iron_bars
-		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 2, 11), new Object[] {
-			"RRR", "SBS", "RRR", Character.valueOf('R'), Items.redstone, Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.iron_bars
-		}));
-		
+        if(PartTransmitter != null) {
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 0), new Object[]{
+                    "SRS", Character.valueOf('S'), "ingotSteel", Character.valueOf('R'), Items.redstone
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 1), new Object[]{
+                    "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 0)
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 2), new Object[]{
+                    "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 1)
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 3), new Object[]{
+                    "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 2)
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 4), new Object[]{
+                    "SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Items.bucket
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 5), new Object[]{
+                    "TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 4)
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 6), new Object[]{
+                    "TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 5)
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 7), new Object[]{
+                    "TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(PartTransmitter, 1, 6)
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 8), new Object[]{
+                    "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass"
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 8, 9), new Object[]{
+                    "SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "circuitBasic"
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 2, 10), new Object[]{
+                    "SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.iron_bars
+            }));
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(PartTransmitter, 2, 11), new Object[]{
+                    "RRR", "SBS", "RRR", Character.valueOf('R'), Items.redstone, Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.iron_bars
+            }));
+        }
+
 		//Plastic stuff
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(Polyethene, 1, 1), new Object[] {
 			"PP", "PP", "PP", Character.valueOf('P'), new ItemStack(Polyethene, 1, 0)
@@ -693,18 +696,22 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, 15), new Object[] {
 			"SSS", "S S", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, 15), new Object[] {
-			"PSP", "S S", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('G'), Items.glowstone_dust
-		}));
+        if(GlowPanel != null) {
+            CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, 15), new Object[]{
+                    "PSP", "S S", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('G'), Items.glowstone_dust
+            }));
+        }
 
 		for(int i = 0; i < EnumColor.DYES.length-1; i++)
 		{
 			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(BlockHDPE, 4, i), new Object[] {
 				"SSS", "SDS", "SSS", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName
 			}));
-			CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, i), new Object[] {
-				"PSP", "SDS", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName, Character.valueOf('G'), Items.glowstone_dust
-			}));
+            if(GlowPanel != null) {
+                CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GlowPanel, 2, i), new Object[]{
+                        "PSP", "SDS", "GSG", Character.valueOf('P'), "paneGlass", Character.valueOf('S'), new ItemStack(Polyethene, 1, 2), Character.valueOf('D'), "dye" + EnumColor.DYES[i].dyeName, Character.valueOf('G'), Items.glowstone_dust
+                }));
+            }
 		}
 
 		for(int i = 0; i < EnumColor.DYES.length; i++)
@@ -939,7 +946,6 @@ public class Mekanism
 	public void addItems()
 	{	
 		//Declarations
-		PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 		EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
 		ReinforcedAlloy = new ItemMekanism().setUnlocalizedName("ReinforcedAlloy");
 		AtomicAlloy = new ItemMekanism().setUnlocalizedName("AtomicAlloy");
@@ -982,14 +988,12 @@ public class Mekanism
 		ItemProxy = new ItemProxy().setUnlocalizedName("ItemProxy");
 		Substrate = new ItemMekanism().setUnlocalizedName("Substrate");
 		Polyethene = new ItemHDPE().setUnlocalizedName("HDPE");
-		BioFuel = new ItemMekanism().setUnlocalizedName("BioFuel");
-		GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
+        BioFuel = new ItemMekanism().setUnlocalizedName("BioFuel");
 
 		//Fluid Container stuff
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		
 		//Registrations
-		GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
 		GameRegistry.registerItem(ElectricBow, "ElectricBow");
 		GameRegistry.registerItem(Dust, "Dust");
 		GameRegistry.registerItem(Ingot, "Ingot");
@@ -1033,7 +1037,14 @@ public class Mekanism
 		GameRegistry.registerItem(Substrate, "Substrate");
 		GameRegistry.registerItem(Polyethene, "Polyethene");
 		GameRegistry.registerItem(BioFuel, "BioFuel");
-		GameRegistry.registerItem(GlowPanel, "GlowPanel");
+
+        if (!disableFMP) {
+            PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
+            GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
+
+            GameRegistry.registerItem(PartTransmitter, "PartTransmitter");
+            GameRegistry.registerItem(GlowPanel, "GlowPanel");
+        }
 	}
 	
 	/**
@@ -1086,7 +1097,9 @@ public class Mekanism
 	public void registerOreDict()
 	{
 		//Add specific items to ore dictionary for recipe usage in other mods.
-		OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
+        if (PartTransmitter != null) {
+            OreDictionary.registerOre("universalCable", new ItemStack(PartTransmitter, 8, 0));
+        }
 		OreDictionary.registerOre("battery", EnergyTablet.getUnchargedItem());
 		OreDictionary.registerOre("pulpWood", Sawdust);
 		OreDictionary.registerOre("dustWood", Sawdust);
