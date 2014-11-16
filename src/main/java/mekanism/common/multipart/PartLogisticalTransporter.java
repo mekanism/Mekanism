@@ -797,45 +797,54 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 		return pipe;
 	}
 
+	@Interface(iface = "buildcraft.api.transport.IPipe", modid = "BuildCraftAPI|transport")
 	public class TransporterPipeProxy implements IPipe
 	{
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public int x() {
 			return PartLogisticalTransporter.this.x();
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public int y() {
 			return PartLogisticalTransporter.this.y();
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public int z() {
 			return PartLogisticalTransporter.this.y();
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public IPipeTile getTile() {
 			return (IPipeTile)tile();
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public IGate getGate(ForgeDirection side) {
 			return null;
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public boolean hasGate(ForgeDirection side) {
 			return false;
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public boolean isWired(PipeWire wire) {
 			return false;
 		}
 
 		@Override
+		@Method(modid = "BuildCraftAPI|transport")
 		public boolean isWireActive(PipeWire wire) {
 			return false;
 		}
