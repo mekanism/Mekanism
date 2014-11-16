@@ -776,44 +776,51 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 	public class TransporterPipeProxy implements IPipe
 	{
-
 		@Override
-		public int x() {
+		public int x()
+		{
 			return PartLogisticalTransporter.this.x();
 		}
 
 		@Override
-		public int y() {
+		public int y() 
+		{
 			return PartLogisticalTransporter.this.y();
 		}
 
 		@Override
-		public int z() {
+		public int z()
+		{
 			return PartLogisticalTransporter.this.y();
 		}
 
 		@Override
-		public IPipeTile getTile() {
+		public IPipeTile getTile() 
+		{
 			return (IPipeTile)tile();
 		}
 
 		@Override
-		public IGate getGate(ForgeDirection side) {
+		public IGate getGate(ForgeDirection side)
+		{
 			return null;
 		}
 
 		@Override
-		public boolean hasGate(ForgeDirection side) {
+		public boolean hasGate(ForgeDirection side) 
+		{
 			return false;
 		}
 
 		@Override
-		public boolean isWired(PipeWire wire) {
+		public boolean isWired(PipeWire wire)
+		{
 			return false;
 		}
 
 		@Override
-		public boolean isWireActive(PipeWire wire) {
+		public boolean isWireActive(PipeWire wire) 
+		{
 			return false;
 		}
 	}
