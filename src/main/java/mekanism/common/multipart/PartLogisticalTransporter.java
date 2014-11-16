@@ -668,31 +668,6 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	}
 
 	@Override
-	public PipeType getPipeType()
-	{
-		return PipeType.ITEM;
-	}
-
-	@Override
-	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, buildcraft.api.core.EnumColor color) {
-		return 0;
-	}
-
-	@Override
-	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from)
-	{
-		if(doAdd)
-		{
-			TileEntity tile = Coord4D.get(tile()).getFromSide(from).getTileEntity(world());
-
-			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
-			return TransporterManager.getToUse(stack, rejects).stackSize;
-		}
-
-		return 0;
-	}
-
-	@Override
 	protected boolean onConfigure(EntityPlayer player, int part, int side)
 	{
 		TransporterUtils.incrementColor(this);
@@ -776,6 +751,34 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	public int getCost()
 	{
 		return 1;
+	}
+	
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, buildcraft.api.core.EnumColor color) {
+		return 0;
+	}
+
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from)
+	{
+		if(doAdd)
+		{
+			TileEntity tile = Coord4D.get(tile()).getFromSide(from).getTileEntity(world());
+
+			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
+			return TransporterManager.getToUse(stack, rejects).stackSize;
+		}
+
+		return 0;
+	}
+	
+	@Override
+	@Method(modid = "BuildCraftAPI|transport")
+	public PipeType getPipeType()
+	{
+		return PipeType.ITEM;
 	}
 
 	@Override
