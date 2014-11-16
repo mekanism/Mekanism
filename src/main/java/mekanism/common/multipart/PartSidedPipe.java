@@ -499,16 +499,15 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(!world().isRemote)
 		{
+			if(getAllCurrentConnections() != (possibleAcceptors | possibleAcceptors))
+			{
+				sendDesc = true;
+			}
 			currentTransmitterConnections = possibleTransmitters;
 			currentAcceptorConnections = possibleAcceptors;
 		}
 
 		onRefresh();
-
-		if(!world().isRemote)
-		{
-			sendDesc = true;
-		}
 	}
 
 	protected void onModeChange(ForgeDirection side)
