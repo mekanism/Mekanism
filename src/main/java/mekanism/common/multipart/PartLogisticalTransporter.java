@@ -44,14 +44,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
-import buildcraft.api.gates.IGate;
 import buildcraft.api.transport.IPipe;
 import buildcraft.api.transport.IPipeTile;
-import buildcraft.api.transport.PipeWire;
 import codechicken.lib.vec.Vector3;
 
 @Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
-public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter, IPipeTile
+public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter
 {
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 4);
 
@@ -64,8 +62,6 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 
 	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
-
-	public TransporterPipeProxy pipe = new TransporterPipeProxy();
 
 	@Override
 	public String getType()
@@ -716,7 +712,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		super.onRemoved();
 
 		if(!world().isRemote)
-		{	
+		{
 			for(TransporterStack stack : transit)
 			{
 				TransporterUtils.drop(this, stack);
@@ -730,115 +726,6 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		return 1;
 	}
 	
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public PipeType getPipeType()
-	{
-		return PipeType.ITEM;
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, buildcraft.api.core.EnumColor color) {
-		return 0;
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from)
-	{
-		if(doAdd)
-		{
-			TileEntity tile = Coord4D.get(tile()).getFromSide(from).getTileEntity(world());
-
-			ItemStack rejects = TransporterUtils.insert(tile, this, stack, null, true, 0);
-			return TransporterManager.getToUse(stack, rejects).stackSize;
-		}
-
-		return 0;
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public boolean isPipeConnected(ForgeDirection with)
-	{
-		return connectionMapContainsSide(getAllCurrentConnections(), with);
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public TileEntity getAdjacentTile(ForgeDirection dir) 
-	{
-		return Coord4D.get(tile()).getFromSide(dir).getTileEntity(world());
-	}
-
-	@Override
-	@Method(modid = "BuildCraftAPI|transport")
-	public IPipe getPipe() 
-	{
-		return pipe;
-	}
-
-	@Interface(iface = "buildcraft.api.transport.IPipe", modid = "BuildCraftAPI|transport")
-	public class TransporterPipeProxy implements IPipe
-	{
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public int x()
-		{
-			return PartLogisticalTransporter.this.x();
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public int y() 
-		{
-			return PartLogisticalTransporter.this.y();
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public int z()
-		{
-			return PartLogisticalTransporter.this.y();
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public IPipeTile getTile() 
-		{
-			return (IPipeTile)tile();
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public IGate getGate(ForgeDirection side)
-		{
-			return null;
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public boolean hasGate(ForgeDirection side) 
-		{
-			return false;
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public boolean isWired(PipeWire wire)
-		{
-			return false;
-		}
-
-		@Override
-		@Method(modid = "BuildCraftAPI|transport")
-		public boolean isWireActive(PipeWire wire) 
-		{
-			return false;
-		}
-	}
-
 	@Override
 	public int getTransmitterNetworkSize()
 	{
