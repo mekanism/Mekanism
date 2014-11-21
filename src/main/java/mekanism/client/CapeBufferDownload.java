@@ -32,7 +32,7 @@ public class CapeBufferDownload extends Thread
 		staticCapeUrl = url;
 
 		setDaemon(true);
-		setName("Cape Downlaod Thread");
+		setName("Cape Download Thread");
 	}
 
 	@Override

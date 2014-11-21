@@ -279,6 +279,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			push();
 
 			MekanismRenderer.glowOn(fluid.getLuminosity());
+			MekanismRenderer.colorFluid(fluid);
 
 			CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslated(pos.x, pos.y, pos.z);
@@ -328,6 +329,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			}
 
 			MekanismRenderer.glowOff();
+			MekanismRenderer.resetColor();
 
 			pop();
 		}
@@ -364,8 +366,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			map.put(fluid, displays);
 			cachedLiquids.put(side, map);
 		}
-
-		MekanismRenderer.colorFluid(fluid);
 
 		for(int i = 0; i < stages; i++)
 		{
@@ -455,8 +455,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			MekanismRenderer.renderObject(toReturn);
 			displays[i].endList();
 		}
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		return displays;
 	}

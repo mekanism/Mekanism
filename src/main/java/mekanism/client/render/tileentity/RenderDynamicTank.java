@@ -55,6 +55,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
 				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
 
@@ -68,6 +69,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				}
 
 				MekanismRenderer.glowOff();
+				MekanismRenderer.resetColor();
 
 				pop();
 
@@ -77,6 +79,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 					{
 						push();
 
+						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
@@ -84,6 +87,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
 
 						MekanismRenderer.glowOff();
+						MekanismRenderer.resetColor();
 
 						pop();
 					}
@@ -132,8 +136,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			cachedCenterFluids.put(data, map);
 		}
 
-		MekanismRenderer.colorFluid(fluid);
-
 		for(int i = 0; i < stages; i++)
 		{
 			displays[i] = DisplayInteger.createAndStart();
@@ -153,8 +155,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 			GL11.glEndList();
 		}
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		return displays;
 	}
@@ -181,8 +181,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			map.put(fluid, display);
 			cachedValveFluids.put(data, map);
 		}
-
-		MekanismRenderer.colorFluid(fluid);
 
 		switch(data.side)
 		{
@@ -264,8 +262,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 		
 		display.endList();
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		return display;
 	}

@@ -52,6 +52,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 			GL11.glTranslated(x, y, z);
 	
 			MekanismRenderer.glowOn(fluid.getLuminosity());
+			MekanismRenderer.colorFluid(fluid);
 	
 			DisplayInteger[] displayList = getListAndRender(fluid);
 	
@@ -65,6 +66,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 			}
 	
 			MekanismRenderer.glowOff();
+			MekanismRenderer.resetColor();
 			
 			pop();
 		}
@@ -77,12 +79,14 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 			GL11.glTranslated(x, y, z);
 			
 			MekanismRenderer.glowOn(valveFluid.getLuminosity());
+			MekanismRenderer.colorFluid(valveFluid);
 			
 			DisplayInteger[] valveList = getValveRender(valveFluid);
 			
 			valveList[Math.min(stages-1, (int)(fluidScale*((float)stages-1)))].render();
 			
 			MekanismRenderer.glowOff();
+			MekanismRenderer.resetColor();
 			
 			pop();
 		}
@@ -126,8 +130,6 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedValveFluids.put(fluid, displays);
 
-		MekanismRenderer.colorFluid(fluid);
-
 		for(int i = 0; i < stages; i++)
 		{
 			displays[i] = DisplayInteger.createAndStart();
@@ -148,8 +150,6 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 			GL11.glEndList();
 		}
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
 		return displays;
 	}
 	
@@ -166,8 +166,6 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedCenterFluids.put(fluid, displays);
-
-		MekanismRenderer.colorFluid(fluid);
 
 		for(int i = 0; i < stages; i++)
 		{
@@ -188,8 +186,6 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 
 			GL11.glEndList();
 		}
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		return displays;
 	}
