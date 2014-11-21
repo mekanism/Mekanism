@@ -260,7 +260,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 								worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
 	
 								missingStack = null;
-								delay = getDelay();
 							}
 	
 							break;
@@ -277,6 +276,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 						oresToMine.remove(chunk);
 					}
 				}
+				
+				delay = getDelay();
 			}
 			else {
 				if(prevEnergy >= getEnergy())
