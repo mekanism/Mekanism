@@ -1,0 +1,734 @@
+﻿//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=黒曜石TNT
+item.EnrichedAlloy.name=濃縮マン
+item.ReinforcedAlloy.name=強化合金
+item.AtomicAlloy.name=原子合金
+item.EnergyTablet.name=エネルギータブレット
+item.SpeedUpgrade.name=スピードアップグレード
+item.EnergyUpgrade.name=エネルギーアップグレード
+item.Robit.name=Robit
+item.AtomicDisassembler.name=原子分解機
+item.ElectricBow.name=Electric Bow
+item.EnrichedIron.name=精錬された鉄
+item.CompressedCarbon.name=圧縮カーボン
+item.CompressedRedstone.name=圧縮レッドストーン
+item.CompressedDiamond.name=圧縮ダイアモンド
+item.CompressedObsidian.name=圧縮黒曜石
+item.PortableTeleporter.name=ポータブルテレポーター
+item.TeleportationCore.name=テレポーテーションコア
+item.Configurator.name=コンフィギュレーター
+item.NetworkReader.name=ネットワークリーダー
+item.WalkieTalkie.name=Walkie-Talkie
+item.Jetpack.name=ジェットパック
+item.ScubaTank.name=スキューバタンク
+item.GasMask.name=ガスマスク
+item.Dictionary.name=辞書
+item.ElectrolyticCore.name=電解コア
+item.Sawdust.name=木くず
+item.Salt.name=塩
+item.BrineBucket.name=塩水
+item.FreeRunners.name=フリーランナー
+item.ArmoredJetpack.name=装甲ジェットパック
+item.FilterCard.name=フィルターカード
+item.SeismicReader.name=セイスミックリーダー
+item.HDPEPellet.name=HDPE ペレット
+item.HDPERod.name=HDPE ロッド
+item.HDPESheet.name=HDPE シート
+item.PlaStick.name=プラスチック
+item.Substrate.name=基板
+
+//Control Circuits
+item.BasicControlCircuit.name=基本制御回路
+item.AdvancedControlCircuit.name=発展制御回路
+item.EliteControlCircuit.name=上級制御回路
+item.UltimateControlCircuit.name=アルティメット制御回路
+
+//Gas Tank
+tile.GasTank.GasTank.name=ガスタンク
+//Cardboard Box
+tile.CardboardBox.name=ダンボール
+
+//Bounding Block
+tile.BoundingBlock.name=Bounding Block
+
+//Salt
+tile.SaltBlock.name=塩ブロック
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=オスミウムブロック
+tile.BasicBlock.BronzeBlock.name=ブロンズブロック
+tile.BasicBlock.RefinedObsidian.name=精錬された黒曜石
+tile.BasicBlock.CharcoalBlock.name=石炭ブロック
+tile.BasicBlock.RefinedGlowstone.name=精錬されたグロウストーン
+tile.BasicBlock.SteelBlock.name=鋼鉄ブロック
+tile.BasicBlock.Bin.name=瓶
+tile.BasicBlock.TeleporterFrame.name=テレポーターフレーム
+tile.BasicBlock.SteelCasing.name=鋼鉄ケース
+tile.BasicBlock.DynamicTank.name=ダイナミックタンク
+tile.BasicBlock.DynamicGlass.name=ダイナミックガラス
+tile.BasicBlock.DynamicValve.name=ダイナミックバルブ
+tile.BasicBlock.CopperBlock.name=銅ブロック
+tile.BasicBlock.TinBlock.name=スズブロック
+tile.BasicBlock.SalinationController.name=塩分化コントローラー
+tile.BasicBlock.SalinationValve.name=塩分化バルブ
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.SalinationBlock.name=塩分化ブロック
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=濃縮チャンバー
+tile.MachineBlock.OsmiumCompressor.name=オスミウム圧縮機
+tile.MachineBlock.Combiner.name=コンバイナー
+tile.MachineBlock.Crusher.name=粉砕機
+tile.MachineBlock.BasicFactory.name=ベーシックファクトリー
+tile.MachineBlock.AdvancedFactory.name=アドバンスドファクトリー
+tile.MachineBlock.EliteFactory.name=エリートファクトリー
+tile.MachineBlock.MetallurgicInfuser.name=冶金注入機
+tile.MachineBlock.PurificationChamber.name=精製チャンバー
+tile.MachineBlock.EnergizedSmelter.name=電気かまど
+tile.MachineBlock.Teleporter.name=テレポーター
+tile.MachineBlock.ElectricPump.name=電気ポンプ
+tile.MachineBlock.ElectricChest.name=電気チェスト
+tile.MachineBlock.Chargepad.name=チャージパッド
+tile.MachineBlock.LogisticalSorter.name=ロジスティカルソーター
+tile.MachineBlock.DigitalMiner.name=デジタルマイナー
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
+tile.MachineBlock2.ChemicalInfuser.name=化学注入機
+tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
+tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
+tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
+tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
+tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
+tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
+tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
+tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PortableTank.name=ポータブルタンク
+tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+
+//Plastic
+tile.PlasticBlock.name=プラスチックブロック
+tile.SlickPlasticBlock.name=スリックプラスチックブロック
+tile.GlowPlasticBlock.name=プラスチックグロウブロック
+tile.ReinforcedPlasticBlock.name=強化プラスチックブロック
+tile.RoadPlasticBlock.name=プラスチックロード
+
+tile.PlasticFence.name=プラスチックの柵
+
+//Infuse types
+infuse.carbon=カーボン
+infuse.tin=Tin
+infuse.diamond=Diamond
+infuse.redstone=レッドストーン
+infuse.fungi=Fungi
+infuse.obsidian=Obsidian
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=オスミウム鉱石
+tile.OreBlock.CopperOre.name=銅鉱石
+tile.OreBlock.TinOre.name=スズ鉱石
+
+//Transmitters
+item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
+item.MultipartTransmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
+item.MultipartTransmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
+item.MultipartTransmitter.EliteUniversalCable.name=エリートユニバーサルケーブル
+item.MultipartTransmitter.UltimateUniversalCable.name=アルティメットユニバーサルケーブル
+item.MultipartTransmitter.BasicMechanicalPipe.name=Basic Mechanical Pipe
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=Advanced Mechanical Pipe
+item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mechanical Pipe
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimate Mechanical Pipe
+item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
+item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
+item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
+
+//Glow Panel
+item.GlowPanel.name=グロウパネル
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=ベーシックエネルギーキューブ
+tile.EnergyCube.Advanced.name=アドバンスドエネルギーキューブ
+tile.EnergyCube.Elite.name=エリートエネルギーキューブ
+tile.EnergyCube.Ultimate.name=アルティメットエネルギーキューブ
+
+//Dust
+item.ironDust.name=Iron Dust
+item.goldDust.name=Gold Dust
+item.osmiumDust.name=Osmium Dust
+item.obsidianDust.name=Refined Obsidian Dust
+item.diamondDust.name=Diamond Dust
+item.steelDust.name=Steel Dust
+item.copperDust.name=Copper Dust
+item.tinDust.name=Tin Dust
+item.silverDust.name=Silver Dust
+item.leadDust.name=Lead Dust
+item.sulfurDust.name=Sulfur Dust
+
+//Clumps
+item.ironClump.name=Iron Clump
+item.goldClump.name=Gold Clump
+item.osmiumClump.name=Osmium Clump
+item.copperClump.name=Copper Clump
+item.tinClump.name=Tin Clump
+item.silverClump.name=Silver Clump
+item.obsidianClump.name=Obsidian Clump
+item.leadClump.name=Lead Clump
+
+//Shards
+item.ironShard.name=Iron Shard
+item.goldShard.name=Gold Shard
+item.osmiumShard.name=Osmium Shard
+item.copperShard.name=Copper Shard
+item.tinShard.name=Tin Shard
+item.silverShard.name=Silver Shard
+item.obsidianShard.name=Obsidian Shard
+item.leadShard.name=Lead Shard
+
+//Crystals
+item.ironCrystal.name=Iron Crystal
+item.goldCrystal.name=Gold Crystal
+item.osmiumCrystal.name=Osmium Crystal
+item.copperCrystal.name=Copper Crystal
+item.tinCrystal.name=Tin Crystal
+item.silverCrystal.name=Silver Crystal
+item.obsidianCrystal.name=Obsidian Crystal
+item.leadCrystal.name=Lead Crystal
+
+//Dirty Dust
+item.dirtyIronDust.name=Dirty Iron Dust
+item.dirtyGoldDust.name=Dirty Gold Dust
+item.dirtyOsmiumDust.name=Dirty Osmium Dust
+item.dirtyCopperDust.name=Dirty Copper Dust
+item.dirtyTinDust.name=Dirty Tin Dust
+item.dirtySilverDust.name=Dirty Silver Dust
+item.dirtyObsidianDust.name=Dirty Obsidian Dust
+item.dirtyLeadDust.name=Dirty Lead Dust
+
+//Ingots
+item.obsidianIngot.name=黒曜石のインゴット
+item.osmiumIngot.name=オスミウムインゴット
+item.bronzeIngot.name=ブロンズインゴット
+item.glowstoneIngot.name=グロウストーンインゴット
+item.steelIngot.name=鋼鉄インゴット
+item.copperIngot.name=銅インゴット
+item.tinIngot.name=スズインゴット
+
+//Gasses
+gas.hydrogen=Hydrogen
+gas.oxygen=Oxygen
+gas.water=Water Vapor
+gas.chlorine=Chlorine
+gas.sulfurDioxideGas=Sulfur Dioxide
+gas.sulfurTrioxideGas=Sulfur Trioxide
+gas.sulfuricAcid=Sulfuric Acid
+gas.hydrogenChloride=Hydrogen Chloride
+gas.liquidOsmium=Liquid Osmium
+gas.liquidStone=Liquid Stone
+gas.ethene=Ethylene
+gas.sodium=Sodium
+gas.brine=Gaseous Brine
+
+gas.iron=Iron Slurry
+gas.gold=Gold Slurry
+gas.osmium=Osmium Slurry
+gas.copper=Copper Slurry
+gas.tin=Tin Slurry
+gas.silver=Silver Slurry
+gas.obsidian=Obsidian Slurry
+gas.lead=Lead Slurry
+
+gas.cleanIron=Clean Iron Slurry
+gas.cleanGold=Clean Gold Slurry
+gas.cleanOsmium=Clean Osmium Slurry
+gas.cleanCopper=Clean Copper Slurry
+gas.cleanTin=Clean Tin Slurry
+gas.cleanSilver=Clean Silver Slurry
+gas.cleanObsidian=Clean Obsidian Slurry
+gas.cleanLead=Clean Lead Slurry
+
+//BC Fuel Gases
+gas.fuel=Vaporized Fuel
+gas.oil=Vaporized Oil
+
+//Fluids
+fluid.hydrogen=Liquid Hydrogen
+fluid.oxygen=Liquid Oxygen
+fluid.chlorine=Liquid Chlorine
+fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
+fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
+fluid.sulfuricAcid=Liquid Sulfuric Acid
+fluid.hydrogenChloride=Liquid Hydrogen Chloride
+fluid.brine=Brine
+fluid.ethene=Liquid Ethylene
+fluid.sodium=Liquid Sodium
+
+//OreGas names
+oregas.iron=鉄鉱石
+oregas.gold=金鉱石
+oregas.osmium=オスミウム鉱石
+oregas.copper=銅鉱石
+oregas.tin=スズ鉱石
+oregas.silver=銀鉱石
+oregas.obsidian=Obsidian Ore
+oregas.lead=Lead Ore
+
+//Update handler text
+update.consider=Consider updating to version
+update.newFeatures=New features
+update.visit=Visit
+update.toDownload=to download
+update.devBuild=Using developer build
+update.outdated=Using outdated version on one or more modules
+
+//Key description text
+key.mode=Mode Switch
+key.voice=Voice
+
+//Config Gui
+mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
+
+//Gui text
+gui.removeSpeedUpgrade=Remove speed upgrade
+gui.removeEnergyUpgrade=Remove energy upgrade
+gui.condensentrating=Condensentrating
+gui.decondensentrating=Decondensentrating
+gui.power=Power
+gui.confirm=Confirm
+gui.open=Open
+gui.allOK=All OK
+gui.none=None
+gui.new=New
+gui.edit=Edit
+gui.save=Save
+gui.output=Output
+gui.delete=Delete
+gui.status=Status
+gui.autoEject=Auto-eject
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.material=Material
+gui.out=Out
+gui.noFluid=No fluid
+gui.empty=Empty
+gui.volume=Volume
+gui.start=Start
+gui.stop=Stop
+gui.config=Config
+gui.teleport=Teleport
+gui.eject=Eject
+gui.input=Input
+gui.slots=Slots
+gui.state=State
+gui.on=On
+gui.off=Off
+gui.filters=Filters
+gui.idle=Idle
+gui.data=Data
+gui.newFilter=New Filter
+gui.energy=Energy
+gui.gas=Gas
+gui.dumping=Dumping
+gui.dumping_excess=Dumping Excess
+gui.modID=Mod ID
+gui.key=Key
+gui.id=ID
+gui.finished=Finished
+
+gui.chemicalInfuser.short=C. Infuser
+gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
+
+gui.dictionary.noKey=No key.
+
+gui.configuration=Configuration
+gui.configuration.strictInput=Strict Input
+
+gui.rotaryCondensentrator.toggleOperation=Toggle operation
+
+gui.factory.secondaryEnergy=Secondary energy
+gui.factory.smelting=Smelting
+gui.factory.enriching=Enriching
+gui.factory.crushing=Crushing
+gui.factory.compressing=Compressing
+gui.factory.combining=Combining
+gui.factory.purifying=Purifying
+gui.factory.injecting=Injecting
+gui.factory.autoSort=Auto-sort
+
+gui.seismicReader.short=S. Reader
+gui.seismicReader.solids=Solids
+gui.seismicReader.fluids=Fluids
+gui.seismicReader.reading=Reading
+
+gui.filterSelect.title=Create New Filter
+
+gui.oredictFilter=OreDict Filter
+gui.oredictFilter.noKey=No key
+gui.oredictFilter.sameKey=Same key
+
+gui.modIDFilter=Mod ID Filter
+gui.modIDFilter.noID=No ID
+gui.modIDFilter.sameID=Same ID
+
+gui.itemFilter=Item Filter
+gui.itemFilter.noItem=No item
+gui.itemFilter.details=ItemStack Details
+gui.itemFilter.min=Min
+gui.itemFilter.max=Max
+
+gui.materialFilter=Material Filter
+gui.materialFilter.details=Using material of
+
+gui.portableTeleporter=Portable Teleporter
+
+gui.robit=Robit
+entity.Robit.name=Robit
+gui.robit.smelting=Robit Smelting
+gui.robit.inventory=Robit Inventory
+gui.robit.crafting=Robit Crafting
+gui.robit.greeting=Hi, I'm
+gui.robit.toggleFollow=Toggle 'follow' mode
+gui.robit.rename=Rename this Robit
+gui.robit.teleport=Teleport back home
+gui.robit.togglePickup=Toggle 'drop pickup' mode
+gui.robit.following=Following
+gui.robit.dropPickup=ドロップ回収
+gui.robit.owner=オーナー
+
+gui.password.setPassword=Set password
+gui.password.enterPassword=Enter password
+gui.password.fieldsEmpty=Field(s) empty
+gui.password.notMatching=Not matching
+gui.password.identical=Identical
+gui.password.invalid=Invalid
+gui.password=Password
+
+gui.logisticalSorter.default=Default
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round-robin
+
+gui.electricChest.editPassword=Edit Password
+
+gui.teleporter.notReady=Not ready
+gui.teleporter.ready=Ready
+gui.teleporter.noFrame=No frame
+gui.teleporter.noLink=No link
+gui.teleporter.exceeds=Links > 2
+gui.teleporter.needsEnergy=Needs energy
+
+gui.digitalMinerConfig=Digital Miner Config
+
+gui.digitalMiner.autoPull=Auto-pull
+gui.digitalMiner.replaceBlock=Replace block
+gui.digitalMiner.reset=リセット
+gui.digitalMiner.silkTouch=シルクタッチ
+gui.digitalMiner.pull=Pull
+gui.digitalMiner.silk=Silk
+gui.digitalMiner.toMine=To mine
+gui.digitalMiner.running=採掘中
+gui.digitalMiner.inverse=Inverse mode
+
+//Recipe names
+recipe.mekanismShaped=Shaped
+
+//Item and block tooltip text
+tooltip.configurator.configurate=Configurate
+tooltip.configurator.empty=Empty
+tooltip.configurator.rotate=Rotate
+tooltip.configurator.wrench=Wrench
+tooltip.configurator.pumpReset=Reset Electric Pump calculation
+tooltip.configurator.toggleDiverter=Diverter mode changed to
+tooltip.configurator.toggleColor=Color bumped to
+tooltip.configurator.viewColor=Current color
+tooltip.configurator.unauth=This chest is locked
+tooltip.configurator.noLink=No link
+tooltip.configurator.linkMsg=Bound to
+tooltip.configurator.dim=dimension
+tooltip.configurator.setLink=Set link to block
+tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
+
+tooltip.upgrade.speed=スピード
+tooltip.upgrade.energy=エネルギー
+
+tooltip.inventory=インベントリ
+tooltip.storedEnergy=Stored energy
+tooltip.auth=Authenticated
+tooltip.locked=Locked
+tooltip.recipeType=Recipe type
+tooltip.hold=Hold
+tooltip.forDesc=for a description
+tooltip.forDetails=for details
+tooltip.fireMode=Fire Mode
+tooltip.capacity=Capacity
+tooltip.pumpRate=Pump Rate
+tooltip.items=アイテム
+tooltip.blocks=ブロック
+tooltip.universal=universal
+tooltip.fluids=Fluids
+tooltip.gasses=Gasses
+tooltip.capableTrans=Capable of transferring
+tooltip.restrictiveDesc=Only used if no other paths available
+tooltip.diversionDesc=Controllable by redstone
+tooltip.noGas=No gas stored
+tooltip.stored=Stored
+tooltip.channel=Channel
+tooltip.mode=Mode
+tooltip.efficiency=Efficiency
+tooltip.modeToggle=Mode toggled to
+tooltip.flowing=Flowing
+tooltip.yes=yes
+tooltip.no=no
+tooltip.name=Name
+tooltip.blockData=Block data
+tooltip.block=Block
+tooltip.meta=Metadata
+tooltip.tile=Tile
+tooltip.keysFound=Key(s) found
+tooltip.noKey=No key
+tooltip.hp=HP
+tooltip.configureState=Configure State
+
+tooltip.portableTank.bucketMode=Bucket Mode
+
+tooltip.disassembler.normal=normal
+tooltip.disassembler.slow=slow
+tooltip.disassembler.fast=fast
+tooltip.disassembler.vein=vein
+tooltip.disassembler.off=off
+
+tooltip.filterCard.got=Retrieved filter data from %s
+tooltip.filterCard.set=Injected filter data of type %s
+tooltip.filterCard.unequal=Unequal filter data formats
+tooltip.filterCard.logisticalSorter=Logistical Sorter
+tooltip.filterCard.digitalMiner=Digital Miner
+
+tooltip.balloon=Balloon
+
+tooltip.jetpack.regular=Regular
+tooltip.jetpack.hover=Hover
+tooltip.jetpack.disabled=Disabled
+
+tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
+tooltip.seismicReader.noVibrations=Unable to discover any vibrations
+
+tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
+tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.
+tooltip.Combiner=A machine used to combine dusts and cobblestone !nto form their ore counterparts.
+tooltip.Crusher=A machine used to crush ingots into their dust counterparts, !nas well as perform many other operations.
+tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner !nthat can mine whatever block you tell it to !nwithin a 32 block (max) radius.
+tooltip.BasicFactory=The lowest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
+tooltip.AdvancedFactory=The middle tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
+tooltip.EliteFactory=The highest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
+tooltip.MetallurgicInfuser=A machine used to infuse various materials !ninto (generally) metals to create metal alloys !nand other compounds.
+tooltip.PurificationChamber=An advanced machine capable of processing !nores into three clumps, serving as the initial !nstage of 300% ore processing.
+tooltip.EnergizedSmelter=A simple machine that serves as a Mekanism-based !nfurnace that runs off of energy.
+tooltip.Teleporter=A machine capable of teleporting players to various !nlocations defined by another teleporter.
+tooltip.ElectricPump=An advanced pump capable of pumping !nout an entire lava lake.
+tooltip.ElectricChest=A portable, 54-slot chest that uses energy to lock !nitself from others by means of password protection.
+tooltip.Chargepad=A universal chargepad that can charge !nany energized item from any mod.
+tooltip.LogisticalSorter=A filter-based, advanced sorting machine that !ncan auto-eject specified items out of and into !nadjacent inventories and Logistical Transporters.
+tooltip.RotaryCondensentrator=A machine capable of converting gasses into !ntheir fluid form and vice versa.
+tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
+tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
+tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
+tooltip.ChemicalDissolutionChamber=An ultimate machine used to chemically !ndissolve all impurities of an ore, !nleaving an unprocessed slurry behind.
+tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
+tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
+tooltip.ChemicalOxidizer=A machine capable of oxidizing !nsolid materials into gas phase.
+tooltip.ChemicalInfuser=A machine that produces a new !ngas by infusing two others.
+tooltip.SeismicVibrator=A machine that uses seismic vibrations to !nprovide information on differing layers !nof the world.
+tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid, liquid and gaseous mixture and !ncreates both a gaseous and solid product.
+tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
+tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
+
+tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
+tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
+tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
+tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
+tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
+tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
+
+tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
+tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
+tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
+
+//Redstone control
+control.disabled=無効
+control.high=High
+control.low=Low
+control.disabled.desc=常にオン
+control.high.desc=Active with signal
+control.low.desc=Active without signal
+
+//Container edit modes
+fluidedit.both=Both
+fluidedit.fill=Fill
+fluidedit.empty=Empty
+
+//Colors
+color.black=Black
+color.darkBlue=Dark Blue
+color.darkGreen=Dark Green
+color.darkAqua=Dark Aqua
+color.darkRed=Dark Red
+color.purple=Purple
+color.orange=Orange
+color.grey=Grey
+color.darkGrey=Dark Grey
+color.indigo=Indigo
+color.brightGreen=Bright Green
+color.aqua=Aqua
+color.red=Red
+color.pink=Pink
+color.yellow=Yellow
+color.white=White
+color.brown=Brown
+color.brightPink=Bright Pink
+
+//Dyes
+dye.black=Black
+dye.darkBlue=Blue
+dye.brown=Brown
+dye.darkGreen=Green
+dye.darkAqua=Cyan
+dye.darkRed=Dark Red
+dye.purple=Purple
+dye.orange=Orange
+dye.grey=Light Grey
+dye.darkGrey=Grey
+dye.indigo=Light Blue
+dye.brightGreen=Lime
+dye.aqua=Aqua
+dye.red=Red
+dye.brightPink=Pink
+dye.pink=Magenta
+dye.yellow=Yellow
+dye.white=White
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=C. Injection Chamber
+nei.rotaryCondensentrator=R. Condensentrator
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.BioFuel.name=バイオ燃料
+item.SolarPanel.name=ソーラーパネル
+
+//Infuse types
+infuse.bio=Biomass
+
+//Generators
+tile.Generator.HeatGenerator.name=火力発電機
+tile.Generator.SolarGenerator.name=ソーラー発電機
+tile.Generator.GasGenerator.name=ガス発電機
+tile.Generator.BioGenerator.name=バイオ発電機
+tile.Generator.AdvancedSolarGenerator.name=アドバンスドソーラー発電機
+tile.Generator.WindTurbine.name=風力発電機
+
+//Gui text
+gui.heatGenerator.fuel=燃料
+gui.solarGenerator.sun=日光
+gui.bioGenerator.bioFuel=バイオ燃料
+gui.electrolyticSeparator.dump=Dump
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=木のパクセル
+item.StonePaxel.name=石のパクセル
+item.IronPaxel.name=鉄のパクセル
+item.DiamondPaxel.name=ダイヤのパクセル
+item.GoldPaxel.name=金のパクセル
+
+//Obsidian
+item.ObsidianHelmet.name=黒曜石のヘルメット
+item.ObsidianChestplate.name=黒曜石のチェストプレート
+item.ObsidianLeggings.name=黒曜石のレギンス
+item.ObsidianBoots.name=黒曜石のブーツ
+item.ObsidianPaxel.name=黒曜石のパクセル
+item.ObsidianPickaxe.name=黒曜石のピッケル
+item.ObsidianAxe.name=黒曜石の斧
+item.ObsidianShovel.name=黒曜石のシャベル
+item.ObsidianHoe.name=黒曜石のクワ
+item.ObsidianSword.name=黒曜石の剣
+
+//Lapis Lazuli
+item.LazuliHelmet.name=ラピスラズリのヘルメット
+item.LazuliChestplate.name=ラピスラズリのチェストプレート
+item.LazuliLeggings.name=ラピスラズリのレギンス
+item.LazuliBoots.name=ラピスラズリのブーツ
+item.LazuliPaxel.name=ラピスラズリのパクセル
+item.LazuliPickaxe.name=ラピスラズリのピッケル
+item.LazuliAxe.name=ラピスラズリの斧
+item.LazuliShovel.name=ラピスラズリのシャベル
+item.LazuliHoe.name=ラピスラズリのクワ
+item.LazuliSword.name=ラピスラズリの剣
+
+//Osmium
+item.OsmiumHelmet.name=オスミウムのヘルメット
+item.OsmiumChestplate.name=オスミウムのチェストプレート
+item.OsmiumLeggings.name=オスミウムのレギンス
+item.OsmiumBoots.name=オスミウムのブーツ
+item.OsmiumPaxel.name=オスミウムのパクセル
+item.OsmiumPickaxe.name=オスミウムのピッケル
+item.OsmiumAxe.name=オスミウムの斧
+item.OsmiumShovel.name=オスミウムのシャベル
+item.OsmiumHoe.name=オスミウムのクワ
+item.OsmiumSword.name=オスミウムの剣
+
+//Bronze
+item.BronzeHelmet.name=ブロンズのヘルメット
+item.BronzeChestplate.name=ブロンズのチェストプレート
+item.BronzeLeggings.name=ブロンズのレギンス
+item.BronzeBoots.name=ブロンズのブーツ
+item.BronzePaxel.name=ブロンズのパクセル
+item.BronzePickaxe.name=ブロンズのツルハシ
+item.BronzeAxe.name=ブロンズの斧
+item.BronzeShovel.name=ブロンズのシャベル
+item.BronzeHoe.name=ブロンズのクワ
+item.BronzeSword.name=ブロンズの剣
+
+//Glow
+item.GlowstoneHelmet.name=グロウストーンのヘルメット
+item.GlowstoneChestplate.name=グロウストーンのチェストプレート
+item.GlowstoneLeggings.name=グロウストーンのレギンス
+item.GlowstoneBoots.name=グロウストーンのブーツ
+item.GlowstonePaxel.name=グロウストーンのパクセル
+item.GlowstonePickaxe.name=グロウストーンのツルハシ
+item.GlowstoneAxe.name=グロウストーンの斧
+item.GlowstoneShovel.name=グロウストーンのシャベル
+item.GlowstoneHoe.name=グロウストーンのクワ
+item.GlowstoneSword.name=グロウストーンの剣
+
+//Steel
+item.SteelHelmet.name=鋼鉄のヘルメット
+item.SteelChestplate.name=鋼鉄のチェストプレート
+item.SteelLeggings.name=鋼鉄のレギンス
+item.SteelBoots.name=鋼鉄のブーツ
+item.SteelPaxel.name=鋼鉄のパクセル
+item.SteelPickaxe.name=鋼鉄のツルハシ
+item.SteelAxe.name=鋼鉄の斧
+item.SteelShovel.name=鋼鉄のシャベル
+item.SteelHoe.name=鋼鉄のクワ
+item.SteelSword.name=鋼鉄の剣
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
+mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
+mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
