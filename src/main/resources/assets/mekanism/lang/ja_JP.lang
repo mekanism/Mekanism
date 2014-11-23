@@ -4,7 +4,7 @@
 
 //Items
 tile.ObsidianTNT.name=黒曜石TNT
-item.EnrichedAlloy.name=濃縮マン
+item.EnrichedAlloy.name=濃縮合金
 item.ReinforcedAlloy.name=強化合金
 item.AtomicAlloy.name=原子合金
 item.EnergyTablet.name=エネルギータブレット
