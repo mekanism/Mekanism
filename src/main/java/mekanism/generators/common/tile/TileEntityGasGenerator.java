@@ -100,7 +100,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 					{
 						burnTicks = fuel.burnTicks - 1;
 						generationRate = fuel.energyPerTick;
-						//output = generationRate * 2;
 						fuelTank.draw(1, true);
 						setEnergy(getEnergy() + generationRate);
 					}
