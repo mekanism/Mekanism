@@ -522,7 +522,7 @@ tooltip.seismicReader.noVibrations=Impossible de découvrir des vibrations
 
 tooltip.EnrichmentChamber=Une machine simple utilisée pour enrichir !nles minerais dans deux de leurs équivalents !nen poussière, aussi bien qu'exécuter beaucoup !nd'autres opérations.
 tooltip.OsmiumCompressor=Une machine assez avancée utilisée pour !ncomprimer l'osmium dans diverses poussières pour !ncréer leurs équivalents en lingot.
-tooltip.Combiner=A machine used to combine dusts and cobblestone !nto form their ore counterparts.
+tooltip.Combiner=Une machine utilisée pour combiner les poussières !net les pavés pour former leurs équivalents minerais.
 tooltip.Crusher=A machine used to crush ingots into their dust counterparts, !nas well as perform many other operations.
 tooltip.DigitalMiner=A highly-advanced, filter-based, auto-miner !nthat can mine whatever block you tell it to !nwithin a 32 block (max) radius.
 tooltip.BasicFactory=The lowest tier of the line of Factories, !nwhich can be used to process multiple !nmachine operations at once.
@@ -550,12 +550,12 @@ tooltip.PressurizedReactionChamber=An advanced machine that processes a !nsolid,
 tooltip.PortableTank=A handy, portable tank that lets you !ncarry 14 buckets of fluid wherever you !nplease. Also doubles as a bucket!
 tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by filling ravines with fluids.
 
-tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
-tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
-tooltip.GasGenerator=A generator that harnesses the molecular !nvarying gasses to produce energy.
-tooltip.BioGenerator=A generator that burns organic materials of !nthe world to produce energy.
-tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the sun's rays with little loss !nto produce energy.
-tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
+tooltip.HeatGenerator=Générateur qui utilise la chaleur de !nla lave ou d'autres ressources pour produire !nde l'énergie.
+tooltip.SolarGenerator=Générateur qui utilise la puissance  !nsolaire pour produire de l'énergie.
+tooltip.GasGenerator=Générateur qui exploite le changement !nmoléculaire des gaz pour produire de l'énergie.
+tooltip.BioGenerator=Générateur qui brule les matériaux organiques !ndu monde pour produire de l'énergie.
+tooltip.AdvancedSolarGenerator=Générateur avancé qui absorbe directement !nles rayons solaire avec peu de pertes !npour produire de l'énergie..
+tooltip.WindTurbine=Générateur qui utilise la force du vent !pour produire de l'énergie, l'efficacité augmentant !naux niveaux les plus haut.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
@@ -733,4 +733,4 @@ item.SteelSword.name=Epée en acier
 //Config Gui
 mekanism.configgui.ctgy.tools.general.tooltip=Options concernant la configuration générale des 'MekanismTools' 
 mekanism.configgui.ctgy.tools.armor.tooltip=Options concernant les valeurs de protection et la balance des armures MekanismTools 
-mekanism.configgui.ctgy.tools.tools.tooltip=Options concernant les valeurs d'efficacité et la balance des ouitls MekanismTools
+mekanism.configgui.ctgy.tools.tools.tooltip=Options concernant les valeurs d'efficacité et la balance des outils MekanismTools
