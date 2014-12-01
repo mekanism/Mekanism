@@ -10,9 +10,9 @@ item.AtomicAlloy.name=原子合金
 item.EnergyTablet.name=エネルギータブレット
 item.SpeedUpgrade.name=スピードアップグレード
 item.EnergyUpgrade.name=エネルギーアップグレード
-item.Robit.name=Robit
+item.Robit.name=ロビット
 item.AtomicDisassembler.name=原子分解機
-item.ElectricBow.name=Electric Bow
+item.ElectricBow.name=電気の弓
 item.EnrichedIron.name=精錬された鉄
 item.CompressedCarbon.name=圧縮カーボン
 item.CompressedRedstone.name=圧縮レッドストーン
@@ -22,7 +22,7 @@ item.PortableTeleporter.name=ポータブルテレポーター
 item.TeleportationCore.name=テレポーテーションコア
 item.Configurator.name=コンフィギュレーター
 item.NetworkReader.name=ネットワークリーダー
-item.WalkieTalkie.name=Walkie-Talkie
+item.WalkieTalkie.name=トランシーバー
 item.Jetpack.name=ジェットパック
 item.ScubaTank.name=スキューバタンク
 item.GasMask.name=ガスマスク
@@ -53,7 +53,7 @@ tile.GasTank.GasTank.name=ガスタンク
 tile.CardboardBox.name=ダンボール
 
 //Bounding Block
-tile.BoundingBlock.name=Bounding Block
+tile.BoundingBlock.name=跳ねているブロック
 
 //Salt
 tile.SaltBlock.name=塩ブロック
@@ -98,21 +98,21 @@ tile.MachineBlock.LogisticalSorter.name=ロジスティカルソーター
 tile.MachineBlock.DigitalMiner.name=デジタルマイナー
 
 //Machine Block 2 (second ID iteration)
-tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+tile.MachineBlock2.RotaryCondensentrator.name=液体物質変換機
 tile.MachineBlock2.ChemicalOxidizer.name=化学酸化機
 tile.MachineBlock2.ChemicalInfuser.name=化学注入機
-tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
-tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
-tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
-tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
-tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
-tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
-tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
-tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
-tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
+tile.MachineBlock2.ChemicalCombiner.name=科学結合機
+tile.MachineBlock2.ChemicalInjectionChamber.name=化学注入機
+tile.MachineBlock2.ElectrolyticSeparator.name=電解分離機
+tile.MachineBlock2.PrecisionSawmill.name=精密製材
+tile.MachineBlock2.ChemicalDissolutionChamber.name=化学溶解機
+tile.MachineBlock2.ChemicalWasher.name=化学洗浄機
+tile.MachineBlock2.ChemicalCrystallizer.name=化学結晶化装置
+tile.MachineBlock2.SeismicVibrator.name=耐震バイブレーター
+tile.MachineBlock2.PressurizedReactionChamber.name=加圧反応機
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.PortableTank.name=ポータブルタンク
-tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.FluidicPlenisher.name=流体再供給機
 
 //Plastic
 tile.PlasticBlock.name=プラスチックブロック
@@ -125,11 +125,11 @@ tile.PlasticFence.name=プラスチックの柵
 
 //Infuse types
 infuse.carbon=カーボン
-infuse.tin=Tin
-infuse.diamond=Diamond
+infuse.tin=鈴
+infuse.diamond=ダイヤモンド
 infuse.redstone=レッドストーン
-infuse.fungi=Fungi
-infuse.obsidian=Obsidian
+infuse.fungi=菌
+infuse.obsidian=黒曜石
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=オスミウム鉱石
@@ -137,18 +137,18 @@ tile.OreBlock.CopperOre.name=銅鉱石
 tile.OreBlock.TinOre.name=スズ鉱石
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
+item.MultipartTransmitter.PressurizedTube.name=加圧チューブ
 item.MultipartTransmitter.BasicUniversalCable.name=ベーシックユニバーサルケーブル
 item.MultipartTransmitter.AdvancedUniversalCable.name=アドバンスドユニバーサルケーブル
 item.MultipartTransmitter.EliteUniversalCable.name=エリートユニバーサルケーブル
 item.MultipartTransmitter.UltimateUniversalCable.name=アルティメットユニバーサルケーブル
-item.MultipartTransmitter.BasicMechanicalPipe.name=Basic Mechanical Pipe
-item.MultipartTransmitter.AdvancedMechanicalPipe.name=Advanced Mechanical Pipe
-item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mechanical Pipe
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimate Mechanical Pipe
-item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
-item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
-item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
+item.MultipartTransmitter.BasicMechanicalPipe.name=基本メカニカルパイプ
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=発展メカニカルパイプ
+item.MultipartTransmitter.EliteMechanicalPipe.name=上級メカニカルパイプ
+item.MultipartTransmitter.UltimateMechanicalPipe.name=究極メカニカルパイプ
+item.MultipartTransmitter.LogisticalTransporter.name=ロジスティカルトランスポーター
+item.MultipartTransmitter.RestrictiveTransporter.name=制限トランスポーター
+item.MultipartTransmitter.DiversionTransporter.name=迂回トランスポーター
 
 //Glow Panel
 item.GlowPanel.name=グロウパネル
@@ -160,57 +160,57 @@ tile.EnergyCube.Elite.name=エリートエネルギーキューブ
 tile.EnergyCube.Ultimate.name=アルティメットエネルギーキューブ
 
 //Dust
-item.ironDust.name=Iron Dust
-item.goldDust.name=Gold Dust
-item.osmiumDust.name=Osmium Dust
-item.obsidianDust.name=Refined Obsidian Dust
-item.diamondDust.name=Diamond Dust
-item.steelDust.name=Steel Dust
-item.copperDust.name=Copper Dust
-item.tinDust.name=Tin Dust
-item.silverDust.name=Silver Dust
-item.leadDust.name=Lead Dust
-item.sulfurDust.name=Sulfur Dust
+item.ironDust.name=鉄の粉
+item.goldDust.name=金の粉
+item.osmiumDust.name=オスミウムの粉
+item.obsidianDust.name=精製黒曜石の粉
+item.diamondDust.name=ダイヤモンドの粉
+item.steelDust.name=スチールの粉
+item.copperDust.name=銅の粉
+item.tinDust.name=鈴の粉
+item.silverDust.name=銀の粉
+item.leadDust.name=鉛の粉
+item.sulfurDust.name=硫黄の粉
 
 //Clumps
-item.ironClump.name=Iron Clump
-item.goldClump.name=Gold Clump
-item.osmiumClump.name=Osmium Clump
-item.copperClump.name=Copper Clump
-item.tinClump.name=Tin Clump
-item.silverClump.name=Silver Clump
-item.obsidianClump.name=Obsidian Clump
-item.leadClump.name=Lead Clump
+item.ironClump.name=鉄の塊
+item.goldClump.name=金の塊
+item.osmiumClump.name=オスミウムの塊
+item.copperClump.name=銅の塊
+item.tinClump.name=鈴の塊
+item.silverClump.name=銀の塊
+item.obsidianClump.name=黒曜石の塊
+item.leadClump.name=鉛の塊
 
 //Shards
-item.ironShard.name=Iron Shard
-item.goldShard.name=Gold Shard
-item.osmiumShard.name=Osmium Shard
-item.copperShard.name=Copper Shard
-item.tinShard.name=Tin Shard
-item.silverShard.name=Silver Shard
-item.obsidianShard.name=Obsidian Shard
-item.leadShard.name=Lead Shard
+item.ironShard.name=鉄の破片
+item.goldShard.name=金の破片
+item.osmiumShard.name=オスミウムの破片
+item.copperShard.name=銅の破片
+item.tinShard.name=鈴の破片
+item.silverShard.name=銀の破片
+item.obsidianShard.name=黒曜石の破片
+item.leadShard.name=鉛の破片
 
 //Crystals
-item.ironCrystal.name=Iron Crystal
-item.goldCrystal.name=Gold Crystal
-item.osmiumCrystal.name=Osmium Crystal
-item.copperCrystal.name=Copper Crystal
-item.tinCrystal.name=Tin Crystal
-item.silverCrystal.name=Silver Crystal
-item.obsidianCrystal.name=Obsidian Crystal
-item.leadCrystal.name=Lead Crystal
+item.ironCrystal.name=鉄の結晶
+item.goldCrystal.name=金の結晶
+item.osmiumCrystal.name=オスミウムの結晶
+item.copperCrystal.name=銅の結晶
+item.tinCrystal.name=鈴の結晶
+item.silverCrystal.name=銀の結晶
+item.obsidianCrystal.name=黒曜石の結晶
+item.leadCrystal.name=鉛の結晶
 
 //Dirty Dust
-item.dirtyIronDust.name=Dirty Iron Dust
-item.dirtyGoldDust.name=Dirty Gold Dust
-item.dirtyOsmiumDust.name=Dirty Osmium Dust
-item.dirtyCopperDust.name=Dirty Copper Dust
-item.dirtyTinDust.name=Dirty Tin Dust
-item.dirtySilverDust.name=Dirty Silver Dust
-item.dirtyObsidianDust.name=Dirty Obsidian Dust
-item.dirtyLeadDust.name=Dirty Lead Dust
+item.dirtyIronDust.name=汚れた鉄の粉 (要翻訳検証)
+item.dirtyGoldDust.name=汚れた金の粉 (要翻訳検証)
+item.dirtyOsmiumDust.name=汚れたオスミウムの粉 (要翻訳検証)
+item.dirtyCopperDust.name=汚れた銅の粉 (要翻訳検証)
+item.dirtyTinDust.name=汚れた鈴の粉 (要翻訳検証)
+item.dirtySilverDust.name=汚れた銀の粉 (要翻訳検証)
+item.dirtyObsidianDust.name=汚れた黒曜石の粉 (要翻訳検証)
+item.dirtyLeadDust.name=汚れた鉛の粉 (要翻訳検証)
 
 //Ingots
 item.obsidianIngot.name=黒曜石のインゴット
@@ -222,53 +222,53 @@ item.copperIngot.name=銅インゴット
 item.tinIngot.name=スズインゴット
 
 //Gasses
-gas.hydrogen=Hydrogen
-gas.oxygen=Oxygen
-gas.water=Water Vapor
-gas.chlorine=Chlorine
-gas.sulfurDioxideGas=Sulfur Dioxide
-gas.sulfurTrioxideGas=Sulfur Trioxide
-gas.sulfuricAcid=Sulfuric Acid
-gas.hydrogenChloride=Hydrogen Chloride
-gas.liquidOsmium=Liquid Osmium
-gas.liquidStone=Liquid Stone
-gas.ethene=Ethylene
-gas.sodium=Sodium
-gas.brine=Gaseous Brine
+gas.hydrogen=水素
+gas.oxygen=酸素
+gas.water=水蒸気
+gas.chlorine=塩素
+gas.sulfurDioxideGas=二酸化硫黄
+gas.sulfurTrioxideGas=三酸化硫黄
+gas.sulfuricAcid=硫酸
+gas.hydrogenChloride=塩化水素
+gas.liquidOsmium=リキッドオスミウム
+gas.liquidStone=リキッドストーン
+gas.ethene=エチレン
+gas.sodium=ナトリウム
+gas.brine=ガス状の塩水 (要翻訳検証)
 
-gas.iron=Iron Slurry
-gas.gold=Gold Slurry
-gas.osmium=Osmium Slurry
-gas.copper=Copper Slurry
-gas.tin=Tin Slurry
-gas.silver=Silver Slurry
-gas.obsidian=Obsidian Slurry
-gas.lead=Lead Slurry
+gas.iron=鉄のスラリー
+gas.gold=金のスラリー
+gas.osmium=オスミウムのスラリー
+gas.copper=銅のスラリー
+gas.tin=鈴のスラリー
+gas.silver=銀のスラリー
+gas.obsidian=黒曜石のスラリー
+gas.lead=鉛のスラリー
 
-gas.cleanIron=Clean Iron Slurry
-gas.cleanGold=Clean Gold Slurry
-gas.cleanOsmium=Clean Osmium Slurry
-gas.cleanCopper=Clean Copper Slurry
-gas.cleanTin=Clean Tin Slurry
-gas.cleanSilver=Clean Silver Slurry
-gas.cleanObsidian=Clean Obsidian Slurry
-gas.cleanLead=Clean Lead Slurry
+gas.cleanIron=清潔な鉄のスラリー
+gas.cleanGold=清潔な金のスラリー
+gas.cleanOsmium=清潔なオスミウムのスラリー
+gas.cleanCopper=清潔な銅のスラリー
+gas.cleanTin=清潔な鈴のスラリー
+gas.cleanSilver=清潔な銀のスラリー
+gas.cleanObsidian=清潔な黒曜石のスラリー
+gas.cleanLead=清潔な鉛のスラリー
 
 //BC Fuel Gases
-gas.fuel=Vaporized Fuel
-gas.oil=Vaporized Oil
+gas.fuel=気化燃料
+gas.oil=気化油
 
 //Fluids
-fluid.hydrogen=Liquid Hydrogen
-fluid.oxygen=Liquid Oxygen
-fluid.chlorine=Liquid Chlorine
-fluid.sulfurDioxideGas=Liquid Sulfur Dioxide
-fluid.sulfurTrioxideGas=Liquid Sulfur Trioxide
-fluid.sulfuricAcid=Liquid Sulfuric Acid
-fluid.hydrogenChloride=Liquid Hydrogen Chloride
-fluid.brine=Brine
-fluid.ethene=Liquid Ethylene
-fluid.sodium=Liquid Sodium
+fluid.hydrogen=液体水素
+fluid.oxygen=液体酸素
+fluid.chlorine=液体塩素
+fluid.sulfurDioxideGas=液体亜硫酸
+fluid.sulfurTrioxideGas=三酸化液体硫黄
+fluid.sulfuricAcid=液体硫酸
+fluid.hydrogenChloride=液体塩化水素
+fluid.brine=塩水
+fluid.ethene=液体エチレン
+fluid.sodium=液体ナトリウム
 
 //OreGas names
 oregas.iron=鉄鉱石
@@ -277,142 +277,142 @@ oregas.osmium=オスミウム鉱石
 oregas.copper=銅鉱石
 oregas.tin=スズ鉱石
 oregas.silver=銀鉱石
-oregas.obsidian=Obsidian Ore
-oregas.lead=Lead Ore
+oregas.obsidian=黒曜石鉱石
+oregas.lead=鉛鉱石
 
 //Update handler text
-update.consider=Consider updating to version
-update.newFeatures=New features
+update.consider=バージョンの更新を検討
+update.newFeatures=新機能
 update.visit=Visit
-update.toDownload=to download
-update.devBuild=Using developer build
-update.outdated=Using outdated version on one or more modules
+update.toDownload=でダウンロード
+update.devBuild=開発版ビルドを利用中
+update.outdated=古いバージョンのモジュールを利用しています
 
 //Key description text
-key.mode=Mode Switch
-key.voice=Voice
+key.mode=モード切り替え
+key.voice=声
 
 //Config Gui
-mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
-mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
+mekanism.configgui.ctgy.general.tooltip=Mekanism&モジュールの基本設定
+mekanism.configgui.ctgy.usage.tooltip=機械に関する設定とエネルギー使用量
 
 //Gui text
-gui.removeSpeedUpgrade=Remove speed upgrade
-gui.removeEnergyUpgrade=Remove energy upgrade
-gui.condensentrating=Condensentrating
-gui.decondensentrating=Decondensentrating
-gui.power=Power
-gui.confirm=Confirm
-gui.open=Open
-gui.allOK=All OK
-gui.none=None
-gui.new=New
-gui.edit=Edit
-gui.save=Save
-gui.output=Output
-gui.delete=Delete
-gui.status=Status
-gui.autoEject=Auto-eject
-gui.itemstack=ItemStack
-gui.oredict=OreDict
-gui.material=Material
-gui.out=Out
-gui.noFluid=No fluid
-gui.empty=Empty
-gui.volume=Volume
-gui.start=Start
-gui.stop=Stop
-gui.config=Config
-gui.teleport=Teleport
-gui.eject=Eject
-gui.input=Input
-gui.slots=Slots
-gui.state=State
-gui.on=On
-gui.off=Off
-gui.filters=Filters
-gui.idle=Idle
-gui.data=Data
-gui.newFilter=New Filter
-gui.energy=Energy
-gui.gas=Gas
-gui.dumping=Dumping
-gui.dumping_excess=Dumping Excess
+gui.removeSpeedUpgrade=スピードアップグレードを削除
+gui.removeEnergyUpgrade=エナジーアップグレードを削除
+gui.condensentrating=コンデンセントレート中
+gui.decondensentrating=デコンデンセントレート中
+gui.power=パワー
+gui.confirm=確認
+gui.open=開く
+gui.allOK=全てOK
+gui.none=なし
+gui.new=新規
+gui.edit=編集
+gui.save=保存
+gui.output=出力
+gui.delete=削除
+gui.status=状態
+gui.autoEject=自動取り出し
+gui.itemstack=アイテム
+gui.oredict=オアディクト
+gui.material=マテリアル
+gui.out=出
+gui.noFluid=非液体
+gui.empty=空
+gui.volume=ボリューム
+gui.start=スタート
+gui.stop=ストップ
+gui.config=設定
+gui.teleport=テレポート
+gui.eject=取り出し
+gui.input=入力
+gui.slots=スロット
+gui.state=状態
+gui.on=オン
+gui.off=オフ
+gui.filters=フィルター
+gui.idle=アイドル
+gui.data=データ
+gui.newFilter=新規フィルター
+gui.energy=エナジー
+gui.gas=ガス
+gui.dumping=廃棄中
+gui.dumping_excess=廃棄過剰
 gui.modID=Mod ID
-gui.key=Key
+gui.key=キー
 gui.id=ID
-gui.finished=Finished
+gui.finished=完了
 
-gui.chemicalInfuser.short=C. Infuser
-gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
+gui.chemicalInfuser.short=C. 注入器
+gui.chemicalDissolutionChamber.short=C. 溶解機
 
-gui.dictionary.noKey=No key.
+gui.dictionary.noKey=No キー.
 
-gui.configuration=Configuration
-gui.configuration.strictInput=Strict Input
+gui.configuration=設定
+gui.configuration.strictInput=厳密な入力
 
-gui.rotaryCondensentrator.toggleOperation=Toggle operation
+gui.rotaryCondensentrator.toggleOperation=切り替え操作
 
-gui.factory.secondaryEnergy=Secondary energy
-gui.factory.smelting=Smelting
-gui.factory.enriching=Enriching
-gui.factory.crushing=Crushing
-gui.factory.compressing=Compressing
-gui.factory.combining=Combining
-gui.factory.purifying=Purifying
-gui.factory.injecting=Injecting
-gui.factory.autoSort=Auto-sort
+gui.factory.secondaryEnergy=二次エネルギー
+gui.factory.smelting=精錬中
+gui.factory.enriching=肥やしています(要検証翻訳)
+gui.factory.crushing=粉砕中
+gui.factory.compressing=圧縮中
+gui.factory.combining=結合中
+gui.factory.purifying=浄化中
+gui.factory.injecting=注入中
+gui.factory.autoSort=自動ソート
 
-gui.seismicReader.short=S. Reader
-gui.seismicReader.solids=Solids
+gui.seismicReader.short=S. レーダー
+gui.seismicReader.solids=ソリッド
 gui.seismicReader.fluids=Fluids
-gui.seismicReader.reading=Reading
+gui.seismicReader.reading=読み込み中
 
-gui.filterSelect.title=Create New Filter
+gui.filterSelect.title=新規フィルターを作成
 
-gui.oredictFilter=OreDict Filter
-gui.oredictFilter.noKey=No key
-gui.oredictFilter.sameKey=Same key
+gui.oredictFilter=オアディクトフィルター
+gui.oredictFilter.noKey=No キー
+gui.oredictFilter.sameKey=同じキー
 
-gui.modIDFilter=Mod ID Filter
+gui.modIDFilter=Mod ID フィルター
 gui.modIDFilter.noID=No ID
-gui.modIDFilter.sameID=Same ID
+gui.modIDFilter.sameID=同じ ID
 
-gui.itemFilter=Item Filter
-gui.itemFilter.noItem=No item
-gui.itemFilter.details=ItemStack Details
-gui.itemFilter.min=Min
-gui.itemFilter.max=Max
+gui.itemFilter=アイテムフィルター
+gui.itemFilter.noItem=No アイテム
+gui.itemFilter.details=ItemStack詳細
+gui.itemFilter.min=最小
+gui.itemFilter.max=最大
 
-gui.materialFilter=Material Filter
-gui.materialFilter.details=Using material of
+gui.materialFilter=マテリアルフィルター
+gui.materialFilter.details=マテリアルを使用中の
 
-gui.portableTeleporter=Portable Teleporter
+gui.portableTeleporter=ポータブルテレポーター
 
-gui.robit=Robit
-entity.Robit.name=Robit
-gui.robit.smelting=Robit Smelting
-gui.robit.inventory=Robit Inventory
-gui.robit.crafting=Robit Crafting
-gui.robit.greeting=Hi, I'm
-gui.robit.toggleFollow=Toggle 'follow' mode
-gui.robit.rename=Rename this Robit
-gui.robit.teleport=Teleport back home
-gui.robit.togglePickup=Toggle 'drop pickup' mode
-gui.robit.following=Following
+gui.robit=ロビット
+entity.Robit.name=ロビット
+gui.robit.smelting=ロビット 精錬中
+gui.robit.inventory=ロビット インベントリ
+gui.robit.crafting=ロビット クラフト中
+gui.robit.greeting=こんにちは！私は
+gui.robit.toggleFollow=フォローモードに切り替え
+gui.robit.rename=このロビットの名前を変更
+gui.robit.teleport=家にテレポートして戻る
+gui.robit.togglePickup=アイテム回収モードに切り替え
+gui.robit.following=フォロー中
 gui.robit.dropPickup=ドロップ回収
 gui.robit.owner=オーナー
 
-gui.password.setPassword=Set password
-gui.password.enterPassword=Enter password
-gui.password.fieldsEmpty=Field(s) empty
-gui.password.notMatching=Not matching
-gui.password.identical=Identical
-gui.password.invalid=Invalid
-gui.password=Password
+gui.password.setPassword=パスワードを設定
+gui.password.enterPassword=パスワードを入力
+gui.password.fieldsEmpty=入力欄が空です
+gui.password.notMatching=パスワードが同じになっていません
+gui.password.identical=同じ
+gui.password.invalid=無効
+gui.password=パスワード
 
-gui.logisticalSorter.default=Default
-gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.default=デフォルト
+gui.logisticalSorter.auto=自動
 gui.logisticalSorter.roundRobin=Round-robin
 
 gui.electricChest.editPassword=Edit Password
