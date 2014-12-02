@@ -415,108 +415,108 @@ gui.logisticalSorter.default=デフォルト
 gui.logisticalSorter.auto=自動
 gui.logisticalSorter.roundRobin=Round-robin
 
-gui.electricChest.editPassword=Edit Password
+gui.electricChest.editPassword=パスワード編集
 
-gui.teleporter.notReady=Not ready
-gui.teleporter.ready=Ready
-gui.teleporter.noFrame=No frame
-gui.teleporter.noLink=No link
-gui.teleporter.exceeds=Links > 2
-gui.teleporter.needsEnergy=Needs energy
+gui.teleporter.notReady=準備が出来ていません
+gui.teleporter.ready=準備完了
+gui.teleporter.noFrame=No フレーム
+gui.teleporter.noLink=接続できません
+gui.teleporter.exceeds=リンク > 2
+gui.teleporter.needsEnergy=必要なエネルギー
 
-gui.digitalMinerConfig=Digital Miner Config
+gui.digitalMinerConfig=デジタルマイナー 設定
 
-gui.digitalMiner.autoPull=Auto-pull
-gui.digitalMiner.replaceBlock=Replace block
+gui.digitalMiner.autoPull=自動取り出し
+gui.digitalMiner.replaceBlock=ブロック置換
 gui.digitalMiner.reset=リセット
 gui.digitalMiner.silkTouch=シルクタッチ
-gui.digitalMiner.pull=Pull
-gui.digitalMiner.silk=Silk
-gui.digitalMiner.toMine=To mine
+gui.digitalMiner.pull=取り出し
+gui.digitalMiner.silk=シルクタッチ
+gui.digitalMiner.toMine=残りブロック数
 gui.digitalMiner.running=採掘中
-gui.digitalMiner.inverse=Inverse mode
+gui.digitalMiner.inverse=逆モード
 
 //Recipe names
-recipe.mekanismShaped=Shaped
+recipe.mekanismShaped=整形
 
 //Item and block tooltip text
-tooltip.configurator.configurate=Configurate
-tooltip.configurator.empty=Empty
-tooltip.configurator.rotate=Rotate
-tooltip.configurator.wrench=Wrench
-tooltip.configurator.pumpReset=Reset Electric Pump calculation
-tooltip.configurator.toggleDiverter=Diverter mode changed to
-tooltip.configurator.toggleColor=Color bumped to
-tooltip.configurator.viewColor=Current color
-tooltip.configurator.unauth=This chest is locked
-tooltip.configurator.noLink=No link
-tooltip.configurator.linkMsg=Bound to
-tooltip.configurator.dim=dimension
-tooltip.configurator.setLink=Set link to block
-tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
+tooltip.configurator.configurate=設定
+tooltip.configurator.empty=空
+tooltip.configurator.rotate=回転
+tooltip.configurator.wrench=レンチ
+tooltip.configurator.pumpReset=電動ポンプ計算をリセット
+tooltip.configurator.toggleDiverter=分流モードを変更:
+tooltip.configurator.toggleColor=カラーバンプ(要検証翻訳):
+tooltip.configurator.viewColor=現在の色
+tooltip.configurator.unauth=このチェストはロック済み
+tooltip.configurator.noLink=未接続
+tooltip.configurator.linkMsg=跳ねる(要翻訳検証):
+tooltip.configurator.dim=ディメンション
+tooltip.configurator.setLink=ブロックにリンクを指定
+tooltip.configurator.plenisherReset=流体再供給機の計算をリセット
 
 tooltip.upgrade.speed=スピード
 tooltip.upgrade.energy=エネルギー
 
 tooltip.inventory=インベントリ
-tooltip.storedEnergy=Stored energy
-tooltip.auth=Authenticated
-tooltip.locked=Locked
-tooltip.recipeType=Recipe type
-tooltip.hold=Hold
-tooltip.forDesc=for a description
-tooltip.forDetails=for details
-tooltip.fireMode=Fire Mode
-tooltip.capacity=Capacity
-tooltip.pumpRate=Pump Rate
+tooltip.storedEnergy=蓄積エネルギー
+tooltip.auth=認証済み
+tooltip.locked=ロック済み
+tooltip.recipeType=レシピタイプ
+tooltip.hold=ホールド
+tooltip.forDesc=説明
+tooltip.forDetails=詳細
+tooltip.fireMode=ファイヤーモード
+tooltip.capacity=容量
+tooltip.pumpRate=ポンプ速度
 tooltip.items=アイテム
 tooltip.blocks=ブロック
-tooltip.universal=universal
-tooltip.fluids=Fluids
-tooltip.gasses=Gasses
-tooltip.capableTrans=Capable of transferring
-tooltip.restrictiveDesc=Only used if no other paths available
-tooltip.diversionDesc=Controllable by redstone
-tooltip.noGas=No gas stored
-tooltip.stored=Stored
-tooltip.channel=Channel
-tooltip.mode=Mode
-tooltip.efficiency=Efficiency
-tooltip.modeToggle=Mode toggled to
-tooltip.flowing=Flowing
-tooltip.yes=yes
-tooltip.no=no
-tooltip.name=Name
-tooltip.blockData=Block data
-tooltip.block=Block
-tooltip.meta=Metadata
-tooltip.tile=Tile
-tooltip.keysFound=Key(s) found
-tooltip.noKey=No key
+tooltip.universal=ユニバーサル
+tooltip.fluids=流体
+tooltip.gasses=ガス
+tooltip.capableTrans=転送可能な
+tooltip.restrictiveDesc=他のパスが可能な場合にのみ使用します
+tooltip.diversionDesc=レッドストーンで制御可能
+tooltip.noGas=ガスは保存されていません
+tooltip.stored=保存済み
+tooltip.channel=チャンネル
+tooltip.mode=モード
+tooltip.efficiency=効率
+tooltip.modeToggle=モード切り替え:
+tooltip.flowing=流れる
+tooltip.yes=はい
+tooltip.no=いいえ
+tooltip.name=名前
+tooltip.blockData=ブロックデータ
+tooltip.block=ブロック
+tooltip.meta=メタデータ
+tooltip.tile=タイル
+tooltip.keysFound=キー発見
+tooltip.noKey=No キー
 tooltip.hp=HP
-tooltip.configureState=Configure State
+tooltip.configureState=設定状態
 
-tooltip.portableTank.bucketMode=Bucket Mode
+tooltip.portableTank.bucketMode=バケツモード
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=slow
-tooltip.disassembler.fast=fast
-tooltip.disassembler.vein=vein
-tooltip.disassembler.off=off
+tooltip.disassembler.normal=通常
+tooltip.disassembler.slow=遅い
+tooltip.disassembler.fast=早い
+tooltip.disassembler.vein=静脈
+tooltip.disassembler.off=オフ
 
-tooltip.filterCard.got=Retrieved filter data from %s
-tooltip.filterCard.set=Injected filter data of type %s
-tooltip.filterCard.unequal=Unequal filter data formats
-tooltip.filterCard.logisticalSorter=Logistical Sorter
-tooltip.filterCard.digitalMiner=Digital Miner
+tooltip.filterCard.got=%s から取得したフィルタデータ
+tooltip.filterCard.set=タイプ %s の注入されたフィルタデータ
+tooltip.filterCard.unequal=フィルタデータと形式が合いません
+tooltip.filterCard.logisticalSorter=物流ソーター
+tooltip.filterCard.digitalMiner=デジタルマイナー
 
-tooltip.balloon=Balloon
+tooltip.balloon=バルーン
 
-tooltip.jetpack.regular=Regular
-tooltip.jetpack.hover=Hover
-tooltip.jetpack.disabled=Disabled
+tooltip.jetpack.regular=レギュラー
+tooltip.jetpack.hover=ホバー
+tooltip.jetpack.disabled=無効
 
-tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
+tooltip.seismicReader.needsEnergy=エネルギー不足 to interpret vibration
 tooltip.seismicReader.noVibrations=Unable to discover any vibrations
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
@@ -562,63 +562,63 @@ tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found sl
 
 //Redstone control
 control.disabled=無効
-control.high=High
-control.low=Low
+control.high=高
+control.low=低
 control.disabled.desc=常にオン
-control.high.desc=Active with signal
-control.low.desc=Active without signal
+control.high.desc=アクティブ(信号)
+control.low.desc=アクティブ(未信号)
 
 //Container edit modes
-fluidedit.both=Both
-fluidedit.fill=Fill
-fluidedit.empty=Empty
+fluidedit.both=両方
+fluidedit.fill=埋める
+fluidedit.empty=空
 
 //Colors
-color.black=Black
-color.darkBlue=Dark Blue
-color.darkGreen=Dark Green
-color.darkAqua=Dark Aqua
-color.darkRed=Dark Red
-color.purple=Purple
-color.orange=Orange
-color.grey=Grey
-color.darkGrey=Dark Grey
-color.indigo=Indigo
-color.brightGreen=Bright Green
-color.aqua=Aqua
-color.red=Red
-color.pink=Pink
-color.yellow=Yellow
-color.white=White
-color.brown=Brown
-color.brightPink=Bright Pink
+color.black=ブラック
+color.darkBlue=ダークブルー
+color.darkGreen=ダークグリーン
+color.darkAqua=ダークアクア
+color.darkRed=ダークレッド
+color.purple=パープル
+color.orange=オレンジ
+color.grey=グレー
+color.darkGrey=ダークグレー
+color.indigo=インディゴ
+color.brightGreen=明るいグリーン
+color.aqua=アクア
+color.red=レッド
+color.pink=ピンク
+color.yellow=イエロー
+color.white=ホワイト
+color.brown=ブラウン
+color.brightPink=明るいピンク
 
 //Dyes
-dye.black=Black
-dye.darkBlue=Blue
-dye.brown=Brown
-dye.darkGreen=Green
-dye.darkAqua=Cyan
-dye.darkRed=Dark Red
-dye.purple=Purple
-dye.orange=Orange
-dye.grey=Light Grey
-dye.darkGrey=Grey
-dye.indigo=Light Blue
-dye.brightGreen=Lime
-dye.aqua=Aqua
-dye.red=Red
-dye.brightPink=Pink
-dye.pink=Magenta
-dye.yellow=Yellow
-dye.white=White
+dye.black=ブラック
+dye.darkBlue=ブルー
+dye.brown=ブラウン
+dye.darkGreen=グリーン
+dye.darkAqua=シアン
+dye.darkRed=ダークレッド
+dye.purple=パープル
+dye.orange=オレンジ
+dye.grey=ライトグレー
+dye.darkGrey=グレー
+dye.indigo=ライトブルー
+dye.brightGreen=ライム
+dye.aqua=アクア
+dye.red=レッド
+dye.brightPink=ピンク
+dye.pink=マゼンタ
+dye.yellow=イエロー
+dye.white=ホワイト
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
 //NEI stuff
-nei.chemicalInjectionChamber=C. Injection Chamber
-nei.rotaryCondensentrator=R. Condensentrator
+nei.chemicalInjectionChamber=C. 注入器
+nei.rotaryCondensentrator=R. コンデンセントレーター
 
 //**********//
 //GENERATORS//
@@ -643,7 +643,7 @@ tile.Generator.WindTurbine.name=風力発電機
 gui.heatGenerator.fuel=燃料
 gui.solarGenerator.sun=日光
 gui.bioGenerator.bioFuel=バイオ燃料
-gui.electrolyticSeparator.dump=Dump
+gui.electrolyticSeparator.dump=廃棄
 
 //*****//
 //TOOLS//
