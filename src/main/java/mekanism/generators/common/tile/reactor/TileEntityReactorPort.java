@@ -10,7 +10,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.util.CableUtils;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -46,7 +46,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		if(resource.getFluid() == FluidRegistry.WATER && getReactor() != null)
 		{
@@ -57,7 +57,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(resource.getFluid() == FluidRegistry.getFluid("steam") && getReactor() != null)
 		{
@@ -68,7 +68,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(getReactor() != null)
 		{
@@ -79,19 +79,19 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return (getReactor() != null && fluid == FluidRegistry.WATER);
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return (getReactor() != null && fluid == FluidRegistry.WATER);
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		if(getReactor() == null)
 		{
@@ -102,7 +102,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(getReactor() != null)
 		{
@@ -124,7 +124,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(getReactor() != null)
 		{
@@ -138,25 +138,25 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return (type == GasRegistry.getGas("deuterium") || type == GasRegistry.getGas("tritium") || type == GasRegistry.getGas("fusionFuelDT"));
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return (type == GasRegistry.getGas("steam"));
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return getReactor() != null;
 	}
 
 	@Override
-	public boolean canOutputTo(ForgeDirection side)
+	public boolean canOutputTo(EnumFacing side)
 	{
 		return true;
 	}
@@ -195,18 +195,18 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.remove(ForgeDirection.UNKNOWN);
+		EnumSet set = EnumSet.allOf(EnumFacing.class);
+		set.remove(EnumFacing.UNKNOWN);
 		
 		return set;
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 
 	@Override

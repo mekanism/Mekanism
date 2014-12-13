@@ -33,12 +33,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Interface;
 
 import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
@@ -309,7 +310,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 			travelToDimension(homeLocation.dimensionId);
 		}
 
-		setPositionAndUpdate(homeLocation.xCoord+0.5, homeLocation.yCoord+0.3, homeLocation.zCoord+0.5);
+		setPositionAndUpdate(homeLocation.getPos().getX()+0.5, homeLocation.getPos().getY()+0.3, homeLocation.getPos().getZ()+0.5);
 
 		motionX = 0;
 		motionY = 0;
@@ -362,7 +363,7 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		int y = MathHelper.floor_double(posY);
 		int z = MathHelper.floor_double(posZ);
 
-		if(worldObj.getTileEntity(x, y, z) instanceof TileEntityChargepad)
+		if(worldObj.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityChargepad)
 		{
 			return true;
 		}

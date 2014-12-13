@@ -4,10 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
@@ -126,9 +126,9 @@ public class BasicSink extends TileEntity implements IEnergySink {
 				!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
 				Info.isIc2Available()) {
 			worldObj = parent.getWorldObj();
-			xCoord = parent.xCoord;
-			yCoord = parent.yCoord;
-			zCoord = parent.zCoord;
+			xCoord = parent.getPos().getX();
+			yCoord = parent.getPos().getY();
+			zCoord = parent.getPos().getZ();
 
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 
@@ -340,7 +340,7 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	// energy net interface >>
 
 	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction) {
+	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction) {
 		return true;
 	}
 
@@ -350,7 +350,7 @@ public class BasicSink extends TileEntity implements IEnergySink {
 	}
 
 	@Override
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage) {
+	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage) {
 		energyStored += amount;
 
 		return 0;

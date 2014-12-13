@@ -16,10 +16,10 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -52,7 +52,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			{
 				push();
 
-				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+				GL11.glTranslated(getX(data.location.getPos().getX()), getY(data.location.getPos().getY()), getZ(data.location.getPos().getZ()));
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
@@ -80,7 +80,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						push();
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
+						GL11.glTranslated(getX(valveData.location.getPos().getX()), getY(valveData.location.getPos().getY()), getZ(valveData.location.getPos().getZ()));
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
@@ -268,7 +268,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 	private int getValveFluidHeight(ValveRenderData data)
 	{
-		return data.valveLocation.yCoord - data.location.yCoord;
+		return data.valveLocation.getPos().getY() - data.location.getPos().getY();
 	}
 
 	private int getStages(int height)
@@ -320,7 +320,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 	public static class ValveRenderData extends RenderData
 	{
-		public ForgeDirection side;
+		public EnumFacing side;
 		public Coord4D valveLocation;
 
 		public static ValveRenderData get(RenderData renderData, ValveData valveData)

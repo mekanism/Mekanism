@@ -20,7 +20,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
@@ -51,15 +51,15 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		tile.components.add(this);
 	}
 
-	private List<ForgeDirection> getTrackedOutputs(int index, List<ForgeDirection> dirs)
+	private List<EnumFacing> getTrackedOutputs(int index, List<EnumFacing> dirs)
 	{
-		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
+		List<EnumFacing> sides = new ArrayList<EnumFacing>();
 
 		for(int i = trackers[index]+1; i <= trackers[index]+6; i++)
 		{
-			for(ForgeDirection side : dirs)
+			for(EnumFacing side : dirs)
 			{
-				if(ForgeDirection.getOrientation(i%6) == side)
+				if(EnumFacing.getOrientation(i%6) == side)
 				{
 					sides.add(side);
 				}
@@ -89,7 +89,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			return;
 		}
 
-		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
+		List<EnumFacing> outputSides = new ArrayList<EnumFacing>();
 
 		IInvConfiguration configurable = (IInvConfiguration)tileEntity;
 
@@ -97,7 +97,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
 			{
-				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+				outputSides.add(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
 			}
 		}
 
@@ -111,9 +111,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 
 			ItemStack stack = tileEntity.inventory[slotID];
-			List<ForgeDirection> outputs = getTrackedOutputs(index, outputSides);
+			List<EnumFacing> outputs = getTrackedOutputs(index, outputSides);
 
-			for(ForgeDirection side : outputs)
+			for(EnumFacing side : outputs)
 			{
 				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.getWorldObj());
 				ItemStack prev = stack.copy();
@@ -190,14 +190,14 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 
 	@Override
-	public void setInputColor(ForgeDirection side, EnumColor color)
+	public void setInputColor(EnumFacing side, EnumColor color)
 	{
 		inputColors[side.ordinal()] = color;
 		MekanismUtils.saveChunk(tileEntity);
 	}
 
 	@Override
-	public EnumColor getInputColor(ForgeDirection side)
+	public EnumColor getInputColor(EnumFacing side)
 	{
 		return inputColors[side.ordinal()];
 	}

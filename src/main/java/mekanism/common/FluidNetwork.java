@@ -21,12 +21,12 @@ import mekanism.common.util.PipeUtils;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 {
@@ -175,7 +175,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				{
 					IFluidHandler acceptor = (IFluidHandler)obj;
 					int currentSending = sending;
-					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+					EnumSet<EnumFacing> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
 					if(remaining > 0)
 					{
@@ -183,7 +183,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 						remaining--;
 					}
 
-					for(ForgeDirection side : sides)
+					for(EnumFacing side : sides)
 					{
 						int prev = fluidSent;
 						
@@ -319,7 +319,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		for(Coord4D coord : ((Map<Coord4D, IFluidHandler>)possibleAcceptors.clone()).keySet())
 		{
-			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 			IFluidHandler acceptor = (IFluidHandler)coord.getTileEntity(getWorld());
 			
 			if(sides == null || sides.isEmpty())
@@ -327,7 +327,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				continue;
 			}
 
-			for(ForgeDirection side : sides)
+			for(EnumFacing side : sides)
 			{
 				if(acceptor.canFill(side.getOpposite(), fluidToSend.getFluid()))
 				{
@@ -377,12 +377,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		for(IFluidHandler acceptor : acceptors)
 		{
-			ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+			EnumFacing side = EnumFacing.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
 
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
-				addSide(Coord4D.get((TileEntity)acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get((TileEntity)acceptor), EnumFacing.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}

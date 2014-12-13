@@ -19,16 +19,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements ITransmitterNetwork<A, N>, IClientTicker, INetworkDataHandler
 {
 	public LinkedHashSet<IGridTransmitter<N>> transmitters = new LinkedHashSet<IGridTransmitter<N>>();
 
 	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
-	public HashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new HashMap<Coord4D, EnumSet<ForgeDirection>>();
+	public HashMap<Coord4D, EnumSet<EnumFacing>> acceptorDirections = new HashMap<Coord4D, EnumSet<EnumFacing>>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
@@ -47,7 +47,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	protected void clearAround(IGridTransmitter<N> transmitter)
 	{
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
 			Coord4D coord = Coord4D.get(transmitter.getTile()).getFromSide(side);
 			
@@ -58,7 +58,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		}
 	}
 	
-	protected void clearIfNecessary(Coord4D acceptor, IGridTransmitter<N> transmitter, ForgeDirection side)
+	protected void clearIfNecessary(Coord4D acceptor, IGridTransmitter<N> transmitter, EnumFacing side)
 	{
 		if(getWorld() == null)
 		{
@@ -87,11 +87,11 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		return transmitters.iterator().next().equals(transmitter);
 	}
 	
-	public void addSide(Coord4D acceptor, ForgeDirection side)
+	public void addSide(Coord4D acceptor, EnumFacing side)
 	{
 		if(acceptorDirections.get(acceptor) == null)
 		{
-			acceptorDirections.put(acceptor, EnumSet.noneOf(ForgeDirection.class));
+			acceptorDirections.put(acceptor, EnumSet.noneOf(EnumFacing.class));
 		}
 		
 		acceptorDirections.get(acceptor).add(side);
@@ -141,23 +141,23 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		
 		Coord4D initCoord = Coord4D.get(transmitters.iterator().next().getTile());
 		
-		int minX = initCoord.xCoord;
-		int minY = initCoord.yCoord;
-		int minZ = initCoord.zCoord;
-		int maxX = initCoord.xCoord;
-		int maxY = initCoord.yCoord;
-		int maxZ = initCoord.zCoord;
+		int minX = initCoord.getPos().getX();
+		int minY = initCoord.getPos().getY();
+		int minZ = initCoord.getPos().getZ();
+		int maxX = initCoord.getPos().getX();
+		int maxY = initCoord.getPos().getY();
+		int maxZ = initCoord.getPos().getZ();
 		
 		for(IGridTransmitter transmitter : transmitters)
 		{
 			Coord4D coord = Coord4D.get(transmitter.getTile());
 			
-			if(coord.xCoord < minX) minX = coord.xCoord;
-			if(coord.yCoord < minY) minY = coord.yCoord;
-			if(coord.zCoord < minZ) minZ = coord.zCoord;
-			if(coord.xCoord > maxX) maxX = coord.xCoord;
-			if(coord.yCoord > maxY) maxY = coord.yCoord;
-			if(coord.zCoord > maxZ) maxZ = coord.zCoord;
+			if(coord.getPos().getX() < minX) minX = coord.getPos().getX();
+			if(coord.getPos().getY() < minY) minY = coord.getPos().getY();
+			if(coord.getPos().getZ() < minZ) minZ = coord.getPos().getZ();
+			if(coord.getPos().getX() > maxX) maxX = coord.getPos().getX();
+			if(coord.getPos().getY() > maxY) maxY = coord.getPos().getY();
+			if(coord.getPos().getZ() > maxZ) maxZ = coord.getPos().getZ();
 		}
 		
 		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, getWorld().provider.dimensionId);
@@ -342,7 +342,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			boolean[] dealtWith = {false, false, false, false, false, false};
 			List<ITransmitterNetwork<A, N>> newNetworks = new ArrayList<ITransmitterNetwork<A, N>>();
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 			{
 				TileEntity sideTile = Coord4D.get((TileEntity)splitPoint).getFromSide(side).getTileEntity(((TileEntity)splitPoint).getWorldObj());
 
@@ -508,7 +508,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 				toIgnore.add(location);
 			}
 
-			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing direction : EnumFacing.VALID_DIRECTIONS)
 			{
 				Coord4D obj = location.getFromSide(direction);
 

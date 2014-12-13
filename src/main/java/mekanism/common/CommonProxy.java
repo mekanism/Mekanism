@@ -95,13 +95,14 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.FMLInjectionData;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 
 /**
  * Common proxy for the Mekanism mod.
@@ -323,7 +324,7 @@ public class CommonProxy
 	 */
 	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 		switch(ID)
 		{
@@ -472,5 +473,5 @@ public class CommonProxy
 		return context.getServerHandler().playerEntity;
 	}
 
-	public void renderLaser(World world, Pos3D from, Pos3D to, ForgeDirection direction, double energy) {}
+	public void renderLaser(World world, Pos3D from, Pos3D to, EnumFacing direction, double energy) {}
 }

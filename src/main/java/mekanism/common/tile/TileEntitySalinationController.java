@@ -20,13 +20,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TileEntitySalinationController extends TileEntitySalinationBlock implements IActiveState
 {
@@ -346,7 +346,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean buildStructure()
 	{
-		ForgeDirection right = MekanismUtils.getRight(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
 
 		height = 0;
 		controllerConflict = false;
@@ -361,18 +361,18 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 		
-		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		while(startPoint.getFromSide(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
 		{
-			startPoint.step(ForgeDirection.UP);
+			startPoint.step(EnumFacing.UP);
 		}
 
 		int middle = 0;
 		
-		Coord4D middlePointer = startPoint.getFromSide(ForgeDirection.DOWN);
+		Coord4D middlePointer = startPoint.getFromSide(EnumFacing.DOWN);
 		
 		while(scanMiddleLayer(middlePointer))
 		{
-			middlePointer = middlePointer.getFromSide(ForgeDirection.DOWN);
+			middlePointer = middlePointer.getFromSide(EnumFacing.DOWN);
 			middle++;
 		}
 		
@@ -392,8 +392,8 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean scanTopLayer(Coord4D current)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection back = MekanismUtils.getBack(facing);
+		EnumFacing left = MekanismUtils.getLeft(facing);
+		EnumFacing back = MekanismUtils.getBack(facing);
 
 		for(int x = 0; x < 4; x++)
 		{
@@ -466,8 +466,8 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean scanMiddleLayer(Coord4D current)
 	{
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection back = MekanismUtils.getBack(facing);
+		EnumFacing left = MekanismUtils.getLeft(facing);
+		EnumFacing back = MekanismUtils.getBack(facing);
 
 		for(int x = 0; x < 4; x++)
 		{
@@ -501,14 +501,14 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		height = 1;
 		Coord4D baseBlock = Coord4D.get(this);
 		
-		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		while(baseBlock.getFromSide(EnumFacing.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
 		{
-			baseBlock.step(ForgeDirection.DOWN);
+			baseBlock.step(EnumFacing.DOWN);
 			height++;
 		}
 
-		ForgeDirection left = MekanismUtils.getLeft(facing);
-		ForgeDirection right = MekanismUtils.getRight(facing);
+		EnumFacing left = MekanismUtils.getLeft(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
 
 		if(!scanBottomRow(baseBlock)) 
 		{
@@ -545,7 +545,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 	 */
 	public boolean scanBottomRow(Coord4D start)
 	{
-		ForgeDirection back = MekanismUtils.getBack(facing);
+		EnumFacing back = MekanismUtils.getBack(facing);
 		Coord4D current = start;
 
 		for(int i = 1; i <= 4; i++)
@@ -619,7 +619,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 			return null;
 		}
 		
-		ForgeDirection right = MekanismUtils.getRight(facing);
+		EnumFacing right = MekanismUtils.getRight(facing);
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 		

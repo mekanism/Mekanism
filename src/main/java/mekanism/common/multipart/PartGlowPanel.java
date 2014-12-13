@@ -12,9 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
@@ -34,7 +34,7 @@ import codechicken.multipart.TileMultipart;
 public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIconHitEffects
 {
 	public EnumColor colour = EnumColor.WHITE;
-	public ForgeDirection side = ForgeDirection.DOWN;
+	public EnumFacing side = EnumFacing.DOWN;
 
 	public static Cuboid6[] bounds = new Cuboid6[6];
 
@@ -55,7 +55,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 		super();
 	}
 
-	public PartGlowPanel(EnumColor colour, ForgeDirection side)
+	public PartGlowPanel(EnumColor colour, EnumFacing side)
 	{
 		super();
 		setColour(colour);
@@ -79,7 +79,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 		colour = newColour;
 	}
 
-	public void setOrientation(ForgeDirection newSide)
+	public void setOrientation(EnumFacing newSide)
 	{
 		side = newSide;
 	}
@@ -114,7 +114,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@Override
 	public void readDesc(MCDataInput data)
 	{
-		side = ForgeDirection.getOrientation(data.readInt());
+		side = EnumFacing.getOrientation(data.readInt());
 		colour = EnumColor.DYES[data.readInt()];
 	}
 
@@ -128,7 +128,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@Override
 	public void load(NBTTagCompound nbt)
 	{
-		side = ForgeDirection.getOrientation(nbt.getInteger("side"));
+		side = EnumFacing.getOrientation(nbt.getInteger("side"));
 		colour = EnumColor.DYES[nbt.getInteger("colour")];
 	}
 
@@ -208,6 +208,6 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	public boolean canStay()
 	{
 		Coord4D adj = Coord4D.get(tile()).getFromSide(side);
-		return world().isSideSolid(adj.xCoord, adj.yCoord, adj.zCoord, side.getOpposite()) || tile().partMap(side.ordinal()) instanceof HollowMicroblock;
+		return world().isSideSolid(adj.getPos().getX(), adj.getPos().getY(), adj.getPos().getZ(), side.getOpposite()) || tile().partMap(side.ordinal()) instanceof HollowMicroblock;
 	}
 }

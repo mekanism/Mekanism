@@ -16,8 +16,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.IFluidBlock;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -50,7 +50,7 @@ public class GuiSeismicReader extends GuiScreen
 	public GuiSeismicReader(Coord4D coord, ItemStack stack)
 	{
 		pos = coord;
-		pos.yCoord = Math.min(255, pos.yCoord);
+		pos.getPos().getY() = Math.min(255, pos.getPos().getY());
 		
 		itemStack = stack;
 		
@@ -141,8 +141,8 @@ public class GuiSeismicReader extends GuiScreen
 			drawTexturedModalRect(guiWidth + scrollStartX, guiHeight + scrollStartY+5-scroll, xSize, 4, 38, 1);
 		}
 		
-		int amount = Math.min((142/2)+Math.min(0, (scroll/2)-3), pos.yCoord);
-		int start = pos.yCoord-(scroll/2)+Math.min(3, scroll/2);
+		int amount = Math.min((142/2)+Math.min(0, (scroll/2)-3), pos.getPos().getY());
+		int start = pos.getPos().getY()-(scroll/2)+Math.min(3, scroll/2);
 		int yStart = scrollStartY + Math.max(0, 6-scroll);
 		
 		drawScale(guiWidth, guiHeight, amount, start, yStart, scroll%2==1);
@@ -216,7 +216,7 @@ public class GuiSeismicReader extends GuiScreen
 				index -= 1;
 			}
 			
-			if(index%8 == 0 && pos.yCoord-index > 6)
+			if(index%8 == 0 && pos.getPos().getY()-index > 6)
 			{
 				int yPos = nextRender+2;
 				
@@ -292,7 +292,7 @@ public class GuiSeismicReader extends GuiScreen
 	{
 		int ret = 6;
 		
-		ret += (pos.yCoord*2); //2 pixels per block
+		ret += (pos.getPos().getY()*2); //2 pixels per block
 		ret += 1; //Bottom layer thing
 		ret -= 142; //142 total pixels lengthwise on display
 		
@@ -303,9 +303,9 @@ public class GuiSeismicReader extends GuiScreen
 	{
 		seismicCalculation.clear();
 		
-		for(int y = 1; y <= pos.yCoord; y++)
+		for(int y = 1; y <= pos.getPos().getY(); y++)
 		{
-			Coord4D coord = new Coord4D(pos.xCoord, y, pos.zCoord, pos.dimensionId);
+			Coord4D coord = new Coord4D(pos.getPos().getX(), y, pos.getPos().getZ(), pos.dimensionId);
 			
 			if(coord.isAirBlock(worldObj))
 			{

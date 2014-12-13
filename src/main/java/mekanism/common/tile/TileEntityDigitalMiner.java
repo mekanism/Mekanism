@@ -51,11 +51,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -257,7 +257,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 									toRemove.add(chunk);
 								}
 	
-								worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, Block.getIdFromBlock(block) + (meta << 12));
+								worldObj.playAuxSFXAtEntity(null, 2001, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), Block.getIdFromBlock(block) + (meta << 12));
 	
 								missingStack = null;
 							}
@@ -290,7 +290,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				if(getEjectInv() instanceof IInventory)
 				{
-					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), ForgeDirection.getOrientation(facing).getOpposite().ordinal(), false);
+					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), EnumFacing.getOrientation(facing).getOpposite().ordinal(), false);
 
 					getTopEject(true, remains);
 				}
@@ -355,12 +355,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		 
 		if(stack != null)
 		{
-			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, Block.getBlockFromItem(stack.getItem()), stack.getItemDamage(), 3);
+			worldObj.setBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), Block.getBlockFromItem(stack.getItem()), stack.getItemDamage(), 3);
 
-			if(obj.getBlock(worldObj) != null && !obj.getBlock(worldObj).canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
+			if(obj.getBlock(worldObj) != null && !obj.getBlock(worldObj).canBlockStay(worldObj, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()))
 			{
-				obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
-				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+				obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), obj.getMetadata(worldObj), 1);
+				worldObj.setBlockToAir(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ());
 			}
 			
 			return true;
@@ -370,7 +370,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			
 			if(filter.replaceStack == null || !filter.requireStack)
 			{
-				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+				worldObj.setBlockToAir(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ());
 				
 				return true;
 			}
@@ -504,7 +504,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntity getEjectInv()
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
 
 		return new Coord4D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
@@ -987,9 +987,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		int diameter = getDiameter();
 		Coord4D start = getStartingCoord();
 
-		int x = start.xCoord+index%diameter;
-		int z = start.zCoord+(index/diameter)%diameter;
-		int y = start.yCoord+(index/diameter/diameter);
+		int x = start.getPos().getX()+index%diameter;
+		int z = start.getPos().getZ()+(index/diameter)%diameter;
+		int y = start.getPos().getY()+(index/diameter/diameter);
 
 		return new Coord4D(x, y, z, worldObj.provider.dimensionId);
 	}
@@ -1113,14 +1113,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntity getEjectTile()
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
 		return new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 
 	@Override
 	public int[] getBoundSlots(Coord4D location, int side)
 	{
-		ForgeDirection dir = ForgeDirection.getOrientation(facing).getOpposite();
+		EnumFacing dir = EnumFacing.getOrientation(facing).getOpposite();
 
 		Coord4D eject = Coord4D.get(this).translate(dir.offsetX, 1, dir.offsetZ);
 		Coord4D pull = Coord4D.get(this).translate(0, 1, 0);
@@ -1146,7 +1146,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
 
 		Coord4D eject = Coord4D.get(this).translate(side.offsetX, 1, side.offsetZ);
 		Coord4D pull = Coord4D.get(this).translate(0, 1, 0);
@@ -1169,7 +1169,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
 
 		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
 		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord, worldObj.provider.dimensionId);

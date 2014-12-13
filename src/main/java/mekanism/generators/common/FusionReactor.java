@@ -21,7 +21,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemCoal;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -314,7 +314,7 @@ public class FusionReactor implements IFusionReactor
 		updatedThisTick = true;
 
 		Coord4D controllerPosition = Coord4D.get(controller);
-		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
+		Coord4D centreOfReactor = controllerPosition.getFromSide(EnumFacing.DOWN, 2);
 
 		unformMultiblock();
 

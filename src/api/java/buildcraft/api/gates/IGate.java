@@ -8,7 +8,7 @@
  */
 package buildcraft.api.gates;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import buildcraft.api.transport.IPipe;
 
@@ -16,7 +16,7 @@ public interface IGate {
 	@Deprecated
 	void setPulsing(boolean pulse);
 	
-	ForgeDirection getSide();
+	EnumFacing getSide();
 
 	IPipe getPipe();
 }

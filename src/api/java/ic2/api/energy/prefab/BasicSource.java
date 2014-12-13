@@ -4,10 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
@@ -128,9 +128,9 @@ public class BasicSource extends TileEntity implements IEnergySource {
 				!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
 				Info.isIc2Available()) {
 			worldObj = parent.getWorldObj();
-			xCoord = parent.xCoord;
-			yCoord = parent.yCoord;
-			zCoord = parent.zCoord;
+			xCoord = parent.getPos().getX();
+			yCoord = parent.getPos().getY();
+			zCoord = parent.getPos().getZ();
 
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 
@@ -343,7 +343,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	// energy net interface >>
 
 	@Override
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction) {
+	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction) {
 		return true;
 	}
 

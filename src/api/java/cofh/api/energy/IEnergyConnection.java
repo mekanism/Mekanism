@@ -1,6 +1,6 @@
 package cofh.api.energy;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Implement this interface on TileEntities which should connect to energy transportation blocks. This is intended for blocks which generate energy but do not
@@ -16,6 +16,6 @@ public interface IEnergyConnection {
 	/**
 	 * Returns TRUE if the TileEntity can connect on a given side.
 	 */
-	boolean canConnectEnergy(ForgeDirection from);
+	boolean canConnectEnergy(EnumFacing from);
 
 }

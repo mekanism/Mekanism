@@ -15,9 +15,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPlastic extends Block
 {
@@ -113,7 +113,7 @@ public class BlockPlastic extends Block
 		return 0;
 	}
 
-	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
+	public boolean recolourBlock(World world, int x, int y, int z, EnumFacing side, int colour)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		if (meta != (15 - colour))

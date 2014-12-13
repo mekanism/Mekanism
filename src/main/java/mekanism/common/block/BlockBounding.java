@@ -12,12 +12,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
@@ -40,7 +41,7 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
 			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
 		} catch(Exception e) {
 			return false;
@@ -51,7 +52,7 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
 			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
 		} catch(Exception e) {
 			return null;
@@ -62,7 +63,7 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
 			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, willHarvest);
 		} catch(Exception e) {
 			return false;
@@ -73,7 +74,7 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
 			tileEntity.onNeighborChange(block);
 			world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
 		} catch(Exception e) {}
@@ -134,7 +135,7 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	@Method(modid = "ComputerCraft")
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
 	{
-		TileEntity te = world.getTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 
 		if(te != null && te instanceof IPeripheral)
 		{

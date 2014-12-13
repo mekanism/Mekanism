@@ -11,7 +11,7 @@ package buildcraft.api.statements;
 import java.util.Collection;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface ITriggerProvider {
 
@@ -23,6 +23,6 @@ public interface ITriggerProvider {
 	/**
 	 * Returns the list of triggers available to a gate next to the given block.
 	 */
-	Collection<ITriggerExternal> getExternalTriggers(ForgeDirection side, TileEntity tile);
+	Collection<ITriggerExternal> getExternalTriggers(EnumFacing side, TileEntity tile);
 
 }

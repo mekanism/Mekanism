@@ -20,8 +20,8 @@ import mekanism.common.item.ItemBlockOre;
 import mekanism.common.item.ItemBlockPlastic;
 
 import net.minecraft.block.Block;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_1;
 import static mekanism.common.block.BlockBasic.BasicBlock.BASIC_BLOCK_2;

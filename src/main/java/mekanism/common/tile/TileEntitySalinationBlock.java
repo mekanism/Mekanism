@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntitySalinationBlock extends TileEntityContainerBlock
 {
@@ -106,7 +106,7 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 			
 			iterated.add(pos);
 			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 			{
 				Coord4D coord = pos.getFromSide(side);
 				

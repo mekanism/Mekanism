@@ -21,10 +21,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -33,7 +33,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 {
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
-	private HashMap<ForgeDirection, HashMap<EnumColor, DisplayInteger>> cachedOverlays = new HashMap<ForgeDirection, HashMap<EnumColor, DisplayInteger>>();
+	private HashMap<EnumFacing, HashMap<EnumColor, DisplayInteger>> cachedOverlays = new HashMap<EnumFacing, HashMap<EnumColor, DisplayInteger>>();
 
 	public RenderConfigurableMachine()
 	{
@@ -64,7 +64,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
 
-			if(xPos == tileEntity.xCoord && yPos == tileEntity.yCoord && zPos == tileEntity.zCoord)
+			if(xPos == tileEntity.getPos().getX() && yPos == tileEntity.getPos().getY() && zPos == tileEntity.getPos().getZ())
 			{
 				EnumColor color = configurable.getSideData().get(configurable.getConfiguration()[MekanismUtils.getBaseOrientation(pos.sideHit, configurable.getOrientation())]).color;
 
@@ -75,7 +75,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				GL11.glTranslatef((float)x, (float)y, (float)z);
 
-				int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), color).display;
+				int display = getOverlayDisplay(world, EnumFacing.getOrientation(pos.sideHit), color).display;
 				GL11.glCallList(display);
 
 				pop();
@@ -103,7 +103,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		MekanismRenderer.blendOn();
 	}
 
-	private DisplayInteger getOverlayDisplay(World world, ForgeDirection side, EnumColor color)
+	private DisplayInteger getOverlayDisplay(World world, EnumFacing side, EnumColor color)
 	{
 		if(cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(color))
 		{

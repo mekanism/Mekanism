@@ -8,7 +8,7 @@
  */
 package buildcraft.api.transport;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import buildcraft.api.transport.IPipeTile.PipeType;
 
@@ -27,5 +27,5 @@ public interface IPipeConnection {
 	 * @return CONNECT to force a connection, DISCONNECT to force no connection,
 	 * and DEFAULT to let the pipe decide.
 	 */
-	ConnectOverride overridePipeConnection(PipeType type, ForgeDirection with);
+	ConnectOverride overridePipeConnection(PipeType type, EnumFacing with);
 }

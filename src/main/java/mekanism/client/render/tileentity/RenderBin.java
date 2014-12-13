@@ -15,9 +15,9 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -46,9 +46,9 @@ public class RenderBin extends TileEntitySpecialRenderer
 				amount = Integer.toString(tileEntity.clientAmount);
 			}
 
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.getOrientation(tileEntity.facing));
+			Coord4D obj = Coord4D.get(tileEntity).getFromSide(EnumFacing.getOrientation(tileEntity.facing));
 
-			if(tileEntity.getWorldObj().getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isSideSolid(tileEntity.getWorldObj(), obj.xCoord, obj.yCoord, obj.zCoord, ForgeDirection.getOrientation(tileEntity.facing).getOpposite()))
+			if(tileEntity.getWorldObj().getBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()).isSideSolid(tileEntity.getWorldObj(), obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), EnumFacing.getOrientation(tileEntity.facing).getOpposite()))
 			{
 				return;
 			}
@@ -60,7 +60,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 			{
 				GL11.glPushMatrix();
 
-				switch(ForgeDirection.getOrientation(tileEntity.facing))
+				switch(EnumFacing.getOrientation(tileEntity.facing))
 				{
 					case NORTH:
 						GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
@@ -97,19 +97,19 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			if(amount != "")
 			{
-				renderText(amount, ForgeDirection.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
+				renderText(amount, EnumFacing.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
 			}
 		}
 	}
 
 	private void doLight(World world, Coord4D obj)
 	{
-		if(world.getBlock(obj.xCoord, obj.yCoord, obj.zCoord).isOpaqueCube())
+		if(world.getBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()).isOpaqueCube())
 		{
 			return;
 		}
 
-		int brightness = world.getLightBrightnessForSkyBlocks(obj.xCoord, obj.yCoord, obj.zCoord, 0);
+		int brightness = world.getLightBrightnessForSkyBlocks(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), 0);
 		int lightX = brightness % 65536;
 		int lightY = brightness / 65536;
 		float scale = 0.6F;
@@ -118,7 +118,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private void renderText(String text, ForgeDirection side, float maxScale, double x, double y, double z)
+	private void renderText(String text, EnumFacing side, float maxScale, double x, double y, double z)
 	{
 		GL11.glPushMatrix();
 

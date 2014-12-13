@@ -47,19 +47,20 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
@@ -237,7 +238,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				{
 					for(int zPos = z-1; zPos <= z+1; zPos++)
 					{
-						Block b = world.getBlock(xPos, yPos, zPos);
+						Block b = world.getBlockState(new BlockPos(xPos, yPos, zPos)).getBlock();
 
 						if(yPos > 255)
 						{
@@ -255,7 +256,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity instanceof IUpgradeTile)
 			{
@@ -442,7 +443,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             return false;
         }
         else {
-            Material material = world.getBlock(x, y, z).getMaterial();
+            Material material = world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial();
             boolean flag = !material.isSolid();
 
             if(!world.isAirBlock(x, y, z) && !flag)
@@ -509,19 +510,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	            {
 	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.dimensionId);
 	
-	                if(!world.canMineBlock(entityplayer, coord.xCoord, coord.yCoord, coord.zCoord))
+	                if(!world.canMineBlock(entityplayer, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
 	                {
 	                    return itemstack;
 	                }
 	
 	                if(!entityplayer.isSneaking())
 	                {
-	                    if(!entityplayer.canPlayerEdit(coord.xCoord, coord.yCoord, coord.zCoord, pos.sideHit, itemstack))
+	                    if(!entityplayer.canPlayerEdit(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), pos.sideHit, itemstack))
 	                    {
 	                        return itemstack;
 	                    }
 	                    
-	                    FluidStack fluid = MekanismUtils.getFluid(world, coord.xCoord, coord.yCoord, coord.zCoord);
+	                    FluidStack fluid = MekanismUtils.getFluid(world, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
 	                    
 	                    if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
 	                    {
@@ -542,7 +543,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	                			setFluidStack(newStack, itemstack);
 	                		}
 	                		
-	                		world.setBlockToAir(coord.xCoord, coord.yCoord, coord.zCoord);
+	                		world.setBlockToAir(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
 	                    }
 	                }
 	                else {
@@ -553,14 +554,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        				return itemstack;
 	        			}
 	        			
-	        			Coord4D trans = coord.getFromSide(ForgeDirection.getOrientation(pos.sideHit));
+	        			Coord4D trans = coord.getFromSide(EnumFacing.getOrientation(pos.sideHit));
 
-	                    if(!entityplayer.canPlayerEdit(trans.xCoord, trans.yCoord, trans.zCoord, pos.sideHit, itemstack))
+	                    if(!entityplayer.canPlayerEdit(trans.getPos().getX(), trans.getPos().getY(), trans.getPos().getZ(), pos.sideHit, itemstack))
 	                    {
 	                        return itemstack;
 	                    }
 
-	                    if(tryPlaceContainedLiquid(world, itemstack, trans.xCoord, trans.yCoord, trans.zCoord) && !entityplayer.capabilities.isCreativeMode)
+	                    if(tryPlaceContainedLiquid(world, itemstack, trans.getPos().getX(), trans.getPos().getY(), trans.getPos().getZ()) && !entityplayer.capabilities.isCreativeMode)
 	                    {
 	                    	FluidStack newStack = stored.copy();
 	                    	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;

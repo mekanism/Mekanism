@@ -1,7 +1,7 @@
 package mekanism.api.transmitters;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITransmitter
 {
@@ -41,7 +41,7 @@ public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITrans
 	 */
 	public void removeFromTransmitterNetwork();
 
-	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive);
+	public boolean canConnectToAcceptor(EnumFacing side, boolean ignoreActive);
 
 	/**
 	 * Call this if you're worried a transmitter's network is messed up and you want

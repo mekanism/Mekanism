@@ -63,10 +63,10 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.src.FMLRenderAccessLibrary;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -172,7 +172,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			}
 
 			InventoryBin inv = new InventoryBin(item);
-			ForgeDirection side = ForgeDirection.getOrientation(2);
+			EnumFacing side = EnumFacing.getOrientation(2);
 
 			String amount = "";
 			ItemStack itemStack = inv.getStack();

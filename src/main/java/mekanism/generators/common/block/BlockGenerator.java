@@ -41,12 +41,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.ModAPIManager;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import buildcraft.api.tools.IToolWrench;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -84,7 +84,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -96,7 +96,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 
 		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(entityliving.rotationPitch);
@@ -137,7 +137,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 		if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 		{
@@ -173,7 +173,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	public void randomDisplayTick(World world, int x, int y, int z, Random random)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(new BlockPos(x, y, z));
 		if(MekanismUtils.isActive(world, x, y, z))
 		{
 			float xRandom = (float)x + 0.5F;
@@ -287,7 +287,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(new BlockPos(x, y, z));
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
@@ -310,7 +310,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 			return true;
 		}
 
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(new BlockPos(x, y, z));
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
@@ -328,7 +328,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
+				int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
@@ -338,7 +338,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 
 		if(metadata == 3 && entityplayer.getCurrentEquippedItem() != null && entityplayer.getCurrentEquippedItem().isItemEqual(new ItemStack(GeneratorsBlocks.Generator, 1, 2)))
 		{
-			if(((TileEntityBasicBlock)world.getTileEntity(x, y, z)).facing != side)
+			if(((TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z))).facing != side)
 			{
 				return false;
 			}
@@ -442,7 +442,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(new BlockPos(x, y, z));
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
 
 		if(tileEntity == null)
@@ -497,7 +497,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -592,16 +592,16 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -614,9 +614,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
@@ -636,7 +636,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	@Method(modid = "ComputerCraft")
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
 	{
-		TileEntity te = world.getTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 
 		if(te != null && te instanceof IPeripheral)
 		{

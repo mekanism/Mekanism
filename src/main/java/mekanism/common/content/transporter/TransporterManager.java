@@ -17,8 +17,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Loader;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Loader;
 
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
@@ -74,7 +74,7 @@ public class TransporterManager
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inv;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.getOrientation(side).getOpposite().ordinal());
 
 			if(slots == null || slots.length == 0)
 			{
@@ -100,7 +100,7 @@ public class TransporterManager
 		{
 			IInvConfiguration config = (IInvConfiguration)inv;
 			int tileSide = config.getOrientation();
-			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != stack.color)
 			{
@@ -160,11 +160,11 @@ public class TransporterManager
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inv;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.getOrientation(side).getOpposite().ordinal());
 
 			if(slots != null && slots.length != 0)
 			{
-				if(stack.pathType != Path.HOME && sidedInventory instanceof TileEntityBin && ForgeDirection.getOrientation(side).getOpposite().ordinal() == 0)
+				if(stack.pathType != Path.HOME && sidedInventory instanceof TileEntityBin && EnumFacing.getOrientation(side).getOpposite().ordinal() == 0)
 				{
 					slots = sidedInventory.getAccessibleSlotsFromSide(1);
 				}
@@ -175,7 +175,7 @@ public class TransporterManager
 
 					if(stack.pathType != Path.HOME)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, EnumFacing.getOrientation(side).getOpposite().ordinal()))
 						{
 							continue;
 						}
@@ -246,7 +246,7 @@ public class TransporterManager
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
 			int tileSide = config.getOrientation();
-			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
 			{
@@ -307,7 +307,7 @@ public class TransporterManager
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.getOrientation(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.getOrientation(side).getOpposite().ordinal());
 
 			if(slots != null && slots.length != 0)
 			{
@@ -315,7 +315,7 @@ public class TransporterManager
 				{
 					int slotID = slots[get];
 
-					if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.getOrientation(side).getOpposite().ordinal()))
+					if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, EnumFacing.getOrientation(side).getOpposite().ordinal()))
 					{
 						continue;
 					}

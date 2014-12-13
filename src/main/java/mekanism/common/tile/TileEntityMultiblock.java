@@ -14,9 +14,9 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -92,13 +92,13 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 					sendStructure = true;
 				}
 
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 				{
 					Coord4D obj = Coord4D.get(this).getFromSide(side);
 
 					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), xCoord, yCoord, zCoord);
 					}
 				}
 

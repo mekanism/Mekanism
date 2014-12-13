@@ -1,4 +1,4 @@
 @API( owner="ComputerCraft", provides="ComputerCraft|API|Turtle", apiVersion="1.65" )
 package dan200.computercraft.api.turtle;
 
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;

@@ -10,7 +10,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface ILogisticalTransporter extends IBlockableConnection, IGridTransmitter<InventoryNetwork>
 {
@@ -24,9 +24,9 @@ public interface ILogisticalTransporter extends IBlockableConnection, IGridTrans
 
 	public void setColor(EnumColor c);
 
-	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side);
+	public boolean canEmitTo(TileEntity tileEntity, EnumFacing side);
 
-	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side);
+	public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side);
 
 	public int getCost();
 }

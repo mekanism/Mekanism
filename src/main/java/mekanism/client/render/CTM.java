@@ -417,8 +417,8 @@ public class CTM
 				break;
 		}
 
-		Block block1 = world.getBlock(x, y, z);
-		Block block2 = world.getBlock(x2, y2, z2);
+		Block block1 = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+		Block block2 = world.getBlockState(new BlockPos(x2, y2, z2)).getBlock();
 
 		int meta1 = world.getBlockMetadata(x, y, z);
 		int meta2 = world.getBlockMetadata(x2, y2, z2);

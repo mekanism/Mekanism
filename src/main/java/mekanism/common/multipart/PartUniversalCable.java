@@ -20,12 +20,12 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
@@ -82,13 +82,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 				cacheEnergy = 0;
 			}
 
-				List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
+				List<EnumFacing> sides = getConnections(ConnectionType.PULL);
 				
 				if(!sides.isEmpty())
 				{
 					TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
 
-					for(ForgeDirection side : sides)
+					for(EnumFacing side : sides)
 					{
 						if(connectedOutputters[side.ordinal()] != null)
 						{
@@ -228,7 +228,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side)
 	{
 		return CableUtils.getConnections(tile())[side.ordinal()];
 	}
@@ -280,7 +280,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(canReceiveEnergy(from))
 		{
@@ -291,28 +291,28 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return canConnect(from);
 	}
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored(EnumFacing from)
 	{
 		return 0;
 	}
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded()*general.TO_TE);
 	}
@@ -324,7 +324,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
 		if(!canReceiveEnergy(side))
 		{
@@ -338,7 +338,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canReceiveEnergy(EnumFacing side)
 	{
 		return getConnectionType(side) == ConnectionType.NORMAL;
 	}

@@ -11,7 +11,7 @@ package buildcraft.api.transport;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface IPipePluggable {
 	void writeToNBT(NBTTagCompound nbt);
@@ -20,13 +20,13 @@ public interface IPipePluggable {
 
 	ItemStack[] getDropItems(IPipeTile pipe);
 
-	void onAttachedPipe(IPipeTile pipe, ForgeDirection direction);
+	void onAttachedPipe(IPipeTile pipe, EnumFacing direction);
 
-	void onDetachedPipe(IPipeTile pipe, ForgeDirection direction);
+	void onDetachedPipe(IPipeTile pipe, EnumFacing direction);
 
-	boolean blocking(IPipeTile pipe, ForgeDirection direction);
+	boolean blocking(IPipeTile pipe, EnumFacing direction);
 
 	void invalidate();
 
-	void validate(IPipeTile pipe, ForgeDirection direction);
+	void validate(IPipeTile pipe, EnumFacing direction);
 }

@@ -25,7 +25,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -130,7 +130,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(fluidTank.getFluid() != null)
 		{
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 			{
 				TileEntity tileEntity = Coord4D.get(this).getFromSide(orientation).getTileEntity(worldObj);
 
@@ -154,20 +154,20 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		Collections.shuffle(tempPumpList);
 
 		//First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
 
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
 						recurringNodes.add(wrapper.clone());
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()), true);
+						worldObj.setBlockToAir(wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ());
 					}
 
 					return true;
@@ -179,15 +179,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
-			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
+			if(MekanismUtils.isFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
-						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()), true);
+						worldObj.setBlockToAir(wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ());
 					}
 
 					return true;
@@ -195,22 +195,22 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 
 			//Add all the blocks surrounding this recurring node to the recurring node list
-			for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 			{
 				Coord4D side = wrapper.getFromSide(orientation);
 
 				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{
-					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
+					if(MekanismUtils.isFluid(worldObj, side.getPos().getX(), side.getPos().getY(), side.getPos().getZ()))
 					{
-						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord).isFluidEqual(fluidTank.getFluid()))
+						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.getPos().getX(), side.getPos().getY(), side.getPos().getZ()).isFluidEqual(fluidTank.getFluid()))
 						{
 							if(take)
 							{
 								setEnergy(getEnergy() - usage.electricPumpUsage);
 								recurringNodes.add(side);
-								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
-								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
+								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.getPos().getX(), side.getPos().getY(), side.getPos().getZ()), true);
+								worldObj.setBlockToAir(side.getPos().getX(), side.getPos().getY(), side.getPos().getZ());
 							}
 
 							return true;
@@ -345,9 +345,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getOrientation(facing).getOpposite());
 	}
 
 	@Override
@@ -373,9 +373,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == ForgeDirection.getOrientation(1))
+		if(direction == EnumFacing.getOrientation(1))
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
@@ -402,9 +402,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.getOrientation(1))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.getOrientation(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -413,15 +413,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return 0;
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
-		if(from == ForgeDirection.getOrientation(1))
+		if(from == EnumFacing.getOrientation(1))
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
@@ -430,15 +430,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return from == ForgeDirection.getOrientation(1);
+		return from == EnumFacing.getOrientation(1);
 	}
 
 	@Override

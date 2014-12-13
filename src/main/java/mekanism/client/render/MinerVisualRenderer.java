@@ -28,7 +28,7 @@ public final class MinerVisualRenderer
 	public static void render(TileEntityDigitalMiner miner)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslated(getX(miner.xCoord), getY(miner.yCoord), getZ(miner.zCoord));
+		GL11.glTranslated(getX(miner.getPos().getX()), getY(miner.getPos().getY()), getZ(miner.getPos().getZ()));
 		MekanismRenderer.blendOn();
 		MekanismRenderer.glowOn();
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -54,11 +54,11 @@ public final class MinerVisualRenderer
 		
 		for(int x = -data.radius; x <= data.radius; x++)
 		{
-			for(int y = data.minY-data.yCoord; y <= data.maxY-data.yCoord; y++)
+			for(int y = data.minY-data.getPos().getY(); y <= data.maxY-data.getPos().getY(); y++)
 			{
 				for(int z = -data.radius; z <= data.radius; z++)
 				{
-					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
+					if(x == -data.radius || x == data.radius || y == data.minY-data.getPos().getY() || y == data.maxY-data.getPos().getY() || z == -data.radius || z == data.radius)
 					{
 						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.dimensionId)));
 					}
@@ -80,7 +80,7 @@ public final class MinerVisualRenderer
 	{
 		Model3D toReturn = new Model3D();
 		
-		toReturn.setBlockBounds(rel.xCoord + 0.4, rel.yCoord + 0.4, rel.zCoord + 0.4, rel.xCoord + 0.6, rel.yCoord + 0.6, rel.zCoord + 0.6);
+		toReturn.setBlockBounds(rel.getPos().getX() + 0.4, rel.getPos().getY() + 0.4, rel.getPos().getZ() + 0.4, rel.getPos().getX() + 0.6, rel.getPos().getY() + 0.6, rel.getPos().getZ() + 0.6);
 		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
@@ -119,7 +119,7 @@ public final class MinerVisualRenderer
 		
 		public MinerRenderData(TileEntityDigitalMiner miner)
 		{
-			this(miner.minY, miner.maxY, miner.radius, miner.yCoord);
+			this(miner.minY, miner.maxY, miner.radius, miner.getPos().getY());
 		}
 		
 		@Override
@@ -127,7 +127,7 @@ public final class MinerVisualRenderer
 		{
 			return data instanceof MinerRenderData && ((MinerRenderData)data).minY == minY && 
 					((MinerRenderData)data).maxY == maxY && ((MinerRenderData)data).radius == radius && 
-					((MinerRenderData)data).yCoord == yCoord;
+					((MinerRenderData)data).getPos().getY() == yCoord;
 		}
 
 		@Override

@@ -15,7 +15,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TransporterStack
 {
@@ -27,7 +27,7 @@ public class TransporterStack
 
 	public boolean initiatedPath = false;
 	
-	public ForgeDirection idleDir = ForgeDirection.UNKNOWN;
+	public EnumFacing idleDir = EnumFacing.UNKNOWN;
 
 	public List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
 
@@ -122,7 +122,7 @@ public class TransporterStack
 
 		progress = nbtTags.getInteger("progress");
 		originalLocation = Coord4D.read(nbtTags.getCompoundTag("originalLocation"));
-		idleDir = ForgeDirection.values()[nbtTags.getInteger("idleDir")];
+		idleDir = EnumFacing.values()[nbtTags.getInteger("idleDir")];
 
 		if(nbtTags.hasKey("homeLocation"))
 		{
@@ -165,7 +165,7 @@ public class TransporterStack
 
 		pathToTarget = newPath.path;
 		pathType = Path.DEST;
-		idleDir = ForgeDirection.UNKNOWN;
+		idleDir = EnumFacing.UNKNOWN;
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -182,7 +182,7 @@ public class TransporterStack
 
 		pathToTarget = newPath.path;
 		pathType = Path.DEST;
-		idleDir = ForgeDirection.UNKNOWN;
+		idleDir = EnumFacing.UNKNOWN;
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -199,7 +199,7 @@ public class TransporterStack
 		
 		if(pathType == Path.HOME)
 		{
-			idleDir = ForgeDirection.UNKNOWN;
+			idleDir = EnumFacing.UNKNOWN;
 		}
 
 		pathToTarget = newPath;
@@ -279,7 +279,7 @@ public class TransporterStack
 		return 0;
 	}
 
-	public boolean canInsertToTransporter(TileEntity tileEntity, ForgeDirection side)
+	public boolean canInsertToTransporter(TileEntity tileEntity, EnumFacing side)
 	{
 		if(!(tileEntity instanceof ILogisticalTransporter))
 		{

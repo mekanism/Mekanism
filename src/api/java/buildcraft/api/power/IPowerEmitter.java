@@ -8,7 +8,7 @@
  */
 package buildcraft.api.power;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Essentially only used for Wooden Power Pipe connection rules.
@@ -19,5 +19,5 @@ import net.minecraftforge.common.util.ForgeDirection;
 @Deprecated
 public interface IPowerEmitter {
 
-	boolean canEmitPowerFrom(ForgeDirection side);
+	boolean canEmitPowerFrom(EnumFacing side);
 }

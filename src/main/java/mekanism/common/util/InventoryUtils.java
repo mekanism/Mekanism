@@ -14,7 +14,7 @@ import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public final class InventoryUtils
 {
@@ -123,11 +123,11 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
-				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.OPPOSITES[side] == 0)
+				if(force && sidedInventory instanceof TileEntityBin && EnumFacing.OPPOSITES[side] == 0)
 				{
 					slots = sidedInventory.getAccessibleSlotsFromSide(1);
 				}
@@ -138,7 +138,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.OPPOSITES[side]))
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, EnumFacing.OPPOSITES[side]))
 						{
 							continue;
 						}
@@ -205,7 +205,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
 
 			if(slots != null)
 			{
@@ -218,7 +218,7 @@ public final class InventoryUtils
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
 						toSend.stackSize = 1;
 
-						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.OPPOSITES[side]))
+						if(sidedInventory.canExtractItem(slotID, toSend, EnumFacing.OPPOSITES[side]))
 						{
 							return new InvStack(inventory, slotID, toSend);
 						}
@@ -264,7 +264,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
@@ -281,7 +281,7 @@ public final class InventoryUtils
 						{
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.OPPOSITES[side]))
+							if(sidedInventory.canExtractItem(slotID, copy, EnumFacing.OPPOSITES[side]))
 							{
 								ret.appendStack(slotID, copy);
 							}
@@ -289,7 +289,7 @@ public final class InventoryUtils
 						else {
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, ForgeDirection.OPPOSITES[side]))
+							if(sidedInventory.canExtractItem(slotID, copy, EnumFacing.OPPOSITES[side]))
 							{
 								copy.stackSize = max-current;
 								ret.appendStack(slotID, copy);
@@ -330,7 +330,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
@@ -342,7 +342,7 @@ public final class InventoryUtils
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 
-						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.OPPOSITES[side]))
+						if(sidedInventory.canExtractItem(slotID, toSend, EnumFacing.OPPOSITES[side]))
 						{
 							return new InvStack(inventory, slotID, toSend);
 						}
@@ -370,7 +370,7 @@ public final class InventoryUtils
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
 			int tileSide = config.getOrientation();
-			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
 			{
@@ -417,11 +417,11 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(ForgeDirection.OPPOSITES[side]);
+			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
 
 			if(slots != null && slots.length != 0)
 			{
-				if(force && sidedInventory instanceof TileEntityBin && ForgeDirection.OPPOSITES[side] == 0)
+				if(force && sidedInventory instanceof TileEntityBin && EnumFacing.OPPOSITES[side] == 0)
 				{
 					slots = sidedInventory.getAccessibleSlotsFromSide(1);
 				}
@@ -432,7 +432,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, ForgeDirection.OPPOSITES[side]))
+						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, EnumFacing.OPPOSITES[side]))
 						{
 							continue;
 						}

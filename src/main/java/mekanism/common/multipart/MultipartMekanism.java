@@ -5,7 +5,7 @@ import mekanism.common.Tier;
 import mekanism.common.block.BlockMachine.MachineType;
 
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 import codechicken.microblock.BlockMicroMaterial;
 import codechicken.microblock.MicroMaterialRegistry;

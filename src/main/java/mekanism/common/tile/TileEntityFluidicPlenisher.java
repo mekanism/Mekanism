@@ -22,7 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,7 +42,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public FluidTank fluidTank = new FluidTank(10000);
 	
-	private static EnumSet<ForgeDirection> dirs = EnumSet.complementOf(EnumSet.of(ForgeDirection.UP, ForgeDirection.UNKNOWN));
+	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP, EnumFacing.UNKNOWN));
 	private static int MAX_NODES = 4000;
 	
 	public TileEntityFluidicPlenisher()
@@ -139,13 +139,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						doPlenish();
 					}
 					else {
-						Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+						Coord4D below = Coord4D.get(this).getFromSide(EnumFacing.DOWN);
 						
 						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
-								worldObj.setBlock(below.xCoord, below.yCoord, below.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+								worldObj.setBlock(below.getPos().getX(), below.getPos().getY(), below.getPos().getZ(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 								
 								setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -169,7 +169,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			if(usedNodes.isEmpty())
 			{
-				Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
+				Coord4D below = Coord4D.get(this).getFromSide(EnumFacing.DOWN);
 				
 				if(!canReplace(below, true, true))
 				{
@@ -193,14 +193,14 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				if(canReplace(coord, true, false))
 				{
-					worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+					worldObj.setBlock(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 
 					setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 
 				}
 				
-				for(ForgeDirection dir : dirs)
+				for(EnumFacing dir : dirs)
 				{
 					Coord4D sideCoord = coord.getFromSide(dir);
 					
@@ -237,17 +237,17 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
+		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
 		{
 			return true;
 		}
 		
-		if(MekanismUtils.isFluid(worldObj, coord.xCoord, coord.yCoord, coord.zCoord))
+		if(MekanismUtils.isFluid(worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
 		{
 			return isPathfinding;
 		}
 		
-		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.xCoord, coord.yCoord, coord.zCoord);
+		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
 	}
 	
 	@Override
@@ -395,9 +395,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getOrientation(facing).getOpposite());
 	}
 
 	@Override
@@ -423,9 +423,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection direction)
+	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == ForgeDirection.UP)
+		if(direction == EnumFacing.UP)
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
@@ -452,9 +452,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == ForgeDirection.UP)
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.UP)
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -463,9 +463,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(from == ForgeDirection.UP && resource.getFluid().canBePlacedInWorld())
+		if(from == EnumFacing.UP && resource.getFluid().canBePlacedInWorld())
 		{
 			return fluidTank.fill(resource, true);
 		}
@@ -474,19 +474,19 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return from == ForgeDirection.UP && fluid.canBePlacedInWorld();
+		return from == EnumFacing.UP && fluid.canBePlacedInWorld();
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return false;
 	}

@@ -21,9 +21,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -131,7 +132,7 @@ public class GuiConfiguration extends GuiMekanism
 			int x = inputPosMap.get(i).xPos;
 			int y = inputPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getOrientation(i));
 
 			if(color != null)
 			{
@@ -195,7 +196,7 @@ public class GuiConfiguration extends GuiMekanism
 			int x = inputPosMap.get(i).xPos;
 			int y = inputPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getOrientation(i));
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
@@ -234,7 +235,7 @@ public class GuiConfiguration extends GuiMekanism
 
 		TileEntity tile = (TileEntity)configurable;
 
-		if(tile == null || mc.theWorld.getTileEntity(tile.xCoord, tile.yCoord, tile.zCoord) == null)
+		if(tile == null || mc.theWorld.getTileEntity(new BlockPos(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ())) == null)
 		{
 			mc.displayGuiScreen(null);
 		}

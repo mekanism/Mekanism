@@ -14,7 +14,7 @@ import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import codechicken.multipart.TileMultipart;
 
@@ -93,7 +93,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 			byte possibleTransmitters = getPossibleTransmitterConnections();
 			HashSet<N> connectedNets = new HashSet<N>();
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 			{
 				if(connectionMapContainsSide(possibleTransmitters, side))
 				{
@@ -193,7 +193,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	}
 
 	@Override
-	protected void onModeChange(ForgeDirection side)
+	protected void onModeChange(EnumFacing side)
 	{
 		super.onModeChange(side);
 

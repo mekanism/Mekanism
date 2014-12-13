@@ -21,8 +21,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import io.netty.buffer.ByteBuf;
 
@@ -113,7 +113,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         if(mop != null)
         {
-            motionVec = Vec3.createVectorHelper(mop.hitVec.xCoord, mop.hitVec.yCoord, mop.hitVec.zCoord);
+            motionVec = Vec3.createVectorHelper(mop.hitVec.getPos().getX(), mop.hitVec.getPos().getY(), mop.hitVec.getPos().getZ());
         }
 
         Entity entity = null;
@@ -180,13 +180,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 int meta = worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
                 boolean fluid = MekanismUtils.isFluid(worldObj, mop.blockX, mop.blockY, mop.blockZ) || MekanismUtils.isDeadFluid(worldObj, mop.blockX, mop.blockY, mop.blockZ);
                 
-                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).getFromSide(ForgeDirection.getOrientation(mop.sideHit));
+                Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).getFromSide(EnumFacing.getOrientation(mop.sideHit));
                 
                 if(!fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
                 	if(!smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
                 	{
-                		worldObj.setBlock(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, Blocks.fire);
+                		worldObj.setBlock(sideCoord.getPos().getX(), sideCoord.getPos().getY(), sideCoord.getPos().getZ(), Blocks.fire);
                 	}
                 }
                 
@@ -232,19 +232,19 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 				
 				if(Block.getBlockFromItem(result.getItem()) != Blocks.air)
 				{
-					worldObj.setBlock(block.xCoord, block.yCoord, block.zCoord, Block.getBlockFromItem(result.getItem()), result.getItemDamage(), 3);
+					worldObj.setBlock(block.getPos().getX(), block.getPos().getY(), block.getPos().getZ(), Block.getBlockFromItem(result.getItem()), result.getItemDamage(), 3);
 				}
 				else {
-					worldObj.setBlockToAir(block.xCoord, block.yCoord, block.zCoord);
+					worldObj.setBlockToAir(block.getPos().getX(), block.getPos().getY(), block.getPos().getZ());
 					
-					EntityItem item = new EntityItem(worldObj, block.xCoord + 0.5, block.yCoord + 0.5, block.zCoord + 0.5, result.copy());
+					EntityItem item = new EntityItem(worldObj, block.getPos().getX() + 0.5, block.getPos().getY() + 0.5, block.getPos().getZ() + 0.5, result.copy());
 					item.motionX = 0;
 					item.motionY = 0;
 					item.motionZ = 0;
 					worldObj.spawnEntityInWorld(item);
 				}
 				
-				worldObj.playAuxSFXAtEntity(null, 2001, block.xCoord, block.yCoord, block.zCoord, Block.getIdFromBlock(b) + (meta << 12));
+				worldObj.playAuxSFXAtEntity(null, 2001, block.getPos().getX(), block.getPos().getY(), block.getPos().getZ(), Block.getIdFromBlock(b) + (meta << 12));
 			}
 			
 			spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));

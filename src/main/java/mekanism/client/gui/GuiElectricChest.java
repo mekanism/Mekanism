@@ -17,9 +17,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -69,7 +69,7 @@ public class GuiElectricChest extends GuiMekanism
 		{
 			if(isBlock)
 			{
-				mc.thePlayer.openGui(Mekanism.instance, 20, mc.theWorld, tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+				mc.thePlayer.openGui(Mekanism.instance, 20, mc.theWorld, tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 			}
 			else {
 				FMLClientHandler.instance().displayGuiScreen(mc.thePlayer, new GuiPasswordModify(mc.thePlayer.getCurrentEquippedItem()));

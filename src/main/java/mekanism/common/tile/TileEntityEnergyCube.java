@@ -17,9 +17,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
@@ -107,19 +107,19 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
+		EnumSet set = EnumSet.allOf(EnumFacing.class);
 		set.removeAll(getOutputtingSides());
-		set.remove(ForgeDirection.UNKNOWN);
+		set.remove(EnumFacing.UNKNOWN);
 
 		return set;
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(ForgeDirection.getOrientation(facing));
+		return EnumSet.of(EnumFacing.getOrientation(facing));
 	}
 
 	@Override

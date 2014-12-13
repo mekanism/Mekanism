@@ -12,6 +12,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 
 import io.netty.buffer.ByteBuf;
 
@@ -58,7 +59,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 
 	public void onNeighborChange(Block block)
 	{
-		TileEntity tile = worldObj.getTileEntity(mainX, mainY, mainZ);
+		TileEntity tile = worldObj.getTileEntity(new BlockPos(mainX, mainY, mainZ));
 
 		if(tile instanceof TileEntityBasicBlock)
 		{

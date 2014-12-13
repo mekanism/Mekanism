@@ -22,9 +22,9 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 import cofh.api.energy.IEnergyReceiver;
 import ic2.api.energy.EnergyNet;
@@ -188,14 +188,14 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					TileEntity acceptor = (TileEntity)obj;
 					double currentSending = sending+remaining;
-					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get(acceptor));
+					EnumSet<EnumFacing> sides = acceptorDirections.get(Coord4D.get(acceptor));
 
 					if(sides == null || sides.isEmpty())
 					{
 						continue;
 					}
 
-					for(ForgeDirection side : sides)
+					for(EnumFacing side : sides)
 					{
 						double prev = sent;
 						
@@ -240,7 +240,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 		for(Coord4D coord : ((Map<Coord4D, TileEntity>)possibleAcceptors.clone()).keySet())
 		{
-			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			EnumSet<EnumFacing> sides = acceptorDirections.get(coord);
 			TileEntity acceptor = coord.getTileEntity(getWorld());
 
 			if(sides == null || sides.isEmpty())
@@ -248,7 +248,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				continue;
 			}
 
-			for(ForgeDirection side : sides)
+			for(EnumFacing side : sides)
 			{
 				if(acceptor instanceof IStrictEnergyAcceptor)
 				{
@@ -338,12 +338,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 		for(TileEntity acceptor : acceptors)
 		{
-			ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+			EnumFacing side = EnumFacing.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
 
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get(acceptor), acceptor);
-				addSide(Coord4D.get(acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get(acceptor), EnumFacing.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}

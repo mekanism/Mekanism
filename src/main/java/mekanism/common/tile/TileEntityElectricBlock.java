@@ -17,10 +17,10 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
@@ -112,15 +112,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 	}
 
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		EnumSet set = EnumSet.allOf(ForgeDirection.class);
-		set.remove(ForgeDirection.UNKNOWN);
+		EnumSet set = EnumSet.allOf(EnumFacing.class);
+		set.remove(EnumFacing.UNKNOWN);
 		return set;
 	}
 
@@ -224,7 +224,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
 		{
@@ -243,7 +243,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
 		{
@@ -262,21 +262,21 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getEnergy()* general.TO_TE);
 	}
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored(EnumFacing from)
 	{
 		return (int)Math.round(getMaxEnergy()* general.TO_TE);
 	}
@@ -312,27 +312,27 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean isTeleporterCompatible(ForgeDirection side)
+	public boolean isTeleporterCompatible(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
 
 	@Override
-	public boolean canOutputTo(ForgeDirection side)
+	public boolean canOutputTo(EnumFacing side)
 	{
 		return getOutputtingSides().contains(side);
 	}
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
 	{
 		return getConsumingSides().contains(direction);
 	}
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean emitsEnergyTo(TileEntity receiver, ForgeDirection direction)
+	public boolean emitsEnergyTo(TileEntity receiver, EnumFacing direction)
 	{
 		return getOutputtingSides().contains(direction) && receiver instanceof IEnergyConductor;
 	}
@@ -373,7 +373,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canReceiveEnergy(EnumFacing side)
 	{
 		return getConsumingSides().contains(side);
 	}
@@ -387,7 +387,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 
 	@Override
 	@Method(modid = "IC2")
-	public double injectEnergy(ForgeDirection direction, double amount, double voltage)
+	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
 		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
 		{
@@ -405,9 +405,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
-		if(!(getConsumingSides().contains(side) || side == ForgeDirection.UNKNOWN))
+		if(!(getConsumingSides().contains(side) || side == EnumFacing.UNKNOWN))
 		{
 			return 0;
 		}

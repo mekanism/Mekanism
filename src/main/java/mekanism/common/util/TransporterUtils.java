@@ -18,7 +18,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public final class TransporterUtils
 {
@@ -34,7 +34,7 @@ public final class TransporterUtils
 	{
 		TileEntity[] transporters = new TileEntity[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity tile = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
 
@@ -70,12 +70,12 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedInventories).indexOf(inventory);
 
-				if(!tileEntity.canConnect(ForgeDirection.getOrientation(side)))
+				if(!tileEntity.canConnect(EnumFacing.getOrientation(side)))
 				{
 					continue;
 				}
 
-				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
+				EnumFacing forgeSide = EnumFacing.getOrientation(side).getOpposite();
 
 				if(inventory.getSizeInventory() > 0)
 				{
@@ -104,7 +104,7 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedTransporters).indexOf(tile);
 
-				if(tileEntity.canConnectMutual(ForgeDirection.getOrientation(side)))
+				if(tileEntity.canConnectMutual(EnumFacing.getOrientation(side)))
 				{
 					connectable[side] = true;
 				}
@@ -123,7 +123,7 @@ public final class TransporterUtils
 	{
 		IInventory[] inventories = new IInventory[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
 
@@ -188,7 +188,7 @@ public final class TransporterUtils
 
 		TransporterManager.remove(stack);
 
-		EntityItem entityItem = new EntityItem(tileEntity.getTile().getWorldObj(), tileEntity.getTile().xCoord + pos[0], tileEntity.getTile().yCoord + pos[1], tileEntity.getTile().zCoord + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.getTile().getWorldObj(), tileEntity.getTile().getPos().getX() + pos[0], tileEntity.getTile().getPos().getY() + pos[1], tileEntity.getTile().getPos().getZ() + pos[2], stack.itemStack);
 
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
@@ -199,7 +199,7 @@ public final class TransporterUtils
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(EnumFacing.getOrientation(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
 		float itemFix = 0;
@@ -209,7 +209,7 @@ public final class TransporterUtils
 			itemFix = 0.1F;
 		}
 
-		return new float[] {0.5F + offset.xCoord*progress, 0.5F + offset.yCoord*progress - itemFix, 0.5F + offset.zCoord*progress};
+		return new float[] {0.5F + offset.getPos().getX()*progress, 0.5F + offset.getPos().getY()*progress - itemFix, 0.5F + offset.getPos().getZ()*progress};
 	}
 
 	public static void incrementColor(ILogisticalTransporter tileEntity)

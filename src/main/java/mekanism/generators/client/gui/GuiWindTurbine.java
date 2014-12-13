@@ -20,8 +20,8 @@ import mekanism.generators.common.inventory.container.ContainerWindTurbine;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -65,7 +65,7 @@ public class GuiWindTurbine extends GuiMekanism
 
 		int size = 44;
 
-		if(!tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
+		if(!tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
 		{
 			size += 9;
 			fontRendererObj.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);

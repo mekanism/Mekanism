@@ -16,9 +16,9 @@ import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
 
 public final class StatementManager {
 
@@ -58,7 +58,7 @@ public final class StatementManager {
 		parameters.put(name, param);
 	}
 
-	public static List<ITriggerExternal> getExternalTriggers(ForgeDirection side, TileEntity entity) {
+	public static List<ITriggerExternal> getExternalTriggers(EnumFacing side, TileEntity entity) {
 		List<ITriggerExternal> result;
 
 		if (entity instanceof IOverrideDefaultStatements) {
@@ -85,7 +85,7 @@ public final class StatementManager {
 		return result;
 	}
 
-	public static List<IActionExternal> getExternalActions(ForgeDirection side, TileEntity entity) {
+	public static List<IActionExternal> getExternalActions(EnumFacing side, TileEntity entity) {
 		List<IActionExternal> result = new LinkedList<IActionExternal>();
 
 		if (entity instanceof IOverrideDefaultStatements) {

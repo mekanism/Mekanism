@@ -18,13 +18,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBlockCardboardBox extends ItemBlock
 {
@@ -76,7 +77,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	{
 		if(!player.isSneaking() && !world.isAirBlock(x, y, z) && stack.getItemDamage() == 0)
 		{
-			Block block = world.getBlock(x, y, z);
+			Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 			int meta = world.getBlockMetadata(x, y, z);
 
 			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta))
@@ -87,9 +88,9 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				isMonitoring = true;
 
-				if(world.getTileEntity(x, y, z) != null)
+				if(world.getTileEntity(new BlockPos(x, y, z)) != null)
 				{
-					TileEntity tile = world.getTileEntity(x, y, z);
+					TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 					NBTTagCompound tag = new NBTTagCompound();
 
 					tile.writeToNBT(tag);
@@ -105,7 +106,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 				isMonitoring = false;
 
-				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+				TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(new BlockPos(x, y, z));
 
 				if(tileEntity != null)
 				{
@@ -131,7 +132,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 		if(place)
 		{
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity != null)
 			{

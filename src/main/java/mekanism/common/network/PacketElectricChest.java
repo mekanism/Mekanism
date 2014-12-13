@@ -14,9 +14,9 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 
@@ -63,9 +63,9 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 		else if(message.packetType == ElectricChestPacketType.CLIENT_OPEN)
 		{
 			try {
-				int x = message.coord4D != null ? message.coord4D.xCoord : 0;
-				int y = message.coord4D != null ? message.coord4D.yCoord : 0;
-				int z = message.coord4D != null ? message.coord4D.zCoord : 0;
+				int x = message.coord4D != null ? message.coord4D.getPos().getX() : 0;
+				int y = message.coord4D != null ? message.coord4D.getPos().getY() : 0;
+				int z = message.coord4D != null ? message.coord4D.getPos().getZ() : 0;
 
 				Mekanism.proxy.openElectricChest(player, message.guiType, message.windowId, message.isBlock, x, y, z);
 			} catch(Exception e) {
@@ -103,7 +103,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				{
 					TileEntityElectricChest tileEntity = (TileEntityElectricChest)message.coord4D.getTileEntity(player.worldObj);
 					tileEntity.locked = message.locked;
-					player.worldObj.notifyBlocksOfNeighborChange(message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, tileEntity.getBlockType());
+					player.worldObj.notifyBlocksOfNeighborChange(message.coord4D.getPos().getX(), message.coord4D.getPos().getY(), message.coord4D.getPos().getZ(), tileEntity.getBlockType());
 				}
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();
@@ -205,9 +205,9 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.getPos().getX());
+						dataStream.writeInt(coord4D.getPos().getY());
+						dataStream.writeInt(coord4D.getPos().getZ());
 						dataStream.writeInt(coord4D.dimensionId);
 					}
 	
@@ -218,9 +218,9 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.getPos().getX());
+						dataStream.writeInt(coord4D.getPos().getY());
+						dataStream.writeInt(coord4D.getPos().getZ());
 						dataStream.writeInt(coord4D.dimensionId);
 					}
 	
@@ -232,9 +232,9 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.getPos().getX());
+						dataStream.writeInt(coord4D.getPos().getY());
+						dataStream.writeInt(coord4D.getPos().getZ());
 						dataStream.writeInt(coord4D.dimensionId);
 					}
 	
@@ -245,9 +245,9 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 	
 					if(isBlock)
 					{
-						dataStream.writeInt(coord4D.xCoord);
-						dataStream.writeInt(coord4D.yCoord);
-						dataStream.writeInt(coord4D.zCoord);
+						dataStream.writeInt(coord4D.getPos().getX());
+						dataStream.writeInt(coord4D.getPos().getY());
+						dataStream.writeInt(coord4D.getPos().getZ());
 						dataStream.writeInt(coord4D.dimensionId);
 					}
 	

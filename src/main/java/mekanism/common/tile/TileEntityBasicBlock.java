@@ -19,8 +19,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
@@ -95,7 +96,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		if(clientFacing != facing)
 		{
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockState(new BlockPos(xCoord, yCoord, zCoord)).getBlock());
 			clientFacing = facing;
 		}
 
@@ -188,7 +189,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		if(!(facing == clientFacing || worldObj.isRemote))
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockState(new BlockPos(xCoord, yCoord, zCoord)).getBlock());
 			clientFacing = facing;
 		}
 	}

@@ -10,7 +10,7 @@ import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public abstract class TileEntityReactorBlock extends TileEntityElectricBlock implements IReactorBlock
 {
@@ -78,15 +78,15 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public EnumSet<ForgeDirection> getOutputtingSides()
+	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 	
 	@Override
@@ -145,7 +145,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 			
 			iterated.add(pos);
 			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 			{
 				Coord4D coord = pos.getFromSide(side);
 				

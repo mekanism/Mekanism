@@ -11,10 +11,11 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Item class for handling multiple metal block IDs.
@@ -147,7 +148,7 @@ public class ItemBlockBasic extends ItemBlock
 			{
 				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
 				{
-					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
+					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
 					InventoryBin inv = new InventoryBin(stack);
 
 					if(inv.getItemType() != null)

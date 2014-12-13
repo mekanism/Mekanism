@@ -18,7 +18,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine<InjectionRecipe> implements IGasHandler, ITubeConnection
 {
@@ -45,7 +45,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(isValidGas(stack.getGas()))
 		{
@@ -56,7 +56,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return isValidGas(type);
 	}
@@ -81,7 +81,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
 		return true;
 	}

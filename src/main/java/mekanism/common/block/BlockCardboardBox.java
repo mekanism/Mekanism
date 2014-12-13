@@ -17,12 +17,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockCardboardBox extends BlockContainer
 {
@@ -72,7 +73,7 @@ public class BlockCardboardBox extends BlockContainer
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox);
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity.storedData != null)
 			{
@@ -95,10 +96,10 @@ public class BlockCardboardBox extends BlockContainer
 
 				world.setBlock(x, y, z, data.block, data.meta, 3);
 
-				if(data.tileTag != null && world.getTileEntity(x, y, z) != null)
+				if(data.tileTag != null && world.getTileEntity(new BlockPos(x, y, z)) != null)
 				{
 					data.updateLocation(x, y, z);
-					world.getTileEntity(x, y, z).readFromNBT(data.tileTag);
+					world.getTileEntity(new BlockPos(x, y, z)).readFromNBT(data.tileTag);
 				}
 
 				if(data.block != null)
@@ -151,7 +152,7 @@ public class BlockCardboardBox extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(x, y, z);
+		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(new BlockPos(x, y, z));
 
 		ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox, 1, world.getBlockMetadata(x, y, z));
 

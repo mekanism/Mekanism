@@ -24,6 +24,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -74,7 +75,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		if(place)
 		{
-			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(new BlockPos(x, y, z));
 			tileEntity.gasTank.setGas(getGas(stack));
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));

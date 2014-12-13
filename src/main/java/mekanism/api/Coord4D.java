@@ -8,12 +8,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import io.netty.buffer.ByteBuf;
 
@@ -84,7 +85,7 @@ public class Coord4D
 			return null;
 		}
 
-		return world.getTileEntity(xCoord, yCoord, zCoord);
+		return world.getTileEntity(new BlockPos(xCoord, yCoord, zCoord));
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class Coord4D
 			return null;
 		}
 		
-		return world.getBlock(xCoord, yCoord, zCoord);
+		return world.getBlockState(new BlockPos(xCoord, yCoord, zCoord)).getBlock();
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class Coord4D
 	 * @param side - side to translate this Coord4D to
 	 * @return translated Coord4D
 	 */
-	public Coord4D getFromSide(ForgeDirection side)
+	public Coord4D getFromSide(EnumFacing side)
 	{
 		return getFromSide(side, 1);
 	}
@@ -173,7 +174,7 @@ public class Coord4D
 	 * @param amount - how far to translate this Coord4D
 	 * @return translated Coord4D
 	 */
-	public Coord4D getFromSide(ForgeDirection side, int amount)
+	public Coord4D getFromSide(EnumFacing side, int amount)
 	{
 		return new Coord4D(xCoord+(side.offsetX*amount), yCoord+(side.offsetY*amount), zCoord+(side.offsetZ*amount), dimensionId);
 	}
@@ -197,7 +198,7 @@ public class Coord4D
 	 */
 	public static Coord4D get(TileEntity tileEntity)
 	{
-		return new Coord4D(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity.getWorldObj().provider.dimensionId);
+		return new Coord4D(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), tileEntity.getWorldObj().provider.dimensionId);
 	}
 
 	/**
@@ -227,28 +228,28 @@ public class Coord4D
 	 */
 	public Coord4D difference(Coord4D other)
 	{
-		return new Coord4D(xCoord-other.xCoord, yCoord-other.yCoord, zCoord-other.zCoord, dimensionId);
+		return new Coord4D(xCoord-other.getPos().getX(), yCoord-other.getPos().getY(), zCoord-other.getPos().getZ(), dimensionId);
 	}
 
 	/**
-	 * A method used to find the ForgeDirection represented by the distance of the defined Coord4D. Most likely won't have many
+	 * A method used to find the EnumFacing represented by the distance of the defined Coord4D. Most likely won't have many
 	 * applicable uses.
 	 * @param other - Coord4D to find the side difference of
-	 * @return ForgeDirection representing the side the defined relative Coord4D is on to this
+	 * @return EnumFacing representing the side the defined relative Coord4D is on to this
 	 */
-	public ForgeDirection sideDifference(Coord4D other)
+	public EnumFacing sideDifference(Coord4D other)
 	{
 		Coord4D diff = difference(other);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
-			if(side.offsetX == diff.xCoord && side.offsetY == diff.yCoord && side.offsetZ == diff.zCoord)
+			if(side.offsetX == diff.getPos().getX() && side.offsetY == diff.getPos().getY() && side.offsetZ == diff.getPos().getZ())
 			{
 				return side;
 			}
 		}
 
-		return ForgeDirection.UNKNOWN;
+		return EnumFacing.UNKNOWN;
 	}
 
 	/**
@@ -258,9 +259,9 @@ public class Coord4D
 	 */
 	public int distanceTo(Coord4D obj)
 	{
-		int subX = xCoord - obj.xCoord;
-		int subY = yCoord - obj.yCoord;
-		int subZ = zCoord - obj.zCoord;
+		int subX = xCoord - obj.getPos().getX();
+		int subY = yCoord - obj.getPos().getY();
+		int subZ = zCoord - obj.getPos().getZ();
 		return (int)MathHelper.sqrt_double(subX * subX + subY * subY + subZ * subZ);
 	}
 
@@ -270,7 +271,7 @@ public class Coord4D
 	 * @param world - world this Coord4D is in
 	 * @return
 	 */
-	public boolean sideVisible(ForgeDirection side, IBlockAccess world)
+	public boolean sideVisible(EnumFacing side, IBlockAccess world)
 	{
 		return world.isAirBlock(xCoord+side.offsetX, yCoord+side.offsetY, zCoord+side.offsetZ);
 	}
@@ -290,7 +291,7 @@ public class Coord4D
 	 * @param side - side to step towards
 	 * @return this Coord4D
 	 */
-	public Coord4D step(ForgeDirection side)
+	public Coord4D step(EnumFacing side)
 	{
 		return translate(side.offsetX, side.offsetY, side.offsetZ);
 	}
@@ -369,9 +370,9 @@ public class Coord4D
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Coord4D &&
-				((Coord4D)obj).xCoord == xCoord &&
-				((Coord4D)obj).yCoord == yCoord &&
-				((Coord4D)obj).zCoord == zCoord &&
+				((Coord4D)obj).getPos().getX() == xCoord &&
+				((Coord4D)obj).getPos().getY() == yCoord &&
+				((Coord4D)obj).getPos().getZ() == zCoord &&
 				((Coord4D)obj).dimensionId == dimensionId;
 	}
 

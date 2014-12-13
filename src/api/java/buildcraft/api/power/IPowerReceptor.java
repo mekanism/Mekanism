@@ -10,7 +10,7 @@ package buildcraft.api.power;
 
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * This interface should be implemented by any Tile Entity that wishes to be
@@ -31,7 +31,7 @@ public interface IPowerReceptor {
 	 * @param side
 	 * @return
 	 */
-	PowerHandler.PowerReceiver getPowerReceiver(ForgeDirection side);
+	PowerHandler.PowerReceiver getPowerReceiver(EnumFacing side);
 
 	/**
 	 * Call back from the PowerHandler that is called when the stored power

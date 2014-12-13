@@ -17,10 +17,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 
@@ -62,7 +62,7 @@ public class PacketPortableTeleport implements IMessageHandler<PortableTeleportM
 							((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
 						}
 						
-						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.getPos().getX()+0.5, coords.getPos().getY()+1, coords.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
 						
 						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 						Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));

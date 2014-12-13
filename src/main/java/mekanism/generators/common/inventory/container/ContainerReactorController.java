@@ -10,8 +10,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerReactorController extends Container
 {
@@ -136,7 +136,7 @@ public class ContainerReactorController extends Container
 	    @SideOnly(Side.CLIENT)
 	    public boolean func_111238_b()
 	    {
-	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorldObj(), tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 	    }
 	}
 }

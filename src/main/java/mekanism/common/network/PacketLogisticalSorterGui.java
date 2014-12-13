@@ -19,13 +19,14 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -51,11 +52,11 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 				try {
 					if(message.packetType == SorterGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.object3D.xCoord, message.object3D.yCoord, message.object3D.zCoord, -1));
+						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.object3D.getPos().getX(), message.object3D.getPos().getY(), message.object3D.getPos().getZ(), -1));
 					}
 					else if(message.packetType == SorterGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.object3D.xCoord, message.object3D.yCoord, message.object3D.zCoord, message.index));
+						FMLCommonHandler.instance().showGuiScreen(LogisticalSorterGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.object3D.getPos().getX(), message.object3D.getPos().getY(), message.object3D.getPos().getZ(), message.index));
 					}
 
 					player.openContainer.windowId = message.windowId;
@@ -145,49 +146,49 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 		{
 			if(type == 0)
 			{
-				return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+				return new GuiLogisticalSorter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)));
 			}
 			else if(type == 4)
 			{
-				return new GuiTFilterSelect(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+				return new GuiTFilterSelect(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)));
 			}
 			else {
 				if(packetType == SorterGuiPacket.CLIENT)
 				{
 					if(type == 1)
 					{
-						return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+						return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 					else if(type == 2)
 					{
-						return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+						return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 					else if(type == 3)
 					{
-						return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+						return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 					else if(type == 5)
 					{
-						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z));
+						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 				}
 				else if(packetType == SorterGuiPacket.CLIENT_INDEX)
 				{
 					if(type == 1)
 					{
-						return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
+						return new GuiTItemStackFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 					else if(type == 2)
 					{
-						return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
+						return new GuiTOreDictFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 					else if(type == 3)
 					{
-						return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
+						return new GuiTMaterialFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 					else if(type == 5)
 					{
-						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(x, y, z), index);
+						return new GuiTModIDFilter(player, (TileEntityLogisticalSorter)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 				}
 			}
@@ -200,9 +201,9 @@ public class PacketLogisticalSorterGui implements IMessageHandler<LogisticalSort
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			dataStream.writeInt(object3D.xCoord);
-			dataStream.writeInt(object3D.yCoord);
-			dataStream.writeInt(object3D.zCoord);
+			dataStream.writeInt(object3D.getPos().getX());
+			dataStream.writeInt(object3D.getPos().getY());
+			dataStream.writeInt(object3D.getPos().getZ());
 	
 			dataStream.writeInt(object3D.dimensionId);
 	

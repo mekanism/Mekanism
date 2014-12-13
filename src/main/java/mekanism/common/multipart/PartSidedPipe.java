@@ -29,9 +29,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -60,7 +60,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public int delayTicks;
 
-	public ForgeDirection testingSide = null;
+	public EnumFacing testingSide = null;
 
 	public byte currentAcceptorConnections = 0x00;
 	public byte currentTransmitterConnections = 0x00;
@@ -124,7 +124,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 	}
 
-	public static boolean connectionMapContainsSide(byte connections, ForgeDirection side)
+	public static boolean connectionMapContainsSide(byte connections, EnumFacing side)
 	{
 		byte tester = (byte)(1 << side.ordinal());
 		return (connections & tester) > 0;
@@ -169,7 +169,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return false;
 	}
 
-	public IIcon getIconForSide(ForgeDirection side)
+	public IIcon getIconForSide(EnumFacing side)
 	{
 		ConnectionType type = getConnectionType(side);
 
@@ -179,19 +179,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				return getCenterIcon();
 			}
-			else if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
+			else if(getAllCurrentConnections() == 3 && side != EnumFacing.DOWN && side != EnumFacing.UP)
 			{
 				return getSideIcon();
 			}
-			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
+			else if(getAllCurrentConnections() == 12 && (side == EnumFacing.DOWN || side == EnumFacing.UP))
 			{
 				return getSideIcon();
 			}
-			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
+			else if(getAllCurrentConnections() == 12 && (side == EnumFacing.EAST || side == EnumFacing.WEST))
 			{
 				return getSideIconRotated();
 			}
-			else if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
+			else if(getAllCurrentConnections() == 48 && side != EnumFacing.EAST && side != EnumFacing.WEST)
 			{
 				return getSideIconRotated();
 			}
@@ -212,7 +212,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return connections;
 		}
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
 			if(canConnectMutual(side))
 			{
@@ -237,7 +237,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return connections;
 		}
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
 			if(canConnectMutual(side))
 			{
@@ -276,7 +276,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(tile() != null)
 		{
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 			{
 				int ord = side.ordinal();
 				byte connections = getAllCurrentConnections();
@@ -337,7 +337,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public int getHollowSize(int side)
 	{
-		ForgeDirection direction = ForgeDirection.getOrientation(side);
+		EnumFacing direction = EnumFacing.getOrientation(side);
 
 		if(connectionMapContainsSide(getAllCurrentConnections(), direction) || direction == testingSide)
 		{
@@ -372,10 +372,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		IconHitEffects.addDestroyEffects(this, effectRenderer, false);
 	}
 
-	public abstract boolean isValidAcceptor(TileEntity tile, ForgeDirection side);
+	public abstract boolean isValidAcceptor(TileEntity tile, EnumFacing side);
 
 	@Override
-	public boolean canConnectMutual(ForgeDirection side)
+	public boolean canConnectMutual(EnumFacing side)
 	{
 		if(!canConnect(side)) return false;
 
@@ -384,7 +384,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	}
 
 	@Override
-	public boolean canConnect(ForgeDirection side)
+	public boolean canConnect(EnumFacing side)
 	{
 		boolean powered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
 		
@@ -553,7 +553,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		onRefresh();
 	}
 
-	protected void onModeChange(ForgeDirection side)
+	protected void onModeChange(EnumFacing side)
 	{
 		refreshConnections();
 	}
@@ -603,7 +603,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return data;
 	}
 
-	public ConnectionType getConnectionType(ForgeDirection side)
+	public ConnectionType getConnectionType(EnumFacing side)
 	{
 		if(!connectionMapContainsSide(getAllCurrentConnections(), side))
 		{
@@ -617,11 +617,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return connectionTypes[side.ordinal()];
 	}
 
-	public List<ForgeDirection> getConnections(ConnectionType type)
+	public List<EnumFacing> getConnections(ConnectionType type)
 	{
-		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
+		List<EnumFacing> sides = new ArrayList<EnumFacing>();
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
 			if(getConnectionType(side) == type)
 			{
@@ -632,7 +632,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return sides;
 	}
 
-	public CCModel getModelForSide(ForgeDirection side, boolean internal)
+	public CCModel getModelForSide(EnumFacing side, boolean internal)
 	{
 		String sideName = side.name().toLowerCase();
 		String typeName = getConnectionType(side).name().toUpperCase();
@@ -669,7 +669,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
 				sendDesc = true;
 	
-				onModeChange(ForgeDirection.getOrientation(side));
+				onModeChange(EnumFacing.getOrientation(side));
 				player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
 	
 				return true;
@@ -707,7 +707,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return true;
 	}
 
-	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive)
+	public boolean canConnectToAcceptor(EnumFacing side, boolean ignoreActive)
 	{
 		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side) || !connectionMapContainsSide(currentAcceptorConnections, side))
 		{

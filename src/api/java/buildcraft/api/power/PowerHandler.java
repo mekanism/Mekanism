@@ -10,7 +10,7 @@ package buildcraft.api.power;
 
 import net.minecraft.nbt.NBTTagCompound;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import buildcraft.api.core.SafeTimeTracker;
 
@@ -288,7 +288,7 @@ public final class PowerHandler {
 		}
 	}
 
-	private void updateSources(ForgeDirection source) {
+	private void updateSources(EnumFacing source) {
 		if (sourcesTracker.markTimeIfDelay(receptor.getWorld(), 1)) {
 			for (int i = 0; i < 6; ++i) {
 				powerSources[i] -= sourcesTracker.durationOfLastDelay();
@@ -423,7 +423,7 @@ public final class PowerHandler {
 		 * @param from
 		 * @return the amount of power used
 		 */
-		public double receiveEnergy(Type source, final double quantity, ForgeDirection from) {
+		public double receiveEnergy(Type source, final double quantity, EnumFacing from) {
 			double used = quantity;
 			if (source == Type.ENGINE) {
 				if (used < minEnergyReceived) {
@@ -478,7 +478,7 @@ public final class PowerHandler {
 		validateEnergy();
 	}
 
-	public boolean isPowerSource(ForgeDirection from) {
+	public boolean isPowerSource(EnumFacing from) {
 		return powerSources[from.ordinal()] != 0;
 	}
 

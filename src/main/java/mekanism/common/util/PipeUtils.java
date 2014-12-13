@@ -7,7 +7,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -25,7 +25,7 @@ public final class PipeUtils
 	{
 		TileEntity[] pipes = new TileEntity[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity pipe = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
@@ -56,13 +56,13 @@ public final class PipeUtils
 			{
 				int side = Arrays.asList(connectedAcceptors).indexOf(container);
 
-				FluidTankInfo[] infoArray = container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite());
+				FluidTankInfo[] infoArray = container.getTankInfo(EnumFacing.getOrientation(side).getOpposite());
 
 				if(infoArray != null && infoArray.length > 0)
 				{
 					boolean notNull = false;
 
-					for(FluidTankInfo info : container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()))
+					for(FluidTankInfo info : container.getTankInfo(EnumFacing.getOrientation(side).getOpposite()))
 					{
 						if(info != null)
 						{
@@ -76,8 +76,8 @@ public final class PipeUtils
 						connectable[side] = true;
 					}
 				}
-				else if(container.canDrain(ForgeDirection.getOrientation(side).getOpposite(), FluidRegistry.WATER)
-						|| container.canFill(ForgeDirection.getOrientation(side).getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
+				else if(container.canDrain(EnumFacing.getOrientation(side).getOpposite(), FluidRegistry.WATER)
+						|| container.canFill(EnumFacing.getOrientation(side).getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
 				{
 					connectable[side] = true;
 				}
@@ -106,7 +106,7 @@ public final class PipeUtils
 	{
 		IFluidHandler[] acceptors = new IFluidHandler[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 

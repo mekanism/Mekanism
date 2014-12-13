@@ -10,7 +10,7 @@ package buildcraft.api.transport;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import buildcraft.api.core.EnumColor;
 
 public interface IPipeTile {
@@ -33,14 +33,14 @@ public interface IPipeTile {
 	 * @param color The color of the item to be added to the pipe, or null for no color.
 	 * @return Amount of items used from the passed stack.
 	 */
-	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from, EnumColor color);
+	int injectItem(ItemStack stack, boolean doAdd, EnumFacing from, EnumColor color);
 
 	/**
 	 * Same as
-	 * {@link #injectItem(ItemStack, boolean, ForgeDirection, EnumColor)}
+	 * {@link #injectItem(ItemStack, boolean, EnumFacing, EnumColor)}
 	 * but with no color attribute.
 	 */
-	int injectItem(ItemStack stack, boolean doAdd, ForgeDirection from);
+	int injectItem(ItemStack stack, boolean doAdd, EnumFacing from);
 
 	/**
 	 * True if the pipe is connected to the block/pipe in the specific direction
@@ -48,9 +48,9 @@ public interface IPipeTile {
 	 * @param with
 	 * @return true if connect
 	 */
-	boolean isPipeConnected(ForgeDirection with);
+	boolean isPipeConnected(EnumFacing with);
 
-	TileEntity getAdjacentTile(ForgeDirection dir);
+	TileEntity getAdjacentTile(EnumFacing dir);
 	
 	IPipe getPipe();
 }

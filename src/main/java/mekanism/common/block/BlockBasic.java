@@ -39,18 +39,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Block class for handling multiple metal block IDs.
@@ -96,7 +97,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(block == this && tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -168,7 +169,7 @@ public class BlockBasic extends Block implements IBlockCTM
 				switch(meta)
 				{
 					case 6:
-						TileEntityBasicBlock tileEntity6 = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+						TileEntityBasicBlock tileEntity6 = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 
 						if(side == 0 || side == 1)
 						{
@@ -185,7 +186,7 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 11:
 						return ctms[meta][0].getIcon(side);
 					case 14:
-						TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
+						TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(new BlockPos(x, y, z));
 
 						if(side == tileEntity14.facing)
 						{
@@ -286,7 +287,7 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 9:
 					case 10:
 					case 11:
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(new BlockPos(x, y, z));
 
 						if(tileEntity != null)
 						{
@@ -321,7 +322,7 @@ public class BlockBasic extends Block implements IBlockCTM
 		{
 			if(!world.isRemote && meta == 6)
 			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
+				TileEntityBin bin = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
 				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
 
 				if(pos != null && pos.sideHit == bin.facing)
@@ -381,7 +382,7 @@ public class BlockBasic extends Block implements IBlockCTM
 
 			if(metadata == 6)
 			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(x, y, z);
+				TileEntityBin bin = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
 
 				if(bin.getItemCount() < bin.MAX_STORAGE)
 				{
@@ -421,9 +422,9 @@ public class BlockBasic extends Block implements IBlockCTM
 			}
 			else if(metadata == 9 || metadata == 10 || metadata == 11)
 			{
-				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getTileEntity(x, y, z)).structure != null)
+				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getTileEntity(new BlockPos(x, y, z))).structure != null)
 				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(new BlockPos(x, y, z));
 
 					if(!manageInventory(entityplayer, tileEntity))
 					{
@@ -444,7 +445,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
 	{
 		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(x, y, z) == 10);
 	}
@@ -592,7 +593,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(tileEntity instanceof IActiveState)
@@ -690,9 +691,9 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		if(world.getTileEntity(x, y, z) instanceof TileEntityBasicBlock)
+		if(world.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityBasicBlock)
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 			int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 			int height = Math.round(entityliving.rotationPitch);
 			int change = 3;
@@ -733,9 +734,9 @@ public class BlockBasic extends Block implements IBlockCTM
 		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
 	    world.updateLightByType(EnumSkyBlock.Sky, x, y, z);
 
-		if(!world.isRemote && world.getTileEntity(x, y, z) != null)
+		if(!world.isRemote && world.getTileEntity(new BlockPos(x, y, z)) != null)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -753,7 +754,7 @@ public class BlockBasic extends Block implements IBlockCTM
 		{
 			if(ret.getItemDamage() == 6)
 			{
-				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(x, y, z);
+				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
 				InventoryBin inv = new InventoryBin(ret);
 
 				inv.setItemCount(tileEntity.getItemCount());
@@ -818,7 +819,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(EnumFacing.getOrientation(side).getOpposite());
 		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
@@ -829,16 +830,16 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -850,9 +851,9 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{

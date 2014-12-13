@@ -3,7 +3,7 @@ package ic2.api.event;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 import net.minecraftforge.event.world.WorldEvent;
 

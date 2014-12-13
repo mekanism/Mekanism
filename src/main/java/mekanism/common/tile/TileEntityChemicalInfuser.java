@@ -30,7 +30,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
@@ -128,13 +128,13 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
 					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
+						centerTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getOrientation(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -300,7 +300,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		return i != 0 && i != 1;
 	}
 
-	public GasTank getTank(ForgeDirection side)
+	public GasTank getTank(EnumFacing side)
 	{
 		if(side == MekanismUtils.getLeft(facing))
 		{
@@ -310,7 +310,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		{
 			return rightTank;
 		}
-		else if(side == ForgeDirection.getOrientation(facing))
+		else if(side == EnumFacing.getOrientation(facing))
 		{
 			return centerTank;
 		}
@@ -351,13 +351,13 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == ForgeDirection.getOrientation(facing);
+		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == EnumFacing.getOrientation(facing);
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return getTank(side) != null && getTank(side) != centerTank ? getTank(side).canReceive(type) : false;
 	}
@@ -382,7 +382,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
@@ -393,7 +393,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
@@ -404,7 +404,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return getTank(side) != null && getTank(side) == centerTank ? getTank(side).canDraw(type) : false;
 	}

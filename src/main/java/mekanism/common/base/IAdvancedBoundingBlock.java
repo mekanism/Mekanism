@@ -8,8 +8,8 @@ import mekanism.api.energy.IStrictEnergyStorage;
 
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 import cofh.api.energy.IEnergyHandler;
 import dan200.computercraft.api.peripheral.IPeripheral;

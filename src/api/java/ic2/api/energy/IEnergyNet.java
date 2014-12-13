@@ -3,7 +3,7 @@ package ic2.api.energy;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Interface representing the methods provided by the global EnergyNet class.
@@ -34,7 +34,7 @@ public interface IEnergyNet {
 	 * @param dir direction the neighbor is to be found
 	 * @return neighbor tile entity registered to the energy net or null if none is registered
 	 */
-	TileEntity getNeighbor(TileEntity te, ForgeDirection dir);
+	TileEntity getNeighbor(TileEntity te, EnumFacing dir);
 
 	/**
 	 * determine how much energy has been emitted by the EnergyEmitter specified

@@ -49,8 +49,8 @@ public class Chunk3D
 	 */
 	public Chunk3D(Coord4D coord)
 	{
-		xCoord = coord.xCoord >> 4;
-		zCoord = coord.zCoord >> 4;
+		xCoord = coord.getPos().getX() >> 4;
+		zCoord = coord.getPos().getZ() >> 4;
 		
 		dimensionId = coord.dimensionId;
 	}
@@ -91,8 +91,8 @@ public class Chunk3D
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Chunk3D &&
-				((Chunk3D)obj).xCoord == xCoord &&
-				((Chunk3D)obj).zCoord == zCoord &&
+				((Chunk3D)obj).getPos().getX() == xCoord &&
+				((Chunk3D)obj).getPos().getZ() == zCoord &&
 				((Chunk3D)obj).dimensionId == dimensionId;
 	}
 

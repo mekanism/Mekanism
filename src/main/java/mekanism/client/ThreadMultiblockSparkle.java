@@ -11,9 +11,9 @@ import mekanism.common.tile.TileEntityMultiblock;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ThreadMultiblockSparkle extends Thread
@@ -35,7 +35,7 @@ public class ThreadMultiblockSparkle extends Thread
 		try {
 			if(general.dynamicTankEasterEgg)
 			{
-				pointer.getWorldObj().playSound(pointer.xCoord, pointer.yCoord, pointer.zCoord, "mekanism:etc.cj", 1F, 1F, false);
+				pointer.getWorldObj().playSound(pointer.getPos().getX(), pointer.getPos().getY(), pointer.getPos().getZ(), "mekanism:etc.cj", 1F, 1F, false);
 			}
 
 			loop(pointer);
@@ -48,40 +48,40 @@ public class ThreadMultiblockSparkle extends Thread
 
 		for(int i = 0; i < 6; i++)
 		{
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.DOWN, world))
+			if(Coord4D.get(tileEntity).sideVisible(EnumFacing.DOWN, world))
 			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + -.01, tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
+				world.spawnParticle("reddust", tileEntity.getPos().getX() + random.nextDouble(), tileEntity.getPos().getY() + -.01, tileEntity.getPos().getZ() + random.nextDouble(), 0, 0, 0);
 			}
 
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.UP, world))
+			if(Coord4D.get(tileEntity).sideVisible(EnumFacing.UP, world))
 			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + 1.01, tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
+				world.spawnParticle("reddust", tileEntity.getPos().getX() + random.nextDouble(), tileEntity.getPos().getY() + 1.01, tileEntity.getPos().getZ() + random.nextDouble(), 0, 0, 0);
 			}
 
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.NORTH, world))
+			if(Coord4D.get(tileEntity).sideVisible(EnumFacing.NORTH, world))
 			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + -.01, 0, 0, 0);
+				world.spawnParticle("reddust", tileEntity.getPos().getX() + random.nextDouble(), tileEntity.getPos().getY() + random.nextDouble(), tileEntity.getPos().getZ() + -.01, 0, 0, 0);
 			}
 
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.SOUTH, world))
+			if(Coord4D.get(tileEntity).sideVisible(EnumFacing.SOUTH, world))
 			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + 1.01, 0, 0, 0);
+				world.spawnParticle("reddust", tileEntity.getPos().getX() + random.nextDouble(), tileEntity.getPos().getY() + random.nextDouble(), tileEntity.getPos().getZ() + 1.01, 0, 0, 0);
 			}
 
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.WEST, world))
+			if(Coord4D.get(tileEntity).sideVisible(EnumFacing.WEST, world))
 			{
-				world.spawnParticle("reddust", tileEntity.xCoord + -.01, tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
+				world.spawnParticle("reddust", tileEntity.getPos().getX() + -.01, tileEntity.getPos().getY() + random.nextDouble(), tileEntity.getPos().getZ() + random.nextDouble(), 0, 0, 0);
 			}
 
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.EAST, world))
+			if(Coord4D.get(tileEntity).sideVisible(EnumFacing.EAST, world))
 			{
-				world.spawnParticle("reddust", tileEntity.xCoord + 1.01, tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
+				world.spawnParticle("reddust", tileEntity.getPos().getX() + 1.01, tileEntity.getPos().getY() + random.nextDouble(), tileEntity.getPos().getZ() + random.nextDouble(), 0, 0, 0);
 			}
 		}
 
 		iteratedNodes.add(tileEntity);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.getWorldObj());
 

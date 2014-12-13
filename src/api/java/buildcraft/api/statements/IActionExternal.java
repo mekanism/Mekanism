@@ -9,10 +9,10 @@
 package buildcraft.api.statements;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface IActionExternal extends IStatement {
 
-	void actionActivate(TileEntity target, ForgeDirection side, IStatementContainer source, IStatementParameter[] parameters);
+	void actionActivate(TileEntity target, EnumFacing side, IStatementContainer source, IStatementParameter[] parameters);
 	
 }

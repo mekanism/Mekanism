@@ -18,7 +18,7 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -338,7 +338,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			{
 				ValveData data = new ValveData();
 				data.location = Coord4D.read(dataStream);
-				data.side = ForgeDirection.getOrientation(dataStream.readInt());
+				data.side = EnumFacing.getOrientation(dataStream.readInt());
 				int viewingTicks = 0;
 
 				if(dataStream.readBoolean())

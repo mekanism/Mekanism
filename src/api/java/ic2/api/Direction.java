@@ -3,7 +3,7 @@ package ic2.api;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Represents the 6 possible directions along the axis of a block.
@@ -40,8 +40,8 @@ public enum Direction {
 		return directions[(side + 2) % 6];
 	}
 
-	public static Direction fromForgeDirection(ForgeDirection dir) {
-		if (dir == ForgeDirection.UNKNOWN) return null;
+	public static Direction fromEnumFacing(EnumFacing dir) {
+		if (dir == EnumFacing.UNKNOWN) return null;
 
 		return fromSideValue(dir.ordinal());
 	}
@@ -53,7 +53,7 @@ public enum Direction {
 	 * @return Adjacent tile entity or null if none exists
 	 */
 	public TileEntity applyToTileEntity(TileEntity te) {
-		return applyTo(te.getWorldObj(), te.xCoord, te.yCoord, te.zCoord);
+		return applyTo(te.getWorldObj(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 	}
 
 	/**
@@ -108,8 +108,8 @@ public enum Direction {
 		return (ordinal() % 2) * 2 - 1;
 	}
 
-	public ForgeDirection toForgeDirection() {
-		return ForgeDirection.getOrientation(toSideValue());
+	public EnumFacing toEnumFacing() {
+		return EnumFacing.getOrientation(toSideValue());
 	}
 
 	public static final Direction[] directions = Direction.values();

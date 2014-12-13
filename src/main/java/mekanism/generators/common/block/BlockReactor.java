@@ -32,13 +32,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.ModAPIManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import buildcraft.api.tools.IToolWrench;
 
@@ -62,8 +63,8 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	{
 		if(this == GeneratorsBlocks.Reactor)
 		{
-			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOff").registerIcons(register);
-			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOn").registerIcons(register);
+			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(EnumFacing.UP, "ctm/ReactorControllerOff").registerIcons(register);
+			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(EnumFacing.UP, "ctm/ReactorControllerOn").registerIcons(register);
 			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
 			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
 			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
@@ -148,7 +149,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -170,7 +171,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			return true;
 		}
 
-		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(x, y, z);
+		TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(new BlockPos(x, y, z));
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		if(entityplayer.getCurrentEquippedItem() != null)
@@ -287,7 +288,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 		if(!world.isRemote)
 		{
@@ -320,7 +321,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(EnumFacing.getOrientation(side).getOpposite());
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
 			int metadata = obj.getMetadata(world);

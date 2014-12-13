@@ -8,5 +8,5 @@
  */
 @API(apiVersion = "3.0", owner = "BuildCraftAPI|core", provides = "BuildCraftAPI|gates")
 package buildcraft.api.gates;
-import cpw.mods.fml.common.API;
+import net.minecraftforge.fml.common.API;
 

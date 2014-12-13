@@ -6,7 +6,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import cpw.mods.fml.common.ModAPIManager;
+import net.minecraftforge.fml.common.ModAPIManager;
 
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;

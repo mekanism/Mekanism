@@ -7,6 +7,7 @@ import mekanism.common.MekanismBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
@@ -25,7 +26,7 @@ public class WorldGenSalt extends WorldGenerator
     @Override
     public boolean generate(World world, Random random, int x, int y, int z)
     {
-        if(world.getBlock(x, y, z).getMaterial() != Material.water)
+        if(world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial() != Material.water)
         {
             return false;
         }
@@ -44,7 +45,7 @@ public class WorldGenSalt extends WorldGenerator
                     {
                         for(int yPos = y - yOffset; yPos <= y + yOffset; yPos++)
                         {
-                            Block block = world.getBlock(xPos, yPos, zPos);
+                            Block block = world.getBlockState(new BlockPos(xPos, yPos, zPos)).getBlock();
 
                             if(block == Blocks.dirt || block == Blocks.clay || block == MekanismBlocks.SaltBlock)
                             {

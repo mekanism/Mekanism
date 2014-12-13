@@ -24,13 +24,15 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
 
 @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
@@ -57,8 +59,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	{
 		if(!world.isRemote)
 		{
-			Block block = world.getBlock(x, y, z);
-			TileEntity tile = world.getTileEntity(x, y, z);
+			Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+			TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(getState(stack) == 0) //Configurate
 			{
@@ -163,8 +165,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			}
 			else if(getState(stack) == 2) //Rotate
 			{
-				ForgeDirection axis = ForgeDirection.getOrientation(side);
-				List<ForgeDirection> l = Arrays.asList(block.getValidRotations(world, x, y, z));
+				EnumFacing axis = EnumFacing.getOrientation(side);
+				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, x, y, z));
 
 				if(!player.isSneaking() && l.contains(axis))
 				{

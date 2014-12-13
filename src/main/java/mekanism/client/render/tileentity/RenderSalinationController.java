@@ -14,10 +14,10 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,7 +39,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			SalinationRenderData data = new SalinationRenderData();
 
 			data.height = tileEntity.height-2;
-			data.side = ForgeDirection.getOrientation(tileEntity.facing);
+			data.side = EnumFacing.getOrientation(tileEntity.facing);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			
@@ -49,7 +49,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 
 				push();
 
-				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
+				GL11.glTranslated(getX(renderLoc.getPos().getX()), getY(renderLoc.getPos().getY()), getZ(renderLoc.getPos().getZ()));
 
 				MekanismRenderer.glowOn(tileEntity.waterTank.getFluid().getFluid().getLuminosity());
 
@@ -186,7 +186,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	public static class SalinationRenderData
 	{
 		public int height;
-		public ForgeDirection side;
+		public EnumFacing side;
 
 		@Override
 		public int hashCode()

@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import codechicken.lib.vec.Vector3;
 
@@ -61,7 +61,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 
 			IGasHandler[] connectedAcceptors = GasTransmission.getConnectedAcceptors(tile());
 
-			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				if(connectedAcceptors[side.ordinal()] != null)
 				{
@@ -228,7 +228,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
 		return GasTransmission.canConnect(tile, side);
 	}
@@ -286,7 +286,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL)
 		{
@@ -297,19 +297,19 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type) 
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return false;
 	}

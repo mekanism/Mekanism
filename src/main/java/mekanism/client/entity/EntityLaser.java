@@ -8,9 +8,9 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -18,9 +18,9 @@ import org.lwjgl.opengl.GL11;
 public class EntityLaser extends EntityFX
 {
 	double length;
-	ForgeDirection direction;
+	EnumFacing direction;
 
-	public EntityLaser(World world, Pos3D start, Pos3D end, ForgeDirection dir, double energy)
+	public EntityLaser(World world, Pos3D start, Pos3D end, EnumFacing dir, double energy)
 	{
 		super(world, (start.xPos + end.xPos)/2D, (start.yPos + end.yPos)/2D, (start.zPos+end.zPos)/2D);
 		particleMaxAge = 5;

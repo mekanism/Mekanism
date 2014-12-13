@@ -10,12 +10,12 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -79,7 +79,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 			Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, id, window), playerMP);
 	
-			playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj.xCoord, obj.yCoord, obj.zCoord);
+			playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ());
 			playerMP.openContainer.windowId = window;
 			playerMP.openContainer.addCraftingToCrafters(playerMP);
 		}
@@ -87,15 +87,15 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 		@SideOnly(Side.CLIENT)
 		public static GuiScreen getGui(int id, EntityPlayer player, World world, Coord4D obj)
 		{
-			return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj.xCoord, obj.yCoord, obj.zCoord);
+			return (GuiScreen)Mekanism.proxy.getClientGui(id, player, world, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ());
 		}
 	
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
+			dataStream.writeInt(coord4D.getPos().getX());
+			dataStream.writeInt(coord4D.getPos().getY());
+			dataStream.writeInt(coord4D.getPos().getZ());
 	
 			dataStream.writeInt(coord4D.dimensionId);
 	

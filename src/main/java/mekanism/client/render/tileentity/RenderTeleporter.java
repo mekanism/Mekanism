@@ -14,7 +14,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,7 +39,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
+			Coord4D obj = Coord4D.get(tileEntity).getFromSide(EnumFacing.WEST);
 			int type = 0;
 
 			if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)

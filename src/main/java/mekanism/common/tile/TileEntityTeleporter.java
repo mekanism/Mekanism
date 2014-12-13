@@ -27,13 +27,14 @@ import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -310,13 +311,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			if(player.isEntityAlive())
 			{
 				newWorld.spawnEntityInWorld(player);
-				player.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+				player.setLocationAndAngles(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
 				newWorld.updateEntityWithOptionalForce(player, false);
 				player.setWorld(newWorld);
 			}
 
 			server.getConfigurationManager().func_72375_a(player, oldWorld);
-			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
 			player.theItemInWorldManager.setWorld(newWorld);
 			server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
 			server.getConfigurationManager().syncPlayerInventory(player);
@@ -331,7 +332,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
 		}
 		else {
-			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
 		}
 	}
 
@@ -345,7 +346,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			entity.isDead = false;
 
 			world.spawnEntityInWorld(entity);
-			entity.setLocationAndAngles(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
@@ -410,7 +411,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			energyCost+=10000;
 		}
 
-		int distance = (int)entity.getDistance(coords.xCoord, coords.yCoord, coords.zCoord);
+		int distance = (int)entity.getDistance(coords.getPos().getX(), coords.getPos().getY(), coords.getPos().getZ());
 		energyCost+=(distance*10);
 
 		return energyCost;
@@ -433,7 +434,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlock(x, y, z) == MekanismBlocks.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
+		return worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() == MekanismBlocks.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
 
 	@Override

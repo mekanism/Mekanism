@@ -7,9 +7,9 @@ import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import io.netty.buffer.ByteBuf;
 
@@ -24,8 +24,8 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 
 		for(int i = 0; i < 50; i++)
 		{
-			player.worldObj.spawnParticle("portal", message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
-			player.worldObj.spawnParticle("portal", message.coord4D.xCoord + random.nextFloat(), message.coord4D.yCoord + 1 + random.nextFloat(), message.coord4D.zCoord + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle("portal", message.coord4D.getPos().getX() + random.nextFloat(), message.coord4D.getPos().getY() + random.nextFloat(), message.coord4D.getPos().getZ() + random.nextFloat(), 0.0F, 0.0F, 0.0F);
+			player.worldObj.spawnParticle("portal", message.coord4D.getPos().getX() + random.nextFloat(), message.coord4D.getPos().getY() + 1 + random.nextFloat(), message.coord4D.getPos().getZ() + random.nextFloat(), 0.0F, 0.0F, 0.0F);
 		}
 		
 		return null;
@@ -45,9 +45,9 @@ public class PacketPortalFX implements IMessageHandler<PortalFXMessage, IMessage
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
+			dataStream.writeInt(coord4D.getPos().getX());
+			dataStream.writeInt(coord4D.getPos().getY());
+			dataStream.writeInt(coord4D.getPos().getZ());
 			dataStream.writeInt(coord4D.dimensionId);
 		}
 	

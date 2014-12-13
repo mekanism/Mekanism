@@ -17,7 +17,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
@@ -188,9 +188,9 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(ForgeDirection.UP);
+		return EnumSet.of(EnumFacing.UP);
 	}
 
 	@Override

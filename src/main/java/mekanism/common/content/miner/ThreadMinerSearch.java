@@ -50,16 +50,16 @@ public class ThreadMinerSearch extends Thread
 
 		for(int i = 0; i < size; i++)
 		{
-			int x = coord.xCoord+i%diameter;
-			int z = coord.zCoord+(i/diameter)%diameter;
-			int y = coord.yCoord+(i/diameter/diameter);
+			int x = coord.getPos().getX()+i%diameter;
+			int z = coord.getPos().getZ()+(i/diameter)%diameter;
+			int y = coord.getPos().getY()+(i/diameter/diameter);
 
 			if(tileEntity.isInvalid())
 			{
 				return;
 			}
 
-			if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
+			if(tileEntity.getPos().getX() == x && tileEntity.getPos().getY() == y && tileEntity.getPos().getZ() == z)
 			{
 				continue;
 			}
@@ -69,14 +69,14 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 
-			TileEntity tile = tileEntity.getWorldObj().getTileEntity(x, y, z);
+			TileEntity tile = tileEntity.getWorldObj().getTileEntity(new BlockPos(x, y, z));
 			
 			if(tile instanceof TileEntityBoundingBlock)
 			{
 				continue;
 			}
 
-			info.block = tileEntity.getWorldObj().getBlock(x, y, z);
+			info.block = tileEntity.getWorldObj().getBlockState(new BlockPos(x, y, z)).getBlock();
 			info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
 
 			if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)

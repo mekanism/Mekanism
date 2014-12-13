@@ -19,9 +19,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemBalloon extends ItemMekanism
 {
@@ -103,18 +103,18 @@ public class ItemBalloon extends ItemMekanism
 
 			if(obj.getBlock(world).isReplaceable(world, x, y, z))
 			{
-				obj.yCoord--;
+				obj.getPos().getY()--;
 			}
 			
-			if(!world.isSideSolid(x, y, z, ForgeDirection.UP))
+			if(!world.isSideSolid(x, y, z, EnumFacing.UP))
 			{
 				return true;
 			}
 
-			if(canReplace(world, obj.xCoord, obj.yCoord+1, obj.zCoord) && canReplace(world, obj.xCoord, obj.yCoord+2, obj.zCoord))
+			if(canReplace(world, obj.getPos().getX(), obj.getPos().getY()+1, obj.getPos().getZ()) && canReplace(world, obj.getPos().getX(), obj.getPos().getY()+2, obj.getPos().getZ()))
 			{
-				world.setBlockToAir(obj.xCoord, obj.yCoord+1, obj.zCoord);
-				world.setBlockToAir(obj.xCoord, obj.yCoord+2, obj.zCoord);
+				world.setBlockToAir(obj.getPos().getX(), obj.getPos().getY()+1, obj.getPos().getZ());
+				world.setBlockToAir(obj.getPos().getX(), obj.getPos().getY()+2, obj.getPos().getZ());
 
 				if(!world.isRemote)
 				{
@@ -160,7 +160,7 @@ public class ItemBalloon extends ItemMekanism
 
 	private boolean canReplace(World world, int x, int y, int z)
 	{
-		return world.isAirBlock(x, y, z) || world.getBlock(x, y, z).isReplaceable(world, x, y, z);
+		return world.isAirBlock(x, y, z) || world.getBlockState(new BlockPos(x, y, z)).getBlock().isReplaceable(world, x, y, z);
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public class ItemBalloon extends ItemMekanism
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
 			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
-			ForgeDirection side = ForgeDirection.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+			EnumFacing side = EnumFacing.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.getFromSide(side).getBoundingBox());
 			boolean latched = false;

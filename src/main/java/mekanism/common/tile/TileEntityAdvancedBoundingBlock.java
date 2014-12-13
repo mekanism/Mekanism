@@ -12,10 +12,10 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
+import net.minecraftforge.fml.common.Optional.Method;
 
 import cofh.api.energy.IEnergyHandler;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -193,7 +193,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "IC2")
-	public boolean acceptsEnergyFrom(TileEntity emitter, ForgeDirection direction)
+	public boolean acceptsEnergyFrom(TileEntity emitter, EnumFacing direction)
 	{
 		if(getInv() == null)
 		{
@@ -205,7 +205,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+	public int receiveEnergy(EnumFacing from, int maxReceive, boolean simulate)
 	{
 		if(getInv() == null)
 		{
@@ -217,7 +217,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+	public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
 		{
@@ -229,7 +229,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public boolean canConnectEnergy(ForgeDirection from)
+	public boolean canConnectEnergy(EnumFacing from)
 	{
 		if(getInv() == null)
 		{
@@ -241,7 +241,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int getEnergyStored(ForgeDirection from)
+	public int getEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
 		{
@@ -253,7 +253,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "CoFHAPI|energy")
-	public int getMaxEnergyStored(ForgeDirection from)
+	public int getMaxEnergyStored(EnumFacing from)
 	{
 		if(getInv() == null)
 		{
@@ -297,7 +297,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
 		if(getInv() == null)
 		{
@@ -308,7 +308,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canReceiveEnergy(ForgeDirection side)
+	public boolean canReceiveEnergy(EnumFacing side)
 	{
 		if(getInv() == null)
 		{
@@ -332,7 +332,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 
 	@Override
 	@Method(modid = "IC2")
-	public double injectEnergy(ForgeDirection directionFrom, double amount, double voltage)
+	public double injectEnergy(EnumFacing directionFrom, double amount, double voltage)
 	{
 		if(getInv() == null)
 		{

@@ -11,12 +11,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemMekanismHoe extends ItemMekanism
 {
@@ -58,7 +59,7 @@ public class ItemMekanismHoe extends ItemMekanism
 				return true;
 			}
 
-			Block blockID = world.getBlock(x, y, z);
+			Block blockID = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 			Block aboveBlock = world.getBlock(x, y + 1, z);
 
 			if((side == 0 || !aboveBlock.isAir(world, x, y, z+1) || blockID != Blocks.grass) && blockID != Blocks.dirt)

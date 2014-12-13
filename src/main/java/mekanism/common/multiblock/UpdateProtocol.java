@@ -12,7 +12,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public abstract class UpdateProtocol<T>
 {
@@ -38,7 +38,7 @@ public abstract class UpdateProtocol<T>
 	{
 		World worldObj = tile.getWorldObj();
 
-		int origX = tile.xCoord, origY = tile.yCoord, origZ = tile.zCoord;
+		int origX = tile.getPos().getX(), origY = tile.getPos().getY(), origZ = tile.getPos().getZ();
 
 		boolean isCorner = true;
 		boolean isHollow = true;
@@ -198,7 +198,7 @@ public abstract class UpdateProtocol<T>
 
 		iteratedNodes.add(tile);
 
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
 
@@ -212,34 +212,34 @@ public abstract class UpdateProtocol<T>
 		}
 	}
 
-	public ForgeDirection getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	public EnumFacing getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
-		if(obj.xCoord == xmin)
+		if(obj.getPos().getX() == xmin)
 		{
-			return ForgeDirection.WEST;
+			return EnumFacing.WEST;
 		}
-		else if(obj.xCoord == xmax)
+		else if(obj.getPos().getX() == xmax)
 		{
-			return ForgeDirection.EAST;
+			return EnumFacing.EAST;
 		}
-		else if(obj.yCoord == ymin)
+		else if(obj.getPos().getY() == ymin)
 		{
-			return ForgeDirection.DOWN;
+			return EnumFacing.DOWN;
 		}
-		else if(obj.yCoord == ymax)
+		else if(obj.getPos().getY() == ymax)
 		{
-			return ForgeDirection.UP;
+			return EnumFacing.UP;
 		}
-		else if(obj.zCoord == zmin)
+		else if(obj.getPos().getZ() == zmin)
 		{
-			return ForgeDirection.NORTH;
+			return EnumFacing.NORTH;
 		}
-		else if(obj.zCoord == zmax)
+		else if(obj.getPos().getZ() == zmax)
 		{
-			return ForgeDirection.SOUTH;
+			return EnumFacing.SOUTH;
 		}
 
-		return ForgeDirection.UNKNOWN;
+		return EnumFacing.UNKNOWN;
 	}
 
 	/**
@@ -263,7 +263,7 @@ public abstract class UpdateProtocol<T>
 	 */
 	private boolean isViableNode(int x, int y, int z)
 	{
-		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		TileEntity tile = pointer.getWorldObj().getTileEntity(new BlockPos(x, y, z));
 		
 		if(MultiblockManager.areEqual(tile, pointer))
 		{
@@ -284,7 +284,7 @@ public abstract class UpdateProtocol<T>
 	 */
 	private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin)
 	{
-		if(obj.xCoord == xmin && obj.yCoord == ymin && obj.zCoord == zmin)
+		if(obj.getPos().getX() == xmin && obj.getPos().getY() == ymin && obj.getPos().getZ() == zmin)
 		{
 			return true;
 		}
@@ -305,31 +305,31 @@ public abstract class UpdateProtocol<T>
 	 */
 	private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
-		if(obj.xCoord == xmin && obj.yCoord == ymin)
+		if(obj.getPos().getX() == xmin && obj.getPos().getY() == ymin)
 			return true;
-		if(obj.xCoord == xmax && obj.yCoord == ymin)
+		if(obj.getPos().getX() == xmax && obj.getPos().getY() == ymin)
 			return true;
-		if(obj.xCoord == xmin && obj.yCoord == ymax)
+		if(obj.getPos().getX() == xmin && obj.getPos().getY() == ymax)
 			return true;
-		if(obj.xCoord == xmax && obj.yCoord == ymax)
-			return true;
-
-		if(obj.xCoord == xmin && obj.zCoord == zmin)
-			return true;
-		if(obj.xCoord == xmax && obj.zCoord == zmin)
-			return true;
-		if(obj.xCoord == xmin && obj.zCoord == zmax)
-			return true;
-		if(obj.xCoord == xmax && obj.zCoord == zmax)
+		if(obj.getPos().getX() == xmax && obj.getPos().getY() == ymax)
 			return true;
 
-		if(obj.yCoord == ymin && obj.zCoord == zmin)
+		if(obj.getPos().getX() == xmin && obj.getPos().getZ() == zmin)
 			return true;
-		if(obj.yCoord == ymax && obj.zCoord == zmin)
+		if(obj.getPos().getX() == xmax && obj.getPos().getZ() == zmin)
 			return true;
-		if(obj.yCoord == ymin && obj.zCoord == zmax)
+		if(obj.getPos().getX() == xmin && obj.getPos().getZ() == zmax)
 			return true;
-		if(obj.yCoord == ymax && obj.zCoord == zmax)
+		if(obj.getPos().getX() == xmax && obj.getPos().getZ() == zmax)
+			return true;
+
+		if(obj.getPos().getY() == ymin && obj.getPos().getZ() == zmin)
+			return true;
+		if(obj.getPos().getY() == ymax && obj.getPos().getZ() == zmin)
+			return true;
+		if(obj.getPos().getY() == ymin && obj.getPos().getZ() == zmax)
+			return true;
+		if(obj.getPos().getY() == ymax && obj.getPos().getZ() == zmax)
 			return true;
 
 		return false;

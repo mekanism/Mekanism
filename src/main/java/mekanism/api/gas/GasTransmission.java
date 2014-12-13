@@ -5,7 +5,7 @@ import mekanism.api.transmitters.TransmissionType;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * A handy class containing several utilities for efficient gas transfer.
@@ -23,7 +23,7 @@ public final class GasTransmission
 	{
 		TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity tube = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
@@ -45,7 +45,7 @@ public final class GasTransmission
 	{
 		IGasHandler[] acceptors = new IGasHandler[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
@@ -67,7 +67,7 @@ public final class GasTransmission
 	{
 		ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
 
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
 		{
 			TileEntity connection = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
@@ -86,7 +86,7 @@ public final class GasTransmission
 	 * @param side - side to attempt connection on
 	 * @return if this tile and side are connectable
 	 */
-	public static boolean canConnect(TileEntity tileEntity, ForgeDirection side)
+	public static boolean canConnect(TileEntity tileEntity, EnumFacing side)
 	{
 		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof IGasTransmitter) || TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, tileEntity)))
 		{

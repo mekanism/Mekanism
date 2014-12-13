@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.Coord4D;
 import mekanism.common.util.PipeUtils;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -23,13 +23,13 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 		{
 			if((master != null) != prevMaster)
 			{
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 				{
 					Coord4D obj = Coord4D.get(this).getFromSide(side);
 
 					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySalinationBlock))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), xCoord, yCoord, zCoord);
 					}
 				}
 			}
@@ -38,13 +38,13 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 		}
 	}
 	@Override
-	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
 		return master == null ? 0 : master.waterTank.fill(resource, doFill);
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
 		if(master != null && resource.getFluid() == FluidRegistry.getFluid("brine"))
 		{
@@ -55,7 +55,7 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 	}
 
 	@Override
-	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
 		if(master != null)
 		{
@@ -66,19 +66,19 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 	}
 
 	@Override
-	public boolean canFill(ForgeDirection from, Fluid fluid)
+	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
 		return master != null && fluid == FluidRegistry.getFluid("water");
 	}
 
 	@Override
-	public boolean canDrain(ForgeDirection from, Fluid fluid)
+	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
 		return master != null && fluid == FluidRegistry.getFluid("brine");
 	}
 
 	@Override
-	public FluidTankInfo[] getTankInfo(ForgeDirection from)
+	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
 		if(master == null)
 		{

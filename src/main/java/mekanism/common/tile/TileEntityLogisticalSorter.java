@@ -32,7 +32,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
@@ -83,8 +83,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(MekanismUtils.canFunction(this) && delayTicks == 0)
 			{
-				TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
-				TileEntity front = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity back = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+				TileEntity front = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing)).getTileEntity(worldObj);
 
 				if(back instanceof IInventory && (front instanceof ILogisticalTransporter || front instanceof IInventory))
 				{
@@ -95,7 +95,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 					for(TransporterFilter filter : filters)
 					{
-						InvStack invStack = filter.getStackFromInventory(inventory, ForgeDirection.getOrientation(facing).getOpposite());
+						InvStack invStack = filter.getStackFromInventory(inventory, EnumFacing.getOrientation(facing).getOpposite());
 
 						if(invStack != null && invStack.getStack() != null)
 						{
@@ -128,7 +128,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 					if(!sentItems && autoEject)
 					{
-						InvStack invStack = InventoryUtils.takeTopStack(inventory, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), new FirstFinder());
+						InvStack invStack = InventoryUtils.takeTopStack(inventory, EnumFacing.getOrientation(facing).getOpposite().ordinal(), new FirstFinder());
 						
 						if(invStack != null && invStack.getStack() != null)
 						{
@@ -435,11 +435,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean canSendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
-			return InventoryUtils.canInsert(back, null, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.canInsert(back, null, stack, EnumFacing.getOrientation(facing).getOpposite().ordinal(), true);
 		}
 
 		return false;
@@ -447,16 +447,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		return Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
 	}
 
 	public ItemStack sendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
-			return InventoryUtils.putStackInInventory((IInventory)back, stack, ForgeDirection.getOrientation(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.putStackInInventory((IInventory)back, stack, EnumFacing.getOrientation(facing).getOpposite().ordinal(), true);
 		}
 
 		return stack;
@@ -483,7 +483,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(side == ForgeDirection.getOrientation(facing).ordinal() || side == ForgeDirection.getOrientation(facing).getOpposite().ordinal())
+		if(side == EnumFacing.getOrientation(facing).ordinal() || side == EnumFacing.getOrientation(facing).getOpposite().ordinal())
 		{
 			return new int[] {0};
 		}
@@ -555,9 +555,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.noneOf(ForgeDirection.class);
+		return EnumSet.noneOf(EnumFacing.class);
 	}
 
 	@Override

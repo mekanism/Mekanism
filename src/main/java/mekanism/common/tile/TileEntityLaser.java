@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
@@ -40,7 +40,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				LaserManager.fireLaserClient(this, EnumFacing.getOrientation(facing), usage.laserUsage, worldObj);
 			}
 		}
 		else
@@ -53,7 +53,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 				
-				MovingObjectPosition mop = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaser(this, EnumFacing.getOrientation(facing), usage.laserUsage, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
@@ -66,7 +66,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos().getX(), hitCoord.getPos().getY(), hitCoord.getPos().getZ());
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += usage.laserUsage;
@@ -78,7 +78,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 						}
 						else
 						{
-							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, mop);
+							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.getPos().getX(), hitCoord.getPos().getY(), hitCoord.getPos().getZ(), mop);
 						}
 					}
 				}

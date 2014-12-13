@@ -1,7 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class Range4D 
 {
@@ -28,9 +28,9 @@ public class Range4D
 	
 	public Range4D(Chunk3D chunk)
 	{
-		xMin = chunk.xCoord*16;
+		xMin = chunk.getPos().getX()*16;
 		yMin = 0;
-		zMin = chunk.zCoord*16;
+		zMin = chunk.getPos().getZ()*16;
 		xMax = xMin+16;
 		yMax = 255;
 		zMax = zMin+16;
@@ -38,13 +38,13 @@ public class Range4D
 	
 	public Range4D(Coord4D coord)
 	{
-		xMin = coord.xCoord;
-		yMin = coord.yCoord;
-		zMin = coord.zCoord;
+		xMin = coord.getPos().getX();
+		yMin = coord.getPos().getY();
+		zMin = coord.getPos().getZ();
 		
-		xMax = coord.xCoord+1;
-		yMax = coord.yCoord+1;
-		zMax = coord.zCoord+1;
+		xMax = coord.getPos().getX()+1;
+		yMax = coord.getPos().getY()+1;
+		zMax = coord.getPos().getZ()+1;
 	}
 	
 	public static Range4D getChunkRange(EntityPlayer player)

@@ -9,8 +9,9 @@ import mekanism.common.tile.TileEntityBasicBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import net.minecraftforge.fml.client.registry.ISimpleBlockRenderingHandler;
 
 /**
  * CTM ISBRH adapted from Chisel
@@ -36,9 +37,9 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 
 		if(MekanismConfig.client.renderCTM && blockCTM != null)
 		{
-			if(blockCTM.hasFacingOverride() && world.getTileEntity(x, y, z) instanceof TileEntityBasicBlock)
+			if(blockCTM.hasFacingOverride() && world.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityBasicBlock)
 			{
-				TileEntityBasicBlock tile = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+				TileEntityBasicBlock tile = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 				blockCTM.setFacing(tile.facing);
 			}
 			rendererCTM.blockAccess = world;

@@ -21,13 +21,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.ModAPIManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import buildcraft.api.tools.IToolWrench;
 
@@ -49,7 +50,7 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 
 		int side = MathHelper.floor_double((double)(entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int change = 3;
@@ -71,7 +72,7 @@ public class BlockGasTank extends BlockContainer
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
@@ -93,7 +94,7 @@ public class BlockGasTank extends BlockContainer
 			return true;
 		}
 
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(new BlockPos(x, y, z));
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
@@ -110,7 +111,7 @@ public class BlockGasTank extends BlockContainer
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 
-				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
+				int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][tileEntity.facing];
 
 				tileEntity.setFacing((short)change);
 				world.notifyBlocksOfNeighborChange(x, y, z, this);
@@ -207,7 +208,7 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
 	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(new BlockPos(x, y, z));
 		ItemStack itemStack = new ItemStack(MekanismBlocks.GasTank);
 
 		IGasItem storageTank = (IGasItem)itemStack.getItem();
@@ -228,21 +229,21 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
 	{
-		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(x, y, z);
+		TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(new BlockPos(x, y, z));
 		return tileEntity.getRedstoneLevel();
 	}
 	
 	@Override
-	public ForgeDirection[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
-		ForgeDirection[] valid = new ForgeDirection[6];
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{
@@ -255,9 +256,9 @@ public class BlockGasTank extends BlockContainer
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
+	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 		
 		if(tile instanceof TileEntityBasicBlock)
 		{

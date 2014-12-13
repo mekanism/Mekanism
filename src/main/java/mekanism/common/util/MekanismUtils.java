@@ -60,6 +60,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
@@ -68,7 +69,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -77,9 +78,9 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.ModAPIManager;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -88,7 +89,7 @@ import cpw.mods.fml.common.registry.GameData;
  */
 public final class MekanismUtils
 {
-	public static final ForgeDirection[] SIDE_DIRS = new ForgeDirection[] {ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST};
+	public static final EnumFacing[] SIDE_DIRS = new EnumFacing[] {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST};
 
 	/**
 	 * Checks for a new version of Mekanism.
@@ -242,8 +243,8 @@ public final class MekanismUtils
 			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
 			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
 
-			int distance0 = (int)player.getDistance(coords0.xCoord, coords0.yCoord, coords0.zCoord);
-			int distance1 = (int)player.getDistance(coords1.xCoord, coords1.yCoord, coords1.zCoord);
+			int distance0 = (int)player.getDistance(coords0.getPos().getX(), coords0.getPos().getY(), coords0.getPos().getZ());
+			int distance1 = (int)player.getDistance(coords1.getPos().getX(), coords1.getPos().getY(), coords1.getPos().getZ());
 
 			if(dimensionId == coords0.dimensionId && dimensionId != coords1.dimensionId)
 			{
@@ -413,7 +414,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isActive(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = (TileEntity)world.getTileEntity(x, y, z);
+		TileEntity tileEntity = (TileEntity)world.getTileEntity(new BlockPos(x, y, z));
 
 		if(tileEntity != null)
 		{
@@ -431,18 +432,18 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return left side
 	 */
-	public static ForgeDirection getLeft(int orientation)
+	public static EnumFacing getLeft(int orientation)
 	{
 		switch(orientation)
 		{
 			case 2:
-				return ForgeDirection.EAST;
+				return EnumFacing.EAST;
 			case 3:
-				return ForgeDirection.WEST;
+				return EnumFacing.WEST;
 			case 4:
-				return ForgeDirection.NORTH;
+				return EnumFacing.NORTH;
 			default:
-				return ForgeDirection.SOUTH;
+				return EnumFacing.SOUTH;
 		}
 	}
 
@@ -451,7 +452,7 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return right side
 	 */
-	public static ForgeDirection getRight(int orientation)
+	public static EnumFacing getRight(int orientation)
 	{
 		return getLeft(orientation).getOpposite();
 	}
@@ -461,9 +462,9 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return opposite side
 	 */
-	public static ForgeDirection getBack(int orientation)
+	public static EnumFacing getBack(int orientation)
 	{
-		return ForgeDirection.getOrientation(orientation).getOpposite();
+		return EnumFacing.getOrientation(orientation).getOpposite();
 	}
 
 	/**
@@ -509,7 +510,7 @@ public final class MekanismUtils
 		{
 			if(side == 2 || side == 3)
 			{
-				return ForgeDirection.getOrientation(side).getOpposite().ordinal();
+				return EnumFacing.getOrientation(side).getOpposite().ordinal();
 			}
 
 			return side;
@@ -521,7 +522,7 @@ public final class MekanismUtils
 				return side;
 			}
 
-			return ForgeDirection.getOrientation(side).getOpposite().ordinal();
+			return EnumFacing.getOrientation(side).getOpposite().ordinal();
 		}
 		else if(blockFacing == 4)
 		{
@@ -575,9 +576,9 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+		Coord4D coord = Coord4D.get(tile).getFromSide(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType());
+		tile.getWorldObj().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
 	}
 
 	/**
@@ -600,9 +601,9 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+		Coord4D coord = Coord4D.get(tile).getFromSide(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType());
+		tile.getWorldObj().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
 	}
 
 	/**
@@ -676,7 +677,7 @@ public final class MekanismUtils
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)world.getTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z))).setMainLocation(orig.getPos().getX(), orig.getPos().getY(), orig.getPos().getZ());
 		}
 	}
 
@@ -694,7 +695,7 @@ public final class MekanismUtils
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)world.getTileEntity(x, y, z)).setMainLocation(orig.xCoord, orig.yCoord, orig.zCoord);
+			((TileEntityAdvancedBoundingBlock)world.getTileEntity(new BlockPos(x, y, z))).setMainLocation(orig.getPos().getX(), orig.getPos().getY(), orig.getPos().getZ());
 		}
 	}
 
@@ -707,12 +708,12 @@ public final class MekanismUtils
 	 */
 	public static void updateBlock(World world, int x, int y, int z)
 	{
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).renderUpdate())
+		if(!(world.getTileEntity(new BlockPos(x, y, z)) instanceof IActiveState) || ((IActiveState)world.getTileEntity(new BlockPos(x, y, z))).renderUpdate())
 		{
 			world.func_147479_m(x, y, z);
 		}
 
-		if(!(world.getTileEntity(x, y, z) instanceof IActiveState) || ((IActiveState)world.getTileEntity(x, y, z)).lightUpdate() && client.machineEffects)
+		if(!(world.getTileEntity(new BlockPos(x, y, z)) instanceof IActiveState) || ((IActiveState)world.getTileEntity(new BlockPos(x, y, z))).lightUpdate() && client.machineEffects)
 		{
 			updateAllLightTypes(world, x, y, z);
 		}
@@ -747,7 +748,7 @@ public final class MekanismUtils
 	 */
 	public static FluidStack getFluid(World world, int x, int y, int z)
 	{
-		Block block = world.getBlock(x, y, z);
+		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 		int meta = world.getBlockMetadata(x, y, z);
 
 		if(block == null)
@@ -786,7 +787,7 @@ public final class MekanismUtils
 	 */
 	public static int getFluidId(World world, int x, int y, int z)
 	{
-		Block block = world.getBlock(x, y, z);
+		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 		int meta = world.getBlockMetadata(x, y, z);
 
 		if(block == null)
@@ -824,7 +825,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isDeadFluid(World world, int x, int y, int z)
 	{
-		Block block = world.getBlock(x, y, z);
+		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 		int meta = world.getBlockMetadata(x, y, z);
 
 		if(block == null || meta == 0)
@@ -1018,7 +1019,7 @@ public final class MekanismUtils
 			return;
 		}
 
-		tileEntity.getWorldObj().markTileEntityChunkModified(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord, tileEntity);
+		tileEntity.getWorldObj().markTileEntityChunkModified(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), tileEntity);
 	}
 
 	/**
@@ -1063,7 +1064,7 @@ public final class MekanismUtils
 
 		Vec3 headVec = getHeadVec(player);
 		Vec3 lookVec = player.getLook(1);
-		Vec3 endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
+		Vec3 endVec = headVec.addVector(lookVec.getPos().getX()*reach, lookVec.getPos().getY()*reach, lookVec.getPos().getZ()*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1079,11 +1080,11 @@ public final class MekanismUtils
 
 		if(!player.worldObj.isRemote)
 		{
-			vec.yCoord += player.getEyeHeight();
+			vec.getPos().getY() += player.getEyeHeight();
 
 			if(player instanceof EntityPlayerMP && player.isSneaking())
 			{
-				vec.yCoord -= 0.08;
+				vec.getPos().getY() -= 0.08;
 			}
 		}
 
@@ -1154,7 +1155,7 @@ public final class MekanismUtils
 	 */
 	public static String getCoordDisplay(Coord4D obj)
 	{
-		return "[" + obj.xCoord + ", " + obj.yCoord + ", " + obj.zCoord + "]";
+		return "[" + obj.getPos().getX() + ", " + obj.getPos().getY() + ", " + obj.getPos().getZ() + "]";
 	}
 
 	/**

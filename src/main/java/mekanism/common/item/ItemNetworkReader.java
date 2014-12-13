@@ -13,9 +13,10 @@ import mekanism.common.Mekanism;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class ItemNetworkReader extends ItemEnergized
 {
@@ -31,7 +32,7 @@ public class ItemNetworkReader extends ItemEnergized
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
 
 			if(getEnergy(stack) >= ENERGY_PER_USE)
 			{
@@ -58,7 +59,7 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					Set<ITransmitterNetwork> iteratedNetworks = new HashSet<ITransmitterNetwork>();
 					
-					for(ForgeDirection iterSide : ForgeDirection.VALID_DIRECTIONS)
+					for(EnumFacing iterSide : EnumFacing.VALID_DIRECTIONS)
 					{
 						Coord4D coord = Coord4D.get(tileEntity).getFromSide(iterSide);
 						

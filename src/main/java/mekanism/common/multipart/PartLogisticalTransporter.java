@@ -36,11 +36,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.Method;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -140,7 +140,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
 		return TransporterUtils.getConnections(this)[side.ordinal()];
 	}
@@ -195,7 +195,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 						if(!stack.isFinal(this))
 						{
-							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))))
+							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), EnumFacing.getOrientation(stack.getSide(this))))
 							{
 								ILogisticalTransporter nextTile = (ILogisticalTransporter)next.getTileEntity(world());
 								nextTile.entityEntering(stack);
@@ -286,7 +286,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 						TileEntity next = stack.getNext(this).getTileEntity(world());
 						boolean recalculate = false;
 
-						if(!stack.canInsertToTransporter(next, ForgeDirection.getOrientation(stack.getSide(this))))
+						if(!stack.canInsertToTransporter(next, EnumFacing.getOrientation(stack.getSide(this))))
 						{
 							recalculate = true;
 						}
@@ -324,7 +324,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 	private boolean checkSideForInsert(TransporterStack stack)
 	{
-		ForgeDirection side = ForgeDirection.getOrientation(stack.getSide(this));
+		EnumFacing side = EnumFacing.getOrientation(stack.getSide(this));
 
 		return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
 	}
@@ -335,7 +335,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		{
 			boolean did = false;
 
-			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			for(EnumFacing side : getConnections(ConnectionType.PULL))
 			{
 				TileEntity tile = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
@@ -406,7 +406,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 	private ItemStack insert_do(Coord4D original, ItemStack itemStack, EnumColor color, boolean doEmit, int min, boolean force)
 	{
-		ForgeDirection from = Coord4D.get(tile()).sideDifference(original).getOpposite();
+		EnumFacing from = Coord4D.get(tile()).sideDifference(original).getOpposite();
 
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -442,7 +442,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	@Override
 	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
-		ForgeDirection from = Coord4D.get(tile()).sideDifference(Coord4D.get(outputter)).getOpposite();
+		EnumFacing from = Coord4D.get(tile()).sideDifference(Coord4D.get(outputter)).getOpposite();
 
 		TransporterStack stack = new TransporterStack();
 		stack.itemStack = itemStack;
@@ -685,7 +685,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public boolean canEmitTo(TileEntity tileEntity, ForgeDirection side)
+	public boolean canEmitTo(TileEntity tileEntity, EnumFacing side)
 	{
 		if(!canConnect(side))
 		{
@@ -696,7 +696,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side)
+	public boolean canReceiveFrom(TileEntity tileEntity, EnumFacing side)
 	{
 		if(!canConnect(side))
 		{

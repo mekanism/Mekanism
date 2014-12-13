@@ -24,13 +24,14 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -56,11 +57,11 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 				try {
 					if(message.packetType == MinerGuiPacket.CLIENT)
 					{
-						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, -1));
+						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos().getX(), message.coord4D.getPos().getY(), message.coord4D.getPos().getZ(), -1));
 					}
 					else if(message.packetType == MinerGuiPacket.CLIENT_INDEX)
 					{
-						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, message.index));
+						FMLCommonHandler.instance().showGuiScreen(DigitalMinerGuiMessage.getGui(message.packetType, message.guiType, player, player.worldObj, message.coord4D.getPos().getX(), message.coord4D.getPos().getY(), message.coord4D.getPos().getZ(), message.index));
 					}
 
 					player.openContainer.windowId = message.windowId;
@@ -164,53 +165,53 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 		{
 			if(type == 0)
 			{
-				return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+				return new GuiDigitalMinerConfig(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 			}
 			else if(type == 4)
 			{
-				return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+				return new GuiDigitalMiner(player.inventory, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 			}
 			else if(type == 5)
 			{
-				return new GuiMFilterSelect(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+				return new GuiMFilterSelect(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 			}
 			else {
 				if(packetType == MinerGuiPacket.CLIENT)
 				{
 					if(type == 1)
 					{
-						return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+						return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 					else if(type == 2)
 					{
-						return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+						return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 					else if(type == 3)
 					{
-						return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+						return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 					else if(type == 6)
 					{
-						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z));
+						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)));
 					}
 				}
 				else if(packetType == MinerGuiPacket.CLIENT_INDEX)
 				{
 					if(type == 1)
 					{
-						return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
+						return new GuiMItemStackFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 					else if(type == 2)
 					{
-						return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
+						return new GuiMOreDictFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 					else if(type == 3)
 					{
-						return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
+						return new GuiMMaterialFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 					else if(type == 6)
 					{
-						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(x, y, z), index);
+						return new GuiMModIDFilter(player, (TileEntityDigitalMiner)world.getTileEntity(new BlockPos(x, y, z)), index);
 					}
 				}
 			}
@@ -223,9 +224,9 @@ public class PacketDigitalMinerGui implements IMessageHandler<DigitalMinerGuiMes
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			dataStream.writeInt(coord4D.xCoord);
-			dataStream.writeInt(coord4D.yCoord);
-			dataStream.writeInt(coord4D.zCoord);
+			dataStream.writeInt(coord4D.getPos().getX());
+			dataStream.writeInt(coord4D.getPos().getY());
+			dataStream.writeInt(coord4D.getPos().getZ());
 	
 			dataStream.writeInt(coord4D.dimensionId);
 	

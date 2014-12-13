@@ -11,7 +11,7 @@ package buildcraft.api.statements;
 import java.util.Collection;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public interface IActionProvider {
 
@@ -24,5 +24,5 @@ public interface IActionProvider {
 	/**
 	 * Returns the list of actions available to a gate next to the given block.
 	 */
-	Collection<IActionExternal> getExternalActions(ForgeDirection side, TileEntity tile);
+	Collection<IActionExternal> getExternalActions(EnumFacing side, TileEntity tile);
 }

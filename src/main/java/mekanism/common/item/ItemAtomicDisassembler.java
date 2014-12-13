@@ -22,9 +22,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.event.entity.player.UseHoeEvent;
-import cpw.mods.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
@@ -96,7 +96,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 		if(!player.worldObj.isRemote)
 		{
-			Block block = player.worldObj.getBlock(x, y, z);
+			Block block = player.worldObj.getBlockState(new BlockPos(x, y, z)).getBlock();
 			int meta = player.worldObj.getBlockMetadata(x, y, z);
 			
 			if(block == Blocks.lit_redstone_ore)
@@ -132,11 +132,11 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 					Block block2 = coord.getBlock(player.worldObj);
 
-					block2.onBlockDestroyedByPlayer(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta);
-					player.worldObj.playAuxSFXAtEntity(null, 2001, coord.xCoord, coord.yCoord, coord.zCoord, meta << 12);
-					player.worldObj.setBlockToAir(coord.xCoord, coord.yCoord, coord.zCoord);
-					block2.breakBlock(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, block, meta);
-					block2.dropBlockAsItem(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta, 0);
+					block2.onBlockDestroyedByPlayer(player.worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), meta);
+					player.worldObj.playAuxSFXAtEntity(null, 2001, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), meta << 12);
+					player.worldObj.setBlockToAir(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
+					block2.breakBlock(player.worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), block, meta);
+					block2.dropBlockAsItem(player.worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), meta, 0);
 
 					setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*getEfficiency(itemstack)));
 				}
@@ -171,7 +171,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		{
 			if(!useHoe(stack, player, world, x, y, z, side))
 			{
-				if(world.getBlock(x, y, z) != Blocks.farmland)
+				if(world.getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.farmland)
 				{
 					return false;
 				}
@@ -227,7 +227,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 				return true;
 			}
 
-			Block block1 = world.getBlock(x, y, z);
+			Block block1 = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 			boolean air = world.isAirBlock(x, y + 1, z);
 
 			if(side != 0 && air && (block1 == Blocks.grass || block1 == Blocks.dirt))
@@ -350,7 +350,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			found.add(pointer);
 
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
 			{
 				Coord4D coord = pointer.getFromSide(side);
 

@@ -5,7 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Pos3D - a way of performing operations on objects in a three dimensional environment.
@@ -25,9 +25,9 @@ public class Pos3D
 	
 	public Pos3D(Vec3 vec)
 	{
-		xPos = vec.xCoord;
-		yPos = vec.yCoord;
-		zPos = vec.zCoord;
+		xPos = vec.getPos().getX();
+		yPos = vec.getPos().getY();
+		zPos = vec.getPos().getZ();
 	}
 
 	public Pos3D(double x, double y, double z)
@@ -39,9 +39,9 @@ public class Pos3D
 	
 	public Pos3D(Coord4D coord)
 	{
-		xPos = coord.xCoord;
-		yPos = coord.yCoord;
-		zPos = coord.zCoord;
+		xPos = coord.getPos().getX();
+		yPos = coord.getPos().getY();
+		zPos = coord.getPos().getZ();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class Pos3D
 	 */
 	public Pos3D(TileEntity tileEntity)
 	{
-		this(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+		this(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 	}
 
 	/**
@@ -117,17 +117,17 @@ public class Pos3D
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but by a set amount in a ForgeDirection
+	 * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
 	 */
-	public Pos3D translate(ForgeDirection direction, double amount)
+	public Pos3D translate(EnumFacing direction, double amount)
 	{
 		return translate(direction.offsetX * amount, direction.offsetY * amount, direction.offsetZ * amount);
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but by a set amount in a ForgeDirection
+	 * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
 	 */
-	public Pos3D translateExcludingSide(ForgeDirection direction, double amount)
+	public Pos3D translateExcludingSide(EnumFacing direction, double amount)
 	{
 		if(direction.offsetX == 0) xPos += amount;
 		if(direction.offsetY == 0) yPos += amount;

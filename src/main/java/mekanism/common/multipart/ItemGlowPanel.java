@@ -10,15 +10,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Vector3;
 import codechicken.microblock.HollowMicroblock;
 import codechicken.multipart.JItemMultiPart;
 import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemGlowPanel extends JItemMultiPart
 {
@@ -37,7 +37,7 @@ public class ItemGlowPanel extends JItemMultiPart
 	public TMultiPart newPart(ItemStack item, EntityPlayer player, World world, BlockCoord pos, int side, Vector3 vHit)
 	{
 		EnumColor col = EnumColor.DYES[item.getItemDamage()];
-		ForgeDirection orientation = getSideFromVector3(vHit.subtract(Vector3.center));
+		EnumFacing orientation = getSideFromVector3(vHit.subtract(Vector3.center));
 		
 		if(pos != null && orientation != null)
 		{
@@ -57,34 +57,34 @@ public class ItemGlowPanel extends JItemMultiPart
 		return null;
 	}
 
-	public ForgeDirection getSideFromVector3(Vector3 vector)
+	public EnumFacing getSideFromVector3(Vector3 vector)
 	{
 		if(Math.abs(vector.x) > Math.abs(vector.y) && Math.abs(vector.x) > Math.abs(vector.z))
 		{
 			if((vector.x < 0.5 && vector.x > 0) || vector.x == -0.5)
 			{
-				return ForgeDirection.EAST;
+				return EnumFacing.EAST;
 			}
 			
-			return ForgeDirection.WEST;
+			return EnumFacing.WEST;
 		}
 		else if(Math.abs(vector.y) > Math.abs(vector.x) && Math.abs(vector.y) > Math.abs(vector.z))
 		{
 			if((vector.y < 0.5 && vector.y > 0) || vector.y == -0.5)
 			{
-				return ForgeDirection.UP;
+				return EnumFacing.UP;
 			}
 			
-			return ForgeDirection.DOWN;
+			return EnumFacing.DOWN;
 		}
 		else if(Math.abs(vector.z) > Math.abs(vector.x) && Math.abs(vector.z) > Math.abs(vector.y))
 		{
 			if((vector.z < 0.5 && vector.z > 0) || vector.z == -0.5)
 			{
-				return ForgeDirection.SOUTH;
+				return EnumFacing.SOUTH;
 			}
 			
-			return ForgeDirection.NORTH;
+			return EnumFacing.NORTH;
 		}
 		
 		return null;
