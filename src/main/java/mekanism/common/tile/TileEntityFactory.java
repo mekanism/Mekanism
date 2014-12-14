@@ -32,6 +32,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StatUtils;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -351,7 +352,7 @@ public class TileEntityFactory extends TileEntityElectricBlock implements IPerip
 
 	public int getSecondaryEnergyPerTick()
 	{
-		return MekanismUtils.getSecondaryEnergyPerTick(this, RecipeType.values()[recipeType].getSecondaryEnergyPerTick());
+		return StatUtils.inversePoisson(MekanismUtils.getSecondaryEnergyPerTickMean(this, RecipeType.values()[recipeType].getSecondaryEnergyPerTick()));
 	}
 
 	public void handleSecondaryFuel()
