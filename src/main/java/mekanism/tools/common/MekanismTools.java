@@ -554,8 +554,10 @@ public class MekanismTools implements IModule
 		BronzeShovel = new ItemMekanismShovel(toolBRONZE).setUnlocalizedName("BronzeShovel");
 		BronzeHoe = new ItemMekanismHoe(toolBRONZE).setUnlocalizedName("BronzeHoe");
 		BronzeSword = new ItemMekanismSword(toolBRONZE).setUnlocalizedName("BronzeSword");
-		
-		BronzePaxel.setHarvestLevel("paxel", toolBRONZE2.getHarvestLevel());
+
+		BronzePaxel.setHarvestLevel("pickaxe", toolBRONZE2.getHarvestLevel());
+		BronzePaxel.setHarvestLevel("axe", toolBRONZE2.getHarvestLevel());
+		BronzePaxel.setHarvestLevel("shovel", toolBRONZE2.getHarvestLevel());
 		BronzePickaxe.setHarvestLevel("pickaxe", toolBRONZE.getHarvestLevel());
 		BronzeAxe.setHarvestLevel("axe", toolBRONZE.getHarvestLevel());
 		BronzeShovel.setHarvestLevel("shovel", toolBRONZE.getHarvestLevel());
@@ -571,8 +573,10 @@ public class MekanismTools implements IModule
 		OsmiumShovel = new ItemMekanismShovel(toolOSMIUM).setUnlocalizedName("OsmiumShovel");
 		OsmiumHoe = new ItemMekanismHoe(toolOSMIUM).setUnlocalizedName("OsmiumHoe");
 		OsmiumSword = new ItemMekanismSword(toolOSMIUM).setUnlocalizedName("OsmiumSword");
-		
-		OsmiumPaxel.setHarvestLevel("paxel", toolOSMIUM2.getHarvestLevel());
+
+		OsmiumPaxel.setHarvestLevel("pickaxe", toolOSMIUM2.getHarvestLevel());
+		OsmiumPaxel.setHarvestLevel("axe", toolOSMIUM2.getHarvestLevel());
+		OsmiumPaxel.setHarvestLevel("shovel", toolOSMIUM2.getHarvestLevel());
 		OsmiumPickaxe.setHarvestLevel("pickaxe", toolOSMIUM.getHarvestLevel());
 		OsmiumAxe.setHarvestLevel("axe", toolOSMIUM.getHarvestLevel());
 		OsmiumShovel.setHarvestLevel("shovel", toolOSMIUM.getHarvestLevel());
@@ -588,8 +592,10 @@ public class MekanismTools implements IModule
 		ObsidianShovel = new ItemMekanismShovel(toolOBSIDIAN).setUnlocalizedName("ObsidianShovel");
 		ObsidianHoe = new ItemMekanismHoe(toolOBSIDIAN).setUnlocalizedName("ObsidianHoe");
 		ObsidianSword = new ItemMekanismSword(toolOBSIDIAN).setUnlocalizedName("ObsidianSword");
-		
-		ObsidianPaxel.setHarvestLevel("paxel", toolOBSIDIAN2.getHarvestLevel());
+
+		ObsidianPaxel.setHarvestLevel("pickaxe", toolOBSIDIAN2.getHarvestLevel());
+		ObsidianPaxel.setHarvestLevel("axe", toolOBSIDIAN2.getHarvestLevel());
+		ObsidianPaxel.setHarvestLevel("shovel", toolOBSIDIAN2.getHarvestLevel());
 		ObsidianPickaxe.setHarvestLevel("pickaxe", toolOBSIDIAN.getHarvestLevel());
 		ObsidianAxe.setHarvestLevel("axe", toolOBSIDIAN.getHarvestLevel());
 		ObsidianShovel.setHarvestLevel("shovel", toolOBSIDIAN.getHarvestLevel());
@@ -605,8 +611,10 @@ public class MekanismTools implements IModule
 		LazuliShovel = new ItemMekanismShovel(toolLAZULI).setUnlocalizedName("LazuliShovel");
 		LazuliHoe = new ItemMekanismHoe(toolLAZULI).setUnlocalizedName("LazuliHoe");
 		LazuliSword = new ItemMekanismSword(toolLAZULI).setUnlocalizedName("LazuliSword");
-		
-		LazuliPaxel.setHarvestLevel("paxel", toolLAZULI2.getHarvestLevel());
+
+		LazuliPaxel.setHarvestLevel("pickaxe", toolLAZULI2.getHarvestLevel());
+		LazuliPaxel.setHarvestLevel("axe", toolLAZULI2.getHarvestLevel());
+		LazuliPaxel.setHarvestLevel("shovel", toolLAZULI2.getHarvestLevel());
 		LazuliPickaxe.setHarvestLevel("pickaxe", toolLAZULI.getHarvestLevel());
 		LazuliAxe.setHarvestLevel("axe", toolLAZULI.getHarvestLevel());
 		LazuliShovel.setHarvestLevel("shovel", toolLAZULI.getHarvestLevel());
@@ -622,8 +630,10 @@ public class MekanismTools implements IModule
 		GlowstoneShovel = new ItemMekanismShovel(toolGLOWSTONE).setUnlocalizedName("GlowstoneShovel");
 		GlowstoneHoe = new ItemMekanismHoe(toolGLOWSTONE).setUnlocalizedName("GlowstoneHoe");
 		GlowstoneSword = new ItemMekanismSword(toolGLOWSTONE).setUnlocalizedName("GlowstoneSword");
-		
-		GlowstonePaxel.setHarvestLevel("paxel", toolGLOWSTONE2.getHarvestLevel());
+
+		GlowstonePaxel.setHarvestLevel("pickaxe", toolGLOWSTONE2.getHarvestLevel());
+		GlowstonePaxel.setHarvestLevel("axe", toolGLOWSTONE2.getHarvestLevel());
+		GlowstonePaxel.setHarvestLevel("shovel", toolGLOWSTONE2.getHarvestLevel());
 		GlowstonePickaxe.setHarvestLevel("pickaxe", toolGLOWSTONE.getHarvestLevel());
 		GlowstoneAxe.setHarvestLevel("axe", toolGLOWSTONE.getHarvestLevel());
 		GlowstoneShovel.setHarvestLevel("shovel", toolGLOWSTONE.getHarvestLevel());
@@ -639,8 +649,10 @@ public class MekanismTools implements IModule
 		SteelShovel = new ItemMekanismShovel(toolSTEEL).setUnlocalizedName("SteelShovel");
 		SteelHoe = new ItemMekanismHoe(toolSTEEL).setUnlocalizedName("SteelHoe");
 		SteelSword = new ItemMekanismSword(toolSTEEL).setUnlocalizedName("SteelSword");
-		
-		SteelPaxel.setHarvestLevel("paxel", toolSTEEL2.getHarvestLevel());
+
+		SteelPaxel.setHarvestLevel("pickaxe", toolSTEEL2.getHarvestLevel());
+		SteelPaxel.setHarvestLevel("axe", toolSTEEL2.getHarvestLevel());
+		SteelPaxel.setHarvestLevel("shovel", toolSTEEL2.getHarvestLevel());
 		SteelPickaxe.setHarvestLevel("pickaxe", toolSTEEL.getHarvestLevel());
 		SteelAxe.setHarvestLevel("axe", toolSTEEL.getHarvestLevel());
 		SteelShovel.setHarvestLevel("shovel", toolSTEEL.getHarvestLevel());
@@ -651,13 +663,23 @@ public class MekanismTools implements IModule
 		IronPaxel = new ItemMekanismPaxel(ToolMaterial.IRON).setUnlocalizedName("IronPaxel");
 		DiamondPaxel = new ItemMekanismPaxel(ToolMaterial.EMERALD).setUnlocalizedName("DiamondPaxel");
 		GoldPaxel = new ItemMekanismPaxel(ToolMaterial.GOLD).setUnlocalizedName("GoldPaxel");
-		
-		WoodPaxel.setHarvestLevel("paxel", ToolMaterial.WOOD.getHarvestLevel());
-		StonePaxel.setHarvestLevel("paxel", ToolMaterial.STONE.getHarvestLevel());
-		IronPaxel.setHarvestLevel("paxel", ToolMaterial.IRON.getHarvestLevel());
-		DiamondPaxel.setHarvestLevel("paxel", ToolMaterial.EMERALD.getHarvestLevel());
-		GoldPaxel.setHarvestLevel("paxel", ToolMaterial.GOLD.getHarvestLevel());
-		
+
+		WoodPaxel.setHarvestLevel("pickaxe", ToolMaterial.WOOD.getHarvestLevel());
+		WoodPaxel.setHarvestLevel("axe", ToolMaterial.WOOD.getHarvestLevel());
+		WoodPaxel.setHarvestLevel("shovel", ToolMaterial.WOOD.getHarvestLevel());
+		StonePaxel.setHarvestLevel("pickaxe", ToolMaterial.STONE.getHarvestLevel());
+		StonePaxel.setHarvestLevel("axe", ToolMaterial.STONE.getHarvestLevel());
+		StonePaxel.setHarvestLevel("shovel", ToolMaterial.STONE.getHarvestLevel());
+		IronPaxel.setHarvestLevel("pickaxe", ToolMaterial.IRON.getHarvestLevel());
+		IronPaxel.setHarvestLevel("axe", ToolMaterial.IRON.getHarvestLevel());
+		IronPaxel.setHarvestLevel("shovel", ToolMaterial.IRON.getHarvestLevel());
+		DiamondPaxel.setHarvestLevel("pickaxe", ToolMaterial.EMERALD.getHarvestLevel());
+		DiamondPaxel.setHarvestLevel("axe", ToolMaterial.EMERALD.getHarvestLevel());
+		DiamondPaxel.setHarvestLevel("shovel", ToolMaterial.EMERALD.getHarvestLevel());
+		GoldPaxel.setHarvestLevel("pickaxe", ToolMaterial.GOLD.getHarvestLevel());
+		GoldPaxel.setHarvestLevel("axe", ToolMaterial.GOLD.getHarvestLevel());
+		GoldPaxel.setHarvestLevel("shovel", ToolMaterial.GOLD.getHarvestLevel());
+
 		Mekanism.configuration.save();
 		
 		//Registrations
