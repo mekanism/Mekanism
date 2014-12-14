@@ -8,7 +8,7 @@ import mekanism.common.MekanismBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -35,7 +35,7 @@ public class BlockPlastic extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		if(this == MekanismBlocks.PlasticBlock)
 		{

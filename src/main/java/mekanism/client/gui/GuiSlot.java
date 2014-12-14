@@ -5,7 +5,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.util.ResourceLocation;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 public class GuiSlot extends GuiElement
 {
@@ -40,11 +40,13 @@ public class GuiSlot extends GuiElement
 		return this;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
+*/
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)

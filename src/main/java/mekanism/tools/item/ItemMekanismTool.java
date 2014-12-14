@@ -11,7 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.tools.common.MekanismTools;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -73,7 +73,7 @@ public class ItemMekanismTool extends ItemTool
     }
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}

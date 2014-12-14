@@ -104,7 +104,7 @@ public final class HolidayManager
 		{
 			String themedLines = getThemedLines(new EnumColor[] {EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
 			player.addChatMessage(new ChatComponentText(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
-			player.addChatMessage(new ChatComponentText(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getCommandSenderName() + EnumColor.RED + "!"));
+			player.addChatMessage(new ChatComponentText(EnumColor.RED + "Merry Christmas, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
 			player.addChatMessage(new ChatComponentText(EnumColor.RED + "May you have plenty of Christmas cheer"));
 			player.addChatMessage(new ChatComponentText(EnumColor.RED + "and have a relaxing holiday with your"));
 			player.addChatMessage(new ChatComponentText(EnumColor.RED + "family :)"));
@@ -153,7 +153,7 @@ public final class HolidayManager
 		{
 			String themedLines = getThemedLines(new EnumColor[] {EnumColor.WHITE, EnumColor.YELLOW}, 13);
 			player.addChatMessage(new ChatComponentText(themedLines + EnumColor.DARK_BLUE + "[Mekanism]" + themedLines));
-			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getCommandSenderName() + EnumColor.RED + "!"));
+			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "Happy New Year, " + EnumColor.DARK_BLUE + player.getName() + EnumColor.RED + "!"));
 			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "Best wishes to you as we enter this"));
 			player.addChatMessage(new ChatComponentText(EnumColor.AQUA + "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
 			player.addChatMessage(new ChatComponentText(EnumColor.DARK_GREY + "-aidancbrady"));

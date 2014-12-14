@@ -23,9 +23,9 @@ public final class GasTransmission
 	{
 		TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity tube = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity tube = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, tileEntity))
 			{
@@ -45,9 +45,9 @@ public final class GasTransmission
 	{
 		IGasHandler[] acceptors = new IGasHandler[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(acceptor instanceof IGasHandler)
 			{
@@ -67,9 +67,9 @@ public final class GasTransmission
 	{
 		ITubeConnection[] connections = new ITubeConnection[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity connection = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity connection = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(canConnect(connection, orientation))
 			{

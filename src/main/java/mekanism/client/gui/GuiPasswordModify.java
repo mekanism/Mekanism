@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
@@ -63,11 +65,11 @@ public class GuiPasswordModify extends GuiScreen
 		buttonList.clear();
 		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, MekanismUtils.localize("gui.confirm")));
 
-		newPasswordField = new GuiTextField(fontRendererObj, guiWidth + 60, guiHeight + 34, 80, 12);
+		newPasswordField = new GuiTextField(0, fontRendererObj, guiWidth + 60, guiHeight + 34, 80, 12);
 		newPasswordField.setMaxStringLength(12);
 		newPasswordField.setFocused(true);
 
-		confirmPasswordField = new GuiTextField(fontRendererObj, guiWidth + 60, guiHeight + 51, 80, 12);
+		confirmPasswordField = new GuiTextField(1, fontRendererObj, guiWidth + 60, guiHeight + 51, 80, 12);
 		confirmPasswordField.setMaxStringLength(12);
 		confirmPasswordField.setFocused(false);
 	}
@@ -75,7 +77,9 @@ public class GuiPasswordModify extends GuiScreen
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
-		super.mouseClicked(mouseX, mouseY, button);
+		try{super.mouseClicked(mouseX, mouseY, button);}
+		catch(IOException e){}
+
 		newPasswordField.mouseClicked(mouseX, mouseY, button);
 		confirmPasswordField.mouseClicked(mouseX, mouseY, button);
 	}
@@ -83,7 +87,9 @@ public class GuiPasswordModify extends GuiScreen
 	@Override
 	public void keyTyped(char c, int i)
 	{
-		super.keyTyped(c, i);
+		try{super.keyTyped(c, i);}
+		catch(IOException e){}
+
 
 		if(i == Keyboard.KEY_TAB)
 		{

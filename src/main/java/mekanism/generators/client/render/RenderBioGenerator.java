@@ -60,7 +60,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getDisplayList(EnumFacing.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
+			getDisplayList(EnumFacing.getFront(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 
 			pop();

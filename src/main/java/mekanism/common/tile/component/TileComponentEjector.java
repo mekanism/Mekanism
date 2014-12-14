@@ -59,7 +59,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			for(EnumFacing side : dirs)
 			{
-				if(EnumFacing.getOrientation(i%6) == side)
+				if(EnumFacing.getFront(i%6) == side)
 				{
 					sides.add(side);
 				}
@@ -97,7 +97,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
 			{
-				outputSides.add(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+				outputSides.add(EnumFacing.getFront(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
 			}
 		}
 
@@ -115,7 +115,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 			for(EnumFacing side : outputs)
 			{
-				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.getWorldObj());
+				TileEntity tile = Coord4D.get(tileEntity).offset(side).getTileEntity(tileEntity.getWorldObj());
 				ItemStack prev = stack.copy();
 
 				if(tile instanceof IInventory && !(tile instanceof ILogisticalTransporter))

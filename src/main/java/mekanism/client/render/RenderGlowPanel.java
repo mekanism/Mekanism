@@ -3,33 +3,34 @@ package mekanism.client.render;
 import java.util.Map;
 
 import mekanism.api.EnumColor;
-import mekanism.common.multipart.PartGlowPanel;
+//import mekanism.common.multipart.PartGlowPanel;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+//import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
-import codechicken.lib.colour.Colour;
-import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.lighting.LightModel;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.ColourMultiplier;
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TextureUtils.IIconSelfRegister;
-import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.Translation;
-import codechicken.lib.vec.Vector3;
+//import codechicken.lib.colour.Colour;
+//import codechicken.lib.colour.ColourRGBA;
+//import codechicken.lib.lighting.LightModel;
+//import codechicken.lib.render.CCModel;
+//import codechicken.lib.render.CCRenderState;
+//import codechicken.lib.render.ColourMultiplier;
+//import codechicken.lib.render.TextureUtils;
+//import codechicken.lib.render.TextureUtils.IIconSelfRegister;
+//import codechicken.lib.render.uv.IconTransformation;
+//import codechicken.lib.vec.Translation;
+//import codechicken.lib.vec.Vector3;
 
-public class RenderGlowPanel implements IIconSelfRegister
+public class RenderGlowPanel //implements IIconSelfRegister
 {
+/*
 	public static RenderGlowPanel INSTANCE;
 
 	public static CCModel[] frameModels;
 	public static CCModel[] lightModels;
 
-	public static IIcon icon;
+	public static TextureAtlasSprite icon;
 
 	public static RenderGlowPanel getInstance()
 	{
@@ -96,7 +97,7 @@ public class RenderGlowPanel implements IIconSelfRegister
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		icon = register.registerIcon("mekanism:models/GlowPanel");
 	}
@@ -106,4 +107,5 @@ public class RenderGlowPanel implements IIconSelfRegister
 	{
 		return 0;
 	}
+*/
 }

@@ -117,7 +117,7 @@ public class TransmitterNetworkRegistry
 				int x = event.getChunk().xPosition;
 				int z = event.getChunk().zPosition;
 
-				IChunkProvider cProvider = event.getChunk().worldObj.getChunkProvider();
+				IChunkProvider cProvider = event.getChunk().getWorld().getChunkProvider();
 				Chunk[] neighbors = new Chunk[5];
 
 				neighbors[0] = event.getChunk();
@@ -139,7 +139,7 @@ public class TransmitterNetworkRegistry
 			try {
 				if(c != null)
 				{
-					Map copy = (Map)((HashMap)c.chunkTileEntityMap).clone();
+					Map copy = (Map)((HashMap)c.getTileEntityMap()).clone();
 
 					for(Iterator iter = copy.values().iterator(); iter.hasNext();)
 					{

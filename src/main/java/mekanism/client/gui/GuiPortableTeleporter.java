@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import mekanism.client.sound.SoundHandler;
@@ -89,7 +91,9 @@ public class GuiPortableTeleporter extends GuiScreen
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
-		super.mouseClicked(mouseX, mouseY, button);
+		try{super.mouseClicked(mouseX, mouseY, button);}
+		catch(IOException e){}
+
 
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);

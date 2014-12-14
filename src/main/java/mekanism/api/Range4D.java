@@ -28,9 +28,9 @@ public class Range4D
 	
 	public Range4D(Chunk3D chunk)
 	{
-		xMin = chunk.getPos().getX()*16;
+		xMin = chunk.xCoord*16;
 		yMin = 0;
-		zMin = chunk.getPos().getZ()*16;
+		zMin = chunk.zCoord*16;
 		xMax = xMin+16;
 		yMax = 255;
 		zMax = zMin+16;
@@ -38,13 +38,13 @@ public class Range4D
 	
 	public Range4D(Coord4D coord)
 	{
-		xMin = coord.getPos().getX();
-		yMin = coord.getPos().getY();
-		zMin = coord.getPos().getZ();
+		xMin = coord.getX();
+		yMin = coord.getY();
+		zMin = coord.getZ();
 		
-		xMax = coord.getPos().getX()+1;
-		yMax = coord.getPos().getY()+1;
-		zMax = coord.getPos().getZ()+1;
+		xMax = coord.getX()+1;
+		yMax = coord.getY()+1;
+		zMax = coord.getZ()+1;
 	}
 	
 	public static Range4D getChunkRange(EntityPlayer player)

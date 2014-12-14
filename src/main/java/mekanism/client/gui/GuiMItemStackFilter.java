@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.sound.SoundHandler;
@@ -80,7 +82,8 @@ public class GuiMItemStackFilter extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){}
 
 		if(guibutton.id == 0)
 		{
@@ -128,7 +131,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.itemType, 12, 19);
+			itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -137,7 +140,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
+			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}

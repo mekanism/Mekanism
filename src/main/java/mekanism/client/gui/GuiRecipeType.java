@@ -6,7 +6,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.util.ResourceLocation;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 public class GuiRecipeType extends GuiElement
 {
@@ -19,11 +19,13 @@ public class GuiRecipeType extends GuiElement
 		tileEntity = tile;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth + 176, guiHeight + 70, 26, 63);
 	}
+*/
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)

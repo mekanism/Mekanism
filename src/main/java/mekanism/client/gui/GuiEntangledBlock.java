@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -78,7 +79,8 @@ public class GuiEntangledBlock extends GuiMekanism
 	{
 		if(!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
-			super.keyTyped(c, i);
+			try{super.keyTyped(c, i);}
+			catch(IOException e){}
 		}
 
 		if(i == Keyboard.KEY_RETURN)
@@ -123,7 +125,7 @@ public class GuiEntangledBlock extends GuiMekanism
 
 		String prevFreq = frequencyField != null ? frequencyField.getText() : "";
 
-		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
+		frequencyField = new GuiTextField(0, fontRendererObj, guiWidth + 75, guiHeight + 55, 96, 11);
 		frequencyField.setText(prevFreq);
 	}
 }

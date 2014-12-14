@@ -27,12 +27,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+<<<<<<< HEAD
+import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+=======
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
-
-import buildcraft.api.tools.IToolWrench;
-import cofh.api.item.IToolHammer;
+>>>>>>> Make vague beginnings on a 1.8 update. Mostly just to get the lay of the land, really.
 
 @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer

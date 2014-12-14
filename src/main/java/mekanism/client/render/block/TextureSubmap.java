@@ -1,6 +1,6 @@
 package mekanism.client.render.block;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -14,16 +14,16 @@ public class TextureSubmap
 {
 	public int width, height;
 	
-	public IIcon icon;
+	public TextureAtlasSprite icon;
 	
-	public IIcon icons[];
+	public TextureAtlasSprite icons[];
 
-	public TextureSubmap(IIcon i, int w, int h)
+	public TextureSubmap(TextureAtlasSprite i, int w, int h)
 	{
 		icon = i;
 		width = w;
 		height = h;
-		icons = new IIcon[width * height];
+		icons = new TextureAtlasSprite[width * height];
 
 		MinecraftForge.EVENT_BUS.register(this);
 	}

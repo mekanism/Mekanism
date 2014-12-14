@@ -29,7 +29,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -58,7 +58,7 @@ public class GuiReactorHeat extends GuiMekanism
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
 		{
 			@Override
-			public IIcon getIcon()
+			public TextureAtlasSprite getIcon()
 			{
 				return BlockStaticLiquid.getLiquidIcon("lava_still");
 			}
@@ -92,7 +92,7 @@ public class GuiReactorHeat extends GuiMekanism
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
 		{
 			@Override
-			public IIcon getIcon()
+			public TextureAtlasSprite getIcon()
 			{
 				return BlockStaticLiquid.getLiquidIcon("lava_still");
 			}

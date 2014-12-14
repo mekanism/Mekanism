@@ -42,7 +42,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public FluidTank fluidTank = new FluidTank(10000);
 	
-	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP, EnumFacing.UNKNOWN));
+	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP, null));
 	private static int MAX_NODES = 4000;
 	
 	public TileEntityFluidicPlenisher()
@@ -139,7 +139,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						doPlenish();
 					}
 					else {
-						Coord4D below = Coord4D.get(this).getFromSide(EnumFacing.DOWN);
+						Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
 						
 						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
@@ -169,7 +169,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		{
 			if(usedNodes.isEmpty())
 			{
-				Coord4D below = Coord4D.get(this).getFromSide(EnumFacing.DOWN);
+				Coord4D below = Coord4D.get(this).offset(EnumFacing.DOWN);
 				
 				if(!canReplace(below, true, true))
 				{
@@ -202,7 +202,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				
 				for(EnumFacing dir : dirs)
 				{
-					Coord4D sideCoord = coord.getFromSide(dir);
+					Coord4D sideCoord = coord.offset(dir);
 					
 					if(sideCoord.exists(worldObj) && canReplace(sideCoord, true, true))
 					{
@@ -397,7 +397,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 
 	@Override

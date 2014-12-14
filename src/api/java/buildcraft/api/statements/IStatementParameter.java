@@ -8,10 +8,10 @@
  */
 package buildcraft.api.statements;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,7 +27,7 @@ public interface IStatementParameter {
 	String getUniqueTag();
 	
 	@SideOnly(Side.CLIENT)
-	IIcon getIcon();
+	TextureAtlasSprite getIcon();
 
 	ItemStack getItemStack();
 
@@ -39,7 +39,7 @@ public interface IStatementParameter {
 	 * fact that they, unlike Parameters, store no additional data)
 	 */
 	@SideOnly(Side.CLIENT)
-	void registerIcons(IIconRegister iconRegister);
+	void registerIcons(TextureAtlasSpriteRegister iconRegister);
 	
 	/**
 	 * Return the parameter description in the UI

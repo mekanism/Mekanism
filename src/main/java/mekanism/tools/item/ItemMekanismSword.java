@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -25,7 +25,7 @@ public class ItemMekanismSword extends ItemSword
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}

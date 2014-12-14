@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiScrollList extends GuiElement
@@ -55,11 +55,13 @@ public class GuiScrollList extends GuiElement
 		textEntries = text;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth + xPosition, guiHeight + yPosition, xSize, size*10);
 	}
+*/
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)

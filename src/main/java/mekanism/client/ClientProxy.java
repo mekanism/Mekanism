@@ -57,9 +57,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderGlowPanel;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.block.BasicRenderingHandler;
-import mekanism.client.render.block.CTMRenderingHandler;
-import mekanism.client.render.block.MachineRenderingHandler;
+//import mekanism.client.render.block.BasicRenderingHandler;
+//import mekanism.client.render.block.CTMRenderingHandler;
+//import mekanism.client.render.block.MachineRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
@@ -182,9 +182,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+//	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+//	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+//	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
 	@Override
 	public void loadConfiguration()
@@ -206,11 +206,13 @@ public class ClientProxy extends CommonProxy
 			Mekanism.configuration.save();
 	}
 
+/*
 	@Override
 	public int getArmorIndex(String string)
 	{
 		return RenderingRegistry.addNewArmourRendererPrefix(string);
 	}
+*/
 
 	@Override
 	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z)
@@ -315,15 +317,15 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderInformation()
 	{
-		RenderPartTransmitter.init();
-		RenderGlowPanel.init();
+//		RenderPartTransmitter.init();
+//		RenderGlowPanel.init();
 
 		//Register entity rendering handlers
-		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed());
-		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit());
-		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon());
-		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new RenderSkeleton());
-		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new RenderFlame());
+		RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, new RenderObsidianTNTPrimed(Minecraft.getMinecraft().getRenderManager()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityRobit.class, new RenderRobit(Minecraft.getMinecraft().getRenderManager()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, new RenderBalloon(Minecraft.getMinecraft().getRenderManager()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new RenderSkeleton(Minecraft.getMinecraft().getRenderManager()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new RenderFlame(Minecraft.getMinecraft().getRenderManager()));
 
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
@@ -348,9 +350,9 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);
 
 		//Register block handlers
-		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
-		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
+//		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
+//		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
+//		RenderingRegistry.registerBlockHandler(new CTMRenderingHandler());
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
@@ -457,7 +459,7 @@ public class ClientProxy extends CommonProxy
 
 				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
-					return new GuiSeismicReader(new Coord4D(x, y, z, world.provider.dimensionId), itemStack1);
+					return new GuiSeismicReader(new Coord4D(x, y, z, world.provider.getDimensionId()), itemStack1);
 				}
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);

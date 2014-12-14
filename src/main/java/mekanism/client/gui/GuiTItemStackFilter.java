@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.MekanismRenderer;
@@ -79,11 +81,11 @@ public class GuiTItemStackFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		minField = new GuiTextField(fontRendererObj, guiWidth + 149, guiHeight + 19, 20, 11);
+		minField = new GuiTextField(0, fontRendererObj, guiWidth + 149, guiHeight + 19, 20, 11);
 		minField.setMaxStringLength(2);
 		minField.setText("" + filter.min);
 
-		maxField = new GuiTextField(fontRendererObj, guiWidth + 149, guiHeight + 31, 20, 11);
+		maxField = new GuiTextField(1, fontRendererObj, guiWidth + 149, guiHeight + 31, 20, 11);
 		maxField.setMaxStringLength(2);
 		maxField.setText("" + filter.max);
 	}
@@ -91,7 +93,8 @@ public class GuiTItemStackFilter extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){}
 
 		if(guibutton.id == 0)
 		{
@@ -149,7 +152,8 @@ public class GuiTItemStackFilter extends GuiMekanism
 	{
 		if((!minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE)
 		{
-			super.keyTyped(c, i);
+			try{super.keyTyped(c, i);}
+			catch(IOException e){}
 		}
 
 		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
@@ -182,7 +186,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.itemType, 12, 19);
+			itemRender.renderItemAndEffectIntoGUI(filter.itemType, 12, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -195,7 +199,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+//			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

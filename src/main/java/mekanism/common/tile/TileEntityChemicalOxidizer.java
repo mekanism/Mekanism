@@ -135,7 +135,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			{
 				GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
@@ -363,14 +363,14 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	{
 		if(gasTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("gasTank", gasTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
+		gasTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("gasTank")));
 	}
 
 	@Override

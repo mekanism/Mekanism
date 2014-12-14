@@ -73,7 +73,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			}
 			else if(message.packetType == ConfigurationPacket.INPUT_COLOR)
 			{
-				EnumFacing side = EnumFacing.getOrientation(message.inputSide);
+				EnumFacing side = EnumFacing.getFront(message.inputSide);
 
 				if(message.clickType == 0)
 				{

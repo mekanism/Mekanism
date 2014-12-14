@@ -142,7 +142,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			TileEntity tileEntity = Coord4D.get(this).getFromSide(EnumFacing.DOWN).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IFluidHandler)
 			{
@@ -283,7 +283,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	
 	public int pushUp(FluidStack fluid, boolean doFill)
 	{
-		Coord4D up = Coord4D.get(this).getFromSide(EnumFacing.UP);
+		Coord4D up = Coord4D.get(this).offset(EnumFacing.UP);
 		
 		if(up.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
@@ -405,7 +405,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
 		
-		Coord4D top = Coord4D.get(this).getFromSide(EnumFacing.UP);
+		Coord4D top = Coord4D.get(this).offset(EnumFacing.UP);
 		
 		if(top.getTileEntity(worldObj) instanceof TileEntityPortableTank)
 		{
@@ -543,7 +543,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	{
 		if(from == EnumFacing.DOWN)
 		{
-			TileEntity tile = Coord4D.get(this).getFromSide(EnumFacing.DOWN).getTileEntity(worldObj);
+			TileEntity tile = Coord4D.get(this).offset(EnumFacing.DOWN).getTileEntity(worldObj);
 			
 			if(isActive && !(tile instanceof TileEntityPortableTank))
 			{

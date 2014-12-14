@@ -1,7 +1,7 @@
 package mekanism.api.gas;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -17,9 +17,9 @@ public class Gas
 
 	private String unlocalizedName;
 
-	private Fluid fluid;
+	private TextureAtlasSprite icon;
 
-	private IIcon icon;
+	private Fluid fluid;
 
 	private boolean visible = true;
 
@@ -40,7 +40,6 @@ public class Gas
 	public Gas(Fluid f)
 	{
 		unlocalizedName = name = f.getName();
-		icon = f.getStillIcon();
 		fluid = f;
 		from_fluid = true;
 	}
@@ -106,32 +105,33 @@ public class Gas
 	}
 
 	/**
-	 * Gets the IIcon associated with this Gas.
-	 * @return associated IIcon
+	 * Gets the TextureAtlasSprite associated with this Gas.
+	 * @return associated TextureAtlasSprite
 	 */
-	public IIcon getIcon()
+
+	public TextureAtlasSprite getIcon()
 	{
-		if(from_fluid)
+		/*if(from_fluid)
 		{
 			return this.getFluid().getIcon();
-		}
-		
+		}*/
+
 		return icon;
 	}
 
 	/**
 	 * Sets this gas's icon.
-	 * @param i - IIcon to associate with this Gas
+	 * @param i - TextureAtlasSprite to associate with this Gas
 	 * @return this Gas object
 	 */
-	public Gas setIcon(IIcon i)
+	public Gas setIcon(TextureAtlasSprite i)
 	{
 		icon = i;
 
-		if(hasFluid())
+		/*if(hasFluid())
 		{
 			fluid.setIcons(getIcon());
-		}
+		}*/
 		
 		from_fluid = false;
 		

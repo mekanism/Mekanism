@@ -19,7 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -28,7 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -55,7 +55,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
 public class BlockEnergyCube extends BlockContainer implements IPeripheralProvider
 {
-	public IIcon[][] icons = new IIcon[256][256];
+	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[256][256];
 
 	public BlockEnergyCube()
 	{
@@ -67,7 +67,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
@@ -303,7 +303,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{

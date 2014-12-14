@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyInfo extends GuiElement
@@ -23,11 +23,13 @@ public class GuiEnergyInfo extends GuiElement
 		infoHandler = handler;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
 	}
+*/
 
 	public static interface IInfoHandler
 	{

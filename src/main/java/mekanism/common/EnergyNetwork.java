@@ -338,12 +338,12 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 		for(TileEntity acceptor : acceptors)
 		{
-			EnumFacing side = EnumFacing.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
+			EnumFacing side = EnumFacing.getFront(Arrays.asList(acceptors).indexOf(acceptor));
 
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get(acceptor), acceptor);
-				addSide(Coord4D.get(acceptor), EnumFacing.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get(acceptor), EnumFacing.getFront(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}

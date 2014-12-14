@@ -4,15 +4,15 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class ItemHDPE extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
+	public TextureAtlasSprite[] icons = new TextureAtlasSprite[256];
 
 	public ItemHDPE()
 	{
@@ -22,7 +22,7 @@ public class ItemHDPE extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		for(int i = 0; i < PlasticItem.values().length; i++)
 		{
@@ -31,7 +31,7 @@ public class ItemHDPE extends ItemMekanism
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public TextureAtlasSprite getIconFromDamage(int meta)
 	{
 		return icons[meta];
 	}

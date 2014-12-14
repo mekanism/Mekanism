@@ -40,7 +40,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(this, EnumFacing.getOrientation(facing), usage.laserUsage, worldObj);
+				LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), usage.laserUsage, worldObj);
 			}
 		}
 		else
@@ -53,7 +53,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 				
-				MovingObjectPosition mop = LaserManager.fireLaser(this, EnumFacing.getOrientation(facing), usage.laserUsage, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaser(this, EnumFacing.getFront(facing), usage.laserUsage, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))

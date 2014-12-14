@@ -71,7 +71,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -84,7 +84,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -146,7 +146,7 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
 public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
-	public IIcon[][] icons = new IIcon[16][16];
+	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[16][16];
 
 	public MachineBlock blockType;
 
@@ -161,7 +161,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		switch(blockType)
 		{
@@ -253,9 +253,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 			if(!transporter.hasInventory())
 			{
-				for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+				for(EnumFacing dir : EnumFacing.values())
 				{
-					TileEntity tile = Coord4D.get(transporter).getFromSide(dir).getTileEntity(world);
+					TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
 
 					if(tile instanceof IInventory)
 					{
@@ -306,7 +306,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 			if(tileEntity instanceof TileEntityMetallurgicInfuser)
 			{
-				side = EnumFacing.getOrientation(side).getOpposite().ordinal();
+				side = EnumFacing.getFront(side).getOpposite().ordinal();
 			}
 
 			if(side == 4)
@@ -350,7 +350,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(int side, int meta)
 	{
 		switch(blockType)
 		{
@@ -414,7 +414,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
@@ -561,9 +561,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				{
 					if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
 					{
-						for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+						for(EnumFacing dir : EnumFacing.values())
 						{
-							TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+							TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
 							if(tile instanceof IInventory)
 							{
@@ -836,9 +836,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 				if(!sorter.hasInventory())
 				{
-					for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+					for(EnumFacing dir : EnumFacing.values())
 					{
-						TileEntity tile = Coord4D.get(tileEntity).getFromSide(dir).getTileEntity(world);
+						TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
 						if(tile instanceof IInventory)
 						{
@@ -857,27 +857,27 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
 		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		if(tileEntity instanceof IUpgradeTile)
 		{
-			((IUpgradeTile)tileEntity).getComponent().write(itemStack.stackTagCompound);
+			((IUpgradeTile)tileEntity).getComponent().write(itemStack.getTagCompound());
 		}
 
 		if(tileEntity instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
 
-			itemStack.stackTagCompound.setBoolean("hasSideData", true);
+			itemStack.getTagCompound().setBoolean("hasSideData", true);
 
-			itemStack.stackTagCompound.setBoolean("ejecting", config.getEjector().isEjecting());
+			itemStack.getTagCompound().setBoolean("ejecting", config.getEjector().isEjecting());
 
 			for(int i = 0; i < 6; i++)
 			{
-				itemStack.stackTagCompound.setByte("config"+i, config.getConfiguration()[i]);
+				itemStack.getTagCompound().setByte("config"+i, config.getConfiguration()[i]);
 			}
 		}
 		
@@ -889,7 +889,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		if(tileEntity instanceof IRedstoneControl)
 		{
 			IRedstoneControl control = (IRedstoneControl)tileEntity;
-			itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
+			itemStack.getTagCompound().setInteger("controlType", control.getControlType().ordinal());
 		}
 
 		if(tileEntity instanceof TileEntityElectricBlock)
@@ -1260,7 +1260,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{

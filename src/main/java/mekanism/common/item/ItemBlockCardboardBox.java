@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -67,7 +67,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -145,22 +145,22 @@ public class ItemBlockCardboardBox extends ItemBlock
 
 	public void setBlockData(ItemStack itemstack, BlockData data)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setTag("blockData", data.write(new NBTTagCompound()));
+		itemstack.getTagCompound().setTag("blockData", data.write(new NBTTagCompound()));
 	}
 
 	public BlockData getBlockData(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null || !itemstack.stackTagCompound.hasKey("blockData"))
+		if(itemstack.getTagCompound() == null || !itemstack.getTagCompound().hasKey("blockData"))
 		{
 			return null;
 		}
 
-		return BlockData.read(itemstack.stackTagCompound.getCompoundTag("blockData"));
+		return BlockData.read(itemstack.getTagCompound().getCompoundTag("blockData"));
 	}
 
 	@SubscribeEvent

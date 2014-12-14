@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiConfigurationTab extends GuiElement
@@ -26,11 +26,13 @@ public class GuiConfigurationTab extends GuiElement
 		tileEntity = tile;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
 	}
+*/
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)

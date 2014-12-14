@@ -26,7 +26,7 @@ import ic2.api.energy.tile.IEnergySource;
 
 public final class CableUtils
 {
-	private static Set<EnumFacing> allSides = EnumSet.complementOf(EnumSet.of(EnumFacing.UNKNOWN));
+	private static Set<EnumFacing> allSides = EnumSet.complementOf(EnumSet.of(null));
 
 	/**
 	 * Gets all the connected energy acceptors, whether IC2-based or BuildCraft-based, surrounding a specific tile entity.
@@ -37,9 +37,9 @@ public final class CableUtils
 	{
 		TileEntity[] acceptors = new TileEntity[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isEnergyAcceptor(acceptor))
 			{
@@ -66,9 +66,9 @@ public final class CableUtils
 	{
 		TileEntity[] cables = new TileEntity[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity cable = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity cable = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isCable(cable))
 			{
@@ -107,7 +107,7 @@ public final class CableUtils
 
 		for(EnumFacing side : sides)
 		{
-			TileEntity tile = coord.getFromSide(side).getTileEntity(tileEntity.getWorldObj());
+			TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorldObj());
 
 			connectable[side.ordinal()] |= isEnergyAcceptor(tile) && isConnectable(tileEntity, tile, side);
 			connectable[side.ordinal()] |= isCable(tile);
@@ -126,9 +126,9 @@ public final class CableUtils
 	{
 		TileEntity[] outputters = new TileEntity[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity outputter = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity outputter = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(isOutputter(outputter, orientation))
 			{
@@ -159,7 +159,7 @@ public final class CableUtils
 			return false;
 		}
 
-		TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
+		TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorldObj());
 
 		return isConnectable(tile, tileEntity, side);
 	}
@@ -253,7 +253,7 @@ public final class CableUtils
 
 		for(EnumFacing side : outputtingSides)
 		{
-			TileEntity tileEntity = Coord4D.get(emitter).getFromSide(side).getTileEntity(emitter.getWorldObj());
+			TileEntity tileEntity = Coord4D.get(emitter).offset(side).getTileEntity(emitter.getWorldObj());
 			double toSend = splitSend+remains;
 			remains = 0;
 

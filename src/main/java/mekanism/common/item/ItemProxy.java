@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -25,7 +25,7 @@ public class ItemProxy extends Item
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
-		return stack.stackTagCompound == null || !stack.stackTagCompound.getBoolean("hasStack");
+		return stack.getTagCompound() == null || !stack.getTagCompound().getBoolean("hasStack");
 	}
 
 	@Override
@@ -36,39 +36,39 @@ public class ItemProxy extends Item
 
 	public void setSavedItem(ItemStack stack, ItemStack save)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 
 		if(save == null)
 		{
-			stack.stackTagCompound.setBoolean("hasStack", false);
-			stack.stackTagCompound.removeTag("savedItem");
+			stack.getTagCompound().setBoolean("hasStack", false);
+			stack.getTagCompound().removeTag("savedItem");
 		}
 		else {
-			stack.stackTagCompound.setBoolean("hasStack", true);
-			stack.stackTagCompound.setTag("savedItem", save.writeToNBT(new NBTTagCompound()));
+			stack.getTagCompound().setBoolean("hasStack", true);
+			stack.getTagCompound().setTag("savedItem", save.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	public ItemStack getSavedItem(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		if(stack.stackTagCompound.getBoolean("hasStack"))
+		if(stack.getTagCompound().getBoolean("hasStack"))
 		{
-			return ItemStack.loadItemStackFromNBT(stack.stackTagCompound.getCompoundTag("savedItem"));
+			return ItemStack.loadItemStackFromNBT(stack.getTagCompound().getCompoundTag("savedItem"));
 		}
 
 		return null;
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register) {}
+	public void registerIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)

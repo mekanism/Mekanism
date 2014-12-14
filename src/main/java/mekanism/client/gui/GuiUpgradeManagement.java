@@ -125,7 +125,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 			
 			if(xAxis >= xPos && xAxis <= xPos+58 && yAxis >= yPos && yAxis <= yPos+12)
 			{
-				func_146283_a(MekanismUtils.splitLines(upgrade.getDescription()), xAxis, yAxis);
+				drawHoveringText(MekanismUtils.splitLines(upgrade.getDescription()), xAxis, yAxis);
 			}
 		}
 
@@ -145,7 +145,7 @@ public class GuiUpgradeManagement extends GuiMekanism
 		GL11.glPushMatrix();
 		GL11.glScalef(size, size, size);
 		GL11.glEnable(GL11.GL_LIGHTING);
-		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), type.getStack(), scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y);
+		itemRender.renderItemAndEffectIntoGUI(type.getStack(), scale ? (int)((1F/size)*x) : x, scale ? (int)((1F/size)*y) : y);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glPopMatrix();
 	}
@@ -263,9 +263,9 @@ public class GuiUpgradeManagement extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	protected void mouseReleased(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(mouseX, mouseY, type);
+		super.mouseReleased(mouseX, mouseY, type);
 
 		if(type == 0 && isDragging)
 		{

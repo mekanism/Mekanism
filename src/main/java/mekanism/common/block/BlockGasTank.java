@@ -14,7 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,7 +45,7 @@ public class BlockGasTank extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
@@ -243,7 +243,7 @@ public class BlockGasTank extends BlockContainer
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{

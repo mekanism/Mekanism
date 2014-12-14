@@ -63,7 +63,7 @@ public class SoundHandler
 
 	public static boolean soundPlaying(EntityPlayer player, Channel channel)
 	{
-		String name = player.getCommandSenderName();
+		String name = player.getName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 
@@ -72,7 +72,7 @@ public class SoundHandler
 
 	public static void addSound(EntityPlayer player, Channel channel, boolean replace)
 	{
-		String name = player.getCommandSenderName();
+		String name = player.getName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 		
@@ -85,7 +85,7 @@ public class SoundHandler
 
 	public static boolean playSound(EntityPlayer player, Channel channel)
 	{
-		String name = player.getCommandSenderName();
+		String name = player.getName();
 		Map<String, IResettableSound> map = getMap(name);
 		IResettableSound sound = map.get(channel.getName());
 		
@@ -147,7 +147,7 @@ public class SoundHandler
 	
 	public static void playSound(String sound)
 	{
-        playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(sound), 1.0F));
+        playSound(PositionedSoundRecord.create(new ResourceLocation(sound), 1.0F));
 	}
 
 	public static void playSound(ISound sound)

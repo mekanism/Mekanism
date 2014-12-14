@@ -12,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -71,7 +71,7 @@ public class ItemBlockBasic extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -98,7 +98,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public boolean hasContainerItem(ItemStack stack)
 	{
-		return stack.getItemDamage() == 6 && stack.stackTagCompound != null && stack.stackTagCompound.hasKey("newCount");
+		return stack.getItemDamage() == 6 && stack.getTagCompound() != null && stack.getTagCompound().hasKey("newCount");
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class ItemBlockBasic extends ItemBlock
 			}
 		}
 
-		if(stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+		if(stack.getTagCompound() == null || !stack.getTagCompound().hasKey("newCount"))
 		{
 			return true;
 		}
@@ -125,14 +125,14 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
-			if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
+			if(stack.getItemDamage() != 6 || stack.getTagCompound() == null || !stack.getTagCompound().hasKey("newCount"))
 			{
 				return null;
 			}
 		}
 
 		ItemStack ret = stack.copy();
-		ret.stackTagCompound.setInteger("itemCount", stack.stackTagCompound.getInteger("newCount"));
+		ret.getTagCompound().setInteger("itemCount", stack.getTagCompound().getInteger("newCount"));
 
 		return ret;
 	}
@@ -146,7 +146,7 @@ public class ItemBlockBasic extends ItemBlock
 		{
 			if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 			{
-				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
+				if(stack.getItemDamage() == 6 && stack.getTagCompound() != null)
 				{
 					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
 					InventoryBin inv = new InventoryBin(stack);

@@ -6,6 +6,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -14,9 +15,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderRobit extends RenderLiving
 {
-	public RenderRobit()
+	public RenderRobit(RenderManager renderManager)
 	{
-		super(new ModelRobit(), 0.5F);
+		super(renderManager, new ModelRobit(), 0.5F);
 	}
 
 	@Override

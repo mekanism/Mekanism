@@ -4,7 +4,9 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.entity.EntityFlame;
 
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -16,6 +18,11 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(Side.CLIENT)
 public class RenderFlame extends Render
 {
+    public RenderFlame(RenderManager renderManager)
+    {
+        super(renderManager);
+    }
+
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {
     	float alpha = (float)(entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
@@ -32,7 +39,7 @@ public class RenderFlame extends Render
         GL11.glRotatef((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0.0F, 0.0F, 1.0F);
         
-        Tessellator tessellator = Tessellator.instance;
+        WorldRenderer worldRender = Tessellator.getInstance().getWorldRenderer();
         
         int i = 0;
         float f2 = 0.0F;
@@ -50,12 +57,12 @@ public class RenderFlame extends Render
         {
             GL11.glRotatef(90F, 1.0F, 0.0F, 0.0F);
             GL11.glNormal3f(0.0F, 0.0F, scale);
-            tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(-8D, -2D, 0.0D, f2, f4);
-            tessellator.addVertexWithUV(8D, -2D, 0.0D, f3, f4);
-            tessellator.addVertexWithUV(8D, 2D, 0.0D, f3, f5);
-            tessellator.addVertexWithUV(-8D, 2D, 0.0D, f2, f5);
-            tessellator.draw();
+            worldRender.startDrawingQuads();
+            worldRender.addVertexWithUV(-8D, -2D, 0.0D, f2, f4);
+            worldRender.addVertexWithUV(8D, -2D, 0.0D, f3, f4);
+            worldRender.addVertexWithUV(8D, 2D, 0.0D, f3, f5);
+            worldRender.addVertexWithUV(-8D, 2D, 0.0D, f2, f5);
+            worldRender.finishDrawing();
         }
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);

@@ -290,7 +290,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				if(getEjectInv() instanceof IInventory)
 				{
-					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), EnumFacing.getOrientation(facing).getOpposite().ordinal(), false);
+					ItemStack remains = InventoryUtils.putStackInInventory((IInventory)getEjectInv(), getTopEject(false, null), EnumFacing.getFront(facing).getOpposite().ordinal(), false);
 
 					getTopEject(true, remains);
 				}
@@ -499,12 +499,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntity getPullInv()
 	{
-		return Coord4D.get(this).translate(0, 2, 0).getTileEntity(worldObj);
+		return Coord4D.get(this).add(0, 2, 0).getTileEntity(worldObj);
 	}
 
 	public TileEntity getEjectInv()
 	{
-		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
 
 		return new Coord4D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
@@ -1113,17 +1113,17 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntity getEjectTile()
 	{
-		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
 		return new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
 	}
 
 	@Override
 	public int[] getBoundSlots(Coord4D location, int side)
 	{
-		EnumFacing dir = EnumFacing.getOrientation(facing).getOpposite();
+		EnumFacing dir = EnumFacing.getFront(facing).getOpposite();
 
-		Coord4D eject = Coord4D.get(this).translate(dir.offsetX, 1, dir.offsetZ);
-		Coord4D pull = Coord4D.get(this).translate(0, 1, 0);
+		Coord4D eject = Coord4D.get(this).add(dir.offsetX, 1, dir.offsetZ);
+		Coord4D pull = Coord4D.get(this).add(0, 1, 0);
 
 		if((location.equals(eject) && side == dir.ordinal()) || (location.equals(pull) && side == 1))
 		{
@@ -1146,10 +1146,10 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack)
 	{
-		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
 
-		Coord4D eject = Coord4D.get(this).translate(side.offsetX, 1, side.offsetZ);
-		Coord4D pull = Coord4D.get(this).translate(0, 1, 0);
+		Coord4D eject = Coord4D.get(this).add(side.offsetX, 1, side.offsetZ);
+		Coord4D pull = Coord4D.get(this).add(0, 1, 0);
 
 		if(location.equals(eject))
 		{
@@ -1169,7 +1169,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j)
 	{
-		EnumFacing side = EnumFacing.getOrientation(facing).getOpposite();
+		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
 
 		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
 		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord, worldObj.provider.dimensionId);
@@ -1419,15 +1419,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	
 	public void writeSustainedData(ItemStack itemStack) 
 	{
-		itemStack.stackTagCompound.setBoolean("hasMinerConfig", true);
+		itemStack.getTagCompound().setBoolean("hasMinerConfig", true);
 
-		itemStack.stackTagCompound.setInteger("radius", radius);
-		itemStack.stackTagCompound.setInteger("minY", minY);
-		itemStack.stackTagCompound.setInteger("maxY", maxY);
-		itemStack.stackTagCompound.setBoolean("doEject", doEject);
-		itemStack.stackTagCompound.setBoolean("doPull", doPull);
-		itemStack.stackTagCompound.setBoolean("silkTouch", silkTouch);
-		itemStack.stackTagCompound.setBoolean("inverse", inverse);
+		itemStack.getTagCompound().setInteger("radius", radius);
+		itemStack.getTagCompound().setInteger("minY", minY);
+		itemStack.getTagCompound().setInteger("maxY", maxY);
+		itemStack.getTagCompound().setBoolean("doEject", doEject);
+		itemStack.getTagCompound().setBoolean("doPull", doPull);
+		itemStack.getTagCompound().setBoolean("silkTouch", silkTouch);
+		itemStack.getTagCompound().setBoolean("inverse", inverse);
 
 		NBTTagList filterTags = new NBTTagList();
 
@@ -1438,26 +1438,26 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 		if(filterTags.tagCount() != 0)
 		{
-			itemStack.stackTagCompound.setTag("filters", filterTags);
+			itemStack.getTagCompound().setTag("filters", filterTags);
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound.hasKey("hasMinerConfig"))
+		if(itemStack.getTagCompound().hasKey("hasMinerConfig"))
 		{
-			radius = itemStack.stackTagCompound.getInteger("radius");
-			minY = itemStack.stackTagCompound.getInteger("minY");
-			maxY = itemStack.stackTagCompound.getInteger("maxY");
-			doEject = itemStack.stackTagCompound.getBoolean("doEject");
-			doPull = itemStack.stackTagCompound.getBoolean("doPull");
-			silkTouch = itemStack.stackTagCompound.getBoolean("silkTouch");
-			inverse = itemStack.stackTagCompound.getBoolean("inverse");
+			radius = itemStack.getTagCompound().getInteger("radius");
+			minY = itemStack.getTagCompound().getInteger("minY");
+			maxY = itemStack.getTagCompound().getInteger("maxY");
+			doEject = itemStack.getTagCompound().getBoolean("doEject");
+			doPull = itemStack.getTagCompound().getBoolean("doPull");
+			silkTouch = itemStack.getTagCompound().getBoolean("silkTouch");
+			inverse = itemStack.getTagCompound().getBoolean("inverse");
 
-			if(itemStack.stackTagCompound.hasKey("filters"))
+			if(itemStack.getTagCompound().hasKey("filters"))
 			{
-				NBTTagList tagList = itemStack.stackTagCompound.getTagList("filters", NBT.TAG_COMPOUND);
+				NBTTagList tagList = itemStack.getTagCompound().getTagList("filters", NBT.TAG_COMPOUND);
 
 				for(int i = 0; i < tagList.tagCount(); i++)
 				{

@@ -5,7 +5,7 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemArmor;
@@ -27,7 +27,7 @@ public class ItemGasMask extends ItemArmor
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)

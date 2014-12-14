@@ -11,7 +11,7 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItems;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,7 +36,7 @@ public class ItemMekanismArmor extends ItemArmor
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}

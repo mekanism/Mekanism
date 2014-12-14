@@ -314,7 +314,7 @@ public class FusionReactor implements IFusionReactor
 		updatedThisTick = true;
 
 		Coord4D controllerPosition = Coord4D.get(controller);
-		Coord4D centreOfReactor = controllerPosition.getFromSide(EnumFacing.DOWN, 2);
+		Coord4D centreOfReactor = controllerPosition.offset(EnumFacing.DOWN, 2);
 
 		unformMultiblock();
 
@@ -358,7 +358,7 @@ public class FusionReactor implements IFusionReactor
 
 		for(int[] coords : positions)
 		{
-			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+			TileEntity tile = centre.add(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
 
 			if(tile instanceof IReactorBlock && ((IReactorBlock)tile).isFrame())
 			{
@@ -386,7 +386,7 @@ public class FusionReactor implements IFusionReactor
 
 		for(int[] coords : positions)
 		{
-			TileEntity tile = centre.clone().translate(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+			TileEntity tile = centre.add(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
 
 			if(tile instanceof ILaserReceptor && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0)))
 			{
@@ -419,7 +419,7 @@ public class FusionReactor implements IFusionReactor
 			{
 				for(int z = -1; x <= 1; x++)
 				{
-					Block tile = centre.clone().translate(x, y, z).getBlock(controller.getWorldObj());
+					Block tile = centre.add(x, y, z).getBlock(controller.getWorldObj());
 
 					if(!tile.isAir(controller.getWorldObj(), x, y, z))
 					{

@@ -9,9 +9,7 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.Upgrade;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -120,7 +118,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
 		EnumSet set = EnumSet.allOf(EnumFacing.class);
-		set.remove(EnumFacing.UNKNOWN);
+		set.remove(null);
 		return set;
 	}
 
@@ -389,7 +387,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public double injectEnergy(EnumFacing direction, double amount, double voltage)
 	{
-		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
+		if(Coord4D.get(this).offset(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
 		{
 			return amount;
 		}
@@ -407,7 +405,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double transferEnergyToAcceptor(EnumFacing side, double amount)
 	{
-		if(!(getConsumingSides().contains(side) || side == EnumFacing.UNKNOWN))
+		if(!(getConsumingSides().contains(side) || side == null))
 		{
 			return 0;
 		}

@@ -7,7 +7,7 @@ import mekanism.common.MekanismItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,7 +24,7 @@ public class BlockSalt extends Block
     
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		blockIcon = register.registerIcon("mekanism:SaltBlock");
 	}

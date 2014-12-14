@@ -75,13 +75,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
 
-			TileEntity tileEntity = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing)).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IGasHandler)
 			{
-				if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getOrientation(facing).getOpposite(), gasTank.getGas().getGas()))
+				if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), gasTank.getGas().getGas()))
 				{
-					gasTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getOrientation(facing).getOpposite(), toSend, true), true);
+					gasTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(side != EnumFacing.getOrientation(facing))
+		if(side != EnumFacing.getFront(facing))
 		{
 			return gasTank.canReceive(type);
 		}

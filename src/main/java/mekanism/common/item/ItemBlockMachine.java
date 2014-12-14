@@ -144,7 +144,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		MachineType type = MachineType.get(itemstack);
 
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+		if(!MekKeyHandler.isPressed(MekanismKeyHandler.sneakKey))
 		{
 			if(type == MachineType.PORTABLE_TANK)
 			{
@@ -158,7 +158,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " and " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
 		}
-		else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
+		else if(!MekKeyHandler.isPressed(MekanismKeyHandler.modeSwitchKey))
 		{
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
@@ -195,9 +195,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				list.add(EnumColor.AQUA + MekanismUtils.localize("tooltip.inventory") + ": " + EnumColor.GREY + LangUtils.transYesNo(getInventory(itemstack) != null && getInventory(itemstack).tagCount() != 0));
 			}
 
-			if(type.supportsUpgrades && itemstack.stackTagCompound != null && itemstack.stackTagCompound.hasKey("upgrades"))
+			if(type.supportsUpgrades && itemstack.getTagCompound() != null && itemstack.getTagCompound().hasKey("upgrades"))
 			{
-				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemstack.stackTagCompound);
+				Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemstack.getTagCompound());
 				
 				for(Map.Entry<Upgrade, Integer> entry : upgrades.entrySet())
 				{
@@ -260,9 +260,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(tileEntity instanceof IUpgradeTile)
 			{
-				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("upgrades"))
+				if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("upgrades"))
 				{
-					((IUpgradeTile)tileEntity).getComponent().read(stack.stackTagCompound);
+					((IUpgradeTile)tileEntity).getComponent().read(stack.getTagCompound());
 				}
 			}
 
@@ -270,20 +270,20 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				IInvConfiguration config = (IInvConfiguration)tileEntity;
 
-				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasSideData"))
+				if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("hasSideData"))
 				{
-					config.getEjector().setEjecting(stack.stackTagCompound.getBoolean("ejecting"));
+					config.getEjector().setEjecting(stack.getTagCompound().getBoolean("ejecting"));
 
 					for(int i = 0; i < 6; i++)
 					{
-						config.getConfiguration()[i] = stack.stackTagCompound.getByte("config"+i);
+						config.getConfiguration()[i] = stack.getTagCompound().getByte("config"+i);
 					}
 				}
 			}
 			
 			if(tileEntity instanceof ISustainedData)
 			{
-				if(stack.stackTagCompound != null)
+				if(stack.getTagCompound() != null)
 				{
 					((ISustainedData)tileEntity).readSustainedData(stack);
 				}
@@ -291,9 +291,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(tileEntity instanceof IRedstoneControl)
 			{
-				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("controlType"))
+				if(stack.getTagCompound() != null && stack.getTagCompound().hasKey("controlType"))
 				{
-					((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[stack.stackTagCompound.getInteger("controlType")]);
+					((IRedstoneControl)tileEntity).setControlType(RedstoneControl.values()[stack.getTagCompound().getInteger("controlType")]);
 				}
 			}
 
@@ -554,7 +554,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        				return itemstack;
 	        			}
 	        			
-	        			Coord4D trans = coord.getFromSide(EnumFacing.getOrientation(pos.sideHit));
+	        			Coord4D trans = coord.offset(EnumFacing.getFront(pos.sideHit));
 
 	                    if(!entityplayer.canPlayerEdit(trans.getPos().getX(), trans.getPos().getY(), trans.getPos().getZ(), pos.sideHit, itemstack))
 	                    {
@@ -581,23 +581,23 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public int getRecipeType(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemStack.stackTagCompound.getInteger("recipeType");
+		return itemStack.getTagCompound().getInteger("recipeType");
 	}
 
 	@Override
 	public void setRecipeType(int type, ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setInteger("recipeType", type);
+		itemStack.getTagCompound().setInteger("recipeType", type);
 	}
 
 	@Override
@@ -607,12 +607,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 			
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			itemStack.getTagCompound().setTag("Items", nbtTags);
 		}
 	}
 
@@ -623,12 +623,12 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 			
-			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+			return itemStack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		}
 
 		return null;
@@ -641,17 +641,17 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 			
 			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.fluidID == 0)
 			{
-				itemStack.stackTagCompound.removeTag("fluidTank");
+				itemStack.getTagCompound().removeTag("fluidTank");
 			}
 			else {
-				itemStack.stackTagCompound.setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+				itemStack.getTagCompound().setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
 			}
 		}
 	}
@@ -663,14 +663,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			if(itemStack.stackTagCompound.hasKey("fluidTank"))
+			if(itemStack.getTagCompound().hasKey("fluidTank"))
 			{
-				return FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank"));
+				return FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank"));
 			}
 		}
 
@@ -693,140 +693,140 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public void setAuthenticated(ItemStack itemStack, boolean auth)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setBoolean("authenticated", auth);
+		itemStack.getTagCompound().setBoolean("authenticated", auth);
 	}
 
 	@Override
 	public boolean getAuthenticated(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return false;
 		}
 
-		return itemStack.stackTagCompound.getBoolean("authenticated");
+		return itemStack.getTagCompound().getBoolean("authenticated");
 	}
 
 	@Override
 	public void setPassword(ItemStack itemStack, String pass)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setString("password", pass);
+		itemStack.getTagCompound().setString("password", pass);
 	}
 
 	@Override
 	public String getPassword(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return "";
 		}
 
-		return itemStack.stackTagCompound.getString("password");
+		return itemStack.getTagCompound().getString("password");
 	}
 
 	@Override
 	public void setLocked(ItemStack itemStack, boolean locked)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setBoolean("locked", locked);
+		itemStack.getTagCompound().setBoolean("locked", locked);
 	}
 
 	@Override
 	public boolean getLocked(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return false;
 		}
 
-		return itemStack.stackTagCompound.getBoolean("locked");
+		return itemStack.getTagCompound().getBoolean("locked");
 	}
 
 	@Override
 	public void setOpen(ItemStack itemStack, boolean open)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setBoolean("open", open);
+		itemStack.getTagCompound().setBoolean("open", open);
 	}
 
 	@Override
 	public boolean getOpen(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return false;
 		}
 
-		return itemStack.stackTagCompound.getBoolean("open");
+		return itemStack.getTagCompound().getBoolean("open");
 	}
 
 	public void setPrevScale(ItemStack itemStack, float prevLidAngle)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setFloat("prevScale", prevLidAngle);
+		itemStack.getTagCompound().setFloat("prevScale", prevLidAngle);
 	}
 
 	public float getPrevScale(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0.0F;
 		}
 
-		return itemStack.stackTagCompound.getFloat("prevScale");
+		return itemStack.getTagCompound().getFloat("prevScale");
 	}
 	
 	public void setBucketMode(ItemStack itemStack, boolean bucketMode)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setBoolean("bucketMode", bucketMode);
+		itemStack.getTagCompound().setBoolean("bucketMode", bucketMode);
 	}
 	
 	public boolean getBucketMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return false;
 		}
 
-		return itemStack.stackTagCompound.getBoolean("bucketMode");
+		return itemStack.getTagCompound().getBoolean("bucketMode");
 	}
 
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null || !MachineType.get(itemStack).isElectric)
+		if(itemStack.getTagCompound() == null || !MachineType.get(itemStack).isElectric)
 		{
 			return 0;
 		}
 
-		return itemStack.stackTagCompound.getDouble("electricity");
+		return itemStack.getTagCompound().getDouble("electricity");
 	}
 
 	@Override
@@ -837,13 +837,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			return;
 		}
 		
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		itemStack.getTagCompound().setDouble("electricity", electricityStored);
 	}
 
 	@Override

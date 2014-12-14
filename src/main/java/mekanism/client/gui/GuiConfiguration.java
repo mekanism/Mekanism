@@ -132,7 +132,7 @@ public class GuiConfiguration extends GuiMekanism
 			int x = inputPosMap.get(i).xPos;
 			int y = inputPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getOrientation(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
 
 			if(color != null)
 			{
@@ -172,7 +172,7 @@ public class GuiConfiguration extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRender.renderIcon(80, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
+//			itemRender.renderIcon(80, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
@@ -196,7 +196,7 @@ public class GuiConfiguration extends GuiMekanism
 			int x = inputPosMap.get(i).xPos;
 			int y = inputPosMap.get(i).yPos;
 
-			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getOrientation(i));
+			EnumColor color = configurable.getEjector().getInputColor(EnumFacing.getFront(i));
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{

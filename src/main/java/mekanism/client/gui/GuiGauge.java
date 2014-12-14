@@ -4,10 +4,10 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 public abstract class GuiGauge<T> extends GuiElement
 {
@@ -36,7 +36,7 @@ public abstract class GuiGauge<T> extends GuiElement
 
 	public abstract int getScaledLevel();
 
-	public abstract IIcon getIcon();
+	public abstract TextureAtlasSprite getIcon();
 
 	public abstract String getTooltipText();
 
@@ -125,12 +125,14 @@ public abstract class GuiGauge<T> extends GuiElement
 		dummyType = type;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
-	
+*/
+
 	public static enum Type
 	{
 		STANDARD(18, 60, 1, "GuiGaugeStandard.png"),

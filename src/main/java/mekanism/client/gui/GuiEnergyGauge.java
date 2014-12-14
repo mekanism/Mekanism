@@ -4,10 +4,10 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 public class GuiEnergyGauge extends GuiGauge
 {
@@ -20,11 +20,13 @@ public class GuiEnergyGauge extends GuiGauge
 		infoHandler = handler;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
 	}
+*/
 
 	@Override
 	public int getScaledLevel()
@@ -33,7 +35,7 @@ public class GuiEnergyGauge extends GuiGauge
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		return MekanismRenderer.energyIcon;
 	}

@@ -6,7 +6,7 @@ import mekanism.common.CTMData;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 /**
  * CTM RenderBlocks adapted from Chisel
@@ -102,7 +102,7 @@ public class RenderBlocksCTM extends RenderBlocks
 
 	void side(int a, int b, int c, int d, int iconIndex, boolean flip, int side)
 	{
-		IIcon icon = iconIndex >= 16 ? dataCTM.getSmallSubmap(side).icons[iconIndex - 16] : dataCTM.getSubmap(side).icons[iconIndex];
+		TextureAtlasSprite icon = iconIndex >= 16 ? dataCTM.getSmallSubmap(side).icons[iconIndex - 16] : dataCTM.getSubmap(side).icons[iconIndex];
 
 		double u0 = icon.getMaxU();
 		double u1 = icon.getMinU();
@@ -137,11 +137,11 @@ public class RenderBlocksCTM extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXNeg(Block block, double x, double y, double z, IIcon icon)
+	public void renderFaceXNeg(Block block, double x, double y, double z, TextureAtlasSprite icon)
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
-			IIcon i = rendererOld.overrideBlockTexture;
+			TextureAtlasSprite i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 1.0, 0.0, i.getMinU(), i.getMinV());
 			tessellator.addVertexWithUV(0.0, 0.0, 0.0, i.getMinU(), i.getMaxV());
@@ -160,11 +160,11 @@ public class RenderBlocksCTM extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceXPos(Block block, double x, double y, double z, IIcon icon)
+	public void renderFaceXPos(Block block, double x, double y, double z, TextureAtlasSprite icon)
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
-			IIcon i = rendererOld.overrideBlockTexture;
+			TextureAtlasSprite i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(1.0, 1.0, 1.0, i.getMaxU(), i.getMinV());
 			tessellator.addVertexWithUV(1.0, 0.0, 1.0, i.getMaxU(), i.getMaxV());
@@ -183,11 +183,11 @@ public class RenderBlocksCTM extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceZNeg(Block block, double x, double y, double z, IIcon icon)
+	public void renderFaceZNeg(Block block, double x, double y, double z, TextureAtlasSprite icon)
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
-			IIcon i = rendererOld.overrideBlockTexture;
+			TextureAtlasSprite i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(1.0, 1.0, 0.0, i.getMaxU(), i.getMinV());
 			tessellator.addVertexWithUV(1.0, 0.0, 0.0, i.getMaxU(), i.getMaxV());
@@ -207,11 +207,11 @@ public class RenderBlocksCTM extends RenderBlocks
 
 
 	@Override
-	public void renderFaceZPos(Block block, double x, double y, double z, IIcon icon)
+	public void renderFaceZPos(Block block, double x, double y, double z, TextureAtlasSprite icon)
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
-			IIcon i = rendererOld.overrideBlockTexture;
+			TextureAtlasSprite i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 1.0, 1.0, i.getMinU(), i.getMinV());
 			tessellator.addVertexWithUV(0.0, 0.0, 1.0, i.getMinU(), i.getMaxV());
@@ -230,11 +230,11 @@ public class RenderBlocksCTM extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYNeg(Block block, double x, double y, double z, IIcon icon)
+	public void renderFaceYNeg(Block block, double x, double y, double z, TextureAtlasSprite icon)
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
-			IIcon i = rendererOld.overrideBlockTexture;
+			TextureAtlasSprite i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 0.0, 1.0, i.getMinU(), i.getMaxV());
 			tessellator.addVertexWithUV(0.0, 0.0, 0.0, i.getMinU(), i.getMinV());
@@ -253,11 +253,11 @@ public class RenderBlocksCTM extends RenderBlocks
 	}
 
 	@Override
-	public void renderFaceYPos(Block block, double x, double y, double z, IIcon icon)
+	public void renderFaceYPos(Block block, double x, double y, double z, TextureAtlasSprite icon)
 	{
 		if(rendererOld != null && rendererOld.hasOverrideBlockTexture())
 		{
-			IIcon i = rendererOld.overrideBlockTexture;
+			TextureAtlasSprite i = rendererOld.overrideBlockTexture;
 
 			tessellator.addVertexWithUV(0.0, 1.0, 0.0, i.getMinU(), i.getMinV());
 			tessellator.addVertexWithUV(0.0, 1.0, 1.0, i.getMinU(), i.getMaxV());

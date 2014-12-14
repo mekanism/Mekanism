@@ -1,6 +1,6 @@
 package mekanism.client.render.block;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -9,14 +9,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Code licensed under GPLv2
  * @author AUTOMATIC_MAIDEN, asie, pokefenn, unpairedbracket
  */
-public class TextureVirtual implements IIcon
+public class TextureVirtual implements TextureAtlasSprite
 {
 	int ox, oy;
 	float u0, u1, v0, v1;
 	String name;
-	IIcon icon;
+	TextureAtlasSprite icon;
 
-	TextureVirtual(IIcon parent, int w, int h, int x, int y)
+	TextureVirtual(TextureAtlasSprite parent, int w, int h, int x, int y)
 	{
 		icon = parent;
 

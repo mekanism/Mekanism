@@ -39,7 +39,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(EnumFacing.WEST);
+			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
 			int type = 0;
 
 			if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)

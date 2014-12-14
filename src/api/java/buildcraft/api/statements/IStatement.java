@@ -8,8 +8,8 @@
  */
 package buildcraft.api.statements;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,10 +25,10 @@ public interface IStatement {
 	String getUniqueTag();
 
 	@SideOnly(Side.CLIENT)
-	IIcon getIcon();
+	TextureAtlasSprite getIcon();
 
 	@SideOnly(Side.CLIENT)
-	void registerIcons(IIconRegister iconRegister);
+	void registerIcons(TextureAtlasSpriteRegister iconRegister);
 
 	/**
 	 * Return the maximum number of parameter this trigger can have, 0 if none.

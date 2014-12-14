@@ -5,8 +5,8 @@ import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -18,11 +18,11 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderObsidianTNTPrimed extends Render
 {
-	private RenderBlocks blockRenderer = new RenderBlocks();
 	private ModelObsidianTNT model = new ModelObsidianTNT();
 
-	public RenderObsidianTNTPrimed()
+	public RenderObsidianTNTPrimed(RenderManager renderManager)
 	{
+		super(renderManager);
 		shadowSize = 0.5F;
 	}
 

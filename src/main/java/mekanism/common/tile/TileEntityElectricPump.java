@@ -130,9 +130,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 		if(fluidTank.getFluid() != null)
 		{
-			for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing orientation : EnumFacing.values())
 			{
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(orientation).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(orientation).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IFluidHandler)
 				{
@@ -154,9 +154,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		Collections.shuffle(tempPumpList);
 
 		//First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			Coord4D wrapper = Coord4D.get(this).getFromSide(orientation);
+			Coord4D wrapper = Coord4D.get(this).offset(orientation);
 
 			if(MekanismUtils.isFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()))
 			{
@@ -195,9 +195,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 
 			//Add all the blocks surrounding this recurring node to the recurring node list
-			for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing orientation : EnumFacing.values())
 			{
-				Coord4D side = wrapper.getFromSide(orientation);
+				Coord4D side = wrapper.offset(orientation);
 
 				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{
@@ -347,7 +347,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 
 	@Override
@@ -375,7 +375,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing direction)
 	{
-		if(direction == EnumFacing.getOrientation(1))
+		if(direction == EnumFacing.getFront(1))
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}
@@ -404,7 +404,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.getOrientation(1))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().getFluid() == resource.getFluid() && from == EnumFacing.getFront(1))
 		{
 			return drain(from, resource.amount, doDrain);
 		}
@@ -421,7 +421,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain)
 	{
-		if(from == EnumFacing.getOrientation(1))
+		if(from == EnumFacing.getFront(1))
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
@@ -438,7 +438,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return from == EnumFacing.getOrientation(1);
+		return from == EnumFacing.getFront(1);
 	}
 
 	@Override

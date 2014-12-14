@@ -25,9 +25,9 @@ public class Pos3D
 	
 	public Pos3D(Vec3 vec)
 	{
-		xPos = vec.getPos().getX();
-		yPos = vec.getPos().getY();
-		zPos = vec.getPos().getZ();
+		xPos = vec.xCoord;
+		yPos = vec.yCoord;
+		zPos = vec.zCoord;
 	}
 
 	public Pos3D(double x, double y, double z)
@@ -39,9 +39,9 @@ public class Pos3D
 	
 	public Pos3D(Coord4D coord)
 	{
-		xPos = coord.getPos().getX();
-		yPos = coord.getPos().getY();
-		zPos = coord.getPos().getZ();
+		xPos = coord.getX();
+		yPos = coord.getY();
+		zPos = coord.getZ();
 	}
 
 	/**
@@ -92,9 +92,9 @@ public class Pos3D
 
 	/**
 	 * Translates this Pos3D by the defined values.
-	 * @param x - amount to translate on the x axis
-	 * @param y - amount to translate on the y axis
-	 * @param z - amount to translate on the z axis
+	 * @param x - amount to add on the x axis
+	 * @param y - amount to add on the y axis
+	 * @param z - amount to add on the z axis
 	 * @return the translated Pos3D
 	 */
 	public Pos3D translate(double x, double y, double z)
@@ -107,8 +107,8 @@ public class Pos3D
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but with a Pos3D value instead.
-	 * @param pos - Pos3D value to translate by
+	 * Performs the same operation as add(x, y, z), but with a Pos3D value instead.
+	 * @param pos - Pos3D value to add by
 	 * @return translated Pos3D
 	 */
 	public Pos3D translate(Pos3D pos)
@@ -117,21 +117,21 @@ public class Pos3D
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
+	 * Performs the same operation as add(x, y, z), but by a set amount in a EnumFacing
 	 */
 	public Pos3D translate(EnumFacing direction, double amount)
 	{
-		return translate(direction.offsetX * amount, direction.offsetY * amount, direction.offsetZ * amount);
+		return translate(direction.getFrontOffsetX() * amount, direction.getFrontOffsetY() * amount, direction.getFrontOffsetZ() * amount);
 	}
 
 	/**
-	 * Performs the same operation as translate(x, y, z), but by a set amount in a EnumFacing
+	 * Performs the same operation as add(x, y, z), but by a set amount in a EnumFacing
 	 */
 	public Pos3D translateExcludingSide(EnumFacing direction, double amount)
 	{
-		if(direction.offsetX == 0) xPos += amount;
-		if(direction.offsetY == 0) yPos += amount;
-		if(direction.offsetZ == 0) zPos += amount;
+		if(direction.getFrontOffsetX() == 0) xPos += amount;
+		if(direction.getFrontOffsetY() == 0) yPos += amount;
+		if(direction.getFrontOffsetZ() == 0) zPos += amount;
 
 		return this;
 	}
@@ -239,14 +239,7 @@ public class Pos3D
 
 	public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2)
 	{
-		return AxisAlignedBB.getBoundingBox(
-				Math.min(pos1.xPos, pos2.xPos),
-				Math.min(pos1.yPos, pos2.yPos),
-				Math.min(pos1.zPos, pos2.zPos),
-				Math.max(pos1.xPos, pos2.xPos),
-				Math.max(pos1.yPos, pos2.yPos),
-				Math.max(pos1.zPos, pos2.zPos)
-		);
+		return AxisAlignedBB.fromBounds(pos1.xPos, pos1.yPos, pos1.zPos, pos2.xPos, pos2.yPos, pos2.zPos);
 	}
 
 	@Override

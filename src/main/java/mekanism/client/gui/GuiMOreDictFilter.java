@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -92,7 +93,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		oreDictText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
+		oreDictText = new GuiTextField(0, fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
 		oreDictText.setMaxStringLength(12);
 		oreDictText.setFocused(true);
 	}
@@ -102,7 +103,9 @@ public class GuiMOreDictFilter extends GuiMekanism
 	{
 		if(!oreDictText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
-			super.keyTyped(c, i);
+			try{super.keyTyped(c, i);}
+			catch(IOException e){}
+
 		}
 
 		if(oreDictText.isFocused() && i == Keyboard.KEY_RETURN)
@@ -120,7 +123,9 @@ public class GuiMOreDictFilter extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){}
+
 
 		if(guibutton.id == 0)
 		{
@@ -168,7 +173,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 12, 19);
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
@@ -178,7 +183,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), filter.replaceStack, 149, 19);
+			itemRender.renderItemAndEffectIntoGUI(filter.replaceStack, 149, 19);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}

@@ -12,7 +12,7 @@ import mekanism.api.util.ListUtils;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -37,7 +37,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register) {}
+	public void registerIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
@@ -277,12 +277,12 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public int getMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemStack.stackTagCompound.getInteger("mode");
+		return itemStack.getTagCompound().getInteger("mode");
 	}
 
 	public String getModeName(ItemStack itemStack)
@@ -308,12 +308,12 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 	public void toggleMode(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemStack.stackTagCompound.setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
+		itemStack.getTagCompound().setInteger("mode", getMode(itemStack) < 4 ? getMode(itemStack)+1 : 0);
 	}
 
 	@Override
@@ -350,9 +350,9 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 			found.add(pointer);
 
-			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.values())
 			{
-				Coord4D coord = pointer.getFromSide(side);
+				Coord4D coord = pointer.offset(side);
 
 				if(coord.exists(world) && checkID(coord.getBlock(world)) && (coord.getMetadata(world) == stack.getItemDamage() || (MekanismUtils.getOreDictName(stack).contains("logWood") && coord.getMetadata(world) % 4 == stack.getItemDamage() % 4)))
 				{

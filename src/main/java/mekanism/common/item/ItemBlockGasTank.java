@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -57,7 +57,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
@@ -97,7 +97,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+		if(!MekKeyHandler.isPressed(MekanismKeyHandler.sneakKey))
 		{
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
 		}
@@ -115,12 +115,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		GasStack stored = GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 
 		if(stored == null)
 		{
@@ -136,7 +136,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -144,14 +144,14 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		if(stack == null || stack.amount == 0)
 		{
 			itemstack.setItemDamage(100);
-			itemstack.stackTagCompound.removeTag("stored");
+			itemstack.getTagCompound().removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
+			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -248,12 +248,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			itemStack.getTagCompound().setTag("Items", nbtTags);
 		}
 	}
 
@@ -264,12 +264,12 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+			return itemStack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		}
 
 		return null;

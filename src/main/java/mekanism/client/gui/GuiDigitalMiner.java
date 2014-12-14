@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,8 @@ public class GuiDigitalMiner extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){};
 
 		if(guibutton.id == 0)
 		{
@@ -180,8 +182,8 @@ public class GuiDigitalMiner extends GuiMekanism
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
 			
-			itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), tileEntity.missingStack, 144, 27);
+//			itemRender.renderIcon(144, 27, MekanismRenderer.getColorIcon(EnumColor.DARK_RED), 16, 16);
+			itemRender.renderItemAndEffectIntoGUI(tileEntity.missingStack, 144, 27);
 			
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

@@ -5,7 +5,7 @@ import mekanism.api.EnumColor;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,7 +27,7 @@ public class ItemBlockPlastic extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}

@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -291,9 +292,9 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int type)
+	protected void mouseReleased(int x, int y, int type)
 	{
-		super.mouseMovedOrUp(x, y, type);
+		super.mouseReleased(x, y, type);
 
 		if(type == 0 && isDragging)
 		{
@@ -317,15 +318,15 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		String prevMin = minField != null ? minField.getText() : "";
 		String prevMax = maxField != null ? maxField.getText() : "";
 
-		radiusField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 67, 26, 11);
+		radiusField = new GuiTextField(0, fontRendererObj, guiWidth + 12, guiHeight + 67, 26, 11);
 		radiusField.setMaxStringLength(2);
 		radiusField.setText(prevRad);
 
-		minField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 92, 26, 11);
+		minField = new GuiTextField(1, fontRendererObj, guiWidth + 12, guiHeight + 92, 26, 11);
 		minField.setMaxStringLength(3);
 		minField.setText(prevMin);
 
-		maxField = new GuiTextField(fontRendererObj, guiWidth + 12, guiHeight + 117, 26, 11);
+		maxField = new GuiTextField(2, fontRendererObj, guiWidth + 12, guiHeight + 117, 26, 11);
 		maxField.setMaxStringLength(3);
 		maxField.setText(prevMax);
 	}
@@ -333,7 +334,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){}
 
 		if(guibutton.id == 0)
 		{
@@ -375,7 +377,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.itemType, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
@@ -396,7 +398,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), oreDictStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(Exception e) {}
@@ -412,7 +414,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 					{
 						GL11.glPushMatrix();
 						GL11.glEnable(GL11.GL_LIGHTING);
-						itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.materialItem, 59, yStart + 3);
+						itemRender.renderItemAndEffectIntoGUI(itemFilter.materialItem, 59, yStart + 3);
 						GL11.glDisable(GL11.GL_LIGHTING);
 						GL11.glPopMatrix();
 					}
@@ -433,7 +435,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						try {
 							GL11.glPushMatrix();
 							GL11.glEnable(GL11.GL_LIGHTING);
-							itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), modIDStacks.get(filter).renderStack, 59, yStart + 3);
+							itemRender.renderItemAndEffectIntoGUI(modIDStacks.get(filter).renderStack, 59, yStart + 3);
 							GL11.glDisable(GL11.GL_LIGHTING);
 							GL11.glPopMatrix();
 						} catch(Exception e) {}
@@ -549,7 +551,8 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		if((!radiusField.isFocused() && !minField.isFocused() && !maxField.isFocused()) || i == Keyboard.KEY_ESCAPE)
 		{
-			super.keyTyped(c, i);
+			try{super.keyTyped(c, i);}
+			catch(IOException e){};
 		}
 
 		if(i == Keyboard.KEY_RETURN)

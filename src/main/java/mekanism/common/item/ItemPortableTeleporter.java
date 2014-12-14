@@ -67,42 +67,42 @@ public class ItemPortableTeleporter extends ItemEnergized
 
 	public int getStatus(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemstack.stackTagCompound.getInteger("status");
+		return itemstack.getTagCompound().getInteger("status");
 	}
 
 	public void setStatus(ItemStack itemstack, int status)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setInteger("status", status);
+		itemstack.getTagCompound().setInteger("status", status);
 	}
 
 	public int getDigit(ItemStack itemstack, int index)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemstack.stackTagCompound.getInteger("digit"+index);
+		return itemstack.getTagCompound().getInteger("digit"+index);
 	}
 
 	public void setDigit(ItemStack itemstack, int index, int digit)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setInteger("digit"+index, digit);
+		itemstack.getTagCompound().setInteger("digit"+index, digit);
 	}
 
 	@Override

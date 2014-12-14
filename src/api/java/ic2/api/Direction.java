@@ -41,7 +41,7 @@ public enum Direction {
 	}
 
 	public static Direction fromEnumFacing(EnumFacing dir) {
-		if (dir == EnumFacing.UNKNOWN) return null;
+		if (dir == null) return null;
 
 		return fromSideValue(dir.ordinal());
 	}
@@ -109,7 +109,7 @@ public enum Direction {
 	}
 
 	public EnumFacing toEnumFacing() {
-		return EnumFacing.getOrientation(toSideValue());
+		return EnumFacing.getFront(toSideValue());
 	}
 
 	public static final Direction[] directions = Direction.values();

@@ -46,9 +46,9 @@ public class RenderBin extends TileEntitySpecialRenderer
 				amount = Integer.toString(tileEntity.clientAmount);
 			}
 
-			Coord4D obj = Coord4D.get(tileEntity).getFromSide(EnumFacing.getOrientation(tileEntity.facing));
+			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.getFront(tileEntity.facing));
 
-			if(tileEntity.getWorldObj().getBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()).isSideSolid(tileEntity.getWorldObj(), obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), EnumFacing.getOrientation(tileEntity.facing).getOpposite()))
+			if(tileEntity.getWorldObj().getBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()).isSideSolid(tileEntity.getWorldObj(), obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), EnumFacing.getFront(tileEntity.facing).getOpposite()))
 			{
 				return;
 			}
@@ -60,7 +60,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 			{
 				GL11.glPushMatrix();
 
-				switch(EnumFacing.getOrientation(tileEntity.facing))
+				switch(EnumFacing.getFront(tileEntity.facing))
 				{
 					case NORTH:
 						GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
@@ -97,7 +97,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			if(amount != "")
 			{
-				renderText(amount, EnumFacing.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
+				renderText(amount, EnumFacing.getFront(tileEntity.facing), 0.02F, x, y - 0.31F, z);
 			}
 		}
 	}

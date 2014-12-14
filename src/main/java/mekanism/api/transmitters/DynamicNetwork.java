@@ -47,9 +47,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	protected void clearAround(IGridTransmitter<N> transmitter)
 	{
-		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
-			Coord4D coord = Coord4D.get(transmitter.getTile()).getFromSide(side);
+			Coord4D coord = Coord4D.get(transmitter.getTile()).offset(side);
 			
 			if(possibleAcceptors.containsKey(coord))
 			{
@@ -128,7 +128,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			return null;
 		}
 		
-		return transmitters.iterator().next().getTile().getWorldObj();
+		return transmitters.iterator().next().getTile().getWorld();
 	}
 	
 	protected Range4D genPacketRange()
@@ -141,26 +141,26 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		
 		Coord4D initCoord = Coord4D.get(transmitters.iterator().next().getTile());
 		
-		int minX = initCoord.getPos().getX();
-		int minY = initCoord.getPos().getY();
-		int minZ = initCoord.getPos().getZ();
-		int maxX = initCoord.getPos().getX();
-		int maxY = initCoord.getPos().getY();
-		int maxZ = initCoord.getPos().getZ();
+		int minX = initCoord.getX();
+		int minY = initCoord.getY();
+		int minZ = initCoord.getZ();
+		int maxX = initCoord.getX();
+		int maxY = initCoord.getY();
+		int maxZ = initCoord.getZ();
 		
 		for(IGridTransmitter transmitter : transmitters)
 		{
 			Coord4D coord = Coord4D.get(transmitter.getTile());
 			
-			if(coord.getPos().getX() < minX) minX = coord.getPos().getX();
-			if(coord.getPos().getY() < minY) minY = coord.getPos().getY();
-			if(coord.getPos().getZ() < minZ) minZ = coord.getPos().getZ();
-			if(coord.getPos().getX() > maxX) maxX = coord.getPos().getX();
-			if(coord.getPos().getY() > maxY) maxY = coord.getPos().getY();
-			if(coord.getPos().getZ() > maxZ) maxZ = coord.getPos().getZ();
+			if(coord.getX() < minX) minX = coord.getX();
+			if(coord.getY() < minY) minY = coord.getY();
+			if(coord.getZ() < minZ) minZ = coord.getZ();
+			if(coord.getX() > maxX) maxX = coord.getX();
+			if(coord.getY() > maxY) maxY = coord.getY();
+			if(coord.getZ() > maxZ) maxZ = coord.getZ();
 		}
 		
-		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, getWorld().provider.dimensionId);
+		return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, getWorld().provider.getDimensionId());
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 			if(aTransmitter instanceof TileEntity)
 			{
-				if(!((TileEntity)aTransmitter).getWorldObj().isRemote)
+				if(!((TileEntity)aTransmitter).getWorld().isRemote)
 				{
 					TransmitterNetworkRegistry.getInstance().registerNetwork(this);
 				}
@@ -309,13 +309,13 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	{
 		if(transmitter instanceof TileEntity)
 		{
-			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorldObj(), getTransmissionType(), Coord4D.get((TileEntity)transmitter));
+			NetworkFinder finder = new NetworkFinder(((TileEntity)transmitter).getWorld(), getTransmissionType(), Coord4D.get((TileEntity)transmitter));
 			List<Coord4D> partNetwork = finder.exploreNetwork();
 			Set<IGridTransmitter<N>> newTransporters = new HashSet<IGridTransmitter<N>>();
 
 			for(Coord4D node : partNetwork)
 			{
-				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).getWorldObj());
+				TileEntity nodeTile = node.getTileEntity(((TileEntity)transmitter).getWorld());
 
 				if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType(), (TileEntity)transmitter))
 				{
@@ -342,9 +342,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			boolean[] dealtWith = {false, false, false, false, false, false};
 			List<ITransmitterNetwork<A, N>> newNetworks = new ArrayList<ITransmitterNetwork<A, N>>();
 
-			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.values())
 			{
-				TileEntity sideTile = Coord4D.get((TileEntity)splitPoint).getFromSide(side).getTileEntity(((TileEntity)splitPoint).getWorldObj());
+				TileEntity sideTile = Coord4D.get((TileEntity)splitPoint).offset(side).getTileEntity(((TileEntity)splitPoint).getWorld());
 
 				if(sideTile != null)
 				{
@@ -358,7 +358,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				if(TransmissionType.checkTransmissionType(connectedBlockA, getTransmissionType()) && !dealtWith[count])
 				{
-					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).getWorldObj(), getTransmissionType(), Coord4D.get(connectedBlockA), Coord4D.get((TileEntity)splitPoint));
+					NetworkFinder finder = new NetworkFinder(((TileEntity)splitPoint).getWorld(), getTransmissionType(), Coord4D.get(connectedBlockA), Coord4D.get((TileEntity)splitPoint));
 					List<Coord4D> partNetwork = finder.exploreNetwork();
 
 					for(int check = count; check < connectedBlocks.length; check++)
@@ -383,7 +383,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 					for(Coord4D node : finder.iterated)
 					{
-						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).getWorldObj());
+						TileEntity nodeTile = node.getTileEntity(((TileEntity)splitPoint).getWorld());
 
 						if(TransmissionType.checkTransmissionType(nodeTile, getTransmissionType()))
 						{
@@ -508,9 +508,9 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 				toIgnore.add(location);
 			}
 
-			for(EnumFacing direction : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing direction : EnumFacing.values())
 			{
-				Coord4D obj = location.getFromSide(direction);
+				Coord4D obj = location.offset(direction);
 
 				if(!iterated.contains(obj) && !toIgnore.contains(obj))
 				{

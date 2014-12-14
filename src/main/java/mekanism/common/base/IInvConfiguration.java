@@ -27,7 +27,7 @@ public interface IInvConfiguration
 	 * Gets this machine's current orientation.
 	 * @return
 	 */
-	public int getOrientation();
+	public int getFront();
 
 	/**
 	 * Gets this machine's ejector.

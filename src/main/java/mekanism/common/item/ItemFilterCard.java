@@ -75,35 +75,35 @@ public class ItemFilterCard extends ItemMekanism
 	
 	public void setData(ItemStack itemstack, NBTTagCompound data)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
 		if(data != null)
 		{
-			itemstack.stackTagCompound.setTag("data", data);
+			itemstack.getTagCompound().setTag("data", data);
 		}
 		else {
-			itemstack.stackTagCompound.removeTag("data");
+			itemstack.getTagCompound().removeTag("data");
 		}
 	}
 
 	public NBTTagCompound getData(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return null;
 		}
 		
-		NBTTagCompound data = itemstack.stackTagCompound.getCompoundTag("data");
+		NBTTagCompound data = itemstack.getTagCompound().getCompoundTag("data");
 		
 		if(data.hasNoTags())
 		{
 			return null;
 		}
 		else {
-			return itemstack.stackTagCompound.getCompoundTag("data");
+			return itemstack.getTagCompound().getCompoundTag("data");
 		}
 	}
 

@@ -6,13 +6,13 @@ import mekanism.common.tile.TileEntityObsidianTNT;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockObsidianTNT extends Block
 {
-	public IIcon[] icons = new IIcon[256];
+	public TextureAtlasSprite[] icons = new TextureAtlasSprite[256];
 
 	public BlockObsidianTNT()
 	{
@@ -30,7 +30,7 @@ public class BlockObsidianTNT extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z)

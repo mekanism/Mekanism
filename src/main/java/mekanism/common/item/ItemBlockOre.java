@@ -12,7 +12,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -39,7 +39,7 @@ public class ItemBlockOre extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+		if(!MekKeyHandler.isPressed(MekanismKeyHandler.sneakKey))
 		{
 			list.add("Hold " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " for details.");
 		}
@@ -55,7 +55,7 @@ public class ItemBlockOre extends ItemBlock
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
+	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}

@@ -44,7 +44,7 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, (float)tileEntity.gasTank.getStored()/tileEntity.gasTank.getMaxGas());
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getListAndRender(EnumFacing.getOrientation(tileEntity.facing), tileEntity.gasTank.getGas().getGas()).render();
+			getListAndRender(EnumFacing.getFront(tileEntity.facing), tileEntity.gasTank.getGas().getGas()).render();
 			GL11.glColor4f(1, 1, 1, 1);
 
 			pop();

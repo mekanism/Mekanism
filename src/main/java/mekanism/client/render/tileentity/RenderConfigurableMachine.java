@@ -66,7 +66,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 			if(xPos == tileEntity.getPos().getX() && yPos == tileEntity.getPos().getY() && zPos == tileEntity.getPos().getZ())
 			{
-				EnumColor color = configurable.getSideData().get(configurable.getConfiguration()[MekanismUtils.getBaseOrientation(pos.sideHit, configurable.getOrientation())]).color;
+				EnumColor color = configurable.getSideData().get(configurable.getConfiguration()[MekanismUtils.getBaseOrientation(pos.sideHit, configurable.getFront())]).color;
 
 				push();
 
@@ -75,7 +75,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				GL11.glTranslatef((float)x, (float)y, (float)z);
 
-				int display = getOverlayDisplay(world, EnumFacing.getOrientation(pos.sideHit), color).display;
+				int display = getOverlayDisplay(world, EnumFacing.getFront(pos.sideHit), color).display;
 				GL11.glCallList(display);
 
 				pop();

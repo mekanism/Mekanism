@@ -23,6 +23,11 @@ public class RenderBalloon extends Render
 
 	public ModelBalloon model = new ModelBalloon();
 
+	public RenderBalloon(RenderManager renderManager)
+	{
+		super(renderManager);
+	}
+
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity)
 	{
@@ -40,9 +45,9 @@ public class RenderBalloon extends Render
 			y = (balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY)*partialTick);
 			z = (balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ)*partialTick);
 
-			x -= RenderManager.renderPosX;
-			y -= RenderManager.renderPosY;
-			z -= RenderManager.renderPosZ;
+			x -= renderManager.viewerPosX;
+			y -= renderManager.viewerPosY;
+			z -= renderManager.viewerPosZ;
 
 			y += balloon.latchedEntity.height + 1.7F;
 		}

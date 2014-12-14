@@ -59,18 +59,18 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					Set<ITransmitterNetwork> iteratedNetworks = new HashSet<ITransmitterNetwork>();
 					
-					for(EnumFacing iterSide : EnumFacing.VALID_DIRECTIONS)
+					for(EnumFacing iterSide : EnumFacing.values())
 					{
-						Coord4D coord = Coord4D.get(tileEntity).getFromSide(iterSide);
+						Coord4D coord = Coord4D.get(tileEntity).offset(iterSide);
 						
 						if(coord.getTileEntity(world) instanceof IGridTransmitter)
 						{
 							IGridTransmitter<?> transmitter = (IGridTransmitter<?>)coord.getTileEntity(world);
 							
-							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.getFromSide(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
+							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.offset(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
 							{
 								player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[" + transmitter.getTransmissionType().getName() + "]" + EnumColor.GREY + " -------------"));
-								player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().acceptorDirections.get(coord.getFromSide(iterSide.getOpposite()))));
+								player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Connected sides: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().acceptorDirections.get(coord.offset(iterSide.getOpposite()))));
 								player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 								
 								iteratedNetworks.add(transmitter.getTransmitterNetwork());

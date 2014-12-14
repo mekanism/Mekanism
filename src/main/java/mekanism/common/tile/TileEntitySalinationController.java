@@ -358,21 +358,21 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 			return false; 
 		}
 		
-		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
-		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
+		Coord4D startPoint = Coord4D.get(this).offset(right);
+		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
-		while(startPoint.getFromSide(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		while(startPoint.offset(EnumFacing.UP).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
 		{
 			startPoint.step(EnumFacing.UP);
 		}
 
 		int middle = 0;
 		
-		Coord4D middlePointer = startPoint.getFromSide(EnumFacing.DOWN);
+		Coord4D middlePointer = startPoint.offset(EnumFacing.DOWN);
 		
 		while(scanMiddleLayer(middlePointer))
 		{
-			middlePointer = middlePointer.getFromSide(EnumFacing.DOWN);
+			middlePointer = middlePointer.offset(EnumFacing.DOWN);
 			middle++;
 		}
 		
@@ -399,7 +399,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(left, x).getFromSide(back, z);
+				Coord4D pointer = current.offset(left, x).offset(back, z);
 				
 				int corner = getCorner(x, z);
 				
@@ -473,7 +473,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		{
 			for(int z = 0; z < 4; z++)
 			{
-				Coord4D pointer = current.getFromSide(left, x).getFromSide(back, z);
+				Coord4D pointer = current.offset(left, x).offset(back, z);
 				
 				if((x == 1 || x == 2) && (z == 1 || z == 2))
 				{
@@ -501,7 +501,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		height = 1;
 		Coord4D baseBlock = Coord4D.get(this);
 		
-		while(baseBlock.getFromSide(EnumFacing.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		while(baseBlock.offset(EnumFacing.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
 		{
 			baseBlock.step(EnumFacing.DOWN);
 			height++;
@@ -515,18 +515,18 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 			return false;
 		};
 		
-		if(!scanBottomRow(baseBlock.getFromSide(left))) 
+		if(!scanBottomRow(baseBlock.offset(left)))
 		{
 			return false;
 		};
 		
-		if(!scanBottomRow(baseBlock.getFromSide(right))) 
+		if(!scanBottomRow(baseBlock.offset(right)))
 		{
 			return false;
 		};
 
-		boolean twoLeft = scanBottomRow(baseBlock.getFromSide(left).getFromSide(left));
-		boolean twoRight = scanBottomRow(baseBlock.getFromSide(right).getFromSide(right));
+		boolean twoLeft = scanBottomRow(baseBlock.offset(left).offset(left));
+		boolean twoRight = scanBottomRow(baseBlock.offset(right).offset(right));
 
 		if(twoLeft == twoRight) 
 		{
@@ -557,7 +557,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 				return false;
 			}
 			
-			current = current.getFromSide(back);
+			current = current.offset(back);
 		}
 
 		return true;
@@ -620,11 +620,11 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		}
 		
 		EnumFacing right = MekanismUtils.getRight(facing);
-		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
-		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
+		Coord4D startPoint = Coord4D.get(this).offset(right);
+		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
-		startPoint = startPoint.getFromSide(right.getOpposite()).getFromSide(MekanismUtils.getBack(facing));
-		startPoint.translate(0, -(height-2), 0);
+		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
+		startPoint = startPoint.add(0, -(height - 2), 0);
 		
 		return startPoint;
 	}

@@ -9,7 +9,7 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -165,7 +165,7 @@ public class ItemBalloon extends ItemMekanism
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerIcons(TextureAtlasSpriteRegister register) {}
 	
 	public class DispenserBehavior extends BehaviorDefaultDispenseItem
 	{
@@ -173,9 +173,9 @@ public class ItemBalloon extends ItemMekanism
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
 			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
-			EnumFacing side = EnumFacing.getOrientation(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+			EnumFacing side = EnumFacing.getFront(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
 
-			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.getFromSide(side).getBoundingBox());
+			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;
 			
 			for(EntityLivingBase entity : entities)

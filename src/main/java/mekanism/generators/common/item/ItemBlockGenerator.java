@@ -17,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -25,7 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -74,12 +75,6 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int i)
-	{
-		return metaBlock.getIcon(2, i);
-	}
-
-	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
 		if(GeneratorType.getFromMetadata(itemstack.getItemDamage()) == null)
@@ -96,12 +91,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	{
 		GeneratorType type = GeneratorType.getFromMetadata(itemstack.getItemDamage());
 		
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+		if(!MekKeyHandler.isPressed(MekanismKeyHandler.sneakKey))
 		{
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails") + ".");
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " and " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.modeSwitchKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDesc") + ".");
 		}
-		else if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey))
+		else if(!MekKeyHandler.isPressed(MekanismKeyHandler.modeSwitchKey))
 		{
 			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 
@@ -121,24 +116,27 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
 	{
 		boolean place = true;
-		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+		Block block = world.getBlockState(pos).getBlock();
 
 		if(stack.getItemDamage() == GeneratorType.ADVANCED_SOLAR_GENERATOR.meta)
 		{
-			if(!(block.isReplaceable(world, x, y, z) && world.isAirBlock(x, y+1, z)))
+			if(!(block.isReplaceable(world, pos) && world.isAirBlock(pos.add(0,1,0))))
 			{
 				return false;
 			}
+
+			BlockPos currentPos = null;
 
 			outer:
 			for(int xPos = -1; xPos <= 1; xPos++)
 			{
 				for(int zPos =- 1; zPos <= 1; zPos++)
 				{
-					if(!world.isAirBlock(x+xPos, y+2, z+zPos) || y+2 > 255)
+					currentPos = pos.add(xPos, 2, zPos);
+					if(!world.isAirBlock(currentPos) || pos.getY()+2 > 255)
 					{
 						place = false;
 						break outer;
@@ -148,15 +146,18 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		}
 		else if(stack.getItemDamage() == GeneratorType.WIND_TURBINE.meta)
 		{
-			if(!block.isReplaceable(world, x, y, z))
+			if(!block.isReplaceable(world, pos))
 			{
 				return false;
 			}
 
+			BlockPos currentPos = null;
+
 			outer:
-			for(int yPos = y+1; yPos <= y+4; yPos++)
+			for(int yPos = 1; yPos <= 4; yPos++)
 			{
-				if(!world.isAirBlock(x, yPos, z) || yPos > 255)
+				currentPos = pos.add(0, yPos, 0);
+				if(!world.isAirBlock(currentPos) || pos.getY() + yPos > 255)
 				{
 					place = false;
 					break outer;
@@ -164,16 +165,16 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 			}
 		}
 
-		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		if(place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState))
 		{
-			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(new BlockPos(x, y, z));
+			TileEntityElectricBlock tileEntity = (TileEntityElectricBlock)world.getTileEntity(pos);
 			tileEntity.electricityStored = getEnergy(stack);
 
-			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			tileEntity.setInventory(getInventory(stack));
 			
 			if(tileEntity instanceof ISustainedData)
 			{
-				if(stack.stackTagCompound != null)
+				if(stack.getTagCompound() != null)
 				{
 					((ISustainedData)tileEntity).readSustainedData(stack);
 				}
@@ -242,12 +243,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			itemStack.getTagCompound().setTag("Items", nbtTags);
 		}
 	}
 
@@ -258,12 +259,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items", 10);
+			return itemStack.getTagCompound().getTagList("Items", 10);
 		}
 
 		return null;
@@ -281,12 +282,12 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("fluidTank", fluidStack.writeToNBT(new NBTTagCompound()));
 		}
 	}
 
@@ -297,14 +298,14 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			if(itemStack.stackTagCompound.hasKey("fluidTank"))
+			if(itemStack.getTagCompound().hasKey("fluidTank"))
 			{
-				return FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank"));
+				return FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank"));
 			}
 		}
 
@@ -320,24 +321,24 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		return itemStack.stackTagCompound.getDouble("electricity");
+		return itemStack.getTagCompound().getDouble("electricity");
 	}
 
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		itemStack.getTagCompound().setDouble("electricity", electricityStored);
 	}
 
 	@Override

@@ -204,12 +204,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						
 						ItemStack returnStack = getMachineStack();
 						
-						if(returnStack.stackTagCompound == null)
+						if(returnStack.getTagCompound() == null)
 						{
 							returnStack.setTagCompound(new NBTTagCompound());
 						}
 						
-						upgradeComponent.write(returnStack.stackTagCompound);
+						upgradeComponent.write(returnStack.getTagCompound());
 
 						inventory[2] = null;
 						inventory[3] = returnStack;
@@ -833,7 +833,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int getOrientation()
+	public int getFront()
 	{
 		return facing;
 	}

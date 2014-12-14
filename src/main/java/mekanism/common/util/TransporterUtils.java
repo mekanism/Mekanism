@@ -34,9 +34,9 @@ public final class TransporterUtils
 	{
 		TileEntity[] transporters = new TileEntity[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity tile = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
+			TileEntity tile = Coord4D.get(tileEntity.getTile()).offset(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
 
 			if(tile instanceof ILogisticalTransporter)
 			{
@@ -70,12 +70,12 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedInventories).indexOf(inventory);
 
-				if(!tileEntity.canConnect(EnumFacing.getOrientation(side)))
+				if(!tileEntity.canConnect(EnumFacing.getFront(side)))
 				{
 					continue;
 				}
 
-				EnumFacing forgeSide = EnumFacing.getOrientation(side).getOpposite();
+				EnumFacing forgeSide = EnumFacing.getFront(side).getOpposite();
 
 				if(inventory.getSizeInventory() > 0)
 				{
@@ -104,7 +104,7 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedTransporters).indexOf(tile);
 
-				if(tileEntity.canConnectMutual(EnumFacing.getOrientation(side)))
+				if(tileEntity.canConnectMutual(EnumFacing.getFront(side)))
 				{
 					connectable[side] = true;
 				}
@@ -123,9 +123,9 @@ public final class TransporterUtils
 	{
 		IInventory[] inventories = new IInventory[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
+			TileEntity inventory = Coord4D.get(tileEntity.getTile()).offset(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
 
 			if(inventory instanceof IInventory && !(inventory instanceof IGridTransmitter))
 			{
@@ -199,7 +199,7 @@ public final class TransporterUtils
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(EnumFacing.getOrientation(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(EnumFacing.getFront(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
 		float itemFix = 0;

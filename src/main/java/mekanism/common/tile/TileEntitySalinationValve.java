@@ -23,9 +23,9 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 		{
 			if((master != null) != prevMaster)
 			{
-				for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.values())
 				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
+					Coord4D obj = Coord4D.get(this).offset(side);
 
 					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySalinationBlock))
 					{

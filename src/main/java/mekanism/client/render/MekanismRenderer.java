@@ -23,11 +23,12 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -47,9 +48,9 @@ public class MekanismRenderer
 {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	
-	public static IIcon[] colors = new IIcon[256];
+	public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
 	
-	public static IIcon energyIcon;
+	public static TextureAtlasSprite energyIcon;
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -65,33 +66,33 @@ public class MekanismRenderer
 	@SubscribeEvent
 	public void onStitch(TextureStitchEvent.Pre event)
 	{
-		if(event.map.getTextureType() == 0)
+		if(event.map.getGlTextureId() == 0)
 		{
 			for(EnumColor color : EnumColor.values())
 			{
-				colors[color.ordinal()] = event.map.registerIcon("mekanism:overlay/Overlay" + color.getLocalizedName().replace(" ", ""));
+				colors[color.ordinal()] = event.map.registerSprite(new ResourceLocation("mekanism:overlay/Overlay" + color.getLocalizedName().replace(" ", "")));
 			}
 			
-			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
+			energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidEnergy"));
 			
-			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
-			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:LiquidChlorine"));
-			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
-			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
-			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
-			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
-			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
-			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:LiquidEthene"));
-			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
-			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
-			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
-			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
-			GasRegistry.getGas("fusionFuelDD").setIcon(event.map.registerIcon("mekanism:LiquidDD"));
-			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
-			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
+			GasRegistry.getGas("hydrogen").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidHydrogen")));
+			GasRegistry.getGas("oxygen").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidOxygen")));
+			GasRegistry.getGas("water").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidSteam")));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidChlorine")));
+			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidSulfurDioxide")));
+			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidSulfurTrioxide")));
+			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidSulfuricAcid")));
+			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidHydrogenChloride")));
+			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidOsmium")));
+			GasRegistry.getGas("liquidStone").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidStone")));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidEthene")));
+			GasRegistry.getGas("brine").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidBrine")));
+			GasRegistry.getGas("sodium").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidSodium")));
+			GasRegistry.getGas("deuterium").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidDeuterium")));
+			GasRegistry.getGas("tritium").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidTritium")));
+			GasRegistry.getGas("fusionFuelDD").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidDD")));
+			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidDT")));
+			GasRegistry.getGas("steam").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidSteam")));
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -99,15 +100,15 @@ public class MekanismRenderer
 				{
 					if(gas.getUnlocalizedName().contains("clean"))
 					{
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidCleanOre"));
+						gas.setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidCleanOre")));
 					}
 					else {
-						gas.setIcon(event.map.registerIcon("mekanism:LiquidOre"));
+						gas.setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidOre")));
 					}
 				}
 			}
 
-			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
+//			FluidRegistry.getFluid("brine").setIcons(event.map.registerSprite(new ResourceLocation("mekanism:LiquidBrine"));
 
 			if(RenderPartTransmitter.getInstance() != null)
 			{
@@ -128,7 +129,7 @@ public class MekanismRenderer
 		public double maxY;
 		public double maxZ;
 		
-		public IIcon[] textures = new IIcon[6];
+		public TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
 		
 		public boolean[] renderSides = new boolean[] {true, true, true, true, true, true, false};
 
@@ -154,17 +155,17 @@ public class MekanismRenderer
 			return renderSides[side.ordinal()];
 		}
 
-		public IIcon getBlockTextureFromSide(int i)
+		public TextureAtlasSprite getBlockTextureFromSide(int i)
 		{
 			return textures[i];
 		}
 		
-		public void setTexture(IIcon tex)
+		public void setTexture(TextureAtlasSprite tex)
 		{
 			Arrays.fill(textures, tex);
 		}
 		
-		public void setTextures(IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east)
+		public void setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west, TextureAtlasSprite east)
 		{
 			textures[0] = down;
 			textures[1] = up;
@@ -246,7 +247,7 @@ public class MekanismRenderer
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	public static IIcon getColorIcon(EnumColor color)
+	public static TextureAtlasSprite getColorIcon(EnumColor color)
 	{
 		return colors[color.ordinal()];
 	}
@@ -323,7 +324,7 @@ public class MekanismRenderer
      */
     public static void renderItem(ItemStack item)
     {
-		IIcon icon = item.getItem().getIconIndex(item);
+		TextureAtlasSprite icon = item.getItem().getIconIndex(item);
 		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
 
         if(icon == null)

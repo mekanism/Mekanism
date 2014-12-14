@@ -214,7 +214,7 @@ public class MekanismRecipe implements IRecipe
 
 				if(itemstack != null && MachineType.get(itemstack).supportsUpgrades)
 				{
-					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.stackTagCompound);
+					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.getTagCompound());
 					
 					for(Map.Entry<Upgrade, Integer> entry : stackMap.entrySet())
 					{
@@ -223,12 +223,12 @@ public class MekanismRecipe implements IRecipe
 				}
 			}
 			
-			if(toReturn.stackTagCompound == null)
+			if(toReturn.getTagCompound() == null)
 			{
 				toReturn.setTagCompound(new NBTTagCompound());
 			}
 			
-			Upgrade.saveMap(upgrades, toReturn.stackTagCompound);
+			Upgrade.saveMap(upgrades, toReturn.getTagCompound());
 		}
 
 		return toReturn;

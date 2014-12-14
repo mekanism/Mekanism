@@ -29,7 +29,7 @@ import mekanism.generators.common.tile.TileEntityWindTurbine;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -77,7 +77,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
@@ -601,7 +601,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{

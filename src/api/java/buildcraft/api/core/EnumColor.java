@@ -11,8 +11,9 @@ package buildcraft.api.core;
 import java.util.Locale;
 import java.util.Random;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -107,7 +108,7 @@ public enum EnumColor {
 		0xe4e4e4};
 
 	@SideOnly(Side.CLIENT)
-	private static IIcon[] brushIcons;
+	private static TextureAtlasSprite[] brushIcons;
 
 	public int getDarkHex() {
 		return DARK_HEX[ordinal()];
@@ -192,16 +193,16 @@ public enum EnumColor {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public static void registerIcons(IIconRegister iconRegister) {
-		brushIcons = new IIcon[16];
+	public static void registerIcons(TextureMap iconRegister) {
+		brushIcons = new TextureAtlasSprite[16];
 		for (EnumColor c : values()) {
-			brushIcons[c.ordinal()] = iconRegister.registerIcon("buildcraft:triggers/color_"
-					+ c.name().toLowerCase(Locale.ENGLISH));
+			brushIcons[c.ordinal()] = iconRegister.registerSprite(new ResourceLocation("buildcraft:triggers/color_"
+					+ c.name().toLowerCase(Locale.ENGLISH)));
 		}
 	}
 
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon() {
+	public TextureAtlasSprite getIcon() {
 		return brushIcons [ordinal()];
 	}
 }

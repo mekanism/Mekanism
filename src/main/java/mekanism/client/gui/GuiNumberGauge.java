@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 import static java.lang.Math.min;
@@ -17,13 +17,7 @@ public class GuiNumberGauge extends GuiGauge
 	}
 
 	@Override
-	public int getScaledLevel()
-	{
-		return (int)((height-2) * min(infoHandler.getLevel() / infoHandler.getMaxLevel(), 1));
-	}
-
-	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		return infoHandler.getIcon();
 	}
@@ -34,10 +28,16 @@ public class GuiNumberGauge extends GuiGauge
 		return infoHandler.getText(infoHandler.getLevel());
 	}
 
+	@Override
+	public int getScaledLevel()
+	{
+		return (int)((height-2) * min(infoHandler.getLevel() / infoHandler.getMaxLevel(), 1));
+	}
+
 
 	public static interface INumberInfoHandler
 	{
-		public IIcon getIcon();
+		public TextureAtlasSprite getIcon();
 
 		public double getLevel();
 

@@ -141,13 +141,13 @@ public abstract class UpdateProtocol<T>
 								rightBlocks = false;
 								break;
 							}
-							else if(isFrame(Coord4D.get(tile).translate(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+							else if(isFrame(Coord4D.get(tile).add(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
 							{
 								rightFrame = false;
 								break;
 							}
 							else {
-								locations.add(Coord4D.get(tile).translate(x, y, z));
+								locations.add(Coord4D.get(tile).add(x, y, z));
 							}
 						}
 						else {
@@ -184,7 +184,7 @@ public abstract class UpdateProtocol<T>
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
 				structure.volume = volume;
-				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
+				structure.renderLocation = Coord4D.get(tile).add(0, 1, 0);
 				
 				onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
 
@@ -198,9 +198,9 @@ public abstract class UpdateProtocol<T>
 
 		iteratedNodes.add(tile);
 
-		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
-			TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
+			TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorldObj());
 
 			if(MultiblockManager.areEqual(tileEntity, pointer))
 			{
@@ -239,7 +239,7 @@ public abstract class UpdateProtocol<T>
 			return EnumFacing.SOUTH;
 		}
 
-		return EnumFacing.UNKNOWN;
+		return null;
 	}
 
 	/**

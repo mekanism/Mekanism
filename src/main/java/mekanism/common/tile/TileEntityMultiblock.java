@@ -92,9 +92,9 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 					sendStructure = true;
 				}
 
-				for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+				for(EnumFacing side : EnumFacing.values())
 				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
+					Coord4D obj = Coord4D.get(this).offset(side);
 
 					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
 					{

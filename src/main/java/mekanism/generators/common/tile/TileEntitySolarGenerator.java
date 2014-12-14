@@ -191,7 +191,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getOrientation(0));
+		return EnumSet.of(EnumFacing.getFront(0));
 	}
 
 	@Override

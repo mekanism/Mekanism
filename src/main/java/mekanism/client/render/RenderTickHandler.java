@@ -47,17 +47,17 @@ public class RenderTickHandler
 				EntityPlayer player = mc.thePlayer;
 				World world = mc.thePlayer.worldObj;
 	
-				FontRenderer font = mc.fontRenderer;
+				FontRenderer font = mc.fontRendererObj;
 	
 				MovingObjectPosition pos = player.rayTrace(40.0D, 1.0F);
 	
 				if(pos != null)
 				{
-					int x = MathHelper.floor_double(pos.blockX);
-					int y = MathHelper.floor_double(pos.blockY);
-					int z = MathHelper.floor_double(pos.blockZ);
+					int x = MathHelper.floor_double(pos.getBlockPos().getX());
+					int y = MathHelper.floor_double(pos.getBlockPos().getY());
+					int z = MathHelper.floor_double(pos.getBlockPos().getZ());
 	
-					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
+					Coord4D obj = new Coord4D(x, y, z, world.provider.getDimensionId());
 	
 					if(Mekanism.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 					{
@@ -72,7 +72,7 @@ public class RenderTickHandler
 						}
 	
 						font.drawStringWithShadow("Block: " + obj.getBlock(world).getUnlocalizedName(), 1, 1, 0x404040);
-						font.drawStringWithShadow("Metadata: " + obj.getMetadata(world), 1, 10, 0x404040);
+						font.drawStringWithShadow("Metadata: " + obj.getBlockState(world), 1, 10, 0x404040);
 						font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(obj), 1, 19, 0x404040);
 						font.drawStringWithShadow("TileEntity: " + tileDisplay, 1, 28, 0x404040);
 						font.drawStringWithShadow("Side: " + pos.sideHit, 1, 37, 0x404040);
@@ -170,7 +170,7 @@ public class RenderTickHandler
 				{
 					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
 					{
-						if(!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+						if(!Mekanism.flamethrowerActive.contains(p.getName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
 						{
 							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
 							{

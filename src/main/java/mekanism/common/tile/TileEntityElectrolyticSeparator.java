@@ -153,7 +153,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
 
-					TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
@@ -179,7 +179,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
 
-					TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
@@ -237,7 +237,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(type == 0)
 		{
-			EnumFacing side = EnumFacing.getOrientation(facing);
+			EnumFacing side = EnumFacing.getFront(facing);
 
 			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
 			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
@@ -311,11 +311,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(EnumFacing.getOrientation(side) == MekanismUtils.getRight(facing))
+		if(EnumFacing.getFront(side) == MekanismUtils.getRight(facing))
 		{
 			return new int[] {3};
 		}
-		else if(side == facing || EnumFacing.getOrientation(side) == EnumFacing.getOrientation(facing).getOpposite())
+		else if(side == facing || EnumFacing.getFront(side) == EnumFacing.getFront(facing).getOpposite())
 		{
 			return new int[] {1, 2};
 		}
@@ -550,26 +550,26 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(fluidTank.getFluid() != null)
 		{
-			itemStack.stackTagCompound.setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("fluidTank", fluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(leftTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(rightTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("fluidTank")));
-		leftTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("leftTank")));
-		rightTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("rightTank")));
+		fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("fluidTank")));
+		leftTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("leftTank")));
+		rightTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("rightTank")));
 	}
 
 	@Override

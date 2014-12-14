@@ -120,7 +120,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 			{
 				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
@@ -316,7 +316,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(from == EnumFacing.getOrientation(facing).getOpposite())
+		if(from == EnumFacing.getFront(facing).getOpposite())
 		{
 			return inputFluidTank.fill(resource, doFill);
 		}
@@ -339,7 +339,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(from == EnumFacing.getOrientation(facing).getOpposite())
+		if(from == EnumFacing.getFront(facing).getOpposite())
 		{
 			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
 		}
@@ -356,7 +356,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == EnumFacing.getOrientation(facing).getOpposite())
+		if(from == EnumFacing.getFront(facing).getOpposite())
 		{
 			return new FluidTankInfo[] {new FluidTankInfo(inputFluidTank)};
 		}
@@ -409,25 +409,25 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		if(inputFluidTank.getFluid() != null)
 		{
-			itemStack.stackTagCompound.setTag("inputFluidTank", inputFluidTank.getFluid().writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("inputFluidTank", inputFluidTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 		
 		if(inputGasTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("inputGasTank", inputGasTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("inputGasTank", inputGasTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputGasTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("outputGasTank", outputGasTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("outputGasTank", outputGasTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("inputFluidTank")));
-		inputGasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputGasTank")));
-		outputGasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputGasTank")));
+		inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("inputFluidTank")));
+		inputGasTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("inputGasTank")));
+		outputGasTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputGasTank")));
 	}
 }

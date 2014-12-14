@@ -6,11 +6,11 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockOre extends Block
 {
-	public IIcon[] icons = new IIcon[256];
+	public TextureAtlasSprite[] icons = new TextureAtlasSprite[256];
 
 	public BlockOre()
 	{
@@ -36,7 +36,7 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 		icons[1] = register.registerIcon("mekanism:CopperOre");
@@ -45,7 +45,7 @@ public class BlockOre extends Block
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(int side, int meta)
 	{
 		return icons[meta];
 	}

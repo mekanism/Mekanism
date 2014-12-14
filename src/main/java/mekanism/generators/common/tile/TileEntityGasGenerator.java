@@ -145,7 +145,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return EnumFacing.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	@Override
@@ -261,7 +261,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return FuelHandler.getFuel(type) != null && side != EnumFacing.getOrientation(facing);
+		return FuelHandler.getFuel(type) != null && side != EnumFacing.getFront(facing);
 	}
 
 	@Override
@@ -279,7 +279,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side != EnumFacing.getOrientation(facing);
+		return side != EnumFacing.getFront(facing);
 	}
 
 	@Override
@@ -287,16 +287,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	{
 		if(fuelTank != null)
 		{
-			itemStack.stackTagCompound.setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("fuelTank", fuelTank.write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		if(itemStack.stackTagCompound.hasKey("fuelTank"))
+		if(itemStack.getTagCompound().hasKey("fuelTank"))
 		{
-			fuelTank.read(itemStack.stackTagCompound.getCompoundTag("fuelTank"));
+			fuelTank.read(itemStack.getTagCompound().getCompoundTag("fuelTank"));
 		}
 	}
 }

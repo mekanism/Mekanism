@@ -141,7 +141,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	@Override
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.DOWN, EnumFacing.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.DOWN, EnumFacing.getFront(facing).getOpposite());
 	}
 
 	@Override

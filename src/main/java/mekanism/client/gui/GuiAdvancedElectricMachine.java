@@ -111,6 +111,6 @@ public class GuiAdvancedElectricMachine extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-		drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
+		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, gas.getGas().getIcon(), sizeX, sizeY);
 	}
 }

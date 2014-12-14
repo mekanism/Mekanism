@@ -4,15 +4,15 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class ItemDust extends ItemMekanism
 {
-	public IIcon[] icons = new IIcon[256];
+	public TextureAtlasSprite[] icons = new TextureAtlasSprite[256];
 
 	public static String[] en_USNames = {"Iron", "Gold", "Osmium",
 										"Obsidian", "Diamond", "Steel",
@@ -27,7 +27,7 @@ public class ItemDust extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		for(int i = 0; i <= 10; i++)
 		{
@@ -36,7 +36,7 @@ public class ItemDust extends ItemMekanism
 	}
 
 	@Override
-	public IIcon getIconFromDamage(int meta)
+	public TextureAtlasSprite getIconFromDamage(int meta)
 	{
 		return icons[meta];
 	}

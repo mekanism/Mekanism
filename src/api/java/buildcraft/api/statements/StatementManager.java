@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -168,7 +168,7 @@ public final class StatementManager {
 	 * on the client side from a given Item of choice.
 	 */
 	@SideOnly(Side.CLIENT)
-	public static void registerIcons(IIconRegister register) {
+	public static void registerIcons(TextureAtlasSpriteRegister register) {
 		for (IStatement statement : statements.values()) {
 			statement.registerIcons(register);
 		}

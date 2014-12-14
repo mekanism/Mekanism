@@ -41,7 +41,7 @@ public class GuiDictionary extends GuiMekanism
 		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemType, 6, 6);
+			itemRender.renderItemAndEffectIntoGUI(itemType, 6, 6);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}

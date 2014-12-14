@@ -4,7 +4,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiGasGauge extends GuiGauge<Gas>
@@ -38,7 +38,7 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	}
 
 	@Override
-	public IIcon getIcon()
+	public TextureAtlasSprite getIcon()
 	{
 		if(dummy)
 		{

@@ -79,7 +79,7 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(EnumFacing.UNKNOWN, EnumFacing.UP));
+		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(null, EnumFacing.UP));
 	}
 
 	public double getMaxOutput()

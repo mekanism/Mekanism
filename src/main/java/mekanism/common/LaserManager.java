@@ -39,7 +39,7 @@ public class LaserManager
 			{
 				if(!(((ILaserReceptor)tile).canLasersDig()))
 				{
-					((ILaserReceptor)tile).receiveLaserEnergy(energy, EnumFacing.getOrientation(mop.sideHit));
+					((ILaserReceptor)tile).receiveLaserEnergy(energy, EnumFacing.getFront(mop.sideHit));
 				}
 			}
 		}

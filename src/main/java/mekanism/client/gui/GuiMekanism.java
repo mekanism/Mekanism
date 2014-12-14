@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -12,10 +13,10 @@ import mekanism.common.tile.TileEntityContainerBlock;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 import org.lwjgl.opengl.GL11;
 
@@ -101,7 +102,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	protected boolean isMouseOverSlot(Slot slot, int mouseX, int mouseY)
 	{
-		return func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);//isPointInRegion
+		return isPointInRegion(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY);
 	}
 
 	@Override
@@ -130,7 +131,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			element.preMouseClicked(xAxis, yAxis, button);
 		}
 
-		super.mouseClicked(mouseX, mouseY, button);
+		try{super.mouseClicked(mouseX, mouseY, button);}
+		catch(IOException e){}
 
 		for(GuiElement element : guiElements)
 		{
@@ -141,14 +143,14 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	protected void drawCreativeTabHoveringText(String text, int x, int y)
 	{
-		func_146283_a(Arrays.asList(new String[] {text}), x, y);
+		drawHoveringText(Arrays.asList(new String[] {text}), x, y);
 	}
 
 	@Override
-	protected void func_146283_a(List list, int x, int y)
+	protected void drawHoveringText(List list, int x, int y)
 	{
 		GL11.glPushAttrib(GL11.GL_ENABLE_BIT + GL11.GL_LIGHTING_BIT);
-		super.func_146283_a(list, x, y);
+		super.drawHoveringText(list, x, y);
 		GL11.glPopAttrib();
 	}
 
@@ -159,9 +161,9 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	}
 
 	@Override
-	public void drawTexturedRectFromIcon(int x, int y, IIcon icon, int w, int h)
+	public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int w, int h)
 	{
-		drawTexturedModelRectFromIcon(x, y, icon, w, h);
+		drawTexturedModalRect(x, y, icon, w, h);
 	}
 
 	@Override
@@ -173,7 +175,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	public void displayTooltips(List<String> list, int xAxis, int yAxis)
 	{
-		func_146283_a(list, xAxis, yAxis);
+		drawHoveringText(list, xAxis, yAxis);
 	}
 
 	@Override
@@ -196,20 +198,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 		}
 	}
 
-	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
-	{
-		super.mouseMovedOrUp(mouseX, mouseY, type);
-		
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
-
-		for(GuiElement element : guiElements)
-		{
-			element.mouseMovedOrUp(xAxis, yAxis, type);
-		}
-	}
-	
 	public void handleMouse(Slot slot, int slotIndex, int button, int modifier)
 	{
 		handleMouseClick(slot, slotIndex, button, modifier);

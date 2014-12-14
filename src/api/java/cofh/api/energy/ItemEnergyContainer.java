@@ -63,15 +63,15 @@ public class ItemEnergyContainer extends Item implements IEnergyContainerItem {
 	@Override
 	public int receiveEnergy(ItemStack container, int maxReceive, boolean simulate) {
 
-		if (container.stackTagCompound == null) {
-			container.stackTagCompound = new NBTTagCompound();
+		if (container.getTagCompound() == null) {
+			container.setTagCompound(new NBTTagCompound());
 		}
-		int energy = container.stackTagCompound.getInteger("Energy");
+		int energy = container.getTagCompound().getInteger("Energy");
 		int energyReceived = Math.min(capacity - energy, Math.min(this.maxReceive, maxReceive));
 
 		if (!simulate) {
 			energy += energyReceived;
-			container.stackTagCompound.setInteger("Energy", energy);
+			container.getTagCompound().setInteger("Energy", energy);
 		}
 		return energyReceived;
 	}
@@ -79,15 +79,15 @@ public class ItemEnergyContainer extends Item implements IEnergyContainerItem {
 	@Override
 	public int extractEnergy(ItemStack container, int maxExtract, boolean simulate) {
 
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
+		if (container.getTagCompound() == null || !container.getTagCompound().hasKey("Energy")) {
 			return 0;
 		}
-		int energy = container.stackTagCompound.getInteger("Energy");
+		int energy = container.getTagCompound().getInteger("Energy");
 		int energyExtracted = Math.min(energy, Math.min(this.maxExtract, maxExtract));
 
 		if (!simulate) {
 			energy -= energyExtracted;
-			container.stackTagCompound.setInteger("Energy", energy);
+			container.getTagCompound().setInteger("Energy", energy);
 		}
 		return energyExtracted;
 	}
@@ -95,10 +95,10 @@ public class ItemEnergyContainer extends Item implements IEnergyContainerItem {
 	@Override
 	public int getEnergyStored(ItemStack container) {
 
-		if (container.stackTagCompound == null || !container.stackTagCompound.hasKey("Energy")) {
+		if (container.getTagCompound() == null || !container.getTagCompound().hasKey("Energy")) {
 			return 0;
 		}
-		return container.stackTagCompound.getInteger("Energy");
+		return container.getTagCompound().getInteger("Energy");
 	}
 
 	@Override

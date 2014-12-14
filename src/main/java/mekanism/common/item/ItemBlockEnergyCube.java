@@ -63,7 +63,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
+		if(!MekKeyHandler.isPressed(MekanismKeyHandler.sneakKey))
 		{
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
 		}
@@ -112,28 +112,28 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public EnergyCubeTier getEnergyCubeTier(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return EnergyCubeTier.BASIC;
 		}
 
-		if(itemstack.stackTagCompound.getString("tier") == null)
+		if(itemstack.getTagCompound().getString("tier") == null)
 		{
 			return EnergyCubeTier.BASIC;
 		}
 
-		return EnergyCubeTier.getFromName(itemstack.stackTagCompound.getString("tier"));
+		return EnergyCubeTier.getFromName(itemstack.getTagCompound().getString("tier"));
 	}
 
 	@Override
 	public void setEnergyCubeTier(ItemStack itemstack, EnergyCubeTier tier)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setString("tier", tier.name);
+		itemstack.getTagCompound().setString("tier", tier.name);
 	}
 
 	@Override
@@ -171,12 +171,12 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 
-			itemStack.stackTagCompound.setTag("Items", nbtTags);
+			itemStack.getTagCompound().setTag("Items", nbtTags);
 		}
 	}
 
@@ -187,12 +187,12 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		{
 			ItemStack itemStack = (ItemStack)data[0];
 
-			if(itemStack.stackTagCompound == null)
+			if(itemStack.getTagCompound() == null)
 			{
 				return null;
 			}
 
-			return itemStack.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+			return itemStack.getTagCompound().getTagList("Items", NBT.TAG_COMPOUND);
 		}
 
 		return null;
@@ -201,12 +201,12 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public double getEnergy(ItemStack itemStack)
 	{
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			return 0;
 		}
 
-		double electricityStored = itemStack.stackTagCompound.getDouble("electricity");
+		double electricityStored = itemStack.getTagCompound().getDouble("electricity");
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 
 		return electricityStored;
@@ -220,13 +220,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			return;
 		}
 		
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.getTagCompound() == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
 		double electricityStored = Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0);
-		itemStack.stackTagCompound.setDouble("electricity", electricityStored);
+		itemStack.getTagCompound().setDouble("electricity", electricityStored);
 		itemStack.setItemDamage((int)Math.max(1, (Math.abs(((electricityStored/getMaxEnergy(itemStack))*100)-100))));
 	}
 

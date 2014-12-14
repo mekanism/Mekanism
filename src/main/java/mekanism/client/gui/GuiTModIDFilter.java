@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -91,7 +92,7 @@ public class GuiTModIDFilter extends GuiMekanism
 			((GuiButton)buttonList.get(1)).enabled = false;
 		}
 
-		modIDText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
+		modIDText = new GuiTextField(0, fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
 		modIDText.setMaxStringLength(12);
 		modIDText.setFocused(true);
 	}
@@ -101,7 +102,9 @@ public class GuiTModIDFilter extends GuiMekanism
 	{
 		if(!modIDText.isFocused() || i == Keyboard.KEY_ESCAPE)
 		{
-			super.keyTyped(c, i);
+			try{super.keyTyped(c, i);}
+			catch(IOException e){}
+
 		}
 
 		if(modIDText.isFocused() && i == Keyboard.KEY_RETURN)
@@ -119,7 +122,8 @@ public class GuiTModIDFilter extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){}
 
 		if(guibutton.id == 0)
 		{
@@ -167,7 +171,7 @@ public class GuiTModIDFilter extends GuiMekanism
 			try {
 				GL11.glPushMatrix();
 				GL11.glEnable(GL11.GL_LIGHTING);
-				itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), renderStack, 12, 19);
+				itemRender.renderItemAndEffectIntoGUI(renderStack, 12, 19);
 				GL11.glDisable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
@@ -181,7 +185,7 @@ public class GuiTModIDFilter extends GuiMekanism
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
-			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
+//			itemRender.renderIcon(12, 44, MekanismRenderer.getColorIcon(filter.color), 16, 16);
 
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();

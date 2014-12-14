@@ -27,7 +27,7 @@ public class TransporterStack
 
 	public boolean initiatedPath = false;
 	
-	public EnumFacing idleDir = EnumFacing.UNKNOWN;
+	public EnumFacing idleDir = null;
 
 	public List<Coord4D> pathToTarget = new ArrayList<Coord4D>();
 
@@ -165,7 +165,7 @@ public class TransporterStack
 
 		pathToTarget = newPath.path;
 		pathType = Path.DEST;
-		idleDir = EnumFacing.UNKNOWN;
+		idleDir = null;
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -182,7 +182,7 @@ public class TransporterStack
 
 		pathToTarget = newPath.path;
 		pathType = Path.DEST;
-		idleDir = EnumFacing.UNKNOWN;
+		idleDir = null;
 		initiatedPath = true;
 
 		return newPath.rejected;
@@ -199,7 +199,7 @@ public class TransporterStack
 		
 		if(pathType == Path.HOME)
 		{
-			idleDir = EnumFacing.UNKNOWN;
+			idleDir = null;
 		}
 
 		pathToTarget = newPath;
@@ -286,7 +286,7 @@ public class TransporterStack
 			return false;
 		}
 
-		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.getWorldObj());
+		TileEntity from = Coord4D.get(tileEntity).offset(side.getOpposite()).getTileEntity(tileEntity.getWorldObj());
 		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 
 		if(!transporter.canConnectMutual(side.getOpposite()))

@@ -338,7 +338,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			{
 				ValveData data = new ValveData();
 				data.location = Coord4D.read(dataStream);
-				data.side = EnumFacing.getOrientation(dataStream.readInt());
+				data.side = EnumFacing.getFront(dataStream.readInt());
 				int viewingTicks = 0;
 
 				if(dataStream.readBoolean())

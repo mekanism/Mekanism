@@ -8,8 +8,8 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.block.TextureSubmap;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -57,7 +57,7 @@ public class CTMData
 		facing = newFacing;
 	}
 
-	public CTMData registerIcons(IIconRegister register)
+	public CTMData registerIcons(TextureAtlasSpriteRegister register)
 	{
 		mainTextureData.registerIcons(register);
 
@@ -91,7 +91,7 @@ public class CTMData
 		return mainTextureData;
 	}
 
-	public IIcon getIcon(int side)
+	public TextureAtlasSprite getIcon(int side)
 	{
 		return getTextureData(side).icon;
 	}

@@ -25,9 +25,9 @@ public final class PipeUtils
 	{
 		TileEntity[] pipes = new TileEntity[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity pipe = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity pipe = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(TransmissionType.checkTransmissionType(pipe, TransmissionType.FLUID))
 			{
@@ -56,13 +56,13 @@ public final class PipeUtils
 			{
 				int side = Arrays.asList(connectedAcceptors).indexOf(container);
 
-				FluidTankInfo[] infoArray = container.getTankInfo(EnumFacing.getOrientation(side).getOpposite());
+				FluidTankInfo[] infoArray = container.getTankInfo(EnumFacing.getFront(side).getOpposite());
 
 				if(infoArray != null && infoArray.length > 0)
 				{
 					boolean notNull = false;
 
-					for(FluidTankInfo info : container.getTankInfo(EnumFacing.getOrientation(side).getOpposite()))
+					for(FluidTankInfo info : container.getTankInfo(EnumFacing.getFront(side).getOpposite()))
 					{
 						if(info != null)
 						{
@@ -76,8 +76,8 @@ public final class PipeUtils
 						connectable[side] = true;
 					}
 				}
-				else if(container.canDrain(EnumFacing.getOrientation(side).getOpposite(), FluidRegistry.WATER)
-						|| container.canFill(EnumFacing.getOrientation(side).getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
+				else if(container.canDrain(EnumFacing.getFront(side).getOpposite(), FluidRegistry.WATER)
+						|| container.canFill(EnumFacing.getFront(side).getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
 				{
 					connectable[side] = true;
 				}
@@ -106,9 +106,9 @@ public final class PipeUtils
 	{
 		IFluidHandler[] acceptors = new IFluidHandler[] {null, null, null, null, null, null};
 
-		for(EnumFacing orientation : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
 
 			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IGridTransmitter))
 			{

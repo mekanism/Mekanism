@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import java.io.IOException;
+
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -47,7 +49,8 @@ public class GuiTFilterSelect extends GuiMekanism
 	@Override
 	protected void actionPerformed(GuiButton guibutton)
 	{
-		super.actionPerformed(guibutton);
+		try{super.actionPerformed(guibutton);}
+		catch(IOException e){}
 
 		if(guibutton.id == 0)
 		{

@@ -14,7 +14,7 @@ import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -44,7 +44,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register) {}
+	public void registerIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
@@ -169,12 +169,12 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public GasStack getGas(ItemStack itemstack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			return null;
 		}
 
-		GasStack stored = GasStack.readFromNBT(itemstack.stackTagCompound.getCompoundTag("stored"));
+		GasStack stored = GasStack.readFromNBT(itemstack.getTagCompound().getCompoundTag("stored"));
 
 		if(stored == null)
 		{
@@ -195,28 +195,28 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 	public JetpackMode getMode(ItemStack stack)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			return JetpackMode.NORMAL;
 		}
 
-		return JetpackMode.values()[stack.stackTagCompound.getInteger("mode")];
+		return JetpackMode.values()[stack.getTagCompound().getInteger("mode")];
 	}
 
 	public void setMode(ItemStack stack, JetpackMode mode)
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.getTagCompound() == null)
 		{
 			stack.setTagCompound(new NBTTagCompound());
 		}
 
-		stack.stackTagCompound.setInteger("mode", mode.ordinal());
+		stack.getTagCompound().setInteger("mode", mode.ordinal());
 	}
 
 	@Override
 	public void setGas(ItemStack itemstack, GasStack stack)
 	{
-		if(itemstack.stackTagCompound == null)
+		if(itemstack.getTagCompound() == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
@@ -224,14 +224,14 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		if(stack == null || stack.amount == 0)
 		{
 			itemstack.setItemDamage(100);
-			itemstack.stackTagCompound.removeTag("stored");
+			itemstack.getTagCompound().removeTag("stored");
 		}
 		else {
 			int amount = Math.max(0, Math.min(stack.amount, getMaxGas(itemstack)));
 			GasStack gasStack = new GasStack(stack.getGas(), amount);
 
 			itemstack.setItemDamage((int)Math.max(1, (Math.abs((((float)amount/getMaxGas(itemstack))*100)-100))));
-			itemstack.stackTagCompound.setTag("stored", gasStack.write(new NBTTagCompound()));
+			itemstack.getTagCompound().setTag("stored", gasStack.write(new NBTTagCompound()));
 		}
 	}
 

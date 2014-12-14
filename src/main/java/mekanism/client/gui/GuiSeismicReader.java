@@ -9,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.Blocks;
@@ -49,8 +50,7 @@ public class GuiSeismicReader extends GuiScreen
 	
 	public GuiSeismicReader(Coord4D coord, ItemStack stack)
 	{
-		pos = coord;
-		pos.getPos().getY() = Math.min(255, pos.getPos().getY());
+		pos = new Coord4D(coord.getX(), Math.min(255, pos.getY()), coord.getZ());
 		
 		itemStack = stack;
 		
@@ -141,8 +141,8 @@ public class GuiSeismicReader extends GuiScreen
 			drawTexturedModalRect(guiWidth + scrollStartX, guiHeight + scrollStartY+5-scroll, xSize, 4, 38, 1);
 		}
 		
-		int amount = Math.min((142/2)+Math.min(0, (scroll/2)-3), pos.getPos().getY());
-		int start = pos.getPos().getY()-(scroll/2)+Math.min(3, scroll/2);
+		int amount = Math.min((142 / 2) + Math.min(0, (scroll / 2) - 3), pos.getY());
+		int start = pos.getY()-(scroll/2)+Math.min(3, scroll/2);
 		int yStart = scrollStartY + Math.max(0, 6-scroll);
 		
 		drawScale(guiWidth, guiHeight, amount, start, yStart, scroll%2==1);
@@ -216,7 +216,7 @@ public class GuiSeismicReader extends GuiScreen
 				index -= 1;
 			}
 			
-			if(index%8 == 0 && pos.getPos().getY()-index > 6)
+			if(index%8 == 0 && pos.getY()-index > 6)
 			{
 				int yPos = nextRender+2;
 				
@@ -292,7 +292,7 @@ public class GuiSeismicReader extends GuiScreen
 	{
 		int ret = 6;
 		
-		ret += (pos.getPos().getY()*2); //2 pixels per block
+		ret += (pos.getY()*2); //2 pixels per block
 		ret += 1; //Bottom layer thing
 		ret -= 142; //142 total pixels lengthwise on display
 		
@@ -303,18 +303,18 @@ public class GuiSeismicReader extends GuiScreen
 	{
 		seismicCalculation.clear();
 		
-		for(int y = 1; y <= pos.getPos().getY(); y++)
+		for(int y = 1; y <= pos.getY(); y++)
 		{
-			Coord4D coord = new Coord4D(pos.getPos().getX(), y, pos.getPos().getZ(), pos.dimensionId);
+			Coord4D coord = new Coord4D(pos.getX(), y, pos.getZ(), pos.dimensionId);
 			
 			if(coord.isAirBlock(worldObj))
 			{
 				seismicCalculation.add(SeismicType.EMPTY);
 				continue;
 			}
-			
-			Block block = coord.getBlock(worldObj);
-			int meta = coord.getMetadata(worldObj);
+
+			IBlockState state = coord.getBlockState(worldObj);
+			Block block = state.getBlock();
 
 			if(block == Blocks.grass)
 			{
@@ -373,7 +373,7 @@ public class GuiSeismicReader extends GuiScreen
 				}
 			}
 			
-			List<String> oreDictNames = MekanismUtils.getOreDictName(new ItemStack(block, 1, meta));
+			List<String> oreDictNames = MekanismUtils.getOreDictName(new ItemStack(block, 1, block.getMetaFromState(state)));
 			boolean foundName = false;
 			
 			if(oreDictNames != null && !oreDictNames.isEmpty())

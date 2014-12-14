@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement
@@ -104,7 +104,9 @@ public abstract class GuiElement
 
 	protected void mouseMovedOrUp(int x, int y, int type) {}
 	
+/*
 	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
+*/
 
 	public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);
 

@@ -39,9 +39,9 @@ import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemWalkieTalkie;
-import mekanism.common.multipart.ItemGlowPanel;
-import mekanism.common.multipart.ItemPartTransmitter;
-import mekanism.common.multipart.TransmitterType;
+//import mekanism.common.multipart.ItemGlowPanel;
+//import mekanism.common.multipart.ItemPartTransmitter;
+//import mekanism.common.multipart.TransmitterType;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.util.MekanismUtils;
@@ -52,8 +52,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
+//import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -61,7 +62,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.src.FMLRenderAccessLibrary;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
@@ -71,9 +71,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class ItemRenderingHandler implements IItemRenderer
+public class ItemRenderingHandler //implements IItemRenderer
 {
-	public ModelRobit robit = new ModelRobit();
+	/*public ModelRobit robit = new ModelRobit();
 	public ModelChest electricChest = new ModelChest();
 	public ModelEnergyCube energyCube = new ModelEnergyCube();
 	public ModelEnergyCore energyCore = new ModelEnergyCore();
@@ -88,10 +88,10 @@ public class ItemRenderingHandler implements IItemRenderer
 	public ModelPortableTank portableTank = new ModelPortableTank();
 	public ModelFlamethrower flamethrower = new ModelFlamethrower();
 
-	private final RenderBalloon balloonRenderer = new RenderBalloon();
+	private final RenderBalloon balloonRenderer = new RenderBalloon(Minecraft.getMinecraft().getRenderManager());
 	private final RenderBin binRenderer = (RenderBin)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityBin.class);
 	private final RenderPortableTank portableTankRenderer = (RenderPortableTank)TileEntityRendererDispatcher.instance.mapSpecialRenderers.get(TileEntityPortableTank.class);
-	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
+	private final Render renderItem = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(EntityItem.class);
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -166,13 +166,13 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			FMLRenderAccessLibrary.renderInventoryBlock((RenderBlocks) data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
-			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
+			if(binRenderer == null || binRenderer.func_147498_b()*//*getFontRenderer()*//* == null)
 			{
 				return;
 			}
 
 			InventoryBin inv = new InventoryBin(item);
-			EnumFacing side = EnumFacing.getOrientation(2);
+			EnumFacing side = EnumFacing.getFront(2);
 
 			String amount = "";
 			ItemStack itemStack = inv.getStack();
@@ -216,7 +216,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 				GL11.glDisable(GL11.GL_LIGHTING);
 
-				renderItem.renderItemAndEffectIntoGUI(binRenderer.func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
+				renderItem.renderItemAndEffectIntoGUI(binRenderer.func_147498_b()*//*getFontRenderer()*//*, renderEngine, itemStack, 0, 0);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
@@ -490,5 +490,5 @@ public class ItemRenderingHandler implements IItemRenderer
 				FMLRenderAccessLibrary.renderInventoryBlock((RenderBlocks)data[0], Block.getBlockFromItem(item.getItem()), item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 			}
 		}
-	}
+	}*/
 }

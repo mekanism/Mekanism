@@ -8,7 +8,7 @@ package dan200.computercraft.api.turtle;
 
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 /**
  * The primary interface for defining an turtle for Turtles. A turtle turtle
@@ -78,14 +78,14 @@ public interface ITurtleUpgrade
 	public TurtleCommandResult useTool( ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction );
 
 	/**
-	 * Called to obtain the IIcon to be used when rendering a turtle peripheral. Needs to be a "common"
-	 * type IIcon for now, as there is no way to determine which texture sheet an IIcon is from by the
-	 * IIcon itself.
+	 * Called to obtain the TextureAtlasSprite to be used when rendering a turtle peripheral. Needs to be a "common"
+	 * type TextureAtlasSprite for now, as there is no way to determine which texture sheet an TextureAtlasSprite is from by the
+	 * TextureAtlasSprite itself.
 	 * @param turtle Access to the turtle that the peripheral resides on.
 	 * @param side Which side of the turtle (left or right) the peripheral resides on.
-	 * @return The IIcon that you wish to be used to render your turtle peripheral.
+	 * @return The TextureAtlasSprite that you wish to be used to render your turtle peripheral.
 	 */
-	public IIcon getIcon( ITurtleAccess turtle, TurtleSide side );
+	public TextureAtlasSprite getIcon( ITurtleAccess turtle, TurtleSide side );
 
     /**
      * TODO: Document me

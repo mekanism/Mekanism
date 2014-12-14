@@ -227,7 +227,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return EnumFacing.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	/**
@@ -306,7 +306,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(resource.fluidID == FluidRegistry.LAVA.getID() && from != EnumFacing.getOrientation(facing))
+		if(resource.fluidID == FluidRegistry.LAVA.getID() && from != EnumFacing.getFront(facing))
 		{
 			return lavaTank.fill(resource, doFill);
 		}
@@ -329,7 +329,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return fluid == FluidRegistry.LAVA && from != EnumFacing.getOrientation(facing);
+		return fluid == FluidRegistry.LAVA && from != EnumFacing.getFront(facing);
 	}
 
 	@Override
@@ -341,7 +341,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == EnumFacing.getOrientation(facing))
+		if(from == EnumFacing.getFront(facing))
 		{
 			return PipeUtils.EMPTY;
 		}
@@ -354,13 +354,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(lavaTank.getFluid() != null)
 		{
-			itemStack.stackTagCompound.setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("lavaTank", lavaTank.getFluid().writeToNBT(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("lavaTank")));
+		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.getTagCompound().getCompoundTag("lavaTank")));
 	}
 }

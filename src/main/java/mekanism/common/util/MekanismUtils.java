@@ -464,7 +464,7 @@ public final class MekanismUtils
 	 */
 	public static EnumFacing getBack(int orientation)
 	{
-		return EnumFacing.getOrientation(orientation).getOpposite();
+		return EnumFacing.getFront(orientation).getOpposite();
 	}
 
 	/**
@@ -510,7 +510,7 @@ public final class MekanismUtils
 		{
 			if(side == 2 || side == 3)
 			{
-				return EnumFacing.getOrientation(side).getOpposite().ordinal();
+				return EnumFacing.getFront(side).getOpposite().ordinal();
 			}
 
 			return side;
@@ -522,7 +522,7 @@ public final class MekanismUtils
 				return side;
 			}
 
-			return EnumFacing.getOrientation(side).getOpposite().ordinal();
+			return EnumFacing.getFront(side).getOpposite().ordinal();
 		}
 		else if(blockFacing == 4)
 		{
@@ -576,7 +576,7 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).getFromSide(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFront())));
 
 		tile.getWorldObj().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
 	}
@@ -601,7 +601,7 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).getFromSide(EnumFacing.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
+		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFront())));
 
 		tile.getWorldObj().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
 	}
@@ -658,7 +658,7 @@ public final class MekanismUtils
 	 */
 	public static double getMaxEnergy(ItemStack itemStack, double def)
 	{
-		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.stackTagCompound);
+		Map<Upgrade, Integer> upgrades = Upgrade.buildMap(itemStack.getTagCompound());
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
 		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}

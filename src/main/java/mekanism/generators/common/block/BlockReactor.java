@@ -25,7 +25,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +33,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -45,7 +45,7 @@ import buildcraft.api.tools.IToolWrench;
 
 public class BlockReactor extends BlockContainer implements IBlockCTM
 {
-	public IIcon[][] icons = new IIcon[16][16];
+	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[16][16];
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
@@ -59,7 +59,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		if(this == GeneratorsBlocks.Reactor)
 		{
@@ -88,7 +88,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(int side, int meta)
 	{
 		if(this == GeneratorsBlocks.Reactor)
 		{
@@ -110,7 +110,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
@@ -321,7 +321,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(EnumFacing.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).offset(EnumFacing.getFront(side).getOpposite());
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
 			int metadata = obj.getMetadata(world);

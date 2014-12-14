@@ -39,7 +39,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			SalinationRenderData data = new SalinationRenderData();
 
 			data.height = tileEntity.height-2;
-			data.side = EnumFacing.getOrientation(tileEntity.facing);
+			data.side = EnumFacing.getFront(tileEntity.facing);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
 			

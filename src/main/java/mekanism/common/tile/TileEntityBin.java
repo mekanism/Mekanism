@@ -192,7 +192,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			{
 				if(bottomStack != null && isActive)
 				{
-					TileEntity tile = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(0)).getTileEntity(worldObj);
+					TileEntity tile = Coord4D.get(this).offset(EnumFacing.getFront(0)).getTileEntity(worldObj);
 
 					if(tile instanceof ILogisticalTransporter)
 					{

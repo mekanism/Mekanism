@@ -154,7 +154,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
@@ -436,20 +436,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	{
 		if(injectTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("injectTank", injectTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("injectTank", injectTank.getGas().write(new NBTTagCompound()));
 		}
 		
 		if(outputTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("outputTank", outputTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		injectTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("injectTank")));
-		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
+		injectTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("injectTank")));
+		outputTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("outputTank")));
 	}
 
 	@Override

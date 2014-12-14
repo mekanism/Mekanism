@@ -9,15 +9,15 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.multipart.PartDiversionTransporter;
-import mekanism.common.multipart.PartLogisticalTransporter;
-import mekanism.common.multipart.PartMechanicalPipe;
-import mekanism.common.multipart.PartPressurizedTube;
-import mekanism.common.multipart.PartSidedPipe;
-import mekanism.common.multipart.PartSidedPipe.ConnectionType;
-import mekanism.common.multipart.PartUniversalCable;
-import mekanism.common.multipart.TransmitterType;
-import mekanism.common.multipart.TransmitterType.Size;
+//import mekanism.common.multipart.PartDiversionTransporter;
+//import mekanism.common.multipart.PartLogisticalTransporter;
+//import mekanism.common.multipart.PartMechanicalPipe;
+//import mekanism.common.multipart.PartPressurizedTube;
+//import mekanism.common.multipart.PartSidedPipe;
+//import mekanism.common.multipart.PartSidedPipe.ConnectionType;
+//import mekanism.common.multipart.PartUniversalCable;
+//import mekanism.common.multipart.TransmitterType;
+//import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
@@ -25,14 +25,14 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.IIconRegister;
+//import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -43,22 +43,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.lib.colour.Colour;
-import codechicken.lib.colour.ColourRGBA;
-import codechicken.lib.lighting.LightModel;
-import codechicken.lib.lighting.LightModel.Light;
-import codechicken.lib.render.CCModel;
-import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.ColourMultiplier;
-import codechicken.lib.render.TextureUtils;
-import codechicken.lib.render.TextureUtils.IIconSelfRegister;
-import codechicken.lib.render.uv.IconTransformation;
-import codechicken.lib.vec.Translation;
-import codechicken.lib.vec.Vector3;
+//import codechicken.lib.colour.Colour;
+//import codechicken.lib.colour.ColourRGBA;
+//import codechicken.lib.lighting.LightModel;
+//import codechicken.lib.lighting.LightModel.Light;
+//import codechicken.lib.render.CCModel;
+//import codechicken.lib.render.CCRenderState;
+//import codechicken.lib.render.ColourMultiplier;
+//import codechicken.lib.render.TextureUtils;
+//import codechicken.lib.render.TextureUtils.IIconSelfRegister;
+//import codechicken.lib.render.uv.IconTransformation;
+//import codechicken.lib.vec.Translation;
+//import codechicken.lib.vec.Vector3;
 
 @SideOnly(Side.CLIENT)
-public class RenderPartTransmitter implements IIconSelfRegister
-{
+public class RenderPartTransmitter //implements IIconSelfRegister
+{/*
 	public static RenderPartTransmitter INSTANCE;
 
 	public static Map<String, CCModel> small_models;
@@ -142,7 +142,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.reset();
 		CCRenderState.startDrawing();
 		
-		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			renderSide(side, type);
 		}
@@ -208,7 +208,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 				if(obj.equals(Coord4D.get(transporter.tile())))
 				{
 					int mode = ((PartDiversionTransporter)transporter).modes[pos.sideHit];
-					EnumFacing side = EnumFacing.getOrientation(pos.sideHit);
+					EnumFacing side = EnumFacing.getFront(pos.sideHit);
 
 					pushTransporter();
 
@@ -243,7 +243,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
-		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			renderEnergySide(side, cable);
 		}
@@ -286,7 +286,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 			boolean gas = fluid.isGaseous();
 
-			for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing side : EnumFacing.values())
 			{
 				if(pipe.getConnectionType(side) == ConnectionType.NORMAL)
 				{
@@ -314,7 +314,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 				}
 			}
 
-			DisplayInteger[] displayLists = getListAndRender(EnumFacing.UNKNOWN, fluid);
+			DisplayInteger[] displayLists = getListAndRender(null, fluid);
 
 			if(displayLists != null)
 			{
@@ -472,7 +472,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.startDrawing();
 		GL11.glTranslated(pos.x, pos.y, pos.z);
 
-		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			renderGasSide(side, tube);
 		}
@@ -493,7 +493,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.hasColour = true;
 		CCRenderState.setBrightness(transmitter.world(), transmitter.x(), transmitter.y(), transmitter.z());
 
-		for(EnumFacing side : EnumFacing.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			renderSide(side, transmitter);
 		}
@@ -501,7 +501,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderSide(EnumFacing side, PartSidedPipe transmitter)
 	{
-		IIcon renderIcon = transmitter.getIconForSide(side);
+		TextureAtlasSprite renderIcon = transmitter.getIconForSide(side);
 
 		Colour c = null;
 
@@ -517,7 +517,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		boolean out = side == EnumFacing.UP || side == EnumFacing.DOWN;
 
-		IIcon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
+		TextureAtlasSprite renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
 
 		renderPart(renderIcon, getItemModel(side, type), 0, 0, 0, null);
 	}
@@ -540,7 +540,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
-	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color)
+	public void renderPart(TextureAtlasSprite icon, CCModel cc, double x, double y, double z, Colour color)
 	{
 		if(color != null)
 		{
@@ -551,7 +551,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		}
 	}
 
-	public void renderTransparency(IIcon icon, CCModel cc, Colour color)
+	public void renderTransparency(TextureAtlasSprite icon, CCModel cc, Colour color)
 	{
 		if(color != null)
 		{
@@ -578,7 +578,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	}
 
 	@Override
-	public void registerIcons(IIconRegister register)
+	public void registerIcons(TextureAtlasSpriteRegister register)
 	{
 		PartUniversalCable.registerIcons(register);
 		PartMechanicalPipe.registerIcons(register);
@@ -617,7 +617,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			return cachedOverlays.get(side).get(mode);
 		}
 
-		IIcon icon = null;
+		TextureAtlasSprite icon = null;
 
 		switch(mode)
 		{
@@ -732,5 +732,5 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		cachedLiquids.clear();
 		cachedOverlays.clear();
-	}
+	}*/
 }

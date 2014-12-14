@@ -128,13 +128,13 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			{
 				GasStack toSend = new GasStack(centerTank.getGas().getGas(), Math.min(centerTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(EnumFacing.getOrientation(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), centerTank.getGas().getGas()))
 					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getOrientation(facing).getOpposite(), toSend, true), true);
+						centerTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -310,7 +310,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		{
 			return rightTank;
 		}
-		else if(side == EnumFacing.getOrientation(facing))
+		else if(side == EnumFacing.getFront(facing))
 		{
 			return centerTank;
 		}
@@ -353,7 +353,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == EnumFacing.getOrientation(facing);
+		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing) || side == EnumFacing.getFront(facing);
 	}
 
 	@Override
@@ -467,25 +467,25 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	{
 		if(leftTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("leftTank", leftTank.getGas().write(new NBTTagCompound()));
 		}
 
 		if(rightTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("rightTank", rightTank.getGas().write(new NBTTagCompound()));
 		}
 
 		if(centerTank.getGas() != null)
 		{
-			itemStack.stackTagCompound.setTag("centerTank", centerTank.getGas().write(new NBTTagCompound()));
+			itemStack.getTagCompound().setTag("centerTank", centerTank.getGas().write(new NBTTagCompound()));
 		}
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		leftTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("leftTank")));
-		rightTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("rightTank")));
-		centerTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("centerTank")));
+		leftTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("leftTank")));
+		rightTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("rightTank")));
+		centerTank.setGas(GasStack.readFromNBT(itemStack.getTagCompound().getCompoundTag("centerTank")));
 	}
 }

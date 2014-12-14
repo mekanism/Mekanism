@@ -64,7 +64,7 @@ public final class StackUtils
 
 	public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check)
 	{
-		return equalsWildcard(wild, check) && (wild.stackTagCompound == null ? check.stackTagCompound == null : (wild.stackTagCompound == check.stackTagCompound || wild.stackTagCompound.equals(check.stackTagCompound)));
+		return equalsWildcard(wild, check) && (wild.getTagCompound() == null ? check.getTagCompound() == null : (wild.getTagCompound() == check.getTagCompound() || wild.getTagCompound().equals(check.getTagCompound())));
 	}
 
 	public static List<ItemStack> even(ItemStack stack1, ItemStack stack2)

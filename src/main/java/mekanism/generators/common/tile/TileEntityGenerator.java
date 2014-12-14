@@ -113,7 +113,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getOrientation(facing));
+		return EnumSet.of(EnumFacing.getFront(facing));
 	}
 
 	@Override

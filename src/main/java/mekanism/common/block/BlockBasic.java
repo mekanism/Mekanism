@@ -29,7 +29,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
@@ -40,7 +40,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
@@ -77,7 +77,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockBasic extends Block implements IBlockCTM
 {
-	public IIcon[][] icons = new IIcon[16][6];
+	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[16][6];
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
@@ -113,7 +113,7 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		switch(blockType)
 		{
@@ -159,7 +159,7 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
@@ -211,7 +211,7 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(int side, int meta)
 	{
 		switch(blockType)
 		{
@@ -819,7 +819,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).getFromSide(EnumFacing.getOrientation(side).getOpposite());
+		Coord4D obj = new Coord4D(x, y, z).offset(EnumFacing.getFront(side).getOpposite());
 		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
@@ -839,7 +839,7 @@ public class BlockBasic extends Block implements IBlockCTM
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
 			
-			for(EnumFacing dir : EnumFacing.VALID_DIRECTIONS)
+			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
 				{

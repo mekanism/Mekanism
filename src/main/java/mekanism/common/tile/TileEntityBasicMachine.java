@@ -288,7 +288,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public int getOrientation()
+	public int getFront()
 	{
 		return facing;
 	}

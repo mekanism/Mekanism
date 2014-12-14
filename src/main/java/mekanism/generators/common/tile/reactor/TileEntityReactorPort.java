@@ -198,7 +198,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
 		EnumSet set = EnumSet.allOf(EnumFacing.class);
-		set.remove(EnumFacing.UNKNOWN);
+		set.remove(null);
 		
 		return set;
 	}

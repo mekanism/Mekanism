@@ -111,7 +111,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		EnumSet set = EnumSet.allOf(EnumFacing.class);
 		set.removeAll(getOutputtingSides());
-		set.remove(EnumFacing.UNKNOWN);
+		set.remove(null);
 
 		return set;
 	}
@@ -119,7 +119,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getOrientation(facing));
+		return EnumSet.of(EnumFacing.getFront(facing));
 	}
 
 	@Override

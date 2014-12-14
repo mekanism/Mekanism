@@ -64,7 +64,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(this, EnumFacing.getOrientation(facing), lastFired, worldObj);
+				LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), lastFired, worldObj);
 			}
 		}
 		else
@@ -89,7 +89,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				MovingObjectPosition mop = LaserManager.fireLaser(this, EnumFacing.getOrientation(facing), firing, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaser(this, EnumFacing.getFront(facing), firing, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))

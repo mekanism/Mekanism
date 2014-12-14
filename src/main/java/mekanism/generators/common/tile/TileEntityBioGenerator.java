@@ -194,7 +194,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return EnumFacing.getOrientation(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
+		return EnumFacing.getFront(side) == MekanismUtils.getRight(facing) ? new int[] {1} : new int[] {0};
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getOrientation(facing).getOpposite());
+		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(FluidRegistry.isFluidRegistered("bioethanol") && from != EnumFacing.getOrientation(facing))
+		if(FluidRegistry.isFluidRegistered("bioethanol") && from != EnumFacing.getFront(facing))
 		{
 			if(resource.getFluid() == FluidRegistry.getFluid("bioethanol"))
 			{
@@ -319,12 +319,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public void writeSustainedData(ItemStack itemStack)
 	{
-		itemStack.stackTagCompound.setInteger("fluidStored", bioFuelSlot.fluidStored);
+		itemStack.getTagCompound().setInteger("fluidStored", bioFuelSlot.fluidStored);
 	}
 
 	@Override
 	public void readSustainedData(ItemStack itemStack) 
 	{
-		bioFuelSlot.setFluid(itemStack.stackTagCompound.getInteger("fluidStored"));
+		bioFuelSlot.setFluid(itemStack.getTagCompound().getInteger("fluidStored"));
 	}
 }

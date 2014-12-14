@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiPowerBar extends GuiElement
@@ -56,12 +56,14 @@ public class GuiPowerBar extends GuiElement
 		yLocation = y;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
-	
+*/
+
 	public static abstract class IPowerInfoHandler
 	{
 		public String getTooltip()

@@ -10,7 +10,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-import codechicken.lib.vec.Rectangle4i;
+//import codechicken.lib.vec.Rectangle4i;
 
 public class GuiUpgradeTab extends GuiElement
 {
@@ -23,11 +23,13 @@ public class GuiUpgradeTab extends GuiElement
 		tileEntity = tile;
 	}
 	
+/*
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth + 176, guiHeight + 6, 26, 26);
 	}
+*/
 
 	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
