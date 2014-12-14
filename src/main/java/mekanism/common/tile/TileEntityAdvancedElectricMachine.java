@@ -22,6 +22,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.StatUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +41,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	public int BASE_SECONDARY_ENERGY_PER_TICK;
 
 	/** How much secondary energy this machine uses per tick, including upgrades. */
-	public int secondaryEnergyPerTick;
+	public double secondaryEnergyPerTick;
 
 	public static int MAX_GAS = 200;
 
@@ -119,7 +120,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 					operatingTicks = 0;
 				}
 
-				gasTank.draw(secondaryEnergyPerTick, true);
+				gasTank.draw(StatUtils.inversePoisson(secondaryEnergyPerTick), true);
 				electricityStored -= energyPerTick;
 			}
 			else {
@@ -207,7 +208,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	@Override
 	public void operate(RECIPE recipe)
 	{
-		recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyPerTick);
+		recipe.operate(inventory, 0, 2, gasTank, (int)secondaryEnergyPerTick);
 
 		markDirty();
 		ejectorComponent.onOutput();
@@ -216,7 +217,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	@Override
 	public boolean canOperate(RECIPE recipe)
 	{
-		return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, secondaryEnergyPerTick);
+		return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, (int)secondaryEnergyPerTick);
 	}
 
 	@Override
@@ -329,7 +330,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 		if(upgrade == Upgrade.SPEED)
 		{
-			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, BASE_SECONDARY_ENERGY_PER_TICK);
+			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
 		}
 	}
 

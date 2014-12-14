@@ -37,6 +37,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StatUtils;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -80,7 +81,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public double energyPerTick = usage.factoryUsage;
 
 	/** How much secondary energy each operation consumes per tick */
-	public int secondaryEnergyPerTick = 0;
+	public double secondaryEnergyPerTick = 0;
 
 	/** How long it takes this factory to switch recipe types. */
 	public int RECIPE_TICKS_REQUIRED = 40;
@@ -367,7 +368,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public int getSecondaryEnergyPerTick()
 	{
-		return secondaryEnergyPerTick;
+		return StatUtils.inversePoisson(secondaryEnergyPerTick);
 	}
 
 	public void handleSecondaryFuel()
@@ -516,7 +517,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				return false;
 			}
 
-			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyPerTick);
+			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, (int)secondaryEnergyPerTick);
 		}
 
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
@@ -540,7 +541,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
-			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyPerTick);
+			recipe.operate(inventory, inputSlot, outputSlot, gasTank, (int)secondaryEnergyPerTick);
 		}
 		else
 		{
@@ -940,7 +941,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+				secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, recipeType.getSecondaryEnergyPerTick());
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 		}
