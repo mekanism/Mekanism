@@ -20,6 +20,7 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.StatUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -111,7 +112,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 					operatingTicks = 0;
 				}
 
-				gasTank.draw(MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK), true);
+				gasTank.draw(StatUtils.inversePoisson(MekanismUtils.getSecondaryEnergyPerTickMean(this, SECONDARY_ENERGY_PER_TICK)), true);
 				electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 			}
 			else {
