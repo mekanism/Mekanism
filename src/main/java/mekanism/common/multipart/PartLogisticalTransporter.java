@@ -41,11 +41,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
-import buildcraft.api.transport.IPipe;
-import buildcraft.api.transport.IPipeTile;
 import codechicken.lib.vec.Vector3;
 
-@Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
 public class PartLogisticalTransporter extends PartSidedPipe implements ILogisticalTransporter
 {
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 2);
