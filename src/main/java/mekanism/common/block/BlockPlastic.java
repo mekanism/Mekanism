@@ -3,6 +3,7 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 
@@ -122,5 +123,10 @@ public class BlockPlastic extends Block
 			return true;
 		}
 		return false;
+	}
+
+	public int getRenderType()
+	{
+		return ClientProxy.PLASTIC_RENDER_ID;
 	}
 }

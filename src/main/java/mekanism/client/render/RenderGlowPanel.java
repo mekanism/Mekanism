@@ -56,18 +56,12 @@ public class RenderGlowPanel //implements IIconSelfRegister
 		{
 			c.computeLighting(LightModel.standardLightModel);
 		}
-
-		for(CCModel c : lightModels)
-		{
-			c.computeLighting(LightModel.standardLightModel);
-		}
 	}
 
 	public void renderStatic(PartGlowPanel panel)
 	{
 		CCRenderState.reset();
 		CCRenderState.setBrightness(panel.world(), panel.x(), panel.y(), panel.z());
-		CCRenderState.hasColour = true;
 
 		Colour colour = new ColourRGBA(panel.colour.getColor(0), panel.colour.getColor(1), panel.colour.getColor(2), 1);
 		int side = panel.side.ordinal();
