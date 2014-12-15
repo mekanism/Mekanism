@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.common.ISustainedTank;
+import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -36,13 +37,16 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import io.netty.buffer.ByteBuf;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl
 {
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
 
 	/** The nodes that have full sources near them or in them */
 	public Set<Coord4D> recurringNodes = new HashSet<Coord4D>();
+
+	/** This machine's current RedstoneControl type. */
+	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityElectricPump()
 	{
@@ -118,11 +122,18 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 
-		if(!worldObj.isRemote && worldObj.getWorldTime() % 20 == 0)
+		if(!worldObj.isRemote && ticker % 20 == 0)
 		{
-			if(getEnergy() >= Mekanism.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount+FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
+			if(MekanismUtils.canFunction(this))
 			{
-				suck(true);
+				if(getEnergy() >= Mekanism.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
+				{
+					suck(true);
+				}
+			}
+			else
+			{
+				ticker--;
 			}
 		}
 
@@ -237,6 +248,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		else {
 			fluidTank.setFluid(null);
 		}
+		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
@@ -255,6 +267,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		else {
 			data.add(0);
 		}
+		data.add(controlType.ordinal());
 
 		return data;
 	}
@@ -273,6 +286,8 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			nbtTags.setTag("fluidTank", fluidTank.writeToNBT(new NBTTagCompound()));
 		}
+
+		nbtTags.setInteger("controlType", controlType.ordinal());
 
 		NBTTagList recurringList = new NBTTagList();
 
@@ -297,6 +312,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		if(nbtTags.hasKey("fluidTank"))
 		{
 			fluidTank.readFromNBT(nbtTags.getCompoundTag("fluidTank"));
+		}
+
+		if(nbtTags.hasKey("controlType"))
+		{
+			controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		}
 
 		if(nbtTags.hasKey("recurringNodes"))
@@ -455,5 +475,18 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		return false;
+	}
+
+	@Override
+	public RedstoneControl getControlType()
+	{
+		return controlType;
+	}
+
+	@Override
+	public void setControlType(RedstoneControl type)
+	{
+		controlType = type;
+		MekanismUtils.saveChunk(this);
 	}
 }
