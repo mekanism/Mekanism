@@ -834,7 +834,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int getFront()
+	public int getFacing()
 	{
 		return facing;
 	}

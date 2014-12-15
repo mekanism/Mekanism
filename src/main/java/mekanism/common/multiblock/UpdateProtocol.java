@@ -36,7 +36,7 @@ public abstract class UpdateProtocol<T>
 	 */
 	public void loopThrough(TileEntityMultiblock<T> tile)
 	{
-		World worldObj = tile.getWorldObj();
+		World worldObj = tile.getWorld();
 
 		int origX = tile.getPos().getX(), origY = tile.getPos().getY(), origZ = tile.getPos().getZ();
 
@@ -200,7 +200,7 @@ public abstract class UpdateProtocol<T>
 
 		for(EnumFacing side : EnumFacing.values())
 		{
-			TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorldObj());
+			TileEntity tileEntity = Coord4D.get(tile).offset(side).getTileEntity(tile.getWorld());
 
 			if(MultiblockManager.areEqual(tileEntity, pointer))
 			{
@@ -251,7 +251,7 @@ public abstract class UpdateProtocol<T>
 	 */
 	private boolean isAir(int x, int y, int z)
 	{
-		return pointer.getWorldObj().isAirBlock(x, y, z);
+		return pointer.getWorld().isAirBlock(x, y, z);
 	}
 
 	/**
@@ -263,7 +263,7 @@ public abstract class UpdateProtocol<T>
 	 */
 	private boolean isViableNode(int x, int y, int z)
 	{
-		TileEntity tile = pointer.getWorldObj().getTileEntity(new BlockPos(x, y, z));
+		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
 		
 		if(MultiblockManager.areEqual(tile, pointer))
 		{
@@ -383,7 +383,7 @@ public abstract class UpdateProtocol<T>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorld());
 				int id = getManager().getInventoryId(tileEntity);
 
 				if(id != -1)
@@ -403,10 +403,10 @@ public abstract class UpdateProtocol<T>
 					{
 						if(cache == null)
 						{
-							cache = (MultiblockCache<T>)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+							cache = (MultiblockCache<T>)Mekanism.tankManager.pullInventory(pointer.getWorld(), id);
 						}
 						else {
-							mergeCaches(rejectedItems, cache, (MultiblockCache<T>)getManager().pullInventory(pointer.getWorldObj(), id));
+							mergeCaches(rejectedItems, cache, (MultiblockCache<T>)getManager().pullInventory(pointer.getWorld(), id));
 						}
 						
 						idToUse = id;
@@ -427,7 +427,7 @@ public abstract class UpdateProtocol<T>
 
 			for(Coord4D obj : structureFound.locations)
 			{
-				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorld());
 
 				tileEntity.structure = (T)structureFound;
 			}

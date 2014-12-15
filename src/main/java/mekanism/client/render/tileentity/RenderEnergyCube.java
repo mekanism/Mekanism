@@ -23,7 +23,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 	private ModelEnergyCore core = new ModelEnergyCore();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityEnergyCube)tileEntity, x, y, z, partialTick);
 	}

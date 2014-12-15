@@ -38,7 +38,7 @@ public class RenderWindTurbine extends TileEntitySpecialRenderer
 		GL11.glRotatef(180, 0F, 0F, 1F);
 
 		if(!Mekanism.proxy.isPaused() &&
-				tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
+				tileEntity.getWorld().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
 		{
 			tileEntity.angle = (tileEntity.angle+((int)(tileEntity.getMultiplier() * partialTick))) % 360;
 		}

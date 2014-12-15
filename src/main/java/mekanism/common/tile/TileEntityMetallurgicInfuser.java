@@ -484,7 +484,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public int getFront()
+	public int getFacing()
 	{
 		return facing;
 	}

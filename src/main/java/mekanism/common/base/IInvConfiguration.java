@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import mekanism.common.SideData;
 
+import net.minecraft.util.EnumFacing;
+
 /**
  * Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.
  * @author AidanBrady
@@ -27,7 +29,7 @@ public interface IInvConfiguration
 	 * Gets this machine's current orientation.
 	 * @return
 	 */
-	public int getFront();
+	public EnumFacing getFacing();
 
 	/**
 	 * Gets this machine's ejector.

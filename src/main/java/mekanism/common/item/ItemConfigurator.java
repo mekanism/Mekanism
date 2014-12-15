@@ -70,15 +70,15 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 					if(!player.isSneaking())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getFront())]).color.getName()));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getFacing())]).color.getName()));
 						return true;
 					}
 					else {
 						if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
 						{
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-							MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getFront()));
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getFront())]).color.getName()));
+							MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getFacing()));
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getFacing())]).color.getName()));
 
 							if(config instanceof TileEntityBasicBlock)
 							{

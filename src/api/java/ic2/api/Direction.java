@@ -53,7 +53,7 @@ public enum Direction {
 	 * @return Adjacent tile entity or null if none exists
 	 */
 	public TileEntity applyToTileEntity(TileEntity te) {
-		return applyTo(te.getWorldObj(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
+		return applyTo(te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
 	}
 
 	/**

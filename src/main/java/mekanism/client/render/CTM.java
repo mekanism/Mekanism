@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 /**
@@ -417,20 +419,20 @@ public class CTM
 				break;
 		}
 
-		Block block1 = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-		Block block2 = world.getBlockState(new BlockPos(x2, y2, z2)).getBlock();
+		IBlockState state1 = world.getBlockState(new BlockPos(x, y, z));
+		IBlockState state2 = world.getBlockState(new BlockPos(x2, y2, z2));
 
-		int meta1 = world.getBlockMetadata(x, y, z);
-		int meta2 = world.getBlockMetadata(x2, y2, z2);
+		Block block1 = state1.getBlock();
+		Block block2 = state2.getBlock();
 
 		boolean validBlockMeta1 = false;
 		boolean invalidBlockMeta2 = true;
 
 		for(Entry<Block, List<Integer>> entry : blockMetas.entrySet())
 		{
-			validBlockMeta1 |= block1.equals(entry.getKey()) && entry.getValue().contains(meta1);
+			validBlockMeta1 |= block1.equals(entry.getKey()) /*&& entry.getValue().contains(meta1)*/;
 
-			invalidBlockMeta2 &= !(block2.equals(entry.getKey()) && entry.getValue().contains(meta2));
+			invalidBlockMeta2 &= !(block2.equals(entry.getKey()) /*&& entry.getValue().contains(meta2)*/);
 		}
 
 		return validBlockMeta1 && invalidBlockMeta2;

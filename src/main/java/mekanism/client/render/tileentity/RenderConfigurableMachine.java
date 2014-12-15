@@ -37,11 +37,11 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 	public RenderConfigurableMachine()
 	{
-		field_147501_a = TileEntityRendererDispatcher.instance;
+		rendererDispatcher = TileEntityRendererDispatcher.instance;
 	}
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((IInvConfiguration)tileEntity, x, y, z, partialTick);
 	}
@@ -58,15 +58,15 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 
 		if(pos != null && itemStack != null && itemStack.getItem() instanceof ItemConfigurator && ((ItemConfigurator)itemStack.getItem()).getState(itemStack) == 0)
 		{
-			int xPos = MathHelper.floor_double(pos.blockX);
-			int yPos = MathHelper.floor_double(pos.blockY);
-			int zPos = MathHelper.floor_double(pos.blockZ);
+			int xPos = MathHelper.floor_double(pos.getBlockPos().getX());
+			int yPos = MathHelper.floor_double(pos.getBlockPos().getY());
+			int zPos = MathHelper.floor_double(pos.getBlockPos().getZ());
 
-			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorldObj().provider.dimensionId);
+			Coord4D obj = new Coord4D(xPos, yPos, zPos, tileEntity.getWorld().provider.getDimensionId());
 
 			if(xPos == tileEntity.getPos().getX() && yPos == tileEntity.getPos().getY() && zPos == tileEntity.getPos().getZ())
 			{
-				EnumColor color = configurable.getSideData().get(configurable.getConfiguration()[MekanismUtils.getBaseOrientation(pos.sideHit, configurable.getFront())]).color;
+				EnumColor color = configurable.getSideData().get(configurable.getConfiguration()[MekanismUtils.getBaseOrientation(pos.sideHit, configurable.getFacing()).ordinal()]).color;
 
 				push();
 
@@ -75,7 +75,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 				bindTexture(MekanismRenderer.getBlocksTexture());
 				GL11.glTranslatef((float)x, (float)y, (float)z);
 
-				int display = getOverlayDisplay(world, EnumFacing.getFront(pos.sideHit), color).display;
+				int display = getOverlayDisplay(world, pos.sideHit, color).display;
 				GL11.glCallList(display);
 
 				pop();

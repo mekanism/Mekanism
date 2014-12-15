@@ -18,7 +18,7 @@ public class RenderElectricPump extends TileEntitySpecialRenderer
 	private ModelElectricPump model = new ModelElectricPump();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityElectricPump)tileEntity, x, y, z, partialTick);
 	}

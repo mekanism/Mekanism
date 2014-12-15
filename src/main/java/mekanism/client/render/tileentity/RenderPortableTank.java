@@ -31,7 +31,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 	private ModelPortableTank model = new ModelPortableTank();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityPortableTank)tileEntity, x, y, z, partialTick);
 	}
@@ -125,7 +125,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowingIcon());
+//		toReturn.setTexture(fluid.getFlowingIcon());
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedValveFluids.put(fluid, displays);
@@ -134,7 +134,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			/*if(fluid.getIcon() != null)
 			{
 				toReturn.minX = 0.3125 + .01;
 				toReturn.minY = 0.0625 + ((float)i/(float)stages)*0.875;
@@ -145,7 +145,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 				toReturn.maxZ = 0.6875 - .01;
 
 				MekanismRenderer.renderObject(toReturn);
-			}
+			}*/
 
 			GL11.glEndList();
 		}
@@ -162,7 +162,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+//		toReturn.setTexture(fluid.getIcon());
 		
 		DisplayInteger[] displays = new DisplayInteger[stages];
 		cachedCenterFluids.put(fluid, displays);
@@ -171,6 +171,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
+/*
 			if(fluid.getIcon() != null)
 			{
 				toReturn.minX = 0.125 + .01;
@@ -183,6 +184,7 @@ public class RenderPortableTank extends TileEntitySpecialRenderer
 
 				MekanismRenderer.renderObject(toReturn);
 			}
+*/
 
 			GL11.glEndList();
 		}

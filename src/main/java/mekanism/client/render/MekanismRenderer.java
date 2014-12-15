@@ -46,7 +46,7 @@ import org.lwjgl.opengl.GL12;
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
 {
-	private static RenderBlocks renderBlocks = new RenderBlocks();
+//	private static RenderBlocks renderBlocks = new RenderBlocks();
 	
 	public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
 	
@@ -110,10 +110,12 @@ public class MekanismRenderer
 
 //			FluidRegistry.getFluid("brine").setIcons(event.map.registerSprite(new ResourceLocation("mekanism:LiquidBrine"));
 
+/*
 			if(RenderPartTransmitter.getInstance() != null)
 			{
 				RenderPartTransmitter.getInstance().resetDisplayInts();
 			}
+*/
 			RenderDynamicTank.resetDisplayInts();
 			RenderSalinationController.resetDisplayInts();
 			RenderPortableTank.resetDisplayInts();
@@ -183,6 +185,7 @@ public class MekanismRenderer
 			return;
 		}
 		
+/*
         renderBlocks.renderMaxX = object.maxX;
         renderBlocks.renderMinX = object.minX;
         renderBlocks.renderMaxY = object.maxY;
@@ -225,6 +228,7 @@ public class MekanismRenderer
 		}
 		
 		Tessellator.instance.draw();
+*/
 	}
 	
 	public static void color(EnumColor color)

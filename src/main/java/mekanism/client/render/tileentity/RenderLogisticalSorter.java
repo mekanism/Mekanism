@@ -18,7 +18,7 @@ public class RenderLogisticalSorter extends TileEntitySpecialRenderer
 	private ModelLogisticalSorter model = new ModelLogisticalSorter();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityLogisticalSorter)tileEntity, x, y, z, partialTick);
 	}

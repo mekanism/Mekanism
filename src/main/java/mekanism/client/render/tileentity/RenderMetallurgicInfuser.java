@@ -19,7 +19,7 @@ public class RenderMetallurgicInfuser extends TileEntitySpecialRenderer
 	private ModelMetallurgicInfuser model = new ModelMetallurgicInfuser();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityMetallurgicInfuser)tileEntity, x, y, z, partialTick);
 	}

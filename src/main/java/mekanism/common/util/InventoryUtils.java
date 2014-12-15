@@ -369,7 +369,7 @@ public final class InventoryUtils
 		if(!force && tileEntity instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
-			int tileSide = config.getFront();
+			int tileSide = config.getFacing();
 			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)

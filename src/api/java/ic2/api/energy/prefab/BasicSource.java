@@ -127,7 +127,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 		if (!addedToEnet &&
 				!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
 				Info.isIc2Available()) {
-			worldObj = parent.getWorldObj();
+			worldObj = parent.getWorld();
 			xCoord = parent.getPos().getX();
 			yCoord = parent.getPos().getY();
 			zCoord = parent.getPos().getZ();

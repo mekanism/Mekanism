@@ -89,7 +89,7 @@ public class MultiblockManager<T>
 		try {
 			if(!loaded)
 			{
-				load(((TileEntity)multiblock).getWorldObj());
+				load(((TileEntity)multiblock).getWorld());
 			}
 			
 			if(!inventories.containsKey(multiblock.getSynchronizedData().inventoryID))

@@ -36,7 +36,7 @@ public final class TransporterUtils
 
 		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity tile = Coord4D.get(tileEntity.getTile()).offset(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
+			TileEntity tile = Coord4D.get(tileEntity.getTile()).offset(orientation).getTileEntity(tileEntity.getTile().getWorld());
 
 			if(tile instanceof ILogisticalTransporter)
 			{
@@ -125,7 +125,7 @@ public final class TransporterUtils
 
 		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity inventory = Coord4D.get(tileEntity.getTile()).offset(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
+			TileEntity inventory = Coord4D.get(tileEntity.getTile()).offset(orientation).getTileEntity(tileEntity.getTile().getWorld());
 
 			if(inventory instanceof IInventory && !(inventory instanceof IGridTransmitter))
 			{
@@ -188,18 +188,18 @@ public final class TransporterUtils
 
 		TransporterManager.remove(stack);
 
-		EntityItem entityItem = new EntityItem(tileEntity.getTile().getWorldObj(), tileEntity.getTile().getPos().getX() + pos[0], tileEntity.getTile().getPos().getY() + pos[1], tileEntity.getTile().getPos().getZ() + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.getTile().getWorld(), tileEntity.getTile().getPos().getX() + pos[0], tileEntity.getTile().getPos().getY() + pos[1], tileEntity.getTile().getPos().getZ() + pos[2], stack.itemStack);
 
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
 		entityItem.motionZ = 0;
 
-		tileEntity.getTile().getWorldObj().spawnEntityInWorld(entityItem);
+		tileEntity.getTile().getWorld().spawnEntityInWorld(entityItem);
 	}
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(EnumFacing.getFront(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorld().provider.dimensionId).step(EnumFacing.getFront(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
 		float itemFix = 0;

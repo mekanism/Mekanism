@@ -65,7 +65,7 @@ public class GuiWindTurbine extends GuiMekanism
 
 		int size = 44;
 
-		if(!tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
+		if(!tileEntity.getWorld().canBlockSeeTheSky(tileEntity.getPos().getX(), tileEntity.getPos().getY()+4, tileEntity.getPos().getZ()))
 		{
 			size += 9;
 			fontRendererObj.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);

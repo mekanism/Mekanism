@@ -27,7 +27,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	private static Map<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>> cachedCenterFluids = new HashMap<SalinationRenderData, HashMap<Fluid, DisplayInteger[]>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntitySalinationController)tileEntity, x, y, z, partialTick);
 	}
@@ -49,7 +49,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 
 				push();
 
-				GL11.glTranslated(getX(renderLoc.getPos().getX()), getY(renderLoc.getPos().getY()), getZ(renderLoc.getPos().getZ()));
+				GL11.glTranslated(getX(renderLoc.getX()), getY(renderLoc.getY()), getZ(renderLoc.getZ()));
 
 				MekanismRenderer.glowOn(tileEntity.waterTank.getFluid().getFluid().getLuminosity());
 
@@ -89,7 +89,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+//		toReturn.setTexture(fluid.getIcon());
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -110,6 +110,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
+/*
 			if(fluid.getIcon() != null)
 			{
 				switch(data.side)
@@ -154,6 +155,7 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 
 				MekanismRenderer.renderObject(toReturn);
 			}
+*/
 
 			displays[i].endList();
 		}

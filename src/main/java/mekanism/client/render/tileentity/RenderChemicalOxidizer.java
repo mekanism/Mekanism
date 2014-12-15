@@ -28,7 +28,7 @@ public class RenderChemicalOxidizer extends TileEntitySpecialRenderer
 	private Map<EnumFacing, HashMap<Gas, DisplayInteger>> cachedGasses = new HashMap<EnumFacing, HashMap<Gas, DisplayInteger>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityChemicalOxidizer)tileEntity, x, y, z, partialTick);
 	}

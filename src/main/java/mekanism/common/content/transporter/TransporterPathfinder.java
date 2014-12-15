@@ -242,7 +242,7 @@ public final class TransporterPathfinder
 			return new Destination(test, false, rejects);
 		}
 		
-		Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), dest, Coord4D.get(start.getTile()), stack);
+		Pathfinder p = new Pathfinder(checker, start.getTile().getWorld(), dest, Coord4D.get(start.getTile()), stack);
 		
 		if(p.getPath().size() >= 2)
 		{
@@ -508,7 +508,7 @@ public final class TransporterPathfinder
 				}
 			};
 
-			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), stack.homeLocation, Coord4D.get(start.getTile()), stack);
+			Pathfinder p = new Pathfinder(checker, start.getTile().getWorld(), stack.homeLocation, Coord4D.get(start.getTile()), stack);
 			List<Coord4D> path = p.getPath();
 
 			if(path.size() >= 2)
@@ -521,7 +521,7 @@ public final class TransporterPathfinder
 			}
 		}
 
-		IdlePath d = new IdlePath(start.getTile().getWorldObj(), Coord4D.get(start.getTile()), stack);
+		IdlePath d = new IdlePath(start.getTile().getWorld(), Coord4D.get(start.getTile()), stack);
 		Destination dest = d.find();
 
 		if(dest == null)

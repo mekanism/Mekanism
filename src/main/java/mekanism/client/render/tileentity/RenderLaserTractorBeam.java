@@ -16,7 +16,7 @@ public class RenderLaserTractorBeam extends TileEntitySpecialRenderer
 	private ModelLaserAmplifier model = new ModelLaserAmplifier();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityLaserTractorBeam)tileEntity, x, y, z, partialTick);
 	}

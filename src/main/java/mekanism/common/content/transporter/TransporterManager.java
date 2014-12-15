@@ -99,7 +99,7 @@ public class TransporterManager
 		if(stack.pathType != Path.HOME && inv instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)inv;
-			int tileSide = config.getFront();
+			int tileSide = config.getFacing();
 			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != stack.color)
@@ -245,7 +245,7 @@ public class TransporterManager
 		if(tileEntity instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
-			int tileSide = config.getFront();
+			int tileSide = config.getFacing();
 			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)

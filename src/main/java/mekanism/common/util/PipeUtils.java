@@ -27,7 +27,7 @@ public final class PipeUtils
 
 		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity pipe = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity pipe = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(TransmissionType.checkTransmissionType(pipe, TransmissionType.FLUID))
 			{
@@ -108,7 +108,7 @@ public final class PipeUtils
 
 		for(EnumFacing orientation : EnumFacing.values())
 		{
-			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorldObj());
+			TileEntity acceptor = Coord4D.get(tileEntity).offset(orientation).getTileEntity(tileEntity.getWorld());
 
 			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IGridTransmitter))
 			{

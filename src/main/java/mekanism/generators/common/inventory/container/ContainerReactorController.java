@@ -136,7 +136,7 @@ public class ContainerReactorController extends Container
 	    @SideOnly(Side.CLIENT)
 	    public boolean func_111238_b()
 	    {
-	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorldObj(), tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
+	        return tileEntity != null && MekanismUtils.isActive(tileEntity.getWorld(), tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ());
 	    }
 	}
 }

@@ -30,7 +30,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 	private static Map<ValveRenderData, HashMap<Fluid, DisplayInteger>> cachedValveFluids = new HashMap<ValveRenderData, HashMap<Fluid, DisplayInteger>>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityDynamicTank)tileEntity, x, y, z, partialTick);
 	}
@@ -52,12 +52,12 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			{
 				push();
 
-				GL11.glTranslated(getX(data.location.getPos().getX()), getY(data.location.getPos().getY()), getZ(data.location.getPos().getZ()));
+				GL11.glTranslated(getX(data.location.getX()), getY(data.location.getY()), getZ(data.location.getZ()));
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorld());
 
 				if(tileEntity.structure.fluidStored.getFluid().isGaseous())
 				{
@@ -80,11 +80,11 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						push();
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
-						GL11.glTranslated(getX(valveData.location.getPos().getX()), getY(valveData.location.getPos().getY()), getZ(valveData.location.getPos().getZ()));
+						GL11.glTranslated(getX(valveData.location.getX()), getY(valveData.location.getY()), getZ(valveData.location.getZ()));
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 
-						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
+						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorld()).render();
 
 						MekanismRenderer.glowOff();
 						MekanismRenderer.resetColor();
@@ -121,7 +121,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getIcon());
+		//toReturn.setTexture(fluid.getIcon());
 
 		final int stages = getStages(data.height);
 		DisplayInteger[] displays = new DisplayInteger[stages];
@@ -140,7 +140,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		{
 			displays[i] = DisplayInteger.createAndStart();
 
-			if(fluid.getIcon() != null)
+			/*if(fluid.getIcon() != null)
 			{
 				toReturn.minX = 0 + .01;
 				toReturn.minY = 0 + .01;
@@ -151,7 +151,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				toReturn.maxZ = data.width - .01;
 
 				MekanismRenderer.renderObject(toReturn);
-			}
+			}*/
 
 			GL11.glEndList();
 		}
@@ -168,7 +168,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 		Model3D toReturn = new Model3D();
 		toReturn.baseBlock = Blocks.water;
-		toReturn.setTexture(fluid.getFlowingIcon());
+		//toReturn.setTexture(fluid.getFlowingIcon());
 
 		DisplayInteger display = DisplayInteger.createAndStart();
 
@@ -256,10 +256,10 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			}
 		}
 
-		if(fluid.getFlowingIcon() != null)
+		/*if(fluid.getFlowingIcon() != null)
 		{
 			MekanismRenderer.renderObject(toReturn);
-		}
+		}*/
 		
 		display.endList();
 
@@ -268,7 +268,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 	private int getValveFluidHeight(ValveRenderData data)
 	{
-		return data.valveLocation.getPos().getY() - data.location.getPos().getY();
+		return data.valveLocation.getY() - data.location.getY();
 	}
 
 	private int getStages(int height)

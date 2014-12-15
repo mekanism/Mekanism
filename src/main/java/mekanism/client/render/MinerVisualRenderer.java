@@ -54,13 +54,13 @@ public final class MinerVisualRenderer
 		
 		for(int x = -data.radius; x <= data.radius; x++)
 		{
-			for(int y = data.minY-data.getPos().getY(); y <= data.maxY-data.getPos().getY(); y++)
+			for(int y = data.minY-data.yCoord; y <= data.maxY-data.yCoord; y++)
 			{
 				for(int z = -data.radius; z <= data.radius; z++)
 				{
-					if(x == -data.radius || x == data.radius || y == data.minY-data.getPos().getY() || y == data.maxY-data.getPos().getY() || z == -data.radius || z == data.radius)
+					if(x == -data.radius || x == data.radius || y == data.minY-data.yCoord || y == data.maxY-data.yCoord || z == -data.radius || z == data.radius)
 					{
-						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.dimensionId)));
+						models.add(createModel(new Coord4D(x, y, z, mc.theWorld.provider.getDimensionId())));
 					}
 				}
 			}
@@ -80,7 +80,7 @@ public final class MinerVisualRenderer
 	{
 		Model3D toReturn = new Model3D();
 		
-		toReturn.setBlockBounds(rel.getPos().getX() + 0.4, rel.getPos().getY() + 0.4, rel.getPos().getZ() + 0.4, rel.getPos().getX() + 0.6, rel.getPos().getY() + 0.6, rel.getPos().getZ() + 0.6);
+		toReturn.setBlockBounds(rel.getX() + 0.4, rel.getY() + 0.4, rel.getZ() + 0.4, rel.getX() + 0.6, rel.getY() + 0.6, rel.getZ() + 0.6);
 		toReturn.baseBlock = Blocks.water;
 		toReturn.setTexture(MekanismRenderer.getColorIcon(EnumColor.WHITE));
 		
@@ -127,7 +127,7 @@ public final class MinerVisualRenderer
 		{
 			return data instanceof MinerRenderData && ((MinerRenderData)data).minY == minY && 
 					((MinerRenderData)data).maxY == maxY && ((MinerRenderData)data).radius == radius && 
-					((MinerRenderData)data).getPos().getY() == yCoord;
+					((MinerRenderData)data).yCoord == yCoord;
 		}
 
 		@Override

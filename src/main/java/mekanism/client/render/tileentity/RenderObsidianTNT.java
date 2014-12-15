@@ -18,7 +18,7 @@ public class RenderObsidianTNT extends TileEntitySpecialRenderer
 	private ModelObsidianTNT model = new ModelObsidianTNT();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityObsidianTNT)tileEntity, x, y, z, partialTick);
 	}

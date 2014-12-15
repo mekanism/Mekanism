@@ -6,12 +6,8 @@ import mekanism.common.tile.TileEntityBin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -24,11 +20,10 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderBin extends TileEntitySpecialRenderer
 {
-	private final RenderBlocks renderBlocks = new RenderBlocks();
-	private final RenderItem renderItem = (RenderItem)RenderManager.instance.getEntityClassRenderObject(EntityItem.class);
+	private static final RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityBin)tileEntity, x, y, z, partialTick);
 	}
@@ -48,12 +43,12 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.getFront(tileEntity.facing));
 
-			if(tileEntity.getWorldObj().getBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()).isSideSolid(tileEntity.getWorldObj(), obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), EnumFacing.getFront(tileEntity.facing).getOpposite()))
+			if(tileEntity.getWorld().getBlockState(obj).getBlock().isSideSolid(tileEntity.getWorld(), obj, EnumFacing.getFront(tileEntity.facing).getOpposite()))
 			{
 				return;
 			}
 
-			doLight(tileEntity.getWorldObj(), obj);
+			doLight(tileEntity.getWorld(), obj);
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
 
 			if(itemStack != null)
@@ -85,11 +80,9 @@ public class RenderBin extends TileEntitySpecialRenderer
 				GL11.glScalef(scale*scaler, scale*scaler, 0);
 				GL11.glRotatef(180, 0, 0, 1);
 
-				TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
-
 				GL11.glDisable(GL11.GL_LIGHTING);
 
-				renderItem.renderItemAndEffectIntoGUI(func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
+				renderItem.renderItemAndEffectIntoGUI(itemStack, 0, 0);
 
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
@@ -104,12 +97,12 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 	private void doLight(World world, Coord4D obj)
 	{
-		if(world.getBlock(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ()).isOpaqueCube())
+		if(world.getBlockState(obj).getBlock().isOpaqueCube())
 		{
 			return;
 		}
 
-		int brightness = world.getLightBrightnessForSkyBlocks(obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), 0);
+		int brightness = world.getCombinedLight(obj, 0);
 		int lightX = brightness % 65536;
 		int lightY = brightness / 65536;
 		float scale = 0.6F;
@@ -156,7 +149,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 		GL11.glTranslatef(displayWidth / 2, 1F, displayHeight / 2);
 		GL11.glRotatef(-90, 1, 0, 0);
 
-		FontRenderer fontRenderer = func_147498_b();//getFontRenderer();
+		FontRenderer fontRenderer = getFontRenderer();
 
 		int requiredWidth = Math.max(fontRenderer.getStringWidth(text), 1);
 		int lineHeight = fontRenderer.FONT_HEIGHT + 2;

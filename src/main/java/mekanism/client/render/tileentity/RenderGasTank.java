@@ -18,7 +18,7 @@ public class RenderGasTank extends TileEntitySpecialRenderer
 	private ModelGasTank model = new ModelGasTank();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityGasTank)tileEntity, x, y, z, partialTick);
 	}

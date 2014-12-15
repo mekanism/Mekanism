@@ -62,11 +62,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -432,19 +432,9 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return left side
 	 */
-	public static EnumFacing getLeft(int orientation)
+	public static EnumFacing getLeft(EnumFacing orientation)
 	{
-		switch(orientation)
-		{
-			case 2:
-				return EnumFacing.EAST;
-			case 3:
-				return EnumFacing.WEST;
-			case 4:
-				return EnumFacing.NORTH;
-			default:
-				return EnumFacing.SOUTH;
-		}
+		return orientation.rotateY();
 	}
 
 	/**
@@ -452,9 +442,9 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return right side
 	 */
-	public static EnumFacing getRight(int orientation)
+	public static EnumFacing getRight(EnumFacing orientation)
 	{
-		return getLeft(orientation).getOpposite();
+		return orientation.rotateYCCW();
 	}
 
 	/**
@@ -504,43 +494,22 @@ public final class MekanismUtils
 	 * @param blockFacing - what orientation the block is facing
 	 * @return machine orientation
 	 */
-	public static int getBaseOrientation(int side, int blockFacing)
+	public static EnumFacing getBaseOrientation(EnumFacing side, EnumFacing blockFacing)
 	{
-		if(blockFacing == 3 || side == 1 || side == 0)
+		if(side.getAxis() == Axis.Y)
 		{
-			if(side == 2 || side == 3)
-			{
-				return EnumFacing.getFront(side).getOpposite().ordinal();
-			}
-
 			return side;
 		}
-		else if(blockFacing == 2)
+		switch(blockFacing)
 		{
-			if(side == 2 || side == 3)
-			{
+			case NORTH:
 				return side;
-			}
-
-			return EnumFacing.getFront(side).getOpposite().ordinal();
-		}
-		else if(blockFacing == 4)
-		{
-			if(side == 2 || side == 3)
-			{
-				return getRight(side).ordinal();
-			}
-
-			return getLeft(side).ordinal();
-		}
-		else if(blockFacing == 5)
-		{
-			if(side == 2 || side == 3)
-			{
-				return getLeft(side).ordinal();
-			}
-
-			return getRight(side).ordinal();
+			case SOUTH:
+				return side.getOpposite();
+			case WEST:
+				return side.rotateY();
+			case EAST:
+				return side.rotateYCCW();
 		}
 
 		return side;
@@ -576,9 +545,9 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFront())));
+		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFacing())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
+		tile.getWorld().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
 	}
 
 	/**
@@ -601,9 +570,9 @@ public final class MekanismUtils
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFront())));
+		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFacing())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
+		tile.getWorld().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
 	}
 
 	/**
@@ -717,23 +686,17 @@ public final class MekanismUtils
 	 * @param y - y coord
 	 * @param z - z coord
 	 */
-	public static void updateBlock(World world, int x, int y, int z)
+	public static void updateBlock(World world, BlockPos pos)
 	{
-		if(!(world.getTileEntity(new BlockPos(x, y, z)) instanceof IActiveState) || ((IActiveState)world.getTileEntity(new BlockPos(x, y, z))).renderUpdate())
+		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).renderUpdate())
 		{
-			world.func_147479_m(x, y, z);
+			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
-		if(!(world.getTileEntity(new BlockPos(x, y, z)) instanceof IActiveState) || ((IActiveState)world.getTileEntity(new BlockPos(x, y, z))).lightUpdate() && client.machineEffects)
+		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(new BlockPos(x, y, z))).lightUpdate() && client.machineEffects)
 		{
-			updateAllLightTypes(world, x, y, z);
+			world.checkLight(pos);
 		}
-	}
-	
-	public static void updateAllLightTypes(World world, int x, int y, int z)
-	{
-		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
-		world.updateLightByType(EnumSkyBlock.Sky, x, y, z);
 	}
 
 	/**
@@ -1025,12 +988,12 @@ public final class MekanismUtils
 	 */
 	public static void saveChunk(TileEntity tileEntity)
 	{
-		if(tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorldObj() == null)
+		if(tileEntity == null || tileEntity.isInvalid() || tileEntity.getWorld() == null)
 		{
 			return;
 		}
 
-		tileEntity.getWorldObj().markTileEntityChunkModified(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), tileEntity);
+		tileEntity.getWorld().markTileEntityChunkModified(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), tileEntity);
 	}
 
 	/**

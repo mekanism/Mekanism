@@ -10,6 +10,7 @@ import mekanism.client.render.block.TextureSubmap;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -113,9 +114,9 @@ public class CTMData
 	}
 
 	@SideOnly(Side.CLIENT)
-	public boolean shouldRenderSide(IBlockAccess world, int x, int y, int z, int side)
+	public boolean shouldRenderSide(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		Coord4D obj = new Coord4D(x, y, z);
+		Coord4D obj = new Coord4D(pos);
 		Block coordBlock = obj.getBlock(world);
 		int coordMeta = obj.getMetadata(world);
 		boolean valid = false;

@@ -87,7 +87,7 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void simulate()
 	{
-		if(controller.getWorldObj().isRemote)
+		if(controller.getWorld().isRemote)
 		{
 			lastPlasmaTemperature = plasmaTemperature;
 			lastCaseTemperature = caseTemperature;
@@ -302,9 +302,9 @@ public class FusionReactor implements IFusionReactor
 		neutronCaptors.clear();
 		formed = false;
 		
-		if(!controller.getWorldObj().isRemote)
+		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.dimensionId);
 		}
 	}
 
@@ -340,9 +340,9 @@ public class FusionReactor implements IFusionReactor
 		
 		formed = true;
 		
-		if(!controller.getWorldObj().isRemote)
+		if(!controller.getWorld().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorldObj().provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new TileEntityMessage(Coord4D.get(controller), controller.getNetworkedData(new ArrayList())), controller.getWorld().provider.dimensionId);
 		}
 	}
 
@@ -358,7 +358,7 @@ public class FusionReactor implements IFusionReactor
 
 		for(int[] coords : positions)
 		{
-			TileEntity tile = centre.add(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+			TileEntity tile = centre.add(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
 			if(tile instanceof IReactorBlock && ((IReactorBlock)tile).isFrame())
 			{
@@ -386,7 +386,7 @@ public class FusionReactor implements IFusionReactor
 
 		for(int[] coords : positions)
 		{
-			TileEntity tile = centre.add(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorldObj());
+			TileEntity tile = centre.add(coords[0], coords[1], coords[2]).getTileEntity(controller.getWorld());
 
 			if(tile instanceof ILaserReceptor && !(coords[1] == 0 && (coords[0] == 0 || coords[2] == 0)))
 			{
@@ -419,9 +419,9 @@ public class FusionReactor implements IFusionReactor
 			{
 				for(int z = -1; x <= 1; x++)
 				{
-					Block tile = centre.add(x, y, z).getBlock(controller.getWorldObj());
+					Block tile = centre.add(x, y, z).getBlock(controller.getWorld());
 
-					if(!tile.isAir(controller.getWorldObj(), x, y, z))
+					if(!tile.isAir(controller.getWorld(), x, y, z))
 					{
 						return false;
 					}

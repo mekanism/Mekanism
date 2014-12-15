@@ -15,6 +15,8 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -29,8 +31,10 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
@@ -81,36 +85,36 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
-	public BasicBlock blockType;
-
-	public BlockBasic(BasicBlock type)
+	public BlockBasic()
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		blockType = type;
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void onNeighborChange(IBlockAccess worldIn, BlockPos pos, BlockPos neighbor)
 	{
-		if(!world.isRemote)
+		if(!(worldIn instanceof World && ((World)worldIn).isRemote))
 		{
-			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+			IBlockState state = worldIn.getBlockState(pos);
+			
+			TileEntity tileEntity = worldIn.getTileEntity(pos);
 
-			if(block == this && tileEntity instanceof TileEntityDynamicTank)
+			if(state.getBlock() == this && tileEntity instanceof TileEntityDynamicTank)
 			{
 				((TileEntityDynamicTank)tileEntity).update();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(state.getBlock());
 			}
 		}
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(TextureAtlasSpriteRegister register)
@@ -156,10 +160,12 @@ public class BlockBasic extends Block implements IBlockCTM
 				break;
 		}
 	}
+*/
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess worldIn, int x, int y, int z, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
@@ -173,10 +179,10 @@ public class BlockBasic extends Block implements IBlockCTM
 
 						if(side == 0 || side == 1)
 						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][3] : icons[meta][1];
+							return MekanismUtils.isActive(worldIn, x, y, z) ? icons[meta][3] : icons[meta][1];
 						} else if(side == tileEntity6.facing)
 						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][4] : icons[meta][2];
+							return MekanismUtils.isActive(worldIn, x, y, z) ? icons[meta][4] : icons[meta][2];
 						} else
 						{
 							return icons[meta][0];
@@ -190,7 +196,7 @@ public class BlockBasic extends Block implements IBlockCTM
 
 						if(side == tileEntity14.facing)
 						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
+							return MekanismUtils.isActive(worldIn, x, y, z) ? icons[meta][1] : icons[meta][0];
 						} else
 						{
 							return icons[meta][2];
@@ -246,96 +252,82 @@ public class BlockBasic extends Block implements IBlockCTM
 				return icons[meta][0];
 		}
 	}
+*/
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return this.getMetaFromState(state);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		switch(blockType)
+		for(BasicBlockType type: BasicBlockType.values())
 		{
-			case BASIC_BLOCK_1:
-				for(int i = 0; i < 16; i++)
-				{
-					list.add(new ItemStack(item, 1, i));
-				}
-				break;
-			case BASIC_BLOCK_2:
-				for(int i = 0; i < 1; i++)
-				{
-					list.add(new ItemStack(item, 1, i));
-				}
-				break;
+			list.add(new ItemStack(item, 1, type.ordinal()));
 		}
 	}
 
 	@Override
-	public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z)
+	public boolean canCreatureSpawn(IBlockAccess worldIn, BlockPos pos, SpawnPlacementType type)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-
+		IBlockState state = worldIn.getBlockState(pos);
+		if(state.getBlock() != this)
+		{
+			return true;
+		}
+		BasicBlockType blockType = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		
 		switch(blockType)
 		{
-			case BASIC_BLOCK_1:
-				switch(meta)
-				{
-					case 9:
-					case 10:
-					case 11:
-						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(new BlockPos(x, y, z));
+				case DYNAMIC_GLASS:
+				case DYNAMIC_TANK:
+				case DYNAMIC_VALVE:
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)worldIn.getTileEntity(pos);
 
-						if(tileEntity != null)
+					if(tileEntity != null)
+					{
+						if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 						{
-							if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+							if(tileEntity.structure != null)
 							{
-								if(tileEntity.structure != null)
-								{
-									return false;
-								}
-							} else
+								return false;
+							}
+						} else
+						{
+							if(tileEntity.clientHasStructure)
 							{
-								if(tileEntity.clientHasStructure)
-								{
-									return false;
-								}
+								return false;
 							}
 						}
-				}
-			case BASIC_BLOCK_2:
-				return super.canCreatureSpawn(type, world, x, y, z);
+					}
 			default:
-				return super.canCreatureSpawn(type, world, x, y, z);
+				return super.canCreatureSpawn(worldIn, pos, type);
 		}
 	}
 
 	@Override
-	public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player)
+	public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
+		IBlockState state = worldIn.getBlockState(pos);
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.BIN)
 		{
-			if(!world.isRemote && meta == 6)
-			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
-				MovingObjectPosition pos = MekanismUtils.rayTrace(world, player);
+			TileEntityBin bin = (TileEntityBin)worldIn.getTileEntity(pos);
+			MovingObjectPosition mop = MekanismUtils.rayTrace(worldIn, playerIn);
 
-				if(pos != null && pos.sideHit == bin.facing)
+			if(mop != null && mop.sideHit == state.getValue(BlockStateBasic.facingProperty))
+			{
+				if(bin.bottomStack != null)
 				{
-					if(bin.bottomStack != null)
+					if(!playerIn.isSneaking())
 					{
-						if(!player.isSneaking())
-						{
-							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.removeStack().copy()));
-						}
-						else {
-							world.spawnEntityInWorld(new EntityItem(world, player.posX, player.posY, player.posZ, bin.remove(1).copy()));
-						}
+						worldIn.spawnEntityInWorld(new EntityItem(worldIn, playerIn.posX, playerIn.posY, playerIn.posZ, bin.removeStack().copy()));
+					} else
+					{
+						worldIn.spawnEntityInWorld(new EntityItem(worldIn, playerIn.posX, playerIn.posY, playerIn.posZ, bin.remove(1).copy()));
 					}
 				}
 			}
@@ -343,101 +335,98 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int i1, float f1, float f2, float f3)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
-
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		
+		if(type != BasicBlockType.BIN)
 		{
-			if(metadata != 6)
+			if(ItemAttacher.canAttach(playerIn.getCurrentEquippedItem()))
 			{
-				if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
-				{
-					return false;
-				}
+				return false;
 			}
+		}
 
-			if(metadata == 2)
+		if(type == BasicBlockType.REFINED_OBSIDIAN)
+		{
+			if(playerIn.isSneaking())
 			{
-				if(entityplayer.isSneaking())
-				{
-					entityplayer.openGui(Mekanism.instance, 1, world, x, y, z);
-					return true;
-				}
-			}
-
-			if(metadata == 14)
-			{
-				if(!entityplayer.isSneaking())
-				{
-					entityplayer.openGui(Mekanism.instance, 33, world, x, y, z);
-					return true;
-				}
-			}
-
-			if(world.isRemote)
-			{
+				playerIn.openGui(Mekanism.instance, 1, worldIn, pos.getX(), pos.getY(), pos.getZ());
 				return true;
 			}
+		}
 
-			if(metadata == 6)
+		if(type == BasicBlockType.SALINATION_CONTROLLER)
+		{
+			if(!playerIn.isSneaking())
 			{
-				TileEntityBin bin = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
+				playerIn.openGui(Mekanism.instance, 33, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				return true;
+			}
+		}
 
-				if(bin.getItemCount() < bin.MAX_STORAGE)
+		if(worldIn.isRemote)
+		{
+			return true;
+		}
+
+		if(type == BasicBlockType.BIN)
+		{
+			TileEntityBin bin = (TileEntityBin)worldIn.getTileEntity(pos);
+
+			if(bin.getItemCount() < bin.MAX_STORAGE)
+			{
+				if(bin.addTicks == 0 && playerIn.getCurrentEquippedItem() != null)
 				{
-					if(bin.addTicks == 0 && entityplayer.getCurrentEquippedItem() != null)
+					if(playerIn.getCurrentEquippedItem() != null)
 					{
-						if(entityplayer.getCurrentEquippedItem() != null)
+						ItemStack remain = bin.add(playerIn.getCurrentEquippedItem());
+						playerIn.setCurrentItemOrArmor(0, remain);
+						bin.addTicks = 5;
+					}
+				}
+				else if(bin.addTicks > 0 && bin.getItemCount() > 0)
+				{
+					ItemStack[] inv = playerIn.inventory.mainInventory;
+
+					for(int i = 0; i < inv.length; i++)
+					{
+						if(bin.getItemCount() == bin.MAX_STORAGE)
 						{
-							ItemStack remain = bin.add(entityplayer.getCurrentEquippedItem());
-							entityplayer.setCurrentItemOrArmor(0, remain);
+							break;
+						}
+
+						if(inv[i] != null)
+						{
+							ItemStack remain = bin.add(inv[i]);
+							inv[i] = remain;
 							bin.addTicks = 5;
 						}
+
+						((EntityPlayerMP)playerIn).sendContainerAndContentsToPlayer(playerIn.openContainer, playerIn.openContainer.getInventory());
 					}
-					else if(bin.addTicks > 0 && bin.getItemCount() > 0)
-					{
-						ItemStack[] inv = entityplayer.inventory.mainInventory;
+				}
+			}
 
-						for(int i = 0; i < inv.length; i++)
-						{
-							if(bin.getItemCount() == bin.MAX_STORAGE)
-							{
-								break;
-							}
+			return true;
+		}
+		else if(type == BasicBlockType.DYNAMIC_GLASS || type == BasicBlockType.DYNAMIC_TANK || type == BasicBlockType.DYNAMIC_VALVE)
+		{
+			if(!playerIn.isSneaking() && ((TileEntityDynamicTank)worldIn.getTileEntity(pos)).structure != null)
+			{
+				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)worldIn.getTileEntity(pos);
 
-							if(inv[i] != null)
-							{
-								ItemStack remain = bin.add(inv[i]);
-								inv[i] = remain;
-								bin.addTicks = 5;
-							}
-
-							((EntityPlayerMP)entityplayer).sendContainerAndContentsToPlayer(entityplayer.openContainer, entityplayer.openContainer.getInventory());
-						}
-					}
+				if(!manageInventory(playerIn, tileEntity))
+				{
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					playerIn.openGui(Mekanism.instance, 18, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				}
+				else {
+					playerIn.inventory.markDirty();
+					tileEntity.sendPacketToRenderer();
 				}
 
 				return true;
-			}
-			else if(metadata == 9 || metadata == 10 || metadata == 11)
-			{
-				if(!entityplayer.isSneaking() && ((TileEntityDynamicTank)world.getTileEntity(new BlockPos(x, y, z))).structure != null)
-				{
-					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(new BlockPos(x, y, z));
-
-					if(!manageInventory(entityplayer, tileEntity))
-					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
-						entityplayer.openGui(Mekanism.instance, 18, world, x, y, z);
-					}
-					else {
-						entityplayer.inventory.markDirty();
-						tileEntity.sendPacketToRenderer();
-					}
-
-					return true;
-				}
 			}
 		}
 
@@ -445,9 +434,10 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
+	public boolean isSideSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
-		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(x, y, z) == 10);
+
+		return worldIn.getBlockState(pos).getValue(BlockStateBasic.typeProperty) != BasicBlockType.DYNAMIC_GLASS;
 	}
 
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -572,29 +562,16 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public boolean renderAsNormalBlock()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType()
+	public int getLightValue(IBlockAccess worldIn, BlockPos pos)
 	{
-		return ClientProxy.CTM_RENDER_ID;
-	}
-
-	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
-	{
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-		int metadata = world.getBlockMetadata(x, y, z);
+		TileEntity tileEntity = worldIn.getTileEntity(pos);
+		IBlockState state = worldIn.getBlockState(pos);
 
 		if(tileEntity instanceof IActiveState)
 		{
@@ -604,98 +581,74 @@ public class BlockBasic extends Block implements IBlockCTM
 			}
 		}
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+
+		switch(type)
 		{
-			switch(metadata)
-			{
-				case 2:
-					return 8;
-				case 4:
-					return 15;
-				case 7:
-					return 12;
-			}
+			case REFINED_OBSIDIAN:
+				return 8;
+			case REFINED_GLOWSTONE:
+				return 15;
+			case TELEPORTER_FRAME:
+				return 12;
 		}
 
 		return 0;
 	}
 
 	@Override
-	public boolean hasTileEntity(int metadata)
+	public boolean hasTileEntity(IBlockState state)
 	{
-		switch(blockType)
+		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		switch(type)
 		{
-			case BASIC_BLOCK_1:
-				switch(metadata)
-				{
-					case 6:
-					case 9:
-					case 10:
-					case 11:
-					case 12:
-					case 14:
-					case 15:
-						return true;
-					default:
-						return false;
-				}
-			case BASIC_BLOCK_2:
-				switch(metadata)
-				{
-					case 0:
-						return true;
-					default:
-						return false;
-				}
+			case BIN:
+			case DYNAMIC_GLASS:
+			case DYNAMIC_TANK:
+			case DYNAMIC_VALVE:
+			case COPPER_BLOCK:
+			case SALINATION_BLOCK:
+			case SALINATION_CONTROLLER:
+			case SALINATION_VALVE:
+				return true;
 			default:
 				return false;
 		}
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata)
+	public TileEntity createTileEntity(World worldIn, IBlockState state)
 	{
-		switch(blockType)
+		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		switch(type)
 		{
-			case BASIC_BLOCK_1:
-				switch(metadata)
-				{
-					case 6:
-						return new TileEntityBin();
-					case 9:
-						return new TileEntityDynamicTank();
-					case 10:
-						return new TileEntityDynamicTank();
-					case 11:
-						return new TileEntityDynamicValve();
-					case 14:
-						return new TileEntitySalinationController();
-					case 15:
-						return new TileEntitySalinationValve();
-					default:
-						return null;
-				}
-			case BASIC_BLOCK_2:
-				switch(metadata)
-				{
-					case 0:
-						return new TileEntitySalinationBlock();
-					default:
-						return null;
-				}
+			case BIN:
+				return new TileEntityBin();
+			case DYNAMIC_GLASS:
+			case DYNAMIC_TANK:
+				return new TileEntityDynamicTank();
+			case DYNAMIC_VALVE:
+				return new TileEntityDynamicValve();
+			case SALINATION_CONTROLLER:
+				return new TileEntitySalinationController();
+			case SALINATION_VALVE:
+				return new TileEntitySalinationValve();
+			case SALINATION_BLOCK:
+				return new TileEntitySalinationBlock();
 			default:
 				return null;
 		}
+
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		if(world.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityBasicBlock)
+		if(worldIn.getTileEntity(pos) instanceof TileEntityBasicBlock)
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
-			int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-			int height = Math.round(entityliving.rotationPitch);
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
+			int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+			int height = Math.round(placer.rotationPitch);
 			int change = 3;
 
 			if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
@@ -722,7 +675,7 @@ public class BlockBasic extends Block implements IBlockCTM
 			}
 
 			tileEntity.setFacing((short)change);
-			tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+			tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 
 			if(tileEntity instanceof IBoundingBlock)
 			{
@@ -730,13 +683,13 @@ public class BlockBasic extends Block implements IBlockCTM
 			}
 		}
 
-		world.func_147479_m(x, y, z);
-		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
-	    world.updateLightByType(EnumSkyBlock.Sky, x, y, z);
+		worldIn.markBlockRangeForRenderUpdate(pos, pos);
+		worldIn.checkLightFor(EnumSkyBlock.BLOCK, pos);
+		worldIn.checkLightFor(EnumSkyBlock.SKY, pos);
 
-		if(!world.isRemote && world.getTileEntity(new BlockPos(x, y, z)) != null)
+		if(!worldIn.isRemote && worldIn.getTileEntity(pos) != null)
 		{
-			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+			TileEntity tileEntity = worldIn.getTileEntity(pos);
 
 			if(tileEntity instanceof TileEntityDynamicTank)
 			{
@@ -746,23 +699,21 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World worldIn, BlockPos pos)
 	{
-		ItemStack ret = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+		IBlockState state = worldIn.getBlockState(pos);
+		ItemStack ret = new ItemStack(this, 1, state.getBlock().getMetaFromState(state));
 
-		if(blockType == BasicBlock.BASIC_BLOCK_1)
+		if(ret.getItemDamage() == 6)
 		{
-			if(ret.getItemDamage() == 6)
+			TileEntityBin tileEntity = (TileEntityBin)worldIn.getTileEntity(pos);
+			InventoryBin inv = new InventoryBin(ret);
+
+			inv.setItemCount(tileEntity.getItemCount());
+
+			if(tileEntity.getItemCount() > 0)
 			{
-				TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
-				InventoryBin inv = new InventoryBin(ret);
-
-				inv.setItemCount(tileEntity.getItemCount());
-
-				if(tileEntity.getItemCount() > 0)
-				{
-					inv.setItemType(tileEntity.itemType);
-				}
+				inv.setItemType(tileEntity.itemType);
 			}
 		}
 
@@ -770,46 +721,47 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random rand, int fortune)
 	{
 		return null;
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World worldIn, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		IBlockState state = worldIn.getBlockState(pos);
+		if(!player.capabilities.isCreativeMode && !worldIn.isRemote && canHarvestBlock(worldIn, pos, player))
 		{
 
 			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionX = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(worldIn, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, worldIn, pos));
 
-			world.spawnEntityInWorld(entityItem);
+			worldIn.spawnEntityInWorld(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return worldIn.setBlockToAir(pos);
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(World worldIn, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, worldIn, pos);
 
-		world.setBlockToAir(x, y, z);
+		worldIn.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
 			float motion = 0.7F;
-			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionX = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionY = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+			double motionZ = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(worldIn, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-			world.spawnEntityInWorld(entityItem);
+			worldIn.spawnEntityInWorld(entityItem);
 		}
 
 		return itemStack;
@@ -817,72 +769,26 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
+	public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
-		Coord4D obj = new Coord4D(x, y, z).offset(EnumFacing.getFront(side).getOpposite());
-		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
+		IBlockState state = worldIn.getBlockState(pos);
+		if(state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.DYNAMIC_GLASS)
 		{
-			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
+			return ctms[10][0].shouldRenderSide(worldIn, pos, side);
 		}
 		else {
-			return super.shouldSideBeRendered(world, x, y, z, side);
+			return super.shouldSideBeRendered(worldIn, pos, side);
 		}
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
+	public CTMData getCTMData(IBlockAccess worldIn, int x, int y, int z, int meta)
 	{
-		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-		EnumFacing[] valid = new EnumFacing[6];
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			for(EnumFacing dir : EnumFacing.values())
-			{
-				if(basicTile.canSetFacing(dir.ordinal()))
-				{
-					valid[dir.ordinal()] = dir;
-				}
-			}
-		}
-		return valid;
-	}
-
-	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
-	{
-		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			if(basicTile.canSetFacing(axis.ordinal()))
-			{
-				basicTile.setFacing((short)axis.ordinal());
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	@Override
-	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
-	{
-		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
+		if(ctms[meta][1] != null && MekanismUtils.isActive(worldIn, x, y, z))
 		{
 			return ctms[meta][1];
 		}
 
 		return ctms[meta][0];
-	}
-
-	public static enum BasicBlock
-	{
-		BASIC_BLOCK_1,
-		BASIC_BLOCK_2;
 	}
 }

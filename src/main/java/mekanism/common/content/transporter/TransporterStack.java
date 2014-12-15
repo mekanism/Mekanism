@@ -217,7 +217,7 @@ public class TransporterStack
 
 	public Coord4D getNext(ILogisticalTransporter tileEntity)
 	{
-		if(!tileEntity.getTile().getWorldObj().isRemote)
+		if(!tileEntity.getTile().getWorld().isRemote)
 		{
 			int index = pathToTarget.indexOf(Coord4D.get(tileEntity.getTile()))-1;
 
@@ -235,7 +235,7 @@ public class TransporterStack
 
 	public Coord4D getPrev(ILogisticalTransporter tileEntity)
 	{
-		if(!tileEntity.getTile().getWorldObj().isRemote)
+		if(!tileEntity.getTile().getWorld().isRemote)
 		{
 			int index = pathToTarget.indexOf(Coord4D.get(tileEntity.getTile()))+1;
 
@@ -286,7 +286,7 @@ public class TransporterStack
 			return false;
 		}
 
-		TileEntity from = Coord4D.get(tileEntity).offset(side.getOpposite()).getTileEntity(tileEntity.getWorldObj());
+		TileEntity from = Coord4D.get(tileEntity).offset(side.getOpposite()).getTileEntity(tileEntity.getWorld());
 		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 
 		if(!transporter.canConnectMutual(side.getOpposite()))

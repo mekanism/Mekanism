@@ -23,7 +23,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 	private HashMap<Integer, DisplayInteger> cachedOverlays = new HashMap<Integer, DisplayInteger>();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityTeleporter)tileEntity, x, y, z, partialTick);
 	}
@@ -42,7 +42,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
 			int type = 0;
 
-			if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)
+			if(obj.getBlock(tileEntity.getWorld()) == MekanismBlocks.BasicBlock /*&& obj.getBlockState(tileEntity.getWorld()) == 7*/)
 			{
 				type = 1;
 			}

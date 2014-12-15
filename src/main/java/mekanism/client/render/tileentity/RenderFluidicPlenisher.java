@@ -18,7 +18,7 @@ public class RenderFluidicPlenisher extends TileEntitySpecialRenderer
 	private ModelFluidicPlenisher model = new ModelFluidicPlenisher();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityFluidicPlenisher)tileEntity, x, y, z, partialTick);
 	}

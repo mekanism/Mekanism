@@ -327,6 +327,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, new RenderSkeleton(Minecraft.getMinecraft().getRenderManager()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityFlame.class, new RenderFlame(Minecraft.getMinecraft().getRenderManager()));
 
+/*
 		//Register item handler
 		ItemRenderingHandler handler = new ItemRenderingHandler();
 
@@ -348,6 +349,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.AtomicDisassembler, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.GlowPanel, handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.Flamethrower, handler);
+*/
 
 		//Register block handlers
 //		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());

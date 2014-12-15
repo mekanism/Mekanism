@@ -41,8 +41,6 @@ public class ModelCustomArmor extends ModelBiped
 		resetPart(bipedLeftLeg, 0, 0, 0);
 
 		bipedHeadwear.cubeList.clear();
-		bipedEars.cubeList.clear();
-		bipedCloak.cubeList.clear();
 	}
 
 	public void init(Entity entity, float f, float f1, float f2, float f3, float f4, float size)
@@ -51,8 +49,8 @@ public class ModelCustomArmor extends ModelBiped
 
 		if(entity instanceof EntityLivingBase)
 		{
-			isSneak = ((EntityLivingBase)entity).isSneaking();
-			isRiding = ((EntityLivingBase)entity).isRiding();
+			isSneak = entity.isSneaking();
+			isRiding = entity.isRiding();
 			isChild = ((EntityLivingBase)entity).isChild();
 		}
 
@@ -248,8 +246,8 @@ public class ModelCustomArmor extends ModelBiped
 		{
 			if(entity instanceof EntityLivingBase)
 			{
-				isSneak = ((EntityLivingBase)entity).isSneaking();
-				isRiding = ((EntityLivingBase)entity).isRiding();
+				isSneak = entity.isSneaking();
+				isRiding = entity.isRiding();
 				isChild = ((EntityLivingBase)entity).isChild();
 			}
 

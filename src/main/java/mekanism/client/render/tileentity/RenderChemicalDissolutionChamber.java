@@ -18,7 +18,7 @@ public class RenderChemicalDissolutionChamber extends TileEntitySpecialRenderer
 	private ModelChemicalDissolutionChamber model = new ModelChemicalDissolutionChamber();
 
 	@Override
-	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
+	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick, int damage)
 	{
 		renderAModelAt((TileEntityChemicalDissolutionChamber)tileEntity, x, y, z, partialTick);
 	}
