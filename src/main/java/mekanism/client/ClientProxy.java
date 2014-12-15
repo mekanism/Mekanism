@@ -51,6 +51,7 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.block.BasicRenderingHandler;
 import mekanism.client.render.block.MachineRenderingHandler;
+import mekanism.client.render.block.PlasticRenderingHandler;
 import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
@@ -159,6 +160,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
 	@Override
 	public void loadConfiguration()
@@ -339,6 +341,7 @@ public class ClientProxy extends CommonProxy
 		//Register block handlers
 		RenderingRegistry.registerBlockHandler(new MachineRenderingHandler());
 		RenderingRegistry.registerBlockHandler(new BasicRenderingHandler());
+		RenderingRegistry.registerBlockHandler(new PlasticRenderingHandler());
 
 		Mekanism.logger.info("Render registrations complete.");
 	}
