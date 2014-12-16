@@ -542,7 +542,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		
 		if(!world().isRemote)
 		{
-			if(getAllCurrentConnections() != (possibleAcceptors | possibleAcceptors))
+			if(getAllCurrentConnections() != (possibleTransmitters | possibleAcceptors))
 			{
 				sendDesc = true;
 			}
