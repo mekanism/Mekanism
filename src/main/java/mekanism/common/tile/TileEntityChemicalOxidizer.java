@@ -17,7 +17,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -68,7 +68,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("machine.oxidiser", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
+		super("machine.oxidiser", "ChemicalOxidizer", MachineBlockType.CHEMICAL_OXIDIZER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 

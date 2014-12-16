@@ -11,7 +11,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Teleporter;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
@@ -66,7 +66,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public TileEntityTeleporter()
 	{
-		super("Teleporter", MachineType.TELEPORTER.baseEnergy);
+		super("Teleporter", MachineBlockType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
 		code = new Teleporter.Code(0, 0, 0, 0);
 	}

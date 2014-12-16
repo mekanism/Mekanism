@@ -11,7 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 
 import net.minecraft.block.Block;
@@ -23,7 +23,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 {
 	public TileEntityPurificationChamber()
 	{
-		super("purification", "PurificationChamber", usage.purificationChamberUsage, 1, 200, MachineType.PURIFICATION_CHAMBER.baseEnergy);
+		super("purification", "PurificationChamber", usage.purificationChamberUsage, 1, 200, MachineBlockType.PURIFICATION_CHAMBER.baseEnergy);
 	}
 
 	@Override

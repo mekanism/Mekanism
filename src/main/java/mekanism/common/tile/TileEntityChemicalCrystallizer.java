@@ -22,7 +22,7 @@ import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -85,7 +85,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public TileEntityChemicalCrystallizer()
 	{
-		super("crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
+		super("crystallizer", "ChemicalCrystallizer", MachineBlockType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {0}));

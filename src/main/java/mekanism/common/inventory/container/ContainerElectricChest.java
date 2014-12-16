@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.base.IElectricChest;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -170,7 +170,7 @@ public class ContainerElectricChest extends Container
 			ItemStack itemStack = player.inventory.getStackInSlot(destSlot);
 			if(itemStack != null && itemStack.getItem() instanceof IElectricChest)
 			{
-				if(MachineType.get(itemStack) == MachineType.ELECTRIC_CHEST)
+				if(MachineBlockType.get(itemStack) == MachineBlockType.ELECTRIC_CHEST)
 				{
 					return null;
 				}

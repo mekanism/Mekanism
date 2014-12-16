@@ -16,7 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -67,7 +67,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public TileEntityRotaryCondensentrator()
 	{
-		super("RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
+		super("RotaryCondensentrator", MachineBlockType.ROTARY_CONDENSENTRATOR.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

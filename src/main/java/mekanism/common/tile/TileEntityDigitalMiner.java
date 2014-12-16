@@ -22,7 +22,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.content.miner.MItemStackFilter;
 import mekanism.common.content.miner.MOreDictFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -122,7 +122,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public TileEntityDigitalMiner()
 	{
-		super("DigitalMiner", MachineType.DIGITAL_MINER.baseEnergy);
+		super("DigitalMiner", MachineBlockType.DIGITAL_MINER.baseEnergy);
 		inventory = new ItemStack[29];
 		radius = 10;
 	}

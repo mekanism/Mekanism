@@ -16,7 +16,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -74,7 +74,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	public TileEntityChemicalWasher()
 	{
-		super("washer", "ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
+		super("washer", "ChemicalWasher", MachineBlockType.CHEMICAL_WASHER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 

@@ -8,7 +8,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
 import mekanism.api.util.EnergyUtils.EnergyType;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -463,7 +463,7 @@ public class CommonProxy
 		else {
 			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
-		MachineType.updateAllUsages();
+		MachineBlockType.updateAllUsages();
 
 		Mekanism.logger.info("Received config from server.");
 	}

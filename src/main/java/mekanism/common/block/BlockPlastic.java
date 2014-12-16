@@ -5,15 +5,19 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
+import mekanism.common.block.states.BlockStatePlastic;
+import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -25,15 +29,10 @@ public class BlockPlastic extends Block
 	public BlockPlastic()
 	{
 		super(Material.wood);
-		setHardness(this == MekanismBlocks.ReinforcedPlasticBlock ? 50F : 5F);
-		setResistance(this == MekanismBlocks.ReinforcedPlasticBlock ? 2000F : 10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		if(this == MekanismBlocks.SlickPlasticBlock)
-		{
-			slipperiness = 0.98F;
-		}
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(TextureAtlasSpriteRegister register)
@@ -59,11 +58,13 @@ public class BlockPlastic extends Block
 			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
 		}
 	}
+*/
 
 	@Override
-	public void onEntityWalking(World world, int x, int y, int z, Entity e)
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity e)
 	{
-		if(this == MekanismBlocks.RoadPlasticBlock)
+		IBlockState state = world.getBlockState(pos);
+		if(state.getValue(BlockStatePlastic.typeProperty) == PlasticBlockType.ROAD)
 		{
 			double boost = 1.6;
 
@@ -74,9 +75,9 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
@@ -90,38 +91,65 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+	public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
 	{
-		return getRenderColor(world.getBlockMetadata(x, y, z));
+		return getRenderColor(world.getBlockState(pos));
 	}
 
 	@Override
-	public int getRenderColor(int meta)
+	public int getRenderColor(IBlockState state)
 	{
-		EnumColor colour = EnumColor.DYES[meta];
+		EnumColor colour = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
 		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
 
 	}
 
 	@Override
-	public int getLightValue()
+	public int getLightValue(IBlockAccess world, BlockPos pos)
 	{
-		if(this == MekanismBlocks.GlowPlasticBlock)
+		IBlockState state = world.getBlockState(pos);
+		if(state.getValue(BlockStatePlastic.typeProperty) == PlasticBlockType.GLOW)
 		{
 			return 10;
 		}
-
 		return 0;
 	}
 
-	public boolean recolourBlock(World world, int x, int y, int z, EnumFacing side, int colour)
+	@Override
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion)
 	{
-		int meta = world.getBlockMetadata(x, y, z);
-		if (meta != (15 - colour))
+		IBlockState state = world.getBlockState(pos);
+		if(state.getValue(BlockStatePlastic.typeProperty) == PlasticBlockType.REINFORCED)
 		{
-			world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
+			return 2000;
+		}
+		return 10;
+	}
+
+	@Override
+	public float getBlockHardness(World worldIn, BlockPos pos)
+	{
+		IBlockState state = worldIn.getBlockState(pos);
+		if(state.getValue(BlockStatePlastic.typeProperty) == PlasticBlockType.REINFORCED)
+		{
+			return 50;
+		}
+		return 5;
+	}
+
+	@Override
+	public boolean recolorBlock(World world, BlockPos pos, EnumFacing side, EnumDyeColor color)
+	{
+		IBlockState state = world.getBlockState(pos);
+		EnumColor newColor = EnumColor.DYES[color.getDyeDamage()];
+
+		EnumColor current = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
+		if (current != newColor)
+		{
+			world.setBlockState(pos, state.withProperty(BlockStatePlastic.colorProperty, newColor));
 			return true;
 		}
+
 		return false;
 	}
 

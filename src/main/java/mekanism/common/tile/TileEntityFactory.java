@@ -28,7 +28,9 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
+import mekanism.common.block.states.MachineBlockType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -118,7 +120,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public TileEntityFactory()
 	{
-		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
+		this(FactoryTier.BASIC, MachineBlockType.BASIC_FACTORY);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
@@ -130,7 +132,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(5));
 	}
 
-	public TileEntityFactory(FactoryTier type, MachineType machine)
+	public TileEntityFactory(FactoryTier type, MachineBlockType machine)
 	{
 		super("null", type.name + "Factory", machine.baseEnergy);
 

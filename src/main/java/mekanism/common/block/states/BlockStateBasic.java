@@ -2,22 +2,19 @@ package mekanism.common.block.states;
 
 import mekanism.common.MekanismBlocks;
 
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
-import net.minecraft.util.EnumFacing.Plane;
 
-public class BlockStateBasic extends BlockState
+public class BlockStateBasic extends BlockStateFacing
 {
 	public static PropertyEnum typeProperty = PropertyEnum.create("type", BasicBlockType.class);
-	public static PropertyDirection facingProperty = PropertyDirection.create("facing", Plane.HORIZONTAL);
 
 	public BlockStateBasic()
 	{
-		super(MekanismBlocks.BasicBlock, typeProperty, facingProperty);
+		super(MekanismBlocks.BasicBlock, typeProperty);
 	}
 
-	public enum BasicBlockType
+	public static enum BasicBlockType
 	{
 		OSMIUM_BLOCK,
 		BRONZE_BLOCK,

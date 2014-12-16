@@ -18,7 +18,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -74,7 +74,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		super("machine.dissolution", "ChemicalDissolutionChamber", MachineBlockType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

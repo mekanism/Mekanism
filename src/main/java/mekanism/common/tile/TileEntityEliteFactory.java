@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.EnumColor;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.InventoryUtils;
 
@@ -11,7 +11,7 @@ public class TileEntityEliteFactory extends TileEntityFactory
 {
 	public TileEntityEliteFactory()
 	{
-		super(FactoryTier.ELITE, MachineType.ELITE_FACTORY);
+		super(FactoryTier.ELITE, MachineBlockType.ELITE_FACTORY);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));

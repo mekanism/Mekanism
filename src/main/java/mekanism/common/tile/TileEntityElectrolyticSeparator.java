@@ -14,7 +14,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -78,7 +78,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public TileEntityElectrolyticSeparator()
 	{
-		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
+		super("ElectrolyticSeparator", MachineBlockType.ELECTROLYTIC_SEPARATOR.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 

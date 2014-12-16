@@ -14,7 +14,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.SideData;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;
@@ -55,7 +55,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineBlockType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));

@@ -19,7 +19,7 @@ import mekanism.common.base.IEjector;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -91,7 +91,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 	public TileEntityMetallurgicInfuser()
 	{
-		super("metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
+		super("metalinfuser", "MetallurgicInfuser", MachineBlockType.METALLURGIC_INFUSER.baseEnergy);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));

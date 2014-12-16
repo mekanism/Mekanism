@@ -1,22 +1,20 @@
 package mekanism.common.block;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.client.ClientProxy;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.states.BlockStateBasic;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -31,12 +29,10 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -318,7 +314,7 @@ public class BlockBasic extends Block implements IBlockCTM
 			TileEntityBin bin = (TileEntityBin)worldIn.getTileEntity(pos);
 			MovingObjectPosition mop = MekanismUtils.rayTrace(worldIn, playerIn);
 
-			if(mop != null && mop.sideHit == state.getValue(BlockStateBasic.facingProperty))
+			if(mop != null && mop.sideHit == state.getValue(BlockStateFacing.facingProperty))
 			{
 				if(bin.bottomStack != null)
 				{

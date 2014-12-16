@@ -6,7 +6,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
 
@@ -19,7 +19,7 @@ public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<Combin
 {
 	public TileEntityCombiner()
 	{
-		super("combiner", "Combiner", usage.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
+		super("combiner", "Combiner", usage.combinerUsage, 1, 200, MachineBlockType.COMBINER.baseEnergy);
 	}
 
 	@Override

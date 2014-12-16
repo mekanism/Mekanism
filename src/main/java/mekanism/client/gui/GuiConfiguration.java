@@ -10,7 +10,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IInvConfiguration;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
@@ -255,7 +255,7 @@ public class GuiConfiguration extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				int guiId = MachineType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
+				int guiId = MachineBlockType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
                 SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
 			}

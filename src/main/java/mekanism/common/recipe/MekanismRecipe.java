@@ -10,7 +10,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -204,7 +204,7 @@ public class MekanismRecipe implements IRecipe
 			}
 		}
 
-		if(MachineType.get(toReturn).supportsUpgrades)
+		if(MachineBlockType.get(toReturn).supportsUpgrades)
 		{
 			Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
 
@@ -212,7 +212,7 @@ public class MekanismRecipe implements IRecipe
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && MachineType.get(itemstack).supportsUpgrades)
+				if(itemstack != null && MachineBlockType.get(itemstack).supportsUpgrades)
 				{
 					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.getTagCompound());
 					
@@ -392,7 +392,7 @@ public class MekanismRecipe implements IRecipe
 
 	private static boolean isFactory(ItemStack stack)
 	{
-		return MachineType.get(stack) == MachineType.BASIC_FACTORY || MachineType.get(stack) == MachineType.ADVANCED_FACTORY || MachineType.get(stack) == MachineType.ELITE_FACTORY;
+		return MachineBlockType.get(stack) == MachineBlockType.BASIC_FACTORY || MachineBlockType.get(stack) == MachineBlockType.ADVANCED_FACTORY || MachineBlockType.get(stack) == MachineBlockType.ELITE_FACTORY;
 	}
 
 	public MekanismRecipe setMirrored(boolean mirror)

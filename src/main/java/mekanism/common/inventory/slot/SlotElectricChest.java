@@ -1,7 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import mekanism.common.base.IElectricChest;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -27,7 +27,7 @@ public class SlotElectricChest extends Slot
 
 		if(itemstack.getItem() instanceof IElectricChest)
 		{
-			if(MachineType.get(itemstack) == MachineType.ELECTRIC_CHEST)
+			if(MachineBlockType.get(itemstack) == MachineBlockType.ELECTRIC_CHEST)
 			{
 				return false;
 			}

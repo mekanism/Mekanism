@@ -10,7 +10,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.base.ISustainedTank;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
@@ -47,7 +47,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public TileEntityFluidicPlenisher()
 	{
-		super("FluidicPlenisher", MachineType.FLUIDIC_PLENISHER.baseEnergy);
+		super("FluidicPlenisher", MachineBlockType.FLUIDIC_PLENISHER.baseEnergy);
 		inventory = new ItemStack[3];
 	}
 	

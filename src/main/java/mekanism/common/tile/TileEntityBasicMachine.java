@@ -13,7 +13,7 @@ import mekanism.common.base.IElectricMachine;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
@@ -292,7 +292,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	@Override
 	public EnumFacing getFacing()
 	{
-		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateBasic.facingProperty);
+		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateFacing.facingProperty);
 	}
 
 	@Override

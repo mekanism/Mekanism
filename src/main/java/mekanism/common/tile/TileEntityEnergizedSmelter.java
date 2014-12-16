@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.Map;
 
 import mekanism.api.MekanismConfig.usage;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
@@ -12,7 +12,7 @@ public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<Smelti
 {
 	public TileEntityEnergizedSmelter()
 	{
-		super("smelter", "EnergizedSmelter", usage.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
+		super("smelter", "EnergizedSmelter", usage.energizedSmelterUsage, 200, MachineBlockType.ENERGIZED_SMELTER.baseEnergy);
 	}
 
 	@Override

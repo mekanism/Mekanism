@@ -10,7 +10,7 @@ import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -35,7 +35,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	
 	public TileEntitySeismicVibrator()
 	{
-		super("SeismicVibrator", MachineType.SEISMIC_VIBRATOR.baseEnergy);
+		super("SeismicVibrator", MachineBlockType.SEISMIC_VIBRATOR.baseEnergy);
 		
 		inventory = new ItemStack[1];
 	}

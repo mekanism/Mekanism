@@ -11,7 +11,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.util.MekanismUtils;
@@ -24,7 +24,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 {
 	public TileEntityChemicalInjectionChamber()
 	{
-		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
+		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, MachineBlockType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
 	}
 
 	@Override

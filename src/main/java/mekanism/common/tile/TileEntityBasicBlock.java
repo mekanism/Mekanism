@@ -9,26 +9,20 @@ import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
-
-import ic2.api.tile.IWrenchable;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
 public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IUpdatePlayerListBox
@@ -155,7 +149,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 
 	public EnumFacing getFacing()
 	{
-		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateBasic.facingProperty);
+		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateFacing.facingProperty);
 	}
 
 	/**

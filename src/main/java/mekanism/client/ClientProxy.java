@@ -54,8 +54,6 @@ import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.RenderGlowPanel;
-import mekanism.client.render.RenderPartTransmitter;
 import mekanism.client.render.RenderTickHandler;
 //import mekanism.client.render.block.BasicRenderingHandler;
 //import mekanism.client.render.block.CTMRenderingHandler;
@@ -65,7 +63,6 @@ import mekanism.client.render.entity.RenderBalloon;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.client.render.entity.RenderRobit;
-import mekanism.client.render.item.ItemRenderingHandler;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChargepad;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -96,12 +93,11 @@ import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.common.CommonProxy;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
-import mekanism.common.MekanismItems;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -159,12 +155,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -231,7 +225,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
-				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+				if(stack != null && stack.getItem() instanceof IElectricChest && MachineBlockType.get(stack) == MachineBlockType.ELECTRIC_CHEST)
 				{
 					InventoryElectricChest inventory = new InventoryElectricChest(entityplayer);
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiElectricChest(entityplayer.inventory, inventory));
@@ -248,7 +242,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
-				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+				if(stack != null && stack.getItem() instanceof IElectricChest && MachineBlockType.get(stack) == MachineBlockType.ELECTRIC_CHEST)
 				{
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordEnter(stack));
 				}
@@ -263,7 +257,7 @@ public class ClientProxy extends CommonProxy
 			else {
 				ItemStack stack = entityplayer.getCurrentEquippedItem();
 
-				if(stack != null && stack.getItem() instanceof IElectricChest && MachineType.get(stack) == MachineType.ELECTRIC_CHEST)
+				if(stack != null && stack.getItem() instanceof IElectricChest && MachineBlockType.get(stack) == MachineBlockType.ELECTRIC_CHEST)
 				{
 					FMLClientHandler.instance().displayGuiScreen(entityplayer, new GuiPasswordModify(stack));
 				}

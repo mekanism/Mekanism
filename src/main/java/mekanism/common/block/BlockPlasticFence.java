@@ -4,12 +4,18 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.block.states.BlockStatePlastic;
 
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
@@ -48,14 +54,19 @@ public class BlockPlasticFence extends BlockFence
 
     }
 
-    public boolean recolourBlock(World world, int x, int y, int z, EnumFacing side, int colour)
+    @Override
+    public boolean recolorBlock(World world, BlockPos pos, EnumFacing side, EnumDyeColor color)
     {
-        int meta = world.getBlockMetadata(x, y, z);
-        if (meta != (15 - colour))
+        IBlockState state = world.getBlockState(pos);
+        EnumColor newColor = EnumColor.DYES[color.getDyeDamage()];
+
+        EnumColor current = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
+        if (current != newColor)
         {
-            world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
+            world.setBlockState(pos, state.withProperty(BlockStatePlastic.colorProperty, newColor));
             return true;
         }
+
         return false;
     }
 

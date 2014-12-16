@@ -11,7 +11,7 @@ import mekanism.api.Range4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -39,7 +39,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 	public TileEntityChargepad()
 	{
-		super("chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
+		super("chargepad", "Chargepad", MachineBlockType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 

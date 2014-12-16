@@ -16,7 +16,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
@@ -61,7 +61,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public TileEntityChemicalInfuser()
 	{
-		super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
+		super("machine.cheminfuser", "ChemicalInfuser", MachineBlockType.CHEMICAL_INFUSER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 
