@@ -124,6 +124,8 @@ public class BlockPlastic extends Block
 		return false;
 	}
 
+	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
 		return ClientProxy.PLASTIC_RENDER_ID;
