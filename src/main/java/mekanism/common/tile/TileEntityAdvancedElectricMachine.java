@@ -279,7 +279,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 3)
 		{
@@ -355,8 +355,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 				return new Object[] {operatingTicks};
 			case 3:
 				return new Object[] {isActive};
-			case 4:
-				return new Object[] {facing};
 			case 5:
 				return new Object[] {canOperate(RecipeHandler.getRecipe(getInput(), getRecipes()))};
 			case 6:

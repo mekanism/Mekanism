@@ -20,10 +20,10 @@ public class PacketFlamethrowerActive implements IMessageHandler<FlamethrowerAct
 		
 		if(message.value)
 		{
-			Mekanism.flamethrowerActive.add(player.getCommandSenderName());
+			Mekanism.flamethrowerActive.add(player.getName());
 		}
 		else {
-			Mekanism.flamethrowerActive.remove(player.getCommandSenderName());
+			Mekanism.flamethrowerActive.remove(player.getName());
 		}
 		
 		return null;

@@ -10,7 +10,7 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -39,6 +40,7 @@ public class BlockCardboardBox extends BlockContainer
 		setResistance(1F);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(TextureAtlasSpriteRegister register)
@@ -47,7 +49,9 @@ public class BlockCardboardBox extends BlockContainer
 		icons[1] = register.registerIcon("mekanism:CardboardBoxSide");
 		icons[2] = register.registerIcon("mekanism:CardboardBoxSideStorage");
 	}
+*/
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public TextureAtlasSprite getIcon(int side, int meta)
@@ -60,20 +64,21 @@ public class BlockCardboardBox extends BlockContainer
 			return meta == 0 ? icons[1] : icons[2];
 		}
 	}
-	
+*/
+
 	@Override
-	public boolean isReplaceable(IBlockAccess world, int x, int y, int z)
+	public boolean isReplaceable(World worldIn, BlockPos pos)
 	{
 		return testingPlace;
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(!world.isRemote && entityplayer.isSneaking())
+		if(!worldIn.isRemote && playerIn.isSneaking())
 		{
 			ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox);
-			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(new BlockPos(x, y, z));
+			TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)worldIn.getTileEntity(pos);
 
 			if(tileEntity.storedData != null)
 			{
@@ -81,7 +86,7 @@ public class BlockCardboardBox extends BlockContainer
 				
 				testingPlace = true;
 				
-				if(!data.block.canPlaceBlockAt(world, x, y, z))
+				if(!data.block.canPlaceBlockAt(worldIn, pos))
 				{
 					testingPlace = false;
 					return true;
@@ -91,31 +96,32 @@ public class BlockCardboardBox extends BlockContainer
 
 				if(data.block != null)
 				{
-					data.meta = data.block.onBlockPlaced(world, x, y, z, facing, hitX, hitY, hitZ, data.meta);
+					IBlockState newState = data.block.onBlockPlaced(worldIn, pos, side, hitX, hitY, hitZ, data.meta, playerIn);
+					data.meta = newState.getBlock().getMetaFromState(state);
 				}
 
-				world.setBlock(x, y, z, data.block, data.meta, 3);
+				worldIn.setBlockState(pos, data.block.getStateFromMeta(data.meta), 3);
 
-				if(data.tileTag != null && world.getTileEntity(new BlockPos(x, y, z)) != null)
+				if(data.tileTag != null && worldIn.getTileEntity(pos) != null)
 				{
-					data.updateLocation(x, y, z);
-					world.getTileEntity(new BlockPos(x, y, z)).readFromNBT(data.tileTag);
+					data.updateLocation(pos);
+					worldIn.getTileEntity(pos).readFromNBT(data.tileTag);
 				}
 
 				if(data.block != null)
 				{
-					data.block.onBlockPlacedBy(world, x, y, z, entityplayer, new ItemStack(data.block, 1, data.meta));
-					data.block.onPostBlockPlaced(world, x, y, z, data.meta);
+					data.block.onBlockPlacedBy(worldIn, pos, state/*TODO ??*/, playerIn, new ItemStack(data.block, 1, data.meta));
+					//data.block.onPostBlockPlaced(worldIn, x, y, z, data.meta);
 				}
 
 				float motion = 0.7F;
-				double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-				double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
-				double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionX = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionY = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
+				double motionZ = (worldIn.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-				EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+				EntityItem entityItem = new EntityItem(worldIn, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
-				world.spawnEntityInWorld(entityItem);
+				worldIn.spawnEntityInWorld(entityItem);
 			}
 		}
 
@@ -128,11 +134,11 @@ public class BlockCardboardBox extends BlockContainer
 		return new TileEntityCardboardBox();
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, pos);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -141,7 +147,7 @@ public class BlockCardboardBox extends BlockContainer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -150,11 +156,11 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos)
 	{
-		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(new BlockPos(x, y, z));
+		TileEntityCardboardBox tileEntity = (TileEntityCardboardBox)world.getTileEntity(pos);
 
-		ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox, 1, world.getBlockMetadata(x, y, z));
+		ItemStack itemStack = new ItemStack(MekanismBlocks.CardboardBox, 1, world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos)));
 
 		if(itemStack.getItemDamage() == 1)
 		{
@@ -168,21 +174,21 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(world, pos, player))
 		{
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos));
 
 			world.spawnEntityInWorld(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 
 	@Override
@@ -192,7 +198,7 @@ public class BlockCardboardBox extends BlockContainer
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random rand, int fortune)
 	{
 		return null;
 	}
@@ -212,13 +218,13 @@ public class BlockCardboardBox extends BlockContainer
 
 		public BlockData() {}
 
-		public void updateLocation(int x, int y, int z)
+		public void updateLocation(BlockPos pos)
 		{
 			if(tileTag != null)
 			{
-				tileTag.setInteger("x", x);
-				tileTag.setInteger("y", y);
-				tileTag.setInteger("z", z);
+				tileTag.setInteger("x", pos.getX());
+				tileTag.setInteger("y", pos.getY());
+				tileTag.setInteger("z", pos.getZ());
 			}
 		}
 

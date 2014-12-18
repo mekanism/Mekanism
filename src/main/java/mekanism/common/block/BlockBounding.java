@@ -2,18 +2,21 @@ package mekanism.common.block;
 
 import java.util.Random;
 
+import mekanism.common.block.states.BlockStateBounding;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -34,45 +37,45 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer entityplayer, EnumFacing facing, float playerX, float playerY, float playerZ)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
+			return world.getBlockState(tileEntity.mainPos).getBlock().onBlockActivated(world, tileEntity.mainPos, world.getBlockState(tileEntity.mainPos), entityplayer, facing, playerX, playerY, playerZ);
 		} catch(Exception e) {
 			return false;
 		}
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
+			return world.getBlockState(tileEntity.mainPos).getBlock().getPickBlock(target, world, tileEntity.mainPos);
 		} catch(Exception e) {
 			return null;
 		}
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, willHarvest);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
+			return world.getBlockState(tileEntity.mainPos).getBlock().removedByPlayer(world, tileEntity.mainPos, player, willHarvest);
 		} catch(Exception e) {
 			return false;
 		}
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
 		try {
-			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z));
-			tileEntity.onNeighborChange(block);
-			world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
+			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(pos);
+			tileEntity.onNeighborChange(world.getBlockState(neighbor).getBlock());
+			world.getBlockState(tileEntity.mainPos).getBlock().onNeighborChange(world, tileEntity.mainPos, pos);
 		} catch(Exception e) {}
 	}
 
@@ -83,7 +86,7 @@ public class BlockBounding extends Block implements IPeripheralProvider
 	}
 
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random rand, int fortune)
 	{
 		return null;
 	}
@@ -100,38 +103,38 @@ public class BlockBounding extends Block implements IPeripheralProvider
 		return false;
 	}
 
+/*
 	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
 	}
+*/
 
 	@Override
-	public boolean hasTileEntity(int metadata)
+	public boolean hasTileEntity(IBlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata)
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		if(metadata == 0)
+		if(!(Boolean)state.getValue(BlockStateBounding.advancedProperty))
 		{
 			return new TileEntityBoundingBlock();
 		}
-		else if(metadata == 1)
+		else
 		{
 			return new TileEntityAdvancedBoundingBlock();
 		}
-
-		return null;
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+	public IPeripheral getPeripheral(World world, BlockPos pos, EnumFacing side)
 	{
-		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity te = world.getTileEntity(pos);
 
 		if(te != null && te instanceof IPeripheral)
 		{

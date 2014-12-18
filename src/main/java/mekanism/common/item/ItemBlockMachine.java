@@ -213,7 +213,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 	
 	@Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ)
     {
 		MachineBlockType type = MachineBlockType.get(stack);
 
@@ -226,7 +226,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ, int metadata)
 	{
 		boolean place = true;
 
@@ -438,7 +438,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		return false;
 	}
 
-    public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, int x, int y, int z)
+    public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos)
     {
         if(getFluidStack(itemstack) == null || !getFluidStack(itemstack).getFluid().canBePlacedInWorld())
         {

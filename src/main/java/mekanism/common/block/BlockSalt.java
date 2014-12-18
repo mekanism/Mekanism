@@ -7,10 +7,8 @@ import mekanism.common.MekanismItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockSalt extends Block
 {
@@ -22,15 +20,17 @@ public class BlockSalt extends Block
         setStepSound(soundTypeSand);
     }
     
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(TextureAtlasSpriteRegister register)
 	{
 		blockIcon = register.registerIcon("mekanism:SaltBlock");
 	}
+*/
 
     @Override
-    public Item getItemDropped(int i, Random random, int j)
+    public Item getItemDropped(IBlockState state, Random random, int fortune)
     {
         return MekanismItems.Salt;
     }

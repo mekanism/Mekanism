@@ -459,12 +459,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public int getFacing()
-	{
-		return facing;
-	}
-
-	@Override
 	public IEjector getEjector()
 	{
 		return ejectorComponent;

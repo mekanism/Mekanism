@@ -23,7 +23,7 @@ public interface IToolHammer {
 	 *            Z location of the block/tile
 	 * @return True if this tool can be used
 	 */
-	boolean isUsable(ItemStack item, EntityLivingBase user, int x, int y, int z);
+	boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos);
 
 	/**
 	 * Callback for when the tool has been used reactively.
@@ -39,6 +39,6 @@ public interface IToolHammer {
 	 * @param z
 	 *            Z location of the block/tile
 	 */
-	void toolUsed(ItemStack item, EntityLivingBase user, int x, int y, int z);
+	void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos);
 
 }

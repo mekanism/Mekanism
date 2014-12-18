@@ -9,13 +9,13 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,9 +27,11 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 		super(100000);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(TextureAtlasSpriteRegister register) {}
+*/
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -42,9 +44,9 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z, int side, float posX, float posY, float posZ)
+	public boolean onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, BlockPos pos, EnumFacing side, float posX, float posY, float posZ)
 	{
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(tileEntity instanceof TileEntityChargepad)
 		{
@@ -53,11 +55,11 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 			{
 				if(!world.isRemote)
 				{
-					EntityRobit robit = new EntityRobit(world, x+0.5, y+0.1, z+0.5);
+					EntityRobit robit = new EntityRobit(world, pos.getX()+0.5, pos.getY()+0.1, pos.getZ()+0.5);
 
 					robit.setHome(Coord4D.get(chargepad));
 					robit.setEnergy(getEnergy(itemstack));
-					robit.setOwner(entityplayer.getCommandSenderName());
+					robit.setOwner(entityplayer.getName());
 					robit.setInventory(getInventory(itemstack));
 					robit.setName(getName(itemstack));
 

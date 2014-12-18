@@ -35,7 +35,7 @@ public class GuiSeismicVibrator extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
 		fontRendererObj.drawString(tileEntity.isActive ? "Vibrating" : "Idle", 19, 26, 0x00CD00);

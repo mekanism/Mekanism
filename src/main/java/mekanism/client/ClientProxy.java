@@ -211,9 +211,9 @@ public class ClientProxy extends CommonProxy
 */
 
 	@Override
-	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z)
+	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos)
 	{
-		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getTileEntity(new BlockPos(x, y, z));
+		TileEntityElectricChest tileEntity = (TileEntityElectricChest)entityplayer.worldObj.getTileEntity(pos);
 
 		if(id == 0)
 		{
@@ -357,9 +357,9 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public GuiScreen getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{
@@ -411,30 +411,30 @@ public class ClientProxy extends CommonProxy
 			case 20:
 				return new GuiPasswordModify((TileEntityElectricChest)tileEntity);
 			case 21:
-				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit != null)
 				{
 					return new GuiRobitMain(player.inventory, robit);
 				}
 			case 22:
-				return new GuiRobitCrafting(player.inventory, world, x);
+				return new GuiRobitCrafting(player.inventory, world, pos.getX());
 			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit1 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit1 != null)
 				{
 					return new GuiRobitInventory(player.inventory, robit1);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit2 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit2 != null)
 				{
 					return new GuiRobitSmelting(player.inventory, robit2);
 				}
 			case 25:
-				return new GuiRobitRepair(player.inventory, world, x);
+				return new GuiRobitRepair(player.inventory, world, pos.getX());
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:
@@ -458,7 +458,7 @@ public class ClientProxy extends CommonProxy
 
 				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
-					return new GuiSeismicReader(new Coord4D(x, y, z, world.provider.getDimensionId()), itemStack1);
+					return new GuiSeismicReader(new Coord4D(pos, world.provider.getDimensionId()), itemStack1);
 				}
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);

@@ -14,7 +14,6 @@ import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -41,10 +40,6 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		setMaxDamage(100);
 		setNoRepair();
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
 
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)

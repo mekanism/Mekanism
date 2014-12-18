@@ -76,7 +76,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, int x, int y, int z, EntityLivingBase entityliving)
+	public boolean onBlockDestroyed(ItemStack itemstack, World world, Block block, BlockPos pos, EntityLivingBase entityliving)
 	{
 		if(block.getBlockHardness(world, x, y, z) != 0.0D)
 		{
@@ -90,7 +90,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player)
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player)
 	{
 		super.onBlockStartBreak(itemstack, x, y, z, player);
 
@@ -165,7 +165,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ)
 	{
 		if(!player.isSneaking())
 		{
@@ -207,7 +207,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		return false;
 	}
 
-	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side)
+	private boolean useHoe(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side)
 	{
 		if(!player.canPlayerEdit(x, y, z, side, stack) || (!player.capabilities.isCreativeMode && getEnergy(stack) < HOE_USAGE))
 		{

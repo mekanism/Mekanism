@@ -57,7 +57,7 @@ public class RobitAIFollow extends EntityAIBase
 		{
 			return false;
 		}
-		else if(theRobit.worldObj.provider.dimensionId != player.worldObj.provider.dimensionId)
+		else if(theRobit.worldObj.provider.getDimensionId() != player.worldObj.provider.getDimensionId())
 		{
 			return false;
 		}
@@ -121,7 +121,7 @@ public class RobitAIFollow extends EntityAIBase
 					{
 						int x = MathHelper.floor_double(theOwner.posX) - 2;
 						int y = MathHelper.floor_double(theOwner.posZ) - 2;
-						int z = MathHelper.floor_double(theOwner.boundingBox.minY);
+						int z = MathHelper.floor_double(theOwner.getBoundingBox().minY);
 
 						for(int l = 0; l <= 4; ++l)
 						{

@@ -55,7 +55,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote)
 		{
@@ -257,33 +257,33 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 	@Override
 	@Method(modid = "BuildCraftAPI|tools")
-	public boolean canWrench(EntityPlayer player, int x, int y, int z)
+	public boolean canWrench(EntityPlayer player, BlockPos pos)
 	{
 		return canUseWrench(player, x, y, z);
 	}
 
 	@Override
 	@Method(modid = "BuildCraftAPI|tools")
-	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
+	public void wrenchUsed(EntityPlayer player, BlockPos pos) {}
 
 	@Override
-	public boolean canUseWrench(EntityPlayer player, int x, int y, int z)
+	public boolean canUseWrench(EntityPlayer player, BlockPos pos)
 	{
 		return getState(player.getCurrentEquippedItem()) == 3;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
+	public boolean doesSneakBypassUse(World world, BlockPos pos, EntityPlayer player)
 	{
 		return getState(player.getCurrentEquippedItem()) == 3;
 	}
 
 	@Override
-	public boolean isUsable(ItemStack item, EntityLivingBase user, int x, int y, int z) 
+	public boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos)
 	{
 		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, x, y, z);
 	}
 
 	@Override
-	public void toolUsed(ItemStack item, EntityLivingBase user, int x, int y, int z) {}
+	public void toolUsed(ItemStack item, EntityLivingBase user, BlockPos pos) {}
 }

@@ -36,7 +36,7 @@ public interface ITurtleAccess
     /**
      * TODO: Document me
      */
-    public boolean teleportTo( World world, int x, int y, int z );
+    public boolean teleportTo( World world, BlockPos pos );
 
 	/**
 	 * Returns a vector containing the floating point co-ordinates at which the turtle is rendered.

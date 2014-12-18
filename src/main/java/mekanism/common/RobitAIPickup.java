@@ -133,7 +133,7 @@ public class RobitAIPickup extends EntityAIBase
 				{
 					int x = MathHelper.floor_double(closest.posX) - 2;
 					int y = MathHelper.floor_double(closest.posZ) - 2;
-					int z = MathHelper.floor_double(closest.boundingBox.minY);
+					int z = MathHelper.floor_double(closest.getBoundingBox().minY);
 
 					for(int l = 0; l <= 4; ++l)
 					{

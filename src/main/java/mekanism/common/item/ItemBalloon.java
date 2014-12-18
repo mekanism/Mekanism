@@ -86,7 +86,7 @@ public class ItemBalloon extends ItemMekanism
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
 		{
@@ -158,7 +158,7 @@ public class ItemBalloon extends ItemMekanism
 		return false;
 	}
 
-	private boolean canReplace(World world, int x, int y, int z)
+	private boolean canReplace(World world, BlockPos pos)
 	{
 		return world.isAirBlock(x, y, z) || world.getBlockState(new BlockPos(x, y, z)).getBlock().isReplaceable(world, x, y, z);
 	}

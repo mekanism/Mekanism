@@ -50,7 +50,7 @@ public class GuiFactory extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 48, 4, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 48, 4, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
 		fontRendererObj.drawString(tileEntity.recipeType.getName(), 104, (ySize - 93) + 2, 0x404040);
 

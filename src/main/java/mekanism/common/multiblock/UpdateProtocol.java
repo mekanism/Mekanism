@@ -11,6 +11,7 @@ import mekanism.common.tile.TileEntityMultiblock;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 
@@ -39,6 +40,7 @@ public abstract class UpdateProtocol<T>
 		World worldObj = tile.getWorld();
 
 		int origX = tile.getPos().getX(), origY = tile.getPos().getY(), origZ = tile.getPos().getZ();
+		Coord4D origPos = new Coord4D(tile.getPos());
 
 		boolean isCorner = true;
 		boolean isHollow = true;
@@ -53,20 +55,20 @@ public abstract class UpdateProtocol<T>
 
 		int volume = 0;
 
-		if((isViableNode(origX + 1, origY, origZ) && isViableNode(origX - 1, origY, origZ)) ||
-				(isViableNode(origX, origY + 1, origZ) && isViableNode(origX, origY - 1, origZ)) ||
-				(isViableNode(origX, origY, origZ + 1) && isViableNode(origX, origY, origZ - 1)))
+		if( isViableNode(origPos.add(1, 0, 0)) && isViableNode(origPos.add(-1, 0, 0)) ||
+			isViableNode(origPos.add(0, 1, 0)) && isViableNode(origPos.add(0, -1, 0)) ||
+			isViableNode(origPos.add(0, 0, 1)) && isViableNode(origPos.add(0, 0, -1)))
 		{
 			isCorner = false;
 		}
 
 		if(isCorner)
 		{
-			if(isViableNode(origX+1, origY, origZ))
+			if(isViableNode(origPos.add(1, 0, 0)))
 			{
 				xmin = 0;
 
-				while(isViableNode(origX+x+1, origY, origZ))
+				while(isViableNode(origPos.add(x+1, 0, 0)))
 				{
 					x++;
 				}
@@ -76,7 +78,7 @@ public abstract class UpdateProtocol<T>
 			else {
 				xmax = 0;
 
-				while(isViableNode(origX+x-1, origY, origZ))
+				while(isViableNode(origPos.add(x-1, 0, 0)))
 				{
 					x--;
 				}
@@ -84,11 +86,11 @@ public abstract class UpdateProtocol<T>
 				xmin = x;
 			}
 
-			if(isViableNode(origX, origY+1, origZ))
+			if(isViableNode(origPos.add(0, 1, 0)))
 			{
 				ymin = 0;
 
-				while(isViableNode(origX, origY+y+1, origZ))
+				while(isViableNode(origPos.add(0, y+1, 0)))
 				{
 					y++;
 				}
@@ -98,7 +100,7 @@ public abstract class UpdateProtocol<T>
 			else {
 				ymax = 0;
 
-				while(isViableNode(origX, origY+y-1 ,origZ))
+				while(isViableNode(origPos.add(0, y-1, 0)))
 				{
 					y--;
 				}
@@ -106,11 +108,11 @@ public abstract class UpdateProtocol<T>
 				ymin = y;
 			}
 
-			if(isViableNode(origX, origY, origZ+1))
+			if(isViableNode(origPos.add(0, 0, 1)))
 			{
 				zmin = 0;
 
-				while(isViableNode(origX, origY, origZ+z+1))
+				while(isViableNode(origPos.add(0, 0, z+1)))
 				{
 					z++;
 				}
@@ -120,7 +122,7 @@ public abstract class UpdateProtocol<T>
 			else {
 				zmax = 0;
 
-				while(isViableNode(origX, origY, origZ+z-1))
+				while(isViableNode(origPos.add(0, 0, z-1)))
 				{
 					z--;
 				}
@@ -136,22 +138,22 @@ public abstract class UpdateProtocol<T>
 					{
 						if(x == xmin || x == xmax || y == ymin || y == ymax || z == zmin || z == zmax)
 						{
-							if(!isViableNode(origX+x, origY+y, origZ+z))
+							if(!isViableNode(origPos.add(x, y, z)))
 							{
 								rightBlocks = false;
 								break;
 							}
-							else if(isFrame(Coord4D.get(tile).add(x, y, z), origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax) && !isValidFrame(origX+x, origY+y, origZ+z))
+							else if(isFrame(origPos.add(x, y, z), origPos.add(xmin, ymin, zmin), origPos.add(xmax, ymax, zmax)) && !isValidFrame(origPos.add(x, y, z)))
 							{
 								rightFrame = false;
 								break;
 							}
 							else {
-								locations.add(Coord4D.get(tile).add(x, y, z));
+								locations.add(origPos.add(x, y, z));
 							}
 						}
 						else {
-							if(!isAir(origX+x, origY+y, origZ+z))
+							if(!isAir(origPos.add(x, y, z)))
 							{
 								isHollow = false;
 								break;
@@ -214,27 +216,27 @@ public abstract class UpdateProtocol<T>
 
 	public EnumFacing getSide(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
-		if(obj.getPos().getX() == xmin)
+		if(obj.getX() == xmin)
 		{
 			return EnumFacing.WEST;
 		}
-		else if(obj.getPos().getX() == xmax)
+		else if(obj.getX() == xmax)
 		{
 			return EnumFacing.EAST;
 		}
-		else if(obj.getPos().getY() == ymin)
+		else if(obj.getY() == ymin)
 		{
 			return EnumFacing.DOWN;
 		}
-		else if(obj.getPos().getY() == ymax)
+		else if(obj.getY() == ymax)
 		{
 			return EnumFacing.UP;
 		}
-		else if(obj.getPos().getZ() == zmin)
+		else if(obj.getZ() == zmin)
 		{
 			return EnumFacing.NORTH;
 		}
-		else if(obj.getPos().getZ() == zmax)
+		else if(obj.getZ() == zmax)
 		{
 			return EnumFacing.SOUTH;
 		}
@@ -244,26 +246,22 @@ public abstract class UpdateProtocol<T>
 
 	/**
 	 * Whether or not the block at the specified location is an air block.
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - position
 	 * @return
 	 */
-	private boolean isAir(int x, int y, int z)
+	private boolean isAir(BlockPos pos)
 	{
-		return pointer.getWorld().isAirBlock(x, y, z);
+		return pointer.getWorld().isAirBlock(pos);
 	}
 
 	/**
 	 * Whether or not the block at the specified location is a viable node for a dynamic tank.
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - position
 	 * @return
 	 */
-	private boolean isViableNode(int x, int y, int z)
+	private boolean isViableNode(BlockPos pos)
 	{
-		TileEntity tile = pointer.getWorld().getTileEntity(new BlockPos(x, y, z));
+		TileEntity tile = pointer.getWorld().getTileEntity(pos);
 		
 		if(MultiblockManager.areEqual(tile, pointer))
 		{
@@ -284,7 +282,7 @@ public abstract class UpdateProtocol<T>
 	 */
 	private boolean isCorrectCorner(Coord4D obj, int xmin, int ymin, int zmin)
 	{
-		if(obj.getPos().getX() == xmin && obj.getPos().getY() == ymin && obj.getPos().getZ() == zmin)
+		if(obj.getX() == xmin && obj.getY() == ymin && obj.getZ() == zmin)
 		{
 			return true;
 		}
@@ -295,41 +293,37 @@ public abstract class UpdateProtocol<T>
 	/**
 	 * Whether or not the block at the specified location is considered a frame on the dynamic tank.
 	 * @param obj - location to check
-	 * @param xmin - minimum x value
-	 * @param xmax - maximum x value
-	 * @param ymin - minimum y value
-	 * @param ymax - maximum y value
-	 * @param zmin - minimum z value
-	 * @param zmax - maximum z value
+	 * @param min - minimum corner location
+	 * @param max - maximum corner location
 	 * @return
 	 */
-	private boolean isFrame(Coord4D obj, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	private boolean isFrame(BlockPos obj, BlockPos min, BlockPos max)
 	{
-		if(obj.getPos().getX() == xmin && obj.getPos().getY() == ymin)
+		if(obj.getX() == min.getX() && obj.getY() == min.getY())
 			return true;
-		if(obj.getPos().getX() == xmax && obj.getPos().getY() == ymin)
+		if(obj.getX() == max.getX() && obj.getY() == min.getY())
 			return true;
-		if(obj.getPos().getX() == xmin && obj.getPos().getY() == ymax)
+		if(obj.getX() == min.getX() && obj.getY() == max.getY())
 			return true;
-		if(obj.getPos().getX() == xmax && obj.getPos().getY() == ymax)
-			return true;
-
-		if(obj.getPos().getX() == xmin && obj.getPos().getZ() == zmin)
-			return true;
-		if(obj.getPos().getX() == xmax && obj.getPos().getZ() == zmin)
-			return true;
-		if(obj.getPos().getX() == xmin && obj.getPos().getZ() == zmax)
-			return true;
-		if(obj.getPos().getX() == xmax && obj.getPos().getZ() == zmax)
+		if(obj.getX() == max.getX() && obj.getY() == max.getY())
 			return true;
 
-		if(obj.getPos().getY() == ymin && obj.getPos().getZ() == zmin)
+		if(obj.getX() == min.getX() && obj.getZ() == min.getZ())
 			return true;
-		if(obj.getPos().getY() == ymax && obj.getPos().getZ() == zmin)
+		if(obj.getX() == max.getX() && obj.getZ() == min.getZ())
 			return true;
-		if(obj.getPos().getY() == ymin && obj.getPos().getZ() == zmax)
+		if(obj.getX() == min.getX() && obj.getZ() == max.getZ())
 			return true;
-		if(obj.getPos().getY() == ymax && obj.getPos().getZ() == zmax)
+		if(obj.getX() == max.getX() && obj.getZ() == max.getZ())
+			return true;
+
+		if(obj.getY() == min.getY() && obj.getZ() == min.getZ())
+
+		if(obj.getY() == max.getY() && obj.getZ() == min.getZ())
+			return true;
+		if(obj.getY() == min.getY() && obj.getZ() == max.getZ())
+			return true;
+		if(obj.getY() == max.getY() && obj.getZ() == max.getZ())
 			return true;
 
 		return false;
@@ -337,12 +331,10 @@ public abstract class UpdateProtocol<T>
 
 	/**
 	 * Whether or not the block at the specified location serves as a frame for a dynamic tank.
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - position
 	 * @return
 	 */
-	protected abstract boolean isValidFrame(int x, int y, int z);
+	protected abstract boolean isValidFrame(BlockPos pos);
 	
 	protected abstract MultiblockCache<T> getNewCache();
 	

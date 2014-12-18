@@ -72,7 +72,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 55, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 55, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		fontRendererObj.drawString(tileEntity.time > 0 ? MekanismUtils.localize("gui.delay") + ": " + tileEntity.time + "t" : MekanismUtils.localize("gui.noDelay"), 26, 30, 0x404040);

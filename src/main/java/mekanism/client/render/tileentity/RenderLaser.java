@@ -30,28 +30,28 @@ public class RenderLaser extends TileEntitySpecialRenderer
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Laser.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.getFacing())
 		{
-			case 0: 
+			case DOWN:
 				GL11.glTranslatef(0.0F, -2.0F, 0.0F);
 				GL11.glRotatef(180F, 1.0F, 0.0F, 0.0F); 
 				break;
-			case 5: 
+			case EAST:
 				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				GL11.glTranslatef(1.0F, 0.0F, 0.0F);
 				GL11.glRotatef(90, 0.0F, 0.0F, -1.0F); 
 				break;
-			case 4: 
+			case WEST:
 				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				GL11.glTranslatef(-1.0F, 0.0F, 0.0F);
 				GL11.glRotatef(90, 0.0F, 0.0F, 1.0F); 
 				break;
-			case 2: 
+			case NORTH:
 				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
 				GL11.glRotatef(90, -1.0F, 0.0F, 0.0F); 
 				break;
-			case 3: 
+			case SOUTH:
 				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				GL11.glTranslatef(0.0F, 0.0F, 1.0F);
 				GL11.glRotatef(90, 1.0F, 0.0F, 0.0F); 

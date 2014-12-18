@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -27,19 +28,19 @@ public class LaserManager
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 
-		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
+		MovingObjectPosition mop = world.rayTraceBlocks(new Vec3(from.xPos, from.yPos, from.zPos), new Vec3(to.xPos, to.yPos, to.zPos));
 
 		if(mop != null)
 		{
 			to = new Pos3D(mop.hitVec);
-			Coord4D toCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
-			TileEntity tile = toCoord.getTileEntity(world);
+			BlockPos toCoord = mop.getBlockPos();
+			TileEntity tile = world.getTileEntity(toCoord);
 
 			if(tile instanceof ILaserReceptor)
 			{
 				if(!(((ILaserReceptor)tile).canLasersDig()))
 				{
-					((ILaserReceptor)tile).receiveLaserEnergy(energy, EnumFacing.getFront(mop.sideHit));
+					((ILaserReceptor)tile).receiveLaserEnergy(energy, mop.sideHit);
 				}
 			}
 		}
@@ -61,15 +62,15 @@ public class LaserManager
 		Block blockHit = blockCoord.getBlock(world);
 		if(dropAtBlock)
 		{
-			blockHit.dropBlockAsItem(world, blockCoord.getPos().getX(), blockCoord.getPos().getY(), blockCoord.getPos().getZ(), blockCoord.getMetadata(world), 0);
+			blockHit.dropBlockAsItem(world, blockCoord, blockCoord.getBlockState(world), 0);
 		}
 		else
 		{
-			ret = blockHit.getDrops(world, blockCoord.getPos().getX(), blockCoord.getPos().getY(), blockCoord.getPos().getZ(), blockCoord.getMetadata(world), 0);
+			ret = blockHit.getDrops(world, blockCoord, blockCoord.getBlockState(world), 0);
 		}
-		blockHit.breakBlock(world, blockCoord.getPos().getX(), blockCoord.getPos().getY(), blockCoord.getPos().getZ(), blockHit, blockCoord.getMetadata(world));
-		world.setBlockToAir(blockCoord.getPos().getX(), blockCoord.getPos().getY(), blockCoord.getPos().getZ());
-		world.playAuxSFX(2001, blockCoord.getPos().getX(), blockCoord.getPos().getY(), blockCoord.getPos().getZ(), Block.getIdFromBlock(blockHit));
+		blockHit.breakBlock(world, blockCoord, blockCoord.getBlockState(world));
+		world.setBlockToAir(blockCoord);
+		world.playAuxSFX(2001, blockCoord, Block.getIdFromBlock(blockHit));
 		return ret;
 	}
 
@@ -81,7 +82,7 @@ public class LaserManager
 	public static void fireLaserClient(Pos3D from, EnumFacing direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
-		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
+		MovingObjectPosition mop = world.rayTraceBlocks(new Vec3(from.xPos, from.yPos, from.zPos), new Vec3(to.xPos, to.yPos, to.zPos));
 
 		if(mop != null)
 		{

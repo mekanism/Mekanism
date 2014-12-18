@@ -18,23 +18,19 @@ import io.netty.buffer.ByteBuf;
 
 public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 {
-	public int mainX;
-	public int mainY;
-	public int mainZ;
+	public Coord4D mainPos;
 	
 	public boolean receivedCoords;
 
 	public boolean prevPower;
 
-	public void setMainLocation(int x, int y, int z)
+	public void setMainLocation(Coord4D mainLocation)
 	{
 		receivedCoords = true;
 		
 		if(!worldObj.isRemote)
 		{
-			mainX = x;
-			mainY = y;
-			mainZ = z;
+			mainPos = mainLocation;
 
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 		}
@@ -51,21 +47,20 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 		}
 	}
 
-	@Override
-	public boolean canUpdate()
+	public Coord4D getMainPos()
 	{
-		return false;
+		return mainPos;
 	}
 
 	public void onNeighborChange(Block block)
 	{
-		TileEntity tile = worldObj.getTileEntity(new BlockPos(mainX, mainY, mainZ));
+		TileEntity tile = worldObj.getTileEntity(getMainPos());
 
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)tile;
 
-			boolean power = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+			boolean power = worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0;
 
 			if(prevPower != power)
 			{
@@ -90,9 +85,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		mainX = dataStream.readInt();
-		mainY = dataStream.readInt();
-		mainZ = dataStream.readInt();
+		mainPos = Coord4D.read(dataStream);
 		prevPower = dataStream.readBoolean();
 	}
 
@@ -101,9 +94,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		super.readFromNBT(nbtTags);
 
-		mainX = nbtTags.getInteger("mainX");
-		mainY = nbtTags.getInteger("mainY");
-		mainZ = nbtTags.getInteger("mainZ");
+		mainPos = Coord4D.read(nbtTags);
 		prevPower = nbtTags.getBoolean("prevPower");
 		receivedCoords = nbtTags.getBoolean("receivedCoords");
 	}
@@ -113,9 +104,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setInteger("mainX", mainX);
-		nbtTags.setInteger("mainY", mainY);
-		nbtTags.setInteger("mainZ", mainZ);
+		mainPos.write(nbtTags);
 		nbtTags.setBoolean("prevPower", prevPower);
 		nbtTags.setBoolean("receivedCoords", receivedCoords);
 	}
@@ -123,9 +112,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(mainX);
-		data.add(mainY);
-		data.add(mainZ);
+		mainPos.write(data);
 		data.add(prevPower);
 
 		return data;

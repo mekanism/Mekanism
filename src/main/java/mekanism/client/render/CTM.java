@@ -83,14 +83,14 @@ public class CTM
 			{},
 	};
 
-	public static int[] getSubmapIndices(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static int[] getSubmapIndices(IBlockAccess world, BlockPos pos, int side, HashMap<Block, List<Integer>> blockMetas)
 	{
 		int index = getTexture(world, x, y, z, side, blockMetas);
 
 		return submaps[index];
 	}
 
-	public static int getTexture(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static int getTexture(IBlockAccess world, BlockPos pos, int side, HashMap<Block, List<Integer>> blockMetas)
 	{
 		if(world == null)
 		{
@@ -393,7 +393,7 @@ public class CTM
 		return texture;
 	}
 
-	public static boolean isConnected(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static boolean isConnected(IBlockAccess world, BlockPos pos, int side, HashMap<Block, List<Integer>> blockMetas)
 	{
 		int x2 = x, y2 = y, z2 = z;
 

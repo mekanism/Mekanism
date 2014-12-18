@@ -203,7 +203,7 @@ public class Coord4D extends BlockPos
 	 */
 	public static Coord4D get(TileEntity tileEntity)
 	{
-		return new Coord4D(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), tileEntity.getWorld().provider.getDimensionId());
+		return new Coord4D(tileEntity.getPos(), tileEntity.getWorld().provider.getDimensionId());
 	}
 
 	/**

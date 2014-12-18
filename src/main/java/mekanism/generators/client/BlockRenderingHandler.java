@@ -14,17 +14,16 @@ import mekanism.generators.common.block.BlockGenerator.GeneratorType;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.client.registry.ISimpleBlockRenderingHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
+public class BlockRenderingHandler// implements ISimpleBlockRenderingHandler
 {
+/*
 	public ModelAdvancedSolarGenerator advancedSolarGenerator = new ModelAdvancedSolarGenerator();
 	public ModelSolarGenerator solarGenerator = new ModelSolarGenerator();
 	public ModelBioGenerator bioGenerator = new ModelBioGenerator();
@@ -126,4 +125,5 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 	{
 		return GeneratorsClientProxy.GENERATOR_RENDER_ID;
 	}
+*/
 }

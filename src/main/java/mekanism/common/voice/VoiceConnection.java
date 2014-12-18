@@ -61,12 +61,12 @@ public class VoiceConnection extends Thread
 								if(!server.isDedicatedServer() && playerIP.equals("local") && !Mekanism.voiceManager.foundLocal)
 								{
 									Mekanism.voiceManager.foundLocal = true;
-									username = playerMP.getCommandSenderName();
+									username = playerMP.getName();
 									break;
 								}
 								else if(playerIP.equals(socket.getInetAddress().getHostAddress()))
 								{
-									username = playerMP.getCommandSenderName();
+									username = playerMP.getName();
 									break;
 								}
 							}
@@ -199,6 +199,6 @@ public class VoiceConnection extends Thread
 
 	public EntityPlayerMP getPlayer()
 	{
-		return server.getConfigurationManager().func_152612_a(username); //TODO getPlayerForUsername
+		return server.getConfigurationManager().getPlayerByUsername(username);
 	}
 }

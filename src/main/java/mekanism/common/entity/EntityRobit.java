@@ -723,7 +723,6 @@ public class EntityRobit extends EntityCreature implements IInventory, ISustaine
 		return tagList;
 	}
 
-	@Override
     public String getCommandSenderName()
 	{
 		return getName().isEmpty() ? "Robit" : getName();

@@ -594,15 +594,15 @@ public class Mekanism
         }
 	
 		//Furnace Recipes
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.OreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.OreBlock, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 5), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismBlocks.OreBlock, 1, 2), new ItemStack(MekanismItems.Ingot, 1, 6), 1.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 2), new ItemStack(MekanismItems.Ingot, 1, 1), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 0), new ItemStack(Items.iron_ingot), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 1), new ItemStack(Items.gold_ingot), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 5), new ItemStack(MekanismItems.Ingot, 1, 4), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 6), new ItemStack(MekanismItems.Ingot, 1, 5), 0.0F);
-		FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 7), new ItemStack(MekanismItems.Ingot, 1, 6), 0.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismBlocks.OreBlock, 1, 0), new ItemStack(MekanismItems.Ingot, 1, 1), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismBlocks.OreBlock, 1, 1), new ItemStack(MekanismItems.Ingot, 1, 5), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismBlocks.OreBlock, 1, 2), new ItemStack(MekanismItems.Ingot, 1, 6), 1.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 2), new ItemStack(MekanismItems.Ingot, 1, 1), 0.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 0), new ItemStack(Items.iron_ingot), 0.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 1), new ItemStack(Items.gold_ingot), 0.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 5), new ItemStack(MekanismItems.Ingot, 1, 4), 0.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 6), new ItemStack(MekanismItems.Ingot, 1, 5), 0.0F);
+		FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 7), new ItemStack(MekanismItems.Ingot, 1, 6), 0.0F);
 		
 		//Enrichment Chamber Recipes
 		RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(Blocks.redstone_ore), new ItemStack(Items.redstone, 12));
@@ -688,8 +688,18 @@ public class Mekanism
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.jukebox), new ItemStack(Blocks.planks, 8), new ItemStack(Items.diamond), 1);
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.bookshelf), new ItemStack(Blocks.planks, 6), new ItemStack(Items.book, 3), 1);
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.wooden_pressure_plate), new ItemStack(Blocks.planks, 2));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence), new ItemStack(Items.stick, 3));
-		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.oak_fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.oak_fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.birch_fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.birch_fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.jungle_fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.jungle_fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.spruce_fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.spruce_fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.dark_oak_fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.dark_oak_fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.acacia_fence), new ItemStack(Items.stick, 3));
+		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.acacia_fence_gate), new ItemStack(Blocks.planks, 2), new ItemStack(Items.stick, 4), 1);
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.noteblock), new ItemStack(Blocks.planks, 8), new ItemStack(Items.redstone), 1);
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.redstone_torch), new ItemStack(Items.stick), new ItemStack(Items.redstone), 1);
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.crafting_table), new ItemStack(Blocks.planks, 4));
@@ -963,7 +973,7 @@ public class Mekanism
 		//Load cached furnace recipes
 		Recipe.ENERGIZED_SMELTER.get().clear();
 		
-		for(Object obj : FurnaceRecipes.smelting().getSmeltingList().entrySet())
+		for(Object obj : FurnaceRecipes.instance().getSmeltingList().entrySet())
 		{
 			Map.Entry<ItemStack, ItemStack> entry = (Map.Entry<ItemStack, ItemStack>)obj;
 			SmeltingRecipe recipe = new SmeltingRecipe(new ItemStackInput(entry.getKey()), new ItemStackOutput(entry.getValue()));
@@ -1095,9 +1105,9 @@ public class Mekanism
 		{
 			for(BiomeGenBase biome : WorldChunkManager.allowedBiomes) 
 			{
-				if(biome.getSpawnableList(EnumCreatureType.monster) != null && biome.getSpawnableList(EnumCreatureType.monster).size() > 0)
+				if(biome.getSpawnableList(EnumCreatureType.MONSTER) != null && biome.getSpawnableList(EnumCreatureType.MONSTER).size() > 0)
 				{
-					EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.monster, new BiomeGenBase[] {biome});
+					EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EnumCreatureType.MONSTER, new BiomeGenBase[] {biome});
 				}
 			}
 		}
@@ -1108,7 +1118,7 @@ public class Mekanism
 		
 		registerOreDict();
 
-		new MultipartMekanism();
+//		new MultipartMekanism();
 
 		//Packet registrations
 		packetHandler.initialize();
@@ -1195,9 +1205,14 @@ public class Mekanism
 		MekanismAPI.addBoxBlacklist(Blocks.end_portal, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.end_portal_frame, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.bed, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(Blocks.wooden_door, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Blocks.oak_door, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Blocks.birch_door, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Blocks.jungle_door, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Blocks.spruce_door, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Blocks.dark_oak_door, OreDictionary.WILDCARD_VALUE);
+		MekanismAPI.addBoxBlacklist(Blocks.acacia_door, OreDictionary.WILDCARD_VALUE);
 		MekanismAPI.addBoxBlacklist(Blocks.iron_door, OreDictionary.WILDCARD_VALUE);
-		MekanismAPI.addBoxBlacklist(MultipartProxy.block(), OreDictionary.WILDCARD_VALUE);
+//		MekanismAPI.addBoxBlacklist(MultipartProxy.block(), OreDictionary.WILDCARD_VALUE);
 		
 		BoxBlacklistParser.load();
 	}
@@ -1207,7 +1222,7 @@ public class Mekanism
 	{
 		if(event.getChunk() != null && !event.world.isRemote)
 		{
-			Map copy = (Map)((HashMap)event.getChunk().chunkTileEntityMap).clone();
+			Map copy = (Map)((HashMap)event.getChunk().getTileEntityMap()).clone();
 			 
 			for(Iterator iter = copy.values().iterator(); iter.hasNext();)
 			{
@@ -1253,7 +1268,7 @@ public class Mekanism
 				}
 	
 				ChunkCoordIntPair coordPair = event.getChunk().getChunkCoordIntPair();
-				worldTickHandler.addRegenChunk(event.world.provider.dimensionId, coordPair);
+				worldTickHandler.addRegenChunk(event.world.provider.getDimensionId(), coordPair);
 			}
 		}
 	}

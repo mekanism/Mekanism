@@ -36,7 +36,7 @@ public final class BuildCraftAPI {
 	private BuildCraftAPI() {
 	}
 
-	public static boolean isSoftBlock(World world, int x, int y, int z) {
+	public static boolean isSoftBlock(World world, BlockPos pos) {
 		return isSoftProperty.get(world, x, y, z);
 	}
 }

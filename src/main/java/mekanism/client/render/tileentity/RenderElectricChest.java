@@ -30,20 +30,20 @@ public class RenderElectricChest extends TileEntitySpecialRenderer
 		GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.getFacing())
 		{
-			case 2:
+			case NORTH:
 				GL11.glRotatef(270, 0.0F, 1.0F, 0.0F);
 				GL11.glTranslatef(1.0F, 0.0F, 0.0F);
 				break;
-			case 3:
+			case SOUTH:
 				GL11.glRotatef(90, 0.0F, 1.0F, 0.0F);
 				GL11.glTranslatef(0.0F, 0.0F, -1.0F);
 				break;
-			case 4:
+			case WEST:
 				GL11.glRotatef(0, 0.0F, 1.0F, 0.0F);
 				break;
-			case 5:
+			case EAST:
 				GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
 				GL11.glTranslatef(1.0F, 0.0F, -1.0F);
 				break;

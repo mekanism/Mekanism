@@ -484,12 +484,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public int getFacing()
-	{
-		return facing;
-	}
-
-	@Override
 	public boolean renderUpdate()
 	{
 		return true;

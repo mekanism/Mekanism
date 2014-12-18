@@ -26,7 +26,8 @@ public class BlockPlasticFence extends BlockFence
 {
 	public BlockPlasticFence()
 	{
-		super("mekanism:PlasticFence", Material.clay);
+		super(Material.wood);
+        setUnlocalizedName("mekanism:PlasticFence");
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
@@ -41,17 +42,16 @@ public class BlockPlasticFence extends BlockFence
     }
 
     @Override
-    public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+    public int colorMultiplier(IBlockAccess world, BlockPos pos, int renderPass)
     {
-        return getRenderColor(world.getBlockMetadata(x, y, z));
+        return getRenderColor(world.getBlockState(pos));
     }
 
     @Override
-    public int getRenderColor(int meta)
+    public int getRenderColor(IBlockState state)
     {
-        EnumColor colour = EnumColor.DYES[meta];
+        EnumColor colour = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
         return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
-
     }
 
     @Override
@@ -71,8 +71,8 @@ public class BlockPlasticFence extends BlockFence
     }
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 }

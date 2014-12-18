@@ -11,15 +11,16 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismBlocks;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.PurificationRecipe;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasHandler, ITubeConnection
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> implements IGasHandler, ITubeConnection
 {
 	public TileEntityPurificationChamber()
 	{
@@ -82,5 +83,29 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	public boolean isValidGas(Gas gas)
 	{
 		return gas == GasRegistry.getGas("oxygen");
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+
 	}
 }

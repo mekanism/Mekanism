@@ -101,7 +101,6 @@ public class BlockPlastic extends Block
 	{
 		EnumColor colour = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
 		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
-
 	}
 
 	@Override
@@ -151,12 +150,5 @@ public class BlockPlastic extends Block
 		}
 
 		return false;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public int getRenderType()
-	{
-		return ClientProxy.PLASTIC_RENDER_ID;
 	}
 }

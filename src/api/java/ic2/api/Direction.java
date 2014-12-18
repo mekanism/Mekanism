@@ -65,7 +65,7 @@ public enum Direction {
 	 * @param z Z coordinate to check from
 	 * @return Adjacent tile entity or null if none exists
 	 */
-	public TileEntity applyTo(World world, int x, int y, int z) {
+	public TileEntity applyTo(World world, BlockPos pos) {
 		int coords[] = { x, y, z };
 
 		coords[ordinal() / 2] += getSign();

@@ -33,7 +33,7 @@ public class GuiSalinationController extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getName())/2), 6, 0x404040);
 
 		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
 		fontRendererObj.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);

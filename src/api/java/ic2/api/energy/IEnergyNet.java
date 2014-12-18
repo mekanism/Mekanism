@@ -25,7 +25,7 @@ public interface IEnergyNet {
 	 * @param z z-coordinate
 	 * @return tile entity registered to the energy net or null if none is registered
 	 */
-	TileEntity getTileEntity(World world, int x, int y, int z);
+	TileEntity getTileEntity(World world, BlockPos pos);
 
 	/**
 	 * Get the EnergyNet-registered neighbor tile entity at the specified position.

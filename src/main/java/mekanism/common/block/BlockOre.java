@@ -6,7 +6,7 @@ import mekanism.common.Mekanism;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,6 +34,7 @@ public class BlockOre extends Block
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(TextureAtlasSpriteRegister register)
@@ -42,18 +43,21 @@ public class BlockOre extends Block
 		icons[1] = register.registerIcon("mekanism:CopperOre");
 		icons[2] = register.registerIcon("mekanism:TinOre");
 	}
+*/
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public TextureAtlasSprite getIcon(int side, int meta)
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override

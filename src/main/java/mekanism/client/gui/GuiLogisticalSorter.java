@@ -322,7 +322,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getName(), 43, 6, 0x404040);
 
 		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
 		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);

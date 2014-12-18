@@ -161,7 +161,7 @@ public class BlockBasic extends Block implements IBlockCTM
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(IBlockAccess worldIn, int x, int y, int z, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess worldIn, BlockPos pos, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
@@ -670,7 +670,6 @@ public class BlockBasic extends Block implements IBlockCTM
 				}
 			}
 
-			tileEntity.setFacing((short)change);
 			tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 
 			if(tileEntity instanceof IBoundingBlock)
@@ -778,9 +777,9 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public CTMData getCTMData(IBlockAccess worldIn, int x, int y, int z, int meta)
+	public CTMData getCTMData(IBlockAccess worldIn, BlockPos pos, int meta)
 	{
-		if(ctms[meta][1] != null && MekanismUtils.isActive(worldIn, x, y, z))
+		if(ctms[meta][1] != null && MekanismUtils.isActive(worldIn, pos))
 		{
 			return ctms[meta][1];
 		}

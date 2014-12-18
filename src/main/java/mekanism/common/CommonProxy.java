@@ -8,7 +8,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
 import mekanism.api.util.EnergyUtils.EnergyType;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ContainerAdvancedElectricMachine;
 import mekanism.common.inventory.container.ContainerChanceMachine;
@@ -164,11 +164,9 @@ public class CommonProxy
 	 * @param id - the electric chest gui ID to open
 	 * @param windowId - the container-specific window ID
 	 * @param isBlock - if the chest is a block
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - position of the chest
 	 */
-	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, int x, int y, int z) {}
+	public void openElectricChest(EntityPlayer entityplayer, int id, int windowId, boolean isBlock, BlockPos pos) {}
 
 	/**
 	 * Register and load client-only render information.
@@ -302,12 +300,10 @@ public class CommonProxy
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
+	 * @param pos - the GUI's position
 	 * @return the GuiScreen of the GUI
 	 */
-	public Object getClientGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Object getClientGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
 		return null;
 	}
@@ -317,14 +313,12 @@ public class CommonProxy
 	 * @param ID - gui ID
 	 * @param player - player that opened the GUI
 	 * @param world - world the GUI was opened in
-	 * @param x - gui's x position
-	 * @param y - gui's y position
-	 * @param z - gui's z position
+	 * @param pos - position of the GUI
 	 * @return the Container of the GUI
 	 */
-	public Container getServerGui(int ID, EntityPlayer player, World world, int x, int y, int z)
+	public Container getServerGui(int ID, EntityPlayer player, World world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		switch(ID)
 		{
@@ -363,7 +357,7 @@ public class CommonProxy
 			case 18:
 				return new ContainerDynamicTank(player.inventory, (TileEntityDynamicTank)tileEntity);
 			case 21:
-				EntityRobit robit = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit != null)
 				{
@@ -372,14 +366,14 @@ public class CommonProxy
 			case 22:
 				return new ContainerRobitCrafting(player.inventory, world);
 			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit1 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit1 != null)
 				{
 					return new ContainerRobitInventory(player.inventory, robit1);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				EntityRobit robit2 = (EntityRobit)world.getEntityByID(pos.getX());
 
 				if(robit2 != null)
 				{

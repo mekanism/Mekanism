@@ -28,11 +28,11 @@ public class ItemNetworkReader extends ItemEnergized
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(!world.isRemote)
 		{
-			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if(getEnergy(stack) >= ENERGY_PER_USE)
 			{

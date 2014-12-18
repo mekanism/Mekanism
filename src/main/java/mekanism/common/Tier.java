@@ -1,7 +1,7 @@
 package mekanism.common;
 
 import mekanism.api.EnumColor;
-import mekanism.common.multipart.TransmitterType;
+//import mekanism.common.multipart.TransmitterType;
 
 import net.minecraft.util.ResourceLocation;
 
@@ -134,6 +134,7 @@ public final class Tier
 	 * @author aidancbrady
 	 *
 	 */
+/*
 	public static enum CableTier
 	{
 		BASIC(500, TransmitterType.UNIVERSAL_CABLE_BASIC),
@@ -155,12 +156,14 @@ public final class Tier
 			type = transmitterType;
 		}
 	}
+*/
 
 	/**
 	 * The tiers used by Mechanical Pipes and their corresponding values.
 	 * @author unpairedbracket
 	 *
 	 */
+/*
 	public static enum PipeTier
 	{
 		BASIC(1000, 100, TransmitterType.MECHANICAL_PIPE_BASIC),
@@ -201,4 +204,5 @@ public final class Tier
 			}
 		}
 	}
+*/
 }

@@ -15,6 +15,6 @@ public interface IStripesHandler {
 	
 	boolean shouldHandle(ItemStack stack);
 	
-	boolean handle(World world, int x, int y, int z, EnumFacing direction,
+	boolean handle(World world, BlockPos pos, EnumFacing direction,
 			ItemStack stack, EntityPlayer player, IStripesPipe pipe);
 }

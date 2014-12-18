@@ -11,12 +11,16 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Teleporter;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -182,7 +186,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public void resetBounds()
 	{
-		teleportBounds = AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+3, zCoord+1);
+		teleportBounds = new AxisAlignedBB(getPos(), getPos().add(1, 3, 1));
 	}
 
 	/**
@@ -304,20 +308,20 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			WorldServer oldWorld = server.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
 			WorldServer newWorld = server.worldServerForDimension(player.dimension);
-			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
+			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 			oldWorld.removePlayerEntityDangerously(player);
 			player.isDead = false;
 
 			if(player.isEntityAlive())
 			{
 				newWorld.spawnEntityInWorld(player);
-				player.setLocationAndAngles(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
+				player.setLocationAndAngles(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 				newWorld.updateEntityWithOptionalForce(player, false);
 				player.setWorld(newWorld);
 			}
 
 			server.getConfigurationManager().func_72375_a(player, oldWorld);
-			player.playerNetServerHandler.setPlayerLocation(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 			player.theItemInWorldManager.setWorld(newWorld);
 			server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
 			server.getConfigurationManager().syncPlayerInventory(player);
@@ -332,7 +336,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, id, coord.dimensionId);
 		}
 		else {
-			player.playerNetServerHandler.setPlayerLocation(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
+			player.playerNetServerHandler.setPlayerLocation(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 		}
 	}
 
@@ -340,13 +344,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		WorldServer world = server.worldServerForDimension(coord.dimensionId);
 
-		if(entity.worldObj.provider.dimensionId != coord.dimensionId)
+		if(entity.worldObj.provider.getDimensionId() != coord.dimensionId)
 		{
 			entity.worldObj.removeEntity(entity);
 			entity.isDead = false;
 
 			world.spawnEntityInWorld(entity);
-			entity.setLocationAndAngles(coord.getPos().getX()+0.5, coord.getPos().getY()+1, coord.getPos().getZ()+0.5, entity.rotationYaw, entity.rotationPitch);
+			entity.setLocationAndAngles(coord.getX()+0.5, coord.getY()+1, coord.getZ()+0.5, entity.rotationYaw, entity.rotationPitch);
 			world.updateEntityWithOptionalForce(entity, false);
 			entity.setWorld(world);
 			world.resetUpdateEntityTick();
@@ -355,7 +359,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 			if(e != null)
 			{
-				e.copyDataFrom(entity, true);
+				e.copyDataFromOld(entity);
 				world.spawnEntityInWorld(e);
 				teleporter.didTeleport.add(e);
 			}
@@ -406,12 +410,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		int energyCost = 1000;
 
-		if(entity.worldObj.provider.dimensionId != coords.dimensionId)
+		if(entity.worldObj.provider.getDimensionId() != coords.dimensionId)
 		{
 			energyCost+=10000;
 		}
 
-		int distance = (int)entity.getDistance(coords.getPos().getX(), coords.getPos().getY(), coords.getPos().getZ());
+		int distance = (int)entity.getDistance(coords.getX(), coords.getY(), coords.getZ());
 		energyCost+=(distance*10);
 
 		return energyCost;
@@ -419,22 +423,23 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public boolean hasFrame()
 	{
-		if(isFrame(xCoord-1, yCoord, zCoord) && isFrame(xCoord+1, yCoord, zCoord)
-				&& isFrame(xCoord-1, yCoord+1, zCoord) && isFrame(xCoord+1, yCoord+1, zCoord)
-				&& isFrame(xCoord-1, yCoord+2, zCoord) && isFrame(xCoord+1, yCoord+2, zCoord)
-				&& isFrame(xCoord-1, yCoord+3, zCoord) && isFrame(xCoord+1, yCoord+3, zCoord)
-				&& isFrame(xCoord, yCoord+3, zCoord)) {return true;}
-		if(isFrame(xCoord, yCoord, zCoord-1) && isFrame(xCoord, yCoord, zCoord+1)
-				&& isFrame(xCoord, yCoord+1, zCoord-1) && isFrame(xCoord, yCoord+1, zCoord+1)
-				&& isFrame(xCoord, yCoord+2, zCoord-1) && isFrame(xCoord, yCoord+2, zCoord+1)
-				&& isFrame(xCoord, yCoord+3, zCoord-1) && isFrame(xCoord, yCoord+3, zCoord+1)
-				&& isFrame(xCoord, yCoord+3, zCoord)) {return true;}
+		if(        isFrame(getPos().add(1, 0, 0)) && isFrame(getPos().add(-1, 0, 0))
+				&& isFrame(getPos().add(1, 1, 0)) && isFrame(getPos().add(-1, 1, 0))
+				&& isFrame(getPos().add(1, 2, 0)) && isFrame(getPos().add(-1, 2, 0))
+				&& isFrame(getPos().add(1, 3, 0)) && isFrame(getPos().add(-1, 3, 0))
+				&& isFrame(getPos().add(0, 3, 0))) {return true;}
+		if(        isFrame(getPos().add(0, 0, 1)) && isFrame(getPos().add(0, 0, -1))
+				&& isFrame(getPos().add(0, 1, 1)) && isFrame(getPos().add(0, 1, -1))
+				&& isFrame(getPos().add(0, 2, 1)) && isFrame(getPos().add(0, 2, -1))
+				&& isFrame(getPos().add(0, 3, 1)) && isFrame(getPos().add(0, 3, -1))
+				&& isFrame(getPos().add(0, 3, 0))) {return true;}
 		return false;
 	}
 
-	public boolean isFrame(int x, int y, int z)
+	public boolean isFrame(BlockPos pos)
 	{
-		return worldObj.getBlockState(new BlockPos(x, y, z)).getBlock() == MekanismBlocks.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
+		IBlockState state = worldObj.getBlockState(pos);
+		return state.getBlock() == MekanismBlocks.BasicBlock && state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.TELEPORTER_FRAME;
 	}
 
 	@Override

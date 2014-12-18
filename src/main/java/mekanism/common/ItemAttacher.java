@@ -3,7 +3,7 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import mekanism.common.multipart.TransmitterType;
+//import mekanism.common.multipart.TransmitterType;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -18,10 +18,12 @@ public final class ItemAttacher
 		attachable.add(new ItemStack(Blocks.redstone_torch));
 		attachable.add(new ItemStack(Blocks.torch));
 
+/*
 		for(TransmitterType type : TransmitterType.values())
 		{
 			attachable.add(new ItemStack(MekanismItems.PartTransmitter, 1, type.ordinal()));
 		}
+*/
 	}
 
 	public static boolean canAttach(ItemStack itemStack)

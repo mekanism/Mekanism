@@ -31,7 +31,7 @@ public class BlockIndex implements Comparable<BlockIndex> {
 	/**
 	 * Creates an index for a block located on x, y. z
 	 */
-	public BlockIndex(int x, int y, int z) {
+	public BlockIndex(BlockPos pos) {
 
 		this.x = x;
 		this.y = y;

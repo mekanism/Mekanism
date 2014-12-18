@@ -41,9 +41,9 @@ public class RenderBin extends TileEntitySpecialRenderer
 				amount = Integer.toString(tileEntity.clientAmount);
 			}
 
-			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.getFront(tileEntity.facing));
+			Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.getFacing());
 
-			if(tileEntity.getWorld().getBlockState(obj).getBlock().isSideSolid(tileEntity.getWorld(), obj, EnumFacing.getFront(tileEntity.facing).getOpposite()))
+			if(tileEntity.getWorld().getBlockState(obj).getBlock().isSideSolid(tileEntity.getWorld(), obj, tileEntity.getFacing().getOpposite()))
 			{
 				return;
 			}
@@ -55,7 +55,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 			{
 				GL11.glPushMatrix();
 
-				switch(EnumFacing.getFront(tileEntity.facing))
+				switch(tileEntity.getFacing())
 				{
 					case NORTH:
 						GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
@@ -90,7 +90,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			if(amount != "")
 			{
-				renderText(amount, EnumFacing.getFront(tileEntity.facing), 0.02F, x, y - 0.31F, z);
+				renderText(amount, tileEntity.getFacing(), 0.02F, x, y - 0.31F, z);
 			}
 		}
 	}

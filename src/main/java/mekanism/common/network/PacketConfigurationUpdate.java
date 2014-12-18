@@ -145,11 +145,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			dataStream.writeInt(coord4D.getPos().getX());
-			dataStream.writeInt(coord4D.getPos().getY());
-			dataStream.writeInt(coord4D.getPos().getZ());
-	
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			if(packetType != ConfigurationPacket.EJECT && packetType != ConfigurationPacket.STRICT_INPUT)
 			{
@@ -172,7 +168,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 		{
 			packetType = ConfigurationPacket.values()[dataStream.readInt()];
 	
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 	
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{

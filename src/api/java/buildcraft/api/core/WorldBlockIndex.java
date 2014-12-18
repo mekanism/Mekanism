@@ -29,7 +29,7 @@ public class WorldBlockIndex implements Comparable<WorldBlockIndex> {
 	/**
 	 * Creates an index for a block located on x, y. z
 	 */
-	public WorldBlockIndex(World world, int x, int y, int z) {
+	public WorldBlockIndex(World world, BlockPos pos) {
 
 		dimension = world.provider.dimensionId;
 		this.x = x;

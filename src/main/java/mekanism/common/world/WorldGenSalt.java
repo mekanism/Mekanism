@@ -24,9 +24,9 @@ public class WorldGenSalt extends WorldGenerator
     }
 
     @Override
-    public boolean generate(World world, Random random, int x, int y, int z)
+    public boolean generate(World world, Random random, BlockPos pos)
     {
-        if(world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial() != Material.water)
+        if(world.getBlockState(pos).getBlock().getMaterial() != Material.water)
         {
             return false;
         }
@@ -34,22 +34,22 @@ public class WorldGenSalt extends WorldGenerator
             int toGenerate = random.nextInt(numberOfBlocks - 2) + 2;
             byte yOffset = 1;
 
-            for(int xPos = x - toGenerate; xPos <= x + toGenerate; xPos++)
+            for(int xPos = pos.getX() - toGenerate; xPos <= pos.getX() + toGenerate; xPos++)
             {
-                for(int zPos = z - toGenerate; zPos <= z + toGenerate; zPos++)
+                for(int zPos = pos.getZ() - toGenerate; zPos <= pos.getZ() + toGenerate; zPos++)
                 {
-                    int xOffset = xPos - x;
-                    int zOffset = zPos - z;
+                    int xOffset = xPos - pos.getX();
+                    int zOffset = zPos - pos.getZ();
 
                     if((xOffset*xOffset) + (zOffset*zOffset) <= toGenerate*toGenerate)
                     {
-                        for(int yPos = y - yOffset; yPos <= y + yOffset; yPos++)
+                        for(int yPos = pos.getY() - yOffset; yPos <= pos.getY() + yOffset; yPos++)
                         {
                             Block block = world.getBlockState(new BlockPos(xPos, yPos, zPos)).getBlock();
 
                             if(block == Blocks.dirt || block == Blocks.clay || block == MekanismBlocks.SaltBlock)
                             {
-                                world.setBlock(xPos, yPos, zPos, blockGen, 0, 2);
+                                world.setBlockState(pos, blockGen.getDefaultState(), 2);
                             }
                         }
                     }

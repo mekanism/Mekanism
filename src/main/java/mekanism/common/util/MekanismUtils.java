@@ -341,7 +341,7 @@ public final class MekanismUtils
 	 * @param y - y coord
 	 * @param z - z coord
 	 */
-	public static void doFakeBlockExplosion(World world, int x, int y, int z)
+	public static void doFakeBlockExplosion(World world, BlockPos pos)
 	{
 		world.spawnParticle("hugeexplosion", x, y, z, 0.0D, 0.0D, 0.0D);
 		world.playSound(x, y, z, "random.explode", 1.0F, 1.0F, true);
@@ -412,7 +412,7 @@ public final class MekanismUtils
 	 * @param z
 	 * @return if machine is active
 	 */
-	public static boolean isActive(IBlockAccess world, int x, int y, int z)
+	public static boolean isActive(IBlockAccess world, BlockPos pos)
 	{
 		TileEntity tileEntity = (TileEntity)world.getTileEntity(new BlockPos(x, y, z));
 
@@ -651,7 +651,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @param orig - original block
 	 */
-	public static void makeBoundingBlock(World world, int x, int y, int z, Coord4D orig)
+	public static void makeBoundingBlock(World world, BlockPos pos, Coord4D orig)
 	{
 		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock);
 
@@ -669,7 +669,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @param orig - original block
 	 */
-	public static void makeAdvancedBoundingBlock(World world, int x, int y, int z, Coord4D orig)
+	public static void makeAdvancedBoundingBlock(World world, BlockPos pos, Coord4D orig)
 	{
 		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock, 1, 0);
 
@@ -707,7 +707,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @return if the block is a fluid
 	 */
-	public static boolean isFluid(World world, int x, int y, int z)
+	public static boolean isFluid(World world, BlockPos pos)
 	{
 		return getFluid(world, x, y, z) != null;
 	}
@@ -720,7 +720,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @return the fluid at the certain location, null if it doesn't exist
 	 */
-	public static FluidStack getFluid(World world, int x, int y, int z)
+	public static FluidStack getFluid(World world, BlockPos pos)
 	{
 		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 		int meta = world.getBlockMetadata(x, y, z);
@@ -759,7 +759,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @return fluid ID
 	 */
-	public static int getFluidId(World world, int x, int y, int z)
+	public static int getFluidId(World world, BlockPos pos)
 	{
 		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 		int meta = world.getBlockMetadata(x, y, z);
@@ -797,7 +797,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @return if the block is a dead fluid
 	 */
-	public static boolean isDeadFluid(World world, int x, int y, int z)
+	public static boolean isDeadFluid(World world, BlockPos pos)
 	{
 		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
 		int meta = world.getBlockMetadata(x, y, z);
@@ -1250,12 +1250,12 @@ public final class MekanismUtils
 		return Item.getIdFromItem(itemStack.getItem());
 	}
 
-	public static boolean hasUsableWrench(EntityPlayer player, int x, int y, int z)
+	public static boolean hasUsableWrench(EntityPlayer player, BlockPos pos)
 	{
 		ItemStack tool = player.getCurrentEquippedItem();
-		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, x, y, z))
+		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, pos))
 			return true;
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool.getItem() instanceof IToolWrench && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
+		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool.getItem() instanceof IToolWrench && ((IToolWrench)tool.getItem()).canWrench(player, pos))
 			return true;
 		return false;
 	}

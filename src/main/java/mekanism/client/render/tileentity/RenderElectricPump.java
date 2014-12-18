@@ -30,12 +30,12 @@ public class RenderElectricPump extends TileEntitySpecialRenderer
 
 		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
 
-		switch(tileEntity.facing)
+		switch(tileEntity.getFacing())
 		{
-			case 2: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
-			case 3: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
-			case 4: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
-			case 5: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
+			case NORTH: GL11.glRotatef(0, 0.0F, 1.0F, 0.0F); break;
+			case SOUTH: GL11.glRotatef(180, 0.0F, 1.0F, 0.0F); break;
+			case WEST: GL11.glRotatef(90, 0.0F, 1.0F, 0.0F); break;
+			case EAST: GL11.glRotatef(270, 0.0F, 1.0F, 0.0F); break;
 		}
 
 		GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);

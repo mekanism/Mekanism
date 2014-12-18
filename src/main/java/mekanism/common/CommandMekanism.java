@@ -16,13 +16,13 @@ import net.minecraft.util.ChatComponentText;
 public class CommandMekanism extends CommandBase
 {
 	@Override
-	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	public boolean canCommandSenderUse(ICommandSender sender)
 	{
-		return MinecraftServer.getServer().isSinglePlayer() || super.canCommandSenderUseCommand(sender);
+		return MinecraftServer.getServer().isSinglePlayer() || super.canCommandSenderUse(sender);
 	}
 
 	@Override
-	public String getCommandName()
+	public String getName()
 	{
 		return "mk";
 	}
@@ -34,13 +34,13 @@ public class CommandMekanism extends CommandBase
 	}
 
 	@Override
-	public List getCommandAliases()
+	public List getAliases()
 	{
 		return Arrays.asList(new String[] {"mekanism", "mek"});
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params)
+	public void execute(ICommandSender sender, String[] params)
 	{
 		if(params.length < 1)
 		{

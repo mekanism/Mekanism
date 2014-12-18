@@ -46,7 +46,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 
 				if(transmitter.getTransmitterNetwork() instanceof DynamicNetwork)
 				{
-					((DynamicNetwork)transmitter.getTransmitterNetwork()).addUpdate(player);
+					transmitter.getTransmitterNetwork().addUpdate(player);
 				}
 			}
 
@@ -70,17 +70,13 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.getPos().getX());
-			dataStream.writeInt(coord4D.getPos().getY());
-			dataStream.writeInt(coord4D.getPos().getZ());
-	
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 		}
 	
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 		}
 	}
 }

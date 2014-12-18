@@ -6,10 +6,8 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.ClientProxy;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IElectricChest;
@@ -22,9 +20,9 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
-import mekanism.common.block.states.MachineBlockType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
@@ -44,7 +42,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -58,6 +56,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -184,41 +183,31 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 */
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
-		int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		int height = Math.round(entityliving.rotationPitch);
-		int change = 3;
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
+		int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
+		int height = Math.round(placer.rotationPitch);
+		EnumFacing newFacing = EnumFacing.NORTH;
 
 		if(tileEntity == null)
 		{
 			return;
 		}
 
-		if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
+		if(height >= 65)
 		{
-			if(height >= 65)
-			{
-				change = 1;
-			}
-			else if(height <= -65)
-			{
-				change = 0;
-			}
+			newFacing = EnumFacing.DOWN;
 		}
-
-		if(change != 0 && change != 1)
+		else if(height <= -65)
 		{
-			switch(side)
-			{
-				case 0: change = 2; break;
-				case 1: change = 5; break;
-				case 2: change = 3; break;
-				case 3: change = 4; break;
-			}
+			newFacing = EnumFacing.UP;
 		}
-
+		else
+		{
+			newFacing = placer.getHorizontalFacing().getOpposite();
+		}
+		
 		if(tileEntity instanceof TileEntityLogisticalSorter)
 		{
 			TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter)tileEntity;
@@ -227,19 +216,21 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			{
 				for(EnumFacing dir : EnumFacing.values())
 				{
-					TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(world);
+					TileEntity tile = Coord4D.get(transporter).offset(dir).getTileEntity(worldIn);
 
 					if(tile instanceof IInventory)
 					{
-						change = dir.getOpposite().ordinal();
+						newFacing = dir.getOpposite();
 						break;
 					}
 				}
 			}
 		}
 
-		tileEntity.setFacing((short)change);
-		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
+
+		worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, newFacing));
+
+		tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
@@ -248,66 +239,66 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta)
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
 
 		if(tileEntity instanceof IBoundingBlock)
 		{
 			((IBoundingBlock)tileEntity).onBreak();
 		}
 
-		super.breakBlock(world, x, y, z, block, meta);
+		super.breakBlock(worldIn, pos, state);
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random random)
+	public void randomDisplayTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
 
-		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
+		if(MekanismUtils.isActive(worldIn, pos) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
 		{
-			float xRandom = (float)x + 0.5F;
-			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-			float zRandom = (float)z + 0.5F;
+			float xRandom = (float)pos.getX() + 0.5F;
+			float yRandom = (float)pos.getY() + 0.0F + rand.nextFloat() * 6.0F / 16.0F;
+			float zRandom = (float)pos.getZ() + 0.5F;
 			float iRandom = 0.52F;
-			float jRandom = random.nextFloat() * 0.6F - 0.3F;
+			float jRandom = rand.nextFloat() * 0.6F - 0.3F;
 
-			int side = tileEntity.facing;
+			EnumFacing side = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
 
 			if(tileEntity instanceof TileEntityMetallurgicInfuser)
 			{
-				side = EnumFacing.getFront(side).getOpposite().ordinal();
+				side = side.getOpposite();
 			}
 
-			if(side == 4)
+			if(side == EnumFacing.WEST)
 			{
-				world.spawnParticle("smoke", (xRandom - iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("reddust", (xRandom - iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom - iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom - iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
 			}
-			else if(side == 5)
+			else if(side == EnumFacing.EAST)
 			{
-				world.spawnParticle("smoke", (xRandom + iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("reddust", (xRandom + iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + iRandom), yRandom, (zRandom + jRandom), 0.0D, 0.0D, 0.0D);
 			}
-			else if(side == 2)
+			else if(side == EnumFacing.NORTH)
 			{
-				world.spawnParticle("smoke", (xRandom + jRandom), yRandom, (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("reddust", (xRandom + jRandom), yRandom, (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + jRandom), yRandom, (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + jRandom), yRandom, (zRandom - iRandom), 0.0D, 0.0D, 0.0D);
 			}
-			else if(side == 3)
+			else if(side == EnumFacing.SOUTH)
 			{
-				world.spawnParticle("smoke", (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
-				world.spawnParticle("reddust", (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
+				worldIn.spawnParticle(EnumParticleTypes.REDSTONE, (xRandom + jRandom), yRandom, (zRandom + iRandom), 0.0D, 0.0D, 0.0D);
 			}
 		}
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	public int getLightValue(IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(client.machineEffects && tileEntity instanceof IActiveState)
 		{
@@ -320,6 +311,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return 0;
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public TextureAtlasSprite getIcon(int side, int meta)
@@ -383,10 +375,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				return null;
 		}
 	}
+*/
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(IBlockAccess world, int x, int y, int z, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess world, BlockPos pos, int side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
@@ -449,11 +443,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 		return null;
 	}
+*/
 
 	@Override
-	public int damageDropped(int i)
+	public int damageDropped(IBlockState state)
 	{
-		return i;
+		return getMetaFromState(state);
 	}
 
 	@Override
@@ -462,141 +457,117 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		for(MachineBlockType type : MachineBlockType.values())
 		{
-			if(type.typeBlock == blockType)
+			switch(type)
 			{
-				switch(type)
-				{
-					case BASIC_FACTORY:
-					case ADVANCED_FACTORY:
-					case ELITE_FACTORY:
-						for(RecipeType recipe : RecipeType.values())
-						{
-							ItemStack stack = new ItemStack(item, 1, type.meta);
-							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
-							list.add(stack);
-						}
-						break;
-					case PORTABLE_TANK:
-						list.add(new ItemStack(item, 1, type.meta));
+				case BASIC_FACTORY:
+				case ADVANCED_FACTORY:
+				case ELITE_FACTORY:
+					for(RecipeType recipe : RecipeType.values())
+					{
+						ItemStack stack = new ItemStack(item, 1, type.ordinal());
+						((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
+						list.add(stack);
+					}
+					break;
+				case PORTABLE_TANK:
+					list.add(new ItemStack(item, 1, type.ordinal()));
 
-						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+					ItemBlockMachine itemMachine = (ItemBlockMachine)item;
 
-						for(Fluid f : FluidRegistry.getRegisteredFluids().values())
-						{
-							ItemStack filled = new ItemStack(item, 1, type.meta);
-							itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
-							itemMachine.setPrevScale(filled, 1);
-							list.add(filled);
-						}
-						break;
-					default:
-						list.add(new ItemStack(item, 1, type.meta));
-				}
+					for(Fluid f : FluidRegistry.getRegisteredFluids().values())
+					{
+						ItemStack filled = new ItemStack(item, 1, type.ordinal());
+						itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
+						itemMachine.setPrevScale(filled, 1);
+						list.add(filled);
+					}
+					break;
+				default:
+					list.add(new ItemStack(item, 1, type.ordinal()));
 			}
 		}
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float posX, float posY, float posZ)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		if(ItemAttacher.canAttach(entityplayer.getCurrentEquippedItem()))
+		if(ItemAttacher.canAttach(playerIn.getCurrentEquippedItem()))
 		{
 			return false;
 		}
 
-		if(world.isRemote)
+		if(worldIn.isRemote)
 		{
 			return true;
 		}
 
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
-		int metadata = world.getBlockMetadata(x, y, z);
+		MachineBlockType type = (MachineBlockType)state.getValue(BlockStateMachine.typeProperty);
 
-		if(entityplayer.getCurrentEquippedItem() != null)
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
+
+		if(playerIn.getCurrentEquippedItem() != null)
 		{
-			Item tool = entityplayer.getCurrentEquippedItem().getItem();
+			Item tool = playerIn.getCurrentEquippedItem().getItem();
 
-			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
+			if(MekanismUtils.hasUsableWrench(playerIn, pos))
 			{
-				if(entityplayer.isSneaking() && metadata != 13)
+				if(playerIn.isSneaking() && type != MachineBlockType.ELECTRIC_CHEST)
 				{
-					dismantleBlock(world, x, y, z, false);
+					dismantleBlock(worldIn, pos, false);
 					return true;
 				}
 
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
-					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+					((IToolWrench)tool).wrenchUsed(playerIn, pos);
 
-				int change = EnumFacing.ROTATION_MATRIX[EnumFacing.UP.ordinal()][tileEntity.facing];
-
-				if(tileEntity instanceof TileEntityLogisticalSorter)
-				{
-					if(!((TileEntityLogisticalSorter)tileEntity).hasInventory())
-					{
-						for(EnumFacing dir : EnumFacing.values())
-						{
-							TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
-
-							if(tile instanceof IInventory)
-							{
-								change = dir.getOpposite().ordinal();
-								break;
-							}
-						}
-					}
-				}
-
-				tileEntity.setFacing((short)change);
-				world.notifyBlocksOfNeighborChange(x, y, z, this);
+				rotateBlock(worldIn, pos, side);
 				return true;
 			}
 		}
 
 		if(tileEntity != null)
 		{
-			MachineBlockType type = MachineBlockType.get(this, metadata);
-
 			switch(type)
 			{
 				case ELECTRIC_CHEST:
 					TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
 
-					if(!(entityplayer.isSneaking() || world.isSideSolid(x, y + 1, z, EnumFacing.DOWN)))
+					if(!(playerIn.isSneaking() || worldIn.isSideSolid(pos.up(), EnumFacing.DOWN)))
 					{
 						if(electricChest.canAccess())
 						{
-							MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
+							MekanismUtils.openElectricChestGui((EntityPlayerMP)playerIn, electricChest, null, true);
 						} else if(!electricChest.authenticated)
 						{
-							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)playerIn);
 						} else
 						{
-							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)playerIn);
 						}
 
 						return true;
 					}
 					break;
 				case PORTABLE_TANK:
-					if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
+					if(playerIn.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(playerIn.getCurrentEquippedItem()))
 					{
-						if(manageInventory(entityplayer, (TileEntityPortableTank)tileEntity))
+						if(manageInventory(playerIn, (TileEntityPortableTank)tileEntity))
 						{
-							entityplayer.inventory.markDirty();
+							playerIn.inventory.markDirty();
 							return true;
 						}
 					} else
 					{
-						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						playerIn.openGui(Mekanism.instance, type.guiId, worldIn, pos.getX(), pos.getY(), pos.getZ());
 					}
 					return true;
 				case LOGISTICAL_SORTER:
-					LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
+					LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, worldIn, (EntityPlayerMP)playerIn, Coord4D.get(tileEntity), -1);
 					return true;
 				default:
-					if(!entityplayer.isSneaking() && type.guiId != -1)
+					if(!playerIn.isSneaking() && type.guiId != -1)
 					{
-						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						playerIn.openGui(Mekanism.instance, type.guiId, worldIn, pos.getX(), pos.getY(), pos.getZ());
 						return true;
 					}
 					return false;
@@ -606,14 +577,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public TileEntity createTileEntity(World world, int metadata)
+	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		if(MachineBlockType.get(this, metadata) == null)
+		if(state.getValue(BlockStateMachine.typeProperty) == null)
 		{
 			return null;
 		}
 
-		return MachineBlockType.get(this, metadata).create();
+		return ((MachineBlockType)state.getValue(BlockStateMachine.typeProperty)).create();
+
 	}
 
 	@Override
@@ -622,11 +594,13 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return null;
 	}
 
+/*
 	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
 	}
+*/
 
 	@Override
 	public boolean isOpaqueCube()
@@ -635,49 +609,49 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 	
 	@Override
-	public Item getItemDropped(int i, Random random, int j)
+	public Item getItemDropped(IBlockState state, Random random, int fortune)
 	{
 		return null;
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
 		return ClientProxy.MACHINE_RENDER_ID;
 	}
+*/
 
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z)
+	public float getBlockHardness(World world, BlockPos pos)
 	{
-		if(!(blockType == MachineBlock.MACHINE_BLOCK_1 && world.getBlockMetadata(x, y, z) == 13))
+		if(!(world.getBlockState(pos).getValue(BlockStateMachine.typeProperty) != MachineBlockType.ELECTRIC_CHEST))
 		{
 			return blockHardness;
 		}
 		else {
-			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(new BlockPos(x, y, z));
+			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(pos);
 			return tileEntity.canAccess() ? 3.5F : -1;
 		}
 	}
 
 	@Override
-	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
+	public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
 	{
-		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(player, world.getBlockMetadata(x, y, z)))
+		if(!player.capabilities.isCreativeMode && !world.isRemote && canHarvestBlock(world, pos, player))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
-
 			float motion = 0.7F;
 			double motionX = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, getPickBlock(null, world, pos));
 
 			world.spawnEntityInWorld(entityItem);
 		}
 
-		return world.setBlockToAir(x, y, z);
+		return world.setBlockToAir(pos);
 	}
 	
 	private boolean manageInventory(EntityPlayer player, TileEntityPortableTank tileEntity)
@@ -791,15 +765,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
+	public void onNeighborChange(IBlockAccess world, BlockPos pos, BlockPos neighbor)
 	{
-		if(!world.isRemote)
+		if(!(world instanceof World && ((World)world).isRemote))
 		{
-			TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+			TileEntity tileEntity = world.getTileEntity(pos);
 
 			if(tileEntity instanceof TileEntityBasicBlock)
 			{
-				((TileEntityBasicBlock)tileEntity).onNeighborChange(block);
+				((TileEntityBasicBlock)tileEntity).onNeighborChange(world.getBlockState(neighbor).getBlock());
 			}
 
 			if(tileEntity instanceof TileEntityLogisticalSorter)
@@ -812,9 +786,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					{
 						TileEntity tile = Coord4D.get(tileEntity).offset(dir).getTileEntity(world);
 
-						if(tile instanceof IInventory)
+						if(tile instanceof IInventory && world instanceof World)
 						{
-							sorter.setFacing((short)dir.getOpposite().ordinal());
+							rotateBlock((World)world, pos, dir.getOpposite());
 							return;
 						}
 					}
@@ -824,10 +798,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos)
 	{
-		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
-		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
+		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
+		ItemStack itemStack = new ItemStack(this, 1, world.getBlockState(pos).getBlock().getMetaFromState(world.getBlockState(pos)));
 
 		if(itemStack.getTagCompound() == null)
 		{
@@ -904,11 +878,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return itemStack;
 	}
 
-	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
+	public ItemStack dismantleBlock(World world, BlockPos pos, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, pos);
 
-		world.setBlockToAir(x, y, z);
+		world.setBlockToAir(pos);
 
 		if(!returnBlock)
 		{
@@ -917,7 +891,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, itemStack);
+			EntityItem entityItem = new EntityItem(world, pos.getX() + motionX, pos.getY() + motionY, pos.getZ() + motionZ, itemStack);
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -926,9 +900,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z)
+	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
-		MachineBlockType type = MachineBlockType.get(this, world.getBlockMetadata(x, y, z));
+		MachineBlockType type = (MachineBlockType)world.getBlockState(pos).getValue(BlockStateMachine.typeProperty);
 
 		switch(type)
 		{
@@ -945,20 +919,20 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+	public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state)
 	{
-		if(world.getTileEntity(new BlockPos(x, y, z)) instanceof TileEntityChargepad)
+		if(world.getTileEntity(pos) instanceof TileEntityChargepad)
 		{
 			return null;
 		}
 
-		return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+		return super.getCollisionBoundingBox(world, pos, state);
 	}
 
 	@Override
-	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, EnumFacing side)
+	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		MachineBlockType type = MachineBlockType.get(blockType, world.getBlockMetadata(x, y, z));
+		MachineBlockType type = (MachineBlockType)world.getBlockState(pos).getValue(BlockStateMachine.typeProperty);
 
 		switch(type)
 		{
@@ -982,9 +956,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	@Override
 	@Method(modid = "ComputerCraft")
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
+	public IPeripheral getPeripheral(World world, BlockPos pos, EnumFacing side)
 	{
-		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity te = world.getTileEntity(pos);
 		
 		if(te != null && te instanceof IPeripheral)
 		{
@@ -995,9 +969,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public EnumFacing[] getValidRotations(World world, int x, int y, int z)
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
-		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
 		
 		if(tile instanceof TileEntityBasicBlock)
@@ -1017,21 +991,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public boolean rotateBlock(World world, int x, int y, int z, EnumFacing axis)
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
-		
-		if(tile instanceof TileEntityBasicBlock)
-		{
-			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
-			if(basicTile.canSetFacing(axis.ordinal()))
-			{
-				basicTile.setFacing((short)axis.ordinal());
-				return true;
-			}
-		}
-		
-		return false;
+		return world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockStateFacing.facingProperty, axis));
 	}
 }
