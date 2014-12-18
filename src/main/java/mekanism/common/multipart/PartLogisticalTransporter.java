@@ -170,7 +170,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
-		return TransporterUtils.getConnections(this)[side.ordinal()];
+		return TransporterUtils.isValidAcceptorOnSide(tile, side);
 	}
 
 	@Override
