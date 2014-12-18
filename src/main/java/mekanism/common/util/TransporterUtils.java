@@ -19,6 +19,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.IFluidHandler;
 
 public final class TransporterUtils
 {
@@ -50,6 +51,25 @@ public final class TransporterUtils
 		}
 
 		return transporters;
+	}
+
+	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
+	{
+		if(tile instanceof IGridTransmitter || !(tile instanceof IInventory))
+			return false;
+
+		IInventory inventory = (IInventory)tile;
+
+		if(inventory.getSizeInventory() > 0)
+		{
+			if(!(inventory instanceof ISidedInventory))
+				return true;
+
+			int[] slots = ((ISidedInventory)inventory).getAccessibleSlotsFromSide(side.getOpposite().ordinal());
+
+			return (slots != null && slots.length > 0);
+		}
+		return false;
 	}
 
 	/**

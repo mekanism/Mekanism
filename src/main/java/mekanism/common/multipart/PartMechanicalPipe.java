@@ -236,9 +236,9 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	}
 
 	@Override
-	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
+	public boolean isValidAcceptor(TileEntity acceptor, ForgeDirection side)
 	{
-		return PipeUtils.getConnections(tile())[side.ordinal()];
+		return PipeUtils.isValidAcceptorOnSide(acceptor, side);
 	}
 
 	@Override
