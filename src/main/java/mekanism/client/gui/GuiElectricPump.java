@@ -39,6 +39,7 @@ public class GuiElectricPump extends GuiMekanism
 				return tileEntity.fluidTank;
 			}
 		}, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation));
 
 	}
 
