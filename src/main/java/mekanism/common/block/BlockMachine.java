@@ -53,6 +53,7 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityGasCentrifuge;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
@@ -205,6 +206,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
 				icons[1][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[2][0] = register.registerIcon("mekanism:GasCentrifuge");
 				break;
 		}
 
@@ -1055,7 +1057,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 1, "EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false);
+		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 1, "EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false),
+		GAS_CENTRIFUGE(MachineBlock.MACHINE_BLOCK_3, 2, "GasCentrifuge", 48, TileEntityGasCentrifuge.class, true, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -1186,6 +1189,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return 0;
 				case ENTANGLED_BLOCK:
 					return 0;
+				case GAS_CENTRIFUGE:
+					return 100;
 				default:
 					return 0;
 			}

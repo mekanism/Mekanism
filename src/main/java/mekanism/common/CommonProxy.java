@@ -72,6 +72,7 @@ import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityGasCentrifuge;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
@@ -155,6 +156,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityLaserAmplifier.class, "LaserAmplifier");
 		GameRegistry.registerTileEntity(TileEntityLaserTractorBeam.class, "LaserTractorBeam");
 		GameRegistry.registerTileEntity(TileEntityAmbientAccumulator.class, "AmbientAccumulator");
+		GameRegistry.registerTileEntity(TileEntityGasCentrifuge.class, "GasCentrifuge");
 	}
 
 	/**
@@ -268,6 +270,7 @@ public class CommonProxy
 		usage.fluidicPlenisherUsage = Mekanism.configuration.get("usage", "FluidicPlenisherUsage", 100D).getDouble(100D);
 		usage.laserUsage = Mekanism.configuration.get("usage", "LaserUsage", 5000D).getDouble(5000D);
 		usage.salinationPlantWaterUsage = Mekanism.configuration.get("usage", "SalinationPlantSpeed", 40.0, "Millibuckets of water turned into brine by the plant per tick", 1.0, 9000.0).getDouble();
+		usage.gasCentrifugeUsage = Mekanism.configuration.get("usage", "GasCentrifugeUsage", 100D).getDouble(100D);
 
 		if(Mekanism.configuration.hasChanged())
 		{

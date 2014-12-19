@@ -26,6 +26,7 @@ import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
+import mekanism.common.recipe.machines.GasCentrifugeRecipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
@@ -230,6 +231,11 @@ public final class RecipeHandler
 		addRecipe(Recipe.AMBIENT_ACCUMULATOR, new AmbientGasRecipe(dimensionID, ambientGasName));
 	}
 
+	public static void addCentrifugeRecipe(GasStack inputGas, GasStack outputGas)
+	{
+		addRecipe(Recipe.GAS_CENTRIFUGE, new GasCentrifugeRecipe(inputGas, outputGas));
+	}
+
 	/**
 	 * Gets the Metallurgic Infuser Recipe for the InfusionInput in the parameters.
 	 * @param input - input Infusion
@@ -332,6 +338,19 @@ public final class RecipeHandler
 			HashMap<ItemStackInput, OxidationRecipe> recipes = Recipe.CHEMICAL_OXIDIZER.get();
 
 			OxidationRecipe recipe = getRecipeTryWildcard(input, recipes);
+			return recipe == null ? null : recipe.copy();
+		}
+
+		return null;
+	}
+
+	public static GasCentrifugeRecipe getCentrifugeRecipe(GasInput input)
+	{
+		if(input.isValid())
+		{
+			HashMap<GasInput, GasCentrifugeRecipe> recipes = Recipe.GAS_CENTRIFUGE.get();
+
+			GasCentrifugeRecipe recipe = recipes.get(input);
 			return recipe == null ? null : recipe.copy();
 		}
 
@@ -499,7 +518,8 @@ public final class RecipeHandler
 		CHEMICAL_WASHER(new HashMap<GasInput, WasherRecipe>()),
 		CHEMICAL_CRYSTALLIZER(new HashMap<GasInput, CrystallizerRecipe>()),
 		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedInput, PressurizedRecipe>()),
-		AMBIENT_ACCUMULATOR(new HashMap<IntegerInput, AmbientGasRecipe>());
+		AMBIENT_ACCUMULATOR(new HashMap<IntegerInput, AmbientGasRecipe>()),
+		GAS_CENTRIFUGE(new HashMap<GasInput, GasCentrifugeRecipe>());
 
 		private HashMap recipes;
 

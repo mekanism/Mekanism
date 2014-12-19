@@ -744,6 +744,9 @@ public class Mekanism
 				60
 		);
 
+		RecipeHandler.addCentrifugeRecipe(new GasStack(GasRegistry.getGas("hydrogen"), 10), new GasStack(GasRegistry.getGas("deuterium"), 1));
+		RecipeHandler.addCentrifugeRecipe(new GasStack(GasRegistry.getGas("deuterium"), 10), new GasStack(GasRegistry.getGas("tritium"), 1));
+
         //Infuse objects
 		InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));
 		InfuseRegistry.registerInfuseObject(new ItemStack(Items.coal, 1, 0), new InfuseObject(InfuseRegistry.get("CARBON"), 10));
