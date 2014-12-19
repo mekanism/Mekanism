@@ -4,7 +4,6 @@ import mekanism.api.transmitters.TransmissionType;
 
 import net.minecraft.util.IIcon;
 
-
 public enum TransmitterType
 {
 	UNIVERSAL_CABLE_BASIC("BasicUniversalCable", Size.SMALL, TransmissionType.ENERGY, PartUniversalCable.cableIcons, 0, 0),
@@ -18,7 +17,8 @@ public enum TransmitterType
 	PRESSURIZED_TUBE("PressurizedTube", Size.SMALL, TransmissionType.GAS, PartPressurizedTube.tubeIcons, 0, 0),
 	LOGISTICAL_TRANSPORTER("LogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 0, 0),
 	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 1, 1),
-	DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 2, 0);
+	DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 2, 0),
+	HEAT_TRANSMITTER("HeatTransmitter", Size.SMALL, TransmissionType.HEAT, PartHeatTransmitter.heatIcons, 0, 0);
 
 	private String unlocalizedName;
 	private Size size;

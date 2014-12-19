@@ -9,7 +9,8 @@ public enum TransmissionType
 	ENERGY("EnergyNetwork"),
 	FLUID("FluidNetwork"),
 	GAS("GasNetwork"),
-	ITEM("InventoryNetwork");
+	ITEM("InventoryNetwork"),
+	HEAT("HeatNetwork");
 	
 	private String name;
 	

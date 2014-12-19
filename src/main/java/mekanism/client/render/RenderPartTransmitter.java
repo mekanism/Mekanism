@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.multipart.PartDiversionTransporter;
+import mekanism.common.multipart.PartHeatTransmitter;
 import mekanism.common.multipart.PartLogisticalTransporter;
 import mekanism.common.multipart.PartMechanicalPipe;
 import mekanism.common.multipart.PartPressurizedTube;
@@ -584,6 +585,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		PartMechanicalPipe.registerIcons(register);
 		PartPressurizedTube.registerIcons(register);
 		PartLogisticalTransporter.registerIcons(register);
+		PartHeatTransmitter.registerIcons(register);
 	}
 
 	@Override
