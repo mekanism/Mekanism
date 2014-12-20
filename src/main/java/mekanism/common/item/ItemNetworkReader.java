@@ -33,12 +33,13 @@ public class ItemNetworkReader extends ItemEnergized
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			boolean drain = !player.capabilities.isCreativeMode;
 
 			if(getEnergy(stack) >= ENERGY_PER_USE)
 			{
 				if(tileEntity instanceof IGridTransmitter)
 				{
-					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 	
 					IGridTransmitter<?> transmitter = (IGridTransmitter<?>)tileEntity;
 	
@@ -57,6 +58,8 @@ public class ItemNetworkReader extends ItemEnergized
 				}
 				else if(tileEntity instanceof IHeatTransfer)
 				{
+					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + ((IHeatTransfer)tileEntity).getTemp() + "K above ambient"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
@@ -65,7 +68,7 @@ public class ItemNetworkReader extends ItemEnergized
 				}
 				else if(tileEntity != null)
 				{
-					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 					
 					Set<ITransmitterNetwork> iteratedNetworks = new HashSet<ITransmitterNetwork>();
 					
