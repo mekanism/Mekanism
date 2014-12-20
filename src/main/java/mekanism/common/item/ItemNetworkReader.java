@@ -55,6 +55,14 @@ public class ItemNetworkReader extends ItemEnergized
 					
 					return true;
 				}
+				else if(tileEntity instanceof IHeatTransfer)
+				{
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + ((IHeatTransfer)tileEntity).getTemp() + "K above ambient"));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+
+					return true;
+				}
 				else if(tileEntity != null)
 				{
 					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);

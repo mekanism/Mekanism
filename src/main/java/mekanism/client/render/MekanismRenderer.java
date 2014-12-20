@@ -50,6 +50,7 @@ public class MekanismRenderer
 	public static IIcon[] colors = new IIcon[256];
 	
 	public static IIcon energyIcon;
+	public static IIcon heatIcon;
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -73,6 +74,7 @@ public class MekanismRenderer
 			}
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
+			heatIcon = event.map.registerIcon("mekanism:LiquidHeat");
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));

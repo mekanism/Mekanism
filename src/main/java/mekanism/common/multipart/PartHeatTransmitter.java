@@ -6,19 +6,28 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.vec.Vector3;
 
 public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements IHeatTransfer
 {
 	public double temperature = 0;
+	public double clientTemperature = 0;
 
-	public double inversek = 10;
+	public double inversek = 5;
 
 	public double inverseHeatCapacity = 1;
 
@@ -121,6 +130,11 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	{
 		temperature += inverseHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
+		if(Math.abs(temperature - clientTemperature) > (temperature / 100))
+		{
+			clientTemperature = temperature;
+			sendTemp();
+		}
 		return temperature;
 	}
 
@@ -132,7 +146,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 
 	public static void registerIcons(IIconRegister register)
 	{
-		heatIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic"});
+		heatIcons.registerCenterIcons(register, new String[] {"HeatTransmitter"});
 		heatIcons.registerSideIcons(register, new String[] {"SmallTransmitterVertical", "SmallTransmitterHorizontal"});
 	}
 
@@ -181,7 +195,61 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	@Override
 	protected boolean onConfigure(EntityPlayer player, int part, int side)
 	{
-		temperature += 100;
+		temperature += 10000;
 		return true;
 	}
-}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void renderDynamic(Vector3 pos, float f, int pass)
+	{
+		if(pass == 0)
+		{
+			RenderPartTransmitter.getInstance().renderContents(this, pos);
+		}
+	}
+
+	@Override
+	public void load(NBTTagCompound nbtTags)
+	{
+		super.load(nbtTags);
+
+		temperature = nbtTags.getDouble("temperature");
+	}
+
+	@Override
+	public void save(NBTTagCompound nbtTags)
+	{
+		super.save(nbtTags);
+
+		nbtTags.setDouble("temperature", temperature);
+	}
+
+	public void sendTemp()
+	{
+		MCDataOutput packet = getWriteStream();
+		packet.writeBoolean(true);
+		packet.writeDouble(temperature);
+	}
+
+	@Override
+	public void writeDesc(MCDataOutput packet)
+	{
+		packet.writeBoolean(false);
+		super.writeDesc(packet);
+	}
+
+	@Override
+	public void readDesc(MCDataInput packet)
+	{
+		if(packet.readBoolean())
+		{
+			temperature = packet.readDouble();
+		}
+		else
+		{
+			super.readDesc(packet);
+		}
+	}
+
+	}

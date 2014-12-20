@@ -260,6 +260,30 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		pop();
 	}
 
+	public void renderContents(PartHeatTransmitter transmitter, Vector3 pos)
+	{
+		push();
+		CCRenderState.reset();
+		CCRenderState.useNormals = true;
+		CCRenderState.startDrawing();
+		GL11.glTranslated(pos.x, pos.y, pos.z);
+
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			renderHeatSide(side, transmitter);
+		}
+
+		MekanismRenderer.glowOn();
+		MekanismRenderer.cullFrontFace();
+
+		CCRenderState.draw();
+
+		MekanismRenderer.disableCullFace();
+		MekanismRenderer.glowOff();
+
+		pop();
+	}
+
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
 		float targetScale = pipe.getTransmitterNetwork().fluidScale;
@@ -527,6 +551,12 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
+	}
+
+	public void renderHeatSide(ForgeDirection side, PartHeatTransmitter cable)
+	{
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
+		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)

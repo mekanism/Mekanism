@@ -386,7 +386,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return 10;
+		return 1;
 	}
 
 	@Override
@@ -403,7 +403,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			TileEntity tileEntity = pos.getFromSide(side).getTileEntity(getWorldObj());
-			if(tileEntity instanceof IHeatTransfer)
+			if(tileEntity instanceof IHeatTransfer && !isInsulated(side))
 			{
 				IHeatTransfer sink = (IHeatTransfer)tileEntity;
 				double invConduction = sink.getInverseConductionCoefficient() + getInverseConductionCoefficient();
