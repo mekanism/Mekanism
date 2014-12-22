@@ -13,13 +13,14 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.PurificationRecipe;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine implements IGasHandler, ITubeConnection
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> implements IGasHandler, ITubeConnection
 {
 	public TileEntityPurificationChamber()
 	{

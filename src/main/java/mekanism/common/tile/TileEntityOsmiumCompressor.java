@@ -8,11 +8,13 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine
+public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine<OsmiumCompressorRecipe>
 {
 	public TileEntityOsmiumCompressor()
 	{
