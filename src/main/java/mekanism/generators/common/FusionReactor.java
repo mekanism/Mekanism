@@ -297,7 +297,7 @@ public class FusionReactor implements IFusionReactor
 		return controller.getMaxEnergy();
 	}
 
-	public void unformMultiblock()
+	public void unformMultiblock(boolean keepBurning)
 	{
 		for(IReactorBlock block : reactorBlocks)
 		{
@@ -309,6 +309,7 @@ public class FusionReactor implements IFusionReactor
 		reactorBlocks.clear();
 		neutronCaptors.clear();
 		formed = false;
+		burning = burning && keepBurning;
 		
 		if(!controller.getWorldObj().isRemote)
 		{
@@ -324,25 +325,25 @@ public class FusionReactor implements IFusionReactor
 		Coord4D controllerPosition = Coord4D.get(controller);
 		Coord4D centreOfReactor = controllerPosition.getFromSide(ForgeDirection.DOWN, 2);
 
-		unformMultiblock();
+		unformMultiblock(true);
 
 		reactorBlocks.add(controller);
 
 		if(!createFrame(centreOfReactor))
 		{
-			unformMultiblock();
+			unformMultiblock(false);
 			return;
 		}
 		
 		if(!addSides(centreOfReactor))
 		{
-			unformMultiblock();
+			unformMultiblock(false);
 			return;
 		}
 		
 		if(!centreIsClear(centreOfReactor))
 		{
-			unformMultiblock();
+			unformMultiblock(false);
 			return;
 		}
 		
