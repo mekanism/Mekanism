@@ -223,7 +223,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public double getTemp()
 	{
-		return getReactor().getTemp();
+		if(getReactor() != null)
+		{
+			return getReactor().getTemp();
+		}
+		return 0;
 	}
 
 	@Override
@@ -235,13 +239,20 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public double getInsulationCoefficient(ForgeDirection side)
 	{
-		return getReactor().getInsulationCoefficient(side);
+		if(getReactor() != null)
+		{
+			return getReactor().getInsulationCoefficient(side);
+		}
+		return 0;
 	}
 
 	@Override
 	public void transferHeatTo(double heat)
 	{
-		getReactor().transferHeatTo(heat);
+		if(getReactor() != null)
+		{
+			getReactor().transferHeatTo(heat);
+		}
 	}
 
 	@Override
@@ -253,7 +264,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public double applyTemperatureChange()
 	{
-		return getReactor().applyTemperatureChange();
+		if(getReactor() != null)
+		{
+			return getReactor().applyTemperatureChange();
+		}
+		return 0;
 	}
 
 	@Override
