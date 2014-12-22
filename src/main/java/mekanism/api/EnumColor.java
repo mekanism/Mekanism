@@ -12,7 +12,7 @@ public enum EnumColor
 	BLACK("\u00a70", "black", "Black", new int[] {0, 0, 0}, 0),
 	DARK_BLUE("\u00a71", "darkBlue", "Blue", new int[] {0, 0, 170}, 4),
 	DARK_GREEN("\u00a72", "darkGreen", "Green", new int[] {0, 170, 0}, 2),
-	DARK_AQUA("\u00a73", "darkAqua", "Cyan", new int[] {0, 170, 170}, 6),
+	DARK_AQUA("\u00a73", "darkAqua", "Cyan", new int[] {0, 255, 255}, 6),
 	DARK_RED("\u00a74", "darkRed", null, new int[] {170, 0, 0}, -1),
 	PURPLE("\u00a75", "purple", "Purple", new int[] {170, 0, 170}, 5),
 	ORANGE("\u00a76", "orange", "Orange", new int[] {255, 170, 0}, 14),
