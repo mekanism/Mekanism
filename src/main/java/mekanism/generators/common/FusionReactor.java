@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -34,6 +35,7 @@ public class FusionReactor implements IFusionReactor
 	public TileEntityReactorController controller;
 	public Set<IReactorBlock> reactorBlocks = new HashSet<IReactorBlock>();
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
+	public Set<IHeatTransfer> heatTransfers = new HashSet<IHeatTransfer>();
 
 	//Current stores of temperature
 	public double plasmaTemperature;
@@ -42,6 +44,8 @@ public class FusionReactor implements IFusionReactor
 	//Last values of temperature
 	public double lastPlasmaTemperature;
 	public double lastCaseTemperature;
+
+	public double heatToAbsorb = 0;
 
 	//Reaction characteristics
 	public static double burnTemperature = 1E8;
@@ -152,7 +156,7 @@ public class FusionReactor implements IFusionReactor
 		
 		getDeuteriumTank().draw(amountToInject / 2, true);
 		getTritiumTank().draw(amountToInject / 2, true);
-		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuel"), amountToInject), true);
+		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), amountToInject), true);
 	}
 
 	public int burnFuel()
@@ -196,18 +200,22 @@ public class FusionReactor implements IFusionReactor
 		{
 			double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
 			int waterToVaporize = (int)(steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
-			//Mekanism.logger.info("Wanting to vaporise " + waterToVaporize + "mB of water");
 			waterToVaporize = min(waterToVaporize, min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
 			
 			if(waterToVaporize > 0)
 			{
-				//Mekanism.logger.info("Vaporising " + waterToVaporize + "mB of water");
 				getWaterTank().drain(waterToVaporize, true);
 				getSteamTank().fill(new FluidStack(FluidRegistry.getFluid("steam"), waterToVaporize), true);
 			}
 			
 			caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
 			caseTemperature -= caseWaterHeat / caseHeatCapacity;
+
+			for(IHeatTransfer source : heatTransfers)
+			{
+				source.simulateHeat();
+			}
+			applyTemperatureChange();
 		}
 
 		//Transfer from casing to environment
@@ -402,6 +410,10 @@ public class FusionReactor implements IFusionReactor
 				{
 					neutronCaptors.add((INeutronCapture)tile);
 				}
+				if(tile instanceof IHeatTransfer)
+				{
+					heatTransfers.add((IHeatTransfer)tile);
+				}
 			}
 			else {
 				return false;
@@ -502,5 +514,56 @@ public class FusionReactor implements IFusionReactor
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
 
 		return (int)(steamTransferEfficiency * caseWaterConductivity * temperature / enthalpyOfVaporization);
+	}
+
+	@Override
+	public double getTemp()
+	{
+		return lastCaseTemperature;
+	}
+
+	@Override
+	public double getInverseConductionCoefficient()
+	{
+		return 1 / caseAirConductivity;
+	}
+
+	@Override
+	public double getInsulationCoefficient(ForgeDirection side)
+	{
+		return 100000;
+	}
+
+	@Override
+	public void transferHeatTo(double heat)
+	{
+		heatToAbsorb += heat;
+	}
+
+	@Override
+	public double[] simulateHeat()
+	{
+		return null;
+	}
+
+	@Override
+	public double applyTemperatureChange()
+	{
+		caseTemperature += heatToAbsorb / caseHeatCapacity;
+		heatToAbsorb = 0;
+
+		return caseTemperature;
+	}
+
+	@Override
+	public boolean canConnectHeat(ForgeDirection side)
+	{
+		return false;
+	}
+
+	@Override
+	public IHeatTransfer getAdjacent(ForgeDirection side)
+	{
+		return null;
 	}
 }
