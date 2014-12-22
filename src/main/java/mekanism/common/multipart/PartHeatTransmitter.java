@@ -8,6 +8,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
+import mekanism.common.util.HeatUtils;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -109,31 +110,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	@Override
 	public double[] simulateHeat()
 	{
-		double heatTransferred[] = new double[]{0,0};
-		Coord4D pos = Coord4D.get(tile());
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			if(connectionMapContainsSide(getAllCurrentConnections(), side))
-			{
-				TileEntity tileEntity = pos.getFromSide(side).getTileEntity(world());
-				if(tileEntity instanceof IHeatTransfer)
-				{
-					IHeatTransfer sink = (IHeatTransfer)tileEntity;
-					double invConduction = sink.getInverseConductionCoefficient() + getInverseConductionCoefficient();
-					double heatToTransfer = getTemp() / invConduction;
-					transferHeatTo(-heatToTransfer);
-					sink.transferHeatTo(heatToTransfer);
-					if(!(sink instanceof IGridTransmitter))
-						heatTransferred[0] += heatToTransfer;
-					continue;
-				}
-			}
-			//Transfer to air otherwise
-			double heatToTransfer = getTemp() / (IHeatTransfer.AIR_INVERSE_COEFFICIENT+getInsulationCoefficient(side)+getInverseConductionCoefficient());
-			transferHeatTo(-heatToTransfer);
-			heatTransferred[1] += heatToTransfer;
-		}
-		return heatTransferred;
+		return HeatUtils.simulate(this, Coord4D.get(tile()), world());
 	}
 
 	@Override
@@ -153,6 +130,20 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	public boolean canConnectHeat(ForgeDirection side)
 	{
 		return true;
+	}
+
+	@Override
+	public IHeatTransfer getAdjacent(ForgeDirection side)
+	{
+		if(connectionMapContainsSide(getAllCurrentConnections(), side))
+		{
+			TileEntity adj = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+			if(adj instanceof IHeatTransfer)
+			{
+				return (IHeatTransfer)adj;
+			}
+		}
+		return null;
 	}
 
 	public static void registerIcons(IIconRegister register)

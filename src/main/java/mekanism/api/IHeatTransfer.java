@@ -23,4 +23,6 @@ public interface IHeatTransfer
 	public double applyTemperatureChange();
 
 	public boolean canConnectHeat(ForgeDirection side);
+
+	public IHeatTransfer getAdjacent(ForgeDirection side);
 }

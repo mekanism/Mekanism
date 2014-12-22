@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 
@@ -404,31 +405,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public double[] simulateHeat()
 	{
-		double heatTransferred[] = new double[]{0,0};
-		Coord4D pos = Coord4D.get(this);
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity tileEntity = pos.getFromSide(side).getTileEntity(getWorldObj());
-			if(canConnectHeat(side) && tileEntity instanceof IHeatTransfer)
-			{
-				IHeatTransfer sink = (IHeatTransfer)tileEntity;
-				double invConduction = sink.getInverseConductionCoefficient() + getInverseConductionCoefficient();
-				double heatToTransfer = getTemp() / invConduction;
-				transferHeatTo(-heatToTransfer);
-				sink.transferHeatTo(heatToTransfer);
-				if(!(sink instanceof IGridTransmitter))
-					heatTransferred[0] += heatToTransfer;
-				continue;
-			}
-			//Transfer to air otherwise
-			double heatToTransfer = getTemp() / (IHeatTransfer.AIR_INVERSE_COEFFICIENT+getInverseConductionCoefficient());
-			transferHeatTo(-heatToTransfer);
-			heatTransferred[1] += heatToTransfer;
-		}
 		double workDone = getTemp()*thermalEfficiency;
 		transferHeatTo(-workDone);
 		setEnergy(getEnergy() + workDone);
-		return heatTransferred;
+		return HeatUtils.simulate(this, Coord4D.get(this), worldObj);
 	}
 
 	@Override
@@ -443,5 +423,19 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public boolean canConnectHeat(ForgeDirection side)
 	{
 		return side == ForgeDirection.DOWN;
+	}
+
+	@Override
+	public IHeatTransfer getAdjacent(ForgeDirection side)
+	{
+		if(side == ForgeDirection.DOWN)
+		{
+			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			if(adj instanceof IHeatTransfer)
+			{
+				return (IHeatTransfer)adj;
+			}
+		}
+		return null;
 	}
 }
