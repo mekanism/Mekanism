@@ -405,9 +405,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public double[] simulateHeat()
 	{
-		double workDone = getTemp()*thermalEfficiency;
-		transferHeatTo(-workDone);
-		setEnergy(getEnergy() + workDone);
+		if(getTemp() > 0)
+		{
+			double carnotEfficiency = getTemp() / (getTemp() + IHeatTransfer.AMBIENT_TEMP);
+			double heatLost = thermalEfficiency * getTemp();
+			double workDone = heatLost * carnotEfficiency;
+			transferHeatTo(-heatLost);
+			setEnergy(getEnergy() + workDone);
+		}
 		return HeatUtils.simulate(this, Coord4D.get(this), worldObj);
 	}
 
