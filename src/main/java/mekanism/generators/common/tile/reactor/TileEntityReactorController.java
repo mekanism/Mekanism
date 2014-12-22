@@ -165,6 +165,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			getReactor().setCaseTemp(tag.getDouble("caseTemp"));
 			getReactor().setInjectionRate(tag.getInteger("injectionRate"));
 			getReactor().setBurning(tag.getBoolean("burning"));
+			getReactor().updateTemperatures();
 		}
 
 		fuelTank.read(tag.getCompoundTag("fuelTank"));

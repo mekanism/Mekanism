@@ -137,6 +137,12 @@ public class FusionReactor implements IFusionReactor
 			kill();
 		}
 
+		updateTemperatures();
+	}
+
+	@Override
+	public void updateTemperatures()
+	{
 		lastPlasmaTemperature = plasmaTemperature < 1E-1 ? 0 : plasmaTemperature;
 		lastCaseTemperature = caseTemperature < 1E-1 ? 0 : caseTemperature;
 	}

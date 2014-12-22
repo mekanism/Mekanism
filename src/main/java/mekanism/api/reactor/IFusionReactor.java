@@ -58,4 +58,6 @@ public interface IFusionReactor extends IHeatTransfer
 	public double getPassiveGeneration(boolean active, boolean current);
 
 	public int getSteamPerTick(boolean current);
+
+	public void updateTemperatures();
 }
