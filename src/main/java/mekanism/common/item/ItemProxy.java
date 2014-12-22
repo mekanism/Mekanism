@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -68,7 +68,7 @@ public class ItemProxy extends Item
 	}
 
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
+	public void registerIcons(TextureMap register) {}
 
 	@Override
 	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)

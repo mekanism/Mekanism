@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.util.MekanismUtils;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -43,7 +43,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister register)
+	public void registerIcons(TextureMap register)
 	{
 		icons[0] = register.registerIcon("mekanism:WalkieTalkieOff");
 

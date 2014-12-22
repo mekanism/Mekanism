@@ -11,8 +11,11 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 public class ThreadMinerSearch extends Thread
 {
@@ -50,9 +53,11 @@ public class ThreadMinerSearch extends Thread
 
 		for(int i = 0; i < size; i++)
 		{
-			int x = coord.getPos().getX()+i%diameter;
-			int z = coord.getPos().getZ()+(i/diameter)%diameter;
-			int y = coord.getPos().getY()+(i/diameter/diameter);
+			int x = coord.getX()+i%diameter;
+			int z = coord.getZ()+(i/diameter)%diameter;
+			int y = coord.getY()+(i/diameter/diameter);
+
+			BlockPos pos = new BlockPos(x, y, z);
 
 			if(tileEntity.isInvalid())
 			{
@@ -69,20 +74,21 @@ public class ThreadMinerSearch extends Thread
 				continue;
 			}
 
-			TileEntity tile = tileEntity.getWorld().getTileEntity(new BlockPos(x, y, z));
+			TileEntity tile = tileEntity.getWorld().getTileEntity(pos);
 			
 			if(tile instanceof TileEntityBoundingBlock)
 			{
 				continue;
 			}
 
-			info.block = tileEntity.getWorld().getBlockState(new BlockPos(x, y, z)).getBlock();
-			info.meta = tileEntity.getWorld().getBlockMetadata(x, y, z);
+			IBlockState state = tileEntity.getWorld().getBlockState(pos);
+			info.block = state.getBlock();
+			info.meta = info.block.getMetaFromState(state);
 
-			if(info.block != null && !tileEntity.getWorld().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorld(), x, y, z) >= 0)
+			if(info.block != null && !tileEntity.getWorld().isAirBlock(pos) && info.block.getBlockHardness(tileEntity.getWorld(), pos) >= 0)
 			{
 				MinerFilter filterFound = null;
-				boolean canFilter = false;
+				boolean canFilter;
 
 				if(acceptedItems.containsKey(info))
 				{
@@ -112,7 +118,7 @@ public class ThreadMinerSearch extends Thread
 
 				if(canFilter)
 				{
-					set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.dimensionId));
+					set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimensionId()));
 					replaceMap.put(i, filterFound);
 					
 					found++;

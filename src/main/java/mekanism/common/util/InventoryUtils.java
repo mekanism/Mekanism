@@ -65,7 +65,7 @@ public final class InventoryUtils
 		return inv;
 	}
 
-	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, int side, boolean force)
+	public static ItemStack putStackInInventory(IInventory inventory, ItemStack itemStack, EnumFacing side, boolean force)
 	{
 		inventory = checkChestInv(inventory);
 
@@ -123,13 +123,13 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
-				if(force && sidedInventory instanceof TileEntityBin && EnumFacing.OPPOSITES[side] == 0)
+				if(force && sidedInventory instanceof TileEntityBin && side == EnumFacing.UP)
 				{
-					slots = sidedInventory.getAccessibleSlotsFromSide(1);
+					slots = sidedInventory.getSlotsForFace(EnumFacing.UP);
 				}
 
 				for(int get = 0; get <= slots.length - 1; get++)
@@ -138,7 +138,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, EnumFacing.OPPOSITES[side]))
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, side.getOpposite()))
 						{
 							continue;
 						}
@@ -186,7 +186,7 @@ public final class InventoryUtils
     		return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
   	}
 
-  	public static InvStack takeTopItem(IInventory inventory, int side)
+  	public static InvStack takeTopItem(IInventory inventory, EnumFacing side)
 	{
 		inventory = checkChestInv(inventory);
 
@@ -205,7 +205,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null)
 			{
@@ -218,7 +218,7 @@ public final class InventoryUtils
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
 						toSend.stackSize = 1;
 
-						if(sidedInventory.canExtractItem(slotID, toSend, EnumFacing.OPPOSITES[side]))
+						if(sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()))
 						{
 							return new InvStack(inventory, slotID, toSend);
 						}
@@ -230,7 +230,7 @@ public final class InventoryUtils
 		return null;
 	}
 
-	public static InvStack takeDefinedItem(IInventory inventory, int side, ItemStack type, int min, int max)
+	public static InvStack takeDefinedItem(IInventory inventory, EnumFacing side, ItemStack type, int min, int max)
 	{
 		inventory = checkChestInv(inventory);
 
@@ -264,7 +264,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
@@ -281,7 +281,7 @@ public final class InventoryUtils
 						{
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, EnumFacing.OPPOSITES[side]))
+							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite()))
 							{
 								ret.appendStack(slotID, copy);
 							}
@@ -289,7 +289,7 @@ public final class InventoryUtils
 						else {
 							ItemStack copy = stack.copy();
 
-							if(sidedInventory.canExtractItem(slotID, copy, EnumFacing.OPPOSITES[side]))
+							if(sidedInventory.canExtractItem(slotID, copy, side.getOpposite()))
 							{
 								copy.stackSize = max-current;
 								ret.appendStack(slotID, copy);
@@ -313,7 +313,7 @@ public final class InventoryUtils
 		return null;
 	}
 
-	public static InvStack takeTopStack(IInventory inventory, int side, Finder id)
+	public static InvStack takeTopStack(IInventory inventory, EnumFacing side, Finder id)
 	{
 		inventory = checkChestInv(inventory);
 
@@ -330,7 +330,7 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
@@ -342,7 +342,7 @@ public final class InventoryUtils
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID);
 
-						if(sidedInventory.canExtractItem(slotID, toSend, EnumFacing.OPPOSITES[side]))
+						if(sidedInventory.canExtractItem(slotID, toSend, side.getOpposite()))
 						{
 							return new InvStack(inventory, slotID, toSend);
 						}
@@ -354,7 +354,7 @@ public final class InventoryUtils
 		return null;
 	}
 
-	public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side, boolean force)
+	public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side, boolean force)
 	{
 		if(!(tileEntity instanceof IInventory))
 		{
@@ -369,8 +369,8 @@ public final class InventoryUtils
 		if(!force && tileEntity instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
-			int tileSide = config.getFacing();
-			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+			EnumFacing tileSide = config.getFacing();
+			EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
 			{
@@ -417,13 +417,13 @@ public final class InventoryUtils
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.OPPOSITES[side]);
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
-				if(force && sidedInventory instanceof TileEntityBin && EnumFacing.OPPOSITES[side] == 0)
+				if(force && sidedInventory instanceof TileEntityBin && side == EnumFacing.DOWN)
 				{
-					slots = sidedInventory.getAccessibleSlotsFromSide(1);
+					slots = sidedInventory.getSlotsForFace(EnumFacing.UP);
 				}
 
 				for(int get = 0; get <= slots.length - 1; get++)
@@ -432,7 +432,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, EnumFacing.OPPOSITES[side]))
+						if(!sidedInventory.isItemValidForSlot(slotID, itemStack) || !sidedInventory.canInsertItem(slotID, itemStack, side.getOpposite()))
 						{
 							continue;
 						}

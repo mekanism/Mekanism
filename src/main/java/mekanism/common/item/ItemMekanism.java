@@ -14,7 +14,7 @@ public class ItemMekanism extends Item
 
 /*
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister register)
+	public void registerIcons(TextureMap register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
 	}

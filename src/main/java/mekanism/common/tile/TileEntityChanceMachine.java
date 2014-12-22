@@ -129,7 +129,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{

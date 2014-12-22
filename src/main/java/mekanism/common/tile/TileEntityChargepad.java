@@ -196,7 +196,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public boolean canSetFacing(int side)
+	public boolean canSetFacing(EnumFacing side)
 	{
 		return side != 0 && side != 1;
 	}

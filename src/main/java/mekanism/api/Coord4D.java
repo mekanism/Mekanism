@@ -77,6 +77,13 @@ public class Coord4D extends BlockPos
 		return world.getBlockState(this);
 	}
 
+	@Deprecated
+	public int getMetadata(IBlockAccess world)
+	{
+		IBlockState state = getBlockState(world);
+		return state.getBlock().getMetaFromState(state);
+	}
+
 	/**
 	 * Gets the TileEntity of the block representing this Coord4D.
 	 * @param world - world this Coord4D is in

@@ -8,7 +8,7 @@
  */
 package buildcraft.api.statements;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,7 +28,7 @@ public interface IStatement {
 	TextureAtlasSprite getIcon();
 
 	@SideOnly(Side.CLIENT)
-	void registerIcons(TextureAtlasSpriteRegister iconRegister);
+	void registerIcons(TextureMap iconRegister);
 
 	/**
 	 * Return the maximum number of parameter this trigger can have, 0 if none.

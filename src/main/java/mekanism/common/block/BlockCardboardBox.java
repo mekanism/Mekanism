@@ -43,7 +43,7 @@ public class BlockCardboardBox extends BlockContainer
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register)
+	public void registerBlockIcons(TextureMap register)
 	{
 		icons[0] = register.registerIcon("mekanism:CardboardBoxTop");
 		icons[1] = register.registerIcon("mekanism:CardboardBoxSide");
@@ -54,7 +54,7 @@ public class BlockCardboardBox extends BlockContainer
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(EnumFacing side, int meta)
 	{
 		if(side == 0 || side == 1)
 		{

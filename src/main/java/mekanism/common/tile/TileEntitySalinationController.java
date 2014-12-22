@@ -734,7 +734,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
     }
 	
 	@Override
-	public boolean canSetFacing(int side)
+	public boolean canSetFacing(EnumFacing side)
 	{
 		return side != 0 && side != 1;
 	}

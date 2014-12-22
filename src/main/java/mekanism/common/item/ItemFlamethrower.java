@@ -7,7 +7,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
+	public void registerIcons(TextureMap register) {}
 	
 	public void useGas(ItemStack stack)
 	{

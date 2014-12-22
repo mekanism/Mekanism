@@ -1,4 +1,4 @@
-package mekanism.client.render.block;
+package mekanism.client.render.texture;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.client.event.TextureStitchEvent;

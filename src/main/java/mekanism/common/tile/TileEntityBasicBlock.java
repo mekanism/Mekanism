@@ -71,16 +71,6 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 		redstoneLastTick = redstone;
 	}
 
-	public void open(EntityPlayer player)
-	{
-		playersUsing.add(player);
-	}
-
-	public void close(EntityPlayer player)
-	{
-		playersUsing.remove(player);
-	}
-
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{

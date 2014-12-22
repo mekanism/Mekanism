@@ -170,10 +170,16 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	}
 
 	@Override
-	public void openInventory(EntityPlayer player) {}
+	public void openInventory(EntityPlayer player)
+	{
+		playersUsing.add(player);
+	}
 
 	@Override
-	public void closeInventory(EntityPlayer player) {}
+	public void closeInventory(EntityPlayer player)
+	{
+		playersUsing.remove(player);
+	}
 
 	@Override
 	public boolean hasCustomName()

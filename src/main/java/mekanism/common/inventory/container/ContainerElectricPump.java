@@ -37,8 +37,7 @@ public class ContainerElectricPump extends Container
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
 
-		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -46,8 +45,7 @@ public class ContainerElectricPump extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override

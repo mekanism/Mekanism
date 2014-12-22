@@ -39,8 +39,7 @@ public class ContainerChemicalCrystallizer extends Container
 			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
 		}
 
-		tileEntity.open(inventory.player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(inventory.player);
 	}
 
 	@Override
@@ -48,8 +47,7 @@ public class ContainerChemicalCrystallizer extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override

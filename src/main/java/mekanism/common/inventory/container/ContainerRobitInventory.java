@@ -15,7 +15,7 @@ public class ContainerRobitInventory extends Container
 	public ContainerRobitInventory(InventoryPlayer inventory, EntityRobit entity)
 	{
 		robit = entity;
-		robit.openInventory();
+		robit.openInventory(inventory.player);
 
 		for(int slotY = 0; slotY < 3; slotY++)
 		{
@@ -72,7 +72,7 @@ public class ContainerRobitInventory extends Container
 
 			if(slotStack.stackSize == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(null);
 			}
 			else {
 				currentSlot.onSlotChanged();
@@ -93,6 +93,6 @@ public class ContainerRobitInventory extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		robit.closeInventory();
+		robit.closeInventory(entityplayer);
 	}
 }

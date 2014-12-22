@@ -19,7 +19,7 @@ import mekanism.common.base.IEjector;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -33,6 +33,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.Method;
 
@@ -116,7 +117,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -199,7 +200,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 4)
 		{
@@ -356,7 +357,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
@@ -386,7 +387,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	@Override
@@ -407,7 +408,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			case 1:
 				return new Object[] {operatingTicks};
 			case 2:
-				return new Object[] {facing};
+				return new Object[] {getFacing()};
 			case 3:
 				return new Object[] {canOperate(RecipeHandler.getMetallurgicInfuserRecipe(getInput()))};
 			case 4:
@@ -440,15 +441,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, getFacing()).ordinal()]).availableSlots;
 	}
 
-	@Override
-	public boolean canSetFacing(int side)
+//	@Override
+	public boolean canSetFacing(EnumFacing side)
 	{
-		return side != 0 && side != 1;
+		return side.getHorizontalIndex() >= 0;
 	}
 
 	@Override
@@ -481,6 +482,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	public byte[] getConfiguration()
 	{
 		return sideConfig;
+	}
+
+	@Override
+	public byte getConfiguration(EnumFacing side)
+	{
+		return sideConfig[side.getIndex()];
 	}
 
 	@Override

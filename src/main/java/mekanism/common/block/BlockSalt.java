@@ -23,7 +23,7 @@ public class BlockSalt extends Block
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register)
+	public void registerBlockIcons(TextureMap register)
 	{
 		blockIcon = register.registerIcon("mekanism:SaltBlock");
 	}

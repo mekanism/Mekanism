@@ -13,7 +13,7 @@ public class RetextureEvent extends WorldEvent {
 	public final int x;
 	public final int y;
 	public final int z;
-	public final int side;
+	public final EnumFacing side;
 
 	// referenced block (to grab the texture from)
 	public final Block referencedBlock;
@@ -23,7 +23,7 @@ public class RetextureEvent extends WorldEvent {
 	// set to true to confirm the operation
 	public boolean applied = false;
 
-	public RetextureEvent(World world1, int x1, int y1, int z1, int side1, Block referencedBlock, int referencedMeta1, int referencedSide1) {
+	public RetextureEvent(World world1, int x1, int y1, int z1, EnumFacing side1, Block referencedBlock, int referencedMeta1, int referencedSide1) {
 		super(world1);
 
 		this.x = x1;

@@ -64,7 +64,7 @@ public class RenderGlowPanel //implements IIconSelfRegister
 		CCRenderState.setBrightness(panel.world(), panel.x(), panel.y(), panel.z());
 
 		Colour colour = new ColourRGBA(panel.colour.getColor(0), panel.colour.getColor(1), panel.colour.getColor(2), 1);
-		int side = panel.side.ordinal();
+		EnumFacing side = panel.side.ordinal();
 		
 		frameModels[side].render(new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon));
 		lightModels[side].render(new Translation(panel.x(), panel.y(), panel.z()), new IconTransformation(icon), new ColourMultiplier(colour.rgba()));
@@ -91,7 +91,7 @@ public class RenderGlowPanel //implements IIconSelfRegister
 	}
 
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister register)
+	public void registerIcons(TextureMap register)
 	{
 		icon = register.registerIcon("mekanism:models/GlowPanel");
 	}

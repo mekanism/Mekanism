@@ -36,7 +36,7 @@ public enum Direction {
 	 */
 	ZP;
 
-	public static Direction fromSideValue(int side) {
+	public static Direction fromSideValue(EnumFacing side) {
 		return directions[(side + 2) % 6];
 	}
 
@@ -74,7 +74,7 @@ public enum Direction {
 			try {
 				return world.getTileEntity(coords[0], coords[1], coords[2]);
 			} catch (Exception e) {
-				throw new RuntimeException("error getting TileEntity at dim "+world.provider.dimensionId+" "+coords[0]+"/"+coords[1]+"/"+coords[2]);
+				throw new RuntimeException("error getting TileEntity at dim "+world.provider.getDimensionId()+" "+coords[0]+"/"+coords[1]+"/"+coords[2]);
 			}
 		}
 

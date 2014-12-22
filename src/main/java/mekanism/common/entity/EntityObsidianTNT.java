@@ -4,6 +4,7 @@ import mekanism.api.MekanismConfig.general;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 
 public class EntityObsidianTNT extends Entity
@@ -20,7 +21,7 @@ public class EntityObsidianTNT extends Entity
 		fuse = 0;
 		preventEntitySpawning = true;
 		setSize(0.98F, 0.98F);
-		yOffset = height / 2.0F;
+//		yOffset = height / 2.0F;
 	}
 
 	public EntityObsidianTNT(World world, double x, double y, double z)
@@ -98,12 +99,12 @@ public class EntityObsidianTNT extends Entity
 					setDead();
 				}
 				else {
-					worldObj.spawnParticle("lava", posX, posY + 0.5, posZ, 0, 0, 0);
+					worldObj.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
 				}
 			}
 		}
 		else {
-			worldObj.spawnParticle("lava", posX, posY + 0.5, posZ, 0, 0, 0);
+			worldObj.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
 		}
 	}
 
@@ -123,11 +124,5 @@ public class EntityObsidianTNT extends Entity
 	protected void readEntityFromNBT(NBTTagCompound nbtTags)
 	{
 		fuse = nbtTags.getByte("Fuse");
-	}
-
-	@Override
-	public float getShadowSize()
-	{
-		return 0;
 	}
 }

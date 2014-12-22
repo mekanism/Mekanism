@@ -37,9 +37,9 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	{
 		if(!worldObj.isRemote)
 		{
-			if(cachedRecipe == null || worldObj.provider.dimensionId != cachedDimensionId)
+			if(cachedRecipe == null || worldObj.provider.getDimensionId() != cachedDimensionId)
 			{
-				cachedDimensionId = worldObj.provider.dimensionId;
+				cachedDimensionId = worldObj.provider.getDimensionId();
 				cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
 			}
 

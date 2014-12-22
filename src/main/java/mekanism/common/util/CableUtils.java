@@ -26,8 +26,7 @@ import ic2.api.energy.tile.IEnergySource;
 
 public final class CableUtils
 {
-	private static Set<EnumFacing> allSides = EnumSet.complementOf(EnumSet.of(null));
-
+	private static Set<EnumFacing> allSides = EnumSet.allOf(EnumFacing.class);
 	/**
 	 * Gets all the connected energy acceptors, whether IC2-based or BuildCraft-based, surrounding a specific tile entity.
 	 * @param tileEntity - center tile entity

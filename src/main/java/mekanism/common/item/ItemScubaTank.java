@@ -13,7 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -249,5 +249,5 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
+	public void registerIcons(TextureMap register) {}
 }

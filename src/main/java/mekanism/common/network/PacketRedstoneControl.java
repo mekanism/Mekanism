@@ -46,10 +46,7 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
-			dataStream.writeInt(coord4D.getPos().getX());
-			dataStream.writeInt(coord4D.getPos().getY());
-			dataStream.writeInt(coord4D.getPos().getZ());
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			dataStream.writeInt(value.ordinal());
 		}
@@ -58,6 +55,7 @@ public class PacketRedstoneControl implements IMessageHandler<RedstoneControlMes
 		public void fromBytes(ByteBuf dataStream)
 		{
 			coord4D = Coord4D.read(dataStream);
+
 			value = RedstoneControl.values()[dataStream.readInt()];
 		}
 	}

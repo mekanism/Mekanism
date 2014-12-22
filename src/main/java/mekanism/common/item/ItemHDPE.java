@@ -4,7 +4,7 @@ import java.util.List;
 
 import mekanism.common.Mekanism;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,7 +22,7 @@ public class ItemHDPE extends ItemMekanism
 	}
 
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister register)
+	public void registerIcons(TextureMap register)
 	{
 		for(int i = 0; i < PlasticItem.values().length; i++)
 		{

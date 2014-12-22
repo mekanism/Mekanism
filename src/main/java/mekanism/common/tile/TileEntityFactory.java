@@ -413,7 +413,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -712,7 +712,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	@Override
@@ -812,13 +812,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
 	}
 
 	@Override
-	public boolean canSetFacing(int side)
+	public boolean canSetFacing(EnumFacing side)
 	{
 		return side != 0 && side != 1;
 	}
@@ -836,9 +836,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public int getFacing()
+	public byte getConfiguration(EnumFacing side)
 	{
-		return facing;
+		return sideConfig[side.getIndex()];
 	}
 
 	@Override

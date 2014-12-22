@@ -43,15 +43,15 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			{
 				if(message.clickType == 0)
 				{
-					MekanismUtils.incrementOutput((IInvConfiguration)tile, message.configIndex);
+					MekanismUtils.incrementOutput((IInvConfiguration)tile, message.configSide);
 				}
 				else if(message.clickType == 1)
 				{
-					MekanismUtils.decrementOutput((IInvConfiguration)tile, message.configIndex);
+					MekanismUtils.decrementOutput((IInvConfiguration)tile, message.configSide);
 				}
 				else if(message.clickType == 2)
 				{
-					((IInvConfiguration)tile).getConfiguration()[message.configIndex] = 0;
+					((IInvConfiguration)tile).getConfiguration()[message.configSide.getIndex()] = 0;
 				}
 
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
@@ -73,7 +73,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			}
 			else if(message.packetType == ConfigurationPacket.INPUT_COLOR)
 			{
-				EnumFacing side = EnumFacing.getFront(message.inputSide);
+				EnumFacing side = message.inputSide;
 
 				if(message.clickType == 0)
 				{
@@ -106,9 +106,9 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	{
 		public Coord4D coord4D;
 	
-		public int configIndex;
+		public EnumFacing configSide;
 	
-		public int inputSide;
+		public EnumFacing inputSide;
 	
 		public int clickType;
 	
@@ -130,13 +130,13 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
 				clickType = click;
-				configIndex = extra;
+				configSide = EnumFacing.getFront(extra);
 			}
 	
 			if(packetType == ConfigurationPacket.INPUT_COLOR)
 			{
 				clickType = click;
-				inputSide = extra;
+				inputSide = EnumFacing.getFront(extra);
 			}
 		}
 	
@@ -154,12 +154,12 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
-				dataStream.writeInt(configIndex);
+				dataStream.writeInt(configSide.ordinal());
 			}
 	
 			if(packetType == ConfigurationPacket.INPUT_COLOR)
 			{
-				dataStream.writeInt(inputSide);
+				dataStream.writeInt(inputSide.ordinal());
 			}
 		}
 	
@@ -173,7 +173,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
 				clickType = dataStream.readInt();
-				configIndex = dataStream.readInt();
+				configSide = EnumFacing.getFront(dataStream.readInt());
 			}
 			else if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{
@@ -182,7 +182,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			else if(packetType == ConfigurationPacket.INPUT_COLOR)
 			{
 				clickType = dataStream.readInt();
-				inputSide = dataStream.readInt();
+				inputSide = EnumFacing.getFront(dataStream.readInt());
 			}
 		}
 	}

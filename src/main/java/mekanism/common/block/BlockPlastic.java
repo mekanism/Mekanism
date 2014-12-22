@@ -35,7 +35,7 @@ public class BlockPlastic extends Block
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register)
+	public void registerBlockIcons(TextureMap register)
 	{
 		if(this == MekanismBlocks.PlasticBlock)
 		{

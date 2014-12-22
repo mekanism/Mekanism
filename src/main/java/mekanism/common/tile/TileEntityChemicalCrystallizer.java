@@ -409,7 +409,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 0)
 		{
@@ -428,7 +428,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		if(side == MekanismUtils.getLeft(facing).ordinal())
 		{
@@ -456,6 +456,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	public byte[] getConfiguration()
 	{
 		return sideConfig;
+	}
+
+	@Override
+	public byte getConfiguration(EnumFacing side)
+	{
+		return sideConfig[side.getIndex()];
 	}
 
 	@Override

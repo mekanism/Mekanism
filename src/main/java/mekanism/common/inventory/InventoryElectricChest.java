@@ -44,7 +44,7 @@ public class InventoryElectricChest extends InventoryBasic
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		read();
 		
@@ -55,7 +55,7 @@ public class InventoryElectricChest extends InventoryBasic
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer player)
 	{
 		write();
 		

@@ -13,8 +13,7 @@ public class ContainerNull extends Container
 	{
 		tileEntity = tile;
 
-		tileEntity.open(player);
-		tileEntity.openInventory();
+		tileEntity.openInventory(player);
 	}
 
 	@Override
@@ -22,8 +21,7 @@ public class ContainerNull extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		tileEntity.closeInventory(entityplayer);
 	}
 
 	@Override

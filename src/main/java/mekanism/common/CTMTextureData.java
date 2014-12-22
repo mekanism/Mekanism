@@ -1,9 +1,10 @@
 package mekanism.common;
 
-import mekanism.client.render.block.TextureSubmap;
+import mekanism.client.render.texture.TextureSubmap;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 
 public class CTMTextureData
 {
@@ -20,10 +21,10 @@ public class CTMTextureData
 		texture = textureName;
 	}
 
-	public void registerIcons(TextureAtlasSpriteRegister register)
+	public void registerIcons(TextureMap register)
 	{
-		icon = register.registerIcon("mekanism:" + texture);
-		submap = new TextureSubmap(register.registerIcon("mekanism:" + texture + "-ctm"), 4, 4);
+		icon = register.registerSprite(new ResourceLocation("mekanism", texture));
+		submap = new TextureSubmap(register.registerSprite(new ResourceLocation("mekanism", texture + "-ctm")), 4, 4);
 		submapSmall = new TextureSubmap(icon, 2, 2);
 	}
 

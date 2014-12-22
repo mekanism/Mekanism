@@ -40,7 +40,7 @@ public class TMaterialFilter extends TransporterFilter
 	@Override
 	public InvStack getStackFromInventory(IInventory inv, EnumFacing side)
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new MaterialFinder(getMaterial()));
+		return InventoryUtils.takeTopStack(inv, side, new MaterialFinder(getMaterial()));
 	}
 
 	@Override

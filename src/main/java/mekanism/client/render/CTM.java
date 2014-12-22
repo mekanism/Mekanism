@@ -7,7 +7,10 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
+
+import com.google.common.base.Predicate;
 
 /**
  * CTM Logic adapted from Chisel.
@@ -83,14 +86,14 @@ public class CTM
 			{},
 	};
 
-	public static int[] getSubmapIndices(IBlockAccess world, BlockPos pos, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static int[] getSubmapIndices(IBlockAccess world, BlockPos pos, EnumFacing side, HashMap<Block, Predicate<IBlockState>> blockMetas)
 	{
-		int index = getTexture(world, x, y, z, side, blockMetas);
+		int index = getTexture(world, pos, side, blockMetas);
 
 		return submaps[index];
 	}
 
-	public static int getTexture(IBlockAccess world, BlockPos pos, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static int getTexture(IBlockAccess world, BlockPos pos, EnumFacing side, HashMap<Block, Predicate<IBlockState>> blockMetas)
 	{
 		if(world == null)
 		{
@@ -101,40 +104,40 @@ public class CTM
 
 		boolean b[] = new boolean[6];
 		
-		if(side <= 1)
+		if(side == EnumFacing.DOWN || side == EnumFacing.UP)
 		{
-			b[0] = isConnected(world, x - 1, y, z, side, blockMetas);
-			b[1] = isConnected(world, x + 1, y, z, side, blockMetas);
-			b[2] = isConnected(world, x, y, z + 1, side, blockMetas);
-			b[3] = isConnected(world, x, y, z - 1, side, blockMetas);
+			b[0] = isConnected(world, pos.west(), side, blockMetas);
+			b[1] = isConnected(world, pos.east(), side, blockMetas);
+			b[2] = isConnected(world, pos.north(), side, blockMetas);
+			b[3] = isConnected(world, pos.south(), side, blockMetas);
 		} 
-		else if(side == 2)
+		else if(side == EnumFacing.NORTH)
 		{
-			b[0] = isConnected(world, x + 1, y, z, side, blockMetas);
-			b[1] = isConnected(world, x - 1, y, z, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
+			b[0] = isConnected(world, pos.east(), side, blockMetas);
+			b[1] = isConnected(world, pos.west(), side, blockMetas);
+			b[2] = isConnected(world, pos.down(), side, blockMetas);
+			b[3] = isConnected(world, pos.up(), side, blockMetas);
 		} 
-		else if(side == 3)
+		else if(side == EnumFacing.SOUTH)
 		{
-			b[0] = isConnected(world, x - 1, y, z, side, blockMetas);
-			b[1] = isConnected(world, x + 1, y, z, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
+			b[0] = isConnected(world, pos.west(), side, blockMetas);
+			b[1] = isConnected(world, pos.east(), side, blockMetas);
+			b[2] = isConnected(world, pos.down(), side, blockMetas);
+			b[3] = isConnected(world, pos.up(), side, blockMetas);
 		} 
-		else if(side == 4)
+		else if(side == EnumFacing.WEST)
 		{
-			b[0] = isConnected(world, x, y, z - 1, side, blockMetas);
-			b[1] = isConnected(world, x, y, z + 1, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
+			b[0] = isConnected(world, pos.north(), side, blockMetas);
+			b[1] = isConnected(world, pos.south(), side, blockMetas);
+			b[2] = isConnected(world, pos.down(), side, blockMetas);
+			b[3] = isConnected(world, pos.up(), side, blockMetas);
 		} 
-		else if(side == 5)
+		else if(side == EnumFacing.EAST)
 		{
-			b[0] = isConnected(world, x, y, z + 1, side, blockMetas);
-			b[1] = isConnected(world, x, y, z - 1, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
+			b[0] = isConnected(world, pos.south(), side, blockMetas);
+			b[1] = isConnected(world, pos.north(), side, blockMetas);
+			b[2] = isConnected(world, pos.down(), side, blockMetas);
+			b[3] = isConnected(world, pos.up(), side, blockMetas);
 		}
 		
 		if(b[0] & !b[1] & !b[2] & !b[3])
@@ -200,40 +203,40 @@ public class CTM
 
 		boolean b2[] = new boolean[6];
 		
-		if(side <= 1)
+		if(side == EnumFacing.DOWN || side == EnumFacing.UP)
 		{
-			b2[0] = !isConnected(world, x + 1, y, z + 1, side, blockMetas);
-			b2[1] = !isConnected(world, x - 1, y, z + 1, side, blockMetas);
-			b2[2] = !isConnected(world, x + 1, y, z - 1, side, blockMetas);
-			b2[3] = !isConnected(world, x - 1, y, z - 1, side, blockMetas);
+			b2[0] = !isConnected(world, pos.south().east(), side, blockMetas);
+			b2[1] = !isConnected(world, pos.south().west(), side, blockMetas);
+			b2[2] = !isConnected(world, pos.north().east(), side, blockMetas);
+			b2[3] = !isConnected(world, pos.north().west(), side, blockMetas);
 		} 
-		else if(side == 2)
+		else if(side == EnumFacing.NORTH)
 		{
-			b2[0] = !isConnected(world, x - 1, y - 1, z, side, blockMetas);
-			b2[1] = !isConnected(world, x + 1, y - 1, z, side, blockMetas);
-			b2[2] = !isConnected(world, x - 1, y + 1, z, side, blockMetas);
-			b2[3] = !isConnected(world, x + 1, y + 1, z, side, blockMetas);
+			b2[0] = !isConnected(world, pos.down().west(), side, blockMetas);
+			b2[1] = !isConnected(world, pos.down().east(), side, blockMetas);
+			b2[2] = !isConnected(world, pos.up().west(), side, blockMetas);
+			b2[3] = !isConnected(world, pos.up().east(), side, blockMetas);
 		} 
-		else if(side == 3)
+		else if(side == EnumFacing.SOUTH)
 		{
-			b2[0] = !isConnected(world, x + 1, y - 1, z, side, blockMetas);
-			b2[1] = !isConnected(world, x - 1, y - 1, z, side, blockMetas);
-			b2[2] = !isConnected(world, x + 1, y + 1, z, side, blockMetas);
-			b2[3] = !isConnected(world, x - 1, y + 1, z, side, blockMetas);
+			b2[0] = !isConnected(world, pos.down().east(), side, blockMetas);
+			b2[1] = !isConnected(world, pos.down().west(), side, blockMetas);
+			b2[2] = !isConnected(world, pos.up().east(), side, blockMetas);
+			b2[3] = !isConnected(world, pos.up().west(), side, blockMetas);
 		} 
-		else if(side == 4)
+		else if(side == EnumFacing.WEST)
 		{
-			b2[0] = !isConnected(world, x, y - 1, z + 1, side, blockMetas);
-			b2[1] = !isConnected(world, x, y - 1, z - 1, side, blockMetas);
-			b2[2] = !isConnected(world, x, y + 1, z + 1, side, blockMetas);
-			b2[3] = !isConnected(world, x, y + 1, z - 1, side, blockMetas);
+			b2[0] = !isConnected(world, pos.down().south(), side, blockMetas);
+			b2[1] = !isConnected(world, pos.down().north(), side, blockMetas);
+			b2[2] = !isConnected(world, pos.up().south(), side, blockMetas);
+			b2[3] = !isConnected(world, pos.up().north(), side, blockMetas);
 		} 
-		else if(side == 5)
+		else if(side == EnumFacing.EAST)
 		{
-			b2[0] = !isConnected(world, x, y - 1, z - 1, side, blockMetas);
-			b2[1] = !isConnected(world, x, y - 1, z + 1, side, blockMetas);
-			b2[2] = !isConnected(world, x, y + 1, z - 1, side, blockMetas);
-			b2[3] = !isConnected(world, x, y + 1, z + 1, side, blockMetas);
+			b2[0] = !isConnected(world, pos.down().north(), side, blockMetas);
+			b2[1] = !isConnected(world, pos.down().south(), side, blockMetas);
+			b2[2] = !isConnected(world, pos.up().north(), side, blockMetas);
+			b2[3] = !isConnected(world, pos.up().south(), side, blockMetas);
 		}
 
 		if(texture == 17 && b2[0])
@@ -393,48 +396,31 @@ public class CTM
 		return texture;
 	}
 
-	public static boolean isConnected(IBlockAccess world, BlockPos pos, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static boolean isConnected(IBlockAccess world, BlockPos pos1, EnumFacing side, HashMap<Block, Predicate<IBlockState>> blockPredicate)
 	{
-		int x2 = x, y2 = y, z2 = z;
+		BlockPos pos2 = pos1.offset(side);
 
-		switch(side)
-		{
-			case 0:
-				y2--;
-				break;
-			case 1:
-				y2++;
-				break;
-			case 2:
-				z2--;
-				break;
-			case 3:
-				z2++;
-				break;
-			case 4:
-				x2--;
-				break;
-			case 5:
-				x2++;
-				break;
-		}
-
-		IBlockState state1 = world.getBlockState(new BlockPos(x, y, z));
-		IBlockState state2 = world.getBlockState(new BlockPos(x2, y2, z2));
+		IBlockState state1 = world.getBlockState(pos1);
+		IBlockState state2 = world.getBlockState(pos2);
 
 		Block block1 = state1.getBlock();
 		Block block2 = state2.getBlock();
 
-		boolean validBlockMeta1 = false;
-		boolean invalidBlockMeta2 = true;
+		boolean validBlockPredicate1 = false;
+		boolean invalidBlockPredicate2 = true;
 
-		for(Entry<Block, List<Integer>> entry : blockMetas.entrySet())
+		for(Entry<Block, Predicate<IBlockState>> entry : blockPredicate.entrySet())
 		{
-			validBlockMeta1 |= block1.equals(entry.getKey()) /*&& entry.getValue().contains(meta1)*/;
+			if(!validBlockPredicate1)
+				validBlockPredicate1 = block1.equals(entry.getKey()) && entry.getValue().apply(state1);
 
-			invalidBlockMeta2 &= !(block2.equals(entry.getKey()) /*&& entry.getValue().contains(meta2)*/);
+			if(invalidBlockPredicate2)
+				invalidBlockPredicate2 = !(block2.equals(entry.getKey()) && entry.getValue().apply(state2));
+
+			if(!invalidBlockPredicate2)
+				return false;
 		}
 
-		return validBlockMeta1 && invalidBlockMeta2;
+		return validBlockPredicate1 && invalidBlockPredicate2;
 	}
 }

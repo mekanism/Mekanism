@@ -2,6 +2,7 @@ package mekanism.common.inventory.container;
 
 import mekanism.common.base.IElectricChest;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityElectricChest;
@@ -31,11 +32,10 @@ public class ContainerElectricChest extends Container
 
 		if(isBlock)
 		{
-			tileEntity.open(inventory.player);
-			tileEntity.openInventory();
+			tileEntity.openInventory(inventory.player);
 		}
 		else {
-			itemInventory.openInventory();
+			itemInventory.openInventory(inventory.player);
 		}
 
 		for(int slotY = 0; slotY < 6; slotY++)
@@ -82,11 +82,10 @@ public class ContainerElectricChest extends Container
 
 		if(isBlock)
 		{
-			tileEntity.close(entityplayer);
-			tileEntity.closeInventory();
+			tileEntity.closeInventory(entityplayer);
 		}
 		else {
-			itemInventory.closeInventory();
+			itemInventory.closeInventory(entityplayer);
 		}
 	}
 

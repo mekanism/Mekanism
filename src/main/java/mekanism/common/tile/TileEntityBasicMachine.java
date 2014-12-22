@@ -247,7 +247,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	@Override
@@ -272,9 +272,9 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public void detach(IComputerAccess computer) {}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return sideOutputs.get(getConfiguration(MekanismUtils.getBaseOrientation(side, getFacing()))).availableSlots;
 	}
 
 	@Override
@@ -287,6 +287,12 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	public byte[] getConfiguration()
 	{
 		return sideConfig;
+	}
+
+	@Override
+	public byte getConfiguration(EnumFacing side)
+	{
+		return sideConfig[side.getIndex()];
 	}
 
 	@Override

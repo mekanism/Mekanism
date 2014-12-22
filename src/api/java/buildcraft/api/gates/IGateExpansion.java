@@ -8,7 +8,7 @@
  */
 package buildcraft.api.gates;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
@@ -20,9 +20,9 @@ public interface IGateExpansion {
 
 	GateExpansionController makeController(TileEntity pipeTile);
 
-	void registerBlockOverlay(TextureAtlasSpriteRegister iconRegister);
+	void registerBlockOverlay(TextureMap iconRegister);
 
-	void registerItemOverlay(TextureAtlasSpriteRegister iconRegister);
+	void registerItemOverlay(TextureMap iconRegister);
 
 	TextureAtlasSprite getOverlayBlock();
 

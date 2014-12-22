@@ -32,7 +32,7 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 
 			if(!player.worldObj.isRemote)
 			{
-				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.worldObj.provider.dimensionId);
+				Mekanism.packetHandler.sendToDimension(new ScubaTankDataMessage(ScubaTankPacket.UPDATE, message.username, message.value), player.worldObj.provider.getDimensionId());
 			}
 		}
 		else if(message.packetType == ScubaTankPacket.MODE)

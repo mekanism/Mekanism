@@ -475,6 +475,7 @@ public class MekanismRenderer
     	}
     }
     
+/*
     public static TextureMap getTextureMap(int type)
     {
     	try {
@@ -494,7 +495,8 @@ public class MekanismRenderer
     	
     	return null;
     }
-    
+*/
+
     public static float getPartialTick()
     {
     	try {
@@ -510,13 +512,13 @@ public class MekanismRenderer
     	int zLevel = 0;
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((par1 + 0), (par2 + par6), zLevel, ((par3 + 0) * f), ((par4 + par6) * f1));
-        tessellator.addVertexWithUV((par1 + par5), (par2 + par6), zLevel, ((par3 + par5) * f), ((par4 + par6) * f1));
-        tessellator.addVertexWithUV((par1 + par5), (par2 + 0), zLevel, ((par3 + par5) * f), ((par4 + 0) * f1));
-        tessellator.addVertexWithUV((par1 + 0), (par2 + 0), zLevel, ((par3 + 0) * f), ((par4 + 0) * f1));
-        tessellator.draw();
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertexWithUV((par1 + 0), (par2 + par6), zLevel, ((par3 + 0) * f), ((par4 + par6) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((par1 + par5), (par2 + par6), zLevel, ((par3 + par5) * f), ((par4 + par6) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((par1 + par5), (par2 + 0), zLevel, ((par3 + par5) * f), ((par4 + 0) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((par1 + 0), (par2 + 0), zLevel, ((par3 + 0) * f), ((par4 + 0) * f1));
+        tessellator.getWorldRenderer().finishDrawing();
     }
     
     public static ResourceLocation getBlocksTexture()
@@ -524,8 +526,10 @@ public class MekanismRenderer
     	return TextureMap.locationBlocksTexture;
     }
     
+/*
     public static ResourceLocation getItemsTexture()
     {
     	return TextureMap.locationItemsTexture;
     }
+*/
 }

@@ -12,7 +12,9 @@ import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -23,6 +25,7 @@ import io.netty.buffer.ByteBuf;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
+	public static EntityReddustFX.Factory redDustFactory = new EntityReddustFX.Factory();
 	public EnumColor color = EnumColor.DARK_BLUE;
 
 	public Coord4D latched;
@@ -40,7 +43,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		ignoreFrustumCheck = true;
 		preventEntitySpawning = true;
 		setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
-		yOffset = height / 2.0F;
+//		yOffset = height / 2.0F;
 		setSize(0.25F, 0.25F);
 		motionY = 0.04;
 
@@ -89,7 +92,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		this(world);
 
 		latched = obj;
-		setPosition(latched.getPos().getX() + 0.5F, latched.getPos().getY() + 2.8F, latched.getPos().getZ() + 0.5F);
+		setPosition(latched.getX() + 0.5F, latched.getY() + 2.8F, latched.getZ() + 0.5F);
 
 		prevPosX = posX;
 		prevPosY = posY;
@@ -98,9 +101,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		color = c;
 
 		dataWatcher.updateObject(2, new Byte((byte)1)); /* Is latched */
-		dataWatcher.updateObject(3, new Integer(latched != null ? latched.getPos().getX() : 0)); /* Latched X */
-		dataWatcher.updateObject(4, new Integer(latched != null ? latched.getPos().getY() : 0)); /* Latched Y */
-		dataWatcher.updateObject(5, new Integer(latched != null ? latched.getPos().getZ() : 0)); /* Latched Z */
+		dataWatcher.updateObject(3, new Integer(latched != null ? latched.getX() : 0)); /* Latched X */
+		dataWatcher.updateObject(4, new Integer(latched != null ? latched.getY() : 0)); /* Latched Y */
+		dataWatcher.updateObject(5, new Integer(latched != null ? latched.getZ() : 0)); /* Latched Z */
 		dataWatcher.updateObject(6, new Integer(-1)); /* Latched entity ID */
 	}
 
@@ -121,7 +124,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			if(dataWatcher.getWatchableObjectByte(2) == 1)
 			{
-				latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.dimensionId);
+				latched = new Coord4D(dataWatcher.getWatchableObjectInt(3), dataWatcher.getWatchableObjectInt(4), dataWatcher.getWatchableObjectInt(5), worldObj.provider.getDimensionId());
 			}
 			else {
 				latched = null;
@@ -146,9 +149,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 			if(ticksExisted == 1)
 			{
 				dataWatcher.updateObject(2, new Byte(latched != null ? (byte)1 : (latchedEntity != null ? (byte)2 : (byte)0))); /* Is latched */
-				dataWatcher.updateObject(3, new Integer(latched != null ? latched.getPos().getX() : 0)); /* Latched X */
-				dataWatcher.updateObject(4, new Integer(latched != null ? latched.getPos().getY() : 0)); /* Latched Y */
-				dataWatcher.updateObject(5, new Integer(latched != null ? latched.getPos().getZ() : 0)); /* Latched Z */
+				dataWatcher.updateObject(3, new Integer(latched != null ? latched.getX() : 0)); /* Latched X */
+				dataWatcher.updateObject(4, new Integer(latched != null ? latched.getY() : 0)); /* Latched Y */
+				dataWatcher.updateObject(5, new Integer(latched != null ? latched.getZ() : 0)); /* Latched Z */
 				dataWatcher.updateObject(6, new Integer(latchedEntity != null ? latchedEntity.getEntityId() : -1)); /* Latched entity ID */
 			}
 		}
@@ -222,9 +225,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		int yPos = MathHelper.floor_double(entity.posY);
 		int zPos = MathHelper.floor_double(entity.posZ);
 
-		for(int i = yPos; i > 0; i--)
+		BlockPos pos = new BlockPos(xPos, yPos, zPos);
+
+		for(int i = 0; i > -yPos; i--)
 		{
-			if(i < 256 && !worldObj.isAirBlock(xPos, i, zPos))
+			if(i < 256 && !worldObj.isAirBlock(pos.offset(EnumFacing.DOWN, i)))
 			{
 				return i+1;
 			}
@@ -271,7 +276,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	{
 		Pos3D pos = new Pos3D(posX + (rand.nextFloat()*.6 - 0.3), posY - 0.8 + (rand.nextFloat()*.6 - 0.3), posZ + (rand.nextFloat()*.6 - 0.3));
 
-		EntityFX fx = new EntityReddustFX(worldObj, pos.xPos, pos.yPos, pos.zPos, 1, 0, 0, 0);
+		EntityFX fx = redDustFactory.getEntityFX(0, worldObj, pos.xPos, pos.yPos, pos.zPos, 0, 0, 0);
 		fx.setRBGColorF(color.getColor(0), color.getColor(1), color.getColor(2));
 
 		Minecraft.getMinecraft().effectRenderer.addEffect(fx);
@@ -352,9 +357,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		{
 			data.writeByte((byte)1);
 
-			data.writeInt(latched.getPos().getX());
-			data.writeInt(latched.getPos().getY());
-			data.writeInt(latched.getPos().getZ());
+			data.writeInt(latched.getX());
+			data.writeInt(latched.getY());
+			data.writeInt(latched.getZ());
 			data.writeInt(latched.dimensionId);
 		}
 		else if(latchedEntity != null)
@@ -415,7 +420,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 	@Override
 	public boolean attackEntityFrom(DamageSource dmgSource, float damage)
 	{
-		if(isEntityInvulnerable())
+		if(isEntityInvulnerable(dmgSource))
 		{
 			return false;
 		}

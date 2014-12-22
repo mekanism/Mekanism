@@ -11,6 +11,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
@@ -19,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
@@ -244,6 +246,12 @@ public class MekanismRecipe implements IRecipe
 	public ItemStack getRecipeOutput()
 	{
 		return output;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inventoryCrafting)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inventoryCrafting);
 	}
 
 	@Override

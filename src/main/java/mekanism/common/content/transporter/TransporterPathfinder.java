@@ -214,7 +214,7 @@ public final class TransporterPathfinder
 			DestChecker checker = new DestChecker()
 			{
 				@Override
-				public boolean isValid(TransporterStack stack, int dir, TileEntity tile)
+				public boolean isValid(TransporterStack stack, EnumFacing dir, TileEntity tile)
 				{
 					return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, dir, false);
 				}
@@ -377,9 +377,9 @@ public final class TransporterPathfinder
 			for(int i = 0; i < 6; i++)
 			{
 				EnumFacing direction = EnumFacing.getFront(i);
-				Coord4D neighbor = start.add(direction.offsetX, direction.offsetY, direction.offsetZ);
+				Coord4D neighbor = start.offset(direction);
 
-				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
+				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighbor.getTileEntity(worldObj))))
 				{
 					blockCount++;
 				}
@@ -444,7 +444,7 @@ public final class TransporterPathfinder
 							openSet.add(neighbor);
 						}
 					}
-					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj)))
+					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighbor.getTileEntity(worldObj)))
 					{
 						side = direction;
 						results = reconstructPath(navMap, currentNode);
@@ -488,7 +488,7 @@ public final class TransporterPathfinder
 
 		public static class DestChecker
 		{
-			public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+			public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile)
 			{
 				return false;
 			}
@@ -502,7 +502,7 @@ public final class TransporterPathfinder
 			DestChecker checker = new DestChecker()
 			{
 				@Override
-				public boolean isValid(TransporterStack stack, int side, TileEntity tile)
+				public boolean isValid(TransporterStack stack, EnumFacing side, TileEntity tile)
 				{
 					return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
 				}

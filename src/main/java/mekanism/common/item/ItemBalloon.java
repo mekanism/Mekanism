@@ -9,7 +9,7 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -86,7 +86,7 @@ public class ItemBalloon extends ItemMekanism
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
 		if(player.isSneaking())
 		{
@@ -99,7 +99,7 @@ public class ItemBalloon extends ItemMekanism
 				return true;
 			}
 
-			Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
+			Coord4D obj = new Coord4D(x, y, z, world.provider.getDimensionId());
 
 			if(obj.getBlock(world).isReplaceable(world, x, y, z))
 			{
@@ -165,14 +165,14 @@ public class ItemBalloon extends ItemMekanism
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
+	public void registerIcons(TextureMap register) {}
 	
 	public class DispenserBehavior extends BehaviorDefaultDispenseItem
 	{
 		@Override
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
-			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.dimensionId);
+			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.getDimensionId());
 			EnumFacing side = EnumFacing.getFront(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());

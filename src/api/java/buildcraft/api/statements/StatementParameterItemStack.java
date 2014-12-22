@@ -8,7 +8,7 @@
  */
 package buildcraft.api.statements;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -76,7 +76,7 @@ public class StatementParameterItemStack implements IStatementParameter {
 	}
 
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister iconRegister) {
+	public void registerIcons(TextureMap iconRegister) {
 		
 	}
 

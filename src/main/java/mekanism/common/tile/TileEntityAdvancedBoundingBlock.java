@@ -87,25 +87,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		if(getInv() == null)
 		{
 			return "null";
 		}
 
-		return getInv().getInventoryName();
+		return getInv().getName();
 	}
 
 	@Override
-	public boolean hasCustomInventoryName()
+	public boolean hasCustomName()
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().hasCustomInventoryName();
+		return getInv().hasCustomName();
 	}
 
 	@Override
@@ -164,7 +164,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int slotID)
+	public int[] getSlotsForFace(EnumFacing slotID)
 	{
 		if(getInv() == null)
 		{
@@ -361,15 +361,15 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 			return null;
 		}
 		
-		TileEntity tile = new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		TileEntity tile = new Coord4D(mainPos, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 
 		if(!(tile instanceof IAdvancedBoundingBlock))
 		{
-			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			worldObj.setBlockToAir(getPos());
 			return null;
 		}
 
-		return (IAdvancedBoundingBlock)new Coord4D(mainX, mainY, mainZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return (IAdvancedBoundingBlock)tile;
 	}
 
 	@Override
@@ -495,7 +495,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(getInv() == null)
 		{
@@ -506,7 +506,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side) 
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(getInv() == null)
 		{

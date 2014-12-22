@@ -14,7 +14,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.SideData;
 import mekanism.common.base.ISustainedData;
-import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;
@@ -120,13 +120,13 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 			{
 				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
 
-				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(getFacing())).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing), outputGasTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(getFacing()), outputGasTank.getGas().getGas()))
 					{
-						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing), toSend, true), true);
+						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(getFacing()), toSend, true), true);
 					}
 				}
 			}
@@ -185,7 +185,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -288,7 +288,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".short.name");
 	}
@@ -316,11 +316,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public int fill(EnumFacing from, FluidStack resource, boolean doFill)
 	{
-		if(from == EnumFacing.getFront(facing).getOpposite())
+		if(from == getFacing().getOpposite())
 		{
 			return inputFluidTank.fill(resource, doFill);
 		}
-		
+
 		return 0;
 	}
 
@@ -339,7 +339,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		if(from == EnumFacing.getFront(facing).getOpposite())
+		if(from == getFacing().getOpposite())
 		{
 			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
 		}
@@ -356,7 +356,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == EnumFacing.getFront(facing).getOpposite())
+		if(from == getFacing().getOpposite())
 		{
 			return new FluidTankInfo[] {new FluidTankInfo(inputFluidTank)};
 		}
@@ -367,7 +367,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
-		if(side == MekanismUtils.getLeft(facing))
+		if(side == MekanismUtils.getLeft(getFacing()))
 		{
 			return inputGasTank.receive(stack, doTransfer);
 		}
@@ -378,7 +378,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
-		if(side == MekanismUtils.getRight(facing))
+		if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return outputGasTank.draw(amount, doTransfer);
 		}
@@ -389,19 +389,19 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return side == MekanismUtils.getLeft(facing) && (inputGasTank.getGas() == null || inputGasTank.getGas().getGas() == type);
+		return side == MekanismUtils.getLeft(getFacing()) && (inputGasTank.getGas() == null || inputGasTank.getGas().getGas() == type);
 	}
 
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return side == MekanismUtils.getRight(facing) && outputGasTank.getGas() != null && outputGasTank.getGas().getGas() == type;
+		return side == MekanismUtils.getRight(getFacing()) && outputGasTank.getGas() != null && outputGasTank.getGas().getGas() == type;
 	}
 
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+		return side == MekanismUtils.getLeft(getFacing()) || side == MekanismUtils.getRight(getFacing());
 	}
 
 	@Override

@@ -299,7 +299,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -326,13 +326,13 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 0)
+		if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}
-		else if(side == 1)
+		else if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
@@ -475,7 +475,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		if(!worldObj.isRemote)
 		{
@@ -487,7 +487,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}

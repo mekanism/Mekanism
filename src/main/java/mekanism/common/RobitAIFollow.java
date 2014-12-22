@@ -5,6 +5,8 @@ import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -85,15 +87,15 @@ public class RobitAIFollow extends EntityAIBase
 	@Override
 	public boolean continueExecuting()
 	{
-		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.dimensionId == theRobit.worldObj.provider.dimensionId;
+		return !thePathfinder.noPath() && theRobit.getDistanceSqToEntity(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() && theRobit.getEnergy() > 0 && theOwner.worldObj.provider.getDimensionId() == theRobit.worldObj.provider.getDimensionId();
 	}
 
 	@Override
 	public void startExecuting()
 	{
 		ticker = 0;
-		avoidWater = theRobit.getNavigator().getAvoidsWater();
-		theRobit.getNavigator().setAvoidsWater(false);
+		avoidWater = ((PathNavigateGround)theRobit.getNavigator()).func_179689_e();
+		((PathNavigateGround)theRobit.getNavigator()).func_179690_a(false);
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class RobitAIFollow extends EntityAIBase
 	{
 		theOwner = null;
 		thePathfinder.clearPathEntity();
-		theRobit.getNavigator().setAvoidsWater(avoidWater);
+		((PathNavigateGround)theRobit.getNavigator()).func_179690_a(true);
 	}
 
 	@Override
@@ -120,16 +122,16 @@ public class RobitAIFollow extends EntityAIBase
 					if(theRobit.getDistanceSqToEntity(theOwner) >= 144.0D)
 					{
 						int x = MathHelper.floor_double(theOwner.posX) - 2;
-						int y = MathHelper.floor_double(theOwner.posZ) - 2;
-						int z = MathHelper.floor_double(theOwner.getBoundingBox().minY);
+						int y = MathHelper.floor_double(theOwner.getBoundingBox().minY);
+						int z = MathHelper.floor_double(theOwner.posZ) - 2;
 
 						for(int l = 0; l <= 4; ++l)
 						{
 							for(int i1 = 0; i1 <= 4; ++i1)
 							{
-								if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, x + l, z - 1, y + i1) && !theWorld.getBlock(x + l, z, y + i1).isNormalCube() && !theWorld.getBlock(x + l, z + 1, y + i1).isNormalCube())
+								if((l < 1 || i1 < 1 || l > 3 || i1 > 3) && theWorld.doesBlockHaveSolidTopSurface(theWorld, new BlockPos(x + l, y - 1, z + i1)) && !theWorld.getBlockState(new BlockPos(x + l, y, z + i1)).getBlock().isNormalCube() && !theWorld.getBlockState(new BlockPos(x + l, y + 1, z + i1)).getBlock().isNormalCube())
 								{
-									theRobit.setLocationAndAngles((x + l) + 0.5F, z, (y + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
+									theRobit.setLocationAndAngles((x + l) + 0.5F, y, (z + i1) + 0.5F, theRobit.rotationYaw, theRobit.rotationPitch);
 									thePathfinder.clearPathEntity();
 									return;
 								}

@@ -133,10 +133,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			dataStream.writeInt(packetType.ordinal());
 	
-			dataStream.writeInt(coord4D.getPos().getX());
-			dataStream.writeInt(coord4D.getPos().getY());
-			dataStream.writeInt(coord4D.getPos().getZ());
-			dataStream.writeInt(coord4D.dimensionId);
+			coord4D.write(dataStream);
 	
 			switch(packetType)
 			{
@@ -161,7 +158,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			packetType = PacketType.values()[dataStream.readInt()];
 			
-			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
+			coord4D = Coord4D.read(dataStream);
 
 			if(packetType == PacketType.ENERGY)
 			{

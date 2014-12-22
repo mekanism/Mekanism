@@ -8,7 +8,7 @@
  */
 package buildcraft.api.statements;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -39,7 +39,7 @@ public interface IStatementParameter {
 	 * fact that they, unlike Parameters, store no additional data)
 	 */
 	@SideOnly(Side.CLIENT)
-	void registerIcons(TextureAtlasSpriteRegister iconRegister);
+	void registerIcons(TextureMap iconRegister);
 	
 	/**
 	 * Return the parameter description in the UI

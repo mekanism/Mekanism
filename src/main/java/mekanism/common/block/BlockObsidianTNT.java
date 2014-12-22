@@ -32,7 +32,7 @@ public class BlockObsidianTNT extends Block
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register) {}
+	public void registerBlockIcons(TextureMap register) {}
 */
 
 	@Override

@@ -37,7 +37,7 @@ public class BlockOre extends Block
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register)
+	public void registerBlockIcons(TextureMap register)
 	{
 		icons[0] = register.registerIcon("mekanism:OsmiumOre");
 		icons[1] = register.registerIcon("mekanism:CopperOre");
@@ -48,7 +48,7 @@ public class BlockOre extends Block
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(EnumFacing side, int meta)
 	{
 		return icons[meta];
 	}

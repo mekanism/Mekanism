@@ -1,6 +1,6 @@
 package mekanism.common.integration;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -20,7 +20,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -419,11 +418,11 @@ public final class OreDictManager
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 8), MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
+			FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 8), MekanismUtils.size(OreDictionary.getOres("ingotSilver").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
-			FurnaceRecipes.smelting().func_151394_a(new ItemStack(MekanismItems.Dust, 1, 9), MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
+			FurnaceRecipes.instance().addSmeltingRecipe(new ItemStack(MekanismItems.Dust, 1, 9), MekanismUtils.size(OreDictionary.getOres("ingotLead").get(0), 1), 0.0F);
 		} catch(Exception e) {}
 		
 		try {
@@ -542,18 +541,17 @@ public final class OreDictManager
 		};
 		
 		InventoryCrafting tempCrafting = new InventoryCrafting(tempContainer, 3, 3);
-		ArrayList recipeList = (ArrayList)CraftingManager.getInstance().getRecipeList();
 
 		for(int i = 1; i < 9; i++)
 		{
 			tempCrafting.setInventorySlotContents(i, null);
 		}
 
-		ArrayList registeredOres = OreDictionary.getOres("logWood");
+		List<ItemStack> registeredOres = OreDictionary.getOres("logWood");
 		
 		for(int i = 0; i < registeredOres.size(); i++)
 		{
-			ItemStack logEntry = (ItemStack)registeredOres.get(i);
+			ItemStack logEntry = registeredOres.get(i);
 
 			if(logEntry.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 			{

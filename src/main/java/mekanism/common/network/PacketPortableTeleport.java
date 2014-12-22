@@ -57,12 +57,12 @@ public class PacketPortableTeleport implements IMessageHandler<PortableTeleportM
 							MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 						}
 						
-						if(world.provider.dimensionId != coords.dimensionId)
+						if(world.provider.getDimensionId() != coords.dimensionId)
 						{
 							((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
 						}
 						
-						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.getPos().getX()+0.5, coords.getPos().getY()+1, coords.getPos().getZ()+0.5, player.rotationYaw, player.rotationPitch);
+						((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.getX()+0.5, coords.getY()+1, coords.getZ()+0.5, player.rotationYaw, player.rotationPitch);
 						
 						world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 						Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));

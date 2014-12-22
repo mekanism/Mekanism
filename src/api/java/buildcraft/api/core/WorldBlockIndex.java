@@ -10,6 +10,7 @@ package buildcraft.api.core;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -31,7 +32,7 @@ public class WorldBlockIndex implements Comparable<WorldBlockIndex> {
 	 */
 	public WorldBlockIndex(World world, BlockPos pos) {
 
-		dimension = world.provider.dimensionId;
+		dimension = world.provider.getDimensionId();
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -45,7 +46,7 @@ public class WorldBlockIndex implements Comparable<WorldBlockIndex> {
 	}
 
 	public WorldBlockIndex(Entity entity) {
-		dimension = entity.worldObj.provider.dimensionId;
+		dimension = entity.worldObj.provider.getDimensionId();
 		x = (int) Math.floor(entity.posX);
 		y = (int) Math.floor(entity.posY);
 		z = (int) Math.floor(entity.posZ);

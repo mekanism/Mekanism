@@ -42,13 +42,13 @@ public class MultiblockManager<T>
 	{
 		if(dataHandler == null)
 		{
-			dataHandler = (DataHandler)world.perWorldStorage.loadData(DataHandler.class, name);
+			dataHandler = (DataHandler)world.getPerWorldStorage().loadData(DataHandler.class, name);
 			
 			if(dataHandler == null)
 			{
 				dataHandler = new DataHandler(name);
 				dataHandler.setManager(this);
-				world.perWorldStorage.setData(name, dataHandler);
+				world.getPerWorldStorage().setData(name, dataHandler);
 			}
 			else {
 				dataHandler.setManager(this);
@@ -80,8 +80,6 @@ public class MultiblockManager<T>
 
 	/**
 	 * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
-	 * @param inventoryID - inventory ID of the dynamic tank
-	 * @param cache - cache of the dynamic tank
 	 * @param multiblock - dynamic tank TileEntity
 	 */
 	public void updateCache(IMultiblock<T> multiblock)
@@ -152,7 +150,7 @@ public class MultiblockManager<T>
 	
 				for(Coord4D obj : (Set<Coord4D>)entry.getValue().locations)
 				{
-					if(obj.dimensionId == world.provider.dimensionId && obj.exists(world))
+					if(obj.dimensionId == world.provider.getDimensionId() && obj.exists(world))
 					{
 						TileEntity tileEntity = obj.getTileEntity(world);
 	

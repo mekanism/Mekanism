@@ -30,7 +30,7 @@ public class ItemRobit extends ItemEnergized implements ISustainedInventory
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
+	public void registerIcons(TextureMap register) {}
 */
 
 	@Override

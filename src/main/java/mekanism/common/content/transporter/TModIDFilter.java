@@ -31,7 +31,7 @@ public class TModIDFilter extends TransporterFilter
 	@Override
 	public InvStack getStackFromInventory(IInventory inv, EnumFacing side)
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new ModIDFinder(modID));
+		return InventoryUtils.takeTopStack(inv, side, new ModIDFinder(modID));
 	}
 
 	@Override

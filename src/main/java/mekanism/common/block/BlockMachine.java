@@ -131,7 +131,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register)
+	public void registerBlockIcons(TextureMap register)
 	{
 		switch(blockType)
 		{
@@ -186,9 +186,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
-		int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 		int height = Math.round(placer.rotationPitch);
-		EnumFacing newFacing = EnumFacing.NORTH;
+		EnumFacing newFacing;
 
 		if(tileEntity == null)
 		{
@@ -314,7 +313,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(EnumFacing side, int meta)
 	{
 		switch(blockType)
 		{
@@ -380,7 +379,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(IBlockAccess world, BlockPos pos, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));

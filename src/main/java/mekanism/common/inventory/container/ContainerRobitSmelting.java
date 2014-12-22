@@ -7,7 +7,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotFurnace;
+import net.minecraft.inventory.SlotFurnaceFuel;
+import net.minecraft.inventory.SlotFurnaceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -23,11 +24,11 @@ public class ContainerRobitSmelting extends Container
 	public ContainerRobitSmelting(InventoryPlayer inventory, EntityRobit entity)
 	{
 		robit = entity;
-		robit.openInventory();
+		robit.openInventory(inventory.player);
 
 		addSlotToContainer(new Slot(entity, 28, 56, 17));
-		addSlotToContainer(new Slot(entity, 29, 56, 53));
-		addSlotToContainer(new SlotFurnace(inventory.player, entity, 30, 116, 35));
+		addSlotToContainer(new SlotFurnaceFuel(entity, 29, 56, 53));
+		addSlotToContainer(new SlotFurnaceOutput(inventory.player, entity, 30, 116, 35));
 
 		int slotX;
 
@@ -129,7 +130,7 @@ public class ContainerRobitSmelting extends Container
 			}
 			else if(slotID != 1 && slotID != 0)
 			{
-				if(FurnaceRecipes.smelting().getSmeltingResult(slotStack) != null)
+				if(FurnaceRecipes.instance().getSmeltingResult(slotStack) != null)
 				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
@@ -183,6 +184,7 @@ public class ContainerRobitSmelting extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		robit.closeInventory();
+
+		robit.closeInventory(entityplayer);
 	}
 }

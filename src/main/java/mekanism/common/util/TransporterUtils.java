@@ -83,9 +83,9 @@ public final class TransporterUtils
 					{
 						ISidedInventory sidedInventory = (ISidedInventory)inventory;
 
-						if(sidedInventory.getAccessibleSlotsFromSide(forgeSide.ordinal()) != null)
+						if(sidedInventory.getSlotsForFace(forgeSide) != null)
 						{
-							if(sidedInventory.getAccessibleSlotsFromSide(forgeSide.ordinal()).length > 0)
+							if(sidedInventory.getSlotsForFace(forgeSide).length > 0)
 							{
 								connectable[side] = true;
 							}
@@ -199,7 +199,7 @@ public final class TransporterUtils
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorld().provider.dimensionId).step(EnumFacing.getFront(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorld().provider.getDimensionId()).step(EnumFacing.getFront(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
 		float itemFix = 0;
@@ -209,7 +209,7 @@ public final class TransporterUtils
 			itemFix = 0.1F;
 		}
 
-		return new float[] {0.5F + offset.getPos().getX()*progress, 0.5F + offset.getPos().getY()*progress - itemFix, 0.5F + offset.getPos().getZ()*progress};
+		return new float[] {0.5F + offset.getX()*progress, 0.5F + offset.getY()*progress - itemFix, 0.5F + offset.getZ()*progress};
 	}
 
 	public static void incrementColor(ILogisticalTransporter tileEntity)

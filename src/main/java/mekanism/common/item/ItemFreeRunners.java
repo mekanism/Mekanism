@@ -12,7 +12,7 @@ import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,7 +55,7 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureAtlasSpriteRegister register) {}
+	public void registerIcons(TextureMap register) {}
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)

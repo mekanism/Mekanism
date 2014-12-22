@@ -138,7 +138,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		if(side == 0 || !canAccess())
 		{
@@ -160,7 +160,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 54)
 		{
@@ -178,7 +178,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	}
 
 	@Override
-	public boolean canSetFacing(int side)
+	public boolean canSetFacing(EnumFacing side)
 	{
 		return side != 0 && side != 1;
 	}

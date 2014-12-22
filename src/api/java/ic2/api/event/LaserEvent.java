@@ -79,12 +79,12 @@ public class LaserEvent extends WorldEvent {
 	public static class LaserHitsBlockEvent extends LaserEvent {
 		// targeted block, even that can be changed!
 		public int x, y, z;
-		public int side;
+		public EnumFacing side;
 		// removeBlock determines if the Block will be removed. dropBlock determines if the Block should drop something.
 		public boolean removeBlock, dropBlock;
 		public float dropChance;
 
-		public LaserHitsBlockEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1, int x1, int y1, int z1, int side1, float dropChance1, boolean removeBlock1, boolean dropBlock1) {
+		public LaserHitsBlockEvent(World world1, Entity lasershot1, EntityLivingBase owner1, float range1, float power1, int blockBreaks1, boolean explosive1, boolean smelt1, int x1, int y1, int z1, EnumFacing side1, float dropChance1, boolean removeBlock1, boolean dropBlock1) {
 			super(world1, lasershot1, owner1, range1, power1, blockBreaks1, explosive1, smelt1);
 			this.x = x1;
 			this.y = y1;

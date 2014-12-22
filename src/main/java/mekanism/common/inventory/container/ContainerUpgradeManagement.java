@@ -8,6 +8,7 @@ import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -35,8 +36,7 @@ public class ContainerUpgradeManagement extends Container
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
 
-		((TileEntityContainerBlock)tileEntity).open(inventory.player);
-		((TileEntityContainerBlock)tileEntity).openInventory();
+		((IInventory)tileEntity).openInventory(inventory.player);
 	}
 
 	@Override
@@ -44,8 +44,7 @@ public class ContainerUpgradeManagement extends Container
 	{
 		super.onContainerClosed(entityplayer);
 
-		((TileEntityContainerBlock)tileEntity).close(entityplayer);
-		((TileEntityContainerBlock)tileEntity).closeInventory();
+		((IInventory)tileEntity).closeInventory(entityplayer);
 	}
 
 	@Override
@@ -106,7 +105,7 @@ public class ContainerUpgradeManagement extends Container
 
 			if(slotStack.stackSize == 0)
 			{
-				currentSlot.putStack((ItemStack)null);
+				currentSlot.putStack(null);
 			}
 			else {
 				currentSlot.onSlotChanged();

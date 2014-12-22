@@ -25,6 +25,8 @@ public interface IInvConfiguration
 	 */
 	public byte[] getConfiguration();
 
+	public byte getConfiguration(EnumFacing side);
+
 	/**
 	 * Gets this machine's current orientation.
 	 * @return

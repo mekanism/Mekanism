@@ -44,10 +44,10 @@ public class TItemStackFilter extends TransporterFilter
 	{
 		if(sizeMode)
 		{
-			return InventoryUtils.takeDefinedItem(inv, side.ordinal(), itemType, min, max);
+			return InventoryUtils.takeDefinedItem(inv, side, itemType, min, max);
 		}
 		else {
-			return InventoryUtils.takeTopStack(inv, side.ordinal(), new ItemStackFinder(itemType));
+			return InventoryUtils.takeTopStack(inv, side, new ItemStackFinder(itemType));
 		}
 	}
 

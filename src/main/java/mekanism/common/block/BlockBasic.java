@@ -113,7 +113,7 @@ public class BlockBasic extends Block implements IBlockCTM
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(TextureAtlasSpriteRegister register)
+	public void registerBlockIcons(TextureMap register)
 	{
 		switch(blockType)
 		{
@@ -161,7 +161,7 @@ public class BlockBasic extends Block implements IBlockCTM
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(IBlockAccess worldIn, BlockPos pos, int side)
+	public TextureAtlasSprite getIcon(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
@@ -213,7 +213,7 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public TextureAtlasSprite getIcon(int side, int meta)
+	public TextureAtlasSprite getIcon(EnumFacing side, int meta)
 	{
 		switch(blockType)
 		{

@@ -12,7 +12,7 @@ public class PaintEvent extends WorldEvent {
 	public final int x;
 	public final int y;
 	public final int z;
-	public final int side;
+	public final EnumFacing side;
 
 	// color to paint the block
 	public final int color;
@@ -20,7 +20,7 @@ public class PaintEvent extends WorldEvent {
 	// set to true to confirm the operation
 	public boolean painted = false;
 
-	public PaintEvent(World world1, int x1, int y1, int z1, int side1, int color1) {
+	public PaintEvent(World world1, int x1, int y1, int z1, EnumFacing side1, int color1) {
 		super(world1);
 
 		this.x = x1;

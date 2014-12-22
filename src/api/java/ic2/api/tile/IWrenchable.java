@@ -15,7 +15,7 @@ public interface IWrenchable {
 	 * @param side block's side the wrench was clicked on
 	 * @return Whether the wrenching was done and the wrench should be damaged
 	 */
-	boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side);
+	boolean wrenchCanSetFacing(EntityPlayer entityPlayer, EnumFacing side);
 
 	/**
 	 * Get the block's facing.

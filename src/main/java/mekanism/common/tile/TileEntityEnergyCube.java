@@ -80,7 +80,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public String getInventoryName()
+	public String getName()
 	{
 		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + ".name");
 	}
@@ -123,7 +123,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public boolean canSetFacing(int side)
+	public boolean canSetFacing(EnumFacing side)
 	{
 		return true;
 	}
@@ -135,13 +135,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return side <= 1 ? new int[] {0} : new int[] {1};
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 1)
 		{
@@ -159,7 +159,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	@Override

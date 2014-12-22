@@ -1,4 +1,4 @@
-package mekanism.client.render.block;
+package mekanism.client.render.texture;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.fml.relauncher.Side;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Code licensed under GPLv2
  * @author AUTOMATIC_MAIDEN, asie, pokefenn, unpairedbracket
  */
-public class TextureVirtual implements TextureAtlasSprite
+public class TextureVirtual extends TextureAtlasSprite
 {
 	int ox, oy;
 	float u0, u1, v0, v1;
@@ -18,6 +18,7 @@ public class TextureVirtual implements TextureAtlasSprite
 
 	TextureVirtual(TextureAtlasSprite parent, int w, int h, int x, int y)
 	{
+		super(parent.getIconName());
 		icon = parent;
 
 		u0 = icon.getInterpolatedU(16.0 * (x) / w);

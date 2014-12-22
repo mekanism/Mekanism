@@ -50,6 +50,7 @@ import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -63,6 +64,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -238,13 +240,13 @@ public final class MekanismUtils
 			return Mekanism.teleporters.get(teleCode).get(0);
 		}
 		else {
-			int dimensionId = player.worldObj.provider.dimensionId;
+			int dimensionId = player.worldObj.provider.getDimensionId();
 
 			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
 			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
 
-			int distance0 = (int)player.getDistance(coords0.getPos().getX(), coords0.getPos().getY(), coords0.getPos().getZ());
-			int distance1 = (int)player.getDistance(coords1.getPos().getX(), coords1.getPos().getY(), coords1.getPos().getZ());
+			int distance0 = (int)player.getDistance(coords0.getX(), coords0.getY(), coords0.getZ());
+			int distance1 = (int)player.getDistance(coords1.getX(), coords1.getY(), coords1.getZ());
 
 			if(dimensionId == coords0.dimensionId && dimensionId != coords1.dimensionId)
 			{
@@ -330,21 +332,19 @@ public final class MekanismUtils
 	public static void doFakeEntityExplosion(EntityPlayer entityplayer)
 	{
 		World world = entityplayer.worldObj;
-		world.spawnParticle("hugeexplosion", entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
+		world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, entityplayer.posX, entityplayer.posY, entityplayer.posZ, 0.0D, 0.0D, 0.0D);
 		world.playSoundAtEntity(entityplayer, "random.explode", 1.0F, 1.0F);
 	}
 
 	/**
 	 * Creates a fake explosion at the declared coords, with only sounds and effects. No damage is caused to either blocks or the player.
 	 * @param world - world where the explosion will occur
-	 * @param x - x coord
-	 * @param y - y coord
-	 * @param z - z coord
+	 * @param pos - where to explode
 	 */
 	public static void doFakeBlockExplosion(World world, BlockPos pos)
 	{
-		world.spawnParticle("hugeexplosion", x, y, z, 0.0D, 0.0D, 0.0D);
-		world.playSound(x, y, z, "random.explode", 1.0F, 1.0F, true);
+		world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, pos.getX(), pos.getY(), pos.getZ(), 0.0D, 0.0D, 0.0D);
+		world.playSound(pos.getX(), pos.getY(), pos.getZ(), "random.explode", 1.0F, 1.0F, true);
 	}
 
 	/**
@@ -407,14 +407,12 @@ public final class MekanismUtils
 	/**
 	 * Checks if a machine is in it's active state.
 	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param pos
 	 * @return if machine is active
 	 */
 	public static boolean isActive(IBlockAccess world, BlockPos pos)
 	{
-		TileEntity tileEntity = (TileEntity)world.getTileEntity(new BlockPos(x, y, z));
+		TileEntity tileEntity = world.getTileEntity(pos);
 
 		if(tileEntity != null)
 		{
@@ -530,24 +528,24 @@ public final class MekanismUtils
 	 * @param config - configurable machine
 	 * @param side - side to increment output of
 	 */
-	public static void incrementOutput(IInvConfiguration config, int side)
+	public static void incrementOutput(IInvConfiguration config, EnumFacing side)
 	{
 		int max = config.getSideData().size()-1;
-		int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
+		int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration(side)));
 
 		if(current < max)
 		{
-			config.getConfiguration()[side] = (byte)(current+1);
+			config.getConfiguration()[side.getIndex()] = (byte)(current+1);
 		}
 		else if(current == max)
 		{
-			config.getConfiguration()[side] = 0;
+			config.getConfiguration()[side.getIndex()] = 0;
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFacing())));
+		Coord4D coord = Coord4D.get(tile).offset(MekanismUtils.getBaseOrientation(side, config.getFacing()));
 
-		tile.getWorld().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
+		tile.getWorld().notifyBlockOfStateChange(coord, tile.getBlockType());
 	}
 
 	/**
@@ -555,24 +553,24 @@ public final class MekanismUtils
 	 * @param config - configurable machine
 	 * @param side - side to increment output of
 	 */
-	public static void decrementOutput(IInvConfiguration config, int side)
+	public static void decrementOutput(IInvConfiguration config, EnumFacing side)
 	{
 		int max = config.getSideData().size()-1;
-		int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
+		int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration(side)));
 
 		if(current > 0)
 		{
-			config.getConfiguration()[side] = (byte)(current-1);
+			config.getConfiguration()[side.getIndex()] = (byte)(current-1);
 		}
 		else if(current == 0)
 		{
-			config.getConfiguration()[side] = (byte)max;
+			config.getConfiguration()[side.getIndex()] = (byte)max;
 		}
 
 		TileEntity tile = (TileEntity)config;
-		Coord4D coord = Coord4D.get(tile).offset(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, config.getFacing())));
+		Coord4D coord = Coord4D.get(tile).offset(MekanismUtils.getBaseOrientation(side, config.getFacing()));
 
-		tile.getWorld().notifyBlockOfNeighborChange(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), tile.getBlockType());
+		tile.getWorld().notifyBlockOfStateChange(coord, tile.getBlockType());
 	}
 
 	/**
@@ -646,45 +644,39 @@ public final class MekanismUtils
 	/**
 	 * Places a fake bounding block at the defined location.
 	 * @param world - world to place block in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @param orig - original block
 	 */
-	public static void makeBoundingBlock(World world, BlockPos pos, Coord4D orig)
+	public static void makeBoundingBlock(World world, BlockPos pos, BlockPos orig)
 	{
-		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock);
+		world.setBlockState(pos, MekanismBlocks.BoundingBlock.getDefaultState());
 
 		if(!world.isRemote)
 		{
-			((TileEntityBoundingBlock)world.getTileEntity(new BlockPos(x, y, z))).setMainLocation(orig.getPos().getX(), orig.getPos().getY(), orig.getPos().getZ());
+			((TileEntityBoundingBlock)world.getTileEntity(pos)).setMainLocation(new Coord4D(orig));
 		}
 	}
 
 	/**
 	 * Places a fake advanced bounding block at the defined location.
 	 * @param world - world to place block in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @param orig - original block
 	 */
-	public static void makeAdvancedBoundingBlock(World world, BlockPos pos, Coord4D orig)
+	public static void makeAdvancedBoundingBlock(World world, BlockPos pos, BlockPos orig)
 	{
-		world.setBlock(x, y, z, MekanismBlocks.BoundingBlock, 1, 0);
+		world.setBlockState(pos, MekanismBlocks.BoundingBlock.getStateFromMeta(1));
 
 		if(!world.isRemote)
 		{
-			((TileEntityAdvancedBoundingBlock)world.getTileEntity(new BlockPos(x, y, z))).setMainLocation(orig.getPos().getX(), orig.getPos().getY(), orig.getPos().getZ());
+			((TileEntityAdvancedBoundingBlock)world.getTileEntity(pos)).setMainLocation(new Coord4D(orig));
 		}
 	}
 
 	/**
 	 * Updates a block's light value and marks it for a render update.
 	 * @param world - world the block is in
-	 * @param x - x coord
-	 * @param y - y coord
-	 * @param z - z coord
+	 * @param pos - coordinates
 	 */
 	public static void updateBlock(World world, BlockPos pos)
 	{
@@ -693,7 +685,7 @@ public final class MekanismUtils
 			world.markBlockRangeForRenderUpdate(pos, pos);
 		}
 
-		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(new BlockPos(x, y, z))).lightUpdate() && client.machineEffects)
+		if(!(world.getTileEntity(pos) instanceof IActiveState) || ((IActiveState)world.getTileEntity(pos)).lightUpdate() && client.machineEffects)
 		{
 			world.checkLight(pos);
 		}
@@ -702,28 +694,25 @@ public final class MekanismUtils
 	/**
 	 * Whether or not a certain block is considered a fluid.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @return if the block is a fluid
 	 */
 	public static boolean isFluid(World world, BlockPos pos)
 	{
-		return getFluid(world, x, y, z) != null;
+		return getFluid(world, pos) != null;
 	}
 
 	/**
 	 * Gets a fluid from a certain location.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @return the fluid at the certain location, null if it doesn't exist
 	 */
 	public static FluidStack getFluid(World world, BlockPos pos)
 	{
-		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-		int meta = world.getBlockMetadata(x, y, z);
+		IBlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		int meta = block.getMetaFromState(state);
 
 		if(block == null)
 		{
@@ -744,7 +733,7 @@ public final class MekanismUtils
 
 			if(meta == 0)
 			{
-				return fluid.drain(world, x, y, z, false);
+				return fluid.drain(world, pos, false);
 			}
 		}
 
@@ -754,15 +743,14 @@ public final class MekanismUtils
 	/**
 	 * Gets the fluid ID at a certain location, 0 if there isn't one
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @return fluid ID
 	 */
 	public static int getFluidId(World world, BlockPos pos)
 	{
-		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-		int meta = world.getBlockMetadata(x, y, z);
+		IBlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		int meta = block.getMetaFromState(state);
 
 		if(block == null)
 		{
@@ -792,15 +780,14 @@ public final class MekanismUtils
 	/**
 	 * Whether or not a block is a dead fluid.
 	 * @param world - world the block is in
-	 * @param x - x coordinate
-	 * @param y - y coordinate
-	 * @param z - z coordinate
+	 * @param pos - coordinates
 	 * @return if the block is a dead fluid
 	 */
 	public static boolean isDeadFluid(World world, BlockPos pos)
 	{
-		Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-		int meta = world.getBlockMetadata(x, y, z);
+		IBlockState state = world.getBlockState(pos);
+		Block block = state.getBlock();
+		int meta = block.getMetaFromState(state);
 
 		if(block == null || meta == 0)
 		{
@@ -993,7 +980,7 @@ public final class MekanismUtils
 			return;
 		}
 
-		tileEntity.getWorld().markTileEntityChunkModified(tileEntity.getPos().getX(), tileEntity.getPos().getY(), tileEntity.getPos().getZ(), tileEntity);
+		tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
 	}
 
 	/**
@@ -1038,7 +1025,7 @@ public final class MekanismUtils
 
 		Vec3 headVec = getHeadVec(player);
 		Vec3 lookVec = player.getLook(1);
-		Vec3 endVec = headVec.addVector(lookVec.getPos().getX()*reach, lookVec.getPos().getY()*reach, lookVec.getPos().getZ()*reach);
+		Vec3 endVec = headVec.addVector(lookVec.xCoord*reach, lookVec.yCoord*reach, lookVec.zCoord*reach);
 
 		return world.rayTraceBlocks(headVec, endVec, true);
 	}
@@ -1050,19 +1037,19 @@ public final class MekanismUtils
 	 */
 	private static Vec3 getHeadVec(EntityPlayer player)
 	{
-		Vec3 vec = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
-
+		Vec3 vec = new Vec3(player.posX, player.posY, player.posZ);
+		double y = 0;
 		if(!player.worldObj.isRemote)
 		{
-			vec.getPos().getY() += player.getEyeHeight();
+			y += player.getEyeHeight();
 
 			if(player instanceof EntityPlayerMP && player.isSneaking())
 			{
-				vec.getPos().getY() -= 0.08;
+				y -= 0.08;
 			}
 		}
 
-		return vec;
+		return vec.add(new Vec3(0, y, 0));
 	}
 
 	/**
@@ -1129,7 +1116,7 @@ public final class MekanismUtils
 	 */
 	public static String getCoordDisplay(Coord4D obj)
 	{
-		return "[" + obj.getPos().getX() + ", " + obj.getPos().getY() + ", " + obj.getPos().getZ() + "]";
+		return "[" + obj.getX() + ", " + obj.getY() + ", " + obj.getZ() + "]";
 	}
 
 	/**
@@ -1194,8 +1181,8 @@ public final class MekanismUtils
 		if((dmgItems[1] != null) && (dmgItems[0].getItem() == dmgItems[1].getItem()) && (dmgItems[0].stackSize == 1) && (dmgItems[1].stackSize == 1) && dmgItems[0].getItem().isRepairable())
 		{
 			Item theItem = dmgItems[0].getItem();
-			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamageForDisplay();
-			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamageForDisplay();
+			int dmgDiff0 = theItem.getMaxDamage() - dmgItems[0].getItemDamage();
+			int dmgDiff1 = theItem.getMaxDamage() - dmgItems[1].getItemDamage();
 			int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage() * 5 / 100;
 			int solve = Math.max(0, theItem.getMaxDamage() - value);
 			return new ItemStack(dmgItems[0].getItem(), 1, solve);
@@ -1233,7 +1220,7 @@ public final class MekanismUtils
 	public static String getMod(ItemStack stack)
 	{
 		try {
-			ModContainer mod = GameData.findModOwner(GameData.getItemRegistry().getNameForObject(stack.getItem()));
+			ModContainer mod = null; //TODO GameData.findModOwner(GameData.getItemRegistry().getNameForObject(stack.getItem()));
 			return mod == null ? "Minecraft" : mod.getName();
 		} catch(Exception e) {
 			return "null";

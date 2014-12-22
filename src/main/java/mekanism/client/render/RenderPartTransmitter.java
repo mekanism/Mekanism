@@ -203,7 +203,7 @@ public class RenderPartTransmitter //implements IIconSelfRegister
 				int yPos = MathHelper.floor_double(pos.blockY);
 				int zPos = MathHelper.floor_double(pos.blockZ);
 
-				Coord4D obj = new Coord4D(xPos, yPos, zPos, transporter.world().provider.dimensionId);
+				Coord4D obj = new Coord4D(xPos, yPos, zPos, transporter.world().provider.getDimensionId());
 
 				if(obj.equals(Coord4D.get(transporter.tile())))
 				{
@@ -578,7 +578,7 @@ public class RenderPartTransmitter //implements IIconSelfRegister
 	}
 
 	@Override
-	public void registerIcons(TextureAtlasSpriteRegister register)
+	public void registerIcons(TextureMap register)
 	{
 		PartUniversalCable.registerIcons(register);
 		PartMechanicalPipe.registerIcons(register);

@@ -1,6 +1,6 @@
 package ic2.api.crops;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -99,7 +99,7 @@ public abstract class CropCard {
 	 * This method will get called by IC2, don't call it yourself.
 	 */
 	@SideOnly(Side.CLIENT)
-	public void registerSprites(TextureAtlasSpriteRegister iconRegister) {
+	public void registerSprites(TextureMap iconRegister) {
 		textures = new TextureAtlasSprite[maxSize()];
 
 		for (int i = 1; i <= textures.length; i++) {

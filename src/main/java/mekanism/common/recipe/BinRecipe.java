@@ -10,6 +10,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
@@ -118,6 +119,12 @@ public class BinRecipe implements IRecipe
 	public ItemStack getRecipeOutput()
 	{
 		return null;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inventoryCrafting)
+	{
+		return ForgeHooks.defaultRecipeGetRemainingItems(inventoryCrafting);
 	}
 
 	@SubscribeEvent

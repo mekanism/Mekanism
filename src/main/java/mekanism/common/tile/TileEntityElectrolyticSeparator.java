@@ -266,7 +266,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		if(slotID == 3)
 		{
@@ -309,7 +309,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		if(EnumFacing.getFront(side) == MekanismUtils.getRight(facing))
 		{
@@ -482,7 +482,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	@Override

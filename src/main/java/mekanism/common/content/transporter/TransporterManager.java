@@ -59,7 +59,7 @@ public class TransporterManager
 		return ret;
 	}
 
-	public static ItemStack[] copyInvFromSide(IInventory inv, int side)
+	public static ItemStack[] copyInvFromSide(IInventory inv, EnumFacing side)
 	{
 		inv = InventoryUtils.checkChestInv(inv);
 
@@ -74,7 +74,7 @@ public class TransporterManager
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inv;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.getFront(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots == null || slots.length == 0)
 			{
@@ -92,15 +92,15 @@ public class TransporterManager
 		return ret;
 	}
 
-	public static void testInsert(IInventory inv, ItemStack[] testInv, int side, TransporterStack stack)
+	public static void testInsert(IInventory inv, ItemStack[] testInv, EnumFacing side, TransporterStack stack)
 	{
 		ItemStack toInsert = stack.itemStack.copy();
 
 		if(stack.pathType != Path.HOME && inv instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)inv;
-			int tileSide = config.getFacing();
-			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+			EnumFacing tileSide = config.getFacing();
+			EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != stack.color)
 			{
@@ -160,13 +160,13 @@ public class TransporterManager
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inv;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.getFront(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
-				if(stack.pathType != Path.HOME && sidedInventory instanceof TileEntityBin && EnumFacing.getFront(side).getOpposite().ordinal() == 0)
+				if(stack.pathType != Path.HOME && sidedInventory instanceof TileEntityBin && side == EnumFacing.UP)
 				{
-					slots = sidedInventory.getAccessibleSlotsFromSide(1);
+					slots = sidedInventory.getSlotsForFace(EnumFacing.UP);
 				}
 
 				for(int get = 0; get <= slots.length - 1; get++)
@@ -175,7 +175,7 @@ public class TransporterManager
 
 					if(stack.pathType != Path.HOME)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, EnumFacing.getFront(side).getOpposite().ordinal()))
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, side.getOpposite()))
 						{
 							continue;
 						}
@@ -235,7 +235,7 @@ public class TransporterManager
 	/**
 	 * @return rejects
 	 */
-	public static ItemStack getPredictedInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, int side)
+	public static ItemStack getPredictedInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, EnumFacing side)
 	{
 		if(!(tileEntity instanceof IInventory))
 		{
@@ -245,8 +245,8 @@ public class TransporterManager
 		if(tileEntity instanceof IInvConfiguration)
 		{
 			IInvConfiguration config = (IInvConfiguration)tileEntity;
-			int tileSide = config.getFacing();
-			EnumColor configColor = config.getEjector().getInputColor(EnumFacing.getFront(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
+			EnumFacing tileSide = config.getFacing();
+			EnumColor configColor = config.getEjector().getInputColor(MekanismUtils.getBaseOrientation(side, tileSide).getOpposite());
 
 			if(config.getEjector().hasStrictInput() && configColor != null && configColor != color)
 			{
@@ -307,7 +307,7 @@ public class TransporterManager
 		}
 		else {
 			ISidedInventory sidedInventory = (ISidedInventory)inventory;
-			int[] slots = sidedInventory.getAccessibleSlotsFromSide(EnumFacing.getFront(side).getOpposite().ordinal());
+			int[] slots = sidedInventory.getSlotsForFace(side.getOpposite());
 
 			if(slots != null && slots.length != 0)
 			{
@@ -315,7 +315,7 @@ public class TransporterManager
 				{
 					int slotID = slots[get];
 
-					if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, EnumFacing.getFront(side).getOpposite().ordinal()))
+					if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, side.getOpposite()))
 					{
 						continue;
 					}

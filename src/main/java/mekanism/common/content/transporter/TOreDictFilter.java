@@ -31,7 +31,7 @@ public class TOreDictFilter extends TransporterFilter
 	@Override
 	public InvStack getStackFromInventory(IInventory inv, EnumFacing side)
 	{
-		return InventoryUtils.takeTopStack(inv, side.ordinal(), new OreDictFinder(oreDictName));
+		return InventoryUtils.takeTopStack(inv, side, new OreDictFinder(oreDictName));
 	}
 
 	@Override

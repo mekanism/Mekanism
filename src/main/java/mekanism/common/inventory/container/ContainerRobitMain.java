@@ -18,7 +18,7 @@ public class ContainerRobitMain extends Container
 		robit = entity;
 		addSlotToContainer(new SlotDischarge(entity, 27, 153, 17));
 
-		robit.openInventory();
+		robit.openInventory(inventory.player);
 
 		int slotX;
 
@@ -40,7 +40,7 @@ public class ContainerRobitMain extends Container
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
-		robit.closeInventory();
+		robit.closeInventory(entityplayer);
 	}
 
 	@Override

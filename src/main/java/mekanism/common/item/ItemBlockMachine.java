@@ -213,7 +213,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	}
 	
 	@Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ)
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
     {
 		MachineBlockType type = MachineBlockType.get(stack);
 
@@ -226,7 +226,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
     }
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, int side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int metadata)
 	{
 		boolean place = true;
 
@@ -510,7 +510,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        else {
 	            if(pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 	            {
-	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.dimensionId);
+	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.getDimensionId());
 	
 	                if(!world.canMineBlock(entityplayer, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
 	                {

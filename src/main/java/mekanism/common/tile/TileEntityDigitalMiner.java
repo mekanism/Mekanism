@@ -507,7 +507,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
 
-		return new Coord4D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return new Coord4D(xCoord+(side.offsetX*2), yCoord+1, zCoord+(side.offsetZ*2), worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 	}
 
 	public void add(List<ItemStack> stacks)
@@ -604,15 +604,15 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
-		super.openInventory();
+		super.openInventory(player);
 
 		if(!worldObj.isRemote)
 		{
-			for(EntityPlayer player : playersUsing)
+			for(EntityPlayer playerUsing : playersUsing)
 			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
+				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)playerUsing);
 			}
 		}
 	}
@@ -980,7 +980,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 	public Coord4D getStartingCoord()
 	{
-		return new Coord4D(xCoord-radius, minY, zCoord-radius, worldObj.provider.dimensionId);
+		return new Coord4D(xCoord-radius, minY, zCoord-radius, worldObj.provider.getDimensionId());
 	}
 
 	public Coord4D getCoordFromIndex(int index)
@@ -992,7 +992,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		int z = start.getPos().getZ()+(index/diameter)%diameter;
 		int y = start.getPos().getY()+(index/diameter/diameter);
 
-		return new Coord4D(x, y, z, worldObj.provider.dimensionId);
+		return new Coord4D(x, y, z, worldObj.provider.getDimensionId());
 	}
 
 	@Override
@@ -1086,7 +1086,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canSetFacing(int side)
+	public boolean canSetFacing(EnumFacing side)
 	{
 		return side != 0 && side != 1;
 	}
@@ -1107,7 +1107,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return InventoryUtils.EMPTY;
 	}
@@ -1115,11 +1115,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public TileEntity getEjectTile()
 	{
 		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
-		return new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId).getTileEntity(worldObj);
+		return new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.getDimensionId()).getTileEntity(worldObj);
 	}
 
 	@Override
-	public int[] getBoundSlots(Coord4D location, int side)
+	public int[] getBoundSlots(Coord4D location, EnumFacing side)
 	{
 		EnumFacing dir = EnumFacing.getFront(facing).getOpposite();
 
@@ -1172,8 +1172,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		EnumFacing side = EnumFacing.getFront(facing).getOpposite();
 
-		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.dimensionId);
-		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord, worldObj.provider.dimensionId);
+		Coord4D eject = new Coord4D(xCoord+side.offsetX, yCoord+1, zCoord+side.offsetZ, worldObj.provider.getDimensionId());
+		Coord4D pull = new Coord4D(xCoord, yCoord+1, zCoord, worldObj.provider.getDimensionId());
 
 		if(location.equals(eject))
 		{
@@ -1208,7 +1208,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	public String[] names = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop"};
@@ -1407,13 +1407,13 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
+	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return clientRendering = !clientRendering;
 	}
 
 	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
+	public boolean onRightClick(EntityPlayer player, EnumFacing side)
 	{
 		return false;
 	}

@@ -166,7 +166,7 @@ public final class ComputerCraftAPI
      * @return If there is a block capable of emitting bundled redstone at the location, it's signal (0-65535) will be returned.
      * If there is no block capable of emitting bundled redstone at the location, -1 will be returned.
      */
-    public static int getBundledRedstoneOutput( World world, BlockPos pos, int side )
+    public static int getBundledRedstoneOutput( World world, BlockPos pos, EnumFacing side )
     {
         findCC();
         if( computerCraft_getDefaultBundledRedstoneOutput != null )

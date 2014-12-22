@@ -97,7 +97,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
 			{
-				outputSides.add(EnumFacing.getFront(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+				outputSides.add(EnumFacing.getFront(MekanismUtils.getBaseOrientation(i, tileEntity.getFacing())));
 			}
 		}
 

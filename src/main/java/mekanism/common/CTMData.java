@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import mekanism.api.Coord4D;
-import mekanism.client.render.block.TextureSubmap;
+import mekanism.client.render.texture.TextureSubmap;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.TextureAtlasSpriteRegister;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -26,7 +26,7 @@ public class CTMData
 
 	public CTMTextureData facingOverride;
 
-	public int facing;
+	public EnumFacing facing;
 
 	public CTMData(String textureName, Block block, List<Integer> connectableMeta)
 	{
@@ -53,12 +53,12 @@ public class CTMData
 		return facingOverride != null;
 	}
 
-	public void setFacing(int newFacing)
+	public void setFacing(EnumFacing newFacing)
 	{
 		facing = newFacing;
 	}
 
-	public CTMData registerIcons(TextureAtlasSpriteRegister register)
+	public CTMData registerIcons(TextureMap register)
 	{
 		mainTextureData.registerIcons(register);
 
@@ -78,31 +78,31 @@ public class CTMData
 		return this;
 	}
 
-	public CTMTextureData getTextureData(int side)
+	public CTMTextureData getTextureData(EnumFacing side)
 	{
 		if(hasFacingOverride() && side == facing)
 		{
 			return facingOverride;
 		}
-		if(sideOverrides[side] != null)
+		if(sideOverrides[side.ordinal()] != null)
 		{
-			return sideOverrides[side];
+			return sideOverrides[side.ordinal()];
 		}
 		
 		return mainTextureData;
 	}
 
-	public TextureAtlasSprite getIcon(int side)
+	public TextureAtlasSprite getIcon(EnumFacing side)
 	{
 		return getTextureData(side).icon;
 	}
 
-	public TextureSubmap getSubmap(int side)
+	public TextureSubmap getSubmap(EnumFacing side)
 	{
 		return getTextureData(side).submap;
 	}
 
-	public TextureSubmap getSmallSubmap(int side)
+	public TextureSubmap getSmallSubmap(EnumFacing side)
 	{
 		return getTextureData(side).submapSmall;
 	}

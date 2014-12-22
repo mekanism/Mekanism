@@ -168,7 +168,7 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 		return false;
 	}
 
-	public int[] getAccessibleSlotsFromSide(int p_94128_1_)
+	public int[] getSlotsForFace(EnumFacing p_94128_1_)
 	{
 		return availableSlotIDs;
 	}

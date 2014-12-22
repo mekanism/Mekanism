@@ -32,6 +32,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -168,7 +169,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public int[] getAccessibleSlotsFromSide(int side)
+	public int[] getSlotsForFace(EnumFacing side)
 	{
 		return new int[] {0};
 	}
@@ -527,7 +528,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	}
 
 	@Override
-	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	public boolean canExtractItem(int slotID, ItemStack itemstack, EnumFacing side)
 	{
 		return ChargeUtils.canBeOutputted(itemstack, false);
 	}
@@ -536,7 +537,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	@Method(modid = "ComputerCraft")
 	public String getType()
 	{
-		return getInventoryName();
+		return getName();
 	}
 
 	@Override
