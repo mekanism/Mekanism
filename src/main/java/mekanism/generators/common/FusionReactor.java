@@ -20,8 +20,11 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemCoal;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -128,6 +131,11 @@ public class FusionReactor implements IFusionReactor
 
 		//Perform the heat transfer calculations
 		transferHeat();
+
+		if(burning)
+		{
+			kill();
+		}
 
 		lastPlasmaTemperature = plasmaTemperature < 1E-1 ? 0 : plasmaTemperature;
 		lastCaseTemperature = caseTemperature < 1E-1 ? 0 : caseTemperature;
@@ -295,6 +303,16 @@ public class FusionReactor implements IFusionReactor
 	public double getBufferSize()
 	{
 		return controller.getMaxEnergy();
+	}
+
+	public void kill()
+	{
+		AxisAlignedBB death_zone = AxisAlignedBB.getBoundingBox(controller.xCoord - 1, controller.yCoord - 3, controller.zCoord - 1 ,controller.xCoord + 2, controller.yCoord, controller.zCoord + 2);
+		List<Entity> entitiesToDie = controller.getWorldObj().getEntitiesWithinAABB(Entity.class, death_zone);
+		for(Entity entity : entitiesToDie)
+		{
+			entity.attackEntityFrom(DamageSource.magic, 50000F);
+		}
 	}
 
 	public void unformMultiblock(boolean keepBurning)
