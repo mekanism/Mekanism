@@ -390,6 +390,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
+	public double getInsulationCoefficient(ForgeDirection side)
+	{
+		return canConnectHeat(side) ? 0 : 10000;
+	}
+
+	@Override
 	public void transferHeatTo(double heat)
 	{
 		heatToAbsorb += heat;
@@ -403,7 +409,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			TileEntity tileEntity = pos.getFromSide(side).getTileEntity(getWorldObj());
-			if(tileEntity instanceof IHeatTransfer && !isInsulated(side))
+			if(canConnectHeat(side) && tileEntity instanceof IHeatTransfer)
 			{
 				IHeatTransfer sink = (IHeatTransfer)tileEntity;
 				double invConduction = sink.getInverseConductionCoefficient() + getInverseConductionCoefficient();
@@ -415,7 +421,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				continue;
 			}
 			//Transfer to air otherwise
-			double heatToTransfer = getTemp() / (10000+getInverseConductionCoefficient());
+			double heatToTransfer = getTemp() / (IHeatTransfer.AIR_INVERSE_COEFFICIENT+getInverseConductionCoefficient());
 			transferHeatTo(-heatToTransfer);
 			heatTransferred[1] += heatToTransfer;
 		}
@@ -434,8 +440,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	}
 
 	@Override
-	public boolean isInsulated(ForgeDirection side)
+	public boolean canConnectHeat(ForgeDirection side)
 	{
-		return side != ForgeDirection.DOWN;
+		return side == ForgeDirection.DOWN;
 	}
 }

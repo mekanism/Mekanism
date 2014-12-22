@@ -556,7 +556,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderHeatSide(ForgeDirection side, PartHeatTransmitter cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature));
+		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)

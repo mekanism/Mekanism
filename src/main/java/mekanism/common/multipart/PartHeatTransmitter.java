@@ -18,6 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.lib.vec.Vector3;
@@ -29,7 +30,11 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 
 	public double inversek = 5;
 
+	public double insulationInversek = 0;
+
 	public double inverseHeatCapacity = 1;
+
+	public ColourRGBA baseColour = new ColourRGBA(0.2, 0.2, 0.2, 1);
 
 	public double heatToAbsorb = 0;
 
@@ -90,6 +95,12 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	}
 
 	@Override
+	public double getInsulationCoefficient(ForgeDirection side)
+	{
+		return insulationInversek;
+	}
+
+	@Override
 	public void transferHeatTo(double heat)
 	{
 		heatToAbsorb += heat;
@@ -118,7 +129,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 				}
 			}
 			//Transfer to air otherwise
-			double heatToTransfer = getTemp() / (10000+getInverseConductionCoefficient());
+			double heatToTransfer = getTemp() / (IHeatTransfer.AIR_INVERSE_COEFFICIENT+getInsulationCoefficient(side)+getInverseConductionCoefficient());
 			transferHeatTo(-heatToTransfer);
 			heatTransferred[1] += heatToTransfer;
 		}
@@ -139,9 +150,9 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	}
 
 	@Override
-	public boolean isInsulated(ForgeDirection side)
+	public boolean canConnectHeat(ForgeDirection side)
 	{
-		return false;
+		return true;
 	}
 
 	public static void registerIcons(IIconRegister register)
@@ -177,7 +188,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
-		return tile instanceof IHeatTransfer && !((IHeatTransfer)tile).isInsulated(side.getOpposite());
+		return tile instanceof IHeatTransfer && ((IHeatTransfer)tile).canConnectHeat(side.getOpposite());
 	}
 
 	@Override
@@ -252,4 +263,9 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 		}
 	}
 
+	public ColourRGBA getBaseColour()
+	{
+		return baseColour;
 	}
+
+}
