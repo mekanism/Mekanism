@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 //import mekanism.common.multipart.PartDiversionTransporter;
+//import mekanism.common.multipart.PartHeatTransmitter;
 //import mekanism.common.multipart.PartLogisticalTransporter;
 //import mekanism.common.multipart.PartMechanicalPipe;
 //import mekanism.common.multipart.PartPressurizedTube;
@@ -246,6 +247,30 @@ public class RenderPartTransmitter //implements IIconSelfRegister
 		for(EnumFacing side : EnumFacing.values())
 		{
 			renderEnergySide(side, cable);
+		}
+
+		MekanismRenderer.glowOn();
+		MekanismRenderer.cullFrontFace();
+
+		CCRenderState.draw();
+
+		MekanismRenderer.disableCullFace();
+		MekanismRenderer.glowOff();
+
+		pop();
+	}
+
+	public void renderContents(PartHeatTransmitter transmitter, Vector3 pos)
+	{
+		push();
+		CCRenderState.reset();
+		CCRenderState.useNormals = true;
+		CCRenderState.startDrawing();
+		GL11.glTranslated(pos.x, pos.y, pos.z);
+
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			renderHeatSide(side, transmitter);
 		}
 
 		MekanismRenderer.glowOn();
@@ -528,6 +553,12 @@ public class RenderPartTransmitter //implements IIconSelfRegister
 		renderTransparency(MekanismRenderer.energyIcon, cable.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower));
 	}
 
+	public void renderHeatSide(EnumFacing side, PartHeatTransmitter cable)
+	{
+		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
+		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
+	}
+
 	public void renderFluidInOut(EnumFacing side, PartMechanicalPipe pipe)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
@@ -584,6 +615,7 @@ public class RenderPartTransmitter //implements IIconSelfRegister
 		PartMechanicalPipe.registerIcons(register);
 		PartPressurizedTube.registerIcons(register);
 		PartLogisticalTransporter.registerIcons(register);
+		PartHeatTransmitter.registerIcons(register);
 	}
 
 	@Override

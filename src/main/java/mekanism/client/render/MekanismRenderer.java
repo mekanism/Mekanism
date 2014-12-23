@@ -51,6 +51,7 @@ public class MekanismRenderer
 	public static TextureAtlasSprite[] colors = new TextureAtlasSprite[256];
 	
 	public static TextureAtlasSprite energyIcon;
+	public static TextureAtlasSprite heatIcon;
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -74,6 +75,7 @@ public class MekanismRenderer
 			}
 			
 			energyIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidEnergy"));
+			heatIcon = event.map.registerSprite(new ResourceLocation("mekanism:LiquidHeat"));
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidHydrogen")));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerSprite(new ResourceLocation("mekanism:LiquidOxygen")));

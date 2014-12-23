@@ -38,6 +38,32 @@ public final class PipeUtils
 		return pipes;
 	}
 
+	public static boolean isValidAcceptorOnSide(TileEntity tile, EnumFacing side)
+	{
+		if(tile instanceof IGridTransmitter || !(tile instanceof IFluidHandler))
+			return false;
+
+		IFluidHandler container = (IFluidHandler)tile;
+		FluidTankInfo[] infoArray = container.getTankInfo(side.getOpposite());
+
+		if(container.canDrain(side.getOpposite(), FluidRegistry.WATER)
+			|| container.canFill(side.getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
+		{
+			return true;
+		}
+		else if(infoArray != null && infoArray.length > 0)
+		{
+			for(FluidTankInfo info : infoArray)
+			{
+				if(info != null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Gets all the adjacent connections to a TileEntity.
 	 * @param tileEntity - center TileEntity

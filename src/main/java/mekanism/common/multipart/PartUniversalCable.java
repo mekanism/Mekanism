@@ -230,7 +230,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	@Override
 	public boolean isValidAcceptor(TileEntity acceptor, EnumFacing side)
 	{
-		return CableUtils.getConnections(tile())[side.ordinal()];
+		return CableUtils.isValidAcceptorOnSide(tile(), acceptor, side);
 	}
 
 	@Override

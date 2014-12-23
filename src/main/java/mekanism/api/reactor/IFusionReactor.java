@@ -1,10 +1,11 @@
 package mekanism.api.reactor;
 
+import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasTank;
 
 import net.minecraftforge.fluids.FluidTank;
 
-public interface IFusionReactor
+public interface IFusionReactor extends IHeatTransfer
 {
 	public void addTemperatureFromEnergyInput(double energyAdded);
 

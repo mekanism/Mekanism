@@ -5,6 +5,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
@@ -33,12 +34,13 @@ public class ItemNetworkReader extends ItemEnergized
 		if(!world.isRemote)
 		{
 			TileEntity tileEntity = world.getTileEntity(pos);
+			boolean drain = !player.capabilities.isCreativeMode;
 
 			if(getEnergy(stack) >= ENERGY_PER_USE)
 			{
 				if(tileEntity instanceof IGridTransmitter)
 				{
-					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 	
 					IGridTransmitter<?> transmitter = (IGridTransmitter<?>)tileEntity;
 	
@@ -49,13 +51,25 @@ public class ItemNetworkReader extends ItemEnergized
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getStoredInfo()));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlowInfo()));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getCapacity()));
+					if(transmitter instanceof IHeatTransfer)
+						player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + ((IHeatTransfer)transmitter).getTemp() + "K above ambient"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 					
 					return true;
 				}
+				else if(tileEntity instanceof IHeatTransfer)
+				{
+					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + ((IHeatTransfer)tileEntity).getTemp() + "K above ambient"));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
+
+					return true;
+				}
 				else if(tileEntity != null)
 				{
-					setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
+					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 					
 					Set<ITransmitterNetwork> iteratedNetworks = new HashSet<ITransmitterNetwork>();
 					

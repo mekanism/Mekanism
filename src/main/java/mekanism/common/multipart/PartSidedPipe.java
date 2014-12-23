@@ -119,6 +119,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				return new PartRestrictiveTransporter();
 			case DIVERSION_TRANSPORTER:
 				return new PartDiversionTransporter();
+			case HEAT_TRANSMITTER:
+				return new PartHeatTransmitter();
 			default:
 				return null;
 		}

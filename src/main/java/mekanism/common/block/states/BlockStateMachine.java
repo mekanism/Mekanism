@@ -25,6 +25,7 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityGasCentrifuge;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
@@ -88,7 +89,8 @@ public class BlockStateMachine extends BlockStateFacing
 		LASER_AMPLIFIER("LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
 		LASER_TRACTOR_BEAM("LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
 		AMBIENT_ACCUMULATOR("AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false),
-		ENTANGLED_BLOCK("EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false);
+		ENTANGLED_BLOCK("EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false),
+		GAS_CENTRIFUGE("GasCentrifuge", 48, TileEntityGasCentrifuge.class, true, false, false);
 
 		public String name;
 		public int guiId;
@@ -197,6 +199,8 @@ public class BlockStateMachine extends BlockStateFacing
 					return 0;
 				case ENTANGLED_BLOCK:
 					return 0;
+				case GAS_CENTRIFUGE:
+					return usage.gasCentrifugeUsage;
 				default:
 					return 0;
 			}

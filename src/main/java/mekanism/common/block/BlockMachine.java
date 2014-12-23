@@ -176,6 +176,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
 				icons[1][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[2][0] = register.registerIcon("mekanism:GasCentrifuge");
 				break;
 		}
 

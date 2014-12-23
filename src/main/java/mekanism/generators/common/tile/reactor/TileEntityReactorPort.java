@@ -2,14 +2,19 @@ package mekanism.generators.common.tile.reactor;
 
 import java.util.EnumSet;
 
+import mekanism.api.Coord4D;
+import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.util.CableUtils;
+import mekanism.common.util.HeatUtils;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -17,7 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection, IHeatTransfer
 {
 	public TileEntityReactorPort()
 	{
@@ -213,5 +218,58 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public double getMaxOutput()
 	{
 		return 1000000000;
+	}
+
+	@Override
+	public double getTemp()
+	{
+		return getReactor().getTemp();
+	}
+
+	@Override
+	public double getInverseConductionCoefficient()
+	{
+		return 5;
+	}
+
+	@Override
+	public double getInsulationCoefficient(ForgeDirection side)
+	{
+		return getReactor().getInsulationCoefficient(side);
+	}
+
+	@Override
+	public void transferHeatTo(double heat)
+	{
+		getReactor().transferHeatTo(heat);
+	}
+
+	@Override
+	public double[] simulateHeat()
+	{
+		return HeatUtils.simulate(this, Coord4D.get(this), worldObj);
+	}
+
+	@Override
+	public double applyTemperatureChange()
+	{
+		return getReactor().applyTemperatureChange();
+	}
+
+	@Override
+	public boolean canConnectHeat(ForgeDirection side)
+	{
+		return getReactor() != null;
+	}
+
+	@Override
+	public IHeatTransfer getAdjacent(ForgeDirection side)
+	{
+		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		if(adj instanceof IHeatTransfer && !(adj instanceof IReactorBlock))
+		{
+			return (IHeatTransfer)adj;
+		}
+		return null;
 	}
 }

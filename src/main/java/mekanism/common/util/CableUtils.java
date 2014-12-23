@@ -108,12 +108,24 @@ public final class CableUtils
 		{
 			TileEntity tile = coord.offset(side).getTileEntity(tileEntity.getWorld());
 
-			connectable[side.ordinal()] |= isEnergyAcceptor(tile) && isConnectable(tileEntity, tile, side);
+			connectable[side.ordinal()] = isValidAcceptorOnSide(tileEntity, tile, side);
 			connectable[side.ordinal()] |= isCable(tile);
-			connectable[side.ordinal()] |= isOutputter(tile, side);
 		}
 
 		return connectable;
+	}
+
+	/**
+	 * Gets the adjacent connections to a TileEntity, from a subset of its sides.
+	 * @param cableEntity - TileEntity that's trying to connect
+	 * @param side - side to check
+	 * @return boolean whether the acceptor is valid
+	 */
+	public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, EnumFacing side)
+	{
+		if(isEnergyAcceptor(tile) && isConnectable(cableEntity, tile, side))
+			return true;
+		return isOutputter(tile, side);
 	}
 
 	/**

@@ -142,7 +142,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	@Override
 	public boolean isValidAcceptor(TileEntity tile, EnumFacing side)
 	{
-		return TransporterUtils.getConnections(this)[side.ordinal()];
+		return TransporterUtils.isValidAcceptorOnSide(tile, side);
 	}
 	
 	@Override

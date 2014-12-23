@@ -33,11 +33,13 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
 				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
 				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
+				"mekanism:heat_transmitter",
 				"mekanism:glow_panel"});
 
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.gas.IGasHandler");
+		MultipartGenerator.registerPassThroughInterface("mekanism.api.IHeatTransfer");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IBlockableConnection");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.IGridTransmitter");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.transmitters.ITransmitter");
@@ -106,6 +108,10 @@ public class MultipartMekanism implements IPartFactory
 		else if(name.equals("mekanism:diversion_transporter"))
 		{
 			return new PartDiversionTransporter();
+		}
+		else if(name.equals("mekanism:heat_transmitter"))
+		{
+			return new PartHeatTransmitter();
 		}
 		else if(name.equals("mekanism:glow_panel"))
 		{
