@@ -14,6 +14,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TItemStackFilter;
@@ -83,8 +84,8 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(MekanismUtils.canFunction(this) && delayTicks == 0)
 			{
-				TileEntity back = Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj);
-				TileEntity front = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
+				TileEntity back = Coord4D.get(this).offset(getFacing().getOpposite()).getTileEntity(worldObj);
+				TileEntity front = Coord4D.get(this).offset(getFacing()).getTileEntity(worldObj);
 
 				if(back instanceof IInventory && (front instanceof ILogisticalTransporter || front instanceof IInventory))
 				{
@@ -95,7 +96,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 					for(TransporterFilter filter : filters)
 					{
-						InvStack invStack = filter.getStackFromInventory(inventory, EnumFacing.getFront(facing).getOpposite());
+						InvStack invStack = filter.getStackFromInventory(inventory, getFacing().getOpposite());
 
 						if(invStack != null && invStack.getStack() != null)
 						{
@@ -128,7 +129,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 					if(!sentItems && autoEject)
 					{
-						InvStack invStack = InventoryUtils.takeTopStack(inventory, EnumFacing.getFront(facing).getOpposite().ordinal(), new FirstFinder());
+						InvStack invStack = InventoryUtils.takeTopStack(inventory, getFacing().getOpposite(), new FirstFinder());
 						
 						if(invStack != null && invStack.getStack() != null)
 						{
@@ -188,7 +189,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 		}
 		else if(front instanceof IInventory)
 		{
-			ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
+			ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), getFacing(), false);
 
 			if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 			{
@@ -327,7 +328,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				filters.add(TransporterFilter.readFromPacket(dataStream));
 			}
 
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 		else if(type == 1)
 		{
@@ -347,7 +348,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			autoEject = dataStream.readBoolean();
 			roundRobin = dataStream.readBoolean();
 
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 		else if(type == 2)
 		{
@@ -435,11 +436,11 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean canSendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(getFacing().getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
-			return InventoryUtils.canInsert(back, null, stack, EnumFacing.getFront(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.canInsert(back, null, stack, getFacing().getOpposite(), true);
 		}
 
 		return false;
@@ -447,16 +448,16 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 	public boolean hasInventory()
 	{
-		return Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj) instanceof IInventory;
+		return Coord4D.get(this).offset(getFacing().getOpposite()).getTileEntity(worldObj) instanceof IInventory;
 	}
 
 	public ItemStack sendHome(ItemStack stack)
 	{
-		TileEntity back = Coord4D.get(this).offset(EnumFacing.getFront(facing).getOpposite()).getTileEntity(worldObj);
+		TileEntity back = Coord4D.get(this).offset(getFacing().getOpposite()).getTileEntity(worldObj);
 
 		if(back instanceof IInventory)
 		{
-			return InventoryUtils.putStackInInventory((IInventory)back, stack, EnumFacing.getFront(facing).getOpposite().ordinal(), true);
+			return InventoryUtils.putStackInInventory((IInventory)back, stack, getFacing().getOpposite(), true);
 		}
 
 		return stack;
@@ -483,7 +484,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == EnumFacing.getFront(facing).ordinal() || side == EnumFacing.getFront(facing).getOpposite().ordinal())
+		if(side == getFacing() || side == getFacing().getOpposite())
 		{
 			return new int[] {0};
 		}
@@ -492,7 +493,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer player)
 	{
 		if(!worldObj.isRemote)
 		{
@@ -529,7 +530,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 			if(active)
 			{
-				worldObj.playSoundEffect(xCoord, yCoord, zCoord, "mekanism:etc.Click", 0.3F, 1);
+				worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mekanism:etc.Click", 0.3F, 1);
 			}
 
 			clientActive = active;
@@ -561,9 +562,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean canSetFacing(int facing)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return true;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override

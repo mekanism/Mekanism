@@ -66,7 +66,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	@Override
 	public Pos3D getSoundPosition()
 	{
-		return new Pos3D(xCoord+0.5, yCoord+0.5, zCoord+0.5);
+		return new Pos3D(getPos().getX()+0.5, getPos().getY()+0.5, getPos().getZ()+0.5);
 	}
 
 	@Override

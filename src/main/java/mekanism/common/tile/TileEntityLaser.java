@@ -40,7 +40,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(this, EnumFacing.getFront(facing), usage.laserUsage, worldObj);
+				LaserManager.fireLaserClient(this, getFacing(), usage.laserUsage, worldObj);
 			}
 		}
 		else
@@ -53,8 +53,8 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 				
-				MovingObjectPosition mop = LaserManager.fireLaser(this, EnumFacing.getFront(facing), usage.laserUsage, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				MovingObjectPosition mop = LaserManager.fireLaser(this, getFacing(), usage.laserUsage, worldObj);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.getBlockPos());
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -66,7 +66,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 				{
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
-					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.getPos().getX(), hitCoord.getPos().getY(), hitCoord.getPos().getZ());
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord);
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += usage.laserUsage;
@@ -78,7 +78,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 						}
 						else
 						{
-							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.getPos().getX(), hitCoord.getPos().getY(), hitCoord.getPos().getZ(), mop);
+							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord, mop);
 						}
 					}
 				}

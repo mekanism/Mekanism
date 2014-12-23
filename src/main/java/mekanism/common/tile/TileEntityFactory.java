@@ -29,8 +29,6 @@ import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
-import mekanism.common.block.states.MachineBlockType;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -156,7 +154,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -164,7 +162,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			if(ticker == 1)
 			{
-				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+				worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 			}
 
 			if(updateDelay > 0)
@@ -222,7 +220,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 						secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
 
-						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+						worldObj.notifyNeighborsOfStateChange(getPos(), getBlockType());
 
 						MekanismUtils.saveChunk(this);
 					}
@@ -608,7 +606,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
@@ -748,7 +746,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 				return new Object[] {progress[(Integer)arguments[0]]};
 			case 2:
-				return new Object[] {facing};
+				return new Object[] {getFacing()};
 			case 3:
 				if(arguments[0] == null)
 				{
@@ -814,13 +812,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, getFacing()).getIndex()]).availableSlots;
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing side)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return side != 0 && side != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override

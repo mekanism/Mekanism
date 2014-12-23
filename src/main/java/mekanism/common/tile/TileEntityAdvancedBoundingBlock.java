@@ -12,7 +12,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.fml.common.Optional.Method;
@@ -109,6 +111,13 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	public IChatComponent getDisplayName()
+	{
+
+		return new ChatComponentText(getName());
+	}
+
+	@Override
 	public int getInventoryStackLimit()
 	{
 		if(getInv() == null)
@@ -131,25 +140,25 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public void openInventory()
+	public void openInventory(EntityPlayer entityPlayer)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 
-		getInv().openInventory();
+		getInv().openInventory(entityPlayer);
 	}
 
 	@Override
-	public void closeInventory()
+	public void closeInventory(EntityPlayer entityPlayer)
 	{
 		if(getInv() == null)
 		{
 			return;
 		}
 
-		getInv().closeInventory();
+		getInv().closeInventory(entityPlayer);
 	}
 
 	@Override
@@ -164,6 +173,30 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		//TODO
+	}
+
+	@Override
 	public int[] getSlotsForFace(EnumFacing slotID)
 	{
 		if(getInv() == null)
@@ -175,20 +208,20 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int index, ItemStack itemstack, EnumFacing side)
 	{
-		return isItemValidForSlot(i, itemstack);
+		return isItemValidForSlot(index, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int index, ItemStack itemstack, EnumFacing side)
 	{
 		if(getInv() == null)
 		{
 			return false;
 		}
 
-		return getInv().canBoundExtract(Coord4D.get(this), i, itemstack, j);
+		return getInv().canBoundExtract(Coord4D.get(this), index, itemstack, side);
 	}
 
 	@Override

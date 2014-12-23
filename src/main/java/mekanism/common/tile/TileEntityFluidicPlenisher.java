@@ -11,6 +11,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
@@ -42,7 +43,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public FluidTank fluidTank = new FluidTank(10000);
 	
-	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP, null));
+	private static EnumSet<EnumFacing> dirs = EnumSet.complementOf(EnumSet.of(EnumFacing.UP));
 	private static int MAX_NODES = 4000;
 	
 	public TileEntityFluidicPlenisher()
@@ -145,7 +146,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
-								worldObj.setBlock(below.getPos().getX(), below.getPos().getY(), below.getPos().getZ(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+								worldObj.setBlockState(below, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getStateFromMeta(0), 3);
 								
 								setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -193,7 +194,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			{
 				if(canReplace(coord, true, false))
 				{
-					worldObj.setBlock(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
+					worldObj.setBlockState(coord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()).getStateFromMeta(0), 3);
 
 					setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
@@ -227,7 +228,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	
 	public int getActiveY()
 	{
-		return yCoord-1;
+		return getPos().getY()-1;
 	}
 	
 	public boolean canReplace(Coord4D coord, boolean checkNodes, boolean isPathfinding)
@@ -237,17 +238,17 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			return false;
 		}
 		
-		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
+		if(coord.isAirBlock(worldObj) || MekanismUtils.isDeadFluid(worldObj, coord))
 		{
 			return true;
 		}
 		
-		if(MekanismUtils.isFluid(worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
+		if(MekanismUtils.isFluid(worldObj, coord))
 		{
 			return isPathfinding;
 		}
 		
-		return coord.getBlock(worldObj).isReplaceable(worldObj, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
+		return coord.getBlock(worldObj).isReplaceable(worldObj, coord);
 	}
 	
 	@Override
@@ -265,7 +266,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 			fluidTank.setFluid(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -397,23 +398,23 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	@Override
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
+		return EnumSet.of(getFacing().getOpposite());
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing side)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return side != 0 && side != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 1)
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}

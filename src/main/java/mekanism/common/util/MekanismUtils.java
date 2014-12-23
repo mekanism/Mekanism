@@ -450,9 +450,9 @@ public final class MekanismUtils
 	 * @param orientation
 	 * @return opposite side
 	 */
-	public static EnumFacing getBack(int orientation)
+	public static EnumFacing getBack(EnumFacing orientation)
 	{
-		return EnumFacing.getFront(orientation).getOpposite();
+		return orientation.getOpposite();
 	}
 
 	/**

@@ -23,6 +23,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -106,7 +107,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -231,7 +232,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		}
 
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -297,9 +298,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public boolean canSetFacing(int i)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return i != 0 && i != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	public double getScaledProgress()
@@ -342,13 +343,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing);
+		return side == MekanismUtils.getLeft(getFacing());
 	}
 
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return side == MekanismUtils.getLeft(facing) && inputTank.canReceive(type);
+		return side == MekanismUtils.getLeft(getFacing()) && inputTank.canReceive(type);
 	}
 
 	@Override
@@ -430,15 +431,15 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(getFacing()))
 		{
 			return new int[] {0};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return new int[] {1};
 		}
-		else if(side == 0 || side == 1)
+		else if(side == EnumFacing.DOWN || side == EnumFacing.UP)
 		{
 			return new int[2];
 		}

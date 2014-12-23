@@ -169,16 +169,16 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			Coord4D wrapper = Coord4D.get(this).offset(orientation);
 
-			if(MekanismUtils.isFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()))
+			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
 						recurringNodes.add(wrapper.clone());
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()), true);
-						worldObj.setBlockToAir(wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ());
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper), true);
+						worldObj.setBlockToAir(wrapper);
 					}
 
 					return true;
@@ -190,15 +190,15 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		//and then add the adjacent block to the recurring list
 		for(Coord4D wrapper : tempPumpList)
 		{
-			if(MekanismUtils.isFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()))
+			if(MekanismUtils.isFluid(worldObj, wrapper))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
 						setEnergy(getEnergy() - usage.electricPumpUsage);
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ()), true);
-						worldObj.setBlockToAir(wrapper.getPos().getX(), wrapper.getPos().getY(), wrapper.getPos().getZ());
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper), true);
+						worldObj.setBlockToAir(wrapper);
 					}
 
 					return true;
@@ -212,16 +212,16 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 				if(Coord4D.get(this).distanceTo(side) <= 80)
 				{
-					if(MekanismUtils.isFluid(worldObj, side.getPos().getX(), side.getPos().getY(), side.getPos().getZ()))
+					if(MekanismUtils.isFluid(worldObj, side))
 					{
-						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.getPos().getX(), side.getPos().getY(), side.getPos().getZ()).isFluidEqual(fluidTank.getFluid()))
+						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side).isFluidEqual(fluidTank.getFluid()))
 						{
 							if(take)
 							{
 								setEnergy(getEnergy() - usage.electricPumpUsage);
 								recurringNodes.add(side);
-								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.getPos().getX(), side.getPos().getY(), side.getPos().getZ()), true);
-								worldObj.setBlockToAir(side.getPos().getX(), side.getPos().getY(), side.getPos().getZ());
+								fluidTank.fill(MekanismUtils.getFluid(worldObj, side), true);
+								worldObj.setBlockToAir(side);
 							}
 
 							return true;
@@ -250,7 +250,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		}
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -367,23 +367,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	@Override
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing).getOpposite());
+		return EnumSet.of(getFacing().getOpposite());
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing side)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return side != 0 && side != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 1)
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {0};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {1};
 		}

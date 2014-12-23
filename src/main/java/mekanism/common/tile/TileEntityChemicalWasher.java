@@ -17,6 +17,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -88,7 +89,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -133,13 +134,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(getFacing())).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), outputTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(getFacing()).getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(getFacing()).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -295,7 +296,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		}
 
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -366,18 +367,18 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public boolean canSetFacing(int i)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return i != 0 && i != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	public GasTank getTank(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing))
+		if(side == MekanismUtils.getLeft(getFacing()))
 		{
 			return inputTank;
 		}
-		else if(side == MekanismUtils.getRight(facing))
+		else if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return outputTank;
 		}
@@ -435,7 +436,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+		return side == MekanismUtils.getLeft(getFacing()) || side == MekanismUtils.getRight(getFacing());
 	}
 
 	@Override
@@ -524,15 +525,15 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
+		if(side == MekanismUtils.getLeft(getFacing()))
 		{
 			return new int[] {0};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return new int[] {1};
 		}
-		else if(side == 0 || side == 1)
+		else if(side == EnumFacing.DOWN || side == EnumFacing.UP)
 		{
 			return new int[2];
 		}

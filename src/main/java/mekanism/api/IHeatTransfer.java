@@ -1,6 +1,7 @@
 package mekanism.api;
 
-import net.minecraftforge.common.util.ForgeDirection;
+
+import net.minecraft.util.EnumFacing;
 
 public interface IHeatTransfer
 {
@@ -14,7 +15,7 @@ public interface IHeatTransfer
 
 	public double getInverseConductionCoefficient();
 
-	public double getInsulationCoefficient(ForgeDirection side);
+	public double getInsulationCoefficient(EnumFacing side);
 
 	public void transferHeatTo(double heat);
 
@@ -22,7 +23,7 @@ public interface IHeatTransfer
 
 	public double applyTemperatureChange();
 
-	public boolean canConnectHeat(ForgeDirection side);
+	public boolean canConnectHeat(EnumFacing side);
 
-	public IHeatTransfer getAdjacent(ForgeDirection side);
+	public IHeatTransfer getAdjacent(EnumFacing side);
 }

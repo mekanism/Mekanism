@@ -230,7 +230,6 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 			{
 				IBlockState state = block.getBlockState(worldObj);
 				Block b = state.getBlock();
-				int meta = b.getMetaFromState(state);
 				
 				if(Block.getBlockFromItem(result.getItem()) != Blocks.air)
 				{
@@ -246,7 +245,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 					worldObj.spawnEntityInWorld(item);
 				}
 				
-				worldObj.playAuxSFXAtEntity(null, 2001, block, Block.getIdFromBlock(b) + (meta << 12));
+				worldObj.playAuxSFXAtEntity(null, 2001, block, Block.getStateId(state));
 			}
 			
 			spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));

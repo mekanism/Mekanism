@@ -980,7 +980,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			
 			for(EnumFacing dir : EnumFacing.values())
 			{
-				if(basicTile.canSetFacing(dir.ordinal()))
+				if(basicTile.canSetFacing(dir))
 				{
 					valid[dir.ordinal()] = dir;
 				}

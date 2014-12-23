@@ -317,7 +317,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 	{
 		if(!temperatureSet)
 		{
-			biomeTemp = worldObj.getBiomeGenForCoordsBody(xCoord, zCoord).getFloatTemperature(xCoord, yCoord, zCoord);
+			biomeTemp = worldObj.getBiomeGenForCoordsBody(getPos()).getFloatTemperature(getPos());
 			temperatureSet = true;
 		}
 		
@@ -346,7 +346,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean buildStructure()
 	{
-		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing right = MekanismUtils.getRight(getFacing());
 
 		height = 0;
 		controllerConflict = false;
@@ -392,8 +392,8 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean scanTopLayer(Coord4D current)
 	{
-		EnumFacing left = MekanismUtils.getLeft(facing);
-		EnumFacing back = MekanismUtils.getBack(facing);
+		EnumFacing left = MekanismUtils.getLeft(getFacing());
+		EnumFacing back = MekanismUtils.getBack(getFacing());
 
 		for(int x = 0; x < 4; x++)
 		{
@@ -466,8 +466,8 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean scanMiddleLayer(Coord4D current)
 	{
-		EnumFacing left = MekanismUtils.getLeft(facing);
-		EnumFacing back = MekanismUtils.getBack(facing);
+		EnumFacing left = MekanismUtils.getLeft(getFacing());
+		EnumFacing back = MekanismUtils.getBack(getFacing());
 
 		for(int x = 0; x < 4; x++)
 		{
@@ -507,8 +507,8 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 			height++;
 		}
 
-		EnumFacing left = MekanismUtils.getLeft(facing);
-		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing left = MekanismUtils.getLeft(getFacing());
+		EnumFacing right = MekanismUtils.getRight(getFacing());
 
 		if(!scanBottomRow(baseBlock)) 
 		{
@@ -545,7 +545,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 	 */
 	public boolean scanBottomRow(Coord4D start)
 	{
-		EnumFacing back = MekanismUtils.getBack(facing);
+		EnumFacing back = MekanismUtils.getBack(getFacing());
 		Coord4D current = start;
 
 		for(int i = 1; i <= 4; i++)
@@ -619,11 +619,11 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 			return null;
 		}
 		
-		EnumFacing right = MekanismUtils.getRight(facing);
+		EnumFacing right = MekanismUtils.getRight(getFacing());
 		Coord4D startPoint = Coord4D.get(this).offset(right);
 		startPoint = isLeftOnFace ? startPoint.offset(right) : startPoint;
 		
-		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(facing));
+		startPoint = startPoint.offset(right.getOpposite()).offset(MekanismUtils.getBack(getFacing()));
 		startPoint = startPoint.add(0, -(height - 2), 0);
 		
 		return startPoint;
@@ -663,10 +663,10 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		if(structured != prev)
 		{
 			waterTank.setCapacity(getMaxWater());
-			worldObj.func_147479_m(xCoord, yCoord, zCoord);
+			worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
 		}
 		
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 	
 	@Override
@@ -732,11 +732,11 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
         nbtTags.setDouble("partialWater", partialWater);
         nbtTags.setDouble("partialBrine", partialBrine);
     }
-	
+
 	@Override
-	public boolean canSetFacing(EnumFacing side)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return side != 0 && side != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	public void clearStructure()

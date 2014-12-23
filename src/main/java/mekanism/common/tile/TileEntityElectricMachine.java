@@ -16,6 +16,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional.Method;
 
 import dan200.computercraft.api.lua.ILuaContext;
@@ -185,7 +186,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 			case 2:
 				return new Object[] {isActive};
 			case 3:
-				return new Object[] {facing};
+				return new Object[] {getFacing()};
 			case 4:
 				return new Object[] {canOperate(getRecipe())};
 			case 5:

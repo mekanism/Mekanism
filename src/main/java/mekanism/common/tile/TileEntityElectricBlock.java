@@ -70,7 +70,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered != this)
 			{
@@ -92,7 +92,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	{
 		if(!worldObj.isRemote)
 		{
-			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, getPos());
 			
 			if(registered instanceof IEnergyTile)
 			{

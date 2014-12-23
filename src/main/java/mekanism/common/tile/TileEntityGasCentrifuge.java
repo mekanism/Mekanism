@@ -13,7 +13,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
-import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
@@ -23,7 +23,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection
 {
@@ -50,7 +50,7 @@ public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implem
 
 	public TileEntityGasCentrifuge()
 	{
-		super("machine.centrifuge", "GasCentrifuge", MachineType.GAS_CENTRIFUGE.baseEnergy);
+		super("machine.centrifuge", "GasCentrifuge", MachineBlockType.GAS_CENTRIFUGE.baseEnergy);
 		inventory = new ItemStack[3];
 	}
 
@@ -64,7 +64,7 @@ public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implem
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -109,9 +109,9 @@ public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implem
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				for(ForgeDirection side : new ForgeDirection[]{ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST})
+				for(EnumFacing side : new EnumFacing[]{EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST})
 				{
-					TileEntity tileEntity = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(side).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
@@ -183,13 +183,13 @@ public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implem
 		return false;
 	}
 
-	public GasTank getTank(ForgeDirection side)
+	public GasTank getTank(EnumFacing side)
 	{
-		return side == ForgeDirection.UP ? inputTank : outputTank;
+		return side == EnumFacing.UP ? inputTank : outputTank;
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
+	public int receiveGas(EnumFacing side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
@@ -200,7 +200,7 @@ public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implem
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
+	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
@@ -211,20 +211,20 @@ public class TileEntityGasCentrifuge extends TileEntityNoisyElectricBlock implem
 	}
 
 	@Override
-	public boolean canDrawGas(ForgeDirection side, Gas type)
+	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
 		return getTank(side) == outputTank ? getTank(side).canDraw(type) : false;
 	}
 
 	@Override
-	public boolean canReceiveGas(ForgeDirection side, Gas type)
+	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
 		return getTank(side) != null && getTank(side) != outputTank ? getTank(side).canReceive(type) : false;
 	}
 
 	@Override
-	public boolean canTubeConnect(ForgeDirection side)
+	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side != ForgeDirection.DOWN;
+		return side != EnumFacing.DOWN;
 	}
 }

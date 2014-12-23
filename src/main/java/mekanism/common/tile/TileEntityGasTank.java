@@ -75,13 +75,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getStored(), output));
 
-			TileEntity tileEntity = Coord4D.get(this).offset(EnumFacing.getFront(facing)).getTileEntity(worldObj);
+			TileEntity tileEntity = Coord4D.get(this).offset(getFacing()).getTileEntity(worldObj);
 
 			if(tileEntity instanceof IGasHandler)
 			{
-				if(((IGasHandler)tileEntity).canReceiveGas(EnumFacing.getFront(facing).getOpposite(), gasTank.getGas().getGas()))
+				if(((IGasHandler)tileEntity).canReceiveGas(getFacing().getOpposite(), gasTank.getGas().getGas()))
 				{
-					gasTank.draw(((IGasHandler)tileEntity).receiveGas(EnumFacing.getFront(facing).getOpposite(), toSend, true), true);
+					gasTank.draw(((IGasHandler)tileEntity).receiveGas(getFacing().getOpposite(), toSend, true), true);
 				}
 			}
 		}
@@ -142,7 +142,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return side == 1 ? new int[]{0} : new int[]{1};
+		return side == EnumFacing.UP ? new int[]{0} : new int[]{1};
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		if(side != EnumFacing.getFront(facing))
+		if(side != getFacing())
 		{
 			return gasTank.canReceive(type);
 		}
@@ -208,7 +208,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		dumping = Mode.values()[dataStream.readInt()];
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -269,9 +269,9 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing side)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return side != 0 && side != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override

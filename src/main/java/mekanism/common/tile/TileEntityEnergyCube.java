@@ -119,7 +119,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
-		return EnumSet.of(EnumFacing.getFront(facing));
+		return EnumSet.of(getFacing());
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		return side <= 1 ? new int[] {0} : new int[] {1};
+		return side.getHorizontalIndex() < 0 ? new int[] {0} : new int[] {1};
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override

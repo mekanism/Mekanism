@@ -4,15 +4,15 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.IGridTransmitter;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class HeatUtils
 {
 	public static double[] simulate(IHeatTransfer source, Coord4D pos, World world)
 	{
 		double heatTransferred[] = new double[]{0,0};
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		for(EnumFacing side : EnumFacing.values())
 		{
 			IHeatTransfer sink = source.getAdjacent(side);
 			if(sink != null)

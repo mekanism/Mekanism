@@ -97,7 +97,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		{
 			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
 			{
-				outputSides.add(EnumFacing.getFront(MekanismUtils.getBaseOrientation(i, tileEntity.getFacing())));
+				outputSides.add(MekanismUtils.getBaseOrientation(EnumFacing.values()[i], tileEntity.getFacing()));
 			}
 		}
 
@@ -120,7 +120,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 				if(tile instanceof IInventory && !(tile instanceof ILogisticalTransporter))
 				{
-					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
+					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side, false);
 				}
 				else if(tile instanceof ILogisticalTransporter)
 				{

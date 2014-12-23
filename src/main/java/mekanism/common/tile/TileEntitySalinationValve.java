@@ -29,7 +29,7 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 
 					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySalinationBlock))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), xCoord, yCoord, zCoord);
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
 					}
 				}
 			}

@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.util.InventoryUtils;
 

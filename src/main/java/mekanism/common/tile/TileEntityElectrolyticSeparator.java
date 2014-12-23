@@ -15,6 +15,7 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -153,13 +155,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
 
-					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(getFacing())).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
-						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), leftTank.getGas().getGas()))
+						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(getFacing()).getOpposite(), leftTank.getGas().getGas()))
 						{
-							leftTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend, true), true);
+							leftTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(getFacing()).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -179,13 +181,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
 
-					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(getFacing())).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
-						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), rightTank.getGas().getGas()))
+						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(getFacing()), rightTank.getGas().getGas()))
 						{
-							rightTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
+							rightTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(getFacing()).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -237,29 +239,29 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	{
 		if(type == 0)
 		{
-			EnumFacing side = EnumFacing.getFront(facing);
+			EnumFacing side = getFacing();
 
-			double x = xCoord + (side.offsetX == 0 ? 0.5 : Math.max(side.offsetX, 0));
-			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
+			double x = getPos().getX() + (side.getFrontOffsetX() == 0 ? 0.5 : Math.max(side.getFrontOffsetX(), 0));
+			double z = getPos().getZ() + (side.getFrontOffsetZ() == 0 ? 0.5 : Math.max(side.getFrontOffsetZ(), 0));
 
-			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
+			worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, x, getPos().getY() + 0.5, z, 0.0D, 0.0D, 0.0D);
 
 		}
 		else if(type == 1)
 		{
-			switch(facing)
+			switch(getFacing())
 			{
-				case 3:
-					worldObj.spawnParticle("smoke", xCoord+0.9, yCoord+1, zCoord+0.75, 0.0D, 0.0D, 0.0D);
+				case SOUTH:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.9, getPos().getY()+1, getPos().getZ()+0.75, 0.0D, 0.0D, 0.0D);
 					break;
-				case 4:
-					worldObj.spawnParticle("smoke", xCoord+0.25, yCoord+1, zCoord+0.9, 0.0D, 0.0D, 0.0D);
+				case WEST:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.25, getPos().getY()+1, getPos().getZ()+0.9, 0.0D, 0.0D, 0.0D);
 					break;
-				case 2:
-					worldObj.spawnParticle("smoke", xCoord+0.1, yCoord+1, zCoord+0.25, 0.0D, 0.0D, 0.0D);
+				case NORTH:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.1, getPos().getY()+1, getPos().getZ()+0.25, 0.0D, 0.0D, 0.0D);
 					break;
-				case 5:
-					worldObj.spawnParticle("smoke", xCoord+0.75, yCoord+1, zCoord+0.1, 0.0D, 0.0D, 0.0D);
+				case EAST:
+					worldObj.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, getPos().getX()+0.75, getPos().getY()+1, getPos().getZ()+0.1, 0.0D, 0.0D, 0.0D);
 					break;
 			}
 		}
@@ -311,11 +313,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(EnumFacing.getFront(side) == MekanismUtils.getRight(facing))
+		if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return new int[] {3};
 		}
-		else if(side == facing || EnumFacing.getFront(side) == EnumFacing.getFront(facing).getOpposite())
+		else if(side == getFacing() || side == getFacing().getOpposite())
 		{
 			return new int[] {1, 2};
 		}
@@ -542,7 +544,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+		return side == MekanismUtils.getLeft(getFacing()) || side == MekanismUtils.getRight(getFacing());
 	}
 
 	@Override
@@ -622,11 +624,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public GasStack drawGas(EnumFacing side, int amount, boolean doTransfer)
 	{
-		if(side == MekanismUtils.getLeft(facing))
+		if(side == MekanismUtils.getLeft(getFacing()))
 		{
 			return leftTank.draw(amount, doTransfer);
 		}
-		else if(side == MekanismUtils.getRight(facing))
+		else if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return rightTank.draw(amount, doTransfer);
 		}
@@ -643,11 +645,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		if(side == MekanismUtils.getLeft(facing))
+		if(side == MekanismUtils.getLeft(getFacing()))
 		{
 			return leftTank.getGas() != null && leftTank.getGas().getGas() == type;
 		}
-		else if(side == MekanismUtils.getRight(facing))
+		else if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return rightTank.getGas() != null && rightTank.getGas().getGas() == type;
 		}

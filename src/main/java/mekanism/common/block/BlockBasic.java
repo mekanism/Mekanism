@@ -643,32 +643,28 @@ public class BlockBasic extends Block implements IBlockCTM
 		if(worldIn.getTileEntity(pos) instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
-			int side = MathHelper.floor_double((placer.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 			int height = Math.round(placer.rotationPitch);
-			int change = 3;
+			EnumFacing newFacing;
 
-			if(tileEntity.canSetFacing(0) && tileEntity.canSetFacing(1))
+			if(tileEntity == null)
 			{
-				if(height >= 65)
-				{
-					change = 1;
-				}
-				else if(height <= -65)
-				{
-					change = 0;
-				}
+				return;
 			}
 
-			if(change != 0 && change != 1)
+			if(height >= 65)
 			{
-				switch(side)
-				{
-					case 0: change = 2; break;
-					case 1: change = 5; break;
-					case 2: change = 3; break;
-					case 3: change = 4; break;
-				}
+				newFacing = EnumFacing.DOWN;
 			}
+			else if(height <= -65)
+			{
+				newFacing = EnumFacing.UP;
+			}
+			else
+			{
+				newFacing = placer.getHorizontalFacing().getOpposite();
+			}
+
+			worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, newFacing));
 
 			tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 

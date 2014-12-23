@@ -296,7 +296,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 			
 			for(EnumFacing dir : EnumFacing.values())
 			{
-				if(basicTile.canSetFacing(dir.ordinal()))
+				if(basicTile.canSetFacing(dir))
 				{
 					valid[dir.ordinal()] = dir;
 				}

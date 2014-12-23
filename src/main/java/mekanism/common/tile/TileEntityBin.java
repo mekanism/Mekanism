@@ -23,7 +23,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.fml.common.Optional.Interface;
 
 import io.netty.buffer.ByteBuf;
@@ -207,7 +209,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 					}
 					else if(tile instanceof IInventory)
 					{
-						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
+						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, EnumFacing.DOWN, false));
 					}
 
 					delayTicks = 10;
@@ -292,7 +294,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 			itemType = null;
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -428,6 +430,12 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
+	public IChatComponent getDisplayName()
+	{
+		return new ChatComponentText(getName());
+	}
+
+	@Override
 	public int getInventoryStackLimit()
 	{
 		return 64;
@@ -440,25 +448,49 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer entityPlayer) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer entityPlayer) {}
 
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack itemstack)
 	{
-		return i == 1 ? isValid(itemstack) : false;
+		return i == 1 && isValid(itemstack);
+	}
+
+	@Override
+	public int getField(int id)
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value)
+	{
+
+	}
+
+	@Override
+	public int getFieldCount()
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear()
+	{
+		//TODO
 	}
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 1)
+		if(side == EnumFacing.UP)
 		{
 			return new int[] {1};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {0};
 		}
@@ -467,21 +499,21 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j)
+	public boolean canInsertItem(int index, ItemStack itemstack, EnumFacing side)
 	{
-		return isItemValidForSlot(i, itemstack);
+		return isItemValidForSlot(index, itemstack);
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j)
+	public boolean canExtractItem(int index, ItemStack itemstack, EnumFacing side)
 	{
-		return i == 0 ? isValid(itemstack) : false;
+		return index == 0 && isValid(itemstack);
 	}
 
 	@Override
-	public boolean canSetFacing(int facing)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return facing != 0 && facing != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override
@@ -559,7 +591,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public boolean onSneakRightClick(EntityPlayer player, EnumFacing side)
 	{
 		setActive(!getActive());
-		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "random.click", 0.3F, 1);
 		return true;
 	}
 

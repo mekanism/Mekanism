@@ -78,6 +78,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -247,20 +249,14 @@ public class PacketHandler
 	public static void writeNBT(ByteBuf output, NBTTagCompound nbtTags)
 	{
 		try {
-			byte[] buffer = CompressedStreamTools.compress(nbtTags);
-			
-			output.writeInt(buffer.length);
-			output.writeBytes(buffer);
+			CompressedStreamTools.write(nbtTags, new ByteBufOutputStream(output));
 		} catch(Exception e) {}
 	}
 	
 	public static NBTTagCompound readNBT(ByteBuf input)
 	{
 		try {
-			byte[] buffer = new byte[input.readInt()];
-			input.readBytes(buffer);
-			
-			return CompressedStreamTools.func_152457_a(buffer, new NBTSizeTracker(2097152L));
+			return CompressedStreamTools.func_152456_a(new ByteBufInputStream(input), new NBTSizeTracker(2097152L));
 		} catch(Exception e) {
 			return null;
 		}

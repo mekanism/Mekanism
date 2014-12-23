@@ -17,6 +17,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -83,7 +84,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+					MekanismUtils.updateBlock(worldObj, getPos());
 				}
 			}
 		}
@@ -187,13 +188,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				{
 					GasStack toSend = new GasStack(gasTank.getGas().getGas(), Math.min(gasTank.getGas().amount, gasOutput));
 
-					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(facing)).getTileEntity(worldObj);
+					TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getLeft(getFacing())).getTileEntity(worldObj);
 
 					if(tileEntity instanceof IGasHandler)
 					{
-						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), gasTank.getGas().getGas()))
+						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(getFacing()).getOpposite(), gasTank.getGas().getGas()))
 						{
-							gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend, true), true);
+							gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(getFacing()).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -359,7 +360,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		}
 
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -428,9 +429,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canSetFacing(int i)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return i != 0 && i != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	public int getScaledFluidLevel(int i)
@@ -478,7 +479,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing);
+		return side == MekanismUtils.getLeft(getFacing());
 	}
 
 	@Override
@@ -496,13 +497,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canDrawGas(EnumFacing side, Gas type)
 	{
-		return mode == 1 && side == MekanismUtils.getLeft(facing) ? gasTank.canDraw(type) : false;
+		return mode == 1 && side == MekanismUtils.getLeft(getFacing()) ? gasTank.canDraw(type) : false;
 	}
 
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return mode == 0 && side == MekanismUtils.getLeft(facing) ? gasTank.canReceive(type) : false;
+		return mode == 0 && side == MekanismUtils.getLeft(getFacing()) ? gasTank.canReceive(type) : false;
 	}
 	
 	@Override
@@ -551,19 +552,19 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canFill(EnumFacing from, Fluid fluid)
 	{
-		return mode == 1 && from == MekanismUtils.getRight(facing) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid);
+		return mode == 1 && from == MekanismUtils.getRight(getFacing()) && (fluidTank.getFluid() == null ? isValidFluid(new FluidStack(fluid, 1)) : fluidTank.getFluid().getFluid() == fluid);
 	}
 
 	@Override
 	public boolean canDrain(EnumFacing from, Fluid fluid)
 	{
-		return mode == 0 && from == MekanismUtils.getRight(facing);
+		return mode == 0 && from == MekanismUtils.getRight(getFacing());
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(EnumFacing from)
 	{
-		if(from == MekanismUtils.getRight(facing))
+		if(from == MekanismUtils.getRight(getFacing()))
 		{
 			return new FluidTankInfo[] {fluidTank.getInfo()};
 		}

@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -54,7 +55,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+					MekanismUtils.updateBlock(worldObj, getPos());
 				}
 			}
 		}
@@ -128,7 +129,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 	
@@ -174,11 +175,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		return true;
 	}
-	
+
 	@Override
-	public boolean canSetFacing(int facing)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return facing != 0 && facing != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 	
 	@Override

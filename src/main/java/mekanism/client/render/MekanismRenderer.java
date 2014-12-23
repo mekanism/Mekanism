@@ -12,36 +12,28 @@ import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.common.ObfuscatedNames;
-import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
@@ -324,10 +316,11 @@ public class MekanismRenderer
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
     
-    /**
+/*    /**
      * Cleaned-up snip of ItemRenderer.renderItem() -- meant to render 2D items as equipped.
      * @param item - ItemStack to render
      */
+/*
     public static void renderItem(ItemStack item)
     {
 		TextureAtlasSprite icon = item.getItem().getIconIndex(item);
@@ -359,14 +352,16 @@ public class MekanismRenderer
 
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
-    
-	/**
+*/
+
+/*	/**
 	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
 	 * in a player's inventory, and in a player's hand.
 	 * @param renderer - RenderBlocks renderer to render the item with
 	 * @param metadata - block/item metadata
 	 * @param block - block to render
 	 */
+/*
 	public static void renderItem(RenderBlocks renderer, int metadata, Block block)
 	{
 		if(!(block instanceof ISpecialBounds) || ((ISpecialBounds)block).doDefaultBoundSetting(metadata))
@@ -428,7 +423,8 @@ public class MekanismRenderer
         
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 	}
-	
+*/
+
 	public static void colorFluid(Fluid fluid)
 	{
 	    int color = fluid.getColor();

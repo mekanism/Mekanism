@@ -112,7 +112,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -183,7 +183,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 
@@ -258,9 +258,9 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public boolean canSetFacing(int facing)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return facing != 0 && facing != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 
 	@Override

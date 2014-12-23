@@ -16,6 +16,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
@@ -24,8 +25,10 @@ import net.minecraftforge.fml.common.Optional.Interface;
 
 import io.netty.buffer.ByteBuf;
 
+import ic2.api.tile.IWrenchable;
+
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
-public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IUpdatePlayerListBox
+public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IUpdatePlayerListBox, IWrenchable
 {
 	public int clientFacing;
 
@@ -137,6 +140,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 		}
 	}
 
+	@Override
 	public EnumFacing getFacing()
 	{
 		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateFacing.facingProperty);
@@ -147,7 +151,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	 * @param facing - facing to check
 	 * @return if the block's orientation can be changed
 	 */
-	public boolean canSetFacing(int facing)
+	public boolean canSetFacing(EnumFacing facing)
 	{
 		return true;
 	}
@@ -180,4 +184,35 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		
 	}
+
+	@Override
+	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, EnumFacing side)
+	{
+		return canSetFacing(side);
+	}
+
+	@Override
+	public void setFacing(EnumFacing facing)
+	{
+		getWorld().getBlockState(getPos()).withProperty(BlockStateFacing.facingProperty, facing);
+	}
+
+	@Override
+	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
+	{
+		return true;
+	}
+
+	@Override
+	public float getWrenchDropRate()
+	{
+		return 1;
+	}
+
+	@Override
+	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
+	{
+		return getBlockType().getDrops(getWorld(), getPos(), getWorld().getBlockState(getPos()), 0).get(0);
+	}
+
 }

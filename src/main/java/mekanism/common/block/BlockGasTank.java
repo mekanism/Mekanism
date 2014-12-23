@@ -235,7 +235,7 @@ public class BlockGasTank extends BlockContainer
 			
 			for(EnumFacing dir : EnumFacing.values())
 			{
-				if(basicTile.canSetFacing(dir.ordinal()))
+				if(basicTile.canSetFacing(dir))
 				{
 					valid[dir.ordinal()] = dir;
 				}

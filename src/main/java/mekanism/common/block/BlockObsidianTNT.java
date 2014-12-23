@@ -2,7 +2,6 @@ package mekanism.common.block;
 
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityObsidianTNT;
-import mekanism.common.tile.TileEntityObsidianTNT;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -108,13 +107,7 @@ public class BlockObsidianTNT extends Block
 	@Override
 	public boolean hasTileEntity(IBlockState state)
 	{
-		return true;
-	}
-
-	@Override
-	public TileEntity createTileEntity(World world, IBlockState state)
-	{
-		return new TileEntityObsidianTNT();
+		return false;
 	}
 
 /*

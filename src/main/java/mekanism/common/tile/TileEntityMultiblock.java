@@ -98,7 +98,7 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 
 					if(!obj.isAirBlock(worldObj) && (obj.getTileEntity(worldObj) == null || obj.getTileEntity(worldObj).getClass() != getClass()))
 					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.getPos().getX(), obj.getPos().getY(), obj.getPos().getZ(), xCoord, yCoord, zCoord);
+						obj.getBlock(worldObj).onNeighborChange(worldObj, obj, getPos());
 					}
 				}
 

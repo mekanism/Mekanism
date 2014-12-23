@@ -80,7 +80,6 @@ import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.tile.TileEntityObsidianTNT;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPortableTank;
@@ -137,7 +136,6 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityLogisticalSorter.class, "LogisticalSorter");
 		GameRegistry.registerTileEntity(TileEntityBin.class, "Bin");
 		GameRegistry.registerTileEntity(TileEntityDigitalMiner.class, "DigitalMiner");
-		GameRegistry.registerTileEntity(TileEntityObsidianTNT.class, "ObsidianTNT");
 		GameRegistry.registerTileEntity(TileEntityRotaryCondensentrator.class, "RotaryCondensentrator");
 		GameRegistry.registerTileEntity(TileEntityTeleporter.class, "MekanismTeleporter");
 		GameRegistry.registerTileEntity(TileEntityChemicalOxidizer.class, "ChemicalOxidizer");

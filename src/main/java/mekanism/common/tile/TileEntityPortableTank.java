@@ -62,7 +62,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	}
 	
 	@Override
-	public boolean canSetFacing(int facing)
+	public boolean canSetFacing(EnumFacing facing)
 	{
 		return false;
 	}
@@ -79,7 +79,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 				if(updateDelay == 0 && clientActive != isActive)
 				{
 					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+					MekanismUtils.updateBlock(worldObj, getPos());
 				}
 			}
 			
@@ -397,7 +397,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		{
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
-			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			MekanismUtils.updateBlock(worldObj, getPos());
 		}
 	}
 	
@@ -480,7 +480,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		if(!worldObj.isRemote)
 		{
 			setActive(!getActive());
-			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+			worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "random.click", 0.3F, 1);
 		}
 		
 		return true;

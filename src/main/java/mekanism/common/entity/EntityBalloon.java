@@ -87,11 +87,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 		dataWatcher.updateObject(6, new Integer(entity.getEntityId())); /* Latched entity ID */
 	}
 
-	public EntityBalloon(World world, Coord4D obj, EnumColor c)
+	public EntityBalloon(World world, BlockPos obj, EnumColor c)
 	{
 		this(world);
 
-		latched = obj;
+		latched = new Coord4D(obj);
 		setPosition(latched.getX() + 0.5F, latched.getY() + 2.8F, latched.getZ() + 0.5F);
 
 		prevPosX = posX;

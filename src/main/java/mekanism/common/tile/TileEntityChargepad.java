@@ -12,6 +12,7 @@ import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 
 import io.netty.buffer.ByteBuf;
 
@@ -51,7 +53,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 		if(!worldObj.isRemote)
 		{
 			isActive = false;
-			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 0.2, zCoord + 1));
+			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.fromBounds(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX() + 1, getPos().getY() + 0.2, getPos().getZ() + 1));
 
 			for(EntityLivingBase entity : entities)
 			{
@@ -103,13 +105,13 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 			if(prevActive != isActive)
 			{
-				worldObj.playSoundEffect(xCoord + 0.5, yCoord + 0.1, zCoord + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
+				worldObj.playSoundEffect(getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getY() + 0.5, "random.click", 0.3F, isActive ? 0.6F : 0.5F);
 				setActive(isActive);
 			}
 		}
 		else if(isActive)
 		{
-			worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
+			worldObj.spawnParticle(EnumParticleTypes.REDSTONE, getPos().getX()+random.nextDouble(), getPos().getY()+0.15, getPos().getZ()+random.nextDouble(), 0, 0, 0);
 		}
 	}
 
@@ -141,7 +143,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	@Override
 	protected EnumSet<EnumFacing> getConsumingSides()
 	{
-		return EnumSet.of(EnumFacing.DOWN, EnumFacing.getFront(facing).getOpposite());
+		return EnumSet.of(EnumFacing.DOWN, getFacing().getOpposite());
 	}
 
 	@Override
@@ -184,7 +186,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	{
 		super.handlePacketData(dataStream);
 		isActive = dataStream.readBoolean();
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, getPos());
 	}
 
 	@Override
@@ -195,11 +197,13 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 		return data;
 	}
 
+/*
 	@Override
 	public boolean canSetFacing(EnumFacing side)
 	{
-		return side != 0 && side != 1;
+		return side == EnumFacing.DOWN || side == EnumFacing.UP;
 	}
+*/
 
 	@Override
 	public float getVolume()

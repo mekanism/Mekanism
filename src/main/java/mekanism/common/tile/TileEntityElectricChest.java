@@ -9,6 +9,7 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
@@ -42,7 +43,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 
 		if((playersUsing.size() > 0) && (lidAngle == 0.0F))
 		{
-			worldObj.playSoundEffect(xCoord + 0.5F, yCoord + 0.5D, zCoord + 0.5F, "random.chestopen", 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
+			worldObj.playSoundEffect(getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F, "random.chestopen", 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
 		}
 
 		if((playersUsing.size() == 0 && lidAngle > 0.0F) || (playersUsing.size() > 0 && lidAngle < 1.0F))
@@ -66,7 +67,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 
 			if(lidAngle < split && angle >= split)
 			{
-				worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, "random.chestclosed", 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
+				worldObj.playSoundEffect(getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F, "random.chestclosed", 0.5F, (worldObj.rand.nextFloat()*0.1F) + 0.9F);
 			}
 
 			if(lidAngle < 0.0F)
@@ -140,7 +141,7 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == 0 || !canAccess())
+		if(side == EnumFacing.DOWN || !canAccess())
 		{
 			return InventoryUtils.EMPTY;
 		}
@@ -171,15 +172,17 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 		}
 	}
 
+/*
 	@Override
 	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
 	{
 		return false;
 	}
+*/
 
 	@Override
-	public boolean canSetFacing(EnumFacing side)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return side != 0 && side != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 }

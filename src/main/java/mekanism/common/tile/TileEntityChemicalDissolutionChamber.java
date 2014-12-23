@@ -19,6 +19,7 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
@@ -88,7 +89,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			if(updateDelay == 0 && clientActive != isActive)
 			{
 				isActive = clientActive;
-				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+				MekanismUtils.updateBlock(worldObj, getPos());
 			}
 		}
 
@@ -154,13 +155,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			{
 				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
 
-				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
+				TileEntity tileEntity = Coord4D.get(this).offset(MekanismUtils.getRight(getFacing())).getTileEntity(worldObj);
 
 				if(tileEntity instanceof IGasHandler)
 				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), outputTank.getGas().getGas()))
+					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(getFacing()).getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(getFacing()).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -196,15 +197,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	@Override
 	public int[] getSlotsForFace(EnumFacing side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal() || side == 1)
+		if(side == MekanismUtils.getLeft(getFacing()) || side == EnumFacing.UP)
 		{
 			return new int[] {1};
 		}
-		else if(side == 0)
+		else if(side == EnumFacing.DOWN)
 		{
 			return new int[] {0};
 		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
+		else if(side == MekanismUtils.getRight(getFacing()))
 		{
 			return new int[] {2};
 		}
@@ -274,7 +275,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			outputTank.setGas(null);
 		}
 
-		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		MekanismUtils.updateBlock(worldObj, pos);
 	}
 
 	@Override
@@ -334,9 +335,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	}
 
 	@Override
-	public boolean canSetFacing(int i)
+	public boolean canSetFacing(EnumFacing facing)
 	{
-		return i != 0 && i != 1;
+		return facing.getHorizontalIndex() >= 0;
 	}
 	
 	@Override
@@ -374,7 +375,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	@Override
 	public boolean canTubeConnect(EnumFacing side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+		return side == MekanismUtils.getLeft(getFacing()) || side == MekanismUtils.getRight(getFacing());
 	}
 
 	@Override
@@ -416,7 +417,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	@Override
 	public boolean canReceiveGas(EnumFacing side, Gas type)
 	{
-		return side == MekanismUtils.getLeft(facing) && type == GasRegistry.getGas("sulfuricAcid");
+		return side == MekanismUtils.getLeft(getFacing()) && type == GasRegistry.getGas("sulfuricAcid");
 	}
 
 	@Override

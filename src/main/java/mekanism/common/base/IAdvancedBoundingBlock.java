@@ -25,9 +25,9 @@ public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory,
 {
 	public int[] getBoundSlots(Coord4D location, EnumFacing side);
 
-	public boolean canBoundInsert(Coord4D location, int i, ItemStack itemstack);
+	public boolean canBoundInsert(Coord4D location, int index, ItemStack itemstack);
 
-	public boolean canBoundExtract(Coord4D location, int i, ItemStack itemstack, int j);
+	public boolean canBoundExtract(Coord4D location, int index, ItemStack itemstack, EnumFacing side);
 
 	public void onPower();
 
