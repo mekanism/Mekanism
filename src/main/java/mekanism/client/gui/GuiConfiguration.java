@@ -10,7 +10,6 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.base.IInvConfiguration;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
@@ -188,7 +187,7 @@ public class GuiConfiguration extends GuiMekanism
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
-				drawCreativeTabHoveringText(data.color != null ? data.color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
+				drawCreativeTabHoveringText(data.color != null ? data.color.getNameWithCode() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 
@@ -201,7 +200,7 @@ public class GuiConfiguration extends GuiMekanism
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
-				drawCreativeTabHoveringText(color != null ? color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
+				drawCreativeTabHoveringText(color != null ? color.getNameWithCode() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 
@@ -209,7 +208,7 @@ public class GuiConfiguration extends GuiMekanism
 		{
 			if(configurable.getEjector().getOutputColor() != null)
 			{
-				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getNameWithCode(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);

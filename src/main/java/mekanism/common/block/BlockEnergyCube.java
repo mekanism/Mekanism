@@ -10,6 +10,9 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateEnergyCube;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -18,6 +21,8 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -324,5 +329,31 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		}
 
 		return null;
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateEnergyCube(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+
+		EnergyCubeTier type = EnergyCubeTier.values()[meta >> 2];
+
+		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing).withProperty(BlockStateEnergyCube.typeProperty, type);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
+
+		EnergyCubeTier type = (EnergyCubeTier)state.getValue(BlockStateEnergyCube.typeProperty);
+
+		return type.ordinal() << 2 | facing.getIndex();
 	}
 }

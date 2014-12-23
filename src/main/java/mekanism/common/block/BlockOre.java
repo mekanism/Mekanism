@@ -3,9 +3,12 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import mekanism.common.block.states.BlockStateOre;
+import mekanism.common.block.states.BlockStateOre.EnumOreType;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -67,5 +70,27 @@ public class BlockOre extends Block
 		list.add(new ItemStack(item, 1, 0));
 		list.add(new ItemStack(item, 1, 1));
 		list.add(new ItemStack(item, 1, 2));
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateOre(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumOreType type = EnumOreType.values()[meta];
+
+		return this.getDefaultState().withProperty(BlockStateOre.typeProperty, type);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumOreType type = (EnumOreType)state.getValue(BlockStateOre.typeProperty);
+
+		return type.ordinal();
 	}
 }

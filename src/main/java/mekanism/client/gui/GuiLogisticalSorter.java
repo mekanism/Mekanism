@@ -356,7 +356,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getNameWithCode() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TOreDictFilter)
 				{
@@ -379,7 +379,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getNameWithCode() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TMaterialFilter)
 				{
@@ -395,7 +395,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getNameWithCode() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TModIDFilter)
 				{
@@ -418,7 +418,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 					}
 
 					fontRendererObj.drawString(MekanismUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getNameWithCode() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 			}
 		}
@@ -441,7 +441,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(tileEntity.color != null)
 			{
-				drawCreativeTabHoveringText(tileEntity.color.getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(tileEntity.color.getNameWithCode(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);

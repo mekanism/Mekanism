@@ -70,7 +70,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 					if(!player.isSneaking())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration(MekanismUtils.getBaseOrientation(side, config.getFacing()))).color.getName()));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration(MekanismUtils.getBaseOrientation(side, config.getFacing()))).color.getNameWithCode()));
 						return true;
 					}
 					else {
@@ -78,7 +78,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						{
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 							MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getFacing()));
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration(MekanismUtils.getBaseOrientation(side, config.getFacing()))).color.getName()));
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration(MekanismUtils.getBaseOrientation(side, config.getFacing()))).color.getNameWithCode()));
 
 							if(config instanceof TileEntityBasicBlock)
 							{

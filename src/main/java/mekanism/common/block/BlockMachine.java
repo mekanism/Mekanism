@@ -20,6 +20,8 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
@@ -42,6 +44,8 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -57,7 +61,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -995,4 +998,34 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		return world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockStateFacing.facingProperty, axis));
 	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateMachine(this);
+	}
+
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+
+		MachineBlockType type = MachineBlockType.values()[meta >> 2];
+
+		if(!type.canRotateTo(facing))
+		{
+			facing = EnumFacing.NORTH;
+		}
+
+		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing).withProperty(BlockStateBasic.typeProperty, type);
+	}
+
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
+
+		MachineBlockType type = (MachineBlockType)state.getValue(BlockStateMachine.typeProperty);
+
+		return type.ordinal() << 2 | facing.getIndex();
+	}
+
 }

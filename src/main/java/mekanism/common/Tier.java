@@ -3,6 +3,7 @@ package mekanism.common;
 import mekanism.api.EnumColor;
 //import mekanism.common.multipart.TransmitterType;
 
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -46,7 +47,7 @@ public final class Tier
 	 * @author aidancbrady
 	 *
 	 */
-	public static enum EnergyCubeTier
+	public static enum EnergyCubeTier implements IStringSerializable
 	{
 		BASIC("Basic", EnumColor.BRIGHT_GREEN, 2000000, 800),
 		ADVANCED("Advanced", EnumColor.DARK_RED, 8000000, 3200),
@@ -76,6 +77,12 @@ public final class Tier
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
+		}
+
+		@Override
+		public String getName()
+		{
+			return name().toLowerCase();
 		}
 
 		private EnergyCubeTier(String s, EnumColor c, double maxEnergy, double out)

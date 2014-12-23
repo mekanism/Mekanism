@@ -2,12 +2,17 @@ package mekanism.common.block;
 
 import java.util.Random;
 
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateBounding;
+import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -142,5 +147,23 @@ public class BlockBounding extends Block implements IPeripheralProvider
 		}
 
 		return null;
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateBounding(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		return getDefaultState().withProperty(BlockStateBounding.advancedProperty, meta > 0);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		return ((Boolean)state.getValue(BlockStateBounding.advancedProperty)) ? 1 : 0;
 	}
 }

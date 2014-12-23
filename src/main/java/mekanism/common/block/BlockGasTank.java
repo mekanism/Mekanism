@@ -7,13 +7,18 @@ import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.base.ISustainedInventory;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateGasTank;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -249,5 +254,27 @@ public class BlockGasTank extends BlockContainer
 	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
 		return world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockStateFacing.facingProperty, axis));
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateGasTank(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+
+		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
+
+		return facing.getIndex();
 	}
 }

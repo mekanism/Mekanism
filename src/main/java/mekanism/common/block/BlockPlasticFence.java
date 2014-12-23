@@ -75,4 +75,20 @@ public class BlockPlasticFence extends BlockFence
 	{
 		return getMetaFromState(state);
 	}
+
+    public int getMetaFromState(IBlockState state)
+    {
+        return ((EnumColor)state.getValue(BlockStatePlastic.colorProperty)).getMetaValue();
+    }
+
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return getDefaultState().withProperty(BlockStatePlastic.colorProperty, EnumColor.DYES[meta]);
+    }
+
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] {NORTH, EAST, WEST, SOUTH, BlockStatePlastic.colorProperty});
+    }
+
 }

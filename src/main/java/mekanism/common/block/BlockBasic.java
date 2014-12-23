@@ -29,6 +29,8 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving.SpawnPlacementType;
@@ -762,7 +764,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
-		IBlockState state = worldIn.getBlockState(pos);
+		IBlockState state = worldIn.getBlockState(pos.offset(side.getOpposite()));
 		if(state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.DYNAMIC_GLASS)
 		{
 			return ctms[10][0].shouldRenderSide(worldIn, pos, side);
@@ -781,5 +783,36 @@ public class BlockBasic extends Block implements IBlockCTM
 		}
 
 		return ctms[meta][0];
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStateBasic(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+
+		BasicBlockType type = BasicBlockType.values()[meta >> 2];
+
+		if(!type.canRotateTo(facing))
+		{
+			facing = EnumFacing.NORTH;
+		}
+
+		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing).withProperty(BlockStateBasic.typeProperty, type);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
+
+		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+
+		return type.ordinal() << 2 | facing.getIndex();
 	}
 }

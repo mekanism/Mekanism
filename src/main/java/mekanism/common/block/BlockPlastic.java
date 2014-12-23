@@ -3,13 +3,13 @@ package mekanism.common.block;
 import java.util.List;
 
 import mekanism.api.EnumColor;
-import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStatePlastic;
 import mekanism.common.block.states.BlockStatePlastic.PlasticBlockType;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -150,5 +150,31 @@ public class BlockPlastic extends Block
 		}
 
 		return false;
+	}
+
+	@Override
+	protected BlockState createBlockState()
+	{
+		return new BlockStatePlastic(this);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta)
+	{
+		EnumColor facing = EnumColor.DYES[(meta&0xF)];
+
+		PlasticBlockType type = PlasticBlockType.values()[meta >> 4];
+
+		return this.getDefaultState().withProperty(BlockStatePlastic.colorProperty, facing).withProperty(BlockStatePlastic.typeProperty, type);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state)
+	{
+		EnumColor color = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
+
+		PlasticBlockType type = (PlasticBlockType)state.getValue(BlockStatePlastic.typeProperty);
+
+		return type.ordinal() << 4 | color.getMetaValue();
 	}
 }

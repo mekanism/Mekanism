@@ -575,14 +575,14 @@ public class Mekanism
 				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, i),
 					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName
 				));
-				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.SlickPlasticBlock, 4, i),
-					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName
+				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 16 + i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, 16 + j), 'D', "dye" + EnumColor.DYES[i].dyeName
 				));
-				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 4, i),
-					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.GlowPlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName
+				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 32 + i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, 32 + j), 'D', "dye" + EnumColor.DYES[i].dyeName
 				));
-				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i),
-					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 1, j), 'D', "dye" + EnumColor.DYES[i].dyeName
+				recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 48 + i),
+					" P ", "PDP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, 48 + j), 'D', "dye" + EnumColor.DYES[i].dyeName
 				));
 /*
 				recipes.add(new MekanismRecipe(new ItemStack(MekanismItems.GlowPanel, 4, i),
@@ -591,14 +591,14 @@ public class Mekanism
 */
 			}
 
-			recipes.add(new ShapelessOreRecipe(new ItemStack(MekanismBlocks.GlowPlasticBlock, 3, i),
+			recipes.add(new ShapelessOreRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 3, 32 + i),
 				new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(Items.glowstone_dust)
 			));
-			recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.ReinforcedPlasticBlock, 4, i),
+			recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 4, 48 + i),
 				" P ", "POP", " P ", 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, i), 'O', new ItemStack(MekanismItems.Dust, 1, 2)
 			));
-			recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.RoadPlasticBlock, 3, i),
-				"SSS", "PPP", "SSS", 'S', Blocks.sand, 'P', new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i)
+			recipes.add(new MekanismRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 3, 64 + i),
+				"SSS", "PPP", "SSS", 'S', Blocks.sand, 'P', new ItemStack(MekanismBlocks.PlasticBlock, 1, 16 + i)
 			));
         }
 	
@@ -637,7 +637,7 @@ public class Mekanism
 		
 		for(int i = 0; i < EnumColor.DYES.length; i++)
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.SlickPlasticBlock, 1, i));
+			RecipeHandler.addEnrichmentChamberRecipe(new ItemStack(MekanismBlocks.PlasticBlock, 1, i), new ItemStack(MekanismBlocks.PlasticBlock, 1, 16 + i));
 		}
 		
 		//Combiner recipes

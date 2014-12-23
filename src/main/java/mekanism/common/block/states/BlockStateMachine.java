@@ -4,6 +4,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.block.BlockMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityChargepad;
@@ -44,70 +45,76 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Plane;
+import net.minecraft.util.IStringSerializable;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 
 public class BlockStateMachine extends BlockStateFacing
 {
-	public static PropertyEnum typeProperty = PropertyEnum.create("type", MachineBlockType.class);
+	public static final PropertyEnum typeProperty = PropertyEnum.create("type", MachineBlockType.class);
 
-	public BlockStateMachine()
+	public BlockStateMachine(BlockMachine block)
 	{
-		super(MekanismBlocks.MachineBlock, typeProperty);
+		super(block, typeProperty);
 	}
 
-	public static enum MachineBlockType
+	public static enum MachineBlockType implements IStringSerializable
 	{
-		ENRICHMENT_CHAMBER("EnrichmentChamber", 3, TileEntityEnrichmentChamber.class, true, false, true),
-		OSMIUM_COMPRESSOR("OsmiumCompressor", 4, TileEntityOsmiumCompressor.class, true, false, true),
-		COMBINER("Combiner", 5, TileEntityCombiner.class, true, false, true),
-		CRUSHER("Crusher", 6, TileEntityCrusher.class, true, false, true),
-		DIGITAL_MINER("DigitalMiner", 2, TileEntityDigitalMiner.class, true, true, true),
-		BASIC_FACTORY("BasicFactory", 11, TileEntityFactory.class, true, false, true),
-		ADVANCED_FACTORY("AdvancedFactory", 11, TileEntityAdvancedFactory.class, true, false, true),
-		ELITE_FACTORY("EliteFactory", 11, TileEntityEliteFactory.class, true, false, true),
-		METALLURGIC_INFUSER("MetallurgicInfuser", 12, TileEntityMetallurgicInfuser.class, true, true, true),
-		PURIFICATION_CHAMBER("PurificationChamber", 15, TileEntityPurificationChamber.class, true, false, true),
-		ENERGIZED_SMELTER("EnergizedSmelter", 16, TileEntityEnergizedSmelter.class, true, false, true),
-		TELEPORTER("Teleporter", 13, TileEntityTeleporter.class, true, false, false),
-		ELECTRIC_PUMP("ElectricPump", 17, TileEntityElectricPump.class, true, true, false),
-		ELECTRIC_CHEST("ElectricChest", -1, TileEntityElectricChest.class, true, true, false),
-		CHARGEPAD("Chargepad", -1, TileEntityChargepad.class, true, true, false),
-		LOGISTICAL_SORTER("LogisticalSorter", -1, TileEntityLogisticalSorter.class, false, true, false),
-		ROTARY_CONDENSENTRATOR("RotaryCondensentrator", 7, TileEntityRotaryCondensentrator.class, true, true, false),
-		CHEMICAL_OXIDIZER("ChemicalOxidizer", 29, TileEntityChemicalOxidizer.class, true, true, true),
-		CHEMICAL_INFUSER("ChemicalInfuser", 30, TileEntityChemicalInfuser.class, true, true, false),
-		CHEMICAL_INJECTION_CHAMBER("ChemicalInjectionChamber", 31, TileEntityChemicalInjectionChamber.class, true, false, true),
-		ELECTROLYTIC_SEPARATOR("ElectrolyticSeparator", 32, TileEntityElectrolyticSeparator.class, true, true, false),
-		PRECISION_SAWMILL("PrecisionSawmill", 34, TileEntityPrecisionSawmill.class, true, false, true),
-		CHEMICAL_DISSOLUTION_CHAMBER("ChemicalDissolutionChamber", 35, TileEntityChemicalDissolutionChamber.class, true, true, true),
-		CHEMICAL_WASHER("ChemicalWasher", 36, TileEntityChemicalWasher.class, true, true, false),
-		CHEMICAL_CRYSTALLIZER("ChemicalCrystallizer", 37, TileEntityChemicalCrystallizer.class, true, true, true),
-		SEISMIC_VIBRATOR("SeismicVibrator", 39, TileEntitySeismicVibrator.class, true, true, false),
-		PRESSURIZED_REACTION_CHAMBER("PressurizedReactionChamber", 40, TileEntityPRC.class, true, true, false),
-		PORTABLE_TANK("PortableTank", 41, TileEntityPortableTank.class, false, true, false),
-		FLUIDIC_PLENISHER("FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false),
-		LASER("Laser", -1, TileEntityLaser.class, true, true, false),
-		LASER_AMPLIFIER("LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
-		LASER_TRACTOR_BEAM("LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
-		AMBIENT_ACCUMULATOR("AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false),
-		ENTANGLED_BLOCK("EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false),
-		GAS_CENTRIFUGE("GasCentrifuge", 48, TileEntityGasCentrifuge.class, true, false, false);
+		ENRICHMENT_CHAMBER(3, TileEntityEnrichmentChamber.class, true, false, true, Plane.HORIZONTAL),
+		OSMIUM_COMPRESSOR(4, TileEntityOsmiumCompressor.class, true, false, true, Plane.HORIZONTAL),
+		COMBINER(5, TileEntityCombiner.class, true, false, true, Plane.HORIZONTAL),
+		CRUSHER(6, TileEntityCrusher.class, true, false, true, Plane.HORIZONTAL),
+		DIGITAL_MINER(2, TileEntityDigitalMiner.class, true, true, true, Plane.HORIZONTAL),
+		BASIC_FACTORY(11, TileEntityFactory.class, true, false, true, Plane.HORIZONTAL),
+		ADVANCED_FACTORY(11, TileEntityAdvancedFactory.class, true, false, true, Plane.HORIZONTAL),
+		ELITE_FACTORY(11, TileEntityEliteFactory.class, true, false, true, Plane.HORIZONTAL),
+		METALLURGIC_INFUSER(12, TileEntityMetallurgicInfuser.class, true, true, true, Plane.HORIZONTAL),
+		PURIFICATION_CHAMBER(15, TileEntityPurificationChamber.class, true, false, true, Plane.HORIZONTAL),
+		ENERGIZED_SMELTER(16, TileEntityEnergizedSmelter.class, true, false, true, Plane.HORIZONTAL),
+		TELEPORTER(13, TileEntityTeleporter.class, true, false, false, Plane.HORIZONTAL),
+		ELECTRIC_PUMP(17, TileEntityElectricPump.class, true, true, false, Plane.HORIZONTAL),
+		ELECTRIC_CHEST(-1, TileEntityElectricChest.class, true, true, false, Plane.HORIZONTAL),
+		CHARGEPAD(-1, TileEntityChargepad.class, true, true, false, Plane.HORIZONTAL),
+		LOGISTICAL_SORTER(-1, TileEntityLogisticalSorter.class, false, true, false, Plane.HORIZONTAL),
+		ROTARY_CONDENSENTRATOR(7, TileEntityRotaryCondensentrator.class, true, true, false, Plane.HORIZONTAL),
+		CHEMICAL_OXIDIZER(29, TileEntityChemicalOxidizer.class, true, true, true, Plane.HORIZONTAL),
+		CHEMICAL_INFUSER(30, TileEntityChemicalInfuser.class, true, true, false, Plane.HORIZONTAL),
+		CHEMICAL_INJECTION_CHAMBER(31, TileEntityChemicalInjectionChamber.class, true, false, true, Plane.HORIZONTAL),
+		ELECTROLYTIC_SEPARATOR(32, TileEntityElectrolyticSeparator.class, true, true, false, Plane.HORIZONTAL),
+		PRECISION_SAWMILL(34, TileEntityPrecisionSawmill.class, true, false, true, Plane.HORIZONTAL),
+		CHEMICAL_DISSOLUTION_CHAMBER(35, TileEntityChemicalDissolutionChamber.class, true, true, true, Plane.HORIZONTAL),
+		CHEMICAL_WASHER(36, TileEntityChemicalWasher.class, true, true, false, Plane.HORIZONTAL),
+		CHEMICAL_CRYSTALLIZER(37, TileEntityChemicalCrystallizer.class, true, true, true, Plane.HORIZONTAL),
+		SEISMIC_VIBRATOR(39, TileEntitySeismicVibrator.class, true, true, false, Plane.HORIZONTAL),
+		PRESSURIZED_REACTION_CHAMBER(40, TileEntityPRC.class, true, true, false, Plane.HORIZONTAL),
+		PORTABLE_TANK(41, TileEntityPortableTank.class, false, true, false, Plane.HORIZONTAL),
+		FLUIDIC_PLENISHER(42, TileEntityFluidicPlenisher.class, true, true, false, Plane.HORIZONTAL),
+		LASER(-1, TileEntityLaser.class, true, true, false, Predicates.<EnumFacing>alwaysTrue()),
+		LASER_AMPLIFIER(44, TileEntityLaserAmplifier.class, false, true, false, Predicates.<EnumFacing>alwaysTrue()),
+		LASER_TRACTOR_BEAM(45, TileEntityLaserTractorBeam.class, false, true, false, Predicates.<EnumFacing>alwaysTrue()),
+		AMBIENT_ACCUMULATOR(46, TileEntityAmbientAccumulator.class, true, false, false, Plane.HORIZONTAL),
+		ENTANGLED_BLOCK(47, TileEntityEntangledBlock.class, true, false, false, Plane.HORIZONTAL),
+		GAS_CENTRIFUGE(48, TileEntityGasCentrifuge.class, true, false, false, Plane.HORIZONTAL);
 
-		public String name;
 		public int guiId;
 		public double baseEnergy;
 		public Class<? extends TileEntity> tileEntityClass;
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
+		public Predicate<EnumFacing> facingPredicate;
 
-		private MachineBlockType(String s, int j, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
+		private MachineBlockType(int j, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades, Predicate<EnumFacing> facingAllowed)
 		{
-			name = s;
 			guiId = j;
 			tileEntityClass = tileClass;
 			isElectric = electric;
 			hasModel = model;
 			supportsUpgrades = upgrades;
+			facingPredicate = facingAllowed;
 		}
 
 		public static MachineBlockType get(int meta)
@@ -221,7 +228,7 @@ public class BlockStateMachine extends BlockStateFacing
 
 		public String getDescription()
 		{
-			return MekanismUtils.localize("tooltip." + name);
+			return MekanismUtils.localize("tooltip." + name().toLowerCase());
 		}
 
 		public ItemStack getStack()
@@ -237,7 +244,18 @@ public class BlockStateMachine extends BlockStateFacing
 		@Override
 		public String toString()
 		{
-			return name;
+			return name().toLowerCase();
+		}
+
+		@Override
+		public String getName()
+		{
+			return name().toLowerCase();
+		}
+
+		public boolean canRotateTo(EnumFacing side)
+		{
+			return facingPredicate.apply(side);
 		}
 	}
 }

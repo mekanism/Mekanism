@@ -35,10 +35,6 @@ public class MekanismBlocks
 	public static final Block GasTank = new BlockGasTank().setUnlocalizedName("GasTank");
 	public static final Block CardboardBox = new BlockCardboardBox().setUnlocalizedName("CardboardBox");
 	public static final Block PlasticBlock = new BlockPlastic().setUnlocalizedName("PlasticBlock");
-	public static final Block SlickPlasticBlock = new BlockPlastic().setUnlocalizedName("SlickPlasticBlock");
-	public static final Block GlowPlasticBlock = new BlockPlastic().setUnlocalizedName("GlowPlasticBlock");
-	public static final Block ReinforcedPlasticBlock = new BlockPlastic().setUnlocalizedName("ReinforcedPlasticBlock");
-	public static final Block RoadPlasticBlock = new BlockPlastic().setUnlocalizedName("RoadPlasticBlock");
 	public static final Block PlasticFence = new BlockPlasticFence().setUnlocalizedName("PlasticFence");
 	public static final Block SaltBlock = new BlockSalt().setUnlocalizedName("SaltBlock");
 
@@ -56,10 +52,6 @@ public class MekanismBlocks
 		GameRegistry.registerBlock(GasTank, ItemBlockGasTank.class, "GasTank");
 		GameRegistry.registerBlock(CardboardBox, ItemBlockCardboardBox.class, "CardboardBox");
 		GameRegistry.registerBlock(PlasticBlock, ItemBlockPlastic.class, "PlasticBlock");
-		GameRegistry.registerBlock(SlickPlasticBlock, ItemBlockPlastic.class, "SlickPlasticBlock");
-		GameRegistry.registerBlock(GlowPlasticBlock, ItemBlockPlastic.class, "GlowPlasticBlock");
-		GameRegistry.registerBlock(ReinforcedPlasticBlock, ItemBlockPlastic.class, "ReinforcedPlasticBlock");
-		GameRegistry.registerBlock(RoadPlasticBlock, ItemBlockPlastic.class, "RoadPlasticBlock");
 		GameRegistry.registerBlock(PlasticFence, ItemBlockPlastic.class, "PlasticFence");
 		GameRegistry.registerBlock(SaltBlock, "SaltBlock");
 	}

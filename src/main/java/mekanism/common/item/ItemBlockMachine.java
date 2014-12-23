@@ -134,7 +134,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	{
 		if(MachineBlockType.get(itemstack) != null)
 		{
-			return getUnlocalizedName() + "." + MachineBlockType.get(itemstack).name;
+			return getUnlocalizedName() + "." + MachineBlockType.get(itemstack).getName();
 		}
 
 		return "null";

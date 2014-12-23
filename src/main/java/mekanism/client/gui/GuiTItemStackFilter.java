@@ -209,7 +209,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 		{
 			if(filter.color != null)
 			{
-				drawCreativeTabHoveringText(filter.color.getName(), xAxis, yAxis);
+				drawCreativeTabHoveringText(filter.color.getNameWithCode(), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
