@@ -28,10 +28,12 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 		setNoRepair();
 	}
 	
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(TextureMap register) {}
-	
+*/
+
 	public void useGas(ItemStack stack)
 	{
 		setGas(stack, new GasStack(getGas(stack).getGas(), getGas(stack).amount-1));

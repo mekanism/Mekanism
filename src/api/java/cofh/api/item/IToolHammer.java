@@ -2,6 +2,7 @@ package cofh.api.item;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 
 /**
  * Implement this interface on subclasses of Item to have that item work as a tool for CoFH mods.

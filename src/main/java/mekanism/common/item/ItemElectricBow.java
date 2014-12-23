@@ -94,7 +94,7 @@ public class ItemElectricBow extends ItemEnergized
 	@Override
 	public EnumAction getItemUseAction(ItemStack itemstack)
 	{
-		return EnumAction.bow;
+		return EnumAction.BOW;
 	}
 
 	@Override

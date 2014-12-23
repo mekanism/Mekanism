@@ -21,6 +21,7 @@ public class ItemHDPE extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	public void registerIcons(TextureMap register)
 	{
@@ -35,6 +36,7 @@ public class ItemHDPE extends ItemMekanism
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)

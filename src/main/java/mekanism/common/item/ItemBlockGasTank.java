@@ -16,6 +16,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +27,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -56,11 +58,13 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 		return i;
 	}
 
+/*
 	@Override
 	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
+*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
@@ -69,13 +73,13 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
 
 		if(place)
 		{
-			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(new BlockPos(x, y, z));
+			TileEntityGasTank tileEntity = (TileEntityGasTank)world.getTileEntity(pos);
 			tileEntity.gasTank.setGas(getGas(stack));
 
 			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));

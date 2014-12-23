@@ -35,7 +35,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 	public ItemJetpack()
 	{
-		super(EnumHelper.addArmorMaterial("JETPACK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
+		super(EnumHelper.addArmorMaterial("JETPACK", "jetpack", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
 		setMaxDamage(100);
 		setNoRepair();

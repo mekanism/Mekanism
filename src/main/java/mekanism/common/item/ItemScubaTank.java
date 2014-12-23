@@ -33,7 +33,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 	public ItemScubaTank()
 	{
-		super(EnumHelper.addArmorMaterial("SCUBATANK", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
+		super(EnumHelper.addArmorMaterial("SCUBATANK", "scubaTank", 0, new int[] {0, 0, 0, 0}, 0), 0, 1);
 		setCreativeTab(Mekanism.tabMekanism);
 		setMaxDamage(100);
 		setNoRepair();
@@ -247,7 +247,9 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 		list.add(filled);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(TextureMap register) {}
+*/
 }

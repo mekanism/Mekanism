@@ -26,11 +26,13 @@ public class ItemBlockPlastic extends ItemBlock
 		return i;
 	}
 
+/*
 	@Override
 	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
+*/
 
 	@Override
 	public String getItemStackDisplayName(ItemStack stack)

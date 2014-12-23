@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -90,7 +91,7 @@ public class ItemBalloon extends ItemMekanism
 	{
 		if(player.isSneaking())
 		{
-			AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(x, y, z, x+1, y+3, z+1);
+			AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
 
 			List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
 
@@ -99,26 +100,24 @@ public class ItemBalloon extends ItemMekanism
 				return true;
 			}
 
-			Coord4D obj = new Coord4D(x, y, z, world.provider.getDimensionId());
-
-			if(obj.getBlock(world).isReplaceable(world, x, y, z))
+			if(world.getBlockState(pos).getBlock().isReplaceable(world, pos))
 			{
-				obj.getPos().getY()--;
+				pos = pos.down();
 			}
 			
-			if(!world.isSideSolid(x, y, z, EnumFacing.UP))
+			if(!world.isSideSolid(pos, EnumFacing.UP))
 			{
 				return true;
 			}
 
-			if(canReplace(world, obj.getPos().getX(), obj.getPos().getY()+1, obj.getPos().getZ()) && canReplace(world, obj.getPos().getX(), obj.getPos().getY()+2, obj.getPos().getZ()))
+			if(canReplace(world, pos.up()) && canReplace(world, pos.up().up()))
 			{
-				world.setBlockToAir(obj.getPos().getX(), obj.getPos().getY()+1, obj.getPos().getZ());
-				world.setBlockToAir(obj.getPos().getX(), obj.getPos().getY()+2, obj.getPos().getZ());
+				world.setBlockToAir(pos.up());
+				world.setBlockToAir(pos.up().up());
 
 				if(!world.isRemote)
 				{
-					world.spawnEntityInWorld(new EntityBalloon(world, obj, getColor(stack)));
+					world.spawnEntityInWorld(new EntityBalloon(world, pos, getColor(stack)));
 					stack.stackSize--;
 				}
 			}
@@ -136,7 +135,7 @@ public class ItemBalloon extends ItemMekanism
 		{
 			if(!player.worldObj.isRemote)
 			{
-				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
+				AxisAlignedBB bound = AxisAlignedBB.fromBounds(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + 4, entity.posZ + 0.2);
 
 				List<EntityBalloon> balloonsNear = player.worldObj.getEntitiesWithinAABB(EntityBalloon.class, bound);
 
@@ -160,27 +159,23 @@ public class ItemBalloon extends ItemMekanism
 
 	private boolean canReplace(World world, BlockPos pos)
 	{
-		return world.isAirBlock(x, y, z) || world.getBlockState(new BlockPos(x, y, z)).getBlock().isReplaceable(world, x, y, z);
+		return world.isAirBlock(pos) || world.getBlockState(new BlockPos(pos)).getBlock().isReplaceable(world, pos);
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(TextureMap register) {}
-	
 	public class DispenserBehavior extends BehaviorDefaultDispenseItem
 	{
 		@Override
 		public ItemStack dispenseStack(IBlockSource source, ItemStack stack)
 		{
-			Coord4D coord = new Coord4D(source.getXInt(), source.getYInt(), source.getZInt(), source.getWorld().provider.getDimensionId());
-			EnumFacing side = EnumFacing.getFront(BlockDispenser.func_149937_b(source.getBlockMetadata()).ordinal());
+			Coord4D coord = new Coord4D(source.getBlockPos(), source.getWorld().provider.getDimensionId());
+			EnumFacing side = BlockDispenser.getFacing(source.getBlockMetadata());
 
 			List<EntityLivingBase> entities = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, coord.offset(side).getBoundingBox());
 			boolean latched = false;
 			
 			for(EntityLivingBase entity : entities)
 			{
-				AxisAlignedBB bound = AxisAlignedBB.getBoundingBox(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + entity.ySize + 4, entity.posZ + 0.2);
+				AxisAlignedBB bound = AxisAlignedBB.fromBounds(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2, entity.posY + 4, entity.posZ + 0.2);
 
 				List<EntityBalloon> balloonsNear = source.getWorld().getEntitiesWithinAABB(EntityBalloon.class, bound);
 				boolean hasBalloon = false;

@@ -46,16 +46,18 @@ public class ItemFreeRunners extends ItemArmor implements IEnergizedItem, ISpeci
 
 	public ItemFreeRunners()
 	{
-		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
+		super(EnumHelper.addArmorMaterial("FRICTIONBOOTS", "frictionBoots", 0, new int[] {0, 0, 0, 0}, 0), 0, 3);
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(TextureMap register) {}
+*/
 
 	@Override
 	public boolean isValidArmor(ItemStack stack, int armorType, Entity entity)

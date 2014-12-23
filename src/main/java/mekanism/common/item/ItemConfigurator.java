@@ -59,8 +59,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	{
 		if(!world.isRemote)
 		{
-			Block block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
-			TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
+			Block block = world.getBlockState(pos).getBlock();
+			TileEntity tile = world.getTileEntity(pos);
 
 			if(getState(stack) == 0) //Configurate
 			{
@@ -70,7 +70,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 					if(!player.isSneaking())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getFacing())]).color.getName()));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration(MekanismUtils.getBaseOrientation(side, config.getFacing()))).color.getName()));
 						return true;
 					}
 					else {
@@ -78,7 +78,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						{
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 							MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getFacing()));
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getFacing())]).color.getName()));
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration(MekanismUtils.getBaseOrientation(side, config.getFacing()))).color.getName()));
 
 							if(config instanceof TileEntityBasicBlock)
 							{
@@ -136,7 +136,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 									}
 
 									slotStack.stackSize -= j;
-									EntityItem item = new EntityItem(world, x + xRandom, y + yRandom, z + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
+									EntityItem item = new EntityItem(world, pos.getX() + xRandom, pos.getY() + yRandom, pos.getZ() + zRandom, new ItemStack(slotStack.getItem(), j, slotStack.getItemDamage()));
 
 									if(slotStack.hasTagCompound())
 									{
@@ -165,16 +165,16 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			}
 			else if(getState(stack) == 2) //Rotate
 			{
-				EnumFacing axis = EnumFacing.getFront(side);
-				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, x, y, z));
+				EnumFacing axis = side;
+				List<EnumFacing> l = Arrays.asList(block.getValidRotations(world, pos));
 
 				if(!player.isSneaking() && l.contains(axis))
 				{
-					block.rotateBlock(world, x, y, z, axis);
+					block.rotateBlock(world, pos, axis);
 				}
 				else if(player.isSneaking() && l.contains(axis.getOpposite()))
 				{
-					block.rotateBlock(world, x, y, z, axis.getOpposite());
+					block.rotateBlock(world, pos, axis.getOpposite());
 				}
 
 				return true;
@@ -259,7 +259,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	@Method(modid = "BuildCraftAPI|tools")
 	public boolean canWrench(EntityPlayer player, BlockPos pos)
 	{
-		return canUseWrench(player, x, y, z);
+		return canUseWrench(player, pos);
 	}
 
 	@Override
@@ -281,7 +281,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	@Override
 	public boolean isUsable(ItemStack item, EntityLivingBase user, BlockPos pos)
 	{
-		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, x, y, z);
+		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, pos);
 	}
 
 	@Override

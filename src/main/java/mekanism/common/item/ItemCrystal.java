@@ -22,6 +22,7 @@ public class ItemCrystal extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	public void registerIcons(TextureMap register)
 	{
@@ -36,6 +37,7 @@ public class ItemCrystal extends ItemMekanism
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)

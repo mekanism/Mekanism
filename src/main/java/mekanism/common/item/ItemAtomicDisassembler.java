@@ -102,14 +102,13 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		{
 			IBlockState state = player.worldObj.getBlockState(pos);
 			Block block = state.getBlock();
-			int meta = block.getMetaFromState(state);
 			
 			if(block == Blocks.lit_redstone_ore)
 			{
 				block = Blocks.redstone_ore;
 			}
 
-			ItemStack stack = new ItemStack(block, 1, meta);
+			ItemStack stack = new ItemStack(block, 1, block.damageDropped(state));
 			Coord4D orig = new Coord4D(pos, player.worldObj.provider.getDimensionId());
 
 			List<String> names = MekanismUtils.getOreDictName(stack);
@@ -138,7 +137,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 					Block block2 = coord.getBlock(player.worldObj);
 
 					block2.onBlockDestroyedByPlayer(player.worldObj, coord, state);
-					player.worldObj.playAuxSFXAtEntity(null, 2001, coord, meta << 12);
+					player.worldObj.playAuxSFXAtEntity(null, 2001, coord, Block.getStateId(state));
 					player.worldObj.setBlockToAir(coord);
 					block2.breakBlock(player.worldObj, coord, state);
 					block2.dropBlockAsItem(player.worldObj, coord, state, 0);

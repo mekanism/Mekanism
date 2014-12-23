@@ -21,6 +21,7 @@ import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -29,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -88,17 +90,17 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
 
 		if(place)
 		{
-			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(new BlockPos(x, y, z));
+			TileEntityEnergyCube tileEntity = (TileEntityEnergyCube)world.getTileEntity(pos);
 			tileEntity.tier = ((IEnergyCube)stack.getItem()).getEnergyCubeTier(stack);
 			tileEntity.electricityStored = getEnergy(stack);
 
-			((ISustainedInventory)tileEntity).setInventory(getInventory(stack));
+			tileEntity.setInventory(getInventory(stack));
 
 			if(!world.isRemote)
 			{

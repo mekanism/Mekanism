@@ -22,8 +22,6 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
-import mekanism.common.block.states.MachineBlockType;
-import mekanism.common.block.states.BlockStateMachine;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
@@ -38,6 +36,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -50,6 +49,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -222,11 +222,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			return false;
 		}
 		
-		return super.onItemUse(stack, player, world, x, y, z, side, hitX, hitY, hitZ);
+		return super.onItemUse(stack, player, world, pos, side, hitX, hitY, hitZ);
     }
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
 	{
 		boolean place = true;
 
@@ -234,11 +234,11 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 		if(type == MachineBlockType.DIGITAL_MINER)
 		{
-			for(int xPos = x-1; xPos <= x+1; xPos++)
+			for(int xPos = -1; xPos <= +1; xPos++)
 			{
-				for(int yPos = y; yPos <= y+1; yPos++)
+				for(int yPos = 0; yPos <= +1; yPos++)
 				{
-					for(int zPos = z-1; zPos <= z+1; zPos++)
+					for(int zPos = -1; zPos <= +1; zPos++)
 					{
 						Block b = world.getBlockState(new BlockPos(xPos, yPos, zPos)).getBlock();
 
@@ -247,7 +247,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 							place = false;
 						}
 
-						if(!b.isAir(world, xPos, yPos, zPos) && !b.isReplaceable(world, xPos, yPos, zPos))
+						if(!b.isReplaceable(world, pos.add(xPos, yPos, zPos)))
 						{
 							return false;
 						}
@@ -256,9 +256,9 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			}
 		}
 
-		if(place && super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata))
+		if(place && super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState))
 		{
-			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(new BlockPos(x, y, z));
+			TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(pos);
 
 			if(tileEntity instanceof IUpgradeTile)
 			{
@@ -302,7 +302,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(tileEntity instanceof TileEntityFactory)
 			{
 				((TileEntityFactory)tileEntity).recipeType = RecipeType.values()[getRecipeType(stack)];
-				world.notifyBlocksOfNeighborChange(x, y, z, tileEntity.getBlockType());
+				world.notifyNeighborsOfStateChange(pos, tileEntity.getBlockType());
 			}
 
 			if(tileEntity instanceof ISustainedTank)
@@ -445,30 +445,30 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
             return false;
         }
         else {
-            Material material = world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial();
+            Material material = world.getBlockState(pos).getBlock().getMaterial();
             boolean flag = !material.isSolid();
 
-            if(!world.isAirBlock(x, y, z) && !flag)
+            if(!world.isAirBlock(pos) && !flag)
             {
                 return false;
             }
             else {
-                if(world.provider.isHellWorld && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER)
+                if(world.provider.doesWaterVaporize() && getFluidStack(itemstack).getFluid() == FluidRegistry.WATER)
                 {
-                    world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                    world.playSoundEffect(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, "random.fizz", 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
                     for(int l = 0; l < 8; l++)
                     {
-                        world.spawnParticle("largesmoke", x + Math.random(), y + Math.random(), z + Math.random(), 0.0D, 0.0D, 0.0D);
+                        world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
                     }
                 }
                 else {
                     if(!world.isRemote && flag && !material.isLiquid())
                     {
-                        world.func_147480_a(x, y, z, true);
+                        world.destroyBlock(pos, true);
                     }
                     
-                    world.setBlock(x, y, z, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()), 0, 3);
+                    world.setBlockState(pos, MekanismUtils.getFlowingBlock(getFluidStack(itemstack).getFluid()).getStateFromMeta(0), 3);
                 }
 
                 return true;
@@ -510,21 +510,21 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        else {
 	            if(pos.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
 	            {
-	            	Coord4D coord = new Coord4D(pos.blockX, pos.blockY, pos.blockZ, world.provider.getDimensionId());
+	            	Coord4D coord = new Coord4D(pos.getBlockPos(), world.provider.getDimensionId());
 	
-	                if(!world.canMineBlock(entityplayer, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ()))
+	                if(!world.isBlockModifiable(entityplayer, coord))
 	                {
 	                    return itemstack;
 	                }
 	
 	                if(!entityplayer.isSneaking())
 	                {
-	                    if(!entityplayer.canPlayerEdit(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ(), pos.sideHit, itemstack))
+	                    if(!entityplayer.canPlayerEdit(coord, pos.sideHit, itemstack))
 	                    {
 	                        return itemstack;
 	                    }
 	                    
-	                    FluidStack fluid = MekanismUtils.getFluid(world, coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
+	                    FluidStack fluid = MekanismUtils.getFluid(world, coord);
 	                    
 	                    if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
 	                    {
@@ -545,7 +545,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	                			setFluidStack(newStack, itemstack);
 	                		}
 	                		
-	                		world.setBlockToAir(coord.getPos().getX(), coord.getPos().getY(), coord.getPos().getZ());
+	                		world.setBlockToAir(coord);
 	                    }
 	                }
 	                else {
@@ -556,14 +556,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	        				return itemstack;
 	        			}
 	        			
-	        			Coord4D trans = coord.offset(EnumFacing.getFront(pos.sideHit));
+	        			Coord4D trans = coord.offset(pos.sideHit);
 
-	                    if(!entityplayer.canPlayerEdit(trans.getPos().getX(), trans.getPos().getY(), trans.getPos().getZ(), pos.sideHit, itemstack))
+	                    if(!entityplayer.canPlayerEdit(trans, pos.sideHit, itemstack))
 	                    {
 	                        return itemstack;
 	                    }
 
-	                    if(tryPlaceContainedLiquid(world, itemstack, trans.getPos().getX(), trans.getPos().getY(), trans.getPos().getZ()) && !entityplayer.capabilities.isCreativeMode)
+	                    if(tryPlaceContainedLiquid(world, itemstack, trans) && !entityplayer.capabilities.isCreativeMode)
 	                    {
 	                    	FluidStack newStack = stored.copy();
 	                    	newStack.amount -= FluidContainerRegistry.BUCKET_VOLUME;
@@ -851,7 +851,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return MekanismUtils.getMaxEnergy(itemStack, MachineBlockType.get(Block.getBlockFromItem(itemStack.getItem()), itemStack.getItemDamage()).baseEnergy);
+		return MekanismUtils.getMaxEnergy(itemStack, MachineBlockType.get(itemStack).baseEnergy);
 	}
 
 	@Override

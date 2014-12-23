@@ -26,6 +26,7 @@ public class ItemDust extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	public void registerIcons(TextureMap register)
 	{
@@ -49,6 +50,7 @@ public class ItemDust extends ItemMekanism
 			itemList.add(new ItemStack(item, 1, counter));
 		}
 	}
+*/
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)

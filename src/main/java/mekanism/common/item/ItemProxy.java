@@ -22,11 +22,13 @@ public class ItemProxy extends Item
 		return getSavedItem(stack);
 	}
 
+/*
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
 		return stack.getTagCompound() == null || !stack.getTagCompound().getBoolean("hasStack");
 	}
+*/
 
 	@Override
 	public boolean hasContainerItem(ItemStack itemStack)
@@ -67,9 +69,11 @@ public class ItemProxy extends Item
 		return null;
 	}
 
+/*
 	@Override
 	public void registerIcons(TextureMap register) {}
 
+*/
 	@Override
 	public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)
 	{

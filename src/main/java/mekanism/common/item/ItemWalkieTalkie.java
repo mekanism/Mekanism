@@ -31,6 +31,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 		list.add(EnumColor.DARK_AQUA + MekanismUtils.localize("tooltip.channel") + ": " + EnumColor.GREY + getChannel(itemstack));
 	}
 
+/*
 	@Override
 	public TextureAtlasSprite getIconIndex(ItemStack itemStack)
 	{
@@ -52,6 +53,7 @@ public class ItemWalkieTalkie extends ItemMekanism
 			icons[i] = register.registerIcon("mekanism:WalkieTalkie_ch" + i);
 		}
 	}
+*/
 
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)

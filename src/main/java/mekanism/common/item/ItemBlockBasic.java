@@ -8,11 +8,13 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.tile.TileEntityBin;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -70,11 +72,13 @@ public class ItemBlockBasic extends ItemBlock
 		return i;
 	}
 
+/*
 	@Override
 	public TextureAtlasSprite getIconFromDamage(int i)
 	{
 		return metaBlock.getIcon(2, i);
 	}
+*/
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -101,6 +105,7 @@ public class ItemBlockBasic extends ItemBlock
 		return stack.getItemDamage() == 6 && stack.getTagCompound() != null && stack.getTagCompound().hasKey("newCount");
 	}
 
+/*
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
@@ -119,6 +124,7 @@ public class ItemBlockBasic extends ItemBlock
 
 		return false;
 	}
+*/
 
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
@@ -138,9 +144,9 @@ public class ItemBlockBasic extends ItemBlock
 	}
 
 	@Override
-	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int metadata)
+	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState)
 	{
-		boolean place = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+		boolean place = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
 
 		if(place)
 		{
@@ -148,7 +154,7 @@ public class ItemBlockBasic extends ItemBlock
 			{
 				if(stack.getItemDamage() == 6 && stack.getTagCompound() != null)
 				{
-					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(new BlockPos(x, y, z));
+					TileEntityBin tileEntity = (TileEntityBin)world.getTileEntity(pos);
 					InventoryBin inv = new InventoryBin(stack);
 
 					if(inv.getItemType() != null)
@@ -167,73 +173,64 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		String name = "";
+		String name;
 
-		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
+		switch(itemstack.getItemDamage())
 		{
-			switch(itemstack.getItemDamage())
-			{
-				case 0:
-					name = "OsmiumBlock";
-					break;
-				case 1:
-					name = "BronzeBlock";
-					break;
-				case 2:
-					name = "RefinedObsidian";
-					break;
-				case 3:
-					name = "CharcoalBlock";
-					break;
-				case 4:
-					name = "RefinedGlowstone";
-					break;
-				case 5:
-					name = "SteelBlock";
-					break;
-				case 6:
-					name = "Bin";
-					break;
-				case 7:
-					name = "TeleporterFrame";
-					break;
-				case 8:
-					name = "SteelCasing";
-					break;
-				case 9:
-					name = "DynamicTank";
-					break;
-				case 10:
-					name = "DynamicGlass";
-					break;
-				case 11:
-					name = "DynamicValve";
-					break;
-				case 12:
-					name = "CopperBlock";
-					break;
-				case 13:
-					name = "TinBlock";
-					break;
-				case 14:
-					name = "SalinationController";
-					break;
-				case 15:
-					name = "SalinationValve";
-					break;
-				default:
-					name = "Unknown";
-					break;
-			}
-		}
-		else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
-		{
-			switch(itemstack.getItemDamage())
-			{
-				case 0:
-					name = "SalinationBlock";
-					break;
-			}
+			case 0:
+				name = "OsmiumBlock";
+				break;
+			case 1:
+				name = "BronzeBlock";
+				break;
+			case 2:
+				name = "RefinedObsidian";
+				break;
+			case 3:
+				name = "CharcoalBlock";
+				break;
+			case 4:
+				name = "RefinedGlowstone";
+				break;
+			case 5:
+				name = "SteelBlock";
+				break;
+			case 6:
+				name = "Bin";
+				break;
+			case 7:
+				name = "TeleporterFrame";
+				break;
+			case 8:
+				name = "SteelCasing";
+				break;
+			case 9:
+				name = "DynamicTank";
+				break;
+			case 10:
+				name = "DynamicGlass";
+				break;
+			case 11:
+				name = "DynamicValve";
+				break;
+			case 12:
+				name = "CopperBlock";
+				break;
+			case 13:
+				name = "TinBlock";
+				break;
+			case 14:
+				name = "SalinationController";
+				break;
+			case 15:
+				name = "SalinationValve";
+				break;
+			case 16:
+				name = "SalinationBlock";
+				break;
+			default:
+				name = "Unknown";
+				break;
 		}
 
 		return getUnlocalizedName() + "." + name;

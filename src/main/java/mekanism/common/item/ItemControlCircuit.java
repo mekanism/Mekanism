@@ -22,6 +22,7 @@ public class ItemControlCircuit extends ItemMekanism
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 
+/*
 	@Override
 	public void registerIcons(TextureMap register)
 	{
@@ -39,6 +40,7 @@ public class ItemControlCircuit extends ItemMekanism
 	{
 		return icons[meta];
 	}
+*/
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
