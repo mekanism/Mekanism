@@ -1,7 +1,7 @@
 package ic2.api.reactor;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -13,7 +13,7 @@ public interface IReactor {
 	 * 
 	 * @return Position of the reactor
 	 */
-	public ChunkCoordinates getPosition();
+	public BlockPos getPosition();
 
 	/**
 	 * Get the reactor's corresponding world.

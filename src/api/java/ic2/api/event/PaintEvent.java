@@ -1,5 +1,6 @@
 package ic2.api.event;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fml.common.eventhandler.Cancelable;

@@ -12,6 +12,9 @@ import dan200.computercraft.api.media.IMediaProvider;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import java.lang.reflect.Method;
@@ -172,7 +175,7 @@ public final class ComputerCraftAPI
         if( computerCraft_getDefaultBundledRedstoneOutput != null )
         {
             try {
-                return ((Integer)computerCraft_getDefaultBundledRedstoneOutput.invoke( null, world, x, y, z, side )).intValue();
+                return ((Integer)computerCraft_getDefaultBundledRedstoneOutput.invoke( null, world, pos, side )).intValue();
             } catch (Exception e){
                 // It failed
             }

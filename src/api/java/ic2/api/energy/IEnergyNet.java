@@ -1,6 +1,7 @@
 package ic2.api.energy;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraft.util.EnumFacing;
@@ -20,9 +21,7 @@ public interface IEnergyNet {
 	 * simplifying cross-mod dependencies and multi-blocks.
 	 * 
 	 * @param world World containing the tile entity
-	 * @param x x-coordinate
-	 * @param y y-coordinate
-	 * @param z z-coordinate
+	 * @param pos - coordinates
 	 * @return tile entity registered to the energy net or null if none is registered
 	 */
 	TileEntity getTileEntity(World world, BlockPos pos);

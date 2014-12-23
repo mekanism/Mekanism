@@ -3,7 +3,8 @@ package ic2.api.crops;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 
 /**
@@ -195,7 +196,7 @@ public interface ICropTile {
 	 * 
 	 * @return Crop location
 	 */
-	public ChunkCoordinates getLocation();
+	public BlockPos getLocation();
 
 	/**
 	 * Get the crop's light level.

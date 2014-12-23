@@ -51,7 +51,7 @@ public class BlockIndex implements Comparable<BlockIndex> {
 	}
 
 	public BlockIndex(TileEntity entity) {
-		this(entity.getPos().getX(), entity.getPos().getY(), entity.getPos().getZ());
+		this(entity.getPos());
 	}
 
 	/**

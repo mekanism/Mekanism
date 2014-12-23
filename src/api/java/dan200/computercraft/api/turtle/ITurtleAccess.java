@@ -11,7 +11,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -31,7 +31,7 @@ public interface ITurtleAccess
 	 * Returns a vector containing the integer co-ordinates at which the turtle resides.
 	 * @return a vector containing the integer co-ordinates at which the turtle resides.
 	 */
-	public ChunkCoordinates getPosition();
+	public BlockPos getPosition();
 
     /**
      * TODO: Document me

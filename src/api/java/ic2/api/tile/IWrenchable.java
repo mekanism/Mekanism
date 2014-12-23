@@ -2,6 +2,7 @@ package ic2.api.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 /**
  * Allows a tile entity to make use of the wrench's removal and rotation functions.
@@ -22,14 +23,14 @@ public interface IWrenchable {
 	 * 
 	 * @return Block facing
 	 */
-	short getFacing();
+	EnumFacing getFacing();
 
 	/**
 	 * Set the block's facing
 	 * 
 	 * @param facing facing to set the block to
 	 */
-	void setFacing(short facing);
+	void setFacing(EnumFacing facing);
 
 	/**
 	 * Determine if the wrench can be used to remove the block.

@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public final class BuildCraftAPI {
@@ -37,6 +38,6 @@ public final class BuildCraftAPI {
 	}
 
 	public static boolean isSoftBlock(World world, BlockPos pos) {
-		return isSoftProperty.get(world, x, y, z);
+		return isSoftProperty.get(world, pos);
 	}
 }

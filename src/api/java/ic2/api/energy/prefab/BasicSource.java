@@ -2,6 +2,7 @@ package ic2.api.energy.prefab;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -87,7 +88,8 @@ import ic2.api.item.ElectricItem;
  * }
  * @endcode
  */
-public class BasicSource extends TileEntity implements IEnergySource {
+public class BasicSource extends TileEntity implements IEnergySource, IUpdatePlayerListBox
+{
 	// **********************************
 	// *** Methods for use by the mod ***
 	// **********************************
@@ -115,7 +117,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 	 * Either updateEntity or onLoaded have to be used.
 	 */
 	@Override
-	public void updateEntity() {
+	public void update() {
 		if (!addedToEnet) onLoaded();
 	}
 
@@ -128,9 +130,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 				!FMLCommonHandler.instance().getEffectiveSide().isClient() &&
 				Info.isIc2Available()) {
 			worldObj = parent.getWorld();
-			xCoord = parent.getPos().getX();
-			yCoord = parent.getPos().getY();
-			zCoord = parent.getPos().getZ();
+			pos = parent.getPos();
 
 			MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
 
@@ -311,7 +311,7 @@ public class BasicSource extends TileEntity implements IEnergySource {
 
 	@Deprecated
 	public void onUpdateEntity() {
-		updateEntity();
+		update();
 	}
 
 	@Deprecated

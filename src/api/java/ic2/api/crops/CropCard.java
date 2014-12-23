@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -103,7 +104,7 @@ public abstract class CropCard {
 		textures = new TextureAtlasSprite[maxSize()];
 
 		for (int i = 1; i <= textures.length; i++) {
-			textures[i-1] = iconRegister.registerIcon("ic2:crop/blockCrop."+name()+"."+i);
+			textures[i-1] = iconRegister.registerSprite(new ResourceLocation("ic2", "crop/blockCrop." + name() + "." + i));
 		}
 	}
 
