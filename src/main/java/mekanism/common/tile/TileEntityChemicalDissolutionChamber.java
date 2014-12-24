@@ -36,6 +36,8 @@ import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
@@ -335,11 +337,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.CHEMICAL_DISSOLUTION_CHAMBER.facingPredicate;
 	}
-	
+
 	@Override
 	public void setActive(boolean active)
 	{

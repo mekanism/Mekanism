@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -32,6 +33,8 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import io.netty.buffer.ByteBuf;
+
+import com.google.common.base.Predicate;
 
 public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager
 {
@@ -60,11 +63,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		inventory = new ItemStack[2];
 	}
-	
+
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return false;
+		return MachineBlockType.PORTABLE_TANK.facingPredicate;
 	}
 
 	@Override

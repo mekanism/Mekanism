@@ -45,6 +45,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IFluidHandler, ISustainedData
 {
 	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
@@ -367,9 +369,9 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.CHEMICAL_WASHER.facingPredicate;
 	}
 
 	public GasTank getTank(EnumFacing side)

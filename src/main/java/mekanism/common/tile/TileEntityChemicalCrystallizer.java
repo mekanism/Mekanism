@@ -44,6 +44,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
 public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IInvConfiguration, IUpgradeTile, ISustainedData
 {
 	public static final int MAX_GAS = 10000;
@@ -298,9 +301,9 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.CHEMICAL_CRYSTALLIZER.facingPredicate;
 	}
 
 	public double getScaledProgress()

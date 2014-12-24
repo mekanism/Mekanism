@@ -473,7 +473,7 @@ public final class RecipeHandler
 	{
 		if(stack != null)
 		{
-			for(PressurizedInput key : (Set<PressurizedInput>)Recipe.PRESSURIZED_REACTION_CHAMBER.get().keySet())
+			for(PressurizedInput key : Recipe.PRESSURIZED_REACTION_CHAMBER.<PressurizedInput, PressurizedRecipe>get().keySet())
 			{
 				if(key.containsType(stack))
 				{
@@ -593,7 +593,7 @@ public final class RecipeHandler
 			return false;
 		}
 
-		public HashMap get()
+		public <INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> HashMap<INPUT, RECIPE> get()
 		{
 			return recipes;
 		}

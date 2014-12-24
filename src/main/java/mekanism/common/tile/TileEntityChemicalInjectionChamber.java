@@ -25,7 +25,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 {
 	public TileEntityChemicalInjectionChamber()
 	{
-		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, MachineBlockType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
+		super("injection", "ChemicalInjectionChamber", 1, 200, MachineBlockType.CHEMICAL_INJECTION_CHAMBER);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,12 +26,15 @@ import net.minecraftforge.fml.common.Optional.Interface;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import ic2.api.tile.IWrenchable;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
 public abstract class TileEntityBasicBlock extends TileEntity implements ITileNetwork, IUpdatePlayerListBox, IWrenchable
 {
-	public int clientFacing;
+	public EnumFacing facing = EnumFacing.NORTH;
+	public EnumFacing clientFacing;
 
 	public HashSet<EntityPlayer> openedThisTick = new HashSet<EntityPlayer>();
 
@@ -77,7 +81,15 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		facing = EnumFacing.getFront(dataStream.readInt());
 		redstone = dataStream.readBoolean();
+
+		if(clientFacing != facing)
+		{
+			MekanismUtils.updateBlock(worldObj, getPos());
+			worldObj.notifyNeighborsOfStateChange(pos, getBlockType());
+			clientFacing = facing;
+		}
 
 		for(ITileComponent component : components)
 		{
@@ -88,6 +100,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
+		data.add(facing.getIndex());
 		data.add(redstone);
 
 		for(ITileComponent component : components)
@@ -119,6 +132,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		super.readFromNBT(nbtTags);
 
+		facing = EnumFacing.getFront(nbtTags.getInteger("facing"));
 		redstone = nbtTags.getBoolean("redstone");
 
 		for(ITileComponent component : components)
@@ -132,6 +146,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		super.writeToNBT(nbtTags);
 
+		nbtTags.setInteger("facing", facing.getIndex());
 		nbtTags.setBoolean("redstone", redstone);
 
 		for(ITileComponent component : components)
@@ -143,7 +158,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	@Override
 	public EnumFacing getFacing()
 	{
-		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateFacing.facingProperty);
+		return facing;
 	}
 
 	/**
@@ -153,7 +168,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	 */
 	public boolean canSetFacing(EnumFacing facing)
 	{
-		return true;
+		return getFacePredicate().apply(facing);
+	}
+
+	public Predicate<EnumFacing> getFacePredicate()
+	{
+		return Predicates.alwaysTrue();
 	}
 
 	public boolean isPowered()
@@ -192,9 +212,9 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	}
 
 	@Override
-	public void setFacing(EnumFacing facing)
+	public void setFacing(EnumFacing newFacing)
 	{
-		getWorld().getBlockState(getPos()).withProperty(BlockStateFacing.facingProperty, facing);
+		facing = newFacing;
 	}
 
 	@Override
@@ -214,5 +234,4 @@ public abstract class TileEntityBasicBlock extends TileEntity implements ITileNe
 	{
 		return getBlockType().getDrops(getWorld(), getPos(), getWorld().getBlockState(getPos()), 0).get(0);
 	}
-
 }

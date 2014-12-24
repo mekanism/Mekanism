@@ -4,6 +4,7 @@ import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -35,9 +36,9 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	 * @param ticksRequired - ticks required to operate -- or smelt an item.
 	 * @param maxEnergy - maximum energy this machine can hold.
 	 */
-	public TileEntityElectricMachine(String soundPath, String name, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityElectricMachine(String soundPath, String name, int ticksRequired, MachineBlockType machineType)
 	{
-		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), ticksRequired, machineType);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));

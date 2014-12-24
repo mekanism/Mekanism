@@ -17,7 +17,6 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 

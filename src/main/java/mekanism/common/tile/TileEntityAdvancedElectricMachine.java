@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -59,9 +60,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	 * @param ticksRequired - how many ticks it takes to smelt an item.
 	 * @param maxEnergy - maximum amount of energy this machine can hold.
 	 */
-	public TileEntityAdvancedElectricMachine(String soundPath, String name, double perTick, int secondaryPerTick, int ticksRequired, double maxEnergy)
+	public TileEntityAdvancedElectricMachine(String soundPath, String name, int secondaryPerTick, int ticksRequired, MachineBlockType machineType)
 	{
-		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"), perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"), ticksRequired, machineType);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));

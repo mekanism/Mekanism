@@ -35,6 +35,8 @@ import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
@@ -296,9 +298,9 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.CHEMICAL_INFUSER.facingPredicate;
 	}
 
 	public GasTank getTank(EnumFacing side)

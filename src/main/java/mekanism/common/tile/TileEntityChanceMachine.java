@@ -5,6 +5,7 @@ import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.ChanceMachineRecipe;
@@ -27,9 +28,9 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
-	public TileEntityChanceMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityChanceMachine(String soundPath, String name, ResourceLocation location, int ticksRequired, MachineBlockType machineType)
 	{
-		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
+		super(soundPath, name, location, ticksRequired, machineType);
 
 		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));

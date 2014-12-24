@@ -255,7 +255,7 @@ public class GuiConfiguration extends GuiMekanism
 		{
 			if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 			{
-				int guiId = MachineBlockType.get(tile.getBlockMetadata()).guiId;
+				int guiId = MachineBlockType.get(tile.getBlockType(), tile.getBlockMetadata()).guiId;
                 SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tile), guiId));
 			}

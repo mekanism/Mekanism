@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 
 import mekanism.common.PacketHandler;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 
@@ -12,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
+
+import com.google.common.base.Predicate;
 
 public class TileEntityElectricChest extends TileEntityElectricBlock
 {
@@ -181,8 +184,8 @@ public class TileEntityElectricChest extends TileEntityElectricBlock
 */
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.ELECTRIC_CHEST.facingPredicate;
 	}
 }

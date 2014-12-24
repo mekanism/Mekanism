@@ -22,6 +22,8 @@ import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntitySeismicVibrator extends TileEntityElectricBlock implements IActiveState, IRedstoneControl
 {
 	public boolean isActive;
@@ -177,11 +179,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.SEISMIC_VIBRATOR.facingPredicate;
 	}
-	
+
 	@Override
 	public RedstoneControl getControlType()
 	{

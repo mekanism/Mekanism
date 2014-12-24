@@ -465,6 +465,11 @@ public class CommonProxy
 
 	public EntityPlayer getPlayer(MessageContext context)
 	{
+		return getPlayerServer(context);
+	}
+
+	public EntityPlayer getPlayerServer(MessageContext context)
+	{
 		return context.getServerHandler().playerEntity;
 	}
 

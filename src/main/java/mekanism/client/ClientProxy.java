@@ -552,7 +552,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			return context.getServerHandler().playerEntity;
+			return getPlayerServer(context);
 		}
 		else {
 			return Minecraft.getMinecraft().thePlayer;

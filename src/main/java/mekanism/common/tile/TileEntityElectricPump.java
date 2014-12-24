@@ -14,6 +14,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +37,8 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import io.netty.buffer.ByteBuf;
+
+import com.google.common.base.Predicate;
 
 public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl
 {
@@ -371,9 +374,9 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.ELECTRIC_PUMP.facingPredicate;
 	}
 
 	@Override

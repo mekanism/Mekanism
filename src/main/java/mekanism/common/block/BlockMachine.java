@@ -20,10 +20,9 @@ import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.block.states.BlockStateBasic;
-import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.block.states.BlockStateMachine;
+import mekanism.common.block.states.BlockStateMachine.MachineBlock;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
@@ -44,7 +43,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -123,12 +121,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 {
 	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[16][16];
 
-	public BlockMachine()
+	public final MachineBlock machineBlock;
+
+	public BlockMachine(MachineBlock block)
 	{
 		super(Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
+		machineBlock = block;
+		machineBlock.setImplBlock(this);
 	}
 
 /*
@@ -198,11 +200,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			return;
 		}
 
-		if(height >= 65)
+		if(height >= 65 && tileEntity.canSetFacing(EnumFacing.DOWN))
 		{
 			newFacing = EnumFacing.DOWN;
 		}
-		else if(height <= -65)
+		else if(height <= -65 && tileEntity.canSetFacing(EnumFacing.UP))
 		{
 			newFacing = EnumFacing.UP;
 		}
@@ -230,8 +232,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			}
 		}
 
-
-		worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, newFacing));
+		tileEntity.setFacing(newFacing);
 
 		tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 
@@ -268,7 +269,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			float iRandom = 0.52F;
 			float jRandom = rand.nextFloat() * 0.6F - 0.3F;
 
-			EnumFacing side = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
+			EnumFacing side = tileEntity.getFacing();
 
 			if(tileEntity instanceof TileEntityMetallurgicInfuser)
 			{
@@ -460,33 +461,36 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		for(MachineBlockType type : MachineBlockType.values())
 		{
-			switch(type)
+			if(type.machineBlock == machineBlock)
 			{
-				case BASIC_FACTORY:
-				case ADVANCED_FACTORY:
-				case ELITE_FACTORY:
-					for(RecipeType recipe : RecipeType.values())
-					{
-						ItemStack stack = new ItemStack(item, 1, type.ordinal());
-						((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
-						list.add(stack);
-					}
-					break;
-				case PORTABLE_TANK:
-					list.add(new ItemStack(item, 1, type.ordinal()));
+				switch(type)
+				{
+					case BASIC_FACTORY:
+					case ADVANCED_FACTORY:
+					case ELITE_FACTORY:
+						for(RecipeType recipe : RecipeType.values())
+						{
+							ItemStack stack = new ItemStack(item, 1, type.meta);
+							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
+							list.add(stack);
+						}
+						break;
+					case PORTABLE_TANK:
+						list.add(new ItemStack(item, 1, type.meta));
 
-					ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
 
-					for(Fluid f : FluidRegistry.getRegisteredFluids().values())
-					{
-						ItemStack filled = new ItemStack(item, 1, type.ordinal());
-						itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
-						itemMachine.setPrevScale(filled, 1);
-						list.add(filled);
-					}
-					break;
-				default:
-					list.add(new ItemStack(item, 1, type.ordinal()));
+						for(Fluid f : FluidRegistry.getRegisteredFluids().values())
+						{
+							ItemStack filled = new ItemStack(item, 1, type.meta);
+							itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
+							itemMachine.setPrevScale(filled, 1);
+							list.add(filled);
+						}
+						break;
+					default:
+						list.add(new ItemStack(item, 1, type.meta));
+				}
 			}
 		}
 	}
@@ -943,9 +947,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				return false;
 			case PORTABLE_TANK:
 				return side == EnumFacing.UP || side == EnumFacing.DOWN;
+			default:
+				return true;
 		}
-
-		return true;
 	}
 
 	@Override
@@ -976,11 +980,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
-		
+
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
+
 			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir))
@@ -989,14 +993,27 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				}
 			}
 		}
-		
+
 		return valid;
 	}
 
 	@Override
 	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		return world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockStateFacing.facingProperty, axis));
+		TileEntity tile = world.getTileEntity(pos);
+
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+
+			if(basicTile.canSetFacing(axis))
+			{
+				basicTile.setFacing(axis);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -1005,27 +1022,30 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return new BlockStateMachine(this);
 	}
 
+	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+		MachineBlockType type = MachineBlockType.getBlockType(machineBlock, meta&0xF);
 
-		MachineBlockType type = MachineBlockType.values()[meta >> 2];
-
-		if(!type.canRotateTo(facing))
-		{
-			facing = EnumFacing.NORTH;
-		}
-
-		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing).withProperty(BlockStateBasic.typeProperty, type);
+		return this.getDefaultState().withProperty(BlockStateMachine.typeProperty, type);
 	}
 
+	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
-
 		MachineBlockType type = (MachineBlockType)state.getValue(BlockStateMachine.typeProperty);
 
-		return type.ordinal() << 2 | facing.getIndex();
+		return type.meta;
 	}
 
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			return state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).getFacing());
+		}
+		return state;
+	}
 }

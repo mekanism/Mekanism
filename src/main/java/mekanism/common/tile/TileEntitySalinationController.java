@@ -12,6 +12,8 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -27,6 +29,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.google.common.base.Predicate;
 
 public class TileEntitySalinationController extends TileEntitySalinationBlock implements IActiveState
 {
@@ -734,9 +738,9 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
     }
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return BasicBlockType.SALINATION_CONTROLLER.facingPredicate;
 	}
 
 	public void clearStructure()

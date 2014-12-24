@@ -57,7 +57,8 @@ public class BlockGasTank extends BlockContainer
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
 
-		worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, placer.getHorizontalFacing().getOpposite()), 2);
+		tileEntity.setFacing(placer.getHorizontalFacing().getOpposite());
+
 		tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 	}
 
@@ -227,17 +228,17 @@ public class BlockGasTank extends BlockContainer
 		TileEntityGasTank tileEntity = (TileEntityGasTank)worldIn.getTileEntity(pos);
 		return tileEntity.getRedstoneLevel();
 	}
-	
+
 	@Override
 	public EnumFacing[] getValidRotations(World world, BlockPos pos)
 	{
 		TileEntity tile = world.getTileEntity(pos);
 		EnumFacing[] valid = new EnumFacing[6];
-		
+
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
-			
+
 			for(EnumFacing dir : EnumFacing.values())
 			{
 				if(basicTile.canSetFacing(dir))
@@ -246,14 +247,27 @@ public class BlockGasTank extends BlockContainer
 				}
 			}
 		}
-		
+
 		return valid;
 	}
 
 	@Override
 	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		return world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockStateFacing.facingProperty, axis));
+		TileEntity tile = world.getTileEntity(pos);
+
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+
+			if(basicTile.canSetFacing(axis))
+			{
+				basicTile.setFacing(axis);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -265,16 +279,23 @@ public class BlockGasTank extends BlockContainer
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		EnumFacing facing = EnumFacing.getFront((meta&0b111));
-
-		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing);
+		return this.getDefaultState();
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
+		return 0;
+	}
 
-		return facing.getIndex();
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			return state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).getFacing());
+		}
+		return state;
 	}
 }

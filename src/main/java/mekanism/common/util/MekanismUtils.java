@@ -82,7 +82,6 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import buildcraft.api.tools.IToolWrench;
 import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.GameData;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.

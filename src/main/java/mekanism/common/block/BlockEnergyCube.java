@@ -94,18 +94,26 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
 		int height = Math.round(placer.rotationPitch);
 
-		if(height >= 65)
+		EnumFacing newFacing;
+
+		if(height >= 65 && tileEntity.canSetFacing(EnumFacing.DOWN))
 		{
-			worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, EnumFacing.DOWN));
+			newFacing = EnumFacing.DOWN;
 		}
-		else if(height <= -65)
+		else if(height <= -65 && tileEntity.canSetFacing(EnumFacing.UP))
 		{
-			worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, EnumFacing.UP));
+			newFacing = EnumFacing.UP;
 		}
 		else
 		{
-			worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, placer.getHorizontalFacing().getOpposite()));
+			newFacing = placer.getHorizontalFacing().getOpposite();
 		}
+
+		if(tileEntity.canSetFacing(newFacing))
+		{
+			tileEntity.setFacing(newFacing);
+		}
+
 		tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 	}
 
@@ -314,7 +322,20 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 	@Override
 	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
 	{
-		return world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockStateFacing.facingProperty, axis));
+		TileEntity tile = world.getTileEntity(pos);
+
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+
+			if(basicTile.canSetFacing(axis))
+			{
+				basicTile.setFacing(axis);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -340,20 +361,27 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+		EnergyCubeTier type = EnergyCubeTier.values()[meta];
 
-		EnergyCubeTier type = EnergyCubeTier.values()[meta >> 2];
-
-		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing).withProperty(BlockStateEnergyCube.typeProperty, type);
+		return this.getDefaultState().withProperty(BlockStateEnergyCube.typeProperty, type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
-
 		EnergyCubeTier type = (EnergyCubeTier)state.getValue(BlockStateEnergyCube.typeProperty);
 
-		return type.ordinal() << 2 | facing.getIndex();
+		return type.ordinal();
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			return state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).getFacing());
+		}
+		return state;
 	}
 }

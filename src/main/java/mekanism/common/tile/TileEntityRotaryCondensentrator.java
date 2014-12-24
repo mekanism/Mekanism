@@ -40,6 +40,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
@@ -429,9 +431,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.ROTARY_CONDENSENTRATOR.facingPredicate;
 	}
 
 	public int getScaledFluidLevel(int i)

@@ -143,6 +143,8 @@ public final class MekanismHooks
 	{
 		try {
 			ComputerCraftAPI.registerPeripheralProvider((BlockMachine) MekanismBlocks.MachineBlock);
+			ComputerCraftAPI.registerPeripheralProvider((BlockMachine) MekanismBlocks.MachineBlock2);
+			ComputerCraftAPI.registerPeripheralProvider((BlockMachine) MekanismBlocks.MachineBlock3);
 		} catch(Exception ex) {}
 	}
 

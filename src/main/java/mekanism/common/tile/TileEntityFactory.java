@@ -48,10 +48,12 @@ import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import javax.crypto.Mac;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
@@ -108,6 +110,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public boolean sorting;
 
+	public MachineBlockType machineType;
+
 	public IResettableSound[] sounds = new IResettableSound[RecipeType.values().length];
 
 	/** This machine's current RedstoneControl type. */
@@ -138,6 +142,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		inventory = new ItemStack[5+type.processes*2];
 		progress = new int[type.processes];
 		isActive = false;
+
+		machineType = machine;
 
 		gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS*tier.processes);
 	}
@@ -816,9 +822,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return machineType.facingPredicate;
 	}
 
 	@Override

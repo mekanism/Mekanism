@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -30,7 +31,10 @@ import net.minecraftforge.fml.common.Optional.Interface;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
+import scala.tools.nsc.backend.icode.BasicBlocks.BasicBlock;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
 public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable
@@ -511,9 +515,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return BasicBlockType.BIN.facingPredicate;
 	}
 
 	@Override

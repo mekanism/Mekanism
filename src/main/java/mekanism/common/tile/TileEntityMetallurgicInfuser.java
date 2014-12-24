@@ -39,6 +39,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -446,10 +447,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, getFacing()).ordinal()]).availableSlots;
 	}
 
-//	@Override
-	public boolean canSetFacing(EnumFacing side)
+	@Override
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return side.getHorizontalIndex() >= 0;
+		return MachineBlockType.METALLURGIC_INFUSER.facingPredicate;
 	}
 
 	@Override

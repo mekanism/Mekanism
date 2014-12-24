@@ -34,6 +34,8 @@ import net.minecraftforge.fluids.IFluidHandler;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IConfigurable, IFluidHandler, ISustainedTank
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
@@ -402,9 +404,9 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.FLUIDIC_PLENISHER.facingPredicate;
 	}
 
 	@Override

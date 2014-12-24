@@ -9,6 +9,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.tile.TileEntityTeleporter;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -42,7 +44,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			Coord4D obj = Coord4D.get(tileEntity).offset(EnumFacing.WEST);
 			int type = 0;
 
-			if(obj.getBlock(tileEntity.getWorld()) == MekanismBlocks.BasicBlock /*&& obj.getBlockState(tileEntity.getWorld()) == 7*/)
+			if(obj.getBlock(tileEntity.getWorld()) == MekanismBlocks.BasicBlock && obj.getBlockState(tileEntity.getWorld()).getValue(BlockStateBasic.typeProperty) == BasicBlockType.TELEPORTER_FRAME)
 			{
 				type = 1;
 			}

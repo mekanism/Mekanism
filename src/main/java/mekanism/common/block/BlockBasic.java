@@ -13,6 +13,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateFacing;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -29,7 +30,6 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -43,7 +43,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
@@ -83,12 +82,16 @@ public class BlockBasic extends Block implements IBlockCTM
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
-	public BlockBasic()
+	public final BasicBlock blockType;
+
+	public BlockBasic(BasicBlock block)
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
+		blockType = block;
+		blockType.setImplBlock(this);
 	}
 
 	@Override
@@ -264,7 +267,8 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		for(BasicBlockType type: BasicBlockType.values())
 		{
-			list.add(new ItemStack(item, 1, type.ordinal()));
+			if(type.blockType == blockType)
+				list.add(new ItemStack(item, 1, type.meta));
 		}
 	}
 
@@ -316,7 +320,7 @@ public class BlockBasic extends Block implements IBlockCTM
 			TileEntityBin bin = (TileEntityBin)worldIn.getTileEntity(pos);
 			MovingObjectPosition mop = MekanismUtils.rayTrace(worldIn, playerIn);
 
-			if(mop != null && mop.sideHit == state.getValue(BlockStateFacing.facingProperty))
+			if(mop != null && mop.sideHit == bin.getFacing())
 			{
 				if(bin.bottomStack != null)
 				{
@@ -653,11 +657,11 @@ public class BlockBasic extends Block implements IBlockCTM
 				return;
 			}
 
-			if(height >= 65)
+			if(height >= 65 && tileEntity.canSetFacing(EnumFacing.DOWN))
 			{
 				newFacing = EnumFacing.DOWN;
 			}
-			else if(height <= -65)
+			else if(height <= -65 && tileEntity.canSetFacing(EnumFacing.UP))
 			{
 				newFacing = EnumFacing.UP;
 			}
@@ -666,7 +670,10 @@ public class BlockBasic extends Block implements IBlockCTM
 				newFacing = placer.getHorizontalFacing().getOpposite();
 			}
 
-			worldIn.setBlockState(pos, state.withProperty(BlockStateFacing.facingProperty, newFacing));
+			if(tileEntity.canSetFacing(newFacing))
+			{
+				tileEntity.setFacing(newFacing);
+			}
 
 			tileEntity.redstone = worldIn.isBlockIndirectlyGettingPowered(pos) > 0;
 
@@ -794,25 +801,68 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		EnumFacing facing = EnumFacing.getFront((meta&0b111));
+		BasicBlockType type = BasicBlockType.getBlockType(blockType, meta&0xF);
 
-		BasicBlockType type = BasicBlockType.values()[meta >> 2];
-
-		if(!type.canRotateTo(facing))
-		{
-			facing = EnumFacing.NORTH;
-		}
-
-		return this.getDefaultState().withProperty(BlockStateFacing.facingProperty, facing).withProperty(BlockStateBasic.typeProperty, type);
+		return this.getDefaultState().withProperty(BlockStateBasic.typeProperty, type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		EnumFacing facing = (EnumFacing)state.getValue(BlockStateFacing.facingProperty);
-
 		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
 
-		return type.ordinal() << 2 | facing.getIndex();
+		return type.meta;
+	}
+
+	@Override
+	public EnumFacing[] getValidRotations(World world, BlockPos pos)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+		EnumFacing[] valid = new EnumFacing[6];
+
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+
+			for(EnumFacing dir : EnumFacing.values())
+			{
+				if(basicTile.canSetFacing(dir))
+				{
+					valid[dir.ordinal()] = dir;
+				}
+			}
+		}
+
+		return valid;
+	}
+
+	@Override
+	public boolean rotateBlock(World world, BlockPos pos, EnumFacing axis)
+	{
+		TileEntity tile = world.getTileEntity(pos);
+
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+
+			if(basicTile.canSetFacing(axis))
+			{
+				basicTile.setFacing(axis);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+	{
+		TileEntity tile = worldIn.getTileEntity(pos);
+		if(tile instanceof TileEntityBasicBlock)
+		{
+			return state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).getFacing());
+		}
+		return state;
 	}
 }

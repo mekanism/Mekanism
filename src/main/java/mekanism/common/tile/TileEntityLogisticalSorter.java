@@ -37,6 +37,8 @@ import net.minecraft.util.EnumFacing;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess, ISustainedData
 {
 	public HashList<TransporterFilter> filters = new HashList<TransporterFilter>();
@@ -562,9 +564,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return MachineBlockType.LOGISTICAL_SORTER.facingPredicate;
 	}
 
 	@Override

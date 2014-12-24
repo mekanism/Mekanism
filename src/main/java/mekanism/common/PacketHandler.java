@@ -261,10 +261,16 @@ public class PacketHandler
 			return null;
 		}
 	}
-	
+
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayer(context);
+	}
+
+
+	public static EntityPlayer getPlayerServer(MessageContext context)
+	{
+		return Mekanism.proxy.getPlayerServer(context);
 	}
 
 

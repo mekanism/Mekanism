@@ -14,6 +14,7 @@ import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.states.BlockStateFacing;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
@@ -30,6 +31,8 @@ import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -75,6 +78,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
 
+	public MachineBlockType machineBlockType;
+
 	public RECIPE cachedRecipe = null;
 
 	public TileComponentUpgrade upgradeComponent;
@@ -85,19 +90,19 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	 * @param soundPath - location of the sound effect
 	 * @param name - full name of this machine
 	 * @param location - GUI texture path of this machine
-	 * @param perTick - the energy this machine consumes every tick in it's active state
 	 * @param baseTicksRequired - how many ticks it takes to run a cycle
-	 * @param maxEnergy - how much energy this machine can store
+	 * @param machineType - this machine's type
 	 */
-	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int baseTicksRequired, double maxEnergy)
+	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, int baseTicksRequired, MachineBlockType machineType)
 	{
-		super("machine." + soundPath, name, maxEnergy);
-		BASE_ENERGY_PER_TICK = perTick;
-		energyPerTick = perTick;
+		super("machine." + soundPath, name, machineType.baseEnergy);
+		BASE_ENERGY_PER_TICK = machineType.getUsage();
+		energyPerTick = machineType.getUsage();
 		BASE_TICKS_REQUIRED = baseTicksRequired;
 		ticksRequired = baseTicksRequired;
 		guiLocation = location;
 		isActive = false;
+		machineBlockType = machineType;
 	}
 
 	@Override
@@ -258,9 +263,9 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	}
 
 	@Override
-	public boolean canSetFacing(EnumFacing facing)
+	public Predicate<EnumFacing> getFacePredicate()
 	{
-		return facing.getHorizontalIndex() >= 0;
+		return machineBlockType.facingPredicate;
 	}
 
 	@Override

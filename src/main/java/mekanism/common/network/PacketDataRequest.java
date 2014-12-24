@@ -28,7 +28,7 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 	@Override
 	public IMessage onMessage(DataRequestMessage message, MessageContext context) 
 	{
-		EntityPlayer player = PacketHandler.getPlayer(context);
+		EntityPlayer player = PacketHandler.getPlayerServer(context);
 		World worldServer = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(message.coord4D.dimensionId);
 		
 		if(worldServer != null && message.coord4D.getTileEntity(worldServer) instanceof ITileNetwork)

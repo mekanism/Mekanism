@@ -62,7 +62,7 @@ public interface IFactory
 
 		public BasicMachineRecipe getRecipe(ItemStackInput input)
 		{
-			return RecipeHandler.getRecipe(input, recipe.get());
+			return RecipeHandler.getRecipe(input, recipe.<ItemStackInput, BasicMachineRecipe>get());
 		}
 
 		public BasicMachineRecipe getRecipe(ItemStack input)
@@ -72,7 +72,7 @@ public interface IFactory
 
 		public AdvancedMachineRecipe getRecipe(AdvancedMachineInput input)
 		{
-			return RecipeHandler.getRecipe(input, recipe.get());
+			return RecipeHandler.getRecipe(input, recipe.<AdvancedMachineInput, AdvancedMachineRecipe>get());
 		}
 
 		public AdvancedMachineRecipe getRecipe(ItemStack input, Gas gas)

@@ -26,10 +26,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockPlastic extends Block
 {
-	public BlockPlastic()
+	public final PlasticBlockType plasticType;
+
+	public BlockPlastic(PlasticBlockType type)
 	{
 		super(Material.wood);
 		setCreativeTab(Mekanism.tabMekanism);
+		plasticType = type;
 	}
 
 /*
@@ -163,9 +166,7 @@ public class BlockPlastic extends Block
 	{
 		EnumColor facing = EnumColor.DYES[(meta&0xF)];
 
-		PlasticBlockType type = PlasticBlockType.values()[meta >> 4];
-
-		return this.getDefaultState().withProperty(BlockStatePlastic.colorProperty, facing).withProperty(BlockStatePlastic.typeProperty, type);
+		return this.getDefaultState().withProperty(BlockStatePlastic.colorProperty, facing).withProperty(BlockStatePlastic.typeProperty, plasticType);
 	}
 
 	@Override
@@ -173,8 +174,6 @@ public class BlockPlastic extends Block
 	{
 		EnumColor color = (EnumColor)state.getValue(BlockStatePlastic.colorProperty);
 
-		PlasticBlockType type = (PlasticBlockType)state.getValue(BlockStatePlastic.typeProperty);
-
-		return type.ordinal() << 4 | color.getMetaValue();
+		return color.getMetaValue();
 	}
 }

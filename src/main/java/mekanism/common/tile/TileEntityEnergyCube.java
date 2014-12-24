@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.common.Optional.Method;
 
 import io.netty.buffer.ByteBuf;
 
+import com.google.common.base.Predicate;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -120,12 +122,6 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	public EnumSet<EnumFacing> getOutputtingSides()
 	{
 		return EnumSet.of(getFacing());
-	}
-
-	@Override
-	public boolean canSetFacing(EnumFacing side)
-	{
-		return true;
 	}
 
 	@Override

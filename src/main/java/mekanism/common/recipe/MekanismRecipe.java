@@ -2,6 +2,7 @@ package mekanism.common.recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.energy.IEnergizedItem;
@@ -306,11 +307,11 @@ public class MekanismRecipe implements IRecipe
 						return false;
 					}
 				}
-				else if(target instanceof ArrayList)
+				else if(target instanceof List)
 				{
 					boolean matched = false;
 
-					for(ItemStack item : (ArrayList<ItemStack>)target)
+					for(ItemStack item : (List<ItemStack>)target)
 					{
 						matched = matched || checkItemEquals(item, slot);
 					}
