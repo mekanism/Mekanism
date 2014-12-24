@@ -3,7 +3,6 @@ package mekanism.common.block.states;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -44,6 +43,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -52,15 +52,31 @@ import net.minecraft.util.IStringSerializable;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import javax.crypto.Mac;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 public class BlockStateMachine extends BlockStateFacing
 {
 	public static final PropertyEnum typeProperty = PropertyEnum.create("type", MachineBlockType.class);
 
+	public static Predicate<IBlockState> filter = new MachineFilter();
+
+	public ImmutableList<IBlockState> actualValidStates;
+
 	public BlockStateMachine(BlockMachine block)
 	{
 		super(block, typeProperty);
+	}
+
+	@Override
+	public ImmutableList<IBlockState> getValidStates()
+	{
+		return actualValidStates == null ?  super.getValidStates() : actualValidStates;
+	}
+
+	public void setupActualStates()
+	{
+		actualValidStates = ImmutableList.copyOf(Iterables.filter((ImmutableList<IBlockState>)super.getValidStates(), filter));
 	}
 
 	public static enum MachineBlock
@@ -298,6 +314,24 @@ public class BlockStateMachine extends BlockStateFacing
 		public boolean canRotateTo(EnumFacing side)
 		{
 			return facingPredicate.apply(side);
+		}
+	}
+
+	public static class MachineFilter implements Predicate<IBlockState>
+	{
+		@Override
+		public boolean apply(IBlockState input)
+		{
+			BlockMachine block = (BlockMachine)input.getBlock();
+			EnumFacing facing = (EnumFacing)input.getValue(facingProperty);
+			MachineBlockType type = (MachineBlockType)input.getValue(typeProperty);
+			return block.machineBlock == type.machineBlock && type.canRotateTo(facing);
+		}
+
+		@Override
+		public boolean equals(Object object)
+		{
+			return false;
 		}
 	}
 }

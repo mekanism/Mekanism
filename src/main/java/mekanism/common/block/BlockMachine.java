@@ -131,6 +131,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		setCreativeTab(Mekanism.tabMekanism);
 		machineBlock = block;
 		machineBlock.setImplBlock(this);
+		((BlockStateMachine)getBlockState()).setupActualStates();
+		setDefaultState(getBlockState().getBaseState());
 	}
 
 /*
