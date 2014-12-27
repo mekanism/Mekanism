@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismConfig.generators;
-import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
@@ -413,7 +412,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			transferHeatTo(-heatLost);
 			setEnergy(getEnergy() + workDone);
 		}
-		return HeatUtils.simulate(this, Coord4D.get(this), worldObj);
+		return HeatUtils.simulate(this);
 	}
 
 	@Override

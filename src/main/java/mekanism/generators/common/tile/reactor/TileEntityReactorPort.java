@@ -258,7 +258,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public double[] simulateHeat()
 	{
-		return HeatUtils.simulate(this, Coord4D.get(this), worldObj);
+		return HeatUtils.simulate(this);
 	}
 
 	@Override

@@ -110,7 +110,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	@Override
 	public double[] simulateHeat()
 	{
-		return HeatUtils.simulate(this, Coord4D.get(tile()), world());
+		return HeatUtils.simulate(this);
 	}
 
 	@Override

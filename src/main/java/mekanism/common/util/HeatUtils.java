@@ -9,7 +9,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class HeatUtils
 {
-	public static double[] simulate(IHeatTransfer source, Coord4D pos, World world)
+	public static double[] simulate(IHeatTransfer source)
 	{
 		double heatTransferred[] = new double[]{0,0};
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
