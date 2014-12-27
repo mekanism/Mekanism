@@ -16,6 +16,7 @@ import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.client.GeneratorsClientProxy;
+import mekanism.generators.client.MekanismGeneratorsClient;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -135,18 +136,22 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
+		if(MekanismGeneratorsClient.enableAmbientLighting)
 		{
-			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+			if(tileEntity instanceof IActiveState && !(tileEntity instanceof TileEntitySolarGenerator))
 			{
-				return 15;
+				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+				{
+					return MekanismGeneratorsClient.ambientLightingLevel;
+				}
 			}
 		}
 
 		return 0;
 	}
+
 
 	@Override
 	public int damageDropped(int i)
