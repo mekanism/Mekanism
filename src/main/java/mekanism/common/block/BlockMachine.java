@@ -43,6 +43,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -117,24 +118,24 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  *
  */
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
+public abstract class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
 	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[16][16];
 
-	public final MachineBlock machineBlock;
-
-	public BlockMachine(MachineBlock block)
+	public BlockMachine()
 	{
 		super(Material.iron);
 		setHardness(3.5F);
 		setResistance(8F);
 		setCreativeTab(Mekanism.tabMekanism);
-		machineBlock = block;
-		machineBlock.setImplBlock(this);
-		((BlockStateMachine)getBlockState()).setupActualStates();
-		setDefaultState(getBlockState().getBaseState());
 	}
 
+	public abstract MachineBlock getMachineBlock();
+
+	public PropertyEnum getProperty()
+	{
+		return getMachineBlock().predicatedProperty;
+	}
 /*
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -463,7 +464,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		for(MachineBlockType type : MachineBlockType.values())
 		{
-			if(type.machineBlock == machineBlock)
+			if(type.machineBlock == getMachineBlock())
 			{
 				switch(type)
 				{
@@ -510,7 +511,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			return true;
 		}
 
-		MachineBlockType type = (MachineBlockType)state.getValue(BlockStateMachine.typeProperty);
+		MachineBlockType type = (MachineBlockType)state.getValue(getProperty());
 
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)worldIn.getTileEntity(pos);
 
@@ -588,12 +589,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public TileEntity createTileEntity(World world, IBlockState state)
 	{
-		if(state.getValue(BlockStateMachine.typeProperty) == null)
+		if(state.getValue(getProperty()) == null)
 		{
 			return null;
 		}
 
-		return ((MachineBlockType)state.getValue(BlockStateMachine.typeProperty)).create();
+		return ((MachineBlockType)state.getValue(getProperty())).create();
 
 	}
 
@@ -623,19 +624,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		return null;
 	}
 
-/*
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.MACHINE_RENDER_ID;
+		return 3;
 	}
-*/
 
 	@Override
 	public float getBlockHardness(World world, BlockPos pos)
 	{
-		if(!(world.getBlockState(pos).getValue(BlockStateMachine.typeProperty) != MachineBlockType.ELECTRIC_CHEST))
+		if(!(world.getBlockState(pos).getValue(getProperty()) != MachineBlockType.ELECTRIC_CHEST))
 		{
 			return blockHardness;
 		}
@@ -911,7 +910,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess world, BlockPos pos)
 	{
-		MachineBlockType type = (MachineBlockType)world.getBlockState(pos).getValue(BlockStateMachine.typeProperty);
+		MachineBlockType type = (MachineBlockType)world.getBlockState(pos).getValue(getProperty());
 
 		switch(type)
 		{
@@ -941,7 +940,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public boolean isSideSolid(IBlockAccess world, BlockPos pos, EnumFacing side)
 	{
-		MachineBlockType type = (MachineBlockType)world.getBlockState(pos).getValue(BlockStateMachine.typeProperty);
+		MachineBlockType type = (MachineBlockType)world.getBlockState(pos).getValue(getProperty());
 
 		switch(type)
 		{
@@ -1021,21 +1020,21 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	protected BlockState createBlockState()
 	{
-		return new BlockStateMachine(this);
+		return new BlockStateMachine(this, getProperty());
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		MachineBlockType type = MachineBlockType.getBlockType(machineBlock, meta&0xF);
+		MachineBlockType type = MachineBlockType.getBlockType(getMachineBlock(), meta&0xF);
 
-		return this.getDefaultState().withProperty(BlockStateMachine.typeProperty, type);
+		return this.getDefaultState().withProperty(getProperty(), type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		MachineBlockType type = (MachineBlockType)state.getValue(BlockStateMachine.typeProperty);
+		MachineBlockType type = (MachineBlockType)state.getValue(getProperty());
 
 		return type.meta;
 	}
@@ -1046,7 +1045,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		TileEntity tile = worldIn.getTileEntity(pos);
 		if(tile instanceof TileEntityBasicBlock)
 		{
-			return state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).getFacing());
+			state = state.withProperty(BlockStateFacing.facingProperty, ((TileEntityBasicBlock)tile).getFacing());
+		}
+		if(tile instanceof IActiveState)
+		{
+			state = state.withProperty(BlockStateMachine.activeProperty, ((IActiveState)tile).getActive());
 		}
 		return state;
 	}

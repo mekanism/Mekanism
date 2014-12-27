@@ -30,6 +30,7 @@ import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -76,22 +77,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block implements IBlockCTM
+public abstract class BlockBasic extends Block implements IBlockCTM
 {
 	public TextureAtlasSprite[][] icons = new TextureAtlasSprite[16][6];
 
 	public CTMData[][] ctms = new CTMData[16][2];
 
-	public final BasicBlock blockType;
-
-	public BlockBasic(BasicBlock block)
+	public BlockBasic()
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		blockType = block;
-		blockType.setImplBlock(this);
+	}
+
+	public abstract BasicBlock getBasicBlock();
+
+	public PropertyEnum getProperty()
+	{
+		return getBasicBlock().predicatedProperty;
 	}
 
 	@Override
@@ -267,7 +271,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		for(BasicBlockType type: BasicBlockType.values())
 		{
-			if(type.blockType == blockType)
+			if(type.blockType == getBasicBlock())
 				list.add(new ItemStack(item, 1, type.meta));
 		}
 	}
@@ -280,7 +284,7 @@ public class BlockBasic extends Block implements IBlockCTM
 		{
 			return true;
 		}
-		BasicBlockType blockType = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		BasicBlockType blockType = (BasicBlockType)state.getValue(getProperty());
 		
 		switch(blockType)
 		{
@@ -315,7 +319,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	{
 		IBlockState state = worldIn.getBlockState(pos);
 
-		if(state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.BIN)
+		if(state.getValue(getProperty()) == BasicBlockType.BIN)
 		{
 			TileEntityBin bin = (TileEntityBin)worldIn.getTileEntity(pos);
 			MovingObjectPosition mop = MekanismUtils.rayTrace(worldIn, playerIn);
@@ -339,7 +343,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		BasicBlockType type = (BasicBlockType)state.getValue(getProperty());
 		
 		if(type != BasicBlockType.BIN)
 		{
@@ -439,7 +443,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	public boolean isSideSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
 
-		return worldIn.getBlockState(pos).getValue(BlockStateBasic.typeProperty) != BasicBlockType.DYNAMIC_GLASS;
+		return worldIn.getBlockState(pos).getValue(getProperty()) != BasicBlockType.DYNAMIC_GLASS;
 	}
 
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -583,7 +587,7 @@ public class BlockBasic extends Block implements IBlockCTM
 			}
 		}
 
-		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		BasicBlockType type = (BasicBlockType)state.getValue(getProperty());
 
 		switch(type)
 		{
@@ -601,7 +605,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public boolean hasTileEntity(IBlockState state)
 	{
-		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		BasicBlockType type = (BasicBlockType)state.getValue(getProperty());
 		switch(type)
 		{
 			case BIN:
@@ -621,7 +625,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	public TileEntity createTileEntity(World worldIn, IBlockState state)
 	{
-		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		BasicBlockType type = (BasicBlockType)state.getValue(getProperty());
 		switch(type)
 		{
 			case BIN:
@@ -772,7 +776,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	public boolean shouldSideBeRendered(IBlockAccess worldIn, BlockPos pos, EnumFacing side)
 	{
 		IBlockState state = worldIn.getBlockState(pos.offset(side.getOpposite()));
-		if(state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.DYNAMIC_GLASS)
+		if(state.getValue(getProperty()) == BasicBlockType.DYNAMIC_GLASS)
 		{
 			return ctms[10][0].shouldRenderSide(worldIn, pos, side);
 		}
@@ -795,21 +799,21 @@ public class BlockBasic extends Block implements IBlockCTM
 	@Override
 	protected BlockState createBlockState()
 	{
-		return new BlockStateBasic(this);
+		return new BlockStateBasic(this, getProperty());
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta)
 	{
-		BasicBlockType type = BasicBlockType.getBlockType(blockType, meta&0xF);
+		BasicBlockType type = BasicBlockType.getBlockType(getBasicBlock(), meta&0xF);
 
-		return this.getDefaultState().withProperty(BlockStateBasic.typeProperty, type);
+		return this.getDefaultState().withProperty(getProperty(), type);
 	}
 
 	@Override
 	public int getMetaFromState(IBlockState state)
 	{
-		BasicBlockType type = (BasicBlockType)state.getValue(BlockStateBasic.typeProperty);
+		BasicBlockType type = (BasicBlockType)state.getValue(getProperty());
 
 		return type.meta;
 	}

@@ -300,12 +300,14 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		return sideConfig[side.getIndex()];
 	}
 
+/*
 	@Override
 	public EnumFacing getFacing()
 	{
 		return (EnumFacing)getWorld().getBlockState(getPos()).getValue(BlockStateFacing.facingProperty);
 	}
 
+*/
 	@Override
 	public boolean renderUpdate()
 	{

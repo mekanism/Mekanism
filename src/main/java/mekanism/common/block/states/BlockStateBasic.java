@@ -1,21 +1,27 @@
 package mekanism.common.block.states;
 
 import mekanism.common.block.BlockBasic;
+import mekanism.common.block.BlockMachine;
 
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Plane;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
 public class BlockStateBasic extends BlockStateFacing
 {
-	public static final PropertyEnum typeProperty = PropertyEnum.create("type", BasicBlockType.class);
+	public static final PropertyBool activeProperty = PropertyBool.create("active");
 
-	public BlockStateBasic(BlockBasic block)
+	public BlockStateBasic(BlockBasic block, PropertyEnum typeProperty)
 	{
 		super(block, typeProperty);
 	}
@@ -26,6 +32,12 @@ public class BlockStateBasic extends BlockStateFacing
 		BASIC_BLOCK_2;
 
 		public BlockBasic implBlock;
+		public PropertyEnum predicatedProperty;
+
+		public void setProperty()
+		{
+			predicatedProperty = PropertyEnum.create("type", BasicBlockType.class, new BasicBlockPredicate(this));
+		}
 
 		public void setImplBlock(BlockBasic block)
 		{
@@ -35,33 +47,35 @@ public class BlockStateBasic extends BlockStateFacing
 
 	public static enum BasicBlockType implements IStringSerializable
 	{
-		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, Predicates.<EnumFacing>alwaysTrue()),
-		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, Predicates.<EnumFacing>alwaysTrue()),
-		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, Predicates.<EnumFacing>alwaysTrue()),
-		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, Predicates.<EnumFacing>alwaysTrue()),
-		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, Predicates.<EnumFacing>alwaysTrue()),
-		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, Predicates.<EnumFacing>alwaysTrue()),
-		BIN(BasicBlock.BASIC_BLOCK_1, 6, Plane.HORIZONTAL),
-		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, Predicates.<EnumFacing>alwaysTrue()),
-		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, Predicates.<EnumFacing>alwaysTrue()),
-		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, Predicates.<EnumFacing>alwaysTrue()),
-		DYNAMIC_GLASS(BasicBlock.BASIC_BLOCK_1, 10, Predicates.<EnumFacing>alwaysTrue()),
-		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, Predicates.<EnumFacing>alwaysTrue()),
-		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, Predicates.<EnumFacing>alwaysTrue()),
-		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, Predicates.<EnumFacing>alwaysTrue()),
-		SALINATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, Plane.HORIZONTAL),
-		SALINATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, Predicates.<EnumFacing>alwaysTrue()),
-		SALINATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, Predicates.<EnumFacing>alwaysTrue());
+		OSMIUM_BLOCK(BasicBlock.BASIC_BLOCK_1, 0, Predicates.<EnumFacing>alwaysFalse(), false),
+		BRONZE_BLOCK(BasicBlock.BASIC_BLOCK_1, 1, Predicates.<EnumFacing>alwaysFalse(), false),
+		REFINED_OBSIDIAN(BasicBlock.BASIC_BLOCK_1, 2, Predicates.<EnumFacing>alwaysFalse(), false),
+		COAL_BLOCK(BasicBlock.BASIC_BLOCK_1, 3, Predicates.<EnumFacing>alwaysFalse(), false),
+		REFINED_GLOWSTONE(BasicBlock.BASIC_BLOCK_1, 4, Predicates.<EnumFacing>alwaysFalse(), false),
+		STEEL_BLOCK(BasicBlock.BASIC_BLOCK_1, 5, Predicates.<EnumFacing>alwaysFalse(), false),
+		BIN(BasicBlock.BASIC_BLOCK_1, 6, Plane.HORIZONTAL, false),
+		TELEPORTER_FRAME(BasicBlock.BASIC_BLOCK_1, 7, Predicates.<EnumFacing>alwaysFalse(), false),
+		STEEL_CASING(BasicBlock.BASIC_BLOCK_1, 8, Predicates.<EnumFacing>alwaysFalse(), false),
+		DYNAMIC_TANK(BasicBlock.BASIC_BLOCK_1, 9, Predicates.<EnumFacing>alwaysFalse(), false),
+		DYNAMIC_GLASS(BasicBlock.BASIC_BLOCK_1, 10, Predicates.<EnumFacing>alwaysFalse(), false),
+		DYNAMIC_VALVE(BasicBlock.BASIC_BLOCK_1, 11, Predicates.<EnumFacing>alwaysFalse(), false),
+		COPPER_BLOCK(BasicBlock.BASIC_BLOCK_1, 12, Predicates.<EnumFacing>alwaysFalse(), false),
+		TIN_BLOCK(BasicBlock.BASIC_BLOCK_1, 13, Predicates.<EnumFacing>alwaysFalse(), false),
+		SALINATION_CONTROLLER(BasicBlock.BASIC_BLOCK_1, 14, Plane.HORIZONTAL, false),
+		SALINATION_VALVE(BasicBlock.BASIC_BLOCK_1, 15, Predicates.<EnumFacing>alwaysFalse(), false),
+		SALINATION_BLOCK(BasicBlock.BASIC_BLOCK_2, 0, Predicates.<EnumFacing>alwaysFalse(), false);
 
 		public BasicBlock blockType;
 		public int meta;
 		public Predicate<EnumFacing> facingPredicate;
+		public boolean activable;
 
-		private BasicBlockType(BasicBlock block, int metadata, Predicate<EnumFacing> facingAllowed)
+		private BasicBlockType(BasicBlock block, int metadata, Predicate<EnumFacing> facingAllowed, boolean activeState)
 		{
 			blockType = block;
 			meta = metadata;
 			facingPredicate = facingAllowed;
+			activable = activeState;
 		}
 
 		public static  BasicBlockType getBlockType(BasicBlock blockID, int metadata)
@@ -87,5 +101,79 @@ public class BlockStateBasic extends BlockStateFacing
 		{
 			return new ItemStack(blockType.implBlock, amount, meta);
 		}
+
+		public boolean canRotateTo(EnumFacing side)
+		{
+			return facingPredicate.apply(side);
+		}
+
+		public boolean hasRotations()
+		{
+			return !facingPredicate.equals(Predicates.alwaysFalse());
+		}
+
+		public boolean hasActiveTexture()
+		{
+			return activable;
+		}
 	}
+
+	public static class BasicBlockPredicate implements Predicate<BasicBlockType>
+	{
+		public BasicBlock basicBlock;
+
+		public BasicBlockPredicate(BasicBlock type)
+		{
+			basicBlock = type;
+		}
+
+		@Override
+		public boolean apply(BasicBlockType input)
+		{
+			return input.blockType == basicBlock;
+		}
+	}
+
+	public static class BasicBlockStateMapper extends StateMapperBase
+	{
+		@Override
+		protected ModelResourceLocation getModelResourceLocation(IBlockState state)
+		{
+			BlockBasic block = (BlockBasic)state.getBlock();
+			BasicBlockType type = (BasicBlockType)state.getValue(block.getProperty());
+			StringBuilder builder = new StringBuilder();
+			if(type.hasRotations())
+			{
+				EnumFacing facing = (EnumFacing)state.getValue(facingProperty);
+				if(type.canRotateTo(facing))
+				{
+					builder.append(facingProperty.getName());
+					builder.append("=");
+					builder.append(facing.getName());
+				}
+				else
+				{
+					return new ModelResourceLocation("builtin/missing", "missing");
+				}
+			}
+			if(type.hasActiveTexture())
+			{
+				String active = (Boolean)state.getValue(activeProperty) ? "active" : "inactive";
+				if(builder.length() > 0)
+				{
+					builder.append(",");
+				}
+				builder.append(active);
+			}
+
+			if(builder.length() == 0)
+			{
+				builder.append("normal");
+			}
+
+			ResourceLocation baseLocation = new ResourceLocation("mekanism", type.getName());
+			return new ModelResourceLocation(baseLocation, builder.toString());
+		}
+	}
+
 }

@@ -378,21 +378,11 @@ public class Coord4D extends BlockPos
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof Coord4D &&
+		return (obj instanceof Coord4D &&
 				((Coord4D)obj).getX() == getX() &&
 				((Coord4D)obj).getY() == getY() &&
 				((Coord4D)obj).getZ() == getZ() &&
-				((Coord4D)obj).dimensionId == dimensionId;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		int code = 1;
-		code = 31 * code + getX();
-		code = 31 * code + getY();
-		code = 31 * code + getZ();
-		code = 31 * code + dimensionId;
-		return code;
+				((Coord4D)obj).dimensionId == dimensionId) ||
+				super.equals(obj);
 	}
 }

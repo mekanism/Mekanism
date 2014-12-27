@@ -1,0 +1,6 @@
+{
+    "parent": "mekanism:block/machine",
+    "textures": {
+        "front": "mekanism:blocks/EnergizedSmelterFrontOff"
+    }
+}

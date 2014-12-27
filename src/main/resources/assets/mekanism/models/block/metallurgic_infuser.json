@@ -1,0 +1,264 @@
+{
+	"textures": {
+		"render": "mekanism:blocks/models/MetallurgicInfuser"
+	},
+    "elements": [
+        {   "__comment": "Base",
+            "from": [ 1, 0, 0 ],
+            "to": [ 15, 2, 16 ],
+            "faces": {
+                "down":  { "uv": [7.5, 0,  11,  4], "texture": "render", "cullface": "down" },
+                "up":    { "uv": [4, 0,  7.5,  4], "texture": "render" },
+                "north": { "uv": [4, 4, 7.5,  4.5], "texture": "render", "cullface": "north" },
+                "south": { "uv": [11.5, 4, 7.5, 4.5], "texture": "render", "cullface": "south" },
+                "west":  { "uv": [7.5, 4, 11.5,  4.5], "texture": "render" },
+                "east":  { "uv": [0,  4, 4,  4.5], "texture": "render" }
+            }
+        },
+        {   "__comment": "EastChamber",
+        	"from": [ 13.5, 2, 2 ],
+            "to": [ 14.5, 8, 7 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "TopChamber",
+            "from": [ 2.5, 8, 2 ],
+            "to": [ 13.5, 9, 7 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "BackChamber",
+            "from": [ 2.5, 2, 7 ],
+            "to": [ 13.5, 8, 8 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "WestChamber",
+            "from": [ 1.5, 2, 2 ],
+            "to": [ 2.5, 8, 7 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "FCTop",
+            "from": [ 2.5, 7, 1 ],
+            "to": [ 13.5, 8, 2 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "FCBottom",
+            "from": [ 2.5, 2, 1 ],
+            "to": [ 13.5, 3, 2 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "north": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "FCEast",
+            "from": [ 12.5, 3, 1 ],
+            "to": [ 13.5, 7, 2 ],
+            "faces": {
+                "north": { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "FCWest",
+            "from": [ 2.5, 3, 1 ],
+            "to": [ 3.5, 7, 2 ],
+            "faces": {
+                "north": { "texture": "render" },
+                "west":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "FCDoor",
+            "from": [ 3.5, 3, 0.5 ],
+            "to": [ 12.5, 7, 1.5 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "Cable1",
+            "from": [ 3.5, 3.5, 8 ],
+            "to": [ 4.5, 4.5, 15 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "Cable2",
+            "from": [ 3, 4, 8 ],
+            "to": [ 5, 6, 15 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "Cable3",
+            "from": [ 11, 4, 8 ],
+            "to": [ 13, 6, 15 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "Cable4",
+            "from": [ 3.5, 5.5, 8 ],
+            "to": [ 4.5, 6.5, 15 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "Cable5",
+            "from": [ 11.5, 3.5, 8 ],
+            "to": [ 12.5, 4.5, 15 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "Cable6",
+            "from": [ 11.5, 5.5, 8 ],
+            "to": [ 12.5, 6.5, 15 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "TopPanelDec",
+            "from": [ 1.5, 11.5, 13.5 ],
+            "to": [ 14.5, 12.5, 14.5 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "north": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "BackPlate",
+            "from": [ 1, 2, 14 ],
+            "to": [ 15, 14, 16 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render", "cullface": "south" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "TopPanel",
+            "from": [ 1, 12, 11 ],
+            "to": [ 15, 14, 14 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "TopPanelExtr",
+            "from": [ 1, 13, 10 ],
+            "to": [ 15, 14, 11 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "ConnectorRight",
+            "from": [ 9.5, 9, 3 ],
+            "to": [ 12.5, 10, 6 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "ConnectorLeft",
+            "from": [ 3.5, 9, 3 ],
+            "to": [ 6.5, 10, 6 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "ConnectorWireRight",
+            "from": [ 10.5, 10, 4 ],
+            "to": [ 11.5, 13, 5 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "ConnectorWireLeft",
+            "from": [ 4.5, 10, 4 ],
+            "to": [ 5.5, 13, 5 ],
+            "faces": {
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" },
+                "west":  { "texture": "render" },
+                "east":  { "texture": "render" }
+            }
+        },
+        {   "__comment": "ConnectorWireTop",
+            "from": [ 5.5, 12, 4 ],
+            "to": [ 10.5, 13, 5 ],
+            "faces": {
+                "down":  { "texture": "render" },
+                "up":    { "texture": "render" },
+                "north": { "texture": "render" },
+                "south": { "texture": "render" }
+            }
+        }
+    ]
+}

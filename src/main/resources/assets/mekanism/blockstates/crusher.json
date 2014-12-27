@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=north,inactive": { "model": "mekanism:crusher_off" },
+        "facing=south,inactive": { "model": "mekanism:crusher_off", "y": 180 },
+        "facing=west,inactive":  { "model": "mekanism:crusher_off", "y": 270 },
+        "facing=east,inactive":  { "model": "mekanism:crusher_off", "y": 90 },
+        "facing=north,active": { "model": "mekanism:crusher_on" },
+        "facing=south,active": { "model": "mekanism:crusher_on", "y": 180 },
+        "facing=west,active":  { "model": "mekanism:crusher_on", "y": 270 },
+        "facing=east,active":  { "model": "mekanism:crusher_on", "y": 90 }
+    }
+}

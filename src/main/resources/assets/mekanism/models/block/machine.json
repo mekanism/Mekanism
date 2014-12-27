@@ -1,0 +1,7 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "mekanism:blocks/SteelCasing",
+        "side": "mekanism:blocks/SteelCasing"
+    }
+}

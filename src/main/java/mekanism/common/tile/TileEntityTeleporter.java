@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Teleporter;
 import mekanism.common.block.states.BlockStateBasic;
+import mekanism.common.block.states.BlockStateBasic.BasicBlock;
 import mekanism.common.block.states.BlockStateBasic.BasicBlockType;
 import mekanism.common.block.states.BlockStateMachine.MachineBlockType;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
@@ -439,7 +440,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public boolean isFrame(BlockPos pos)
 	{
 		IBlockState state = worldObj.getBlockState(pos);
-		return state.getBlock() == MekanismBlocks.BasicBlock && state.getValue(BlockStateBasic.typeProperty) == BasicBlockType.TELEPORTER_FRAME;
+		return state.getBlock() == MekanismBlocks.BasicBlock && state.getValue(BasicBlock.BASIC_BLOCK_1.predicatedProperty) == BasicBlockType.TELEPORTER_FRAME;
 	}
 
 	@Override

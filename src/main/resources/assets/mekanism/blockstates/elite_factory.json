@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "mekanism:elite_factory" },
+        "facing=south": { "model": "mekanism:elite_factory", "y": 180 },
+        "facing=west":  { "model": "mekanism:elite_factory", "y": 270 },
+        "facing=east":  { "model": "mekanism:elite_factory", "y": 90 }
+    }
+}

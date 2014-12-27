@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=north,inactive": { "model": "mekanism:advanced_factory" },
+        "facing=south,inactive": { "model": "mekanism:advanced_factory", "y": 180 },
+        "facing=west,inactive":  { "model": "mekanism:advanced_factory", "y": 270 },
+        "facing=east,inactive":  { "model": "mekanism:advanced_factory", "y": 90 },
+        "facing=north,active": { "model": "mekanism:advanced_factory" },
+        "facing=south,active": { "model": "mekanism:advanced_factory", "y": 180 },
+        "facing=west,active":  { "model": "mekanism:advanced_factory", "y": 270 },
+        "facing=east,active":  { "model": "mekanism:advanced_factory", "y": 90 }
+    }
+}

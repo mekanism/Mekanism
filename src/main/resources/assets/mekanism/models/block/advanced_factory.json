@@ -1,0 +1,8 @@
+{
+    "parent": "block/orientable",
+    "textures": {
+        "top": "mekanism:blocks/AdvancedFactoryTop",
+        "front": "mekanism:blocks/AdvancedFactoryFront",
+        "side": "mekanism:blocks/AdvancedFactorySide"
+    }
+}

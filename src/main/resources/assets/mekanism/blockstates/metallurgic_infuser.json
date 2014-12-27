@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "mekanism:metallurgic_infuser" },
+        "facing=south": { "model": "mekanism:metallurgic_infuser", "y": 180 },
+        "facing=west":  { "model": "mekanism:metallurgic_infuser", "y": 270 },
+        "facing=east":  { "model": "mekanism:metallurgic_infuser", "y": 90 }
+    }
+}
