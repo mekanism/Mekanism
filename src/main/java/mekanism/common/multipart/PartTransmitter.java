@@ -17,11 +17,16 @@ import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.multipart.TMultiPart;
 import codechicken.multipart.TileMultipart;
 
 public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends PartSidedPipe implements IGridTransmitter<N>
 {
 	public N theNetwork;
+
+	public byte newSidesMerged;
 
 	@Override
 	public void bind(TileMultipart t)
@@ -62,6 +67,50 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	{
 		setTransmitterNetwork(null);
 		getTransmitterNetwork();
+	}
+
+	@Override
+	public void onPartChanged(TMultiPart part)
+	{
+		byte transmitterConnections = currentTransmitterConnections;
+		super.onPartChanged(part);
+		byte addedSides = (byte)(0b00111111 & (currentTransmitterConnections & ~transmitterConnections));
+		mergeNewSideNets(addedSides);
+	}
+
+	public void mergeNewSideNets(byte sides)
+	{
+		if(theNetwork != null)
+		{
+			HashSet<N> connectedNets = new HashSet<N>();
+
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				if(connectionMapContainsSide(sides, side))
+				{
+					TileEntity cable = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+
+					if(TransmissionType.checkTransmissionType(cable, getTransmissionType()) && ((IGridTransmitter<N>)cable).getTransmitterNetwork(false) != null)
+					{
+						connectedNets.add(((IGridTransmitter<N>)cable).getTransmitterNetwork());
+					}
+				}
+			}
+
+			if(connectedNets.size() == 0)
+			{
+				newSidesMerged = 0x00;
+				return;
+			}
+			else {
+				connectedNets.add(theNetwork);
+				theNetwork = createNetworkByMergingSet(connectedNets);
+				theNetwork.fullRefresh();
+				theNetwork.updateCapacity();
+				newSidesMerged = sides;
+				sendDesc = true;
+			}
+		}
 	}
 
 	@Override
@@ -223,4 +272,30 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 	@Override
 	public void chunkLoad() {}
+
+	@Override
+	public void readDesc(MCDataInput packet)
+	{
+		super.readDesc(packet);
+		if(packet.readBoolean())
+		{
+			mergeNewSideNets(packet.readByte());
+		}
+	}
+
+	@Override
+	public void writeDesc(MCDataOutput packet)
+	{
+		super.writeDesc(packet);
+		if(newSidesMerged != 0x00)
+		{
+			packet.writeBoolean(true);
+			packet.writeByte(newSidesMerged);
+			newSidesMerged = 0x00;
+		}
+		else
+		{
+			packet.writeBoolean(false);
+		}
+	}
 }
