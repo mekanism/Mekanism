@@ -168,7 +168,11 @@ public class GuiPasswordEnter extends GuiScreen
 		int guiHeight = (height - ySize) / 2;
 
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		String actualPass = passwordField.getText();
+		String censored = new String(new char[actualPass.length()]).replace("\0", "*");
+		passwordField.setText(censored);
 		passwordField.drawTextBox();
+		passwordField.setText(actualPass);
 
 		super.drawScreen(mouseX, mouseY, partialTick);
 

@@ -201,8 +201,16 @@ public class GuiPasswordModify extends GuiScreen
 		fontRendererObj.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
 		fontRendererObj.drawString("Enter:", guiWidth + 27, guiHeight + 37, 0x404040);
 		fontRendererObj.drawString("Repeat:", guiWidth + 21, guiHeight + 54, 0x404040);
+		String actualPass = newPasswordField.getText();
+		String censored = new String(new char[actualPass.length()]).replace("\0", "*");
+		newPasswordField.setText(censored);
 		newPasswordField.drawTextBox();
+		newPasswordField.setText(actualPass);
+		actualPass = confirmPasswordField.getText();
+		censored = new String(new char[actualPass.length()]).replace("\0", "*");
+		confirmPasswordField.setText(censored);
 		confirmPasswordField.drawTextBox();
+		confirmPasswordField.setText(actualPass);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
