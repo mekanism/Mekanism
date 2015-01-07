@@ -416,7 +416,7 @@ public final class RecipeHandler
 		{
 			for(Map.Entry<AdvancedInput, ItemStack> entry : recipes.entrySet())
 			{
-				if(entry.getKey().matches(input))
+				if(entry.getKey().matches(input) && entry.getKey().gasType == input.gasType)
 				{
 					if(stackDecrease)
 					{
