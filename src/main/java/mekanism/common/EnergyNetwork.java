@@ -80,15 +80,18 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
     @Override
-	protected synchronized void updateMeanCapacity()
+	protected void updateMeanCapacity()
 	{
         int numCables = transmitters.size();
         double reciprocalSum = 0;
-        
-        for(IGridTransmitter<EnergyNetwork> cable : transmitters)
-        {
-            reciprocalSum += 1.0/(double)cable.getCapacity();
-        }
+
+		synchronized(transmitters)
+		{
+			for(IGridTransmitter<EnergyNetwork> cable : transmitters)
+			{
+				reciprocalSum += 1.0 / (double)cable.getCapacity();
+			}
+		}
 
         meanCapacity = (double)numCables / reciprocalSum;            
 	}
@@ -119,7 +122,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
     	}
     }
 	
-	public synchronized double getEnergyNeeded()
+	public double getEnergyNeeded()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -129,7 +132,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return getCapacity()-electricityStored;
 	}
 
-	public synchronized double tickEmit(double energyToSend)
+	public double tickEmit(double energyToSend)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -153,7 +156,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return sent;
 	}
 
-	public synchronized double emit(double energyToSend, boolean doEmit)
+	public double emit(double energyToSend, boolean doEmit)
 	{
 		double toUse = Math.min(getEnergyNeeded(), energyToSend);
 		if(doEmit)
@@ -166,7 +169,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	/**
 	 * @return sent
 	 */
-	public synchronized double doEmit(double energyToSend, boolean tryAgain)
+	public double doEmit(double energyToSend, boolean tryAgain)
 	{
 		double sent = 0;
 
@@ -219,7 +222,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public synchronized Set<TileEntity> getAcceptors(Object... data)
+	public Set<TileEntity> getAcceptors(Object... data)
 	{
 		Set<TileEntity> toReturn = new HashSet<TileEntity>();
 
@@ -228,7 +231,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			return toReturn;
 		}
 
-		for(TileEntity acceptor : ((Map<Coord4D, TileEntity>)possibleAcceptors.clone()).values())
+		for(TileEntity acceptor : possibleAcceptors.values())
 		{
 			ForgeDirection side = acceptorDirections.get(acceptor);
 
@@ -246,7 +249,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					if(handler.getMaxEnergy() - handler.getEnergy() > 0)
 					{
 						toReturn.add(acceptor);
-						continue;
 					}
 				}
 			}
@@ -259,7 +261,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					if(handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
 					{
 						toReturn.add(acceptor);
-						continue;
 					}
 				}
 			}
@@ -276,7 +277,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 					if(Math.min(demanded, max) > 0)
 					{
 						toReturn.add(acceptor);
-						continue;
 					}
 				}
 			}
@@ -286,37 +286,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public synchronized void refresh()
+	public void refresh()
 	{
-		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
-		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
-		boolean networkChanged = false;
-
-		while(it.hasNext())
-		{
-			IGridTransmitter<EnergyNetwork> conductor = (IGridTransmitter<EnergyNetwork>)it.next();
-
-			if(conductor == null || conductor.getTile().isInvalid())
-			{
-				it.remove();
-				transmitters.remove(conductor);
-				networkChanged = true;
-			}
-			else {
-				conductor.setTransmitterNetwork(this);
-			}
-		}
-
-		if(networkChanged) 
-		{
-			updateCapacity();
-		}
+		super.refresh();
 
 		needsUpdate = true;
 	}
 	
 	@Override
-	public synchronized void refresh(IGridTransmitter<EnergyNetwork> transmitter)
+	public void refresh(IGridTransmitter<EnergyNetwork> transmitter)
 	{
 		TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors(transmitter.getTile());
 		

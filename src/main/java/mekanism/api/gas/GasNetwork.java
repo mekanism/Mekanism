@@ -135,12 +135,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		gasStored = null;
 	}
 
-	public synchronized int getGasNeeded()
+	public int getGasNeeded()
 	{
 		return getCapacity()-(gasStored != null ? gasStored.amount : 0);
 	}
 
-	public synchronized int tickEmit(GasStack stack)
+	public int tickEmit(GasStack stack)
 	{
 		List availableAcceptors = Arrays.asList(getAcceptors(stack.getGas()).toArray());
 
@@ -185,7 +185,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		return sent;
 	}
 
-	public synchronized int emit(GasStack stack)
+	public int emit(GasStack stack)
 	{
 		if(gasStored != null && gasStored.getGas() != stack.getGas())
 		{
@@ -276,12 +276,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 
 	@Override
-	public synchronized Set<IGasHandler> getAcceptors(Object... data)
+	public Set<IGasHandler> getAcceptors(Object... data)
 	{
 		Gas type = (Gas)data[0];
 		Set<IGasHandler> toReturn = new HashSet<IGasHandler>();
 
-		for(IGasHandler acceptor : ((Map<Coord4D, IGasHandler>)possibleAcceptors.clone()).values())
+		for(IGasHandler acceptor : possibleAcceptors.values())
 		{
 			if(acceptorDirections.get(acceptor) == null)
 			{
@@ -298,35 +298,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	}
 
 	@Override
-	public synchronized void refresh()
-	{
-		Set<IGridTransmitter<GasNetwork>> iterTubes = (Set<IGridTransmitter<GasNetwork>>)transmitters.clone();
-		Iterator<IGridTransmitter<GasNetwork>> it = iterTubes.iterator();
-		boolean networkChanged = false;
-
-		while(it.hasNext())
-		{
-			IGridTransmitter<GasNetwork> conductor = (IGridTransmitter<GasNetwork>)it.next();
-
-			if(conductor == null || conductor.getTile().isInvalid())
-			{
-				it.remove();
-				networkChanged = true;
-				transmitters.remove(conductor);
-			}
-			else {
-				conductor.setTransmitterNetwork(this);
-			}
-		}
-
-		if(networkChanged) 
-		{
-			updateCapacity();
-		}
-	}
-	
-	@Override
-	public synchronized void refresh(IGridTransmitter<GasNetwork> transmitter)
+	public void refresh(IGridTransmitter<GasNetwork> transmitter)
 	{
 		IGasHandler[] acceptors = GasTransmission.getConnectedAcceptors(transmitter.getTile());
 		
