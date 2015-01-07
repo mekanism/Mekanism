@@ -1339,20 +1339,44 @@ public class Mekanism
         InfuseRegistry.registerInfuseType(new InfuseType("FUNGI", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 20, 0).setUnlocalizedName("infuse.fungi"));
 		InfuseRegistry.registerInfuseType(new InfuseType("BIO", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 12, 0).setUnlocalizedName("infuse.bio"));
 		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", MekanismUtils.getResource(ResourceType.INFUSE, "Infusions.png"), 24, 0).setUnlocalizedName("infuse.obsidian"));
+
+		//Load configuration
+		proxy.loadConfiguration();
+
+		//Register the mod's world generators
+		GameRegistry.registerWorldGenerator(genHandler, 1);
+
+		//Register player tracker
+		FMLCommonHandler.instance().bus().register(new CommonPlayerTracker());
+		FMLCommonHandler.instance().bus().register(new CommonPlayerTickHandler());
+
+		//Register to receive subscribed events
+		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
+
+		//Register with TransmitterNetworkRegistry
+		TransmitterNetworkRegistry.initiate();
+
+		//Load this module
+		addItems();
+		addBlocks();
+		addRecipes();
+		addEntities();
+
+		registerOreDict();
+
+		new MultipartMekanism();
+
+		//Load proxy
+		proxy.registerRenderInformation();
+		proxy.loadUtilities();
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		//Register the mod's world generators
-		GameRegistry.registerWorldGenerator(genHandler, 1);
-		
 		//Register the mod's GUI handler
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new CoreGuiHandler());
-		
-		//Register player tracker
-		FMLCommonHandler.instance().bus().register(new CommonPlayerTracker());
-		FMLCommonHandler.instance().bus().register(new CommonPlayerTickHandler());
 		
 		//Initialization notification
 		logger.info("Version " + versionNumber + " initializing...");
@@ -1360,39 +1384,15 @@ public class Mekanism
 		//Get data from server.
 		new ThreadGetData();
 		
-		//Register to receive subscribed events
-		FMLCommonHandler.instance().bus().register(this);
-		MinecraftForge.EVENT_BUS.register(this);
-
 		//Set up VoiceServerManager
 		if(voiceServerEnabled)
 		{
 			voiceManager = new VoiceServerManager();
 		}
-		
-		//Register with TransmitterNetworkRegistry
-		TransmitterNetworkRegistry.initiate();
-		
-		//Load configuration
-		proxy.loadConfiguration();
-
-		//Load this module
-		addItems();
-		addBlocks();
-		addRecipes();
-		addEntities();
-		
-		registerOreDict();
-
-		new MultipartMekanism();
 
 		//Packet registrations
 		packetHandler.initialize();
 
-		//Load proxy
-		proxy.registerRenderInformation();
-		proxy.loadUtilities();
-		
 		//Completion notification
 		logger.info("Loading complete.");
 		
