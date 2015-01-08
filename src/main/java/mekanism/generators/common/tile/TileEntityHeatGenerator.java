@@ -432,7 +432,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public IHeatTransfer getAdjacent(ForgeDirection side)
 	{
-		if(side == ForgeDirection.DOWN)
+		if(canConnectHeat(side))
 		{
 			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
 			if(adj instanceof IHeatTransfer)

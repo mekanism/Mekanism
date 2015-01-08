@@ -1,6 +1,6 @@
 package mekanism.common.multiblock;
 
-public interface IMultiblock<T>
+public interface IMultiblock<T extends SynchronizedData<T>>
 {
-	public SynchronizedData<T> getSynchronizedData();
+	public T getSynchronizedData();
 }

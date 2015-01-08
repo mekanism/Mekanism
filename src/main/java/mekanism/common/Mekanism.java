@@ -62,6 +62,8 @@ import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
+import mekanism.common.tile.TileEntityBoiler;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -950,6 +952,8 @@ public class Mekanism
 		GameRegistry.registerTileEntity(TileEntitySalinationValve.class, "SalinationValve");
 		GameRegistry.registerTileEntity(TileEntitySalinationBlock.class, "SalinationTank");
 		GameRegistry.registerTileEntity(TileEntityEntangledBlock.class, "EntangledBlock");
+		GameRegistry.registerTileEntity(TileEntityBoiler.class, "SteamBoiler");
+		GameRegistry.registerTileEntity(TileEntityBoilerValve.class, "BoilerValve");
 
 		//Load tile entities that have special renderers.
 		proxy.registerSpecialTileEntities();

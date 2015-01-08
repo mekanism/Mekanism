@@ -20,7 +20,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
-public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock implements IMultiblock<T>
+public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityContainerBlock implements IMultiblock<T>
 {
 	/** The tank data for this structure. */
 	public T structure;
@@ -138,7 +138,7 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 		{
 			for(Coord4D obj : getSynchronizedData().locations)
 			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(worldObj);
+				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(worldObj);
 
 				if(tileEntity != null && tileEntity.isRendering)
 				{
@@ -244,8 +244,8 @@ public abstract class TileEntityMultiblock<T> extends TileEntityContainerBlock i
 	}
 
 	@Override
-	public SynchronizedData<T> getSynchronizedData() 
+	public T getSynchronizedData()
 	{
-		return (SynchronizedData<T>)structure;
+		return structure;
 	}
 }

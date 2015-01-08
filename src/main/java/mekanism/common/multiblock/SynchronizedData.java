@@ -7,7 +7,7 @@ import mekanism.api.Coord4D;
 
 import net.minecraft.item.ItemStack;
 
-public abstract class SynchronizedData<T>
+public abstract class SynchronizedData<T extends SynchronizedData<T>>
 {
 	public Set<Coord4D> locations = new HashSet<Coord4D>();
 
@@ -26,6 +26,9 @@ public abstract class SynchronizedData<T>
 	public boolean hasRenderer;
 
 	public Coord4D renderLocation;
+
+	public Coord4D minLocation;
+	public Coord4D maxLocation;
 	
 	public ItemStack[] getInventory()
 	{

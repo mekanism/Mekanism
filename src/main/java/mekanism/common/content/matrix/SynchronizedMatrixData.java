@@ -5,7 +5,7 @@ import mekanism.common.multiblock.SynchronizedData;
 
 import net.minecraft.item.ItemStack;
 
-public class SynchronizedMatrixData extends SynchronizedData<SynchronizedTankData>
+public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData>
 {
 	public ItemStack[] inventory = new ItemStack[2];
 	

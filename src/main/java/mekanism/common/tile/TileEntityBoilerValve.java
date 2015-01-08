@@ -1,6 +1,8 @@
 package mekanism.common.tile;
 
-import mekanism.common.content.tank.DynamicFluidTank;
+import mekanism.common.content.boiler.BoilerSteamTank;
+import mekanism.common.content.boiler.BoilerTank;
+import mekanism.common.content.boiler.BoilerWaterTank;
 import mekanism.common.util.PipeUtils;
 
 import net.minecraftforge.common.util.ForgeDirection;
@@ -9,36 +11,38 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandler
+public class TileEntityBoilerValve extends TileEntityBoiler implements IFluidHandler
 {
-	public DynamicFluidTank fluidTank;
+	public BoilerTank waterTank;
+	public BoilerTank steamTank;
 
-	public TileEntityDynamicValve()
+	public TileEntityBoilerValve()
 	{
-		super("Dynamic Valve");
-		fluidTank = new DynamicFluidTank(this);
+		super("Boiler Valve");
+		waterTank = new BoilerWaterTank(this);
+		steamTank = new BoilerSteamTank(this);
 	}
 
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {fluidTank.getInfo()} : PipeUtils.EMPTY;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure)) ? new FluidTankInfo[] {waterTank.getInfo(), steamTank.getInfo()} : PipeUtils.EMPTY;
 	}
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		return fluidTank.fill(resource, doFill);
+		return waterTank.fill(resource, doFill);
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(structure != null && structure.fluidStored != null)
+		if(structure != null && structure.steamStored != null)
 		{
-			if(resource.getFluid() == structure.fluidStored.getFluid())
+			if(resource.getFluid() == structure.steamStored.getFluid())
 			{
-				return fluidTank.drain(resource.amount, doDrain);
+				return steamTank.drain(resource.amount, doDrain);
 			}
 		}
 
@@ -50,7 +54,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	{
 		if(structure != null)
 		{
-			return fluidTank.drain(maxDrain, doDrain);
+			return steamTank.drain(maxDrain, doDrain);
 		}
 
 		return null;

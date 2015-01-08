@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class MultiblockManager<T>
+public class MultiblockManager<T extends SynchronizedData<T>>
 {
 	private static Set<MultiblockManager> managers = new HashSet<MultiblockManager>();
 	
@@ -80,8 +80,6 @@ public class MultiblockManager<T>
 
 	/**
 	 * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
-	 * @param inventoryID - inventory ID of the dynamic tank
-	 * @param cache - cache of the dynamic tank
 	 * @param multiblock - dynamic tank TileEntity
 	 */
 	public void updateCache(IMultiblock<T> multiblock)

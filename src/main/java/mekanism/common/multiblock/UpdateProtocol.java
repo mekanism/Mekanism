@@ -14,13 +14,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class UpdateProtocol<T>
+public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
 	/** The multiblock nodes that have already been iterated over. */
 	public Set<TileEntityMultiblock<T>> iteratedNodes = new HashSet<TileEntityMultiblock<T>>();
 
 	/** The structures found, all connected by some nodes to the pointer. */
-	public SynchronizedData<T> structureFound = null;
+	public T structureFound = null;
 
 	/** The original block the calculation is getting run from. */
 	public TileEntityMultiblock<T> pointer;
@@ -178,13 +178,15 @@ public abstract class UpdateProtocol<T>
 		{
 			if(rightBlocks && rightFrame && isHollow && isCorner)
 			{
-				SynchronizedData<T> structure = getNewStructure();
+				T structure = getNewStructure();
 				structure.locations = locations;
 				structure.volLength = Math.abs(xmax-xmin)+1;
 				structure.volHeight = Math.abs(ymax-ymin)+1;
 				structure.volWidth = Math.abs(zmax-zmin)+1;
 				structure.volume = volume;
 				structure.renderLocation = Coord4D.get(tile).translate(0, 1, 0);
+				structure.minLocation = Coord4D.get(tile).translate(xmin, ymin, zmin);
+				structure.maxLocation = Coord4D.get(tile).translate(xmax, ymax, zmax);
 				
 				onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
 
@@ -346,7 +348,7 @@ public abstract class UpdateProtocol<T>
 	
 	protected abstract MultiblockCache<T> getNewCache();
 	
-	protected abstract SynchronizedData<T> getNewStructure();
+	protected abstract T getNewStructure();
 	
 	protected abstract MultiblockManager<T> getManager();
 	
@@ -354,7 +356,7 @@ public abstract class UpdateProtocol<T>
 	
 	protected void onFormed() {}
 	
-	protected void onStructureCreated(SynchronizedData<T> structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
+	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 
 	/**
 	 * Runs the protocol and updates all tanks that make a part of the dynamic tank.
@@ -371,7 +373,7 @@ public abstract class UpdateProtocol<T>
 				{
 					for(TileEntity tile : iteratedNodes)
 					{
-						((TileEntityMultiblock<T>)tileEntity).structure = null;
+						((TileEntityMultiblock<T>)tile).structure = null;
 					}
 
 					return;
@@ -406,7 +408,7 @@ public abstract class UpdateProtocol<T>
 							cache = (MultiblockCache<T>)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
 						}
 						else {
-							mergeCaches(rejectedItems, cache, (MultiblockCache<T>)getManager().pullInventory(pointer.getWorldObj(), id));
+							mergeCaches(rejectedItems, cache, getManager().pullInventory(pointer.getWorldObj(), id));
 						}
 						
 						idToUse = id;

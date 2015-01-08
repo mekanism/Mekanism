@@ -26,7 +26,8 @@ public class HeatUtils
 				continue;
 			}
 			//Transfer to air otherwise
-			double heatToTransfer = source.getTemp() / (IHeatTransfer.AIR_INVERSE_COEFFICIENT+source.getInsulationCoefficient(side)+source.getInverseConductionCoefficient());
+			double invConduction = IHeatTransfer.AIR_INVERSE_COEFFICIENT + source.getInsulationCoefficient(side) + source.getInverseConductionCoefficient();
+			double heatToTransfer = source.getTemp() / invConduction;
 			source.transferHeatTo(-heatToTransfer);
 			heatTransferred[1] += heatToTransfer;
 		}

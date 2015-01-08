@@ -20,6 +20,8 @@ import mekanism.common.inventory.InventoryBin;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.tile.TileEntityBoiler;
+import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.tile.TileEntitySalinationBlock;
@@ -71,6 +73,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:14: Salination Controller
  * 0:15: Salination Valve
  * 1:0: Salination Block
+ * 1:1: Steam Boiler
+ * 1:2: Boiler Valve
  * @author AidanBrady
  *
  */
@@ -150,8 +154,12 @@ public class BlockBasic extends Block implements IBlockCTM
 				break;
 			case BASIC_BLOCK_2:
 				ctms[0][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
+				ctms[1][0] = new CTMData("ctm/SteamBoiler", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[2][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(2, 1)).registerIcons(register);
 
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
+				icons[1][0] = ctms[1][0].mainTextureData.icon;
+				icons[2][0] = ctms[2][0].mainTextureData.icon;
 				break;
 		}
 	}
@@ -265,7 +273,7 @@ public class BlockBasic extends Block implements IBlockCTM
 				}
 				break;
 			case BASIC_BLOCK_2:
-				for(int i = 0; i < 1; i++)
+				for(int i = 0; i < 3; i++)
 				{
 					list.add(new ItemStack(item, 1, i));
 				}
@@ -642,6 +650,8 @@ public class BlockBasic extends Block implements IBlockCTM
 				switch(metadata)
 				{
 					case 0:
+					case 1:
+					case 2:
 						return true;
 					default:
 						return false;
@@ -679,6 +689,10 @@ public class BlockBasic extends Block implements IBlockCTM
 				{
 					case 0:
 						return new TileEntitySalinationBlock();
+					case 1:
+						return new TileEntityBoiler();
+					case 2:
+						return new TileEntityBoilerValve();
 					default:
 						return null;
 				}
@@ -745,7 +759,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
 		ItemStack ret = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
