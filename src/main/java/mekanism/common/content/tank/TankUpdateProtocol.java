@@ -9,7 +9,6 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
@@ -74,14 +73,14 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 	@Override
 	protected void onFormed()
 	{
-		if(((SynchronizedTankData)structureFound).fluidStored != null)
+		if(structureFound.fluidStored != null)
 		{
-			((SynchronizedTankData)structureFound).fluidStored.amount = Math.min(((SynchronizedTankData)structureFound).fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
+			structureFound.fluidStored.amount = Math.min(structureFound.fluidStored.amount, structureFound.volume*FLUID_PER_TANK);
 		}
 	}
 	
 	@Override
-	protected void onStructureCreated(SynchronizedData<SynchronizedTankData> structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	protected void onStructureCreated(SynchronizedTankData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
 	{
 		for(Coord4D obj : structure.locations)
 		{
@@ -91,7 +90,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData>
 				data.location = obj;
 				data.side = getSide(obj, origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax);
 
-				((SynchronizedTankData)structure).valves.add(data);
+				structure.valves.add(data);
 			}
 		}
 	}

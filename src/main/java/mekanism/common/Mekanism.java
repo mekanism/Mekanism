@@ -33,6 +33,7 @@ import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.BoilerCache;
+import mekanism.common.content.boiler.BoilerManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
@@ -162,7 +163,7 @@ public class Mekanism
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", TankCache.class);
 	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("energizedInductionMatrix", MatrixCache.class);
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine", TurbineCache.class);
-	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new MultiblockManager<SynchronizedBoilerData>("thermoelectricBoiler", BoilerCache.class);
+	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new BoilerManager("thermoelectricBoiler");
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();

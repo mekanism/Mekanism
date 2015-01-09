@@ -23,7 +23,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
 	public double heatToAbsorb;
 
-	public double heatCapacity = 100;
+	public double heatCapacity = 0.000001;
 
 	public double enthalpyOfVaporization = 10;
 
@@ -48,7 +48,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return 100;
+		return 1;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 		if(temperature < 100 + IHeatTransfer.AMBIENT_TEMP)
 		{
 			double temperatureDeficit = 100 + IHeatTransfer.AMBIENT_TEMP - temperature;
-			double heatNeeded = temperatureDeficit * volume * heatCapacity * 16;
+			double heatNeeded = temperatureDeficit * volume * heatCapacity * 16000;
 			double heatProvided = Math.min(heatToAbsorb, heatNeeded);
 			heatToAbsorb -= heatProvided;
 			temperature += heatProvided / (volume * heatCapacity * 16);
@@ -97,7 +97,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
 			heatToAbsorb -= amountToBoil * enthalpyOfVaporization;
 		}
-		heatToAbsorb *= 0.2;
+		heatToAbsorb *= 0.8;
 		return temperature;
 	}
 

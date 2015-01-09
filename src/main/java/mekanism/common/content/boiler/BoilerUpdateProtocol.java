@@ -104,7 +104,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 				data.location = obj;
 				data.side = getSide(obj, origX+xmin, origX+xmax, origY+ymin, origY+ymax, origZ+zmin, origZ+zmax);
 
-				((SynchronizedBoilerData)structure).valves.add(data);
+				structure.valves.add(data);
 			}
 		}
 	}

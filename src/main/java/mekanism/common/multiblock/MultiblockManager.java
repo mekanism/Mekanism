@@ -141,51 +141,56 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 		
 		for(MultiblockManager manager : managers)
 		{
-			ArrayList<Integer> idsToKill = new ArrayList<Integer>();
-			HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
-			
-			for(Map.Entry<Integer, MultiblockCache> entry : ((Map<Integer, MultiblockCache>)manager.inventories).entrySet())
+			manager.tickSelf(world);
+		}
+	}
+
+	public void tickSelf(World world)
+	{
+		ArrayList<Integer> idsToKill = new ArrayList<Integer>();
+		HashMap<Integer, HashSet<Coord4D>> tilesToKill = new HashMap<Integer, HashSet<Coord4D>>();
+
+		for(Map.Entry<Integer, MultiblockCache<T>> entry : inventories.entrySet())
+		{
+			int inventoryID = entry.getKey();
+
+			for(Coord4D obj : entry.getValue().locations)
 			{
-				int inventoryID = entry.getKey();
-	
-				for(Coord4D obj : (Set<Coord4D>)entry.getValue().locations)
+				if(obj.dimensionId == world.provider.dimensionId && obj.exists(world))
 				{
-					if(obj.dimensionId == world.provider.dimensionId && obj.exists(world))
+					TileEntity tileEntity = obj.getTileEntity(world);
+
+					if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != this || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != -1 && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
 					{
-						TileEntity tileEntity = obj.getTileEntity(world);
-	
-						if(!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock)tileEntity).getManager() != manager || (getStructureId(((TileEntityMultiblock<?>)tileEntity)) != -1 && getStructureId(((TileEntityMultiblock)tileEntity)) != inventoryID))
+						if(!tilesToKill.containsKey(inventoryID))
 						{
-							if(!tilesToKill.containsKey(inventoryID))
-							{
-								tilesToKill.put(inventoryID, new HashSet<Coord4D>());
-							}
-	
-							tilesToKill.get(inventoryID).add(obj);
+							tilesToKill.put(inventoryID, new HashSet<Coord4D>());
 						}
+
+						tilesToKill.get(inventoryID).add(obj);
 					}
 				}
-	
-				if(entry.getValue().locations.isEmpty())
-				{
-					idsToKill.add(inventoryID);
-				}
 			}
-	
-			for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
+
+			if(entry.getValue().locations.isEmpty())
 			{
-				for(Coord4D obj : entry.getValue())
-				{
-					((Map<Integer, MultiblockCache>)manager.inventories).get(entry.getKey()).locations.remove(obj);
-					manager.dataHandler.markDirty();
-				}
+				idsToKill.add(inventoryID);
 			}
-	
-			for(int inventoryID : idsToKill)
+		}
+
+		for(Map.Entry<Integer, HashSet<Coord4D>> entry : tilesToKill.entrySet())
+		{
+			for(Coord4D obj : entry.getValue())
 			{
-				manager.inventories.remove(inventoryID);
-				manager.dataHandler.markDirty();
+				inventories.get(entry.getKey()).locations.remove(obj);
+				dataHandler.markDirty();
 			}
+		}
+
+		for(int inventoryID : idsToKill)
+		{
+			inventories.remove(inventoryID);
+			dataHandler.markDirty();
 		}
 	}
 	

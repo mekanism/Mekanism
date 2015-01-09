@@ -43,7 +43,7 @@ public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerDat
 
 	public double temperature;
 	public double heatToAbsorb;
-	public double invHeatCapacity = 10;
+	public double invHeatCapacity = 5;
 
 	public TileEntityBoiler()
 	{
@@ -109,13 +109,6 @@ public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerDat
 			if(structure != null)
 			{
 				manageInventory();
-			}
-
-			simulateHeat();
-			applyTemperatureChange();
-			if(structure != null)
-			{
-				structure.applyTemperatureChange();
 			}
 		}
 	}
@@ -461,13 +454,13 @@ public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerDat
 	@Override
 	public double getInverseConductionCoefficient()
 	{
-		return 10;
+		return 50;
 	}
 
 	@Override
 	public double getInsulationCoefficient(ForgeDirection side)
 	{
-		return 10;
+		return 50;
 	}
 
 	@Override

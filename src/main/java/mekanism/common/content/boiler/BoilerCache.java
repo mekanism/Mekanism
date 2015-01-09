@@ -1,5 +1,6 @@
 package mekanism.common.content.boiler;
 
+import mekanism.api.Coord4D;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
@@ -7,8 +8,11 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.HashMap;
 
 public class BoilerCache extends MultiblockCache<SynchronizedBoilerData>
 {
