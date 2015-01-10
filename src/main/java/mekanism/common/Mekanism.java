@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ import mekanism.common.EnergyDisplay.EnergyType;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.IFactory.RecipeType;
+import mekanism.common.Teleporter.Code;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockBasic;
@@ -191,7 +193,7 @@ public class Mekanism
 	public static Version versionNumber = new Version(7, 1, 1);
 	
 	/** Map of Teleporters */
-	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
+	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Code, ArrayList<Coord4D>>();
 	
 	/** A map containing references to all dynamic tank inventory caches. */
 	public static Map<Integer, DynamicTankCache> dynamicInventories = new HashMap<Integer, DynamicTankCache>();
@@ -225,8 +227,8 @@ public class Mekanism
 	
 	public static KeySync keyMap = new KeySync();
 	
-	public static Set<String> jetpackOn = new HashSet<String>();
-	public static Set<String> gasmaskOn = new HashSet<String>();
+	public static final Set<String> jetpackOn = Collections.synchronizedSet(new HashSet<String>());
+	public static final Set<String> gasmaskOn = Collections.synchronizedSet(new HashSet<String>());
 	
 	public static Set<Coord4D> activeVibrators = new HashSet<Coord4D>();
 

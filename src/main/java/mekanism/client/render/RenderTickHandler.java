@@ -102,66 +102,67 @@ public class RenderTickHandler
 						font.drawStringWithShadow("Oxygen: " + scubaTank.getStored(stack), 1, y - 11, 0x404040);
 					}
 				}
-	
-				Set<String> copy = (Set)((HashSet)Mekanism.jetpackOn).clone();
-	
-				for(String s : copy)
+
+				synchronized(Mekanism.jetpackOn)
 				{
-					EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
-	
-					if(p == null)
+					for(String s : Mekanism.jetpackOn)
 					{
-						continue;
+						EntityPlayer p = mc.theWorld.getPlayerEntityByName(s);
+
+						if(p == null)
+						{
+							continue;
+						}
+
+						Pos3D playerPos = new Pos3D(p);
+
+						if(p != mc.thePlayer)
+						{
+							playerPos.translate(0, 1.7, 0);
+						}
+
+						float random = (rand.nextFloat() - 0.5F) * 0.1F;
+
+						Pos3D vLeft = new Pos3D();
+						vLeft.xPos -= 0.43;
+						vLeft.yPos -= 0.55;
+						vLeft.zPos -= 0.54;
+						vLeft.rotateYaw(p.renderYawOffset);
+
+						Pos3D vRight = new Pos3D();
+						vRight.xPos += 0.43;
+						vRight.yPos -= 0.55;
+						vRight.zPos -= 0.54;
+						vRight.rotateYaw(p.renderYawOffset);
+
+						Pos3D vCenter = new Pos3D();
+						vCenter.xPos = (rand.nextFloat() - 0.5F) * 0.4F;
+						vCenter.yPos -= 0.86;
+						vCenter.zPos -= 0.30;
+						vCenter.rotateYaw(p.renderYawOffset);
+
+						Pos3D rLeft = vLeft.clone().scale(random);
+						Pos3D rRight = vRight.clone().scale(random);
+
+						Pos3D mLeft = vLeft.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mRight = vRight.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+						Pos3D mCenter = vCenter.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
+
+						mLeft.translate(rLeft);
+						mRight.translate(rRight);
+
+						Pos3D v = playerPos.clone().translate(vLeft);
+						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
+						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
+
+						v = playerPos.clone().translate(vRight);
+						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
+						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
+
+						v = playerPos.clone().translate(vCenter);
+						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
+						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
 					}
-	
-					Pos3D playerPos = new Pos3D(p);
-	
-					if(p != mc.thePlayer)
-					{
-						playerPos.translate(0, 1.7, 0);
-					}
-	
-					float random = (rand.nextFloat()-0.5F)*0.1F;
-	
-					Pos3D vLeft = new Pos3D();
-					vLeft.xPos -= 0.43;
-					vLeft.yPos -= 0.55;
-					vLeft.zPos -= 0.54;
-					vLeft.rotateYaw(p.renderYawOffset);
-	
-					Pos3D vRight = new Pos3D();
-					vRight.xPos += 0.43;
-					vRight.yPos -= 0.55;
-					vRight.zPos -= 0.54;
-					vRight.rotateYaw(p.renderYawOffset);
-	
-					Pos3D vCenter = new Pos3D();
-					vCenter.xPos = (rand.nextFloat()-0.5F)*0.4F;
-					vCenter.yPos -= 0.86;
-					vCenter.zPos -= 0.30;
-					vCenter.rotateYaw(p.renderYawOffset);
-	
-					Pos3D rLeft = vLeft.clone().scale(random);
-					Pos3D rRight = vRight.clone().scale(random);
-	
-					Pos3D mLeft = vLeft.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-					Pos3D mRight = vRight.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-					Pos3D mCenter = vCenter.clone().scale(0.2).translate(new Pos3D(p.motionX, p.motionY, p.motionZ));
-	
-					mLeft.translate(rLeft);
-					mRight.translate(rRight);
-	
-					Pos3D v = playerPos.clone().translate(vLeft);
-					spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
-					spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mLeft.xPos, mLeft.yPos, mLeft.zPos);
-	
-					v = playerPos.clone().translate(vRight);
-					spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
-					spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mRight.xPos, mRight.yPos, mRight.zPos);
-	
-					v = playerPos.clone().translate(vCenter);
-					spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
-					spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
 				}
 			}
 		}

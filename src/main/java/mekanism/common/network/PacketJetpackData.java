@@ -92,10 +92,13 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 			else if(packetType == JetpackPacket.FULL)
 			{
 				dataStream.writeInt(Mekanism.jetpackOn.size());
-	
-				for(String username : Mekanism.jetpackOn)
+
+				synchronized(Mekanism.jetpackOn)
 				{
-					PacketHandler.writeString(dataStream, username);
+					for (String username : Mekanism.jetpackOn)
+					{
+						PacketHandler.writeString(dataStream, username);
+					}
 				}
 			}
 		}
