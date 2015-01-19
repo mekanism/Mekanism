@@ -34,6 +34,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -71,6 +73,11 @@ public class MekanismGenerators implements IModule
 
 	public static int windGenerationMinY;
 	public static int windGenerationMaxY;
+	@SideOnly(Side.CLIENT)
+
+	//General Configuration
+	public static boolean enableAmbientLighting;
+	public static int ambientLightingLevel;
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)

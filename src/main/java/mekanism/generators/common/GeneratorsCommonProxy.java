@@ -49,6 +49,9 @@ public class GeneratorsCommonProxy
 	 */
 	public void loadConfiguration()
 	{
+		MekanismGenerators.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean(true);
+		MekanismGenerators.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15, "", 0, 15).getInt(15);
+
 		MekanismGenerators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble(300D);
 		MekanismGenerators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble(350D);
 		MekanismGenerators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble(150D);
