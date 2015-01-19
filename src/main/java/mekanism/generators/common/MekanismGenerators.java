@@ -73,9 +73,7 @@ public class MekanismGenerators implements IModule
 
 	public static int windGenerationMinY;
 	public static int windGenerationMaxY;
-	@SideOnly(Side.CLIENT)
 
-	//General Configuration
 	public static boolean enableAmbientLighting;
 	public static int ambientLightingLevel;
 
