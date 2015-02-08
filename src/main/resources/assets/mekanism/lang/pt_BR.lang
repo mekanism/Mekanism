@@ -2,19 +2,22 @@
 //MEKANISM//
 //********//
 
-//Items
+//Itens
 tile.ObsidianTNT.name=TNT de Obsidiana
 item.EnrichedAlloy.name=Liga Enriquecida
+item.ReinforcedAlloy.name=Liga Reforçada
+item.AtomicAlloy.name=Liga Atômica
 item.EnergyTablet.name=Tablete de Energia
-item.SpeedUpgrade.name=Upgrade de Velocidade
-item.EnergyUpgrade.name=Upgrade de Energia
+item.SpeedUpgrade.name=Atualização de Velocidade
+item.EnergyUpgrade.name=Atualização de Energia
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Desintegrador Atômico
-item.AtomicCore.name=Núcleo Atômico
 item.ElectricBow.name=Arco Elétrico
-item.ControlCircuit.name=Circuito de Controle
 item.EnrichedIron.name=Ferro Enriquecido 
-item.CompressedCarbon.name=Carbono Compactado
+item.CompressedCarbon.name=Carbono Comprimido
+item.CompressedRedstone.name=Redstone Comprimida
+item.CompressedDiamond.name=Diamente Comprimido
+item.CompressedObsidian.name=Obsidiana Comprimida
 item.PortableTeleporter.name=Teletransportador Portátil
 item.TeleportationCore.name=Núcleo de Teletransporte 
 item.Configurator.name=Configurador
@@ -25,7 +28,6 @@ item.ScubaTank.name=Tanque de Mergulho
 item.GasMask.name=Máscara de Gás
 item.Dictionary.name=Dicionário
 item.ElectrolyticCore.name=Núcleo Eletrolítico
-item.CompressedRedstone.name=Redstone Compactado
 item.Sawdust.name=Serragem
 item.Salt.name=Sal
 item.BrineBucket.name=Balde de Salmoura
@@ -39,7 +41,13 @@ item.HDPESheet.name=Folha de HDPE
 item.PlaStick.name=Plástico
 item.Substrate.name=Substrato
 
-//Gas Tank
+//Control Circuits
+item.BasicControlCircuit.name=Circuito de Controle Básico
+item.AdvancedControlCircuit.name=Circuito de Controle Avançado
+item.EliteControlCircuit.name=Circuito de Controle de Elite
+item.UltimateControlCircuit.name=Circuito de Controle Definitivo
+
+//Tanque de Gás
 tile.GasTank.GasTank.name=Tanque de Gás
 
 //Cardboard Box
@@ -48,12 +56,15 @@ tile.CardboardBox.name=Caixa de Papelão
 //Bounding Block
 tile.BoundingBlock.name=Delimitadora de Bloco
 
-//Basic Block
+//Salt
+tile.SaltBlock.name=Bloco de Sal
+
+//Bloco Básico
 tile.BasicBlock.OsmiumBlock.name=Bloco de Ósmio
 tile.BasicBlock.BronzeBlock.name=Bloco de Bronze
 tile.BasicBlock.RefinedObsidian.name=Obsidiana Refinada
 tile.BasicBlock.CharcoalBlock.name=Bloco de Carvão Vegetal
-tile.BasicBlock.RefinedGlowstone.name=Glowstone Refinada
+tile.BasicBlock.RefinedGlowstone.name=Pedra Luminosa Refinada
 tile.BasicBlock.SteelBlock.name=Bloco de Aço
 tile.BasicBlock.Bin.name=Silo
 tile.BasicBlock.TeleporterFrame.name=Moldura do Teletransportador
@@ -66,10 +77,10 @@ tile.BasicBlock.TinBlock.name=Bloco de Estanho
 tile.BasicBlock.SalinationController.name=Controlador de Salinização
 tile.BasicBlock.SalinationValve.name=Válvula de Salinização
 
-//Basic Block 2 (second ID iteration)
+//Bloco Básico 2 (second ID iteration)
 tile.BasicBlock2.SalinationBlock.name=Bloco de Salinização
 
-//Machine Block
+//Bloco de Máquina
 tile.MachineBlock.EnrichmentChamber.name=Câmara de Enriquecimento
 tile.MachineBlock.OsmiumCompressor.name=Compressor de Ósmio
 tile.MachineBlock.Combiner.name=Combinador
@@ -87,7 +98,7 @@ tile.MachineBlock.Chargepad.name=Plataforma Recarregadora
 tile.MachineBlock.LogisticalSorter.name=Classificador Logístico
 tile.MachineBlock.DigitalMiner.name=Minerador Digital
 
-//Machine Block 2 (second ID iteration)
+//Bloco de Máquina 2 (second ID iteration)
 tile.MachineBlock2.RotaryCondensentrator.name=Condensentrator Rotatório
 tile.MachineBlock2.ChemicalOxidizer.name=Oxidador Químico
 tile.MachineBlock2.ChemicalInfuser.name=Infusor Químico
@@ -102,7 +113,7 @@ tile.MachineBlock2.SeismicVibrator.name=Vibrador Sísmico
 tile.MachineBlock2.PressurizedReactionChamber.name=Câmara de Reação Pressurizada
 tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
 tile.MachineBlock2.PortableTank.name=Tanque Portátil
-tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.FluidicPlenisher.name=Preenchedor Flúdico
 
 //Plastic
 tile.PlasticBlock.name=Bloco de Plástico
@@ -118,28 +129,30 @@ infuse.carbon=Carbono
 infuse.tin=Estanho
 infuse.diamond=Diamante
 infuse.redstone=Redstone
-infuse.fungi=Fungos
+infuse.fungi=Fungo
+infuse.obsidian=Obsidiana
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Minério de Ósmio
 tile.OreBlock.CopperOre.name=Minério de Cobre
 tile.OreBlock.TinOre.name=Minério de Estanho
 
+//Transmitters
 item.MultipartTransmitter.PressurizedTube.name=Tubo Pressurizado
 item.MultipartTransmitter.BasicUniversalCable.name=Cabo Universal Básico
 item.MultipartTransmitter.AdvancedUniversalCable.name=Cabo Universal Avançado
 item.MultipartTransmitter.EliteUniversalCable.name=Cabo Universal Elite
-item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Ultimate
+item.MultipartTransmitter.UltimateUniversalCable.name=Cabo Universal Definitivo
 item.MultipartTransmitter.BasicMechanicalPipe.name=Tubo Mecânico Básico
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Tubo Mecânico Avançado
 item.MultipartTransmitter.EliteMechanicalPipe.name=Tubo Mecânico Elite
-item.MultipartTransmitter.UltimateMechanicalPipe.name=Tubo Mecânico Ultimate
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Tubo Mecânico Definitivo
 item.MultipartTransmitter.LogisticalTransporter.name=Transportador Logístico
 item.MultipartTransmitter.RestrictiveTransporter.name=Transportador Restritivo
 item.MultipartTransmitter.DiversionTransporter.name=Transportador Redirecionador
 
 //Glow Panel
-item.GlowPanel.name=Painel de Glowstone
+item.GlowPanel.name=Painel de Pedra Luminosa
 
 //Energy Cubes
 tile.EnergyCube.Basic.name=Cubo de Energia Básico
@@ -151,7 +164,7 @@ tile.EnergyCube.Ultimate.name=Cubo de Energia Definitivo
 item.ironDust.name=Pó de Ferro
 item.goldDust.name=Pó de Ouro
 item.osmiumDust.name=Pó de Ósmio
-item.obsidianDust.name=Pó de Obsidiana Refinado
+item.obsidianDust.name=Pó de Obsidiana Refinada
 item.diamondDust.name=Pó de Diamante
 item.steelDust.name=Pó de Aço
 item.copperDust.name=Pó de Cobre
@@ -204,7 +217,7 @@ item.dirtyLeadDust.name=Pó de Chumbo Sujo
 item.obsidianIngot.name=Lingote de Obsidiana
 item.osmiumIngot.name=Lingote de Ósmio
 item.bronzeIngot.name=Lingote de Bronze
-item.glowstoneIngot.name=Lingote de Glowstone
+item.glowstoneIngot.name=Lingote de Pedra Luminosa
 item.steelIngot.name=Lingote de Aço
 item.copperIngot.name=Lingote de Cobre
 item.tinIngot.name=Lingote de Estanho
@@ -212,7 +225,7 @@ item.tinIngot.name=Lingote de Estanho
 //Gasses
 gas.hydrogen=Hidrogênio
 gas.oxygen=Oxigênio
-gas.water=Vapor de Água
+gas.water=Vapor D'água
 gas.chlorine=Cloro
 gas.sulfurDioxideGas=Dióxido de Enxofre
 gas.sulfurTrioxideGas=Trióxido de Enxofre
@@ -221,6 +234,8 @@ gas.hydrogenChloride=Cloreto de Hidrogênio
 gas.liquidOsmium=Ósmio Líquido
 gas.liquidStone=Pedra Líquida
 gas.ethene=Etileno
+gas.sodium=Sódio
+gas.brine=Salmoura Gasosa
 
 gas.iron=Lodo de Ferro
 gas.gold=Lodo de Ouro
@@ -254,6 +269,7 @@ fluid.sulfuricAcid=Ácido Sulfúrico Líquido
 fluid.hydrogenChloride=Cloreto de Hidrogênio Líquido
 fluid.brine=Salmoura
 fluid.ethene=Etileno Líquido
+fluid.sodium=Sódio Líquido
 
 //OreGas names
 oregas.iron=Minério de Ferro
@@ -277,11 +293,15 @@ update.outdated=Usando a versão desatualizada em um ou mais módulos
 key.mode=Modo Interruptor
 key.voice=Voz
 
+//Config Gui
+mekanism.configgui.ctgy.general.tooltip=Configurações gerais sobre Mekanism e todos os seus módulos
+mekanism.configgui.ctgy.usage.tooltip=Configurações de máquinas e seu consumo de energia
+
 //Gui text
-gui.removeSpeedUpgrade=Remover upgrade de velocidade
-gui.removeEnergyUpgrade=Remover upgrade de energia
+gui.removeSpeedUpgrade=Remover atualização de velocidade
+gui.removeEnergyUpgrade=Remover atualização de energia
 gui.condensentrating=Condensentrando
-gui.decondensentrating=Decondensentrando
+gui.decondensentrating=Descondensentrando
 gui.power=Energia
 gui.confirm=Confirmar
 gui.open=Abrir
@@ -292,9 +312,9 @@ gui.edit=Editar
 gui.save=Salvar
 gui.output=Saída
 gui.delete=Deletar
-gui.status=Estatus
+gui.status=Estado
 gui.autoEject=Auto-ejetar
-gui.itemstack=PilhaDeItems
+gui.itemstack=PilhaDeItens
 gui.oredict=OreDict
 gui.material=Material
 gui.out=Saída
@@ -318,6 +338,7 @@ gui.newFilter=Novo Filtro
 gui.energy=Energia
 gui.gas=Gás
 gui.dumping=Despejar
+gui.dumping_excess=Despejando Excesso
 gui.modID=Mod ID
 gui.key=Chave
 gui.id=ID
@@ -355,12 +376,12 @@ gui.oredictFilter.noKey=Nenhuma entrada digitada
 gui.oredictFilter.sameKey=Mesma entrada
 
 gui.modIDFilter=Mod ID Filtro
-gui.modIDFilter.noID=Nenhuma ID inserido
+gui.modIDFilter.noID=Nenhuma ID inserida
 gui.modIDFilter.sameID=O mesmo ID
 
 gui.itemFilter=Filtro de Itens
 gui.itemFilter.noItem=Sem Itens
-gui.itemFilter.details=Detalhes da Pilha De Itens
+gui.itemFilter.details=Detalhes da Pilha de Itens
 gui.itemFilter.min=Min
 gui.itemFilter.max=Máx
 
@@ -368,12 +389,6 @@ gui.materialFilter=Filtrar Material
 gui.materialFilter.details=Utilizando material de
 
 gui.portableTeleporter=Teletransportador Portátil
-
-gui.teleporter.notReady=Não Pronto
-gui.teleporter.ready=Pronto
-gui.teleporter.needsEnergy=Requer Energia
-gui.teleporter.linksCapacity=Conexões > 2
-gui.teleporter.noLink=Nenhuma conexão localizada
 
 gui.robit=Robit
 entity.Robit.name=Robit
@@ -403,7 +418,14 @@ gui.logisticalSorter.roundRobin=Rodízio
 
 gui.electricChest.editPassword=Editar Senha
 
-gui.digitalMinerConfig=Config Minerador Digital
+gui.teleporter.notReady=Não Está Pronto
+gui.teleporter.ready=Pronto
+gui.teleporter.noFrame=Sem quadro
+gui.teleporter.noLink=Nenhuma conexão
+gui.teleporter.linksCapacity=Conexões > 2
+gui.teleporter.needsEnergy=Requer Energia
+
+gui.digitalMinerConfig=Configuração Minerador Digital
 
 gui.digitalMiner.autoPull=Auto-puxar
 gui.digitalMiner.replaceBlock=Substituir bloco
@@ -480,7 +502,7 @@ tooltip.portableTank.bucketMode=Modo Balde
 tooltip.disassembler.normal=normal
 tooltip.disassembler.slow=lento
 tooltip.disassembler.fast=rápido
-tooltip.disassembler.vein=vein
+tooltip.disassembler.vein=veio
 tooltip.disassembler.off=desligado
 
 tooltip.filterCard.got=Filtrar dados recuperados de %s
@@ -521,6 +543,8 @@ tooltip.PrecisionSawmill=Uma máquina usada para processar lenha e outros itens 
 tooltip.ChemicalDissolutionChamber=Uma máquina definitiva usada para !nquimicamente dissolver quaisquer impurezas de um !nminério, deixando um lodo!nnão-processado atrás.
 tooltip.ChemicalWasher=Uma máquina definitiva que limpar lodo !nnão-processado e o prepara para cristalização.
 tooltip.ChemicalCrystallizer=Uma máquina definitiva usada para cristalizar lodo !nde minério purificado em cristais de minério.
+tooltip.ChemicalOxidizer=Uma máquina capaz de oxidar!n materiais sólidos em sua fase gasosa.
+tooltip.ChemicalInfuser=Uma máquina que produz um novo!ngás através da infusão de outros dois.
 tooltip.SeismicVibrator=Uma máquina que usa vibrações sísmicas para !nprovideciar informações de diversas camadas !ndo mundo.
 tooltip.PressurizedReactionChamber=Uma máquina avançada que processa uma mistura líquida, gasosa e sólida e cria ambos um produto gasoso e um sólido.
 tooltip.PortableTank=Um tanque portátil útil que te deixa carregar 14 !nbaldes de fluido para onde !nquiser. Também serve como balde!
@@ -545,43 +569,48 @@ control.disabled.desc=Sempre ativo
 control.high.desc=Ativo com sinal
 control.low.desc=Ativo sem sinal
 
+//Container edit modes
+fluidedit.both=Ambos
+fluidedit.fill=Preencher
+fluidedit.empty=Esvaziar
+
 //Colors
 color.black=Preto
-color.darkBlue=Azul Escuro
-color.darkGreen=Verde Escuro
+color.darkBlue=Azul
+color.darkGreen=Verde
 color.darkAqua=Ciano Escuro
 color.darkRed=Vermelho Escuro
-color.purple=Roxo
+color.purple=Lilás
 color.orange=Laranja
-color.grey=Cinza
-color.darkGrey=Cinza Escuro
+color.grey=Cinza Claro
+color.darkGrey=Cinza
 color.indigo=Índigo
 color.brightGreen=Verde Claro
 color.aqua=Ciano
 color.red=Vermelho
-color.pink=Magenta
+color.pink=Rosa
 color.yellow=Amarelo
 color.white=Branco
 color.brown=Marrom
-color.brightPink=Rosa
+color.brightPink=Rosa Claro
 
 //Dyes
 dye.black=Preto
-dye.darkBlue=Azul Escuro
+dye.darkBlue=Azul
 dye.brown=Marrom
-dye.darkGreen=Verde Escuro
+dye.darkGreen=Verde
 dye.darkAqua=Ciano Escuro
 dye.darkRed=Vermelho Escuro
-dye.purple=Roxo
+dye.purple=Lilás
 dye.orange=Laranja
-dye.grey=Cinza
+dye.grey=Cinza Claro
 dye.darkGrey=Cinza
 dye.indigo=Índigo
 dye.brightGreen=Verde Claro
 dye.aqua=Ciano
 dye.red=Vermelho
-dye.brightPink=Rosa
-dye.pink=Magenta
+dye.brightPink=Rosa Claro
+dye.pink=Rosa
 dye.yellow=Amarelo
 dye.white=Branco
 
@@ -604,11 +633,11 @@ item.SolarPanel.name=Painel Solar
 infuse.bio=Biomassa
 
 //Generators
-tile.Generator.HeatGenerator.name=Gerador à Calor
-tile.Generator.SolarGenerator.name=Gerador à Energia Solar
+tile.Generator.HeatGenerator.name=Gerador Térmico
+tile.Generator.SolarGenerator.name=Gerador Solar
 tile.Generator.HydrogenGenerator.name=Gerador à Hidrogênio
 tile.Generator.BioGenerator.name=Bio-Gerador
-tile.Generator.AdvancedSolarGenerator.name=Gerador à Energia Solar Avançado
+tile.Generator.AdvancedSolarGenerator.name=Gerador Solar Avançado
 tile.Generator.WindTurbine.name=Turbina Eólica
 
 //Gui text
@@ -622,42 +651,42 @@ gui.electrolyticSeparator.dump=Despejar
 //*****//
 
 //Vanilla Paxels
-item.WoodPaxel.name=Pacachado de Madeira
-item.StonePaxel.name=Pacachado de Pedra
-item.IronPaxel.name=Pacachado de Ferro
-item.DiamondPaxel.name=Pacachado de Diamante
-item.GoldPaxel.name=Pacachado de Ouro
+item.WoodPaxel.name=Paxel de Madeira
+item.StonePaxel.name=Paxel de Pedra
+item.IronPaxel.name=Paxel de Ferro
+item.DiamondPaxel.name=Paxel de Diamante
+item.GoldPaxel.name=Paxel de Ouro
 
-//Obsidian
+//Obsidiana
 item.ObsidianHelmet.name=Elmo de Obsidiana
 item.ObsidianChestplate.name=Peitoral de Obsidiana
-item.ObsidianLeggings.name=Calças de Obsidiana
+item.ObsidianLeggings.name=Calça de Obsidiana
 item.ObsidianBoots.name=Botas de Obsidiana
-item.ObsidianPaxel.name=Pacachado de Obsidiana
+item.ObsidianPaxel.name=Paxel de Obsidiana
 item.ObsidianPickaxe.name=Picareta de Obsidiana
 item.ObsidianAxe.name=Machado de Obsidiana
 item.ObsidianShovel.name=Pá de Obsidiana
 item.ObsidianHoe.name=Enxada de Obsidiana
 item.ObsidianSword.name=Espada de Obsidiana
 
-//Lapis Lazuli
+//Lápis-Lazúli
 item.LazuliHelmet.name=Elmo de Lápis-Lazúli
 item.LazuliChestplate.name=Peitoral de Lápis-Lazúli
-item.LazuliLeggings.name=Calças de Lápis-Lazúli
+item.LazuliLeggings.name=Calça de Lápis-Lazúli
 item.LazuliBoots.name=Botas de Lápis-Lazúli
-item.LazuliPaxel.name=Pacachado de Lápis-Lazúli
+item.LazuliPaxel.name=Paxel de Lápis-Lazúli
 item.LazuliPickaxe.name=Picareta de Lápis-Lazúli
 item.LazuliAxe.name=Machado de Lápis-Lazúli
 item.LazuliShovel.name=Pá de Lápis-Lazúli
 item.LazuliHoe.name=Enxada de Lápis-Lazúli
 item.LazuliSword.name=Espada de Lápis-Lazúli
 
-//Osmium
+//Ósmio
 item.OsmiumHelmet.name=Elmo de Ósmio
 item.OsmiumChestplate.name=Peitoral de Ósmio
-item.OsmiumLeggings.name=Calças de Ósmio
+item.OsmiumLeggings.name=Calça de Ósmio
 item.OsmiumBoots.name=Botas de Ósmio
-item.OsmiumPaxel.name=Pacachado de Ósmio
+item.OsmiumPaxel.name=Paxel de Ósmio
 item.OsmiumPickaxe.name=Picareta de Ósmio
 item.OsmiumAxe.name=Machado de Ósmio
 item.OsmiumShovel.name=Pá de Ósmio
@@ -667,35 +696,40 @@ item.OsmiumSword.name=Espada de Ósmio
 //Bronze
 item.BronzeHelmet.name=Elmo de Bronze
 item.BronzeChestplate.name=Peitoral de Bronze
-item.BronzeLeggings.name=Calças de Bronze
+item.BronzeLeggings.name=Calça de Bronze
 item.BronzeBoots.name=Botas de Bronze
-item.BronzePaxel.name=Pacachado de Bronze
+item.BronzePaxel.name=Paxel de Bronze
 item.BronzePickaxe.name=Picareta de Bronze
 item.BronzeAxe.name=Machado de Bronze
 item.BronzeShovel.name=Pá de Bronze
 item.BronzeHoe.name=Enxada de Bronze
 item.BronzeSword.name=Espada de Bronze
 
-//Glow
-item.GlowstoneHelmet.name=Elmo de Glowstone
-item.GlowstoneChestplate.name=Peitoral de Glowstone
-item.GlowstoneLeggings.name=Calças de Glowstone
-item.GlowstoneBoots.name=Botas de Glowstone
-item.GlowstonePaxel.name=Pacachado de Glowstone
-item.GlowstonePickaxe.name=Picareta de Glowstone
-item.GlowstoneAxe.name=Machado de Glowstone
-item.GlowstoneShovel.name=Pá de Glowstone
-item.GlowstoneHoe.name=Enxada de Glowstone
-item.GlowstoneSword.name=Espada de Glowstone
+//Pedra Luminosa
+item.GlowstoneHelmet.name=Elmo de Pedra Luminosa
+item.GlowstoneChestplate.name=Peitoral de Pedra Luminosa
+item.GlowstoneLeggings.name=Calça de Pedra Luminosa
+item.GlowstoneBoots.name=Botas de Pedra Luminosa
+item.GlowstonePaxel.name=Paxel de Pedra Luminosa
+item.GlowstonePickaxe.name=Picareta de Pedra Luminosa
+item.GlowstoneAxe.name=Machado de Pedra Luminosa
+item.GlowstoneShovel.name=Pá de Pedra Luminosa
+item.GlowstoneHoe.name=Enxada de Pedra Luminosa
+item.GlowstoneSword.name=Espada de Pedra Luminosa
 
-//Steel
+//Aço
 item.SteelHelmet.name=Elmo de Aço
 item.SteelChestplate.name=Peitoral de Aço
-item.SteelLeggings.name=Calças de Aço
+item.SteelLeggings.name=Calça de Aço
 item.SteelBoots.name=Botas de Aço
-item.SteelPaxel.name=Pacachado de Aço
+item.SteelPaxel.name=Paxel de Aço
 item.SteelPickaxe.name=Picareta de Aço
 item.SteelAxe.name=Machado de Aço
 item.SteelShovel.name=Pá de Aço
 item.SteelHoe.name=Enxada de Aço
 item.SteelSword.name=Espada de Aço
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general.tooltip=Definições sobre a configuração geral do 'MekanismTools'
+mekanism.configgui.ctgy.tools.armor.tooltip=Configurações em relação aos valores de proteção e equilíbrio de equipamentos protetores do 'MekanismTools'
+mekanism.configgui.ctgy.tools.tools.tooltip=Configurações em relação aos valores de eficiência e equilíbrio de conjuntos de ferramentas do 'MekanismTools'
