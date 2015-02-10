@@ -24,7 +24,7 @@ item.Configurator.name=Configurateur
 item.NetworkReader.name=Analyseur de réseaux
 item.WalkieTalkie.name=Talkie-walkie
 item.Jetpack.name=Propulseur à réaction
-item.ScubaTank.name=Réservoire de scaphandre
+item.ScubaTank.name=Réservoir de scaphandre
 item.GasMask.name=Masque à gaz
 item.Dictionary.name=Dictionnaire
 item.ElectrolyticCore.name=Noyau électrolytique
@@ -62,9 +62,9 @@ tile.SaltBlock.name=Bloc de sel
 //Basic Block
 tile.BasicBlock.OsmiumBlock.name=Bloc d'osmium
 tile.BasicBlock.BronzeBlock.name=Bloc de bronze
-tile.BasicBlock.RefinedObsidian.name=Obsidienne rafinée
+tile.BasicBlock.RefinedObsidian.name=Obsidienne raffinée
 tile.BasicBlock.CoalBlock.name=Bloc de charbon
-tile.BasicBlock.RefinedGlowstone.name=Pierre lumineuse rafinée
+tile.BasicBlock.RefinedGlowstone.name=Pierre lumineuse raffinée
 tile.BasicBlock.SteelBlock.name=Bloc d'acier
 tile.BasicBlock.Bin.name=Silo
 tile.BasicBlock.TeleporterFrame.name=Cadre de téléporteur
@@ -126,10 +126,10 @@ tile.PlasticFence.name=Barrière en plastique
 
 //Infuse types
 infuse.carbon=Charbon
-infuse.tin=Etain
+infuse.tin=Étain
 infuse.diamond=Diamant
 infuse.redstone=Redstone
-infuse.fungi=Moissisure
+infuse.fungi=Moisissure
 infuse.obsidian=Obsidienne
 
 //Ore Block
@@ -184,14 +184,14 @@ item.obsidianClump.name=Bouquet d'obsidienne
 item.leadClump.name=Bouquet de plomb
 
 //Shards
-item.ironShard.name=Eclat de fer
-item.goldShard.name=Eclat d'or
-item.osmiumShard.name=Eclat d'osmium
-item.copperShard.name=Eclat de cuivre
-item.tinShard.name=Eclat d'étain
-item.silverShard.name=Eclat d'argent
-item.obsidianShard.name=Eclat d'obsidienne
-item.leadShard.name=Eclat de plomb
+item.ironShard.name=Éclat de fer
+item.goldShard.name=Éclat d'or
+item.osmiumShard.name=Éclat d'osmium
+item.copperShard.name=Éclat de cuivre
+item.tinShard.name=Éclat d'étain
+item.silverShard.name=Éclat d'argent
+item.obsidianShard.name=Éclat d'obsidienne
+item.leadShard.name=Éclat de plomb
 
 //Crystals
 item.ironCrystal.name=Cristal de fer
@@ -227,10 +227,10 @@ gas.hydrogen=Hydrogène
 gas.oxygen=Oxygène
 gas.water=Vapeur d'eau
 gas.chlorine=Chlore
-gas.sulfurDioxideGas=Dioxide de souffre
-gas.sulfurTrioxideGas=Trioxide de souffre
+gas.sulfurDioxideGas=Dioxyde de souffre
+gas.sulfurTrioxideGas=Trioxyde de souffre
 gas.sulfuricAcid=Acide sulfurique gazeux
-gas.hydrogenChloride=Chlorure d'hydrogène gaseux
+gas.hydrogenChloride=Chlorure d'hydrogène gazeux
 gas.liquidOsmium=Osmium liquide
 gas.liquidStone=Pierre liquide
 gas.ethene=Ethylène
@@ -268,7 +268,8 @@ fluid.sulfurTrioxideGas=Trioxide de souffre liquide
 fluid.sulfuricAcid=Acide sulfurique
 fluid.hydrogenChloride=Chlorure d'hydrogène
 fluid.brine=Saumure
-fluid.ethene=Ethylène liquide
+fluid.ethene=Éthylène
+ liquide
 fluid.sodium=Sodium liquide
 
 //OreGas names
@@ -286,8 +287,8 @@ update.consider=Envisagez de mettre à jour à la version
 update.newFeatures=Nouvelles fonctionnalités
 update.visit=Visitez
 update.toDownload=Pour télécharger
-update.devBuild=Vous utilisez developer build
-update.outdated=Vous utilisez d'ancienne version d'un ou plusieurs modules
+update.devBuild=Vous utilisez la version développeur
+update.outdated=Vous utilisez d'anciennes versions d'un ou plusieurs modules
 
 //Key description text
 key.mode=Bascule de mode
@@ -308,7 +309,7 @@ gui.open=Ouvrir
 gui.allOK=Tout est OK
 gui.none=Rien
 gui.new=Créer
-gui.edit=Editer
+gui.edit=Éditer
 gui.save=Sauver
 gui.output=Sortie
 gui.delete=Effacer
@@ -325,17 +326,17 @@ gui.start=Départ
 gui.stop=Arrêt
 gui.config=Configurer
 gui.teleport=Téléporter
-gui.eject=Ejecter
+gui.eject=Éjecter
 gui.input=Entrée
 gui.slots=Emplacements
-gui.state=Etat
+gui.state=État
 gui.on=Marche
 gui.off=Arrêt
 gui.filters=Filtres
-gui.idle=Idle
+gui.idle=En attente
 gui.data=Données
 gui.newFilter=Créer Filtre
-gui.energy=Energie
+gui.energy=Énergie
 gui.gas=Gaz
 gui.dumping=Décharger
 gui.dumping_excess=Décharger surplus
@@ -354,7 +355,7 @@ gui.configuration.strictInput=Entrée stricte
 
 gui.rotaryCondensentrator.toggleOperation=Changer d'opération
 
-gui.factory.secondaryEnergy=Energie secondaire
+gui.factory.secondaryEnergy=Énergie secondaire
 gui.factory.smelting=Fonte
 gui.factory.enriching=Enrichissement
 gui.factory.crushing=Broyage
@@ -386,7 +387,7 @@ gui.itemFilter.min=Mini
 gui.itemFilter.max=Maxi
 
 gui.materialFilter=Filtre Matériaux
-gui.materialFilter.details=Utilisant de materiel de
+gui.materialFilter.details=Utilisant de matériel de
 
 gui.portableTeleporter=Téléporteur portable
 
@@ -416,7 +417,7 @@ gui.logisticalSorter.default=Défaut
 gui.logisticalSorter.auto=Auto
 gui.logisticalSorter.roundRobin=Cyclique
 
-gui.electricChest.editPassword=Editer le mot de passe
+gui.electricChest.editPassword=Éditer le mot de passe
 
 gui.teleporter.notReady=pas prêt
 gui.teleporter.ready=Prêt
@@ -425,7 +426,7 @@ gui.teleporter.noLink=Pas de lien
 gui.teleporter.exceeds=Liens > 2
 gui.teleporter.needsEnergy=demande de l'énergie
 
-gui.digitalMinerConfig=Configutaion du mineur digital
+gui.digitalMinerConfig=Configuration du mineur digital
 
 gui.digitalMiner.autoPull=Tire-auto
 gui.digitalMiner.replaceBlock=Bloc de remplacement
@@ -451,7 +452,7 @@ tooltip.configurator.toggleColor=Couleur heurtée à
 tooltip.configurator.viewColor=Couleur courante
 tooltip.configurator.unauth=Ce coffre est verrouillé
 tooltip.configurator.noLink=Pas de lien
-tooltip.configurator.linkMsg=Bound to
+tooltip.configurator.linkMsg=Lié à
 tooltip.configurator.dim=dimension
 tooltip.configurator.setLink=Mettre le lien au bloc
 tooltip.configurator.plenisherReset=Mise à zéro du calcul du remplisseur fluidique
@@ -460,7 +461,7 @@ tooltip.upgrade.speed=Vitesse
 tooltip.upgrade.energy=Energie
 
 tooltip.inventory=Inventaire
-tooltip.storedEnergy=Energie stockée
+tooltip.storedEnergy=Énergie stockée
 tooltip.auth=Authentifié
 tooltip.locked=Verrouillé
 tooltip.recipeType=type de recette
@@ -470,7 +471,7 @@ tooltip.forDetails=pour les détails
 tooltip.fireMode=Mode lancement
 tooltip.capacity=Capacité
 tooltip.pumpRate=Taux de pompe
-tooltip.items=Eléments
+tooltip.items=Éléments
 tooltip.blocks=Blocs
 tooltip.universal=universel
 tooltip.fluids=Fluides
@@ -482,7 +483,7 @@ tooltip.noGas=Pas de gaz stocké
 tooltip.stored=Stocké
 tooltip.channel=Cannal
 tooltip.mode=Mode
-tooltip.efficiency=Efficasité
+tooltip.efficiency=Efficacité
 tooltip.modeToggle=Mode basculé en
 tooltip.flowing=Courant
 tooltip.yes=oui
@@ -540,7 +541,8 @@ tooltip.RotaryCondensentrator=A machine capable of converting gasses into !nthei
 tooltip.ChemicalInjectionChamber=An elite machine capable of processing !nores into four shards, serving as the initial !nstage of 400% ore processing.
 tooltip.ElectrolyticSeparator=A machine that uses the process of !nelectrolysis to split apart a certain !ngas into two different gasses.
 tooltip.PrecisionSawmill=A machine used to process logs and other !nwood-based items more efficiently, as well !nas to obtain sawdust.
-tooltip.ChemicalDissolutionChamber=An ultimate machine used to chemically !ndissolve all impurities of an ore, !nleaving an unprocessed slurry behind.
+tooltip.ChemicalDissolutionChamber=An
+ ultimate machine used to chemically !ndissolve all impurities of an ore, !nleaving an unprocessed slurry behind.
 tooltip.ChemicalWasher=An ultimate machine that cleans unprocessed !nslurry and prepares it for crystallization.
 tooltip.ChemicalCrystallizer=An ultimate machine used to crystallize !npurified ore slurry into ore crystals.
 tooltip.ChemicalOxidizer=A machine capable of oxidizing !nsolid materials into gas phase.
@@ -639,7 +641,7 @@ tile.Generator.SolarGenerator.name=Générateur solaire
 tile.Generator.HydrogenGenerator.name=Générateur à hydrogène
 tile.Generator.BioGenerator.name=Bio-Générateur
 tile.Generator.AdvancedSolarGenerator.name=Générateur solaire avancé
-tile.Generator.WindTurbine.name=Eolienne
+tile.Generator.WindTurbine.name=Éolienne
 
 //Gui text
 gui.heatGenerator.fuel=Carburant
@@ -668,7 +670,7 @@ item.ObsidianPickaxe.name=Pioche en obsidienne
 item.ObsidianAxe.name=Hache en obsidienne
 item.ObsidianShovel.name=Pelle en obsidienne
 item.ObsidianHoe.name=Houe en obsidienne
-item.ObsidianSword.name=Epée en obsidienne
+item.ObsidianSword.name=Épée en obsidienne
 
 //Lapis Lazuli
 item.LazuliHelmet.name=Casque en lapis lazuli
@@ -680,7 +682,7 @@ item.LazuliPickaxe.name=Pioche en lapis lazuli
 item.LazuliAxe.name=Hache en lapis lazuli
 item.LazuliShovel.name=Pelle en lapis lazuli
 item.LazuliHoe.name=Houe en lapis lazuli
-item.LazuliSword.name=Epée en lapis lazuli
+item.LazuliSword.name=Épée en lapis lazuli
 
 //Osmium
 item.OsmiumHelmet.name=Casque en osmium
@@ -692,7 +694,7 @@ item.OsmiumPickaxe.name=Pioche en osmium
 item.OsmiumAxe.name=Hache en osmium
 item.OsmiumShovel.name=Pelle en osmium
 item.OsmiumHoe.name=Houe en osmium
-item.OsmiumSword.name=Epée en osmium
+item.OsmiumSword.name=Épée en osmium
 
 //Bronze
 item.BronzeHelmet.name=Casque en bronze
@@ -704,7 +706,7 @@ item.BronzePickaxe.name=Pioche en bronze
 item.BronzeAxe.name=Hache en bronze
 item.BronzeShovel.name=Pelle en bronze
 item.BronzeHoe.name=Houe en bronze
-item.BronzeSword.name=Epée en bronze
+item.BronzeSword.name=Épée en bronze
 
 //Glow
 item.GlowstoneHelmet.name=Casque en pierre lumineuse
@@ -716,7 +718,7 @@ item.GlowstonePickaxe.name=Pioche en pierre lumineuse
 item.GlowstoneAxe.name=Hache en pierre lumineuse
 item.GlowstoneShovel.name=Pelle en pierre lumineuse
 item.GlowstoneHoe.name=Houe en pierre lumineuse
-item.GlowstoneSword.name=Epée en pierre lumineuse
+item.GlowstoneSword.name=Épée en pierre lumineuse
 
 //Steel
 item.SteelHelmet.name=Casque en acier
@@ -728,7 +730,7 @@ item.SteelPickaxe.name=Pioche en acier
 item.SteelAxe.name=Hache en acier
 item.SteelShovel.name=Pelle en acier
 item.SteelHoe.name=Houe en acier
-item.SteelSword.name=Epée en acier
+item.SteelSword.name=Épée en acier
 
 //Config Gui
 mekanism.configgui.ctgy.tools.general.tooltip=Options concernant la configuration générale des 'MekanismTools' 

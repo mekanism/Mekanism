@@ -53,6 +53,8 @@ public class MekanismConfig
 		public static boolean oldTransmitterRender = false;
 		public static boolean replaceSoundsWhenResuming = true;
 		public static boolean renderCTM = true;
+		public static boolean enableAmbientLighting;
+		public static int ambientLightingLevel;
 	}
 
 	public static class usage

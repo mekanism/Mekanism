@@ -78,6 +78,7 @@ public class GeneratorsCommonProxy
 		generators.heatGenerationLava = Mekanism.configuration.get("generation", "HeatGenerationLava", 5D).getDouble(5D);
 		generators.heatGenerationNether = Mekanism.configuration.get("generation", "HeatGenerationNether", 100D).getDouble(100D);
 		generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble(50D);
+		
 		loadWindConfiguration();
 
 		if(Mekanism.configuration.hasChanged())

@@ -202,10 +202,14 @@ public class ClientProxy extends CommonProxy
 		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
-		client.renderCTM = Mekanism.configuration.get("client", "Use CTM Renderer", true).getBoolean();
+		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
+		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean(true);
+        client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt(15);
 
 		if(Mekanism.configuration.hasChanged())
+		{
 			Mekanism.configuration.save();
+		}
 	}
 
 	@Override

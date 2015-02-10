@@ -81,10 +81,13 @@ public class PacketScubaTankData implements IMessageHandler<ScubaTankDataMessage
 			else if(packetType == ScubaTankPacket.FULL)
 			{
 				dataStream.writeInt(Mekanism.gasmaskOn.size());
-	
-				for(String name : Mekanism.gasmaskOn)
+
+				synchronized(Mekanism.gasmaskOn)
 				{
-					PacketHandler.writeString(dataStream, name);
+					for (String name : Mekanism.gasmaskOn)
+					{
+						PacketHandler.writeString(dataStream, name);
+					}
 				}
 			}
 		}

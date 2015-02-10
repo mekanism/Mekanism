@@ -336,13 +336,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(client.machineEffects && tileEntity instanceof IActiveState)
+		if(client.enableAmbientLighting)
 		{
-			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+	
+			if(tileEntity instanceof IActiveState)
 			{
-				return 15;
+				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+				{
+					return client.ambientLightingLevel;
+				}
 			}
 		}
 
@@ -434,8 +437,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(side == tileEntity.facing)
 						{
 							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][2];
 						}
 					case 5:
@@ -444,11 +447,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(side == tileEntity.facing)
 						{
 							return icons[meta][0];
-						} else if(side == 0 || side == 1)
+						} 
+						else if(side == 0 || side == 1)
 						{
 							return icons[meta][2];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][1];
 						}
 					default:
@@ -462,8 +466,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(side == tileEntity.facing)
 						{
 							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][2];
 						}
 					default:
@@ -517,6 +521,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 							itemMachine.setPrevScale(filled, 1);
 							list.add(filled);
 						}
+						
 						break;
 					default:
 						list.add(new ItemStack(item, 1, type.meta));
