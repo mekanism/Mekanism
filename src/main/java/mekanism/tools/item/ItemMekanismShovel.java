@@ -16,7 +16,7 @@ public class ItemMekanismShovel extends ItemMekanismTool
 	@Override
 	public boolean canHarvestBlock(Block block, ItemStack stack)
 	{
-		if(block == Blocks.snow)
+		if(block == Blocks.snow_layer)
 		{
 			return true;
 		}
@@ -28,7 +28,7 @@ public class ItemMekanismShovel extends ItemMekanismTool
 	{
 		blocksEffectiveAgainst = (new Block[]
 				{
-					Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium
+					Blocks.grass, Blocks.dirt, Blocks.sand, Blocks.gravel, Blocks.snow_layer, Blocks.snow, Blocks.clay, Blocks.farmland, Blocks.soul_sand, Blocks.mycelium
 				});
 	}
 }

@@ -511,6 +511,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		if(nowPowered != redstonePowered)
 		{
 			refreshConnections();
+			redstonePowered = nowPowered;
 		}
 	}
 
@@ -564,6 +565,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onAdded()
 	{
 		super.onAdded();
+		redstonePowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
 		refreshConnections();
 	}
 
@@ -571,6 +573,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onChunkLoad()
 	{
 		super.onChunkLoad();
+		redstonePowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
 		refreshConnections();
 	}
 	

@@ -1,5 +1,6 @@
 package mekanism.generators.client;
 
+import mekanism.common.Mekanism;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -51,6 +52,18 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 		ClientRegistry.registerTileEntity(TileEntityGasGenerator.class, "GasGenerator", new RenderGasGenerator());
 		ClientRegistry.registerTileEntity(TileEntityWindTurbine.class, "WindTurbine", new RenderWindTurbine());
 		ClientRegistry.registerTileEntity(TileEntityReactorController.class, "ReactorController", new RenderReactor());
+	}
+
+	@Override
+	public void loadConfiguration()
+	{
+		super.loadConfiguration();
+
+		MekanismGeneratorsClient.enableAmbientLighting = Mekanism.configuration.get("generation", "EnableAmbientLighting", true).getBoolean(true);
+		MekanismGeneratorsClient.ambientLightingLevel = Mekanism.configuration.get("generation", "AmbientLightingLevel", 15, "", 0, 15).getInt(15);
+
+		if(Mekanism.configuration.hasChanged())
+			Mekanism.configuration.save();
 	}
 
 	@Override

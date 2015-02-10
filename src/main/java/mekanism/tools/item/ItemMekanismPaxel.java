@@ -51,6 +51,16 @@ public class ItemMekanismPaxel extends ItemMekanismTool
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
+		if(block == Blocks.anvil)
+		{
+			return toolMaterial.getHarvestLevel() >= 0;
+		}
+
+		if(block == Blocks.snow || block == Blocks.snow_layer)
+		{
+			return true;
+		}
+
 		if(block.getMaterial() == Material.rock)
 		{
 			return true;

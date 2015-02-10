@@ -50,6 +50,8 @@ version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUI
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version

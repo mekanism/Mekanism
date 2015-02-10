@@ -47,6 +47,11 @@ public class ItemMekanismPickaxe extends ItemMekanismTool
 			return toolMaterial.getHarvestLevel() >= 2;
 		}
 
+		if(block == Blocks.anvil)
+		{
+			return toolMaterial.getHarvestLevel() >= 0;
+		}
+
 		if(block.getMaterial() == Material.rock)
 		{
 			return true;
