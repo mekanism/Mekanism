@@ -126,12 +126,6 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot)
 	{
-		if(chargeSlot)
-		{
-			return MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem;
-		}
-		else {
-			return MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack);
-		}
+		return true; //this is too much of a hassle to manage
 	}
 }
