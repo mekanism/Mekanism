@@ -1,13 +1,16 @@
 package mekanism.client;
 
+import java.io.File;
 import java.lang.reflect.Method;
 
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -40,7 +43,9 @@ public class CapeBufferDownload extends Thread
 	{
 		try {
 			download();
-		} catch(Exception e) {}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void download()
@@ -48,14 +53,10 @@ public class CapeBufferDownload extends Thread
 		try {
 			resourceLocation = new ResourceLocation("mekanism/" + StringUtils.stripControlCodes(username));
 
-			Method method = MekanismUtils.getPrivateMethod(AbstractClientPlayer.class, ObfuscatedNames.AbstractClientPlayer_getDownloadImage, ResourceLocation.class, String.class, ResourceLocation.class, IImageBuffer.class);
-			Object obj = method.invoke(null, resourceLocation, staticCapeUrl, null, null);
-
-			if(obj instanceof ThreadDownloadImageData)
-			{
-				capeImage = (ThreadDownloadImageData)obj;
-			}
-		} catch(Exception e) {}
+			capeImage = downloadCape();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		downloaded = true;
 	}
@@ -68,5 +69,28 @@ public class CapeBufferDownload extends Thread
 	public ResourceLocation getResourceLocation()
 	{
 		return resourceLocation;
+	}
+	
+	public ThreadDownloadImageData downloadCape() 
+	{
+		try {
+			File capeFile = new File(resourceLocation.getResourcePath() + ".png");
+			
+			if(capeFile.exists())
+			{
+				capeFile.delete();
+			}
+			
+			TextureManager manager = Minecraft.getMinecraft().getTextureManager();
+			ThreadDownloadImageData data = new ThreadDownloadImageData(capeFile, staticCapeUrl, null, null);
+
+			manager.loadTexture(resourceLocation, data);
+			
+			return data;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }
