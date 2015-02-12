@@ -3,18 +3,17 @@ package mekanism.api.transmitters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range4D;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -27,8 +26,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 {
 	public LinkedHashSet<IGridTransmitter<N>> transmitters = new LinkedHashSet<IGridTransmitter<N>>();
 
-	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
-	public HashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new HashMap<Coord4D, EnumSet<ForgeDirection>>();
+	public ConcurrentHashMap<Coord4D, A> possibleAcceptors = new ConcurrentHashMap<Coord4D, A>();
+	public ConcurrentHashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new ConcurrentHashMap<Coord4D, EnumSet<ForgeDirection>>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
