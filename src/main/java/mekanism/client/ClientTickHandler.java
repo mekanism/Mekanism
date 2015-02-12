@@ -1,9 +1,5 @@
 package mekanism.client;
 
-import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
-import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
-import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,7 +16,6 @@ import mekanism.client.sound.JetpackSound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
-import mekanism.common.ObfuscatedNames;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
