@@ -10,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
@@ -27,8 +28,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 {
 	public final Set<IGridTransmitter<N>> transmitters = Collections.synchronizedSet(new LinkedHashSet<IGridTransmitter<N>>());
 
-	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
-	public HashMap<A, ForgeDirection> acceptorDirections = new HashMap<A, ForgeDirection>();
+	public ConcurrentHashMap<Coord4D, A> possibleAcceptors = new ConcurrentHashMap<Coord4D, A>();
+	public ConcurrentHashMap<A, ForgeDirection> acceptorDirections = new ConcurrentHashMap<A, ForgeDirection>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 	
