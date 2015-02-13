@@ -42,7 +42,7 @@ import io.netty.buffer.ByteBuf;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "7.1.1", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "7.1.2", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.generators.client.GeneratorsClientProxy", serverSide = "mekanism.generators.common.GeneratorsCommonProxy")
@@ -52,7 +52,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(7, 1, 1);
+	public static Version versionNumber = new Version(7, 1, 2);
 	
 	//Items
 	public static Item SolarPanel;

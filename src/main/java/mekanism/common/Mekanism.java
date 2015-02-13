@@ -161,7 +161,7 @@ import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "7.1.1", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "Mekanism", name = "Mekanism", version = "7.1.2", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraftAPI|power;after:BuildCraftAPI|tools;after:BuildCraftAPI|transport;after:IC2API;after:CoFHAPI|energy;after:ComputerCraft;after:Galacticraft API;" +
 				"after:MineFactoryReloaded;after:MetallurgyCore;after:EnderIO;after:ExtraUtilities;after:Railcraft;after:Forestry;after:RedstoneArsenal")
 public class Mekanism
@@ -190,7 +190,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(7, 1, 1);
+	public static Version versionNumber = new Version(7, 1, 2);
 	
 	/** Map of Teleporters */
 	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Code, ArrayList<Coord4D>>();

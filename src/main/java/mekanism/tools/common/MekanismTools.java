@@ -37,7 +37,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 import io.netty.buffer.ByteBuf;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "7.1.1", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "7.1.2", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 public class MekanismTools implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
@@ -47,7 +47,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(7, 1, 1);
+	public static Version versionNumber = new Version(7, 1, 2);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;
