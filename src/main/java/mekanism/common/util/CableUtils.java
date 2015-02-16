@@ -125,7 +125,10 @@ public final class CableUtils
 	public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, ForgeDirection side)
 	{
 		if(isEnergyAcceptor(tile) && isConnectable(cableEntity, tile, side))
+		{
 			return true;
+		}
+		
 		return isOutputter(tile, side);
 	}
 

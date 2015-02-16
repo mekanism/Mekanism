@@ -286,6 +286,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 		{
 			return maxReceive - (int)Math.round(getTransmitterNetwork().emit(maxReceive * general.FROM_TE, !simulate) * general.TO_TE);
 		}
+		
 		return 0;
 	}
 

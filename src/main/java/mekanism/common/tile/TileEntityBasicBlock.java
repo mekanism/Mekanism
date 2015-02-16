@@ -188,7 +188,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		if(!(facing == clientFacing || worldObj.isRemote))
 		{
 			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlock(xCoord, yCoord, zCoord));
+			worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 			clientFacing = facing;
 		}
 	}
@@ -221,7 +221,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Method(modid = "IC2API")
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
-		return getBlockType().getPickBlock(null, worldObj, xCoord, yCoord, zCoord);
+		return getBlockType().getPickBlock(null, worldObj, xCoord, yCoord, zCoord, entityPlayer);
 	}
 
 	public boolean isPowered()
