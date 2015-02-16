@@ -195,7 +195,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public void fixTransmitterNetwork()
 	{
-		getTransmitterNetwork().fixMessedUpNetwork((IGridTransmitter<N>) tile());
+		getTransmitterNetwork().fixMessedUpNetwork((IGridTransmitter<N>)tile());
 	}
 
 	public abstract N createNetworkFromSingleTransmitter(IGridTransmitter<N> transmitter);
@@ -207,7 +207,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	{
 		super.onChunkUnload();
 
-		getTransmitterNetwork().split(this);
+		getTransmitterNetwork().split((IGridTransmitter<N>)tile());
 
 		if(!world().isRemote)
 		{
@@ -276,6 +276,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	public void readDesc(MCDataInput packet)
 	{
 		super.readDesc(packet);
+		
 		if(packet.readBoolean())
 		{
 			mergeNewSideNets(packet.readByte());
@@ -286,14 +287,14 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	public void writeDesc(MCDataOutput packet)
 	{
 		super.writeDesc(packet);
+		
 		if(newSidesMerged != 0x00)
 		{
 			packet.writeBoolean(true);
 			packet.writeByte(newSidesMerged);
 			newSidesMerged = 0x00;
 		}
-		else
-		{
+		else {
 			packet.writeBoolean(false);
 		}
 	}
