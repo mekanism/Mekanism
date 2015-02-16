@@ -75,7 +75,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				if(gasType != null && FuelHandler.getFuel(gasType) != null)
 				{
 					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
-					fuelTank.receive(removed, true);
+					boolean isTankEmpty = (fuelTank.getGas() == null);
+					int fuelReceived = fuelTank.receive(removed, true);
+					
+					if(fuelReceived > 0 && isTankEmpty)
+					{
+						output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick * 2;
+					}
 				}
 			}
 
@@ -209,6 +215,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		}
 		
 		generationRate = dataStream.readDouble();
+		output = dataStream.readDouble();
 	}
 
 	@Override
@@ -227,6 +234,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		}
 		
 		data.add(generationRate);
+		data.add(output);
 		
 		return data;
 	}
@@ -234,9 +242,18 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		if(fuelTank.getGas() == null || fuelTank.getGas().isGasEqual(stack))
+		boolean isTankEmpty = (fuelTank.getGas() == null);
+		
+		if(isTankEmpty || fuelTank.getGas().isGasEqual(stack))
 		{
-			return fuelTank.receive(stack, doTransfer);
+			int fuelReceived = fuelTank.receive(stack, true);
+			
+			if (isTankEmpty && fuelReceived > 0) 
+			{
+				output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick * 2;
+			}
+			
+			return fuelReceived;
 		}
 
 		return 0;
@@ -248,6 +265,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		super.readFromNBT(nbtTags);
 
 		fuelTank.read(nbtTags.getCompoundTag("fuelTank"));
+		FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+		
+		if(fuel != null) 
+		{
+			output = fuel.energyPerTick * 2;
+		}
 	}
 
 	@Override

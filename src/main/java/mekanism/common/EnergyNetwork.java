@@ -238,7 +238,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			return toReturn;
 		}
 
-		for(Coord4D coord : ((Map<Coord4D, TileEntity>)possibleAcceptors.clone()).keySet())
+		for(Coord4D coord : possibleAcceptors.keySet())
 		{
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
 			TileEntity acceptor = coord.getTileEntity(getWorld());

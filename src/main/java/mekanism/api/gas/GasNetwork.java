@@ -300,7 +300,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			return toReturn;
 		}
 
-		for(Coord4D coord : ((Map<Coord4D, IGasHandler>)possibleAcceptors.clone()).keySet())
+		for(Coord4D coord : possibleAcceptors.keySet())
 		{
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
 			IGasHandler acceptor = (IGasHandler)coord.getTileEntity(getWorld());

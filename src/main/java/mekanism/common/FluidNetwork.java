@@ -317,7 +317,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			return toReturn;
 		}
 
-		for(Coord4D coord : ((Map<Coord4D, IFluidHandler>)possibleAcceptors.clone()).keySet())
+		for(Coord4D coord : possibleAcceptors.keySet())
 		{
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
 			IFluidHandler acceptor = (IFluidHandler)coord.getTileEntity(getWorld());
