@@ -24,13 +24,15 @@ public class GasInput extends MachineInput<GasInput>
 		return ingredient != null;
 	}
 
-	public boolean useGas(GasTank gasTank, boolean deplete)
+	public boolean useGas(GasTank gasTank, boolean deplete, int scale)
 	{
-		if(gasTank.getGasType() == ingredient.getGas() && gasTank.getStored() >= ingredient.amount)
+		if(gasTank.getGasType() == ingredient.getGas() && gasTank.getStored() >= ingredient.amount*scale)
 		{
-			gasTank.draw(ingredient.amount, deplete);
+			gasTank.draw(ingredient.amount*scale, deplete);
+			
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -47,6 +49,7 @@ public class GasInput extends MachineInput<GasInput>
 		{
 			return !other.isValid();
 		}
+		
 		return other.ingredient.hashCode() == ingredient.hashCode();
 	}
 

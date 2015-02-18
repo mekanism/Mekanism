@@ -1478,6 +1478,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 				delayLength = MekanismUtils.getTicks(this, 80);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}
 }

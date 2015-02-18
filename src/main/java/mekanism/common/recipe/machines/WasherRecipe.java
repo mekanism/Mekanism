@@ -33,14 +33,14 @@ public class WasherRecipe extends MachineRecipe<GasInput, GasOutput, WasherRecip
 
 	public boolean canOperate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank)
 	{
-		return getInput().useGas(inputTank, false) && waterInput.useFluid(fluidTank, false) && getOutput().applyOutputs(outputTank, false);
+		return getInput().useGas(inputTank, false, 1) && waterInput.useFluid(fluidTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
 	}
 
-	public void operate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank)
+	public void operate(GasTank inputTank, FluidTank fluidTank, GasTank outputTank, int scale)
 	{
-		if(getInput().useGas(inputTank, true) && waterInput.useFluid(fluidTank, true))
+		if(getInput().useGas(inputTank, true, scale) && waterInput.useFluid(fluidTank, true, scale))
 		{
-			getOutput().applyOutputs(outputTank, true);
+			getOutput().applyOutputs(outputTank, true, scale);
 		}
 	}
 }

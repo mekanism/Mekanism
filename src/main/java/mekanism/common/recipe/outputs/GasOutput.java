@@ -18,13 +18,15 @@ public class GasOutput extends MachineOutput<GasOutput>
 		return new GasOutput(output.copy());
 	}
 
-	public boolean applyOutputs(GasTank gasTank, boolean doEmit)
+	public boolean applyOutputs(GasTank gasTank, boolean doEmit, int scale)
 	{
-		if(gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount)
+		if(gasTank.canReceive(output.getGas()) && gasTank.getNeeded() >= output.amount*scale)
 		{
-			gasTank.receive(output.copy(), doEmit);
+			gasTank.receive(output.copy().withAmount(output.amount*scale), doEmit);
+			
 			return true;
 		}
+		
 		return false;
 	}
 }

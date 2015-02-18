@@ -241,6 +241,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 				for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
 				{
 					InfusionInput input = (InfusionInput)obj;
+					
 					if(input.inputStack.isItemEqual(itemstack))
 					{
 						return true;
@@ -543,6 +544,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}
 }

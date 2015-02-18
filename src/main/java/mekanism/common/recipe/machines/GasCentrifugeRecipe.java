@@ -25,14 +25,14 @@ public class GasCentrifugeRecipe extends MachineRecipe<GasInput, GasOutput, GasC
 
 	public boolean canOperate(GasTank inputTank, GasTank outputTank)
 	{
-		return getInput().useGas(inputTank, false) && getOutput().applyOutputs(outputTank, false);
+		return getInput().useGas(inputTank, false, 1) && getOutput().applyOutputs(outputTank, false, 1);
 	}
 
 	public void operate(GasTank inputTank, GasTank outputTank)
 	{
-		if(getInput().useGas(inputTank, true))
+		if(getInput().useGas(inputTank, true, 1))
 		{
-			getOutput().applyOutputs(outputTank, true);
+			getOutput().applyOutputs(outputTank, true, 1);
 		}
 	}
 

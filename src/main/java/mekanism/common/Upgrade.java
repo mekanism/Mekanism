@@ -19,7 +19,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 public enum Upgrade
 {
 	SPEED("speed", 8, EnumColor.RED),
-	ENERGY("energy", 8, EnumColor.BRIGHT_GREEN);
+	ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
+	FILTER("filter", 1, EnumColor.DARK_AQUA);
 	
 	private String name;
 	private int maxStack;
@@ -66,6 +67,8 @@ public enum Upgrade
 				return new ItemStack(MekanismItems.SpeedUpgrade);
 			case ENERGY:
 				return new ItemStack(MekanismItems.EnergyUpgrade);
+			case FILTER:
+				return new ItemStack(MekanismItems.FilterUpgrade);
 		}
 		
 		return null;

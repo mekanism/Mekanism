@@ -45,6 +45,13 @@ public class GasStack
 	{
 		return type;
 	}
+	
+	public GasStack withAmount(int newAmount)
+	{
+		amount = newAmount;
+		
+		return this;
+	}
 
 	/**
 	 * Writes this GasStack to a defined tag compound.

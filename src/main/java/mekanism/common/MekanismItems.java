@@ -50,6 +50,7 @@ public class MekanismItems
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
+	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
 	public static final ItemRobit Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
 	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler().setUnlocalizedName("AtomicDisassembler");
 	public static final Item EnrichedIron = new ItemMekanism().setUnlocalizedName("EnrichedIron");
@@ -104,6 +105,7 @@ public class MekanismItems
 		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
+		GameRegistry.registerItem(FilterUpgrade, "HeavyWaterUpgrade");
 		GameRegistry.registerItem(Robit, "Robit");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");

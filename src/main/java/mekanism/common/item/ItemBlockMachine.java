@@ -521,7 +521,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	                        return itemstack;
 	                    }
 	                    
-	                    FluidStack fluid = MekanismUtils.getFluid(world, coord.xCoord, coord.yCoord, coord.zCoord);
+	                    FluidStack fluid = MekanismUtils.getFluid(world, coord.xCoord, coord.yCoord, coord.zCoord, false);
 	                    
 	                    if(fluid != null && (getFluidStack(itemstack) == null || getFluidStack(itemstack).isFluidEqual(fluid)))
 	                    {

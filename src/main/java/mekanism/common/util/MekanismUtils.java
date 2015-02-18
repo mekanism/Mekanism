@@ -745,7 +745,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isFluid(World world, int x, int y, int z)
 	{
-		return getFluid(world, x, y, z) != null;
+		return getFluid(world, x, y, z, false) != null;
 	}
 
 	/**
@@ -756,7 +756,7 @@ public final class MekanismUtils
 	 * @param z - z coordinate
 	 * @return the fluid at the certain location, null if it doesn't exist
 	 */
-	public static FluidStack getFluid(World world, int x, int y, int z)
+	public static FluidStack getFluid(World world, int x, int y, int z, boolean filter)
 	{
 		Block block = world.getBlock(x, y, z);
 		int meta = world.getBlockMetadata(x, y, z);
@@ -768,7 +768,13 @@ public final class MekanismUtils
 
 		if((block == Blocks.water || block == Blocks.flowing_water) && meta == 0)
 		{
-			return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+			if(!filter)
+			{
+				return new FluidStack(FluidRegistry.WATER, FluidContainerRegistry.BUCKET_VOLUME);
+			}
+			else {
+				return new FluidStack(FluidRegistry.getFluid("heavywater"), 10);
+			}
 		}
 		else if((block == Blocks.lava || block == Blocks.flowing_lava) && meta == 0)
 		{

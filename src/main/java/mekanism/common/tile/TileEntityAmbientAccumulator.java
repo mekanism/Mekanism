@@ -43,9 +43,9 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 				cachedRecipe = RecipeHandler.getDimensionGas(new IntegerInput(cachedDimensionId));
 			}
 
-			if(cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput().applyOutputs(collectedGas, false))
+			if(cachedRecipe != null && gasRand.nextDouble() < 0.05 && cachedRecipe.getOutput().applyOutputs(collectedGas, false, 1))
 			{
-				cachedRecipe.getOutput().applyOutputs(collectedGas, true);
+				cachedRecipe.getOutput().applyOutputs(collectedGas, true, 1);
 			}
 		}
 	}

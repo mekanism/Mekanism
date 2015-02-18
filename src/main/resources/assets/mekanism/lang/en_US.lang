@@ -10,6 +10,7 @@ item.AtomicAlloy.name=Atomic Alloy
 item.EnergyTablet.name=Energy Tablet
 item.SpeedUpgrade.name=Speed Upgrade
 item.EnergyUpgrade.name=Energy Upgrade
+item.FilterUpgrade.name=Filter Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
 item.ElectricBow.name=Electric Bow
@@ -275,6 +276,7 @@ fluid.hydrogenChloride=Liquid Hydrogen Chloride
 fluid.brine=Brine
 fluid.ethene=Liquid Ethylene
 fluid.sodium=Liquid Sodium
+fluid.heavyWater=Heavy Water
 
 //OreGas names
 oregas.iron=Iron Ore
@@ -299,6 +301,8 @@ upgrade.energy=Energy
 upgrade.energy.desc=Increases energy efficiency !nand capacity of machinery.
 upgrade.speed=Speed
 upgrade.speed.desc=Increases speed of machinery.
+upgrade.filter=Filter
+upgrade.filter.desc=A filter that separates !nheavy water from regular water.
 
 //Key description text
 key.mode=Mode Switch

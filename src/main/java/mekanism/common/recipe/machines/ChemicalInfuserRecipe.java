@@ -24,14 +24,14 @@ public class ChemicalInfuserRecipe extends MachineRecipe<ChemicalPairInput, GasO
 
 	public boolean canOperate(GasTank leftTank, GasTank rightTank, GasTank outputTank)
 	{
-		return getInput().useGas(leftTank, rightTank, false) && getOutput().applyOutputs(outputTank, false);
+		return getInput().useGas(leftTank, rightTank, false) && getOutput().applyOutputs(outputTank, false, 1);
 	}
 
 	public void operate(GasTank leftInput, GasTank rightInput, GasTank outputTank)
 	{
 		if(getInput().useGas(leftInput, rightInput, true))
 		{
-			getOutput().applyOutputs(outputTank, true);
+			getOutput().applyOutputs(outputTank, true, 1);
 		}
 	}
 }

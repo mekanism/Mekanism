@@ -214,16 +214,18 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)BASE_TICKS_REQUIRED);
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	public DissolutionRecipe getRecipe()
 	{
 		ItemStackInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getDissolutionRecipe(getInput());
 		}
+		 
 		return cachedRecipe;
 	}
 
@@ -464,6 +466,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}
 }

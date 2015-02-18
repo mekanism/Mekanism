@@ -201,10 +201,12 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 	public OxidationRecipe getRecipe()
 	{
 		ItemStackInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
 		}
+		
 		return cachedRecipe;
 	}
 
@@ -384,6 +386,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}
 }

@@ -21,14 +21,14 @@ public class DissolutionRecipe extends MachineRecipe<ItemStackInput, GasOutput, 
 
 	public boolean canOperate(ItemStack[] inventory, GasTank outputTank)
 	{
-		return getInput().useItemStackFromInventory(inventory, 1, false) && getOutput().applyOutputs(outputTank, false);
+		return getInput().useItemStackFromInventory(inventory, 1, false) && getOutput().applyOutputs(outputTank, false, 1);
 	}
 
 	public void operate(ItemStack[] inventory, GasTank outputTank)
 	{
 		if(getInput().useItemStackFromInventory(inventory, 1, true))
 		{
-			getOutput().applyOutputs(outputTank, true);
+			getOutput().applyOutputs(outputTank, true, 1);
 		}
 	}
 

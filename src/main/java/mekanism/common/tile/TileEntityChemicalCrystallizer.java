@@ -502,6 +502,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}
 }

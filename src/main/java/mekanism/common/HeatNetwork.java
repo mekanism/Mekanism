@@ -136,6 +136,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 					newHeatLost += d[1];
 				}
 			}
+			
 			for(IGridTransmitter<HeatNetwork> transmitter : transmitters)
 			{
 				if(transmitter instanceof IHeatTransfer)
@@ -145,6 +146,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 				}
 			}
 		}
+		
 		heatLost = newHeatLost;
 		heatTransferred = newHeatTransferred;
 		meanTemp = newSumTemp / transmitters.size();

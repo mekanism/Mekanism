@@ -142,6 +142,11 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		return supported;
 	}
+	
+	public void clearSupportedTypes()
+	{
+		supported.clear();
+	}
 
 	@Override
 	public void read(ByteBuf dataStream)
@@ -181,6 +186,7 @@ public class TileComponentUpgrade implements ITileComponent
 	public void read(NBTTagCompound nbtTags)
 	{
 		upgrades = Upgrade.buildMap(nbtTags);
+		
 		for(Upgrade upgrade : getSupportedTypes())
 		{
 			tileEntity.recalculateUpgradables(upgrade);

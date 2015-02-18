@@ -944,6 +944,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, recipeType.getSecondaryEnergyPerTick());
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}
 }
