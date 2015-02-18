@@ -337,7 +337,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 				if(tile instanceof IInventory)
 				{
 					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side.getOpposite().ordinal());
+					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal());
 
 					if(stack != null && stack.getStack() != null)
 					{
