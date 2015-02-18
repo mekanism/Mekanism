@@ -312,6 +312,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		if(itemStack.stackTagCompound.hasKey("fuelTank"))
 		{
 			fuelTank.read(itemStack.stackTagCompound.getCompoundTag("fuelTank"));
+			
+			// update energy output based on any existing fuel in tank
+			FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+			if (fuel != null) {
+				output = fuel.energyPerTick * 2;
+			}
 		}
 	}
 }
