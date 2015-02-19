@@ -60,20 +60,22 @@ public final class BoxBlacklistParser
 		{
 			line++;
 
-			if(readingLine.startsWith("#"))
+			if(readingLine.startsWith("#") || readingLine.trim().isEmpty())
 			{
 				continue;
 			}
 
 			String[] split = readingLine.split(":");
 
-			if(split.length != 2 || !isInteger(split[1]))
+			if(split.length < 2 || split.length > 3 || !isInteger(split[split.length-1]))
 			{
 				Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
 				continue;
 			}
 			
-			Block block = Block.getBlockFromName(split[0].trim());
+			String blockName = (split.length == 2) ? split[0].trim() : split[0].trim() + ":" + split[1].trim();
+			
+			Block block = Block.getBlockFromName(blockName);
 			
 			if(block == null)
 			{
@@ -81,7 +83,7 @@ public final class BoxBlacklistParser
 				continue;
 			}
 
-			MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[1]));
+			MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length-1]));
 			entries++;
 		}
 
