@@ -191,7 +191,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		{
 			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
 			{
-				if(irecipe.getValue().reactants.containsType((GasStack)results[0]))
+				if(irecipe.getValue().products.getGasOutput().isGasEqual((GasStack)results[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
