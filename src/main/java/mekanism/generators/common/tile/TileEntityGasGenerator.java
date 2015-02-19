@@ -75,8 +75,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				{
 					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
 					boolean isTankEmpty = (fuelTank.getGas() == null);
+					
 					int fuelReceived = fuelTank.receive(removed, true);
-					if (fuelReceived > 0 && isTankEmpty)
+					
+					if(fuelReceived > 0 && isTankEmpty)
 					{
 						output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick * 2;
 					}
@@ -241,12 +243,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	public int receiveGas(ForgeDirection side, GasStack stack)
 	{
 		boolean isTankEmpty = (fuelTank.getGas() == null);
-		if (isTankEmpty || fuelTank.getGas().isGasEqual(stack))
+		
+		if(isTankEmpty || fuelTank.getGas().isGasEqual(stack))
 		{
 			int fuelReceived = fuelTank.receive(stack, true);
-			if (isTankEmpty && fuelReceived > 0) {
-				output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick * 2;
+			
+			if(isTankEmpty && fuelReceived > 0) 
+			{
+				output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick*2;
 			}
+			
 			return fuelReceived;
 		}
 
@@ -259,8 +265,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		super.readFromNBT(nbtTags);
 
 		fuelTank.read(nbtTags.getCompoundTag("fuelTank"));
+		
 		FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
-		if (fuel != null) {
+		
+		if(fuel != null) 
+		{
 			output = fuel.energyPerTick * 2;
 		}
 	}
@@ -313,9 +322,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		{
 			fuelTank.read(itemStack.stackTagCompound.getCompoundTag("fuelTank"));
 			
-			// update energy output based on any existing fuel in tank
+			//Update energy output based on any existing fuel in tank
 			FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
-			if (fuel != null) {
+			
+			if(fuel != null) 
+			{
 				output = fuel.energyPerTick * 2;
 			}
 		}
