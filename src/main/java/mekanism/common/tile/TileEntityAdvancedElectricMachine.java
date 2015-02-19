@@ -120,7 +120,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 					operatingTicks = 0;
 				}
 
-				gasTank.draw(StatUtils.inversePoisson(secondaryEnergyPerTick), true);
+				gasTank.draw((int)secondaryEnergyPerTick, true);
 				electricityStored -= energyPerTick;
 			}
 			else {
@@ -160,6 +160,16 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			}
 		}
 	}
+	
+	public boolean upgradeableSecondaryEfficiency()
+	{
+		return false;
+	}
+
+	public boolean useStatisticalMechanics()
+	{
+		return false;
+	}
 
 	@Override
 	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
@@ -198,10 +208,12 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	public RECIPE getRecipe()
 	{
 		AdvancedMachineInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
 		}
+		
 		return cachedRecipe;
 	}
 
@@ -330,7 +342,19 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 		if(upgrade == Upgrade.SPEED)
 		{
-			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
+			double secondaryToUse = BASE_SECONDARY_ENERGY_PER_TICK;
+
+			if(upgradeableSecondaryEfficiency())
+			{
+				secondaryToUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
+			}
+
+			secondaryEnergyPerTick = (int)Math.ceil(secondaryToUse);
+
+			if(useStatisticalMechanics())
+			{
+				secondaryEnergyPerTick = StatUtils.inversePoisson(secondaryToUse);
+			}
 		}
 	}
 

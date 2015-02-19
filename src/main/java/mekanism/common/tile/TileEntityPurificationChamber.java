@@ -84,4 +84,16 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
 	{
 		return gas == GasRegistry.getGas("oxygen");
 	}
+
+	@Override
+	public boolean upgradeableSecondaryEfficiency()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean useStatisticalMechanics()
+	{
+		return true;
+	}
 }

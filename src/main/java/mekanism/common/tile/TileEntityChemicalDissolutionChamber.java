@@ -27,12 +27,11 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import io.netty.buffer.ByteBuf;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData
@@ -462,7 +461,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		switch(upgrade)
 		{
 			case SPEED:
-				injectUsage = MekanismUtils.getSecondaryEnergyPerTick(this, BASE_INJECT_USAGE);
+				double toUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
+				injectUsage = StatUtils.inversePoisson((int)Math.ceil(toUse));
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);

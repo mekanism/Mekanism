@@ -199,8 +199,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 					{
 						recipeTicks++;
 					}
-					else
-					{
+					else {
 						recipeTicks = 0;
 						
 						ItemStack returnStack = getMachineStack();
@@ -218,7 +217,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						recipeType = toSet;
 						gasTank.setGas(null);
 
-						secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+						secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
 						worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
 
@@ -235,12 +234,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= getSecondaryEnergyPerTick())
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyPerTick)
 				{
 					if((progress[process]+1) < ticksRequired)
 					{
 						progress[process]++;
-						gasTank.draw(getSecondaryEnergyPerTick(), true);
+						gasTank.draw((int)secondaryEnergyPerTick, true);
 						electricityStored -= energyPerTick;
 					}
 					else if((progress[process]+1) >= ticksRequired)
@@ -248,7 +247,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						operate(getInputSlot(process), getOutputSlot(process));
 
 						progress[process] = 0;
-						gasTank.draw(getSecondaryEnergyPerTick(), true);
+						gasTank.draw((int)secondaryEnergyPerTick, true);
 						electricityStored -= energyPerTick;
 					}
 				}
@@ -273,7 +272,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				}
 			}
 
-			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= getSecondaryEnergyPerTick())
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyPerTick)
 			{
 				setActive(true);
 			}
@@ -366,9 +365,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 	}
 
-	public int getSecondaryEnergyPerTick()
+	public int getSecondaryEnergyPerTick(RecipeType type)
 	{
-		return StatUtils.inversePoisson(secondaryEnergyPerTick);
+		double toUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
+		return StatUtils.inversePoisson((int)Math.ceil(toUse));
 	}
 
 	public void handleSecondaryFuel()
@@ -577,7 +577,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		if(recipeType != oldRecipe)
 		{
-			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+			secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 		}
 		
 		recipeTicks = dataStream.readInt();
@@ -621,7 +621,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		if(recipeType != oldRecipe)
 		{
-			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTick(this, recipeType.getSecondaryEnergyPerTick());
+			secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 		}
 
 		recipeTicks = nbtTags.getInteger("recipeTicks");
@@ -941,7 +941,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-				secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, recipeType.getSecondaryEnergyPerTick());
+				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
