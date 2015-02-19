@@ -67,11 +67,12 @@ public final class BoxBlacklistParser
 
 			String[] split = readingLine.split(":");
 
-			if(split.length < 2 || split.length > 3 || !isInteger(split[split.length - 1]))
+			if(split.length < 2 || split.length > 3 || !isInteger(split[split.length-1]))
 			{
 				Mekanism.logger.error("BoxBlacklist.txt: Couldn't parse blacklist data on line " + line);
 				continue;
 			}
+			
 			String blockName = (split.length == 2) ? split[0].trim() : split[0].trim() + ":" + split[1].trim();
 			
 			Block block = Block.getBlockFromName(blockName);
@@ -82,7 +83,7 @@ public final class BoxBlacklistParser
 				continue;
 			}
 
-			MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length - 1]));
+			MekanismAPI.addBoxBlacklist(block, Integer.parseInt(split[split.length-1]));
 			entries++;
 		}
 
