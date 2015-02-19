@@ -170,7 +170,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 			{
 				if(!stack.initiatedPath)
 				{
-					if(!recalculate(stack, null))
+					if(stack.itemStack == null || !recalculate(stack, null))
 					{
 						remove.add(stack);
 						continue;
