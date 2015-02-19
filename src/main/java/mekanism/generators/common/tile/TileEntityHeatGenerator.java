@@ -234,7 +234,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			return 1000;
 		}
 
-		return TileEntityFurnace.getItemBurnTime(itemstack)/20;
+		return TileEntityFurnace.getItemBurnTime(itemstack)/2;
 	}
 
 	@Override
