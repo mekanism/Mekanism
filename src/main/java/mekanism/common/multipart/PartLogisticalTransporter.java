@@ -197,7 +197,7 @@ public class PartLogisticalTransporter extends PartSidedPipe implements ILogisti
 			{
 				if(!stack.initiatedPath)
 				{
-					if(!recalculate(stack, null))
+					if(stack.itemStack == null || !recalculate(stack, null))
 					{
 						remove.add(stack);
 						continue;
