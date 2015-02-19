@@ -672,6 +672,30 @@ public final class MekanismUtils
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
 		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
+	
+	/**
+	 * A better "isBlockIndirectlyGettingPowered()" that doesn't load chunks
+	 * @param world - the world to perform the check in
+	 * @param coord - the coordinate of the block performing the check
+	 * @return if the block is indirectly getting powered by LOADED chunks
+	 */
+	public static boolean isGettingPowered(World world, Coord4D coord)
+	{
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			Coord4D sideCoord = coord.getFromSide(side);
+			
+			if(sideCoord.exists(world))
+			{
+				if(world.getIndirectPowerLevelTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Places a fake bounding block at the defined location.

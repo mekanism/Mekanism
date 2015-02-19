@@ -207,7 +207,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(handlesRedstone() && redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
 		{
 			return connections;
 		}
@@ -232,7 +232,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(handlesRedstone() && redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z()))
+		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
 		{
 			return connections;
 		}
@@ -386,7 +386,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
-		boolean powered = world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		boolean powered = MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		
 		if(handlesRedstone() && redstoneReactive && powered)
 		{
@@ -504,7 +504,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public void redstoneRefresh()
 	{
-		boolean nowPowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		boolean nowPowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 
 		if(nowPowered != redstonePowered)
 		{
@@ -522,7 +522,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(handlesRedstone())
 			{
-				boolean nowPowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
+				boolean nowPowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 	
 				if(nowPowered != redstonePowered)
 				{
@@ -563,7 +563,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onAdded()
 	{
 		super.onAdded();
-		redstonePowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		
+		redstonePowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		refreshConnections();
 	}
 
@@ -571,7 +572,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onChunkLoad()
 	{
 		super.onChunkLoad();
-		redstonePowered = redstoneReactive && world().isBlockIndirectlyGettingPowered(x(), y(), z());
+		
+		redstonePowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		refreshConnections();
 	}
 	
