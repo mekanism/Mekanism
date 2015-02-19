@@ -76,6 +76,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 				{
 					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
 					boolean isTankEmpty = (fuelTank.getGas() == null);
+					
 					int fuelReceived = fuelTank.receive(removed, true);
 					
 					if(fuelReceived > 0 && isTankEmpty)
@@ -250,7 +251,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 			
 			if(isTankEmpty && fuelReceived > 0) 
 			{
-				output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick * 2;
+				output = FuelHandler.getFuel(fuelTank.getGas().getGas()).energyPerTick*2;
 			}
 			
 			return fuelReceived;
@@ -265,6 +266,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		super.readFromNBT(nbtTags);
 
 		fuelTank.read(nbtTags.getCompoundTag("fuelTank"));
+		
 		FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
 		
 		if(fuel != null) 
@@ -320,6 +322,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		if(itemStack.stackTagCompound.hasKey("fuelTank"))
 		{
 			fuelTank.read(itemStack.stackTagCompound.getCompoundTag("fuelTank"));
+			
+			//Update energy output based on any existing fuel in tank
+			FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+			
+			if(fuel != null) 
+			{
+				output = fuel.energyPerTick * 2;
+			}
 		}
 	}
 }
