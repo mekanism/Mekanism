@@ -1,6 +1,10 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,7 +31,6 @@ import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,9 +43,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class PRCRecipeHandler extends BaseRecipeHandler
 {
@@ -192,7 +192,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		{
 			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
-				if(irecipe.getValue().getInput().containsType((GasStack)results[0]))
+				if(irecipe.getValue().getOutput().getGasOutput().isGasEqual((GasStack)results[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
