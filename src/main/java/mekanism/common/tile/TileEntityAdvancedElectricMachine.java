@@ -99,7 +99,21 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
 			boolean changed = false;
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= (int)MekanismUtils.getSecondaryEnergyPerTick(this, SECONDARY_ENERGY_PER_TICK))
+			double secondaryToUse = SECONDARY_ENERGY_PER_TICK;
+
+			if(upgradeableSecondaryEfficiency())
+			{
+				secondaryToUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, SECONDARY_ENERGY_PER_TICK);
+			}
+
+			int actualSecondaryToUse = (int)Math.ceil(secondaryToUse);
+
+			if(useStatisticalMechanics())
+			{
+				actualSecondaryToUse = StatUtils.inversePoisson(secondaryToUse);
+			}
+
+			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK) && gasTank.getStored() >= actualSecondaryToUse)
 			{
 				setActive(true);
 
@@ -112,7 +126,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 					operatingTicks = 0;
 				}
 
-				gasTank.draw(StatUtils.inversePoisson(MekanismUtils.getSecondaryEnergyPerTickMean(this, SECONDARY_ENERGY_PER_TICK)), true);
+				gasTank.draw(actualSecondaryToUse, true);
 				electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 			}
 			else {
@@ -176,6 +190,16 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 				}
 			}
 		}
+	}
+
+	public boolean upgradeableSecondaryEfficiency()
+	{
+		return false;
+	}
+
+	public boolean useStatisticalMechanics()
+	{
+		return false;
 	}
 
 	@Override

@@ -89,4 +89,16 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	{
 		return gas == GasRegistry.getGas("sulfuricAcid") || gas == GasRegistry.getGas("water") || gas == GasRegistry.getGas("hydrogenChloride");
 	}
+
+	@Override
+	public boolean upgradeableSecondaryEfficiency()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean useStatisticalMechanics()
+	{
+		return true;
+	}
 }
