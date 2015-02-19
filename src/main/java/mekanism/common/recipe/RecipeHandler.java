@@ -580,9 +580,9 @@ public final class RecipeHandler
 				{
 					Map.Entry entry = (Map.Entry)obj;
 
-					if(entry.getKey() instanceof FluidStack)
+					if(entry.getKey() instanceof FluidInput)
 					{
-						if(((FluidStack)entry.getKey()).getFluid() == input)
+						if(((FluidInput)entry.getKey()).ingredient.getFluid() == input)
 						{
 							return true;
 						}

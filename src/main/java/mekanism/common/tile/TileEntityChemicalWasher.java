@@ -68,8 +68,6 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	public double prevEnergy;
 
 	public final double BASE_ENERGY_USAGE = usage.chemicalWasherUsage;
-	
-	public double energyUsage = usage.chemicalWasherUsage;
 
 	public WasherRecipe cachedRecipe;
 	
@@ -120,13 +118,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
 			}
 
-			if(canOperate(recipe) && getEnergy() >= energyUsage && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 
-				operate(recipe);
+				int operations = operate(recipe);
 
-				setEnergy(getEnergy() - energyUsage);
+				setEnergy(getEnergy() - BASE_ENERGY_USAGE*operations);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -176,9 +174,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		return recipe != null && recipe.canOperate(inputTank, fluidTank, outputTank);
 	}
 
-	public void operate(WasherRecipe recipe)
+	public int operate(WasherRecipe recipe)
 	{
-		recipe.operate(inputTank, fluidTank, outputTank, getUpgradedUsage());
+		int operations = getUpgradedUsage();
+		
+		recipe.operate(inputTank, fluidTank, outputTank, operations);
+		
+		return operations;
 	}
 
 	private void manageBuckets()
@@ -257,6 +259,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		int possibleProcess = Math.min(inputTank.getStored(), outputTank.getNeeded());
 		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
 		
 		return Math.min(fluidTank.getFluidAmount()/WATER_USAGE, possibleProcess);
 	}
@@ -643,7 +646,6 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		switch(upgrade)
 		{
 			case ENERGY:
-				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
 	}

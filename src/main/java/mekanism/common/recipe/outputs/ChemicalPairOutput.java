@@ -55,25 +55,29 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput>
 		return new ChemicalPairOutput(rightGas, leftGas);
 	}
 
-	public boolean applyOutputs(GasTank leftTank, GasTank rightTank, boolean doEmit)
+	public boolean applyOutputs(GasTank leftTank, GasTank rightTank, boolean doEmit, int scale)
 	{
 		if(leftTank.canReceive(leftGas.getGas()) && rightTank.canReceive(rightGas.getGas()))
 		{
-			if(leftTank.getNeeded() >= leftGas.amount && rightTank.getNeeded() >= rightGas.amount)
+			if(leftTank.getNeeded() >= leftGas.amount*scale && rightTank.getNeeded() >= rightGas.amount*scale)
 			{
-				leftTank.receive(leftGas, doEmit);
-				rightTank.receive(rightGas, doEmit);
+				leftTank.receive(leftGas.copy().withAmount(leftGas.amount*scale), doEmit);
+				rightTank.receive(rightGas.copy().withAmount(rightGas.amount*scale), doEmit);
+				
 				return true;
 			}
-		} else if(leftTank.canReceive(rightGas.getGas()) && rightTank.canReceive(leftGas.getGas()))
+		} 
+		else if(leftTank.canReceive(rightGas.getGas()) && rightTank.canReceive(leftGas.getGas()))
 		{
-			if(leftTank.getNeeded() >= rightGas.amount && rightTank.getNeeded() >= leftGas.amount)
+			if(leftTank.getNeeded() >= rightGas.amount*scale && rightTank.getNeeded() >= leftGas.amount*scale)
 			{
-				leftTank.receive(rightGas, doEmit);
-				rightTank.receive(leftGas, doEmit);
+				leftTank.receive(rightGas.copy().withAmount(rightGas.amount*scale), doEmit);
+				rightTank.receive(leftGas.copy().withAmount(leftGas.amount*scale), doEmit);
+				
 				return true;
 			}
 		}
+		
 		return false;
 	}
 

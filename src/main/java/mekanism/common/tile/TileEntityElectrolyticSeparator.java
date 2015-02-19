@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -13,7 +15,9 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -21,11 +25,11 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -40,16 +44,13 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedData, IGasHandler
+public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock implements IFluidHandler, IPeripheral, ITubeConnection, ISustainedData, IGasHandler, IUpgradeTile
 {
 	/** This separator's water slot. */
 	public FluidTank fluidTank = new FluidTank(24000);
@@ -75,11 +76,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public boolean isActive = false;
 
 	public SeparatorRecipe cachedRecipe;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
 	public TileEntityElectrolyticSeparator()
 	{
 		super("ElectrolyticSeparator", MachineType.ELECTROLYTIC_SEPARATOR.baseEnergy);
-		inventory = new ItemStack[4];
+		inventory = new ItemStack[5];
 	}
 
 	@Override
@@ -140,12 +143,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			if(canOperate(recipe) && getEnergy() >= recipe.extraEnergy)
 			{
 				setActive(true);
-				operate(recipe);
-				setEnergy(getEnergy() - recipe.extraEnergy);
+				
+				int operations = operate(recipe);
+				
+				setEnergy(getEnergy() - recipe.extraEnergy*operations);
 			}
 			else {
 				setActive(false);
 			}
+			
+			int dumpAmount = 8*(int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
 
 			if(leftTank.getGas() != null)
 			{
@@ -164,7 +171,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					}
 				}
 				else {
-					leftTank.draw(8, true);
+					leftTank.draw(dumpAmount, true);
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
@@ -190,7 +197,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					}
 				}
 				else {
-					rightTank.draw(8, true);
+					rightTank.draw(dumpAmount, true);
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
@@ -201,14 +208,36 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		}
 	}
+	
+	public int getUpgradedUsage(SeparatorRecipe recipe)
+	{
+		int possibleProcess = 0;
+		
+		if(leftTank.getGasType() == recipe.recipeOutput.leftGas.getGas())
+		{
+			possibleProcess = leftTank.getNeeded()/recipe.recipeOutput.leftGas.amount;
+			possibleProcess = Math.min(rightTank.getNeeded()/recipe.recipeOutput.rightGas.amount, possibleProcess);
+		}
+		else {
+			possibleProcess = leftTank.getNeeded()/recipe.recipeOutput.rightGas.amount;
+			possibleProcess = Math.min(rightTank.getNeeded()/recipe.recipeOutput.leftGas.amount, possibleProcess);
+		}
+		
+		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/recipe.extraEnergy), possibleProcess);
+		
+		return Math.min(fluidTank.getFluidAmount()/recipe.recipeInput.ingredient.amount, possibleProcess);
+	}
 
 	public SeparatorRecipe getRecipe()
 	{
 		FluidInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getElectrolyticSeparatorRecipe(getInput());
 		}
+		
 		return cachedRecipe;
 	}
 
@@ -222,9 +251,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		return recipe != null && recipe.canOperate(fluidTank, leftTank, rightTank);
 	}
 
-	public void operate(SeparatorRecipe recipe)
+	public int operate(SeparatorRecipe recipe)
 	{
-		recipe.operate(fluidTank, leftTank, rightTank);
+		int operations = getUpgradedUsage(recipe);
+		
+		recipe.operate(fluidTank, leftTank, rightTank, operations);
+		
+		return operations;
 	}
 
 	public boolean canFill(ChemicalPairOutput gases)
@@ -581,7 +614,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid);
+		return Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(fluid);
 	}
 
 	@Override
@@ -593,7 +626,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid()))
+		if(Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(resource.getFluid()))
 		{
 			return fluidTank.fill(resource, doFill);
 		}
@@ -658,5 +691,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public void setActive(boolean active)
 	{
 		isActive = active;
+	}
+	
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case ENERGY:
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+		}
 	}
 }

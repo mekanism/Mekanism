@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -14,17 +16,19 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -32,9 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData
+public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -52,9 +54,11 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public double prevEnergy;
 
-	public final double ENERGY_USAGE = usage.chemicalInfuserUsage;
+	public final double BASE_ENERGY_USAGE = usage.chemicalInfuserUsage;
 
 	public ChemicalInfuserRecipe cachedRecipe;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -62,7 +66,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public TileEntityChemicalInfuser()
 	{
 		super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
-		inventory = new ItemStack[4];
+		inventory = new ItemStack[5];
 	}
 
 	@Override
@@ -110,10 +114,10 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
 			}
 
-			if(canOperate(recipe) && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - ENERGY_USAGE);
+				setEnergy(getEnergy() - BASE_ENERGY_USAGE);
 
 				operate(recipe);
 			}
@@ -142,6 +146,27 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			prevEnergy = getEnergy();
 		}
 	}
+	
+	public int getUpgradedUsage(ChemicalInfuserRecipe recipe)
+	{
+		int possibleProcess = 0;
+		
+		if(leftTank.getGasType() == recipe.recipeInput.leftGas.getGas())
+		{
+			possibleProcess = leftTank.getStored()/recipe.recipeInput.leftGas.amount;
+			possibleProcess = Math.min(rightTank.getStored()/recipe.recipeInput.rightGas.amount, possibleProcess);
+		}
+		else {
+			possibleProcess = leftTank.getStored()/recipe.recipeInput.rightGas.amount;
+			possibleProcess = Math.min(rightTank.getStored()/recipe.recipeInput.leftGas.amount, possibleProcess);
+		}
+		
+		possibleProcess = Math.min(centerTank.getNeeded()/recipe.recipeOutput.output.amount, possibleProcess);
+		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
+		
+		return possibleProcess;
+	}
 
 	public ChemicalPairInput getInput()
 	{
@@ -151,10 +176,12 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public ChemicalInfuserRecipe getRecipe()
 	{
 		ChemicalPairInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getChemicalInfuserRecipe(getInput());
 		}
+		
 		return cachedRecipe;
 	}
 
@@ -487,5 +514,23 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		leftTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("leftTank")));
 		rightTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("rightTank")));
 		centerTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("centerTank")));
+	}
+	
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case ENERGY:
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+		}
 	}
 }

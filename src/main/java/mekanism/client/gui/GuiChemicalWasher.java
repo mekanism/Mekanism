@@ -45,7 +45,7 @@ public class GuiChemicalWasher extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyUsage);
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.BASE_ENERGY_USAGE*tileEntity.getUpgradedUsage());
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));

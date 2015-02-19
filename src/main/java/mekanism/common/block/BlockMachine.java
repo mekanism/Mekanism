@@ -154,7 +154,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		super(Material.iron);
 		setHardness(3.5F);
-		setResistance(8F);
+		setResistance(16F);
 		setCreativeTab(Mekanism.tabMekanism);
 		blockType = type;
 	}

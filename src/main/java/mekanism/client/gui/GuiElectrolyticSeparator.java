@@ -21,7 +21,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
@@ -40,11 +39,19 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 
 		tileEntity = tentity;
 
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png")));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(general.FROM_H2*2);
+				double usage = 0;
+				
+				if(tileEntity.getRecipe() != null)
+				{
+					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*tileEntity.getRecipe().extraEnergy;
+				}
+				
+				String multiplier = MekanismUtils.getEnergyDisplay(usage);
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png")));

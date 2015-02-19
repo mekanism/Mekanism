@@ -31,14 +31,14 @@ public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutpu
 
 	public boolean canOperate(FluidTank fluidTank, GasTank leftTank, GasTank rightTank)
 	{
-		return getInput().useFluid(fluidTank, false, 1) && getOutput().applyOutputs(leftTank, rightTank, false);
+		return getInput().useFluid(fluidTank, false, 1) && getOutput().applyOutputs(leftTank, rightTank, false, 1);
 	}
 
-	public void operate(FluidTank fluidTank, GasTank leftTank, GasTank rightTank)
+	public void operate(FluidTank fluidTank, GasTank leftTank, GasTank rightTank, int scale)
 	{
-		if(getInput().useFluid(fluidTank, true, 1))
+		if(getInput().useFluid(fluidTank, true, scale))
 		{
-			getOutput().applyOutputs(leftTank, rightTank, true);
+			getOutput().applyOutputs(leftTank, rightTank, true, scale);
 		}
 	}
 }
