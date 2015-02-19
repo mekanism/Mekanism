@@ -47,7 +47,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public int updateDelay;
 
-	public int gasOutput = 16;
+	public int gasOutput = 256;
 
 	public boolean isActive;
 
@@ -461,8 +461,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		switch(upgrade)
 		{
 			case SPEED:
-				double toUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
-				injectUsage = StatUtils.inversePoisson((int)Math.ceil(toUse));
+				injectUsage = StatUtils.inversePoisson(MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE));
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);

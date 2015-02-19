@@ -65,7 +65,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public GasTank rightTank = new GasTank(MAX_GAS);
 
 	/** How fast this block can output gas. */
-	public int output = 16;
+	public int output = 256;
 
 	/** The type of gas this block is outputting. */
 	public boolean dumpLeft = false;

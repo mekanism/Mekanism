@@ -38,16 +38,13 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -367,8 +364,16 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public int getSecondaryEnergyPerTick(RecipeType type)
 	{
-		double toUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
-		return StatUtils.inversePoisson((int)Math.ceil(toUse));
+		double secondaryToUse = type.getSecondaryEnergyPerTick();
+
+		if(type.fuelSpeedUpgrade())
+		{
+			secondaryToUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
+			return StatUtils.inversePoisson(secondaryToUse);
+		}
+		else {
+			return (int)Math.ceil(secondaryToUse);
+		}
 	}
 
 	public void handleSecondaryFuel()

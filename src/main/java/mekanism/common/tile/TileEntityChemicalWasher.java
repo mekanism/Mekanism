@@ -59,7 +59,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	public int updateDelay;
 
-	public int gasOutput = 16;
+	public int gasOutput = 256;
 
 	public boolean isActive;
 

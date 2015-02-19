@@ -44,18 +44,19 @@ public interface IFactory
 
 	public static enum RecipeType
 	{
-		SMELTING("smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, Recipe.ENERGIZED_SMELTER),
-		ENRICHING("enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, Recipe.ENRICHMENT_CHAMBER),
-		CRUSHING("crushing", "crusher", MachineType.CRUSHER.getStack(), false, Recipe.CRUSHER),
-		COMPRESSING("compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, Recipe.OSMIUM_COMPRESSOR),
-		COMBINING("combining", "combiner", MachineType.COMBINER.getStack(), true, Recipe.COMBINER),
-		PURIFYING("purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, Recipe.CHEMICAL_INJECTION_CHAMBER);
+		SMELTING("smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, false, Recipe.ENERGIZED_SMELTER),
+		ENRICHING("enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("crushing", "crusher", MachineType.CRUSHER.getStack(), false, false, Recipe.CRUSHER),
+		COMPRESSING("compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
+		PURIFYING("purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER);
 
 		private String name;
 		private ResourceLocation sound;
 		private ItemStack stack;
 		private boolean usesFuel;
+		private boolean fuelSpeed;
 		private Recipe recipe;
 		private TileEntityAdvancedElectricMachine cacheTile;
 
@@ -85,6 +86,7 @@ public interface IFactory
 			{
 				return getRecipe(slotStack,gasType);
 			}
+			
 			return getRecipe(slotStack);
 		}
 
@@ -198,13 +200,19 @@ public interface IFactory
 		{
 			return usesFuel;
 		}
+		
+		public boolean fuelSpeedUpgrade()
+		{
+			return fuelSpeed;
+		}
 
-		private RecipeType(String s, String s1, ItemStack is, boolean b, Recipe r)
+		private RecipeType(String s, String s1, ItemStack is, boolean b, boolean b1, Recipe r)
 		{
 			name = s;
 			sound = new ResourceLocation("mekanism", "tile.machine." + s1);
 			stack = is;
 			usesFuel = b;
+			fuelSpeed = b1;
 			recipe = r;
 		}
 	}
