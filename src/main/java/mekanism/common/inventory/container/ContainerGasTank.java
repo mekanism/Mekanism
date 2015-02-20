@@ -69,25 +69,15 @@ public class ContainerGasTank extends Container
 			{
 				if(slotID != 0 && slotID != 1)
 				{
-					if(!mergeItemStack(slotStack, 1, 2, false))
-					{
-						if(!mergeItemStack(slotStack, 0, 1, false))
-						{
-							return null;
-						}
-					}
-				}
-				else if(slotID == 1)
-				{
 					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
-						if(!mergeItemStack(slotStack, 2, inventorySlots.size(), false))
+						if(!mergeItemStack(slotStack, 1, 2, false))
 						{
 							return null;
 						}
 					}
 				}
-				else if(slotID == 0)
+				else
 				{
 					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
 					{
