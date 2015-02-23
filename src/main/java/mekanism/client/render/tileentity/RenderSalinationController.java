@@ -8,7 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -29,10 +29,10 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntitySalinationController)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntitySolarEvaporationController)tileEntity, x, y, z, partialTick);
 	}
 
-	public void renderAModelAt(TileEntitySalinationController tileEntity, double x, double y, double z, float partialTick)
+	public void renderAModelAt(TileEntitySolarEvaporationController tileEntity, double x, double y, double z, float partialTick)
 	{
 		if(tileEntity.structured && tileEntity.waterTank.getFluid() != null)
 		{

@@ -9,20 +9,20 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntitySalinationBlock extends TileEntityContainerBlock
+public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 {
-	public TileEntitySalinationController master;
+	public TileEntitySolarEvaporationController master;
 	
 	public boolean attempted;
 
-	public TileEntitySalinationBlock()
+	public TileEntitySolarEvaporationBlock()
 	{
 		super("SalinationTank");
 
 		inventory = new ItemStack[0];
 	}
 
-	public TileEntitySalinationBlock(String fullName)
+	public TileEntitySolarEvaporationBlock(String fullName)
 	{
 		super(fullName);
 
@@ -40,7 +40,7 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 		attempted = false;
 	}
 
-	public void addToStructure(TileEntitySalinationController controller)
+	public void addToStructure(TileEntitySolarEvaporationController controller)
 	{
 		master = controller;
 	}
@@ -80,9 +80,9 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 	
 	public void updateController()
 	{
-		if(!(this instanceof TileEntitySalinationController))
+		if(!(this instanceof TileEntitySolarEvaporationController))
 		{
-			TileEntitySalinationController found = new ControllerFinder().find();
+			TileEntitySolarEvaporationController found = new ControllerFinder().find();
 			
 			if(found != null)
 			{
@@ -93,7 +93,7 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 	
 	public class ControllerFinder
 	{
-		public TileEntitySalinationController found;
+		public TileEntitySolarEvaporationController found;
 		
 		public Set<Coord4D> iterated = new HashSet<Coord4D>();
 		
@@ -110,13 +110,13 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 			{
 				Coord4D coord = pos.getFromSide(side);
 				
-				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+				if(!iterated.contains(coord) && coord.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 				{
-					((TileEntitySalinationBlock)coord.getTileEntity(worldObj)).attempted = true;
+					((TileEntitySolarEvaporationBlock)coord.getTileEntity(worldObj)).attempted = true;
 					
-					if(coord.getTileEntity(worldObj) instanceof TileEntitySalinationController)
+					if(coord.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationController)
 					{
-						found = (TileEntitySalinationController)coord.getTileEntity(worldObj);
+						found = (TileEntitySolarEvaporationController)coord.getTileEntity(worldObj);
 						return;
 					}
 					
@@ -125,9 +125,9 @@ public class TileEntitySalinationBlock extends TileEntityContainerBlock
 			}
 		}
 		
-		public TileEntitySalinationController find()
+		public TileEntitySolarEvaporationController find()
 		{
-			loop(Coord4D.get(TileEntitySalinationBlock.this));
+			loop(Coord4D.get(TileEntitySolarEvaporationBlock.this));
 			
 			return found;
 		}

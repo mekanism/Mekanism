@@ -28,7 +28,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySalinationController extends TileEntitySalinationBlock implements IActiveState
+public class TileEntitySolarEvaporationController extends TileEntitySolarEvaporationBlock implements IActiveState
 {
 	public static final int MAX_BRINE = 10000;
 	public static final int MAX_SOLARS = 4;
@@ -37,7 +37,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 	public FluidTank waterTank = new FluidTank(0);
 	public FluidTank brineTank = new FluidTank(MAX_BRINE);
 
-	public Set<TileEntitySalinationBlock> tankParts = new HashSet<TileEntitySalinationBlock>();
+	public Set<TileEntitySolarEvaporationBlock> tankParts = new HashSet<TileEntitySolarEvaporationBlock>();
 	public ISalinationSolar[] solars = new ISalinationSolar[4];
 
 	public boolean temperatureSet = false;
@@ -62,7 +62,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 	
 	public float prevScale;
 	
-	public TileEntitySalinationController()
+	public TileEntitySolarEvaporationController()
 	{
 		super("SalinationController");
 		
@@ -361,7 +361,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		Coord4D startPoint = Coord4D.get(this).getFromSide(right);
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 		
-		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		while(startPoint.getFromSide(ForgeDirection.UP).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 		{
 			startPoint.step(ForgeDirection.UP);
 		}
@@ -501,7 +501,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 		height = 1;
 		Coord4D baseBlock = Coord4D.get(this);
 		
-		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySalinationBlock)
+		while(baseBlock.getFromSide(ForgeDirection.DOWN).getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock)
 		{
 			baseBlock.step(ForgeDirection.DOWN);
 			height++;
@@ -565,18 +565,18 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public boolean addTankPart(TileEntity tile)
 	{
-		if(tile instanceof TileEntitySalinationBlock && (tile == this || !(tile instanceof TileEntitySalinationController)))
+		if(tile instanceof TileEntitySolarEvaporationBlock && (tile == this || !(tile instanceof TileEntitySolarEvaporationController)))
 		{
 			if(tile != this)
 			{
-				((TileEntitySalinationBlock)tile).addToStructure(this);
-				tankParts.add((TileEntitySalinationBlock)tile);
+				((TileEntitySolarEvaporationBlock)tile).addToStructure(this);
+				tankParts.add((TileEntitySolarEvaporationBlock)tile);
 			}
 			
 			return true;
 		}
 		else {
-			if(tile != this && tile instanceof TileEntitySalinationController)
+			if(tile != this && tile instanceof TileEntitySolarEvaporationController)
 			{
 				controllerConflict = true;
 			}
@@ -741,7 +741,7 @@ public class TileEntitySalinationController extends TileEntitySalinationBlock im
 
 	public void clearStructure()
 	{
-		for(TileEntitySalinationBlock tankPart : tankParts)
+		for(TileEntitySolarEvaporationBlock tankPart : tankParts)
 		{
 			tankPart.controllerGone();
 		}

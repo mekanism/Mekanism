@@ -152,7 +152,7 @@ import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 
@@ -303,7 +303,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser", new RenderChemicalInfuser());
 		ClientRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator", new RenderElectrolyticSeparator());
-		ClientRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController", new RenderSalinationController());
+		ClientRegistry.registerTileEntity(TileEntitySolarEvaporationController.class, "SalinationController", new RenderSalinationController());
 		ClientRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill", new RenderConfigurableMachine());
 		ClientRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber", new RenderChemicalDissolutionChamber());
 		ClientRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher", new RenderChemicalWasher());
@@ -451,7 +451,7 @@ public class ClientProxy extends CommonProxy
 			case 32:
 				return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
-				return new GuiSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
+				return new GuiSalinationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
 			case 34:
 				return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill)tileEntity);
 			case 35:

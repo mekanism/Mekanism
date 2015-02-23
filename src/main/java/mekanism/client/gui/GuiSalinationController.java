@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerSalinationController;
-import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -18,9 +18,9 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class GuiSalinationController extends GuiMekanism
 {
-	public TileEntitySalinationController tileEntity;
+	public TileEntitySolarEvaporationController tileEntity;
 
-	public GuiSalinationController(InventoryPlayer inventory, TileEntitySalinationController tentity)
+	public GuiSalinationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
 	{
 		super(tentity, new ContainerSalinationController(inventory, tentity));
 		tileEntity = tentity;

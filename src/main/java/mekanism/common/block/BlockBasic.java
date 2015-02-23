@@ -24,9 +24,9 @@ import mekanism.common.tile.TileEntityBoiler;
 import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntitySalinationBlock;
-import mekanism.common.tile.TileEntitySalinationController;
-import mekanism.common.tile.TileEntitySalinationValve;
+import mekanism.common.tile.TileEntitySolarEvaporationBlock;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntitySolarEvaporationValve;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.block.Block;
@@ -70,9 +70,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Salination Controller
- * 0:15: Salination Valve
- * 1:0: Salination Block
+ * 0:14: Solar Neutron Controller
+ * 0:15: Solar Neutron Valve
+ * 1:0: Solar Neutron Block
  * 1:1: Steam Boiler
  * 1:2: Boiler Valve
  * @author AidanBrady
@@ -125,9 +125,9 @@ public class BlockBasic extends Block implements IBlockCTM
 				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
 				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
-				ctms[14][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationController").registerIcons(register);
-				ctms[14][1] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SalinationControllerOn").registerIcons(register);
-				ctms[15][0] = new CTMData("ctm/SalinationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+				ctms[14][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationController").registerIcons(register);
+				ctms[14][1] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationControllerOn").registerIcons(register);
+				ctms[15][0] = new CTMData("ctm/SolarEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
 
 				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
 				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
@@ -153,7 +153,7 @@ public class BlockBasic extends Block implements IBlockCTM
 				icons[15][0] = ctms[15][0].mainTextureData.icon;
 				break;
 			case BASIC_BLOCK_2:
-				ctms[0][0] = new CTMData("ctm/SalinationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
+				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
 				ctms[1][0] = new CTMData("ctm/SteamBoiler", this, Arrays.asList(1, 2)).registerIcons(register);
 				ctms[2][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(2, 1)).registerIcons(register);
 
@@ -193,7 +193,7 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 11:
 						return ctms[meta][0].getIcon(side);
 					case 14:
-						TileEntitySalinationController tileEntity14 = (TileEntitySalinationController)world.getTileEntity(x, y, z);
+						TileEntitySolarEvaporationController tileEntity14 = (TileEntitySolarEvaporationController)world.getTileEntity(x, y, z);
 
 						if(side == tileEntity14.facing)
 						{
@@ -678,9 +678,9 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 11:
 						return new TileEntityDynamicValve();
 					case 14:
-						return new TileEntitySalinationController();
+						return new TileEntitySolarEvaporationController();
 					case 15:
-						return new TileEntitySalinationValve();
+						return new TileEntitySolarEvaporationValve();
 					default:
 						return null;
 				}
@@ -688,7 +688,7 @@ public class BlockBasic extends Block implements IBlockCTM
 				switch(metadata)
 				{
 					case 0:
-						return new TileEntitySalinationBlock();
+						return new TileEntitySolarEvaporationBlock();
 					case 1:
 						return new TileEntityBoiler();
 					case 2:

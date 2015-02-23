@@ -87,7 +87,7 @@ import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
-import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntityTeleporter;
 
@@ -143,7 +143,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityChemicalInfuser.class, "ChemicalInfuser");
 		GameRegistry.registerTileEntity(TileEntityChemicalInjectionChamber.class, "ChemicalInjectionChamber");
 		GameRegistry.registerTileEntity(TileEntityElectrolyticSeparator.class, "ElectrolyticSeparator");
-		GameRegistry.registerTileEntity(TileEntitySalinationController.class, "SalinationController");
+		GameRegistry.registerTileEntity(TileEntitySolarEvaporationController.class, "SalinationController");
 		GameRegistry.registerTileEntity(TileEntityPrecisionSawmill.class, "PrecisionSawmill");
 		GameRegistry.registerTileEntity(TileEntityChemicalDissolutionChamber.class, "ChemicalDissolutionChamber");
 		GameRegistry.registerTileEntity(TileEntityChemicalWasher.class, "ChemicalWasher");
@@ -404,7 +404,7 @@ public class CommonProxy
 			case 32:
 				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
-				return new ContainerSalinationController(player.inventory, (TileEntitySalinationController)tileEntity);
+				return new ContainerSalinationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
 			case 34:
 				return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine)tileEntity);
 			case 35:

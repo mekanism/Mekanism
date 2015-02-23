@@ -313,7 +313,6 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			outputTank.setGas(null);
 		}
 
-
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 

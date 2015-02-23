@@ -39,6 +39,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 4, 24).with(SlotOverlay.PLUS));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 4, 55).with(SlotOverlay.MINUS));
 
@@ -51,7 +52,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.ENERGY_USAGE);
+				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.BASE_ENERGY_USAGE*tileEntity.getUpgradedUsage());
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));

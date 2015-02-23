@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntitySalinationValve extends TileEntitySalinationBlock implements IFluidHandler
+public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationBlock implements IFluidHandler
 {
 	public boolean prevMaster = false;
 	
@@ -27,7 +27,7 @@ public class TileEntitySalinationValve extends TileEntitySalinationBlock impleme
 				{
 					Coord4D obj = Coord4D.get(this).getFromSide(side);
 
-					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySalinationBlock))
+					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntitySolarEvaporationBlock))
 					{
 						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
 					}

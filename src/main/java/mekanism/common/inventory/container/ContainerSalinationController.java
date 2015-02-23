@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,9 +13,9 @@ import net.minecraftforge.fluids.FluidRegistry;
 
 public class ContainerSalinationController extends Container
 {
-	private TileEntitySalinationController tileEntity;
+	private TileEntitySolarEvaporationController tileEntity;
 
-	public ContainerSalinationController(InventoryPlayer inventory, TileEntitySalinationController tentity)
+	public ContainerSalinationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
 	{
 		tileEntity = tentity;
 

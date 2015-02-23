@@ -76,11 +76,11 @@ tile.BasicBlock.DynamicGlass.name=Dynamic Glass
 tile.BasicBlock.DynamicValve.name=Dynamic Valve
 tile.BasicBlock.CopperBlock.name=Copper Block
 tile.BasicBlock.TinBlock.name=Tin Block
-tile.BasicBlock.SalinationController.name=Salination Controller
-tile.BasicBlock.SalinationValve.name=Salination Valve
+tile.BasicBlock.SolarEvaporationController.name=Solar Evaporation Controller
+tile.BasicBlock.SolarEvaporationValve.name=Solar Evaporation Valve
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SalinationBlock.name=Salination Block
+tile.BasicBlock2.SolarEvaporationBlock.name=Solar Evaporation Block
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
