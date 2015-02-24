@@ -435,6 +435,15 @@ public final class OreDictManager
 		} catch(Exception e) {}
 		
 		try {
+			RecipeHandler.addCrusherRecipe(new ItemStack(Items.gunpowder), MekanismUtils.size(OreDictionary.getOres("dustSaltpeter").get(0), 1));
+		} catch(Exception e) {}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustSaltpeter"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 1), new ItemStack(Items.gunpowder));
+		}
+		
+		try {
 			for(ItemStack ore : OreDictionary.getOres("ingotSilver"))
 			{
 				RecipeHandler.addCrusherRecipe(MekanismUtils.size(ore, 1), new ItemStack(MekanismItems.Dust, 1, 8));
@@ -456,7 +465,7 @@ public final class OreDictManager
 			RecipeHandler.addCombinerRecipe(MekanismUtils.size(ore, 8), new ItemStack(Blocks.gold_ore));
 		}
 		
-		for(ItemStack ore : OreDictionary.getOres("dustLapisLazuli"))
+		for(ItemStack ore : OreDictionary.getOres("dustLapis"))
 		{
 			RecipeHandler.addCrusherRecipe(new ItemStack(Items.dye, 1, 4), MekanismUtils.size(ore, 1));
 		}
