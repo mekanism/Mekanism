@@ -81,7 +81,6 @@ public class MekanismConfig
 		public static double pressurizedReactionBaseUsage;
 		public static double fluidicPlenisherUsage;
 		public static double laserUsage;
-		public static double salinationPlantWaterUsage;
 		public static double gasCentrifugeUsage;
 		public static double heavyWaterElectrolysisUsage;
 	}

@@ -37,8 +37,8 @@ import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
+import mekanism.common.recipe.machines.SolarEvaporationRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -235,6 +235,11 @@ public final class RecipeHandler
 	{
 		addRecipe(Recipe.GAS_CENTRIFUGE, new GasCentrifugeRecipe(inputGas, outputGas));
 	}
+	
+	public static void addSolarEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid)
+	{
+		addRecipe(Recipe.SOLAR_EVAPORATION_PLANT, new SolarEvaporationRecipe(inputFluid, outputFluid));
+	}
 
 	/**
 	 * Gets the Metallurgic Infuser Recipe for the InfusionInput in the parameters.
@@ -424,6 +429,19 @@ public final class RecipeHandler
 
 		return null;
 	}
+	
+	public static SolarEvaporationRecipe getSolarEvaporationRecipe(FluidInput input)
+	{
+		if(input.isValid())
+		{
+			HashMap<FluidInput, SolarEvaporationRecipe> recipes = Recipe.SOLAR_EVAPORATION_PLANT.get();
+			
+			SolarEvaporationRecipe recipe = recipes.get(input);
+			return recipe == null ? null : recipe.copy();
+		}
+		
+		return null;
+	}
 
 	public static PressurizedRecipe getPRCRecipe(PressurizedInput input)
 	{
@@ -519,7 +537,8 @@ public final class RecipeHandler
 		CHEMICAL_CRYSTALLIZER(new HashMap<GasInput, CrystallizerRecipe>()),
 		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedInput, PressurizedRecipe>()),
 		AMBIENT_ACCUMULATOR(new HashMap<IntegerInput, AmbientGasRecipe>()),
-		GAS_CENTRIFUGE(new HashMap<GasInput, GasCentrifugeRecipe>());
+		GAS_CENTRIFUGE(new HashMap<GasInput, GasCentrifugeRecipe>()),
+		SOLAR_EVAPORATION_PLANT(new HashMap<FluidInput, SolarEvaporationRecipe>());
 
 		private HashMap recipes;
 

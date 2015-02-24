@@ -2,10 +2,8 @@ package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -40,15 +38,15 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		return master == null ? 0 : master.waterTank.fill(resource, doFill);
+		return master == null ? 0 : master.inputTank.fill(resource, doFill);
 	}
 
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(master != null && resource.getFluid() == FluidRegistry.getFluid("brine"))
+		if(master != null && (resource == null || resource.isFluidEqual(master.outputTank.getFluid())))
 		{
-			return master.brineTank.drain(resource.amount, doDrain);
+			return master.outputTank.drain(resource.amount, doDrain);
 		}
 
 		return null;
@@ -59,7 +57,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	{
 		if(master != null)
 		{
-			return master.brineTank.drain(maxDrain, doDrain);
+			return master.outputTank.drain(maxDrain, doDrain);
 		}
 
 		return null;
@@ -68,13 +66,13 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return master != null && fluid == FluidRegistry.getFluid("water");
+		return master != null && master.hasRecipe(fluid);
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return master != null && fluid == FluidRegistry.getFluid("brine");
+		return master != null && master.outputTank.getFluidAmount() > 0;
 	}
 
 	@Override
@@ -85,6 +83,6 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 			return PipeUtils.EMPTY;
 		}
 
-		return new FluidTankInfo[] {new FluidTankInfo(master.waterTank), new FluidTankInfo(master.brineTank)};
+		return new FluidTankInfo[] {new FluidTankInfo(master.inputTank), new FluidTankInfo(master.outputTank)};
 	}
 }

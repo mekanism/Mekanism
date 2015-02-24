@@ -72,7 +72,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.chemicalCrystallizerUsage);
 			dataStream.writeDouble(usage.seismicVibratorUsage);
 			dataStream.writeDouble(usage.fluidicPlenisherUsage);
-			dataStream.writeDouble(usage.salinationPlantWaterUsage);
 			dataStream.writeDouble(usage.gasCentrifugeUsage);
 			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
 	
@@ -133,7 +132,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.chemicalCrystallizerUsage = dataStream.readDouble();
 			usage.seismicVibratorUsage = dataStream.readDouble();
 			usage.fluidicPlenisherUsage = dataStream.readDouble();
-			usage.salinationPlantWaterUsage = dataStream.readDouble();
 			usage.gasCentrifugeUsage = dataStream.readDouble();
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
 	

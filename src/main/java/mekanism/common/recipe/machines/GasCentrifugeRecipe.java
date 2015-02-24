@@ -35,5 +35,4 @@ public class GasCentrifugeRecipe extends MachineRecipe<GasInput, GasOutput, GasC
 			getOutput().applyOutputs(outputTank, true, 1);
 		}
 	}
-
 }

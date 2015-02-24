@@ -42,12 +42,12 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.waterTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.waterTank.getFluid()) + ": " + tileEntity.waterTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.inputTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.inputTank.getFluid()) + ": " + tileEntity.inputTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.brineTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.brineTank.getFluid()) + ": " + tileEntity.brineTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.outputTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.outputTank.getFluid()) + ": " + tileEntity.outputTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72)
@@ -64,8 +64,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 		{
 			return "Structured";
 		}
-		else if(!tileEntity.structured)
-		{
+		else {
 			if(tileEntity.controllerConflict)
 			{
 				return "Conflict";
@@ -74,8 +73,6 @@ public class GuiSolarEvaporationController extends GuiMekanism
 				return "Incomplete";
 			}
 		}
-
-		return null;
 	}
 
 	private String getTemp()
@@ -104,7 +101,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 	{
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSalinationController.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
@@ -115,14 +112,14 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 		int displayInt;
 
-		if(tileEntity.getScaledWaterLevel(58) > 0)
+		if(tileEntity.getScaledInputLevel(58) > 0)
 		{
-			displayGauge(7, 14, tileEntity.getScaledWaterLevel(58), tileEntity.waterTank.getFluid(), null);
+			displayGauge(7, 14, tileEntity.getScaledInputLevel(58), tileEntity.inputTank.getFluid(), null);
 		}
 
-		if(tileEntity.getScaledBrineLevel(58) > 0)
+		if(tileEntity.getScaledOutputLevel(58) > 0)
 		{
-			displayGauge(153, 14, tileEntity.getScaledBrineLevel(58), tileEntity.brineTank.getFluid(), null);
+			displayGauge(153, 14, tileEntity.getScaledOutputLevel(58), tileEntity.outputTank.getFluid(), null);
 		}
 
 		displayInt = tileEntity.getScaledTempLevel(78);
@@ -174,7 +171,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 			}
 		}
 
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSalinationController.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"));
 		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 0, 16, 59);
 	}
 }

@@ -27,7 +27,7 @@ import codechicken.nei.recipe.TemplateRecipeHandler;
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
-public class SalinationControllerRecipeHandler extends BaseRecipeHandler
+public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
@@ -47,19 +47,19 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.BasicBlock.SalinationController.name");
+		return MekanismUtils.localize("tile.BasicBlock.SolarEvaporationController.name");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "salinationcontroller";
+		return "solarevaporation";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiSalinationController.png";
+		return "mekanism:gui/nei/GuiSolarEvaporationController.png";
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 
 	public String getRecipeId()
 	{
-		return "mekanism.salinationcontroller";
+		return "mekanism.solarevaporation";
 	}
 
 	public Set<Entry<FluidStack, FluidStack>> getRecipes()

@@ -70,8 +70,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new PrecisionSawmillRecipeHandler());
 		API.registerUsageHandler(new PrecisionSawmillRecipeHandler());
 
-		API.registerRecipeHandler(new SalinationControllerRecipeHandler());
-		API.registerUsageHandler(new SalinationControllerRecipeHandler());
+		API.registerRecipeHandler(new SolarEvaporationRecipeHandler());
+		API.registerUsageHandler(new SolarEvaporationRecipeHandler());
 
 		API.registerRecipeHandler(new ChemicalDissolutionChamberRecipeHandler());
 		API.registerUsageHandler(new ChemicalDissolutionChamberRecipeHandler());
@@ -97,7 +97,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
-		API.setGuiOffset(GuiSolarEvaporationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
