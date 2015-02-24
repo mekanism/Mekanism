@@ -271,6 +271,7 @@ public class CommonProxy
 		usage.laserUsage = Mekanism.configuration.get("usage", "LaserUsage", 5000D).getDouble(5000D);
 		usage.salinationPlantWaterUsage = Mekanism.configuration.get("usage", "SalinationPlantSpeed", 40.0, "Millibuckets of water turned into brine by the plant per tick", 1.0, 9000.0).getDouble();
 		usage.gasCentrifugeUsage = Mekanism.configuration.get("usage", "GasCentrifugeUsage", 100D).getDouble(100D);
+		usage.heavyWaterElectrolysisUsage = Mekanism.configuration.get("usage", "HeavyWaterElectrolysisUsage", 800D).getDouble(800D);
 
 		if(Mekanism.configuration.hasChanged())
 		{

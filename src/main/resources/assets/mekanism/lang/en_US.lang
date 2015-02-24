@@ -242,6 +242,8 @@ gas.liquidStone=Liquid Stone
 gas.ethene=Ethylene
 gas.sodium=Sodium
 gas.brine=Gaseous Brine
+gas.deuterium=Deuterium
+gas.tritium=Tritium
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry

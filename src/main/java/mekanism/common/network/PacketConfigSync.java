@@ -74,6 +74,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.fluidicPlenisherUsage);
 			dataStream.writeDouble(usage.salinationPlantWaterUsage);
 			dataStream.writeDouble(usage.gasCentrifugeUsage);
+			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)
@@ -134,6 +135,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.fluidicPlenisherUsage = dataStream.readDouble();
 			usage.salinationPlantWaterUsage = dataStream.readDouble();
 			usage.gasCentrifugeUsage = dataStream.readDouble();
+			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)

@@ -83,6 +83,7 @@ public class MekanismConfig
 		public static double laserUsage;
 		public static double salinationPlantWaterUsage;
 		public static double gasCentrifugeUsage;
+		public static double heavyWaterElectrolysisUsage;
 	}
 
 	public static class generators
