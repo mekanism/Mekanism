@@ -674,9 +674,16 @@ public final class MekanismUtils
 		{
 			Coord4D sideCoord = coord.getFromSide(side);
 			
-			if(sideCoord.exists(world))
+			if(sideCoord.exists(world) && sideCoord.getFromSide(side).exists(world))
 			{
-				if(world.getIndirectPowerLevelTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
+				if(sideCoord.getFromSide(side).exists(world))
+				{
+					if(world.getIndirectPowerLevelTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
+					{
+						return true;
+					}
+				}
+				else if(world.isBlockProvidingPowerTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
 				{
 					return true;
 				}

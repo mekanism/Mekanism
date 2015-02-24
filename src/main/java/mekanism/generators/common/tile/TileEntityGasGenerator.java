@@ -267,7 +267,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
 		fuelTank.read(nbtTags.getCompoundTag("fuelTank"));
 		
-		FuelGas fuel = FuelHandler.getFuel(fuelTank.getGas().getGas());
+		boolean isTankEmpty = (fuelTank.getGas() == null);
+		FuelGas fuel = (isTankEmpty) ? null : FuelHandler.getFuel(fuelTank.getGas().getGas());
 		
 		if(fuel != null) 
 		{
