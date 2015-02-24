@@ -17,7 +17,7 @@ public class TileEntitySolarEvaporationBlock extends TileEntityContainerBlock
 
 	public TileEntitySolarEvaporationBlock()
 	{
-		super("SalinationTank");
+		super("SolarEvaporationBlock");
 
 		inventory = new ItemStack[0];
 	}

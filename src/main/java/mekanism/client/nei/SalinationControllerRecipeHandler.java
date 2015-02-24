@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.client.gui.GuiSalinationController;
+import mekanism.client.gui.GuiSolarEvaporationController;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -65,7 +65,7 @@ public class SalinationControllerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiSalinationController.class;
+		return GuiSolarEvaporationController.class;
 	}
 
 	public String getRecipeId()

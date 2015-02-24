@@ -32,9 +32,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Salination Controller
- * 0:15: Salination Valve
- * 1:0: Salination Block
+ * 0:14: Solar Evaporation Controller
+ * 0:15: Solar Evaporation Valve
+ * 1:0: Solar Evaporation Block
  * @author AidanBrady
  *
  */
@@ -215,10 +215,10 @@ public class ItemBlockBasic extends ItemBlock
 					name = "TinBlock";
 					break;
 				case 14:
-					name = "SalinationController";
+					name = "SolarEvaporationController";
 					break;
 				case 15:
-					name = "SalinationValve";
+					name = "SolarEvaporationValve";
 					break;
 				default:
 					name = "Unknown";
@@ -230,7 +230,7 @@ public class ItemBlockBasic extends ItemBlock
 			switch(itemstack.getItemDamage())
 			{
 				case 0:
-					name = "SalinationBlock";
+					name = "SolarEvaporationBlock";
 					break;
 			}
 		}

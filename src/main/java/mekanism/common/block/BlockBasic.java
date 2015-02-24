@@ -70,9 +70,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Solar Neutron Controller
- * 0:15: Solar Neutron Valve
- * 1:0: Solar Neutron Block
+ * 0:14: Solar Evaporation Controller
+ * 0:15: Solar Evaporation Valve
+ * 1:0: Solar Evaporation Block
  * 1:1: Steam Boiler
  * 1:2: Boiler Valve
  * @author AidanBrady

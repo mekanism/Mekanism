@@ -16,7 +16,7 @@ import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
-import mekanism.client.gui.GuiSalinationController;
+import mekanism.client.gui.GuiSolarEvaporationController;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 
@@ -97,7 +97,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
-		API.setGuiOffset(GuiSalinationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarEvaporationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);

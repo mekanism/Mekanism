@@ -40,7 +40,7 @@ import mekanism.common.inventory.container.ContainerRobitMain;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
-import mekanism.common.inventory.container.ContainerSalinationController;
+import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
@@ -405,7 +405,7 @@ public class CommonProxy
 			case 32:
 				return new ContainerElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
-				return new ContainerSalinationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
+				return new ContainerSolarEvaporationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
 			case 34:
 				return new ContainerChanceMachine(player.inventory, (TileEntityChanceMachine)tileEntity);
 			case 35:

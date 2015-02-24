@@ -11,11 +11,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class ContainerSalinationController extends Container
+public class ContainerSolarEvaporationController extends Container
 {
 	private TileEntitySolarEvaporationController tileEntity;
 
-	public ContainerSalinationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
+	public ContainerSolarEvaporationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
 	{
 		tileEntity = tentity;
 

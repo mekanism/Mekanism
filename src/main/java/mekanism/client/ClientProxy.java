@@ -48,7 +48,7 @@ import mekanism.client.gui.GuiRobitMain;
 import mekanism.client.gui.GuiRobitRepair;
 import mekanism.client.gui.GuiRobitSmelting;
 import mekanism.client.gui.GuiRotaryCondensentrator;
-import mekanism.client.gui.GuiSalinationController;
+import mekanism.client.gui.GuiSolarEvaporationController;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiTeleporter;
@@ -451,7 +451,7 @@ public class ClientProxy extends CommonProxy
 			case 32:
 				return new GuiElectrolyticSeparator(player.inventory, (TileEntityElectrolyticSeparator)tileEntity);
 			case 33:
-				return new GuiSalinationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
+				return new GuiSolarEvaporationController(player.inventory, (TileEntitySolarEvaporationController)tileEntity);
 			case 34:
 				return new GuiPrecisionSawmill(player.inventory, (TileEntityPrecisionSawmill)tileEntity);
 			case 35:

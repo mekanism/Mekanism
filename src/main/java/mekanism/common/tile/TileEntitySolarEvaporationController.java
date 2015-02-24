@@ -64,7 +64,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public TileEntitySolarEvaporationController()
 	{
-		super("SalinationController");
+		super("SolarEvaporationController");
 		
 		inventory = new ItemStack[4];
 	}

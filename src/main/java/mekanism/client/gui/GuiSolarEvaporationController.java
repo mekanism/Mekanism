@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.inventory.container.ContainerSalinationController;
+import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -16,13 +16,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class GuiSalinationController extends GuiMekanism
+public class GuiSolarEvaporationController extends GuiMekanism
 {
 	public TileEntitySolarEvaporationController tileEntity;
 
-	public GuiSalinationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
+	public GuiSolarEvaporationController(InventoryPlayer inventory, TileEntitySolarEvaporationController tentity)
 	{
-		super(tentity, new ContainerSalinationController(inventory, tentity));
+		super(tentity, new ContainerSolarEvaporationController(inventory, tentity));
 		tileEntity = tentity;
 	}
 
@@ -33,7 +33,7 @@ public class GuiSalinationController extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
 
 		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
 		fontRendererObj.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
