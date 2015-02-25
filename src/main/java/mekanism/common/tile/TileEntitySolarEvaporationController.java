@@ -90,11 +90,11 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			
 			updateTemperature();
 			manageBuckets();
+			
+			SolarEvaporationRecipe recipe = getRecipe();
 	
-			if(canOperate())
+			if(canOperate(recipe))
 			{
-				SolarEvaporationRecipe recipe = getRecipe();
-				
 				int outputNeeded = outputTank.getCapacity()-outputTank.getFluidAmount();
 				int inputStored = inputTank.getFluidAmount();
 				
@@ -192,19 +192,19 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		}
 	}
 
-	public boolean canOperate()
+	public boolean canOperate(SolarEvaporationRecipe recipe)
 	{
 		if(!structured || height < 3 || height > 18 || inputTank.getFluid() == null || getTempMultiplier() == 0)
 		{
 			return false;
 		}
 		
-		if(getRecipe() == null)
+		if(recipe != null && recipe.canOperate(inputTank, outputTank))
 		{
-			return false;
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	private void manageBuckets()

@@ -1,19 +1,21 @@
 package mekanism.client.nei;
 
-import java.awt.*;
-import java.util.HashMap;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.client.gui.GuiSolarEvaporationController;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.SolarEvaporationRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
@@ -24,25 +26,12 @@ import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
-
 public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
-	private static Map<FluidStack, FluidStack> recipes = new HashMap<FluidStack, FluidStack>();
-
 	public static int xOffset = 5;
 	public static int yOffset = 12;
-
-	static
-	{
-		if(recipes.isEmpty())
-		{
-			recipes.put(new FluidStack(FluidRegistry.WATER, 1), new FluidStack(FluidRegistry.getFluid("brine"), 1));
-		}
-	}
 
 	@Override
 	public String getRecipeName()
@@ -73,9 +62,15 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 		return "mekanism.solarevaporation";
 	}
 
-	public Set<Entry<FluidStack, FluidStack>> getRecipes()
+	public Collection<SolarEvaporationRecipe> getRecipes()
 	{
-		return recipes.entrySet();
+		return Recipe.SOLAR_EVAPORATION_PLANT.get().values();
+	}
+	
+	@Override
+	public void loadTransferRects()
+	{
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(49-xOffset, 20-yOffset, 78, 38), getRecipeId(), new Object[0]));
 	}
 
 	@Override
@@ -117,16 +112,16 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(SolarEvaporationRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("fluid") && results.length == 1 && results[0] instanceof FluidStack)
 		{
-			for(Map.Entry<FluidStack, FluidStack> irecipe : getRecipes())
+			for(SolarEvaporationRecipe irecipe : getRecipes())
 			{
-				if(((FluidStack)results[0]).isFluidEqual(irecipe.getValue()))
+				if(((FluidStack)results[0]).isFluidEqual(irecipe.recipeOutput.output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -142,9 +137,9 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(Map.Entry<FluidStack, FluidStack> irecipe : getRecipes())
+			for(SolarEvaporationRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getKey().isFluidEqual((FluidStack)ingredients[0]))
+				if(irecipe.recipeInput.ingredient.isFluidEqual((FluidStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -284,9 +279,9 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 			fluidOutput = output;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(SolarEvaporationRecipe recipe)
 		{
-			this((FluidStack)recipe.getKey(), (FluidStack)recipe.getValue());
+			this((FluidStack)recipe.recipeInput.ingredient, (FluidStack)recipe.recipeOutput.output);
 		}
 	}
 }

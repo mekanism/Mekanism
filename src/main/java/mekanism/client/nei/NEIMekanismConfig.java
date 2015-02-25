@@ -102,6 +102,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPRC.class, PRCRecipeHandler.xOffset, PRCRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
 		
 		GuiContainerManager.addSlotClickHandler(new MekanismSlotClickHandler());
 		
