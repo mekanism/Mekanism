@@ -26,7 +26,7 @@ public class FluidInput extends MachineInput<FluidInput>
 
 	public boolean useFluid(FluidTank fluidTank, boolean deplete, int scale)
 	{
-		if(fluidTank.getFluid().containsFluid(ingredient))
+		if(fluidTank.getFluid() != null && fluidTank.getFluid().containsFluid(ingredient))
 		{
 			fluidTank.drain(ingredient.amount*scale, deplete);
 			return true;
