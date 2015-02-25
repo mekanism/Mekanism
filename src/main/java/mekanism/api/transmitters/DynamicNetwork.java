@@ -70,12 +70,15 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			return;
 		}
 		
-		if(acceptor.getTileEntity(getWorld()) == null || acceptor.getTileEntity(getWorld()).isInvalid() || transmitter.canConnectToAcceptor(side, true))
+		World world = getWorld();
+		
+		if(acceptor.getTileEntity(world) == null || acceptor.getTileEntity(world).isInvalid() || transmitter.canConnectToAcceptor(side, true))
 		{
 			possibleAcceptors.remove(acceptor);
-			if(acceptor.getTileEntity(getWorld()) != null)
+			
+			if(acceptor.getTileEntity(world) != null)
 			{
-				acceptorDirections.remove(acceptor.getTileEntity(getWorld()));
+				acceptorDirections.remove(acceptor.getTileEntity(world));
 			}
 		}
 	}

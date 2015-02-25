@@ -404,6 +404,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		stacks:
 		for(ItemStack stack : stacks)
 		{
+			if(stack == null)
+			{
+				continue;
+			}
+			
 			for(int i = 0; i < 27; i++)
 			{
 				if(testInv[i] == null)
