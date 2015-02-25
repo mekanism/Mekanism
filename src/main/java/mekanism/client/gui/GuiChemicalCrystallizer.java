@@ -18,18 +18,19 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiChemicalCrystallizer extends GuiMekanism
@@ -99,6 +100,17 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 			if(tileEntity.inputTank.getGas().getGas() instanceof OreGas)
 			{
 				fontRendererObj.drawString("(" + ((OreGas)tileEntity.inputTank.getGas().getGas()).getOreName() + ")", 29, 24, 0x00CD00);
+			}
+			else {
+				CrystallizerRecipe recipe = tileEntity.getRecipe();
+				
+				if(recipe == null)
+				{
+					fontRendererObj.drawString("(No recipe)", 29, 24, 0x00CD00);
+				}
+				else {
+					fontRendererObj.drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);
+				}
 			}
 		}
 

@@ -43,50 +43,50 @@ import cpw.mods.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder("Mekanism")
 public class MekanismItems
 {
-	public static final ItemElectricBow ElectricBow = (ItemElectricBow)new ItemElectricBow().setUnlocalizedName("ElectricBow");
 	public static final Item EnrichedAlloy = new ItemMekanism().setUnlocalizedName("EnrichedAlloy");
 	public static final Item ReinforcedAlloy = new ItemMekanism().setUnlocalizedName("ReinforcedAlloy");
 	public static final Item AtomicAlloy = new ItemMekanism().setUnlocalizedName("AtomicAlloy");
-	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
-	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
-	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
-	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
-	public static final ItemRobit Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
-	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler().setUnlocalizedName("AtomicDisassembler");
+	public static final Item TeleportationCore = new ItemMekanism().setUnlocalizedName("TeleportationCore");
+	public static final Item ElectrolyticCore = new ItemMekanism().setUnlocalizedName("ElectrolyticCore");
+	public static final Item Substrate = new ItemMekanism().setUnlocalizedName("Substrate");
+	public static final Item Polyethene = new ItemHDPE().setUnlocalizedName("HDPE");
+	public static final Item BioFuel = new ItemMekanism().setUnlocalizedName("BioFuel");
+	public static final Item ItemProxy = new ItemProxy().setUnlocalizedName("ItemProxy");
 	public static final Item EnrichedIron = new ItemMekanism().setUnlocalizedName("EnrichedIron");
 	public static final Item CompressedCarbon = new ItemMekanism().setUnlocalizedName("CompressedCarbon");
 	public static final Item CompressedRedstone = new ItemMekanism().setUnlocalizedName("CompressedRedstone");
 	public static final Item CompressedDiamond = new ItemMekanism().setUnlocalizedName("CompressedDiamond");
 	public static final Item CompressedObsidian = new ItemMekanism().setUnlocalizedName("CompressedObsidian");
+	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
+	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
+	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
+	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
+	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
+	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
+	public static final ItemRobit Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
+	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler().setUnlocalizedName("AtomicDisassembler");
 	public static final Item PortableTeleporter = new ItemPortableTeleporter().setUnlocalizedName("PortableTeleporter");
-	public static final Item TeleportationCore = new ItemMekanism().setUnlocalizedName("TeleportationCore");
 	public static final Item Configurator = new ItemConfigurator().setUnlocalizedName("Configurator");
 	public static final Item NetworkReader = new ItemNetworkReader().setUnlocalizedName("NetworkReader");
 	public static final Item WalkieTalkie = new ItemWalkieTalkie().setUnlocalizedName("WalkieTalkie");
-	public static final Item ItemProxy = new ItemProxy().setUnlocalizedName("ItemProxy");
+	public static final ItemElectricBow ElectricBow = (ItemElectricBow)new ItemElectricBow().setUnlocalizedName("ElectricBow");
+	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
+	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
+	public static final Item Dictionary = new ItemDictionary().setUnlocalizedName("Dictionary");
+	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
 	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
-	public static final ItemJetpack Jetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("Jetpack");
 	public static final ItemScubaTank ScubaTank = (ItemScubaTank)new ItemScubaTank().setUnlocalizedName("ScubaTank");
 	public static final ItemGasMask GasMask = (ItemGasMask)new ItemGasMask().setUnlocalizedName("GasMask");
-	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
-	public static final Item Dictionary = new ItemDictionary().setUnlocalizedName("Dictionary");
-	public static final Item Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
-	public static final Item ElectrolyticCore = new ItemMekanism().setUnlocalizedName("ElectrolyticCore");
-	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
-	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
-	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
-	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
-	public static final Item FrictionBoots = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
+	public static final ItemJetpack Jetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("Jetpack");
 	public static final ItemJetpack ArmoredJetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("ArmoredJetpack");
-	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
-	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
-	public static final Item Substrate = new ItemMekanism().setUnlocalizedName("Substrate");
-	public static final Item Polyethene = new ItemHDPE().setUnlocalizedName("HDPE");
-	public static final Item BioFuel = new ItemMekanism().setUnlocalizedName("BioFuel");
+	public static final Item FreeRunners = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
+	public static final Item Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
 
 	//Multi-ID Items
 	public static final Item Dust = new ItemDust();
+	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
+	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
 	public static final Item Ingot = new ItemIngot();
 	public static final Item Clump = new ItemClump();
 	public static final Item DirtyDust = new ItemDirtyDust();
@@ -106,7 +106,7 @@ public class MekanismItems
 		GameRegistry.registerItem(EnergyTablet, "EnergyTablet");
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
-		GameRegistry.registerItem(FilterUpgrade, "HeavyWaterUpgrade");
+		GameRegistry.registerItem(FilterUpgrade, "FilterUpgrade");
 		GameRegistry.registerItem(Robit, "Robit");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");
@@ -138,7 +138,7 @@ public class MekanismItems
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(LithiumBucket, "LithiumBucket");
 		GameRegistry.registerItem(Crystal, "Crystal");
-		GameRegistry.registerItem(FrictionBoots, "FrictionBoots");
+		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 		GameRegistry.registerItem(FilterCard, "FilterCard");
 		GameRegistry.registerItem(SeismicReader, "SeismicReader");
@@ -152,6 +152,6 @@ public class MekanismItems
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
-		MinecraftForge.EVENT_BUS.register(FrictionBoots);
+		MinecraftForge.EVENT_BUS.register(FreeRunners);
 	}
 }
