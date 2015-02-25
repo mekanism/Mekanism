@@ -88,11 +88,12 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 		{
 			data.add(collectedGas.getGasType().getID());
 			data.add(collectedGas.getStored());
-		} else
-		{
+		} 
+		else {
 			data.add(-1);
 			data.add(0);
 		}
+		
 		return data;
 	}
 
@@ -100,11 +101,12 @@ public class TileEntityAmbientAccumulator extends TileEntityContainerBlock imple
 	public void handlePacketData(ByteBuf data)
 	{
 		int gasID = data.readInt();
+		
 		if(gasID < 0)
 		{
 			collectedGas.setGas(null);
-		} else
-		{
+		} 
+		else {
 			collectedGas.setGas(new GasStack(gasID, data.readInt()));
 		}
 	}

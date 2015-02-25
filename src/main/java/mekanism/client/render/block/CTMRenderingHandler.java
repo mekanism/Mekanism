@@ -41,6 +41,7 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 				TileEntityBasicBlock tile = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 				blockCTM.setFacing(tile.facing);
 			}
+			
 			rendererCTM.blockAccess = world;
 			rendererCTM.renderMaxX = 1.0;
 			rendererCTM.renderMaxY = 1.0;
@@ -66,5 +67,4 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 	{
 		return ClientProxy.CTM_RENDER_ID;
 	}
-
 }

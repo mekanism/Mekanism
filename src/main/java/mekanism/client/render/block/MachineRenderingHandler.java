@@ -22,16 +22,19 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
@@ -53,6 +56,8 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	public ModelFluidicPlenisher fluidicPlenisher = new ModelFluidicPlenisher();
 	public ModelLaser laser = new ModelLaser();
 	public ModelLaserAmplifier laserAmplifier = new ModelLaserAmplifier();
+	
+	public IModelCustom solarNeutronActivator = AdvancedModelLoader.loadModel(new ResourceLocation("mekanism:models/solar_tri.obj"));
 
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer)
@@ -210,6 +215,14 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			GL11.glTranslatef(0.0F, -0.85F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "LaserTractorBeam.png"));
 			laserAmplifier.render(0.0560F);
+		}
+		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
+		{
+			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+			GL11.glScalef(0.45F, 0.45F, 0.45F);
+			GL11.glTranslatef(0.0F, -1.3F, 0.0F);
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarNeutronActivator.png"));
+			solarNeutronActivator.renderAll();
 		}
 		else {
 			MekanismRenderer.renderItem(renderer, metadata, block);

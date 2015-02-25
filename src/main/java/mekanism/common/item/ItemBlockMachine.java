@@ -100,6 +100,10 @@ import ic2.api.item.ISpecialElectricItem;
  * 1:12: Fluidic Plenisher
  * 1:13: Laser
  * 1:14: Laser Amplifier
+ * 1:15: Laser Tractor Beam
+ * 2:0: Entangled Block
+ * 2:1: Solar Neutron Activator
+ * 2:2: Ambient Accumulator
  * @author AidanBrady
  *
  */

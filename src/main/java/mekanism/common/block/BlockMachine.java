@@ -53,7 +53,6 @@ import mekanism.common.tile.TileEntityEnrichmentChamber;
 import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
-import mekanism.common.tile.TileEntityGasCentrifuge;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
@@ -66,9 +65,9 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
+import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -94,13 +93,12 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
@@ -139,7 +137,8 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 1:14: Laser Amplifier
  * 1:15: Laser Tractor Beam
  * 2:0: Entangled Block
- * 2:1: Ambient Accumulator
+ * 2:1: Solar Neutron Activator
+ * 2:2: Ambient Accumulator
  * @author AidanBrady
  *
  */
@@ -205,8 +204,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				break;
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
-				icons[1][0] = register.registerIcon("mekanism:SteelCasing");
-				icons[2][0] = register.registerIcon("mekanism:GasCentrifuge");
+				icons[2][0] = register.registerIcon("mekanism:SteelCasing");
 				break;
 		}
 
@@ -559,7 +557,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				}
 
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
+				{
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+				}
 
 				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
@@ -600,11 +600,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(electricChest.canAccess())
 						{
 							MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
-						} else if(!electricChest.authenticated)
+						} 
+						else if(!electricChest.authenticated)
 						{
 							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
-						} else
-						{
+						} 
+						else {
 							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
 						}
 
@@ -619,10 +620,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 							entityplayer.inventory.markDirty();
 							return true;
 						}
-					} else
-					{
+					} 
+					else {
 						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
 					}
+					
 					return true;
 				case LOGISTICAL_SORTER:
 					LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
@@ -633,6 +635,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
 						return true;
 					}
+					
 					return false;
 			}
 		}
@@ -1061,9 +1064,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false),
 		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
-		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 0, "AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false),
-		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 1, "EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false),
-		GAS_CENTRIFUGE(MachineBlock.MACHINE_BLOCK_3, 2, "GasCentrifuge", 48, TileEntityGasCentrifuge.class, true, false, false);
+		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 47, TileEntityEntangledBlock.class, true, false, false),
+		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", -1/*48*/, TileEntitySolarNeutronActivator.class, false, true, false),
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 46, TileEntityAmbientAccumulator.class, true, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;
@@ -1190,12 +1193,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return 0;
 				case LASER_TRACTOR_BEAM:
 					return 0;
-				case AMBIENT_ACCUMULATOR:
-					return 0;
 				case ENTANGLED_BLOCK:
 					return 0;
-				case GAS_CENTRIFUGE:
-					return 100;
+				case SOLAR_NEUTRON_ACTIVATOR:
+					return 0;
+				case AMBIENT_ACCUMULATOR:
+					return 0;
 				default:
 					return 0;
 			}
