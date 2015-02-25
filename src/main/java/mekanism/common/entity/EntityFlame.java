@@ -28,8 +28,8 @@ import io.netty.buffer.ByteBuf;
 
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 {
-	public static final int LIFESPAN = 60;
-	public static final int DAMAGE = 4;
+	public static final int LIFESPAN = 80;
+	public static final int DAMAGE = 10;
 	
 	public Entity owner = null;
 	
@@ -53,7 +53,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 		Pos3D mergedVec = playerPos.clone().translate(flameVec);
 		setPosition(mergedVec.xPos, mergedVec.yPos, mergedVec.zPos);
 		
-		Pos3D motion = new Pos3D(0.2, 0.2, 0.2);
+		Pos3D motion = new Pos3D(0.4, 0.4, 0.4);
 		motion.multiply(new Pos3D(player.getLookVec()));
 		
 		setHeading(motion);
@@ -94,6 +94,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
         posY += motionY;
         posZ += motionZ;
         
+        setPosition(posX, posY, posZ);
+        
     	calculateVector();
         
 		if(ticksExisted > LIFESPAN)
@@ -123,9 +125,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         for(Entity entity1 : (List<Entity>)list)
         {
-            if((entity1 instanceof EntityItem || entity1.canBeCollidedWith()) && (entity1 != owner || ticksExisted >= 5))
+            if((entity1 instanceof EntityItem || entity1.canBeCollidedWith()) && entity1 != owner)
             {
-                float boundsScale = 0.4F;
+                float boundsScale = 0.3F;
                 AxisAlignedBB newBounds = entity1.boundingBox.expand((double)boundsScale, (double)boundsScale, (double)boundsScale);
                 MovingObjectPosition movingobjectposition1 = newBounds.calculateIntercept(localVec, motionVec);
 
@@ -159,11 +161,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 
         if(mop != null)
         {
-            if(mop.entityHit != null)
+            if(mop.entityHit != null && !mop.entityHit.isImmuneToFire())
             {
             	if(mop.entityHit instanceof EntityItem)
             	{
-            		if(mop.entityHit.ticksExisted > 40)
+            		if(mop.entityHit.ticksExisted > 80)
             		{
             			if(!smeltItem((EntityItem)mop.entityHit))
             			{

@@ -43,8 +43,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
 			}
 		}
-		else
-		{
+		else {
 			if(getEnergy() >= usage.laserUsage)
 			{
 				if(!on)
@@ -67,6 +66,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += usage.laserUsage;
@@ -76,8 +76,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 							LaserManager.breakBlock(hitCoord, true, worldObj);
 							diggingProgress = 0;
 						}
-						else
-						{
+						else {
 							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, mop);
 						}
 					}

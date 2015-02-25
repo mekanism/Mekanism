@@ -59,12 +59,12 @@ public class LaserManager
 	{
 		List<ItemStack> ret = null;
 		Block blockHit = blockCoord.getBlock(world);
+		
 		if(dropAtBlock)
 		{
 			blockHit.dropBlockAsItem(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
 		}
-		else
-		{
+		else {
 			ret = blockHit.getDrops(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockCoord.getMetadata(world), 0);
 		}
 		blockHit.breakBlock(world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, blockHit, blockCoord.getMetadata(world));
