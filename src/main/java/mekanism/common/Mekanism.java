@@ -832,6 +832,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustSilver", new ItemStack(MekanismItems.Dust, 1, 8));
 		OreDictionary.registerOre("dustLead", new ItemStack(MekanismItems.Dust, 1, 9));
 		OreDictionary.registerOre("dustSulfur", new ItemStack(MekanismItems.Dust, 1, 10));
+		OreDictionary.registerOre("dustLithium", new ItemStack(MekanismItems.Dust, 1, 11));
 		
 		OreDictionary.registerOre("ingotRefinedObsidian", new ItemStack(MekanismItems.Ingot, 1, 0));
 		OreDictionary.registerOre("ingotOsmium", new ItemStack(MekanismItems.Ingot, 1, 1));
@@ -861,12 +862,6 @@ public class Mekanism
 		OreDictionary.registerOre("oreOsmium", new ItemStack(MekanismBlocks.OreBlock, 1, 0));
 		OreDictionary.registerOre("oreCopper", new ItemStack(MekanismBlocks.OreBlock, 1, 1));
 		OreDictionary.registerOre("oreTin", new ItemStack(MekanismBlocks.OreBlock, 1, 2));
-		
-		//MC stuff
-		OreDictionary.registerOre("oreCoal", new ItemStack(Blocks.coal_ore));
-		OreDictionary.registerOre("ingotIron", new ItemStack(Items.iron_ingot));
-		OreDictionary.registerOre("ingotGold", new ItemStack(Items.gold_ingot));
-		OreDictionary.registerOre("oreRedstone", new ItemStack(Blocks.redstone_ore));
 		
 		if(general.controlCircuitOreDict)
 		{
@@ -1048,6 +1043,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("fusionFuelDD")).registerFluid();
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
 		GasRegistry.register(new Gas("steam")).registerFluid();
+		GasRegistry.register(new Gas("lithium")).registerFluid();
 		
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 		

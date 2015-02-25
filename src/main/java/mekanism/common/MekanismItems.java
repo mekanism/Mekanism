@@ -76,6 +76,7 @@ public class MekanismItems
 	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
 	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
+	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
 	public static final Item FrictionBoots = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
 	public static final ItemJetpack ArmoredJetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("ArmoredJetpack");
 	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
@@ -135,6 +136,7 @@ public class MekanismItems
 		GameRegistry.registerItem(Sawdust, "Sawdust");
 		GameRegistry.registerItem(Salt, "Salt");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
+		GameRegistry.registerItem(LithiumBucket, "LithiumBucket");
 		GameRegistry.registerItem(Crystal, "Crystal");
 		GameRegistry.registerItem(FrictionBoots, "FrictionBoots");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
@@ -147,6 +149,7 @@ public class MekanismItems
 		GameRegistry.registerItem(Flamethrower, "Flamethrower");
 
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
+		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);
 
 		MinecraftForge.EVENT_BUS.register(GasMask);
 		MinecraftForge.EVENT_BUS.register(FrictionBoots);

@@ -32,6 +32,7 @@ item.ElectrolyticCore.name=Electrolytic Core
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
 item.BrineBucket.name=Brine Bucket
+item.LithiumBucket.name=Lithium Bucket
 item.FreeRunners.name=Free Runners
 item.ArmoredJetpack.name=Armored Jetpack
 item.FilterCard.name=Filter Card
@@ -178,6 +179,7 @@ item.tinDust.name=Tin Dust
 item.silverDust.name=Silver Dust
 item.leadDust.name=Lead Dust
 item.sulfurDust.name=Sulfur Dust
+item.lithiumDust.name=Lithium Dust
 
 //Clumps
 item.ironClump.name=Iron Clump
@@ -244,6 +246,7 @@ gas.sodium=Sodium
 gas.brine=Gaseous Brine
 gas.deuterium=Deuterium
 gas.tritium=Tritium
+gas.lithium=Lithium
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -279,6 +282,7 @@ fluid.brine=Brine
 fluid.ethene=Liquid Ethylene
 fluid.sodium=Liquid Sodium
 fluid.heavyWater=Heavy Water
+fluid.lithium=Liquid Lithium
 
 //OreGas names
 oregas.iron=Iron Ore

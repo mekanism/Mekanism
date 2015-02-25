@@ -26,7 +26,8 @@ public class InfuseStorage
 		if(contains(storage))
 		{
 			amount -= storage.amount;
-		} else if(type == storage.type)
+		} 
+		else if(type == storage.type)
 		{
 			amount = 0;
 		}
