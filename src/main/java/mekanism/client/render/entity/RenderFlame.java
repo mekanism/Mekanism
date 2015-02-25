@@ -19,7 +19,7 @@ public class RenderFlame extends Render
     public void doRender(EntityFlame entity, double x, double y, double z, float f, float partialTick)
     {
     	float alpha = (float)(entity.ticksExisted+partialTick)/(float)EntityFlame.LIFESPAN;
-    	float size = alpha*8;
+    	float size = (float)Math.pow(2*alpha, 2);
     	
         GL11.glPushMatrix();
         MekanismRenderer.glowOn();
@@ -39,7 +39,7 @@ public class RenderFlame extends Render
         float f3 = 0.5F;
         float f4 = (float)(0 + i * 10) / 32F;
         float f5 = (float)(5 + i * 10) / 32F;
-        float scale = 0.05625F*(0.8F+alpha);
+        float scale = 0.05625F*(0.8F+size);
         
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         GL11.glRotatef(45F, 1.0F, 0.0F, 0.0F);
