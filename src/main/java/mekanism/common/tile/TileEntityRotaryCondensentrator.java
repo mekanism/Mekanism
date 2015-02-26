@@ -64,7 +64,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
 	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 5);
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -72,7 +72,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public TileEntityRotaryCondensentrator()
 	{
 		super("RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
-		inventory = new ItemStack[5];
+		inventory = new ItemStack[6];
 	}
 
 	@Override
@@ -169,8 +169,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
-					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), 1), true);
-					gasTank.draw(1, true);
+					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), getUpgradedUsage()), true);
+					gasTank.draw(getUpgradedUsage(), true);
 					setEnergy(getEnergy() - BASE_ENERGY_USAGE);
 				}
 				else {
@@ -274,8 +274,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					setActive(true);
-					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), 1), true);
-					fluidTank.drain(1, true);
+					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), getUpgradedUsage()), true);
+					fluidTank.drain(getUpgradedUsage(), true);
 					setEnergy(getEnergy() - BASE_ENERGY_USAGE);
 				}
 				else {
