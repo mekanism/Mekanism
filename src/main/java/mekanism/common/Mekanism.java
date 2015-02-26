@@ -754,15 +754,15 @@ public class Mekanism
 				0,
 				100
 		);
-
 		RecipeHandler.addPRCRecipe(
 				new ItemStack(MekanismItems.Substrate), new FluidStack(FluidRegistry.getFluid("ethene"), 50), new GasStack(GasRegistry.getGas("oxygen"), 10),
 				new ItemStack(MekanismItems.Polyethene), new GasStack(GasRegistry.getGas("oxygen"), 5),
 				1000,
 				60
 		);
-
-		RecipeHandler.addCentrifugeRecipe(new GasStack(GasRegistry.getGas("deuterium"), 10), new GasStack(GasRegistry.getGas("tritium"), 1));
+		
+		//Solar Neutron Activator Recipes
+		RecipeHandler.addSolarNeutronRecipe(new GasStack(GasRegistry.getGas("lithium"), 1), new GasStack(GasRegistry.getGas("tritium"), 1));
 
         //Infuse objects
 		InfuseRegistry.registerInfuseObject(new ItemStack(MekanismItems.BioFuel), new InfuseObject(InfuseRegistry.get("BIO"), 5));

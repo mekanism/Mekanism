@@ -27,15 +27,10 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 		super(new ContainerSolarNeutronActivator(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png")));
-		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png")));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 4, 24).with(SlotOverlay.PLUS));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 4, 55).with(SlotOverlay.MINUS));
-
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 154, 24));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 154, 55));
-
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 154, 4).with(SlotOverlay.POWER));
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 4, 24).with(SlotOverlay.PLUS));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 4, 55).with(SlotOverlay.MINUS));
 		
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
@@ -43,14 +38,14 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 			{
 				return tileEntity.inputTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 25, 13));
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 25, 13));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.outputTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 133, 13));
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 133, 13));
 
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
@@ -59,7 +54,7 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 			{
 				return tileEntity.isActive ? 1 : 0;
 			}
-		}, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"), 62, 38));
+		}, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 62, 38));
 	}
 
 	@Override
@@ -76,7 +71,7 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSolarNeutronActivator.png"));
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;

@@ -44,6 +44,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public TileEntitySolarNeutronActivator()
 	{
 		super("SolarNeutronActivator");
+		inventory = new ItemStack[3];
 	}
 
 	@Override
