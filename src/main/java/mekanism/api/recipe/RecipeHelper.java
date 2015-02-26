@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -278,6 +277,38 @@ public final class RecipeHelper
 			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
 			Method m = recipeClass.getMethod("addPRCRecipe", ItemStack.class, FluidStack.class, GasStack.class, ItemStack.class, GasStack.class, Double.TYPE, Integer.TYPE);
 			m.invoke(null, inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks);
+		} catch(Exception e) {
+			System.err.println("Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Solar Evaporation Plant recipe.
+	 * @param input - input GasStack
+	 * @param output - output GasStack
+	 */
+	public static void addSolarEvaporationRecipe(FluidStack input, FluidStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
+			Method m = recipeClass.getMethod("addSolarEvaporationRecipe", FluidStack.class, FluidStack.class);
+			m.invoke(null, input, output);
+		} catch(Exception e) {
+			System.err.println("Error while adding recipe: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Add a Solar Neutron Activator recipe.
+	 * @param input - input GasStack
+	 * @param output - output GasStack
+	 */
+	public static void addSolarNeutronRecipe(GasStack input, GasStack output)
+	{
+		try {
+			Class recipeClass = Class.forName("mekanism.common.recipe.RecipeHandler");
+			Method m = recipeClass.getMethod("addSolarEvaporationRecipe", GasStack.class, GasStack.class);
+			m.invoke(null, input, output);
 		} catch(Exception e) {
 			System.err.println("Error while adding recipe: " + e.getMessage());
 		}

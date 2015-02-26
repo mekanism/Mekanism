@@ -51,12 +51,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public static final int MAX_FLUID = 10000;
 
-	public int updateDelay;
-
 	/** 0: gas -> fluid; 1: fluid -> gas */
 	public int mode;
 
 	public int gasOutput = 256;
+	
+	public int updateDelay;
 
 	public boolean isActive;
 

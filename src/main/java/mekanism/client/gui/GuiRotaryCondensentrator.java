@@ -55,7 +55,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.BASE_ENERGY_USAGE*tileEntity.getUpgradedUsage());
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
 			@Override
 			public FluidTank getTank()
@@ -99,7 +99,6 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 				return tileEntity.mode == 1;
 			}
 		}, ProgressBar.LARGE_LEFT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png"), 62, 38));
-
 	}
 
 	@Override

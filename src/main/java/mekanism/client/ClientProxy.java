@@ -51,6 +51,7 @@ import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
@@ -484,6 +485,8 @@ public class ClientProxy extends CommonProxy
 			case 46:
 				return new GuiEntangledBlock(player.inventory, (TileEntityEntangledBlock)tileEntity);
 			case 47:
+				return new GuiSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator)tileEntity);
+			case 48:
 				return new GuiAmbientAccumulator(player, (TileEntityAmbientAccumulator)tileEntity);
 		}
 

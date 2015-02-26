@@ -42,6 +42,7 @@ import mekanism.common.inventory.container.ContainerRobitSmelting;
 import mekanism.common.inventory.container.ContainerRotaryCondensentrator;
 import mekanism.common.inventory.container.ContainerSeismicVibrator;
 import mekanism.common.inventory.container.ContainerSolarEvaporationController;
+import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
@@ -427,7 +428,10 @@ public class CommonProxy
 			case 45:
 				return new ContainerLaserTractorBeam(player.inventory, (TileEntityLaserTractorBeam)tileEntity);
 			case 46:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 47:
+				return new ContainerSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator)tileEntity);
+			case 48:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 

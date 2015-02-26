@@ -26,7 +26,6 @@ import mekanism.common.recipe.machines.CrusherRecipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
-import mekanism.common.recipe.machines.GasCentrifugeRecipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
@@ -38,6 +37,7 @@ import mekanism.common.recipe.machines.SawmillRecipe;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.SolarEvaporationRecipe;
+import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -225,20 +225,20 @@ public final class RecipeHandler
 	{
 		addRecipe(Recipe.PRESSURIZED_REACTION_CHAMBER, new PressurizedRecipe(inputSolid, inputFluid, inputGas, outputSolid, outputGas, extraEnergy, ticks));
 	}
-
-	public static void addAmbientGas(int dimensionID, String ambientGasName)
-	{
-		addRecipe(Recipe.AMBIENT_ACCUMULATOR, new AmbientGasRecipe(dimensionID, ambientGasName));
-	}
-
-	public static void addCentrifugeRecipe(GasStack inputGas, GasStack outputGas)
-	{
-		addRecipe(Recipe.GAS_CENTRIFUGE, new GasCentrifugeRecipe(inputGas, outputGas));
-	}
 	
 	public static void addSolarEvaporationRecipe(FluidStack inputFluid, FluidStack outputFluid)
 	{
 		addRecipe(Recipe.SOLAR_EVAPORATION_PLANT, new SolarEvaporationRecipe(inputFluid, outputFluid));
+	}
+	
+	public static void addSolarNeutronRecipe(GasStack inputGas, GasStack outputGas)
+	{
+		addRecipe(Recipe.SOLAR_NEUTRON_ACTIVATOR, new SolarNeutronRecipe(inputGas, outputGas));
+	}
+
+	public static void addAmbientGas(int dimensionID, String ambientGasName)
+	{
+		addRecipe(Recipe.AMBIENT_ACCUMULATOR, new AmbientGasRecipe(dimensionID, ambientGasName));
 	}
 
 	/**
@@ -343,19 +343,6 @@ public final class RecipeHandler
 			HashMap<ItemStackInput, OxidationRecipe> recipes = Recipe.CHEMICAL_OXIDIZER.get();
 
 			OxidationRecipe recipe = getRecipeTryWildcard(input, recipes);
-			return recipe == null ? null : recipe.copy();
-		}
-
-		return null;
-	}
-
-	public static GasCentrifugeRecipe getCentrifugeRecipe(GasInput input)
-	{
-		if(input.isValid())
-		{
-			HashMap<GasInput, GasCentrifugeRecipe> recipes = Recipe.GAS_CENTRIFUGE.get();
-
-			GasCentrifugeRecipe recipe = recipes.get(input);
 			return recipe == null ? null : recipe.copy();
 		}
 
@@ -537,8 +524,8 @@ public final class RecipeHandler
 		CHEMICAL_CRYSTALLIZER(new HashMap<GasInput, CrystallizerRecipe>()),
 		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedInput, PressurizedRecipe>()),
 		AMBIENT_ACCUMULATOR(new HashMap<IntegerInput, AmbientGasRecipe>()),
-		GAS_CENTRIFUGE(new HashMap<GasInput, GasCentrifugeRecipe>()),
-		SOLAR_EVAPORATION_PLANT(new HashMap<FluidInput, SolarEvaporationRecipe>());
+		SOLAR_EVAPORATION_PLANT(new HashMap<FluidInput, SolarEvaporationRecipe>()),
+		SOLAR_NEUTRON_ACTIVATOR(new HashMap<GasInput, SolarNeutronRecipe>());
 
 		private HashMap recipes;
 
