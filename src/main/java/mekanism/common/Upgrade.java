@@ -9,7 +9,6 @@ import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -80,12 +79,41 @@ public enum Upgrade
 		
 		if(tile instanceof IUpgradeTile)
 		{
-			if(canMultiply())
+			if(tile instanceof IUpgradeInfoHandler)
 			{
-				double effect = Math.pow(general.maxUpgradeMultiplier, (float)((IUpgradeTile)tile).getComponent().getUpgrades(this)/(float)getMax());
-				
-				ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
+				return ((IUpgradeInfoHandler)tile).getInfo(this);
 			}
+			else {
+				ret = getMultScaledInfo((IUpgradeTile)tile);
+			}
+		}
+		
+		return ret;
+	}
+	
+	public List<String> getMultScaledInfo(IUpgradeTile tile)
+	{
+		List<String> ret = new ArrayList<String>();
+		
+		if(canMultiply())
+		{
+			double effect = Math.pow(general.maxUpgradeMultiplier, (float)tile.getComponent().getUpgrades(this)/(float)getMax());
+			
+			ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
+		}
+		
+		return ret;
+	}
+	
+	public List<String> getExpScaledInfo(IUpgradeTile tile)
+	{
+		List<String> ret = new ArrayList<String>();
+		
+		if(canMultiply())
+		{
+			double effect = Math.pow(2, (float)tile.getComponent().getUpgrades(this));
+			
+			ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + effect + "x");
 		}
 		
 		return ret;
@@ -131,5 +159,10 @@ public enum Upgrade
 		compound.setInteger("amount", amount);
 		
 		return compound;
+	}
+	
+	public static interface IUpgradeInfoHandler
+	{
+		public List<String> getInfo(Upgrade upgrade);
 	}
 }

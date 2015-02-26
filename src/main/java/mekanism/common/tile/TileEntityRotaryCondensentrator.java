@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
@@ -16,6 +17,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
+import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
@@ -41,7 +43,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile
+public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
@@ -168,10 +170,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
+					int usage = getUpgradedUsage();
+					
 					setActive(true);
-					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), getUpgradedUsage()), true);
-					gasTank.draw(getUpgradedUsage(), true);
-					setEnergy(getEnergy() - BASE_ENERGY_USAGE);
+					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), usage), true);
+					gasTank.draw(usage, true);
+					setEnergy(getEnergy() - BASE_ENERGY_USAGE*usage);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -273,10 +277,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
+					int usage = getUpgradedUsage();
+					
 					setActive(true);
-					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), getUpgradedUsage()), true);
-					fluidTank.drain(getUpgradedUsage(), true);
-					setEnergy(getEnergy() - BASE_ENERGY_USAGE);
+					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), usage), true);
+					fluidTank.drain(usage, true);
+					setEnergy(getEnergy() - BASE_ENERGY_USAGE*usage);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -292,17 +298,16 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	
 	public int getUpgradedUsage()
 	{
-		int possibleProcess = 0;
+		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
 		
 		if(mode == 0) //Gas to fluid
 		{
-			possibleProcess = Math.min(gasTank.getStored(), fluidTank.getCapacity()-fluidTank.getFluidAmount());
+			possibleProcess = Math.min(Math.min(gasTank.getStored(), fluidTank.getCapacity()-fluidTank.getFluidAmount()), possibleProcess);
 		}
 		else { //Fluid to gas
-			possibleProcess = Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded());
+			possibleProcess = Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
 		}
 		
-		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
 		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
 		
 		return possibleProcess;
@@ -639,5 +644,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
+	}
+
+	@Override
+	public List<String> getInfo(Upgrade upgrade) 
+	{
+		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
 	}
 }

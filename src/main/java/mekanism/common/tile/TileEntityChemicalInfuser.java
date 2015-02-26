@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
@@ -17,6 +18,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
+import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
@@ -36,7 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile
+public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -149,20 +151,19 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	
 	public int getUpgradedUsage(ChemicalInfuserRecipe recipe)
 	{
-		int possibleProcess = 0;
+		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
 		
 		if(leftTank.getGasType() == recipe.recipeInput.leftGas.getGas())
 		{
-			possibleProcess = leftTank.getStored()/recipe.recipeInput.leftGas.amount;
+			possibleProcess = Math.min(leftTank.getStored()/recipe.recipeInput.leftGas.amount, possibleProcess);
 			possibleProcess = Math.min(rightTank.getStored()/recipe.recipeInput.rightGas.amount, possibleProcess);
 		}
 		else {
-			possibleProcess = leftTank.getStored()/recipe.recipeInput.rightGas.amount;
+			possibleProcess = Math.min(leftTank.getStored()/recipe.recipeInput.rightGas.amount, possibleProcess);
 			possibleProcess = Math.min(rightTank.getStored()/recipe.recipeInput.leftGas.amount, possibleProcess);
 		}
 		
 		possibleProcess = Math.min(centerTank.getNeeded()/recipe.recipeOutput.output.amount, possibleProcess);
-		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
 		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
 		
 		return possibleProcess;
@@ -532,5 +533,11 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
+	}
+	
+	@Override
+	public List<String> getInfo(Upgrade upgrade) 
+	{
+		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
 	}
 }

@@ -136,12 +136,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 				setActive(true);
 
 				setEnergy(getEnergy() - energyUsage);
+				
 				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
 				}
-				else
-				{
+				else {
 					operate(recipe);
 					operatingTicks = 0;
 				}
@@ -170,10 +170,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	public CrystallizerRecipe getRecipe()
 	{
 		GasInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getChemicalCrystallizerRecipe(getInput());
 		}
+		
 		return cachedRecipe;
 	}
 

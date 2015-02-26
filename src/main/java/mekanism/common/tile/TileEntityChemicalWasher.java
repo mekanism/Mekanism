@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.usage;
@@ -17,6 +18,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
+import mekanism.common.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
@@ -46,7 +48,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IFluidHandler, IUpgradeTile, ISustainedData
+public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IFluidHandler, IUpgradeTile, ISustainedData, IUpgradeInfoHandler
 {
 	public FluidTank fluidTank = new FluidTank(MAX_FLUID);
 	public GasTank inputTank = new GasTank(MAX_GAS);
@@ -257,8 +259,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	
 	public int getUpgradedUsage()
 	{
-		int possibleProcess = Math.min(inputTank.getStored(), outputTank.getNeeded());
-		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
+		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+		possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
 		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
 		
 		return Math.min(fluidTank.getFluidAmount()/WATER_USAGE, possibleProcess);
@@ -647,5 +649,11 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
 		}
+	}
+	
+	@Override
+	public List<String> getInfo(Upgrade upgrade) 
+	{
+		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
 	}
 }

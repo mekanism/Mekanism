@@ -223,6 +223,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 	
 	private boolean smeltBlock(Coord4D block)
 	{
+		ItemStack stack = block.getStack(worldObj);
+		
+		if(stack == null)
+		{
+			return false;
+		}
+		
 		ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(block.getStack(worldObj));
 		
 		if(result != null)
