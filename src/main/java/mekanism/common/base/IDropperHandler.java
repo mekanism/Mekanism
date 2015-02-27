@@ -33,7 +33,7 @@ public interface IDropperHandler
 					GasTank gasTank = (GasTank)tank;
 					int dropperStored = dropper.getGas(stack) != null ? dropper.getGas(stack).amount : 0;
 					
-					if(dropper.getGas(stack) != null && !dropper.getGas(stack).isGasEqual(gasTank.getGas()))
+					if(dropper.getGas(stack) != null && gasTank.getGas() != null && !dropper.getGas(stack).isGasEqual(gasTank.getGas()))
 					{
 						return;
 					}
@@ -47,7 +47,7 @@ public interface IDropperHandler
 						
 						int toInsert = Math.min(gasTank.getStored(), ItemGaugeDropper.CAPACITY-dropperStored);
 						GasStack drawn = gasTank.draw(toInsert, true);
-						dropper.setGas(stack, new GasStack(gasTank.getGasType(), dropperStored+(drawn != null ? drawn.amount : 0)));
+						dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored+(drawn != null ? drawn.amount : 0)));
 						
 						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 					}
@@ -69,7 +69,7 @@ public interface IDropperHandler
 					FluidTank fluidTank = (FluidTank)tank;
 					int dropperStored = dropper.getFluid(stack) != null ? dropper.getFluid(stack).amount : 0;
 					
-					if(dropper.getFluid(stack) != null && !dropper.getFluid(stack).isFluidEqual(fluidTank.getFluid()))
+					if(dropper.getFluid(stack) != null && fluidTank.getFluid() != null && !dropper.getFluid(stack).isFluidEqual(fluidTank.getFluid()))
 					{
 						return;
 					}
@@ -83,7 +83,7 @@ public interface IDropperHandler
 						
 						int toInsert = Math.min(fluidTank.getFluidAmount(), ItemGaugeDropper.CAPACITY-dropperStored);
 						FluidStack drawn = fluidTank.drain(toInsert, true);
-						dropper.setFluid(stack, new FluidStack(fluidTank.getFluid().getFluid(), dropperStored+(drawn != null ? drawn.amount : 0)));
+						dropper.setFluid(stack, new FluidStack(drawn.getFluid(), dropperStored+(drawn != null ? drawn.amount : 0)));
 						
 						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 					}
