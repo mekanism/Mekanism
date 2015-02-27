@@ -139,7 +139,7 @@ public class MekanismItems
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(LithiumBucket, "LithiumBucket");
 		GameRegistry.registerItem(Crystal, "Crystal");
-		GameRegistry.registerItem(FreeRunners, "FrictionBoots");
+		GameRegistry.registerItem(FreeRunners, "FreeRunners");
 		GameRegistry.registerItem(ArmoredJetpack, "ArmoredJetpack");
 		GameRegistry.registerItem(FilterCard, "FilterCard");
 		GameRegistry.registerItem(SeismicReader, "SeismicReader");
