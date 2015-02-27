@@ -119,6 +119,7 @@ public class FusionReactor implements IFusionReactor
 				injectFuel();
 				int fuelBurned = burnFuel();
 				neutronFlux(fuelBurned);
+				
 				if(fuelBurned == 0)
 				{
 					burning = false;
@@ -229,6 +230,7 @@ public class FusionReactor implements IFusionReactor
 			{
 				source.simulateHeat();
 			}
+			
 			applyTemperatureChange();
 		}
 

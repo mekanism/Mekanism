@@ -57,10 +57,10 @@ public class GuiReactorController extends GuiMekanism
 		
 		if(tileEntity.getActive())
 		{
-			fontRendererObj.drawString(MekanismUtils.localize("container.reactor.formed"), 8, 16, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.formed"), 8, 16, 0x404040);
 		}
 		else {
-			fontRendererObj.drawString(MekanismUtils.localize("container.reactor.notFormed"), 8, 16, 0x404040);
+			fontRendererObj.drawString(MekanismUtils.localize("gui.incomplete"), 8, 16, 0x404040);
 		}
 	}
 

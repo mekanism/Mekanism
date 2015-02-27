@@ -429,6 +429,19 @@ public final class RecipeHandler
 		
 		return null;
 	}
+	
+	public static SolarNeutronRecipe getSolarNeutronRecipe(GasInput input)
+	{
+		if(input.isValid())
+		{
+			HashMap<GasInput, SolarNeutronRecipe> recipes = Recipe.SOLAR_NEUTRON_ACTIVATOR.get();
+			
+			SolarNeutronRecipe recipe = recipes.get(input);
+			return recipe == null ? null : recipe.copy();
+		}
+		
+		return null;
+	}
 
 	public static PressurizedRecipe getPRCRecipe(PressurizedInput input)
 	{

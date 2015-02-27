@@ -251,6 +251,7 @@ gas.brine=Gaseous Brine
 gas.deuterium=Deuterium
 gas.tritium=Tritium
 gas.lithium=Lithium
+gas.fusionFuelDT=D-T Fuel
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -287,6 +288,8 @@ fluid.ethene=Liquid Ethylene
 fluid.sodium=Liquid Sodium
 fluid.heavyWater=Heavy Water
 fluid.lithium=Liquid Lithium
+fluid.deuterium=Liquid Deuterium
+fluid.tritium=Liquid Tritium
 
 //OreGas names
 oregas.iron=Iron Ore
@@ -385,6 +388,12 @@ gui.min=Min
 gui.max=Max
 gui.delay=Delay
 gui.noDelay=No Delay
+gui.fuel=Fuel
+gui.heat=Heat
+gui.formed=Formed
+gui.incomplete=Incomplete
+
+gui.reactor.injectionRate=Injection Rate
 
 gui.upgrades=Upgrades
 gui.upgrades.supported=Supported

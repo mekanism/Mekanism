@@ -28,7 +28,6 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 4, 24).with(SlotOverlay.PLUS));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 4, 55).with(SlotOverlay.MINUS));
 		
@@ -64,6 +63,7 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 26, 4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

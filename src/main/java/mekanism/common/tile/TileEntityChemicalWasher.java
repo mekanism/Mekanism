@@ -88,6 +88,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote && updateDelay > 0)
 		{
 			updateDelay--;

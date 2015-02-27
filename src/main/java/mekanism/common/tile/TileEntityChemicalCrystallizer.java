@@ -99,6 +99,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote && updateDelay > 0)
 		{
 			updateDelay--;

@@ -19,9 +19,13 @@ import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.GasInput;
+import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, IDropperHandler
@@ -39,6 +43,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	
 	public int gasOutput = 256;
 	
+	public SolarNeutronRecipe cachedRecipe;
+	
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -51,7 +57,85 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public void onUpdate() 
 	{
+		if(worldObj.isRemote && updateDelay > 0)
+		{
+			updateDelay--;
+
+			if(updateDelay == 0 && clientActive != isActive)
+			{
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			}
+		}
 		
+		if(!worldObj.isRemote)
+		{
+			SolarNeutronRecipe recipe = getRecipe();
+
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+
+				if(updateDelay == 0 && clientActive != isActive)
+				{
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				}
+			}
+			
+			//Buckets
+
+			if(canOperate(recipe) && MekanismUtils.canFunction(this))
+			{
+				setActive(true);
+				
+				operate(recipe);
+			}
+			else {
+				setActive(false);
+			}
+
+			if(outputTank.getGas() != null)
+			{
+				GasStack toSend = new GasStack(outputTank.getGas().getGas(), Math.min(outputTank.getStored(), gasOutput));
+
+				TileEntity tileEntity = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
+
+				if(tileEntity instanceof IGasHandler)
+				{
+					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), outputTank.getGas().getGas()))
+					{
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
+					}
+				}
+			}
+		}
+	}
+	
+	public SolarNeutronRecipe getRecipe()
+	{
+		GasInput input = getInput();
+		
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getSolarNeutronRecipe(getInput());
+		}
+		
+		return cachedRecipe;
+	}
+
+	public GasInput getInput()
+	{
+		return new GasInput(inputTank.getGas());
+	}
+
+	public boolean canOperate(SolarNeutronRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(inputTank, outputTank);
+	}
+
+	public void operate(SolarNeutronRecipe recipe)
+	{
+		recipe.operate(inputTank, outputTank);
 	}
 	
 	@Override

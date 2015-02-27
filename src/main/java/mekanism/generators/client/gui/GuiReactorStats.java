@@ -52,9 +52,8 @@ public class GuiReactorStats extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
+		
 		if(tileEntity.isFormed())
 		{
 			fontRendererObj.drawString(EnumColor.DARK_GREEN + MekanismUtils.localize("gui.passive"), 6, 26, 0x404040);
@@ -72,6 +71,8 @@ public class GuiReactorStats extends GuiMekanism
 			fontRendererObj.drawString(MekanismUtils.localize("gui.passiveGeneration") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(true, false))+"/t", 16, 142, 0x404040);
 			fontRendererObj.drawString(MekanismUtils.localize("gui.steamProduction") + ": " + nf.format(tileEntity.getReactor().getSteamPerTick(false)) + "mB/t", 16, 152, 0x404040);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override
@@ -112,6 +113,5 @@ public class GuiReactorStats extends GuiMekanism
 				SoundHandler.playSound("gui.button.press");
 				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 10));
 			}
-
 		}
 	}}

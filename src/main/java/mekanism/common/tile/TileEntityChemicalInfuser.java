@@ -75,6 +75,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote && updateDelay > 0)
 		{
 			updateDelay--;

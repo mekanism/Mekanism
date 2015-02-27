@@ -24,14 +24,14 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiReactorFuel extends GuiMekanism
@@ -104,7 +104,9 @@ public class GuiReactorFuel extends GuiMekanism
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate()), 55, 35, 0x404040);
+		String str = MekanismUtils.localize("gui.reactor.injectionRate") + ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate());
+		fontRendererObj.drawString(str, (xSize / 2) - (fontRendererObj.getStringWidth(str) / 2), 35, 0x404040);
+		fontRendererObj.drawString("Edit Rate" + ":", 50, 117, 0x404040);
 	}
 
 	@Override
@@ -157,7 +159,6 @@ public class GuiReactorFuel extends GuiMekanism
 				SoundHandler.playSound("gui.button.press");
 				MekanismGenerators.packetHandler.sendToServer(new GeneratorsGuiMessage(Coord4D.get(tileEntity), 10));
 			}
-
 		}
 	}
 
@@ -209,7 +210,7 @@ public class GuiReactorFuel extends GuiMekanism
 
 		String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
 
-		injectionRateField = new GuiTextField(fontRendererObj, guiWidth + 75, guiHeight + 115, 26, 11);
+		injectionRateField = new GuiTextField(fontRendererObj, guiWidth + 98, guiHeight + 115, 26, 11);
 		injectionRateField.setMaxStringLength(2);
 		injectionRateField.setText(prevRad);
 	}

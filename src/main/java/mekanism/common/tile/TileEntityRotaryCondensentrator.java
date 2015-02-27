@@ -81,6 +81,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote)
 		{
 			if(updateDelay > 0)
