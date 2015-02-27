@@ -55,9 +55,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		return false;
 	}
 
-	public void radiateNeutrons(int neutrons)
-	{
-	}
+	public void radiateNeutrons(int neutrons) {} //future impl
 
 	public void formMultiblock()
 	{

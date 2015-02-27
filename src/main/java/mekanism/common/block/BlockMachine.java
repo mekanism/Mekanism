@@ -550,7 +550,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking() && metadata != 13)
+				if(entityplayer.isSneaking() && MachineType.get(world.getBlock(x, y, z), metadata) != MachineType.ELECTRIC_CHEST)
 				{
 					dismantleBlock(world, x, y, z, false);
 					return true;

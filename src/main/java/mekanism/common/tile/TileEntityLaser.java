@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
@@ -91,6 +92,12 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 				diggingProgress = 0;
 			}
 		}
+	}
+	
+	@Override
+	protected EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
 	
 	@Override
