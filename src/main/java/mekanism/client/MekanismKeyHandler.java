@@ -77,7 +77,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			Item item = StackUtils.getItem(toolStack);
 			if(player.isSneaking() && item instanceof ItemConfigurator)
 			{
-				ItemConfigurator configurator = (ItemConfigurator) item;
+				ItemConfigurator configurator = (ItemConfigurator)item;
 
 				configurator.setState(toolStack, (byte) (configurator.getState(toolStack) < 3 ? configurator.getState(toolStack) + 1 : 0));
 				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(configurator.getState(toolStack)));
@@ -85,7 +85,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			}
 			else if(player.isSneaking() && item instanceof ItemElectricBow)
 			{
-				ItemElectricBow bow = (ItemElectricBow) item;
+				ItemElectricBow bow = (ItemElectricBow)item;
 
 				bow.setFireState(toolStack, !bow.getFireState(toolStack));
 				Mekanism.packetHandler.sendToServer(new ElectricBowStateMessage(bow.getFireState(toolStack)));
@@ -93,7 +93,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			}
 			else if(player.isSneaking() && item instanceof ItemBlockMachine)
 			{
-				ItemBlockMachine machine = (ItemBlockMachine) item;
+				ItemBlockMachine machine = (ItemBlockMachine)item;
 
 				if(MachineType.get(toolStack) == MachineType.PORTABLE_TANK)
 				{
@@ -104,7 +104,7 @@ public class MekanismKeyHandler extends MekKeyHandler
 			}
 			else if(player.isSneaking() && item instanceof ItemWalkieTalkie)
 			{
-				ItemWalkieTalkie wt = (ItemWalkieTalkie) item;
+				ItemWalkieTalkie wt = (ItemWalkieTalkie)item;
 
 				if(wt.getOn(toolStack))
 				{

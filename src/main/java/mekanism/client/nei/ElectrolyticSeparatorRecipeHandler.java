@@ -5,10 +5,9 @@ import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElectrolyticSeparator;
@@ -28,6 +27,7 @@ import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
+import mekanism.common.recipe.outputs.ChemicalPairOutput;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -111,9 +111,9 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		return "mekanism.electrolyticseparator";
 	}
 
-	public Set<Entry<FluidStack, SeparatorRecipe>> getRecipes()
+	public Collection<SeparatorRecipe> getRecipes()
 	{
-		return Recipe.ELECTROLYTIC_SEPARATOR.get().entrySet();
+		return Recipe.ELECTROLYTIC_SEPARATOR.get().values();
 	}
 
 	@Override
@@ -140,17 +140,17 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 			fluidInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
-		if(recipe.outputPair.recipeOutput.leftGas != null)
+		if(recipe.outputPair.leftGas != null)
 		{
-			displayGauge(28, 59-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.recipeOutput.leftGas);
-			leftGas.setDummyType(recipe.outputPair.recipeOutput.leftGas.getGas());
+			displayGauge(28, 59-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.leftGas);
+			leftGas.setDummyType(recipe.outputPair.leftGas.getGas());
 			leftGas.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
-		if(recipe.outputPair.recipeOutput.rightGas != null)
+		if(recipe.outputPair.rightGas != null)
 		{
-			displayGauge(28, 101-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.recipeOutput.rightGas);
-			rightGas.setDummyType(recipe.outputPair.recipeOutput.rightGas.getGas());
+			displayGauge(28, 101-xOffset, 19-yOffset, 176, 68, 28, null, recipe.outputPair.rightGas);
+			rightGas.setDummyType(recipe.outputPair.rightGas.getGas());
 			rightGas.renderScale(0, 0, -xOffset, -yOffset);
 		}
 	}
@@ -174,16 +174,16 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(SeparatorRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<FluidStack, SeparatorRecipe> irecipe : getRecipes())
+			for(SeparatorRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getValue().recipeOutput.containsType((GasStack)results[0]))
+				if(irecipe.recipeOutput.containsType((GasStack)results[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -199,9 +199,9 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(Map.Entry<FluidStack, SeparatorRecipe> irecipe : getRecipes())
+			for(SeparatorRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getKey().isFluidEqual((FluidStack)ingredients[0]))
+				if(irecipe.recipeInput.ingredient.isFluidEqual((FluidStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -226,11 +226,11 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputPair.recipeOutput.leftGas.getGas().getLocalizedName());
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputPair.leftGas.getGas().getLocalizedName());
 		}
 		else if(xAxis >= 101 && xAxis <= 117 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputPair.recipeOutput.rightGas.getGas().getLocalizedName());
+			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputPair.rightGas.getGas().getLocalizedName());
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -253,11 +253,11 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.recipeOutput.leftGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.leftGas;
 		}
 		else if(xAxis >= 101 && xAxis <= 117 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.recipeOutput.rightGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.rightGas;
 		}
 
 		if(gas != null)
@@ -315,11 +315,11 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.recipeOutput.leftGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.leftGas;
 		}
 		else if(xAxis >= 101 && xAxis <= 117 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.recipeOutput.rightGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputPair.rightGas;
 		}
 
 		if(gas != null)
@@ -369,7 +369,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
 		public FluidInput fluidInput;
-		public SeparatorRecipe outputPair;
+		public ChemicalPairOutput outputPair;
 
 		@Override
 		public PositionedStack getResult()
@@ -377,15 +377,15 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(FluidInput input, SeparatorRecipe pair)
+		public CachedIORecipe(FluidInput input, ChemicalPairOutput pair)
 		{
 			fluidInput = input;
 			outputPair = pair;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(SeparatorRecipe recipe)
 		{
-			this((FluidInput)recipe.getKey(), (SeparatorRecipe)recipe.getValue());
+			this(recipe.recipeInput, recipe.recipeOutput);
 		}
 	}
 }

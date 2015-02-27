@@ -261,6 +261,7 @@ public class ClientTickHandler
 						{
 							SoundHandler.addSound(player, JETPACK, client.replaceSoundsWhenResuming);
 						}
+						
 						SoundHandler.playSound(player, JETPACK);
 					}
 				}
@@ -275,6 +276,7 @@ public class ClientTickHandler
 						{
 							SoundHandler.addSound(player, GASMASK, client.replaceSoundsWhenResuming);
 						}
+						
 						SoundHandler.playSound(player, GASMASK);
 					}
 				}
@@ -287,6 +289,7 @@ public class ClientTickHandler
 						{
 							SoundHandler.addSound(player, FLAMETHROWER, client.replaceSoundsWhenResuming);
 						}
+						
 						SoundHandler.playSound(player, FLAMETHROWER);
 					}
 				}

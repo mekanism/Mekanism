@@ -68,7 +68,7 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("machine.oxidiser", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
+		super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 
