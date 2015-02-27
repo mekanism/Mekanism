@@ -50,7 +50,7 @@ public class SolarNeutronRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/GuiSolarNeutronActivator.png";
+		return "mekanism:gui/nei/GuiSolarNeutronActivator.png";
 	}
 
 	@Override
@@ -82,16 +82,16 @@ public class SolarNeutronRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 
-		drawTexturedModalRect(61-xOffset, 39-yOffset, 176, 63, 55, 8);
+		drawTexturedModalRect(64-xOffset, 39-yOffset, 176, 58, 55, 8);
 
-		if(recipe.outputStack != null)
+		if(recipe.inputStack != null)
 		{
-			displayGauge(58, 26-xOffset, 14-yOffset, 176, 40, 58, null, recipe.inputStack);
+			displayGauge(58, 26-xOffset, 14-yOffset, 176, 0, 58, null, recipe.inputStack);
 		}
 
 		if(recipe.inputStack != null)
 		{
-			displayGauge(58, 134-xOffset, 14-yOffset, 176, 40, 58, null, recipe.outputStack);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 0, 58, null, recipe.outputStack);
 		}
 	}
 

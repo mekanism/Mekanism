@@ -1048,7 +1048,6 @@ public class Mekanism
 		GasRegistry.register(new Gas("brine").registerFluid());
 		GasRegistry.register(new Gas("deuterium")).registerFluid();
 		GasRegistry.register(new Gas("tritium")).registerFluid();
-		GasRegistry.register(new Gas("fusionFuelDD")).registerFluid();
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
 		GasRegistry.register(new Gas("steam")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();

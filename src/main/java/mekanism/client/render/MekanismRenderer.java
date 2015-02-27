@@ -14,7 +14,6 @@ import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -35,12 +34,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
@@ -91,7 +91,6 @@ public class MekanismRenderer
 			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
 			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
 			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
-			GasRegistry.getGas("fusionFuelDD").setIcon(event.map.registerIcon("mekanism:LiquidDD"));
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
 			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
