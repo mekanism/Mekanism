@@ -73,7 +73,7 @@ public class MekanismItems
 	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
 	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
 	public static final Item Dictionary = new ItemDictionary().setUnlocalizedName("Dictionary");
-	public static final Item GaugeDropper = new ItemGaugeDropper().setUnlocalizedName("GaugeDropper");
+	public static final ItemGaugeDropper GaugeDropper = (ItemGaugeDropper)new ItemGaugeDropper().setUnlocalizedName("GaugeDropper");
 	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
 	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");

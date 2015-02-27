@@ -1,16 +1,19 @@
 package mekanism.client.gui;
 
+import java.util.Arrays;
+
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IDropperHandler;
+import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import scala.actors.threadpool.Arrays;
 
 public class GuiGasGauge extends GuiGauge<Gas>
 {
@@ -34,21 +37,22 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		System.out.println("clicked");
-		if(guiObj instanceof GuiMekanism)
+		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			System.out.println("mekanism");
-			TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
-			System.out.println(tile);
-			if(tile instanceof IDropperHandler)
+			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+			
+			if(guiObj instanceof GuiMekanism && stack != null && stack.getItem() instanceof ItemGaugeDropper)
 			{
-				System.out.println("handler");
-				int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
+				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(index != -1)
+				if(tile instanceof IDropperHandler)
 				{
-					System.out.println("sending " + index);
-					Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+					int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
+					
+					if(index != -1)
+					{
+						Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+					}
 				}
 			}
 		}

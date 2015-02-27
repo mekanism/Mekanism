@@ -3,9 +3,11 @@ package mekanism.client.gui;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IDropperHandler;
+import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -35,17 +37,22 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-		if(guiObj instanceof GuiMekanism)
+		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
+			ItemStack stack = mc.thePlayer.inventory.getItemStack();
 			
-			if(tile instanceof IDropperHandler)
+			if(guiObj instanceof GuiMekanism && stack != null && stack.getItem() instanceof ItemGaugeDropper)
 			{
-				int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
+				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(index != -1)
+				if(tile instanceof IDropperHandler)
 				{
-					Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+					int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
+					
+					if(index != -1)
+					{
+						Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+					}
 				}
 			}
 		}

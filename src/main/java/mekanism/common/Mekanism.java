@@ -61,7 +61,6 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.SmeltingRecipe;
-import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.recipe.outputs.ItemStackOutput;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoiler;
@@ -449,6 +448,9 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.Flamethrower.getEmptyItem(), new Object[] {
 			"TTT", "TGS", "BCB", Character.valueOf('T'), "ingotTin", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('S'), Items.flint_and_steel, Character.valueOf('B'), "ingotBronze", Character.valueOf('C'), "circuitAdvanced"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.GaugeDropper.getEmptyItem(), new Object[] {
+			" O ", "G G", "GGG", Character.valueOf('O'), "ingotOsmium", Character.valueOf('G'), "paneGlass"
 		}));
 		
 		//Energy Cube recipes
