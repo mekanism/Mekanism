@@ -24,7 +24,7 @@ public class GuiMFilterSelect extends GuiMekanism
 	
 	public GuiMFilterSelect(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerNull(player, tentity));
+		super(tentity, new ContainerNull(player, tentity));
 		
 		tileEntity = tentity;
 	}

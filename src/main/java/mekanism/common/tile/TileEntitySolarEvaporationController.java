@@ -8,10 +8,10 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
-import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IDropperHandler;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
@@ -33,7 +33,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntitySolarEvaporationController extends TileEntitySolarEvaporationBlock implements IActiveState
+public class TileEntitySolarEvaporationController extends TileEntitySolarEvaporationBlock implements IActiveState, IDropperHandler
 {
 	public static final int MAX_OUTPUT = 10000;
 	public static final int MAX_SOLARS = 4;
@@ -801,5 +801,11 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	public boolean lightUpdate()
 	{
 		return false;
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {inputTank, outputTank};
 	}
 }

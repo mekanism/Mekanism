@@ -57,7 +57,7 @@ public class GuiTModIDFilter extends GuiMekanism
 
 	public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		origFilter = (TModIDFilter)tileEntity.filters.get(index);
@@ -68,7 +68,7 @@ public class GuiTModIDFilter extends GuiMekanism
 
 	public GuiTModIDFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		isNew = true;

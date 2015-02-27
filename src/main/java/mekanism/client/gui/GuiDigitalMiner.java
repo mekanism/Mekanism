@@ -40,7 +40,7 @@ public class GuiDigitalMiner extends GuiMekanism
 
 	public GuiDigitalMiner(InventoryPlayer inventory, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerDigitalMiner(inventory, tentity));
+		super(tentity, new ContainerDigitalMiner(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));

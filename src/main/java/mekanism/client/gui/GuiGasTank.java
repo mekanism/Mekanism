@@ -22,7 +22,7 @@ public class GuiGasTank extends GuiMekanism
 
 	public GuiGasTank(InventoryPlayer inventory, TileEntityGasTank tentity)
 	{
-		super(new ContainerGasTank(inventory, tentity));
+		super(tentity, new ContainerGasTank(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
 	}

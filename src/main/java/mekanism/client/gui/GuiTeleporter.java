@@ -24,7 +24,7 @@ public class GuiTeleporter extends GuiMekanism
 
 	public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
 	{
-		super(new ContainerTeleporter(inventory, tentity));
+		super(tentity, new ContainerTeleporter(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 164, 15));

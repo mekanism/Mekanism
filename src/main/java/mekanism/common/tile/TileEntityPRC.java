@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.SideData;
+import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemUpgrade;
@@ -26,7 +29,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -39,14 +41,11 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedProducts, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData
+public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedProducts, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData, IDropperHandler
 {
 	public FluidTank inputFluidTank = new FluidTank(10000);
 	public GasTank inputGasTank = new GasTank(10000);
@@ -429,5 +428,11 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("inputFluidTank")));
 		inputGasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("inputGasTank")));
 		outputGasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputGasTank")));
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {inputFluidTank, inputGasTank, outputGasTank};
 	}
 }

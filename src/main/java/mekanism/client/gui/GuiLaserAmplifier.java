@@ -33,7 +33,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 
 	public GuiLaserAmplifier(InventoryPlayer inventory, TileEntityLaserAmplifier tentity)
 	{
-		super(new ContainerLaserAmplifier(inventory, tentity));
+		super(tentity, new ContainerLaserAmplifier(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()

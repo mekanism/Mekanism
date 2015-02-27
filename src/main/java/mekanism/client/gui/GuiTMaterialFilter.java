@@ -46,7 +46,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 	public GuiTMaterialFilter(EntityPlayer player, TileEntityLogisticalSorter tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		origFilter = (TMaterialFilter)tileEntity.filters.get(index);
@@ -55,7 +55,7 @@ public class GuiTMaterialFilter extends GuiMekanism
 
 	public GuiTMaterialFilter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		isNew = true;

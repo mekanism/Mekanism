@@ -25,7 +25,7 @@ public class GuiElectricPump extends GuiMekanism
 
 	public GuiElectricPump(InventoryPlayer inventory, TileEntityElectricPump tentity)
 	{
-		super(new ContainerElectricPump(inventory, tentity));
+		super(tentity, new ContainerElectricPump(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 27, 19));

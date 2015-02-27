@@ -24,7 +24,7 @@ public class GuiTFilterSelect extends GuiMekanism
 	
 	public GuiTFilterSelect(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerNull(player, tentity));
+		super(tentity, new ContainerNull(player, tentity));
 		
 		tileEntity = tentity;
 	}

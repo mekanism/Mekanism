@@ -15,6 +15,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Upgrade;
+import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.IUpgradeTile;
@@ -39,7 +40,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, IDropperHandler
 {
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
@@ -511,5 +512,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public TileComponentUpgrade getComponent() 
 	{
 		return upgradeComponent;
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {fluidTank};
 	}
 }

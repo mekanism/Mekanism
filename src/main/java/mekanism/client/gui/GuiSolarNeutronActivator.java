@@ -24,7 +24,7 @@ public class GuiSolarNeutronActivator extends GuiMekanism
 
 	public GuiSolarNeutronActivator(InventoryPlayer inventory, TileEntitySolarNeutronActivator tentity)
 	{
-		super(new ContainerSolarNeutronActivator(inventory, tentity));
+		super(tentity, new ContainerSolarNeutronActivator(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));

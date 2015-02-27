@@ -23,7 +23,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
 
-	public TileEntityContainerBlock tileEntity;
+	private TileEntityContainerBlock tileEntity;
 
 	public GuiMekanism(Container container)
 	{
@@ -76,6 +76,11 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 				}
 			}
 		}
+	}
+	
+	public TileEntityContainerBlock getTileEntity()
+	{
+		return tileEntity;
 	}
 
 	private SideData getFromSlot(Slot slot)

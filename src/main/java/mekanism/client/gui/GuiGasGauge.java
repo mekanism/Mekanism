@@ -5,12 +5,12 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IDropperHandler;
-import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import scala.actors.threadpool.Arrays;
 
 public class GuiGasGauge extends GuiGauge<Gas>
 {
@@ -34,16 +34,20 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
+		System.out.println("clicked");
 		if(guiObj instanceof GuiMekanism)
 		{
-			TileEntity tile = ((GuiMekanism)guiObj).tileEntity;
-			
+			System.out.println("mekanism");
+			TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
+			System.out.println(tile);
 			if(tile instanceof IDropperHandler)
 			{
-				int index = ((IDropperHandler)tile).getTankId(infoHandler.getTank());
+				System.out.println("handler");
+				int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
 				
 				if(index != -1)
 				{
+					System.out.println("sending " + index);
 					Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
 				}
 			}

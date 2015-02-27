@@ -44,7 +44,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 	public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		origFilter = (MMaterialFilter)tileEntity.filters.get(index);
@@ -53,7 +53,7 @@ public class GuiMMaterialFilter extends GuiMekanism
 
 	public GuiMMaterialFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		isNew = true;

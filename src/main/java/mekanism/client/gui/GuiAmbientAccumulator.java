@@ -18,7 +18,7 @@ public class GuiAmbientAccumulator extends GuiMekanism
 
 	public GuiAmbientAccumulator(EntityPlayer player, TileEntityAmbientAccumulator tile)
 	{
-		super(new ContainerNull(player, tile));
+		super(tile, new ContainerNull(player, tile));
 		tileEntity = tile;
 
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {

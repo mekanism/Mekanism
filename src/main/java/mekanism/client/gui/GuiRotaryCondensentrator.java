@@ -35,7 +35,7 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 
 	public GuiRotaryCondensentrator(InventoryPlayer inventory, TileEntityRotaryCondensentrator tentity)
 	{
-		super(new ContainerRotaryCondensentrator(inventory, tentity));
+		super(tentity, new ContainerRotaryCondensentrator(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));

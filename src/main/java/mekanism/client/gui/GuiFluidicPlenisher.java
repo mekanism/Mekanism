@@ -26,7 +26,7 @@ public class GuiFluidicPlenisher extends GuiMekanism
 
 	public GuiFluidicPlenisher(InventoryPlayer inventory, TileEntityFluidicPlenisher tentity)
 	{
-		super(new ContainerFluidicPlenisher(inventory, tentity));
+		super(tentity, new ContainerFluidicPlenisher(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 27, 19));

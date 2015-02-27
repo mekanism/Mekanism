@@ -44,7 +44,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 	public GuiMItemStackFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		origFilter = (MItemStackFilter)tileEntity.filters.get(index);
@@ -53,7 +53,7 @@ public class GuiMItemStackFilter extends GuiMekanism
 
 	public GuiMItemStackFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		isNew = true;

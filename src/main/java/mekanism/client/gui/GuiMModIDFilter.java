@@ -58,7 +58,7 @@ public class GuiMModIDFilter extends GuiMekanism
 
 	public GuiMModIDFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		origFilter = (MModIDFilter)tileEntity.filters.get(index);
@@ -69,7 +69,7 @@ public class GuiMModIDFilter extends GuiMekanism
 
 	public GuiMModIDFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		isNew = true;

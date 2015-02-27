@@ -11,6 +11,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
+import scala.actors.threadpool.Arrays;
 
 public class GuiFluidGauge extends GuiGauge<Fluid>
 {
@@ -36,11 +37,11 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	{
 		if(guiObj instanceof GuiMekanism)
 		{
-			TileEntity tile = ((GuiMekanism)guiObj).tileEntity;
+			TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 			
 			if(tile instanceof IDropperHandler)
 			{
-				int index = ((IDropperHandler)tile).getTankId(infoHandler.getTank());
+				int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
 				
 				if(index != -1)
 				{

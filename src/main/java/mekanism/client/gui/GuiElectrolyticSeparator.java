@@ -35,7 +35,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 
 	public GuiElectrolyticSeparator(InventoryPlayer inventory, TileEntityElectrolyticSeparator tentity)
 	{
-		super(new ContainerElectrolyticSeparator(inventory, tentity));
+		super(tentity, new ContainerElectrolyticSeparator(inventory, tentity));
 
 		tileEntity = tentity;
 

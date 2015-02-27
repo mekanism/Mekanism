@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IDropperHandler;
+import mekanism.common.base.IDropperHandler.DropperHandler;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -20,7 +21,12 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
 		if(tileEntity instanceof IDropperHandler)
 		{
 			try {
-				((IDropperHandler)tileEntity).useDropper(PacketHandler.getPlayer(context), message.tankId);
+				Object tank = ((IDropperHandler)tileEntity).getTanks()[message.tankId];
+				
+				if(tank != null)
+				{
+					DropperHandler.useDropper(PacketHandler.getPlayer(context), tank, message.mouseButton);
+				}
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

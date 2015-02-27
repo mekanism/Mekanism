@@ -29,7 +29,7 @@ public class GuiEntangledBlock extends GuiMekanism
 
 	public GuiEntangledBlock(InventoryPlayer inventory, TileEntityEntangledBlock tentity)
 	{
-		super(new ContainerNull(inventory.player, tentity));
+		super(tentity, new ContainerNull(inventory.player, tentity));
 		tileEntity = tentity;
 		isCreative = inventory.player.capabilities.isCreativeMode;
 	}

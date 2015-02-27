@@ -58,7 +58,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 	public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tentity, int index)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		origFilter = (MOreDictFilter)tileEntity.filters.get(index);
@@ -69,7 +69,7 @@ public class GuiMOreDictFilter extends GuiMekanism
 
 	public GuiMOreDictFilter(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerFilter(player.inventory, tentity));
+		super(tentity, new ContainerFilter(player.inventory, tentity));
 		tileEntity = tentity;
 
 		isNew = true;

@@ -54,7 +54,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerNull(player, tentity));
+		super(tentity, new ContainerNull(player, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}

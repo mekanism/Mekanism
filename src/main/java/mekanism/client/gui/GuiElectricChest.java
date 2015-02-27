@@ -32,7 +32,7 @@ public class GuiElectricChest extends GuiMekanism
 
 	public GuiElectricChest(InventoryPlayer inventory, TileEntityElectricChest tentity)
 	{
-		super(new ContainerElectricChest(inventory, tentity, null, true));
+		super(tentity, new ContainerElectricChest(inventory, tentity, null, true));
 
 		xSize+=26;
 		ySize+=64;

@@ -26,7 +26,7 @@ public class GuiEnergyCube extends GuiMekanism
 
 	public GuiEnergyCube(InventoryPlayer inventory, TileEntityEnergyCube tentity)
 	{
-		super(new ContainerEnergyCube(inventory, tentity));
+		super(tentity, new ContainerEnergyCube(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
 		guiElements.add(new GuiEnergyGauge(new IEnergyInfoHandler()

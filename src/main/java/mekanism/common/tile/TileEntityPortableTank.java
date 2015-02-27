@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -9,6 +11,7 @@ import mekanism.api.Range4D;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -16,7 +19,6 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,9 +33,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager
+public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, IDropperHandler
 {
 	public boolean isActive;
 
@@ -607,5 +607,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	public void setContainerEditMode(ContainerEditMode mode) 
 	{
 		editMode = mode;
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {fluidTank};
 	}
 }
