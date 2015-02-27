@@ -20,20 +20,20 @@ public class ContainerSolarNeutronActivator extends Container
 	public ContainerSolarNeutronActivator(InventoryPlayer inventory, TileEntitySolarNeutronActivator tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotStorageTank(tentity, 0, 5, 25));
-		addSlotToContainer(new SlotStorageTank(tentity, 1, 5, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, 0, 5, 56));
+		addSlotToContainer(new SlotStorageTank(tentity, 1, 155, 56));
 
 		int slotX;
 
-		for(slotX = 0; slotX < 3; ++slotX)
+		for(slotX = 0; slotX < 3; slotX++)
 		{
-			for(int slotY = 0; slotY < 9; ++slotY)
+			for(int slotY = 0; slotY < 9; slotY++)
 			{
 				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
 		}
@@ -79,7 +79,7 @@ public class ContainerSolarNeutronActivator extends Container
 							return null;
 						}
 					}
-					else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.inputTank.getGas() != null ? tileEntity.inputTank.getGas().getGas() : null))
+					else if(((IGasItem)slotStack.getItem()).canReceiveGas(slotStack, tileEntity.outputTank.getGas() != null ? tileEntity.outputTank.getGas().getGas() : null))
 					{
 						if(!mergeItemStack(slotStack, 1, 2, false))
 						{

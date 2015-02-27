@@ -21,7 +21,7 @@ public final class LangUtils
 		return (fluidStack == null || fluidStack.getFluid() == null ) ? null : fluidStack.getFluid().getLocalizedName(fluidStack);
 	}
 
-	public static String localiseGasStack(GasStack gasStack)
+	public static String localizeGasStack(GasStack gasStack)
 	{
 		return (gasStack == null || gasStack.getGas() == null ) ? null : gasStack.getGas().getLocalizedName();
 	}

@@ -185,11 +185,11 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(LangUtils.localiseGasStack(((CachedIORecipe) arecipes.get(recipe)).gasStack));
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).gasStack));
 		}
 		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe) arecipes.get(recipe)).fluidStack));
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).fluidStack));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);

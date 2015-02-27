@@ -10,6 +10,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
@@ -26,6 +27,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock implements IRedstoneControl, IBoundingBlock, IGasHandler, ITubeConnection, IActiveState, ISustainedData, IDropperHandler
@@ -34,6 +36,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public GasTank outputTank = new GasTank(MAX_GAS);
 	
 	public static final int MAX_GAS = 10000;
+	public static final int TICKS_REQUIRED = 20;
 	
 	public int updateDelay;
 	
@@ -42,6 +45,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public boolean clientActive;
 	
 	public int gasOutput = 256;
+	
+	public int recipeTicks = 0;
 	
 	public SolarNeutronRecipe cachedRecipe;
 	
@@ -80,18 +85,36 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 				}
 			}
 			
-			//Buckets
+			if(inventory[0] != null && (inputTank.getGas() == null || inputTank.getStored() < inputTank.getMaxGas()))
+			{
+				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
+			}
+			
+			if(inventory[1] != null && outputTank.getGas() != null)
+			{
+				outputTank.draw(GasTransmission.addGas(inventory[1], outputTank.getGas()), true);
+			}
 			
 			SolarNeutronRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this))
+			boolean sky =  ((!worldObj.isRaining() && !worldObj.isThundering()) || isDesert()) && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord+1, zCoord);
+			
+			if(worldObj.isDaytime() && sky && canOperate(recipe) && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				
-				operate(recipe);
+				if(recipeTicks == TICKS_REQUIRED)
+				{
+					operate(recipe);
+					recipeTicks = 0;
+				}
+				else {
+					recipeTicks++;
+				}
 			}
 			else {
 				setActive(false);
+				recipeTicks = 0;
 			}
 
 			if(outputTank.getGas() != null)
@@ -109,6 +132,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 				}
 			}
 		}
+	}
+	
+	public boolean isDesert()
+	{
+		return worldObj.provider.getBiomeGenForCoords(xCoord >> 4, zCoord >> 4) instanceof BiomeGenDesert;
 	}
 	
 	public SolarNeutronRecipe getRecipe()
@@ -144,6 +172,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		super.handlePacketData(dataStream);
 
 		isActive = dataStream.readBoolean();
+		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		if(dataStream.readBoolean())
@@ -171,6 +200,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		super.getNetworkedData(data);
 
 		data.add(isActive);
+		data.add(recipeTicks);
 		data.add(controlType.ordinal());
 
 		if(inputTank.getGas() != null)
@@ -202,6 +232,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		super.readFromNBT(nbtTags);
 
 		isActive = nbtTags.getBoolean("isActive");
+		recipeTicks = nbtTags.getInteger("recipeTicks");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
 		inputTank.read(nbtTags.getCompoundTag("inputTank"));
@@ -214,6 +245,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("isActive", isActive);
+		nbtTags.setInteger("recipeTicks", recipeTicks);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		
 		nbtTags.setTag("inputTank", inputTank.write(new NBTTagCompound()));
@@ -242,25 +274,35 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer) 
 	{
+		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
+		{
+			return inputTank.receive(stack, doTransfer);
+		}
+		
 		return 0;
 	}
 
 	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer) 
 	{
+		if(canDrawGas(side, null))
+		{
+			return outputTank.draw(amount, doTransfer);
+		}
+		
 		return null;
 	}
 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type) 
 	{
-		return false;
+		return side == ForgeDirection.DOWN && inputTank.canReceive(type);
 	}
 
 	@Override
 	public boolean canDrawGas(ForgeDirection side, Gas type) 
 	{
-		return false;
+		return side == ForgeDirection.getOrientation(facing) && outputTank.canDraw(type);
 	}
 	
 	@Override

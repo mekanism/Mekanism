@@ -17,11 +17,10 @@ import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
-
 import net.minecraft.item.ItemStack;
-
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -84,6 +83,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		
 		API.registerRecipeHandler(new PRCRecipeHandler());
 		API.registerUsageHandler(new PRCRecipeHandler());
+		
+		API.registerRecipeHandler(new SolarNeutronRecipeHandler());
+		API.registerUsageHandler(new SolarNeutronRecipeHandler());
 
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
@@ -103,6 +105,7 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPRC.class, PRCRecipeHandler.xOffset, PRCRecipeHandler.yOffset);
 		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarNeutronActivator.class, SolarNeutronRecipeHandler.xOffset, SolarNeutronRecipeHandler.yOffset);
 		
 		GuiContainerManager.addSlotClickHandler(new MekanismSlotClickHandler());
 		
@@ -121,6 +124,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 	@Override
 	public String getVersion()
 	{
-		return "1.3";
+		return "8.0.0";
 	}
 }

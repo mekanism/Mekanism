@@ -408,21 +408,6 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		return null;
 	}
 
-	public int getScaledFluidLevel(int i)
-	{
-		return fluidTank != null ? fluidTank.getFluidAmount()*i / MAX_FLUID : 0;
-	}
-
-	public int getScaledInputGasLevel(int i)
-	{
-		return inputTank != null ? inputTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledOutputGasLevel(int i)
-	{
-		return outputTank != null ? outputTank.getStored()*i / MAX_GAS : 0;
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{

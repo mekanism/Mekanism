@@ -1,18 +1,24 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.List;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiChemicalInfuser;
+import mekanism.client.gui.GuiSolarNeutronActivator;
+import mekanism.client.nei.RotaryCondensentratorRecipeHandler.CachedIORecipe;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
-import mekanism.common.recipe.inputs.ChemicalPairInput;
-import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -21,48 +27,46 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
-public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
+public class SolarNeutronRecipeHandler extends BaseRecipeHandler
 {
 	private int ticksPassed;
 
 	public static int xOffset = 5;
-	public static int yOffset = 3;
+	public static int yOffset = 12;
 
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalInfuser.name");
+		return MekanismUtils.localize("tile.MachineBlock3.SolarNeutronActivator.name");
 	}
 
 	@Override
 	public String getOverlayIdentifier()
 	{
-		return "chemicalinfuser";
+		return "solarneutron";
 	}
 
 	@Override
 	public String getGuiTexture()
 	{
-		return "mekanism:gui/nei/GuiChemicalInfuser.png";
+		return "mekanism:gui/GuiSolarNeutronActivator.png";
 	}
 
 	@Override
 	public Class getGuiClass()
 	{
-		return GuiChemicalInfuser.class;
+		return GuiSolarNeutronActivator.class;
 	}
 
 	public String getRecipeId()
 	{
-		return "mekanism.chemicalinfuser";
+		return "mekanism.solarneutron";
 	}
 
-	public Collection<ChemicalInfuserRecipe> getRecipes()
+	public Collection<SolarNeutronRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_INFUSER.get().values();
+		return Recipe.SOLAR_NEUTRON_ACTIVATOR.get().values();
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 80);
+		drawTexturedModalRect(-2, 0, 3, yOffset, 170, 70);
 	}
 
 	@Override
@@ -78,22 +82,16 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 
-		drawTexturedModalRect(47-xOffset, 39-yOffset, 176, 71, 28, 8);
-		drawTexturedModalRect(101-xOffset, 39-yOffset, 176, 63, 28, 8);
-
-		if(recipe.chemicalInput.leftGas != null)
-		{
-			displayGauge(58, 26-xOffset, 14-yOffset, 176, 4, 58, null, recipe.chemicalInput.leftGas);
-		}
+		drawTexturedModalRect(61-xOffset, 39-yOffset, 176, 63, 55, 8);
 
 		if(recipe.outputStack != null)
 		{
-			displayGauge(58, 80-xOffset, 5-yOffset, 176, 4, 58, null, recipe.outputStack);
+			displayGauge(58, 26-xOffset, 14-yOffset, 176, 40, 58, null, recipe.inputStack);
 		}
 
-		if(recipe.chemicalInput.rightGas != null)
+		if(recipe.inputStack != null)
 		{
-			displayGauge(58, 134-xOffset, 14-yOffset, 176, 4, 58, null, recipe.chemicalInput.rightGas);
+			displayGauge(58, 134-xOffset, 14-yOffset, 176, 40, 58, null, recipe.outputStack);
 		}
 	}
 
@@ -108,8 +106,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(47-xOffset, 39-yOffset, 28, 8), getRecipeId(), new Object[0]));
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(101-xOffset, 39-yOffset, 28, 8), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(64-xOffset, 39-yOffset, 48, 8), getRecipeId(), new Object[0]));
 	}
 
 	@Override
@@ -117,14 +114,14 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(ChemicalInfuserRecipe irecipe : getRecipes())
+			for(SolarNeutronRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(ChemicalInfuserRecipe irecipe : getRecipes())
+			for(SolarNeutronRecipe irecipe : getRecipes())
 			{
 				if(((GasStack)results[0]).isGasEqual(irecipe.getOutput().output))
 				{
@@ -142,9 +139,9 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(ChemicalInfuserRecipe irecipe : getRecipes())
+			for(SolarNeutronRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getInput().containsType((GasStack)ingredients[0]))
+				if(irecipe.getInput().ingredient.isGasEqual((GasStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -163,17 +160,13 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).chemicalInput.leftGas));
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).inputStack));
 		}
-		else if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5+13 && yAxis <= 63+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
 			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).outputStack));
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
-		{
-			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).chemicalInput.rightGas));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -187,33 +180,29 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y-(Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		GasStack stack = null;
+		GasStack gas = null;
 
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.leftGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
 		}
-		else if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5+13 && yAxis <= 63+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+4 && yAxis <= 72+4)
 		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
-		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.rightGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
 
-		if(stack != null)
+		if(gas != null)
 		{
 			if(keyCode == NEIClientConfig.getKeyBinding("gui.recipe"))
 			{
-				if(doGasLookup(stack, false))
+				if(doGasLookup(gas, false))
 				{
 					return true;
 				}
 			}
 			else if(keyCode == NEIClientConfig.getKeyBinding("gui.usage"))
 			{
-				if(doGasLookup(stack, true))
+				if(doGasLookup(gas, true))
 				{
 					return true;
 				}
@@ -231,33 +220,29 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 		int xAxis = point.x - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiLeft);
 		int yAxis = point.y - (Integer)MekanismUtils.getPrivateValue(gui, GuiContainer.class, ObfuscatedNames.GuiContainer_guiTop);
 
-		GasStack stack = null;
+		GasStack gas = null;
 
-		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+13 && yAxis <= 72+13)
+		if(xAxis >= 26 && xAxis <= 42 && yAxis >= 14+18 && yAxis <= 72+18)
 		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.leftGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).inputStack;
 		}
-		else if(xAxis >= 80 && xAxis <= 96 && yAxis >= 5+13 && yAxis <= 63+13)
+		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+18 && yAxis <= 72+18)
 		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
-		}
-		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
-		{
-			stack = ((CachedIORecipe)arecipes.get(recipe)).chemicalInput.rightGas;
+			gas = ((CachedIORecipe)arecipes.get(recipe)).outputStack;
 		}
 
-		if(stack != null)
+		if(gas != null)
 		{
 			if(button == 0)
 			{
-				if(doGasLookup(stack, false))
+				if(doGasLookup(gas, false))
 				{
 					return true;
 				}
 			}
 			else if(button == 1)
 			{
-				if(doGasLookup(stack, true))
+				if(doGasLookup(gas, true))
 				{
 					return true;
 				}
@@ -281,7 +266,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public ChemicalPairInput chemicalInput;
+		public GasStack inputStack;
 		public GasStack outputStack;
 
 		@Override
@@ -290,15 +275,15 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(ChemicalPairInput input, GasStack output)
+		public CachedIORecipe(GasStack input, GasStack output)
 		{
-			chemicalInput = input;
+			inputStack = input;
 			outputStack = output;
 		}
 
-		public CachedIORecipe(ChemicalInfuserRecipe recipe)
+		public CachedIORecipe(SolarNeutronRecipe recipe)
 		{
-			this(recipe.getInput(), recipe.getOutput().output);
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

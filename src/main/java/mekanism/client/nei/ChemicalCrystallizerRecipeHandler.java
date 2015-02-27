@@ -1,6 +1,10 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,8 +13,8 @@ import mekanism.client.gui.GuiChemicalCrystallizer;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -22,9 +26,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 {
@@ -140,7 +141,7 @@ public class ChemicalCrystallizerRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).inputStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).inputStack));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);

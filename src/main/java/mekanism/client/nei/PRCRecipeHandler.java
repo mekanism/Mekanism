@@ -270,11 +270,11 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas().getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas()));
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput().getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput()));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);

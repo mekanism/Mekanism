@@ -1,6 +1,10 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,8 +13,8 @@ import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,9 +26,6 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 {
@@ -151,7 +152,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		{
 			for(WasherRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getOutput().output.isGasEqual((GasStack)ingredients[0]))
+				if(irecipe.getInput().ingredient.isGasEqual((GasStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -176,11 +177,11 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		}
 		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).inputStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).inputStack));
 		}
 		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).outputStack));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
