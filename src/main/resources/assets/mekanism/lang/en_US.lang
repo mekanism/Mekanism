@@ -726,8 +726,8 @@ gui.solarGenerator.sun=Sun
 gui.bioGenerator.bioFuel=BioFuel
 gui.electrolyticSeparator.dump=Dump
 
-gui.passive=Passive
-gui.active=Active
+gui.passive=Air-Cooled
+gui.active=Water-Cooled
 
 gui.minInject=Min. Inject Rate
 gui.ignition=Ignition Temp

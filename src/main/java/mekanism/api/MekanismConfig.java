@@ -1,6 +1,7 @@
 package mekanism.api;
 
-import mekanism.api.util.EnergyUtils.EnergyType;
+import mekanism.api.util.UnitDisplayUtils.EnergyType;
+import mekanism.api.util.UnitDisplayUtils.TempType;
 
 public class MekanismConfig
 {
@@ -27,6 +28,7 @@ public class MekanismConfig
 		public static int userWorldGenVersion = 0;
 		public static double ENERGY_PER_REDSTONE = 10000;
 		public static EnergyType activeType = EnergyType.J;
+		public static TempType tempUnit =	TempType.K;
 		public static double TO_IC2;
 		public static double TO_BC;
 		public static double TO_TE;

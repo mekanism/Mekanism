@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.util.EnergyUtils.EnergyType;
+import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;

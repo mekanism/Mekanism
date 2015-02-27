@@ -23,8 +23,9 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.EnergyUtils;
-import mekanism.api.util.EnergyUtils.ElectricUnit;
+import mekanism.api.util.UnitDisplayUtils;
+import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.OreDictCache;
@@ -1142,13 +1143,37 @@ public final class MekanismUtils
 		switch(general.activeType)
 		{
 			case J:
-				return EnergyUtils.getDisplayShort(energy, ElectricUnit.JOULES);
+				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return EnergyUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
 			case EU:
-				return EnergyUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return EnergyUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
+		}
+
+		return "error";
+	}
+
+	/**
+	 * Gets a rounded energy display of a defined amount of energy.
+	 * @param T - temperature to display
+	 * @return rounded energy display
+	 */
+	public static String getTemperatureDisplay(double T)
+	{
+		switch(general.tempUnit)
+		{
+			case K:
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.KELVIN);
+			case C:
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.CELSIUS);
+			case R:
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.RANKINE);
+			case F:
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.FAHRENHEIT);
+			case STP:
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.AMBIENT);
 		}
 
 		return "error";
