@@ -35,6 +35,7 @@
 	"tile.machine.prc": {"category": "block", "sounds": [{"name": "PressurizedReactionChamber", "stream": false}]},
 	"tile.machine.purification": {"category": "block", "sounds": [{"name": "PurificationChamber", "stream": false}]},
 	"tile.machine.smelter": {"category": "block", "sounds": [{"name": "Smelter", "stream": false}]},
+	"tile.machine.laser": {"category": "block", "sounds": [{"name": "Laser", "stream": false}]},
 
 	"tile.gen.bio": {"category": "block", "sounds": [{"name": "BioGenerator", "stream": false}]},
 	"tile.gen.gas": {"category": "block", "sounds": [{"name": "GasGenerator", "stream": false}]},

@@ -127,5 +127,4 @@ public class CTMData
 		
 		return !valid;
 	}
-
 }

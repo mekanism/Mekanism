@@ -95,8 +95,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 		if(!worldObj.isRemote)
 		{
-			DissolutionRecipe recipe = getRecipe();
-
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -120,6 +118,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			}
 
 			boolean changed = false;
+			
+			DissolutionRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsage && MekanismUtils.canFunction(this))
 			{

@@ -114,8 +114,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 		if(!worldObj.isRemote)
 		{
-			CrystallizerRecipe recipe = getRecipe();
-
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -132,6 +130,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 			{
 				inputTank.receive(GasTransmission.removeGas(inventory[0], inputTank.getGasType(), inputTank.getNeeded()), true);
 			}
+			
+			CrystallizerRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyUsage)
 			{

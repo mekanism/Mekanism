@@ -90,8 +90,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 		if(!worldObj.isRemote)
 		{
-			ChemicalInfuserRecipe recipe = getRecipe();
-
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -118,6 +116,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			{
 				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
 			}
+			
+			ChemicalInfuserRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{

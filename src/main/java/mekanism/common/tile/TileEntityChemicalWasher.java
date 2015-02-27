@@ -103,8 +103,6 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 		if(!worldObj.isRemote)
 		{
-			WasherRecipe recipe = getRecipe();
-
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -122,6 +120,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			{
 				outputTank.draw(GasTransmission.addGas(inventory[2], outputTank.getGas()), true);
 			}
+			
+			WasherRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{

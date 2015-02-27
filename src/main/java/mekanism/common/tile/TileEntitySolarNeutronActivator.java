@@ -70,8 +70,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 		
 		if(!worldObj.isRemote)
 		{
-			SolarNeutronRecipe recipe = getRecipe();
-
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -83,6 +81,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 			}
 			
 			//Buckets
+			
+			SolarNeutronRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && MekanismUtils.canFunction(this))
 			{
@@ -143,6 +143,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.handlePacketData(dataStream);
 
+		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		if(dataStream.readBoolean())
@@ -169,6 +170,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.getNetworkedData(data);
 
+		data.add(isActive);
 		data.add(controlType.ordinal());
 
 		if(inputTank.getGas() != null)
@@ -199,6 +201,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.readFromNBT(nbtTags);
 
+		isActive = nbtTags.getBoolean("isActive");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
 		inputTank.read(nbtTags.getCompoundTag("inputTank"));
@@ -210,6 +213,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	{
 		super.writeToNBT(nbtTags);
 
+		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 		
 		nbtTags.setTag("inputTank", inputTank.write(new NBTTagCompound()));

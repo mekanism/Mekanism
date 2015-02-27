@@ -96,9 +96,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		if(!worldObj.isRemote)
 		{
 			ChargeUtils.discharge(3, this);
-
-			SeparatorRecipe recipe = getRecipe();
-
+			
 			if(inventory[0] != null)
 			{
 				if(RecipeHandler.Recipe.ELECTROLYTIC_SEPARATOR.containsRecipe(inventory[0]))
@@ -142,6 +140,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				rightTank.draw(GasTransmission.addGas(inventory[2], rightTank.getGas()), true);
 				MekanismUtils.saveChunk(this);
 			}
+			
+			SeparatorRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && getEnergy() >= recipe.extraEnergy)
 			{

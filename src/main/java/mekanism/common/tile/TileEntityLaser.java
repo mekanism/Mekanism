@@ -1,33 +1,39 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
+import mekanism.api.Range4D;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityLaser extends TileEntityElectricBlock
+public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IActiveState
 {
-	public boolean on;
 	public Coord4D digging;
 	public double diggingProgress;
+	
+	public boolean isActive;
+
+	public boolean clientActive;
 
 	public TileEntityLaser()
 	{
-		super("Laser", 2* usage.laserUsage);
+		super("machine.laser", "Laser", 2*usage.laserUsage);
 		inventory = new ItemStack[0];
 	}
 
@@ -38,7 +44,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 
 		if(worldObj.isRemote)
 		{
-			if(on)
+			if(isActive)
 			{
 				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
 			}
@@ -46,11 +52,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 		else {
 			if(getEnergy() >= usage.laserUsage)
 			{
-				if(!on)
-				{
-					on = true;
-					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
-				}
+				setActive(true);
 				
 				MovingObjectPosition mop = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
 				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
@@ -71,7 +73,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 					{
 						diggingProgress += usage.laserUsage;
 
-						if(diggingProgress >= hardness * general.laserEnergyNeededPerHardness)
+						if(diggingProgress >= hardness*general.laserEnergyNeededPerHardness)
 						{
 							LaserManager.breakBlock(hitCoord, true, worldObj);
 							diggingProgress = 0;
@@ -84,13 +86,41 @@ public class TileEntityLaser extends TileEntityElectricBlock
 
 				setEnergy(getEnergy() - usage.laserUsage);
 			}
-			else if(on)
-			{
-				on = false;
+			else {
+				setActive(false);
 				diggingProgress = 0;
-				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 			}
 		}
+	}
+	
+	@Override
+	public void setActive(boolean active)
+	{
+		isActive = active;
+
+		if(clientActive != active)
+		{
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			clientActive = active;
+		}
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return isActive;
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean lightUpdate()
+	{
+		return true;
 	}
 
 	@Override
@@ -98,7 +128,7 @@ public class TileEntityLaser extends TileEntityElectricBlock
 	{
 		super.getNetworkedData(data);
 
-		data.add(on);
+		data.add(isActive);
 
 		return data;
 	}
@@ -108,6 +138,24 @@ public class TileEntityLaser extends TileEntityElectricBlock
 	{
 		super.handlePacketData(dataStream);
 
-		on = dataStream.readBoolean();
+		isActive = dataStream.readBoolean();
+		
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		isActive = nbtTags.getBoolean("isActive");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("isActive", isActive);
 	}
 }

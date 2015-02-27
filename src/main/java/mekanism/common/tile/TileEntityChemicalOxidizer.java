@@ -90,7 +90,6 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 
 		if(!worldObj.isRemote)
 		{
-			OxidationRecipe recipe = getRecipe();
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -107,6 +106,8 @@ public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock imp
 			{
 				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
 			}
+			
+			OxidationRecipe recipe = getRecipe();
 
 			if(canOperate(recipe) && getEnergy() >= energyUsage && MekanismUtils.canFunction(this))
 			{
