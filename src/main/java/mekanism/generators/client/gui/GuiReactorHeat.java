@@ -78,7 +78,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Plasma: " + (int)level + "C";
+				return "Plasma: " + MekanismUtils.getTemperatureDisplay(level);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 7, 50));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
@@ -112,7 +112,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Case: " + (int)level + "C";
+				return "Case: " + MekanismUtils.getTemperatureDisplay(level);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 61, 50));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()

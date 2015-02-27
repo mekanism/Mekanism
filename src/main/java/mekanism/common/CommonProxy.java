@@ -7,6 +7,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
 import mekanism.api.util.EnergyUtils.EnergyType;
+import mekanism.api.util.EnergyUtils.TempType;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
@@ -241,6 +242,32 @@ public class CommonProxy
 			else if(s.trim().equalsIgnoreCase("mj") || s.trim().equalsIgnoreCase("bc") || s.trim().equalsIgnoreCase("buildcraft"))
 			{
 				general.activeType = EnergyType.MJ;
+			}
+		}
+
+		s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "Temperature Units", "K", null, new String[]{"K", "C", "R", "F"}).getString();
+
+		if(s != null)
+		{
+			if(s.trim().equalsIgnoreCase("k") || s.trim().equalsIgnoreCase("kelvin"))
+			{
+				general.tempUnit = TempType.K;
+			}
+			else if(s.trim().equalsIgnoreCase("c") || s.trim().equalsIgnoreCase("celsius") || s.trim().equalsIgnoreCase("centigrade"))
+			{
+				general.tempUnit = TempType.C;
+			}
+			else if(s.trim().equalsIgnoreCase("r") || s.trim().equalsIgnoreCase("rankine"))
+			{
+				general.tempUnit = TempType.R;
+			}
+			else if(s.trim().equalsIgnoreCase("f") || s.trim().equalsIgnoreCase("fahrenheit"))
+			{
+				general.tempUnit = TempType.F;
+			}
+			else if(s.trim().equalsIgnoreCase("a") || s.trim().equalsIgnoreCase("ambient") || s.trim().equalsIgnoreCase("stp"))
+			{
+				general.tempUnit = TempType.STP;
 			}
 		}
 

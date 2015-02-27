@@ -25,6 +25,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.EnergyUtils;
 import mekanism.api.util.EnergyUtils.ElectricUnit;
+import mekanism.api.util.EnergyUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.OreDictCache;
@@ -1149,6 +1150,30 @@ public final class MekanismUtils
 				return EnergyUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
 				return EnergyUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
+		}
+
+		return "error";
+	}
+
+	/**
+	 * Gets a rounded energy display of a defined amount of energy.
+	 * @param T - temperature to display
+	 * @return rounded energy display
+	 */
+	public static String getTemperatureDisplay(double T)
+	{
+		switch(general.tempUnit)
+		{
+			case K:
+				return EnergyUtils.getDisplayShort(T, TemperatureUnit.KELVIN);
+			case C:
+				return EnergyUtils.getDisplayShort(T, TemperatureUnit.CELSIUS);
+			case R:
+				return EnergyUtils.getDisplayShort(T, TemperatureUnit.RANKINE);
+			case F:
+				return EnergyUtils.getDisplayShort(T, TemperatureUnit.FAHRENHEIT);
+			case STP:
+				return EnergyUtils.getDisplayShort(T, TemperatureUnit.AMBIENT);
 		}
 
 		return "error";
