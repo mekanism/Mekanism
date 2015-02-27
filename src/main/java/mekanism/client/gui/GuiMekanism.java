@@ -23,7 +23,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 {
 	public Set<GuiElement> guiElements = new HashSet<GuiElement>();
 
-	private TileEntityContainerBlock tileEntity;
+	public TileEntityContainerBlock tileEntity;
 
 	public GuiMekanism(Container container)
 	{

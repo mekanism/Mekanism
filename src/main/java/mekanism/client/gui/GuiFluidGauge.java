@@ -1,8 +1,12 @@
 package mekanism.client.gui;
 
+import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
+import mekanism.common.base.IDropperHandler;
+import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
@@ -25,6 +29,25 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 		gauge.dummy = true;
 		
 		return gauge;
+	}
+	
+	@Override
+	public void mouseClicked(int xAxis, int yAxis, int button)
+	{
+		if(guiObj instanceof GuiMekanism)
+		{
+			TileEntity tile = ((GuiMekanism)guiObj).tileEntity;
+			
+			if(tile instanceof IDropperHandler)
+			{
+				int index = ((IDropperHandler)tile).getTankId(infoHandler.getTank());
+				
+				if(index != -1)
+				{
+					Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+				}
+			}
+		}
 	}
 
 	@Override

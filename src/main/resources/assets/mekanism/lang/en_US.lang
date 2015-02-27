@@ -43,6 +43,7 @@ item.HDPESheet.name=HDPE Sheet
 item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
+item.GaugeDropper.name=Gauge Dropper
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit

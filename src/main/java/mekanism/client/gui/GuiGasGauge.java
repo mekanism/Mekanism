@@ -1,9 +1,14 @@
 package mekanism.client.gui;
 
+import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
+import mekanism.common.Mekanism;
+import mekanism.common.base.IDropperHandler;
+import mekanism.common.base.IRedstoneControl.RedstoneControl;
+import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.MekanismUtils;
-
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 
@@ -24,6 +29,25 @@ public class GuiGasGauge extends GuiGauge<Gas>
 		gauge.dummy = true;
 		
 		return gauge;
+	}
+	
+	@Override
+	public void mouseClicked(int xAxis, int yAxis, int button)
+	{
+		if(guiObj instanceof GuiMekanism)
+		{
+			TileEntity tile = ((GuiMekanism)guiObj).tileEntity;
+			
+			if(tile instanceof IDropperHandler)
+			{
+				int index = ((IDropperHandler)tile).getTankId(infoHandler.getTank());
+				
+				if(index != -1)
+				{
+					Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
+				}
+			}
+		}
 	}
 
 	@Override

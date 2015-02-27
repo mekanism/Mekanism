@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ import mekanism.common.network.PacketDigitUpdate;
 import mekanism.common.network.PacketDigitUpdate.DigitUpdateMessage;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
+import mekanism.common.network.PacketDropperUse;
+import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketElectricBowState;
@@ -60,7 +64,6 @@ import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -76,8 +79,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -125,6 +126,7 @@ public class PacketHandler
 		netHandler.registerMessage(PacketPortableTankState.class, PortableTankStateMessage.class, 25, Side.SERVER);
 		netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
 		netHandler.registerMessage(PacketFlamethrowerActive.class, FlamethrowerActiveMessage.class, 27, Side.SERVER);
+		netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
 	}
 	
 	/**

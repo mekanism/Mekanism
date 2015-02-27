@@ -1,12 +1,12 @@
 package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.base.IDropperHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-
 import codechicken.lib.vec.Rectangle4i;
 
 public abstract class GuiGauge<T> extends GuiElement
@@ -21,7 +21,7 @@ public abstract class GuiGauge<T> extends GuiElement
 	protected boolean dummy;
 	
 	protected T dummyType;
-
+	
 	public GuiGauge(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, def);
@@ -117,7 +117,7 @@ public abstract class GuiGauge<T> extends GuiElement
 	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
-
+		
 	}
 
 	public void setDummyType(T type)

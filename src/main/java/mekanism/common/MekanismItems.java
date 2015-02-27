@@ -15,6 +15,7 @@ import mekanism.common.item.ItemFilterCard;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
+import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemHDPE;
 import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
@@ -30,7 +31,6 @@ import mekanism.common.item.ItemUpgrade;
 import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -73,6 +73,7 @@ public class MekanismItems
 	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
 	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
 	public static final Item Dictionary = new ItemDictionary().setUnlocalizedName("Dictionary");
+	public static final Item GaugeDropper = new ItemGaugeDropper().setUnlocalizedName("GaugeDropper");
 	public static final Item FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
 	public static final Item PartTransmitter = new ItemPartTransmitter().setUnlocalizedName("MultipartTransmitter");
 	public static final Item GlowPanel = new ItemGlowPanel().setUnlocalizedName("GlowPanel");
@@ -147,6 +148,7 @@ public class MekanismItems
 		GameRegistry.registerItem(BioFuel, "BioFuel");
 		GameRegistry.registerItem(GlowPanel, "GlowPanel");
 		GameRegistry.registerItem(Flamethrower, "Flamethrower");
+		GameRegistry.registerItem(GaugeDropper, "GaugeDropper");
 
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);
