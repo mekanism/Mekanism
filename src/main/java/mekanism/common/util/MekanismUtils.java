@@ -23,9 +23,9 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.util.EnergyUtils;
-import mekanism.api.util.EnergyUtils.ElectricUnit;
-import mekanism.api.util.EnergyUtils.TemperatureUnit;
+import mekanism.api.util.UnitDisplayUtils;
+import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.OreDictCache;
@@ -1143,13 +1143,13 @@ public final class MekanismUtils
 		switch(general.activeType)
 		{
 			case J:
-				return EnergyUtils.getDisplayShort(energy, ElectricUnit.JOULES);
+				return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
 			case RF:
-				return EnergyUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TE, ElectricUnit.REDSTONE_FLUX, 0);
 			case EU:
-				return EnergyUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_IC2, ElectricUnit.ELECTRICAL_UNITS, 0);
 			case MJ:
-				return EnergyUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
+				return UnitDisplayUtils.getDisplayShort(energy * general.TO_TE / 10, ElectricUnit.MINECRAFT_JOULES);
 		}
 
 		return "error";
@@ -1165,15 +1165,15 @@ public final class MekanismUtils
 		switch(general.tempUnit)
 		{
 			case K:
-				return EnergyUtils.getDisplayShort(T, TemperatureUnit.KELVIN);
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.KELVIN);
 			case C:
-				return EnergyUtils.getDisplayShort(T, TemperatureUnit.CELSIUS);
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.CELSIUS);
 			case R:
-				return EnergyUtils.getDisplayShort(T, TemperatureUnit.RANKINE);
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.RANKINE);
 			case F:
-				return EnergyUtils.getDisplayShort(T, TemperatureUnit.FAHRENHEIT);
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.FAHRENHEIT);
 			case STP:
-				return EnergyUtils.getDisplayShort(T, TemperatureUnit.AMBIENT);
+				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.AMBIENT);
 		}
 
 		return "error";

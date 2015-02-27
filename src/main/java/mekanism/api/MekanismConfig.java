@@ -1,7 +1,7 @@
 package mekanism.api;
 
-import mekanism.api.util.EnergyUtils.EnergyType;
-import mekanism.api.util.EnergyUtils.TempType;
+import mekanism.api.util.UnitDisplayUtils.EnergyType;
+import mekanism.api.util.UnitDisplayUtils.TempType;
 
 public class MekanismConfig
 {
