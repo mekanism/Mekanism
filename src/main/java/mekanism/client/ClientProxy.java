@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
+import mekanism.client.ThreadSparkle.INodeChecker;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiChemicalCrystallizer;
@@ -112,6 +113,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -164,6 +166,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -492,11 +495,32 @@ public class ClientProxy extends CommonProxy
 
 		return null;
 	}
+	
+	@Override
+	public void addHitEffects(Coord4D coord, MovingObjectPosition mop)
+	{
+		if(Minecraft.getMinecraft().theWorld != null)
+		{
+			Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(coord.xCoord, coord.yCoord, coord.zCoord, mop);
+		}
+	}
+	
+	@Override
+	public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker)
+	{
+		new ThreadSparkle(tileEntity, checker).start();
+	}
 
 	@Override
-	public void doAnimation(TileEntityMultiblock<?> tileEntity)
+	public void doMultiblockSparkle(TileEntityMultiblock<?> tileEntity)
 	{
-		new ThreadMultiblockSparkle(tileEntity).start();
+		new ThreadSparkle(tileEntity, new INodeChecker() {
+			@Override
+			public boolean isNode(TileEntity tile)
+			{
+				return MultiblockManager.areEqual(tile, tileEntity);
+			}
+		}).start();
 	}
 
 	@Override

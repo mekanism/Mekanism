@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.api.Range4D;
+import mekanism.client.ThreadSparkle.INodeChecker;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IDropperHandler;
@@ -686,6 +687,17 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		{
 			inputTank.setCapacity(getMaxWater());
 			worldObj.func_147479_m(xCoord, yCoord, zCoord);
+			
+			if(structured)
+			{
+				Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
+					@Override
+					public boolean isNode(TileEntity tile)
+					{
+						return tile instanceof TileEntitySolarEvaporationBlock;
+					}
+				});
+			}
 		}
 		
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);

@@ -6,9 +6,6 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.tile.TileEntityMultiblock;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,17 +13,20 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ThreadMultiblockSparkle extends Thread
+public class ThreadSparkle extends Thread
 {
-	public TileEntityMultiblock<?> pointer;
+	public TileEntity pointer;
 
 	public Random random = new Random();
 
 	public Set<TileEntity> iteratedNodes = new HashSet<TileEntity>();
+	
+	public INodeChecker nodeChecker;
 
-	public ThreadMultiblockSparkle(TileEntityMultiblock<?> tileEntity)
+	public ThreadSparkle(TileEntity tileEntity, INodeChecker checker)
 	{
 		pointer = tileEntity;
+		nodeChecker = checker;
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class ThreadMultiblockSparkle extends Thread
 		} catch(Exception e) {}
 	}
 
-	public void loop(TileEntityMultiblock<?> tileEntity)
+	public void loop(TileEntity tileEntity)
 	{
 		World world = pointer.getWorldObj();
 
@@ -85,10 +85,20 @@ public class ThreadMultiblockSparkle extends Thread
 		{
 			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.getWorldObj());
 
-			if(MultiblockManager.areEqual(tile, pointer) && !iteratedNodes.contains(tile))
+			if(tile != null && isNode(tile) && !iteratedNodes.contains(tile))
 			{
-				loop((TileEntityMultiblock<?>)tile);
+				loop(tile);
 			}
 		}
+	}
+	
+	public boolean isNode(TileEntity tile)
+	{
+		return nodeChecker.isNode(tile);
+	}
+	
+	public static interface INodeChecker
+	{
+		public boolean isNode(TileEntity tile);
 	}
 }

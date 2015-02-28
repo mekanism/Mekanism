@@ -13,7 +13,6 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -99,6 +98,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					Block blockHit = hitCoord.getBlock(worldObj);
 					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
 					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					
 					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
 					{
 						diggingProgress += firing;
@@ -109,7 +109,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 							diggingProgress = 0;
 						}
 						else {
-							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, mop);
+							Mekanism.proxy.addHitEffects(hitCoord, mop);
 						}
 					}
 				}

@@ -56,7 +56,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			{
 				if(!prevStructure)
 				{
-					Mekanism.proxy.doAnimation(this);
+					Mekanism.proxy.doMultiblockSparkle(this);
 				}
 			}
 

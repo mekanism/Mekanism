@@ -2,12 +2,14 @@ package mekanism.common;
 
 import java.io.File;
 
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.api.util.UnitDisplayUtils.TempType;
+import mekanism.client.ThreadSparkle.INodeChecker;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
@@ -97,6 +99,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -320,11 +323,21 @@ public class CommonProxy
 	{
 		return false;
 	}
+	
+	/**
+	 * Adds block hit effects on the client side.
+	 */
+	public void addHitEffects(Coord4D coord, MovingObjectPosition mop) {}
+	
+	/**
+	 * Does a generic creation animation, starting from the rendering block.
+	 */
+	public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker) {}
 
 	/**
 	 * Does the multiblock creation animation, starting from the rendering block.
 	 */
-	public void doAnimation(TileEntityMultiblock<?> tileEntity) {}
+	public void doMultiblockSparkle(TileEntityMultiblock<?> tileEntity) {}
 
 	/**
 	 * Get the actual interface for a GUI. Client-only.

@@ -82,7 +82,7 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void addTemperatureFromEnergyInput(double energyAdded)
 	{
-		plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 10);
+		plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 100);
 	}
 
 	public boolean hasHohlraum()

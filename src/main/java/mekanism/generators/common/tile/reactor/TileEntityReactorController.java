@@ -1,20 +1,32 @@
 package mekanism.generators.common.tile.reactor;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.client;
+import mekanism.api.Pos3D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
+import mekanism.client.ThreadSparkle.INodeChecker;
+import mekanism.client.sound.IHasSound;
+import mekanism.client.sound.IResettableSound;
+import mekanism.client.sound.ISoundSource;
+import mekanism.client.sound.SoundHandler;
+import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
-
+import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,9 +34,7 @@ import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState
+public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState, IHasSound, ISoundSource
 {
 	public static final int MAX_WATER = 100 * FluidContainerRegistry.BUCKET_VOLUME;
 
@@ -39,6 +49,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	public GasTank fuelTank = new GasTank(MAX_FUEL);
 
 	public AxisAlignedBB box;
+	
+	public ResourceLocation soundURL = new ResourceLocation("mekanism", "tile.machine.fusionreactor");
+	
+	public IResettableSound sound;
 
 	public double clientTemp = 0;
 	public boolean clientBurning = false;
@@ -91,6 +105,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	public void onUpdate()
 	{
 		super.onUpdate();
+		
+		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
+		{
+			getSound().reset();
+			SoundHandler.playSound(getSound());
+		}
 
 		if(isFormed())
 		{
@@ -219,6 +239,17 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		
 		if(formed)
 		{
+			if(getReactor() == null || !((FusionReactor)getReactor()).formed)
+			{
+				Mekanism.proxy.doGenericSparkle(this, new INodeChecker() {
+					@Override
+					public boolean isNode(TileEntity tile)
+					{
+						return tile instanceof TileEntityReactorBlock;
+					}
+				});
+			}
+			
 			if(getReactor() == null)
 			{
 				setReactor(new FusionReactor(this));
@@ -290,5 +321,72 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 		}
 		
 		return box;
+	}
+	
+	@Override
+	public IResettableSound getSound()
+	{
+		return sound;
+	}
+
+	@Override
+	public boolean shouldPlaySound()
+	{
+		return isBurning() && !isInvalid();
+	}
+
+	@Override
+	public ResourceLocation getSoundLocation()
+	{
+		return soundURL;
+	}
+
+	@Override
+	public float getVolume()
+	{
+		return 2F;
+	}
+
+	@Override
+	public float getPitch()
+	{
+		return 1F;
+	}
+
+	@Override
+	public Pos3D getSoundPosition()
+	{
+		return new Pos3D(xCoord+0.5, yCoord+0.5, zCoord+0.5);
+	}
+
+	@Override
+	public boolean shouldRepeat()
+	{
+		return true;
+	}
+
+	@Override
+	public int getRepeatDelay()
+	{
+		return 0;
+	}
+
+	@Override
+	public AttenuationType getAttenuation()
+	{
+		return AttenuationType.LINEAR;
+	}
+
+	@Override
+	public void validate()
+	{
+		super.validate();
+
+		initSounds();
+	}
+
+	public void initSounds()
+	{
+		sound = new TileSound(this, this);
 	}
 }
