@@ -136,10 +136,10 @@ public final class Tier
 	 */
 	public static enum CableTier
 	{
-		BASIC(500, TransmitterType.UNIVERSAL_CABLE_BASIC),
-		ADVANCED(2000, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
-		ELITE(8000, TransmitterType.UNIVERSAL_CABLE_ELITE),
-		ULTIMATE(32000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
+		BASIC(3200, TransmitterType.UNIVERSAL_CABLE_BASIC),
+		ADVANCED(12800, TransmitterType.UNIVERSAL_CABLE_ADVANCED),
+		ELITE(64000, TransmitterType.UNIVERSAL_CABLE_ELITE),
+		ULTIMATE(320000, TransmitterType.UNIVERSAL_CABLE_ULTIMATE);
 		
 		public BaseTier getBaseTier()
 		{
