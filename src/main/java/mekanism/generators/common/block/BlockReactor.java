@@ -228,7 +228,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	{
 		for(ReactorBlockType type : ReactorBlockType.values())
 		{
-			if(type.typeBlock == this)
+			if(type.typeBlock == this && type != ReactorBlockType.NEUTRON_CAPTURE)
 			{
 				list.add(new ItemStack(item, 1, type.meta));
 			}

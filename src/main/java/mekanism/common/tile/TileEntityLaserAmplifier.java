@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -9,17 +11,13 @@ import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl
 {
@@ -67,14 +65,12 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
 			}
 		}
-		else
-		{
+		else {
 			if(ticks < time)
 			{
 				ticks++;
 			}
-			else
-			{
+			else {
 				ticks = 0;
 			}
 
@@ -107,13 +103,12 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					{
 						diggingProgress += firing;
 
-						if(diggingProgress >= hardness * general.laserEnergyNeededPerHardness)
+						if(diggingProgress >= hardness*general.laserEnergyNeededPerHardness)
 						{
 							LaserManager.breakBlock(hitCoord, true, worldObj);
 							diggingProgress = 0;
 						}
-						else
-						{
+						else {
 							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, mop);
 						}
 					}

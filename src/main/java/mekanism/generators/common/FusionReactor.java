@@ -1,5 +1,8 @@
 package mekanism.generators.common;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,7 +21,6 @@ import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemCoal;
@@ -29,9 +31,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class FusionReactor implements IFusionReactor
 {
@@ -60,7 +59,7 @@ public class FusionReactor implements IFusionReactor
 	public static double plasmaHeatCapacity = 100;
 	public static double caseHeatCapacity = 1;
 	public static double enthalpyOfVaporization = 10;
-	public static double thermocoupleEfficiency = 0.01;
+	public static double thermocoupleEfficiency = 0.1;
 	public static double steamTransferEfficiency = 0.1;
 
 	//Heat transfer metrics
@@ -317,6 +316,7 @@ public class FusionReactor implements IFusionReactor
 	{
 		AxisAlignedBB death_zone = AxisAlignedBB.getBoundingBox(controller.xCoord - 1, controller.yCoord - 3, controller.zCoord - 1 ,controller.xCoord + 2, controller.yCoord, controller.zCoord + 2);
 		List<Entity> entitiesToDie = controller.getWorldObj().getEntitiesWithinAABB(Entity.class, death_zone);
+		
 		for(Entity entity : entitiesToDie)
 		{
 			entity.attackEntityFrom(DamageSource.magic, 50000F);
@@ -471,6 +471,7 @@ public class FusionReactor implements IFusionReactor
 		return true;
 	}
 
+	@Override
 	public boolean isFormed()
 	{
 		return formed;
@@ -529,6 +530,7 @@ public class FusionReactor implements IFusionReactor
 		return burnTemperature * energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) / (energyPerFuel * burnRatio * (plasmaCaseConductivity+k+caseAirConductivity) - plasmaCaseConductivity * (k + caseAirConductivity));
 	}
 
+	@Override
 	public double getPassiveGeneration(boolean active, boolean current)
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(active);
@@ -536,6 +538,7 @@ public class FusionReactor implements IFusionReactor
 		return thermocoupleEfficiency * caseAirConductivity * temperature;
 	}
 
+	@Override
 	public int getSteamPerTick(boolean current)
 	{
 		double temperature = current ? caseTemperature : getMaxCasingTemperature(true);
