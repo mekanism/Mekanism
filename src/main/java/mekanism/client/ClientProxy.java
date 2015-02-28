@@ -512,7 +512,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@Override
-	public void doMultiblockSparkle(TileEntityMultiblock<?> tileEntity)
+	public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity)
 	{
 		new ThreadSparkle(tileEntity, new INodeChecker() {
 			@Override
