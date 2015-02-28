@@ -33,7 +33,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tileEntity.tier.name + ".png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tileEntity.tier.getBaseTier().getName() + ".png"));
 
 		switch(tileEntity.facing)
 		{
@@ -65,7 +65,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 			MekanismRenderer.blendOn();
 			MekanismRenderer.glowOn();
 
-			EnumColor c = tileEntity.tier.color;
+			EnumColor c = tileEntity.tier.getBaseTier().getColor();
 
 
 			GL11.glPushMatrix();

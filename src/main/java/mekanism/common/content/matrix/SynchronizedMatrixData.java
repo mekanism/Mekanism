@@ -1,8 +1,6 @@
 package mekanism.common.content.matrix;
 
-import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.multiblock.SynchronizedData;
-
 import net.minecraft.item.ItemStack;
 
 public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData>
@@ -16,6 +14,4 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 	public int capacitors;
 	
 	public int outputters;
-	
-	public int coolants;
 }

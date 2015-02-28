@@ -82,7 +82,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public String getInventoryName()
 	{
-		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.name + ".name");
+		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.getBaseTier().getName() + ".name");
 	}
 
 	@Override
@@ -219,7 +219,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(tier.name);
+		data.add(tier.getBaseTier().getName());
 
 		super.getNetworkedData(data);
 
@@ -242,7 +242,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	{
 		super.writeToNBT(nbtTags);
 
-		nbtTags.setString("tier", tier.name);
+		nbtTags.setString("tier", tier.getBaseTier().getName());
 		nbtTags.setInteger("controlType", controlType.ordinal());
 	}
 

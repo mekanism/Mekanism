@@ -124,7 +124,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		{
 			EnergyCubeTier tier = ((IEnergyCube)item.getItem()).getEnergyCubeTier(item);
 			IEnergizedItem energized = (IEnergizedItem)item.getItem();
-			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.name + ".png"));
+			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "EnergyCube" + tier.getBaseTier().getName() + ".png"));
 
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
@@ -142,7 +142,7 @@ public class ItemRenderingHandler implements IItemRenderer
 
 			MekanismRenderer.glowOn();
 
-			EnumColor c = tier.color;
+			EnumColor c = tier.getBaseTier().getColor();
 
 			GL11.glPushMatrix();
 			GL11.glScalef(0.4F, 0.4F, 0.4F);
