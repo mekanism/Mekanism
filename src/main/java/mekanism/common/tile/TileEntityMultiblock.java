@@ -28,7 +28,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	/** Whether or not to send this multiblock's structure in the next update packet. */
 	public boolean sendStructure;
 
-	/** This multiblockblock's previous "has structure" state. */
+	/** This multiblock's previous "has structure" state. */
 	public boolean prevStructure;
 
 	/** Whether or not this multiblock has it's structure, for the client side mechanics. */
