@@ -9,9 +9,9 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 	
 	public double electricityStored;
 	
-	public double heat;
-	
-	public int capacitors;
-	
-	public int outputters;
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return inventory;
+	}
 }

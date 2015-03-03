@@ -22,19 +22,19 @@ import io.netty.buffer.ByteBuf;
 
 public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityContainerBlock implements IMultiblock<T>
 {
-	/** The tank data for this structure. */
+	/** The multiblock data for this structure. */
 	public T structure;
 	
-	/** Whether or not to send this tank's structure in the next update packet. */
+	/** Whether or not to send this multiblock's structure in the next update packet. */
 	public boolean sendStructure;
 
-	/** This tank's previous "has structure" state. */
+	/** This multiblockblock's previous "has structure" state. */
 	public boolean prevStructure;
 
-	/** Whether or not this tank has it's structure, for the client side mechanics. */
+	/** Whether or not this multiblock has it's structure, for the client side mechanics. */
 	public boolean clientHasStructure;
 	
-	/** Whether or not this tank segment is rendering the structure. */
+	/** Whether or not this multiblock segment is rendering the structure. */
 	public boolean isRendering;
 	
 	public TileEntityMultiblock(String name)

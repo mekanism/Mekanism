@@ -3,15 +3,19 @@ package mekanism.common.content.matrix;
 import java.util.List;
 
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 {
-	public MatrixUpdateProtocol(TileEntityMultiblock<SynchronizedMatrixData> tileEntity) 
+	public MatrixUpdateProtocol(TileEntityInductionCasing tileEntity) 
 	{
 		super(tileEntity);
 	}
@@ -19,7 +23,20 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	@Override
 	protected boolean isValidFrame(int x, int y, int z) 
 	{
-		return false;
+		return pointer.getWorldObj().getBlock(x, y, z) == MekanismBlocks.BasicBlock2 && pointer.getWorldObj().getBlockMetadata(x, y, z) == 1;
+	}
+	
+	@Override
+	public boolean isValidInnerNode(int x, int y, int z)
+	{
+		TileEntity tile = pointer.getWorldObj().getTileEntity(x, y, z);
+		
+		if(tile != null && (tile instanceof TileEntityInductionCell || tile instanceof TileEntityInductionProvider))
+		{
+			return true;
+		}
+		
+		return isAir(x, y, z);
 	}
 
 	@Override

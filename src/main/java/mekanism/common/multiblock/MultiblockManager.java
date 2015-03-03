@@ -28,7 +28,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	
 	public String name;
 	
-	/** A map containing references to all dynamic tank inventory caches. */
+	/** A map containing references to all multiblock inventory caches. */
 	public Map<Integer, MultiblockCache<T>> inventories = new HashMap<Integer, MultiblockCache<T>>();
 	
 	public MultiblockManager(String s, Class<? extends MultiblockCache<T>> cache)
@@ -61,7 +61,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	 * Grabs an inventory from the world's caches, and removes all the world's references to it.
 	 * @param world - world the cache is stored in
 	 * @param id - inventory ID to pull
-	 * @return correct Dynamic Tank inventory cache
+	 * @return correct multiblock inventory cache
 	 */
 	public MultiblockCache<T> pullInventory(World world, int id)
 	{
@@ -79,8 +79,8 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Updates a dynamic tank cache with the defined inventory ID with the parameterized values.
-	 * @param multiblock - dynamic tank TileEntity
+	 * Updates a multiblock cache with the defined inventory ID with the parameterized values.
+	 * @param multiblock - multiblock TileEntity
 	 */
 	public void updateCache(IMultiblock<T> multiblock)
 	{
@@ -110,7 +110,7 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Grabs a unique inventory ID for a dynamic tank.
+	 * Grabs a unique inventory ID for a multiblock.
 	 * @return unique inventory ID
 	 */
 	public int getUniqueInventoryID()

@@ -8,7 +8,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityMultiblock;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -18,6 +17,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 {
 	/** The multiblock nodes that have already been iterated over. */
 	public Set<TileEntityMultiblock<T>> iteratedNodes = new HashSet<TileEntityMultiblock<T>>();
+	
+	public Set<Coord4D> innerNodes = new HashSet<Coord4D>();
 
 	/** The structures found, all connected by some nodes to the pointer. */
 	public T structureFound = null;
@@ -151,20 +152,25 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 							}
 						}
 						else {
-							if(!isAir(origX+x, origY+y, origZ+z))
+							if(!isValidInnerNode(origX+x, origY+y, origZ+z))
 							{
 								isHollow = false;
 								break;
+							}
+							else {
+								innerNodes.add(new Coord4D(origX+x, origY+y, origZ+z, pointer.getWorldObj().provider.dimensionId));
 							}
 
 							volume++;
 						}
 					}
+					
 					if(!isHollow || !rightBlocks || !rightFrame)
 					{
 						break;
 					}
 				}
+				
 				if(!isHollow || !rightBlocks || !rightFrame)
 				{
 					break;
@@ -251,13 +257,18 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 * @param z - z coordinate
 	 * @return
 	 */
-	private boolean isAir(int x, int y, int z)
+	protected boolean isAir(int x, int y, int z)
 	{
 		return pointer.getWorldObj().isAirBlock(x, y, z);
 	}
+	
+	protected boolean isValidInnerNode(int x, int y, int z)
+	{
+		return isAir(x, y, z);
+	}
 
 	/**
-	 * Whether or not the block at the specified location is a viable node for a dynamic tank.
+	 * Whether or not the block at the specified location is a viable node for a multiblock structure.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
 	 * @param z - z coordinate
@@ -276,7 +287,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * If the block at the specified location is on the minimum of all angles of this dynamic tank, and the one to use for the
+	 * If the block at the specified location is on the minimum of all angles of this multiblock structure, and the one to use for the
 	 * actual calculation.
 	 * @param obj - location to check
 	 * @param xmin - minimum x value
@@ -295,7 +306,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location is considered a frame on the dynamic tank.
+	 * Whether or not the block at the specified location is considered a frame on the multiblock structure.
 	 * @param obj - location to check
 	 * @param xmin - minimum x value
 	 * @param xmax - maximum x value
@@ -338,7 +349,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Whether or not the block at the specified location serves as a frame for a dynamic tank.
+	 * Whether or not the block at the specified location serves as a frame for a multiblock structure.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
 	 * @param z - z coordinate
@@ -359,7 +370,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 
 	/**
-	 * Runs the protocol and updates all tanks that make a part of the dynamic tank.
+	 * Runs the protocol and updates all nodes that make a part of the multiblock.
 	 */
 	public void doUpdate()
 	{
@@ -401,11 +412,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			{
 				for(int id : idsFound)
 				{
-					if(Mekanism.tankManager.inventories.get(id) != null)
+					if(getManager().inventories.get(id) != null)
 					{
 						if(cache == null)
 						{
-							cache = (MultiblockCache<T>)Mekanism.tankManager.pullInventory(pointer.getWorldObj(), id);
+							cache = getManager().pullInventory(pointer.getWorldObj(), id);
 						}
 						else {
 							mergeCaches(rejectedItems, cache, getManager().pullInventory(pointer.getWorldObj(), id));
@@ -416,10 +427,11 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				}
 			}
 			else {
-				idToUse = Mekanism.tankManager.getUniqueInventoryID();
+				idToUse = getManager().getUniqueInventoryID();
 			}
 			
 			//TODO someday: drop all items in rejectedItems
+			//TODO seriously this needs to happen soon
 
 			cache.apply((T)structureFound);
 
