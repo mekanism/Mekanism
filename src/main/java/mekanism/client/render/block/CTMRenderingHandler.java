@@ -53,6 +53,7 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 
 			return rendererCTM.renderStandardBlock(block, x, y, z);
 		}
+		
 		return rendererOld.renderStandardBlock(block, x, y, z);
 	}
 

@@ -403,6 +403,7 @@ gui.fuel=Fuel
 gui.heat=Heat
 gui.formed=Formed
 gui.incomplete=Incomplete
+gui.inductionMatrix=Induction Matrix
 
 gui.reactor.injectionRate=Injection Rate
 

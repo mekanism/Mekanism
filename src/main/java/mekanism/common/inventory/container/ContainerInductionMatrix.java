@@ -1,14 +1,17 @@
 package mekanism.common.inventory.container;
 
+import ic2.api.item.IElectricItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
 import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class ContainerInductionMatrix extends Container
 {
@@ -65,19 +68,73 @@ public class ContainerInductionMatrix extends Container
 			ItemStack slotStack = currentSlot.getStack();
 			stack = slotStack.copy();
 
-			if(FluidContainerRegistry.isEmptyContainer(slotStack) || FluidContainerRegistry.isFilledContainer(slotStack))
+			if(ChargeUtils.canBeCharged(slotStack) || ChargeUtils.canBeDischarged(slotStack))
 			{
-				if(slotID != 0 && slotID != 1)
+				if(slotStack.getItem() == Items.redstone)
 				{
-					if(!mergeItemStack(slotStack, 0, 1, false))
+					if(slotID != 1)
 					{
-						return null;
+						if(!mergeItemStack(slotStack, 1, 2, false))
+						{
+							return null;
+						}
+					}
+					else {
+						if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+						{
+							return null;
+						}
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+					if(slotID != 1 && slotID != 0)
 					{
-						return null;
+						if(ChargeUtils.canBeDischarged(slotStack))
+						{
+							if(!mergeItemStack(slotStack, 1, 2, false))
+							{
+								if(canTransfer(slotStack))
+								{
+									if(!mergeItemStack(slotStack, 0, 1, false))
+									{
+										return null;
+									}
+								}
+							}
+						}
+						else if(canTransfer(slotStack))
+						{
+							if(!mergeItemStack(slotStack, 0, 1, false))
+							{
+								return null;
+							}
+						}
+					}
+					else if(slotID == 1)
+					{
+						if(canTransfer(slotStack))
+						{
+							if(!mergeItemStack(slotStack, 0, 1, false))
+							{
+								if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+								{
+									return null;
+								}
+							}
+						}
+						else {
+							if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+							{
+								return null;
+							}
+						}
+					}
+					else if(slotID == 0)
+					{
+						if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+						{
+							return null;
+						}
 					}
 				}
 			}
@@ -121,5 +178,10 @@ public class ContainerInductionMatrix extends Container
 		}
 
 		return stack;
+	}
+	
+	private boolean canTransfer(ItemStack slotStack)
+	{
+		return MekanismUtils.useIC2() && slotStack.getItem() instanceof IElectricItem;
 	}
 }

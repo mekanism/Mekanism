@@ -1,10 +1,8 @@
 package mekanism.client.gui;
 
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -24,7 +22,6 @@ public class GuiInductionMatrix extends GuiMekanism
 	{
 		super(tentity, new ContainerInductionMatrix(inventory, tentity));
 		tileEntity = tentity;
-		guiElements.add(new GuiContainerEditMode(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png")));
 	}
 
 	@Override

@@ -16,10 +16,13 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.Range4D;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -133,14 +136,19 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-		setEnergy(dataStream.readDouble());
+		
+		mode = dataStream.readBoolean();
+		
+		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-		data.add(getEnergy());
+		
+		data.add(mode);
+		
 		return data;
 	}
 	
@@ -406,7 +414,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		{
 			mode = !mode;
 			String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
-			player.addChatMessage(new ChatComponentText(MekanismUtils.localize("tooltip.inductionPortMode") + modeText));
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.inductionPortMode") + modeText));
+			
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
 			markDirty();
 		}
 		

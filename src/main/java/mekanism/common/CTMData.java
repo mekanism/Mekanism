@@ -83,6 +83,7 @@ public class CTMData
 		{
 			return facingOverride;
 		}
+		
 		if(sideOverrides[side] != null)
 		{
 			return sideOverrides[side];

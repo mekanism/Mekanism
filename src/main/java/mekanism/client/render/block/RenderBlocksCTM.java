@@ -147,8 +147,8 @@ public class RenderBlocksCTM extends RenderBlocks
 			tessellator.addVertexWithUV(0.0, 0.0, 0.0, i.getMinU(), i.getMaxV());
 			tessellator.addVertexWithUV(0.0, 0.0, 1.0, i.getMaxU(), i.getMaxV());
 			tessellator.addVertexWithUV(0.0, 1.0, 1.0, i.getMaxU(), i.getMinV());
-		} else
-		{
+		} 
+		else {
 			int tex[] = CTM.getSubmapIndices(blockAccess, bx, by, bz, 4, dataCTM.acceptableBlockMetas);
 
 			setupSides(1, 0, 4, 5, 14, 19, 17, 23, 9);
@@ -170,8 +170,8 @@ public class RenderBlocksCTM extends RenderBlocks
 			tessellator.addVertexWithUV(1.0, 0.0, 1.0, i.getMaxU(), i.getMaxV());
 			tessellator.addVertexWithUV(1.0, 0.0, 0.0, i.getMinU(), i.getMaxV());
 			tessellator.addVertexWithUV(1.0, 1.0, 0.0, i.getMinU(), i.getMinV());
-		} else
-		{
+		} 
+		else {
 			int tex[] = CTM.getSubmapIndices(blockAccess, bx, by, bz, 5, dataCTM.acceptableBlockMetas);
 
 			setupSides(3, 2, 6, 7, 15, 25, 16, 21, 11);
@@ -193,8 +193,8 @@ public class RenderBlocksCTM extends RenderBlocks
 			tessellator.addVertexWithUV(1.0, 0.0, 0.0, i.getMaxU(), i.getMaxV());
 			tessellator.addVertexWithUV(0.0, 0.0, 0.0, i.getMinU(), i.getMaxV());
 			tessellator.addVertexWithUV(0.0, 1.0, 0.0, i.getMinU(), i.getMinV());
-		} else
-		{
+		} 
+		else {
 			int tex[] = CTM.getSubmapIndices(blockAccess, bx, by, bz, 2, dataCTM.acceptableBlockMetas);
 
 			setupSides(2, 3, 0, 1, 15, 18, 14, 22, 8);
@@ -217,8 +217,8 @@ public class RenderBlocksCTM extends RenderBlocks
 			tessellator.addVertexWithUV(0.0, 0.0, 1.0, i.getMinU(), i.getMaxV());
 			tessellator.addVertexWithUV(1.0, 0.0, 1.0, i.getMaxU(), i.getMaxV());
 			tessellator.addVertexWithUV(1.0, 1.0, 1.0, i.getMaxU(), i.getMinV());
-		} else
-		{
+		} 
+		else {
 			int tex[] = CTM.getSubmapIndices(blockAccess, bx, by, bz, 3, dataCTM.acceptableBlockMetas);
 
 			setupSides(4, 7, 6, 5, 20, 16, 24, 17, 10);
@@ -240,8 +240,8 @@ public class RenderBlocksCTM extends RenderBlocks
 			tessellator.addVertexWithUV(0.0, 0.0, 0.0, i.getMinU(), i.getMinV());
 			tessellator.addVertexWithUV(1.0, 0.0, 0.0, i.getMaxU(), i.getMinV());
 			tessellator.addVertexWithUV(1.0, 0.0, 1.0, i.getMaxU(), i.getMaxV());
-		} else
-		{
+		} 
+		else {
 			int tex[] = CTM.getSubmapIndices(blockAccess, bx, by, bz, 0, dataCTM.acceptableBlockMetas);
 
 			setupSides(0, 3, 7, 4, 18, 21, 20, 19, 13);
@@ -263,8 +263,8 @@ public class RenderBlocksCTM extends RenderBlocks
 			tessellator.addVertexWithUV(0.0, 1.0, 1.0, i.getMinU(), i.getMaxV());
 			tessellator.addVertexWithUV(1.0, 1.0, 1.0, i.getMaxU(), i.getMaxV());
 			tessellator.addVertexWithUV(1.0, 1.0, 0.0, i.getMaxU(), i.getMinV());
-		} else
-		{
+		} 
+		else {
 			int tex[] = CTM.getSubmapIndices(blockAccess, bx, by, bz, 1, dataCTM.acceptableBlockMetas);
 
 			setupSides(2, 1, 5, 6, 22, 23, 24, 25, 12);

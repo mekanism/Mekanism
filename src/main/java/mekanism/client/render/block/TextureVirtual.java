@@ -93,5 +93,4 @@ public class TextureVirtual implements IIcon
 	{
 		return oy;
 	}
-
 }

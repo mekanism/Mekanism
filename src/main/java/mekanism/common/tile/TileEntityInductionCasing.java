@@ -4,6 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData>
@@ -35,5 +36,11 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	public MultiblockManager<SynchronizedMatrixData> getManager() 
 	{
 		return Mekanism.matrixManager;
+	}
+	
+	@Override
+	public String getInventoryName()
+	{
+		return MekanismUtils.localize("gui.inductionMatrix");
 	}
 }
