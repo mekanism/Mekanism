@@ -1,5 +1,10 @@
 package mekanism.common.util;
 
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergyAcceptor;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -11,18 +16,13 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.tile.TileEntityElectricBlock;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import cofh.api.energy.IEnergyConnection;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 
 public final class CableUtils
 {
@@ -218,16 +218,16 @@ public final class CableUtils
 		return false;
 	}
 
-	public static void emit(TileEntityElectricBlock emitter)
+	public static void emit(IEnergyWrapper emitter)
 	{
-		if(!emitter.getWorldObj().isRemote && MekanismUtils.canFunction(emitter))
+		if(!((TileEntity)emitter).getWorldObj().isRemote && MekanismUtils.canFunction((TileEntity)emitter))
 		{
 			double energyToSend = Math.min(emitter.getEnergy(), emitter.getMaxOutput());
 
 			if(energyToSend > 0)
 			{
 				List<ForgeDirection> outputtingSides = new ArrayList<ForgeDirection>();
-				boolean[] connectable = getConnections(emitter, emitter.getOutputtingSides());
+				boolean[] connectable = getConnections((TileEntity)emitter, emitter.getOutputtingSides());
 
 				for(ForgeDirection side : emitter.getOutputtingSides())
 				{
@@ -258,7 +258,7 @@ public final class CableUtils
 		}
 	}
 
-	private static double emit_do(TileEntityElectricBlock emitter, List<ForgeDirection> outputtingSides, double totalToSend, boolean tryAgain)
+	private static double emit_do(IEnergyWrapper emitter, List<ForgeDirection> outputtingSides, double totalToSend, boolean tryAgain)
 	{
 		double remains = totalToSend%outputtingSides.size();
 		double splitSend = (totalToSend-remains)/outputtingSides.size();
@@ -268,7 +268,7 @@ public final class CableUtils
 
 		for(ForgeDirection side : outputtingSides)
 		{
-			TileEntity tileEntity = Coord4D.get(emitter).getFromSide(side).getTileEntity(emitter.getWorldObj());
+			TileEntity tileEntity = Coord4D.get((TileEntity)emitter).getFromSide(side).getTileEntity(((TileEntity)emitter).getWorldObj());
 			double toSend = splitSend+remains;
 			remains = 0;
 
@@ -289,7 +289,7 @@ public final class CableUtils
 		return sent;
 	}
 
-	private static double emit_do_do(TileEntityElectricBlock from, TileEntity tileEntity, ForgeDirection side, double currentSending, boolean tryAgain)
+	private static double emit_do_do(IEnergyWrapper from, TileEntity tileEntity, ForgeDirection side, double currentSending, boolean tryAgain)
 	{
 		double sent = 0;
 
@@ -314,7 +314,7 @@ public final class CableUtils
 		}
 		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
 		{
-			if(((IEnergySink)tileEntity).acceptsEnergyFrom(from, side.getOpposite()))
+			if(((IEnergySink)tileEntity).acceptsEnergyFrom((TileEntity)from, side.getOpposite()))
 			{
 				double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)tileEntity).getSinkTier())*general.FROM_IC2);
 				toSend = Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*general.FROM_IC2);

@@ -188,7 +188,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.UP);
 	}

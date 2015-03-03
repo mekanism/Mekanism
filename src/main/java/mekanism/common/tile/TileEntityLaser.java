@@ -95,7 +95,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}

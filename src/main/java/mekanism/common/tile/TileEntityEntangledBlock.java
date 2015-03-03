@@ -72,16 +72,19 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 		return data;
 	}
 
+	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return sharedInventory == null ? nothing : EnumSet.of(ForgeDirection.UP);
 	}
 
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return sharedInventory == null ? nothing : EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN, ForgeDirection.UP));
 	}
 
+	@Override
 	public double getMaxOutput()
 	{
 		return sharedInventory == null ? 0 : 1000;

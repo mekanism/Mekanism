@@ -28,9 +28,10 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		tier = InductionCellTier.values()[dataStream.readInt()];
-		electricityStored = dataStream.readDouble();
 
 		super.handlePacketData(dataStream);
+		
+		electricityStored = dataStream.readDouble();
 
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 	}
@@ -39,9 +40,10 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		data.add(tier.ordinal());
-		data.add(electricityStored);
 
 		super.getNetworkedData(data);
+		
+		data.add(electricityStored);
 
 		return data;
 	}

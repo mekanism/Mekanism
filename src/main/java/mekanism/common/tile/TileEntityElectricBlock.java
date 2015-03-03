@@ -4,10 +4,7 @@ import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.tile.IEnergyStorage;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
@@ -15,27 +12,16 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.ICableOutputter;
-import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import cofh.api.energy.IEnergyHandler;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 
-@InterfaceList({
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-		@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
-})
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
@@ -107,18 +93,21 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		}
 	}
 
+	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
 	}
 
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		EnumSet set = EnumSet.allOf(ForgeDirection.class);
 		set.remove(ForgeDirection.UNKNOWN);
 		return set;
 	}
 
+	@Override
 	public double getMaxOutput()
 	{
 		return 0;

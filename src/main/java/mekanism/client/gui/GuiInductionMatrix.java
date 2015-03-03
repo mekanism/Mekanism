@@ -1,5 +1,7 @@
 package mekanism.client.gui;
 
+import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;
@@ -32,18 +34,15 @@ public class GuiInductionMatrix extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-		/*fontRendererObj.drawString(MekanismUtils.localize("gui.volume") + ": " + tileEntity.clientCapacity/TankUpdateProtocol.FLUID_PER_TANK, 53, 26, 0x00CD00);
-		fontRendererObj.drawString(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ":" : MekanismUtils.localize("gui.noFluid"), 53, 44, 0x00CD00);
-
-		if(tileEntity.structure.fluidStored != null)
-		{
-			fontRendererObj.drawString(tileEntity.structure.fluidStored.amount + "mB", 53, 53, 0x00CD00);
-		}
+		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", 53, 26, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()), 53, 35, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.outputCap), 53, 53, 0x00CD00);
 
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.structure.fluidStored != null ? LangUtils.localizeFluidStack(tileEntity.structure.fluidStored) + ": " + tileEntity.structure.fluidStored.amount + "mB" : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
-		}*/
+			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -59,20 +58,15 @@ public class GuiInductionMatrix extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		/*if(tileEntity.getScaledFluidLevel(58) > 0)
+		if(tileEntity.getScaledEnergyLevel(58) > 0)
 		{
-			displayGauge(7, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 0);
-			displayGauge(23, 14, tileEntity.getScaledFluidLevel(58), tileEntity.structure.fluidStored, 1);
-		}*/
+			displayGauge(7, 14, tileEntity.getScaledEnergyLevel(58), 0);
+			displayGauge(23, 14, tileEntity.getScaledEnergyLevel(58), 1);
+		}
 	}
 
-	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, int side /*0-left, 1-right*/)
+	public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/)
 	{
-		if(fluid == null)
-		{
-			return;
-		}
-
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 
@@ -93,7 +87,7 @@ public class GuiInductionMatrix extends GuiMekanism
 			}
 
 			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-			drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
+			drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, 16 - (16 - renderRemaining));
 			start+=16;
 
 			if(renderRemaining == 0 || scale == 0)

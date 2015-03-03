@@ -84,7 +84,7 @@ public abstract class TileEntityReactorBlock extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
 	}

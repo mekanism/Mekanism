@@ -17,8 +17,10 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 	
 	public Set<Coord4D> providers = new HashSet<Coord4D>();
 	
-	public double storageCap;
+	public double remainingOutput;
+	public double lastOutput;
 	
+	public double storageCap;
 	public double outputCap;
 	
 	@Override

@@ -105,7 +105,7 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
 	}

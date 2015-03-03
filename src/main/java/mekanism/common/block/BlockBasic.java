@@ -183,8 +183,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
-				icons[2][0] = ctms[2][0].facingOverride.icon;
-				icons[2][1] = ctms[2][1].facingOverride.icon;
+				//icons[2][0] = ctms[2][0].facingOverride.icon;
+				//icons[2][1] = ctms[2][1].facingOverride.icon;
 				icons[2][0] = register.registerIcon("mekanism:InductionPortInput");
 				icons[2][1] = register.registerIcon("mekanism:InductionPortOutput");
 				icons[3][0] = register.registerIcon("mekanism:InductionCellBasic");

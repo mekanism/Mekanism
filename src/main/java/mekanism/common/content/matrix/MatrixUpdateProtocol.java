@@ -83,6 +83,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 			{
 				structure.cells.add(coord);
 				structure.storageCap += ((TileEntityInductionCell)tile).tier.MAX_ELECTRICITY;
+				structure.electricityStored += ((TileEntityInductionCell)tile).getEnergy();
 			}
 			else if(tile instanceof TileEntityInductionProvider)
 			{
@@ -95,13 +96,13 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	@Override
 	protected void onStructureDestroyed(SynchronizedMatrixData structure)
 	{
+		if(structure.electricityStored <= 0)
+		{
+			return;
+		}
+		
 		for(Coord4D coord : structure.cells)
 		{
-			if(structure.electricityStored == 0)
-			{
-				break;
-			}
-			
 			if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityInductionCell)
 			{
 				TileEntityInductionCell cell = (TileEntityInductionCell)coord.getTileEntity(pointer.getWorldObj());
@@ -109,6 +110,11 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 				double toAdd = Math.min(cell.getMaxEnergy()-cell.getEnergy(), structure.electricityStored);
 				cell.setEnergy(cell.getEnergy()+toAdd);
 				structure.electricityStored -= toAdd;
+			}
+			
+			if(structure.electricityStored <= 0)
+			{
+				break;
 			}
 		}
 	}

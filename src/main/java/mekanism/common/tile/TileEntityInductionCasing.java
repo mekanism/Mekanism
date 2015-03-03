@@ -1,13 +1,19 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData>
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage
 {
 	public TileEntityInductionCasing() 
 	{
@@ -18,6 +24,54 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		super(name);
 		inventory = new ItemStack[2];
+	}
+	
+	@Override
+	public void onUpdate()
+	{
+		super.onUpdate();
+		
+		if(!worldObj.isRemote)
+		{
+			if(structure != null && isRendering)
+			{
+				structure.lastOutput = structure.outputCap-structure.remainingOutput;
+				structure.remainingOutput = structure.outputCap;
+				
+				ChargeUtils.charge(0, this);
+				ChargeUtils.discharge(1, this);
+			}
+		}
+	}
+	
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		if(structure != null)
+		{
+			data.add(structure.electricityStored);
+			data.add(structure.storageCap);
+			data.add(structure.outputCap);
+			data.add(structure.lastOutput);
+		}
+		
+		return data;
+	}
+
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+		
+		if(clientHasStructure)
+		{
+			structure.electricityStored = dataStream.readDouble();
+			structure.storageCap = dataStream.readDouble();
+			structure.outputCap = dataStream.readDouble();
+			structure.lastOutput = dataStream.readDouble();
+		}
 	}
 
 	@Override
@@ -42,5 +96,32 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	public String getInventoryName()
 	{
 		return MekanismUtils.localize("gui.inductionMatrix");
+	}
+	
+	public int getScaledEnergyLevel(int i)
+	{
+		return (int)(getEnergy()*i / getMaxEnergy());
+	}
+
+	@Override
+	public double getEnergy()
+	{
+		return structure != null ? structure.electricityStored : 0;
+	}
+
+	@Override
+	public void setEnergy(double energy)
+	{
+		if(structure != null)
+		{
+			structure.electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
+			MekanismUtils.saveChunk(this);
+		}
+	}
+
+	@Override
+	public double getMaxEnergy()
+	{
+		return structure != null ? structure.storageCap : 0;
 	}
 }
