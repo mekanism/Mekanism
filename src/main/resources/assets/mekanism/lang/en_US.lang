@@ -83,6 +83,16 @@ tile.BasicBlock.SolarEvaporationValve.name=Solar Evaporation Valve
 
 //Basic Block 2 (second ID iteration)
 tile.BasicBlock2.SolarEvaporationBlock.name=Solar Evaporation Block
+tile.BasicBlock2.InductionCasing.name=Induction Casing
+tile.BasicBlock2.InductionPort.name=Induction Port
+tile.BasicBlock2.InductionCellBasic.name=Basic Induction Cell
+tile.BasicBlock2.InductionCellAdvanced.name=Advanced Induction Cell
+tile.BasicBlock2.InductionCellElite.name=Elite Induction Cell
+tile.BasicBlock2.InductionCellUltimate.name=Ultimate Induction Cell
+tile.BasicBlock2.InductionProviderBasic.name=Basic Induction Provider
+tile.BasicBlock2.InductionProviderAdvanced.name=Advanced Induction Provider
+tile.BasicBlock2.InductionProviderElite.name=Elite Induction Provider
+tile.BasicBlock2.InductionProviderUltimate.name=Ultimate Induction Provider
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber

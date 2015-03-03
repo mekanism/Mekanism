@@ -46,7 +46,6 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -65,10 +64,11 @@ import net.minecraft.src.FMLRenderAccessLibrary;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ItemRenderingHandler implements IItemRenderer
@@ -162,9 +162,17 @@ public class ItemRenderingHandler implements IItemRenderer
 
 			GL11.glPopMatrix();
 		}
-		else if(item.getItem() instanceof ItemBlockBasic && item.getItemDamage() == 6)
+		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock2 && item.getItemDamage() == 3)
 		{
-			FMLRenderAccessLibrary.renderInventoryBlock((RenderBlocks) data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+			MekanismRenderer.renderCustomItem((RenderBlocks)data[0], item);
+		}
+		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock2 && item.getItemDamage() == 4)
+		{
+			MekanismRenderer.renderCustomItem((RenderBlocks)data[0], item);
+		}
+		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock && item.getItemDamage() == 6)
+		{
+			FMLRenderAccessLibrary.renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
 			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
 			{

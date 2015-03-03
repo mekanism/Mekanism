@@ -1,16 +1,26 @@
 package mekanism.common.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBin;
-
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -35,6 +45,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:14: Solar Evaporation Controller
  * 0:15: Solar Evaporation Valve
  * 1:0: Solar Evaporation Block
+ * 1:1: Induction Casing
+ * 1:2: Induction Port
+ * 1:3: Induction Cell
+ * 1:4: Induction Provider
  * @author AidanBrady
  *
  */
@@ -47,6 +61,26 @@ public class ItemBlockBasic extends ItemBlock
 		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
+	}
+	
+	public BaseTier getTier(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			return BaseTier.BASIC;
+		}
+
+		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
+	}
+
+	public void setTier(ItemStack itemstack, BaseTier tier)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
 	}
 
 	@Override
@@ -158,6 +192,29 @@ public class ItemBlockBasic extends ItemBlock
 					tileEntity.setItemCount(inv.getItemCount());
 				}
 			}
+			else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
+			{
+				if(stack.getItemDamage() == 3)
+				{
+					TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+					tileEntity.tier = InductionCellTier.values()[getTier(stack).ordinal()];
+					
+					if(!world.isRemote)
+					{
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					}
+				}
+				else if(stack.getItemDamage() == 4)
+				{
+					TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+					tileEntity.tier = InductionProviderTier.values()[getTier(stack).ordinal()];
+					
+					if(!world.isRemote)
+					{
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					}
+				}
+			}
 		}
 
 		return place;
@@ -231,6 +288,18 @@ public class ItemBlockBasic extends ItemBlock
 			{
 				case 0:
 					name = "SolarEvaporationBlock";
+					break;
+				case 1:
+					name = "InductionCasing";
+					break;
+				case 2:
+					name = "InductionPort";
+					break;
+				case 3:
+					name = "InductionCell" + getTier(itemstack).getName();
+					break;
+				case 4:
+					name = "InductionProvider" + getTier(itemstack).getName();
 					break;
 			}
 		}

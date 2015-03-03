@@ -8,27 +8,31 @@ import java.util.Random;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.client.ClientProxy;
+import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.tile.TileEntityBoiler;
-import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
+import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionPort;
+import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntitySolarEvaporationBlock;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationValve;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -73,12 +77,14 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:14: Solar Evaporation Controller
  * 0:15: Solar Evaporation Valve
  * 1:0: Solar Evaporation Block
- * 1:1: Steam Boiler
- * 1:2: Boiler Valve
+ * 1:1: Induction Casing
+ * 1:2: Induction Port
+ * 1:3: Induction Cell
+ * 1:4: Induction Provider
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block implements IBlockCTM
+public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][6];
 
@@ -93,6 +99,21 @@ public class BlockBasic extends Block implements IBlockCTM
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
 		blockType = type;
+	}
+	
+	@Override
+	public IIcon getIcon(ItemStack stack, int side)
+	{
+		if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 3)
+		{
+			return icons[3][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+		}
+		else if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 4)
+		{
+			return icons[4][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+		}
+		
+		return getIcon(side, stack.getItemDamage());
 	}
 
 	@Override
@@ -154,12 +175,24 @@ public class BlockBasic extends Block implements IBlockCTM
 				break;
 			case BASIC_BLOCK_2:
 				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
-				ctms[1][0] = new CTMData("ctm/SteamBoiler", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[2][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(2, 1)).registerIcons(register);
+				//ctms[1][0] = new CTMData("ctm/SteamBoiler", this, Arrays.asList(1, 2)).registerIcons(register);
+				//ctms[2][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(2, 1)).registerIcons(register);
+				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[2][0] = new CTMData("ctm/InductionPort", this, Arrays.asList(2, 1)).registerIcons(register);
 
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
+				//icons[1][0] = ctms[1][0].mainTextureData.icon;
+				//icons[2][0] = ctms[2][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
 				icons[2][0] = ctms[2][0].mainTextureData.icon;
+				icons[3][0] = register.registerIcon("mekanism:InductionCellBasic");
+				icons[3][1] = register.registerIcon("mekanism:InductionCellAdvanced");
+				icons[3][2] = register.registerIcon("mekanism:InductionCellElite");
+				icons[3][3] = register.registerIcon("mekanism:InductionCellUltimate");
+				icons[4][0] = register.registerIcon("mekanism:InductionProviderBasic");
+				icons[4][1] = register.registerIcon("mekanism:InductionProviderAdvanced");
+				icons[4][2] = register.registerIcon("mekanism:InductionProviderElite");
+				icons[4][3] = register.registerIcon("mekanism:InductionProviderUltimate");
 				break;
 		}
 	}
@@ -176,16 +209,17 @@ public class BlockBasic extends Block implements IBlockCTM
 				switch(meta)
 				{
 					case 6:
-						TileEntityBasicBlock tileEntity6 = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+						TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
 						if(side == 0 || side == 1)
 						{
 							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][3] : icons[meta][1];
-						} else if(side == tileEntity6.facing)
+						} 
+						else if(side == tileEntity.facing)
 						{
 							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][4] : icons[meta][2];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][0];
 						}
 					case 9:
@@ -193,13 +227,13 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 11:
 						return ctms[meta][0].getIcon(side);
 					case 14:
-						TileEntitySolarEvaporationController tileEntity14 = (TileEntitySolarEvaporationController)world.getTileEntity(x, y, z);
+						TileEntitySolarEvaporationController tileEntity1 = (TileEntitySolarEvaporationController)world.getTileEntity(x, y, z);
 
-						if(side == tileEntity14.facing)
+						if(side == tileEntity1.facing)
 						{
 							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][2];
 						}
 					default:
@@ -208,6 +242,12 @@ public class BlockBasic extends Block implements IBlockCTM
 			case BASIC_BLOCK_2:
 				switch(meta)
 				{
+					case 3:
+						TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity.tier.ordinal()];
+					case 4:
+						TileEntityInductionProvider tileEntity1 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity1.tier.ordinal()];
 					default:
 						return getIcon(side, meta);
 				}
@@ -229,19 +269,20 @@ public class BlockBasic extends Block implements IBlockCTM
 						if(side == 0 || side == 1)
 						{
 							return icons[meta][1];
-						} else if(side == 3)
+						} 
+						else if(side == 3)
 						{
 							return icons[meta][2];
-						} else
-						{
+						}
+						else {
 							return icons[meta][0];
 						}
 					case 14:
 						if(side == 3)
 						{
 							return icons[meta][0];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][2];
 						}
 					default:
@@ -273,10 +314,37 @@ public class BlockBasic extends Block implements IBlockCTM
 				}
 				break;
 			case BASIC_BLOCK_2:
-				for(int i = 0; i < 3; i++)
+				for(int i = 0; i < 5; i++)
 				{
-					list.add(new ItemStack(item, 1, i));
+					if(i == 3)
+					{
+						for(BaseTier tier : BaseTier.values())
+						{
+							if(tier.isObtainable())
+							{
+								ItemStack stack = new ItemStack(item, 1, i);
+								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
+								list.add(stack);
+							}
+						}
+					}
+					else if(i == 4)
+					{
+						for(BaseTier tier : BaseTier.values())
+						{
+							if(tier.isObtainable())
+							{
+								ItemStack stack = new ItemStack(item, 1, i);
+								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
+								list.add(stack);
+							}
+						}
+					}
+					else {
+						list.add(new ItemStack(item, 1, i));
+					}
 				}
+				
 				break;
 		}
 	}
@@ -304,17 +372,43 @@ public class BlockBasic extends Block implements IBlockCTM
 								{
 									return false;
 								}
-							} else
-							{
+							} 
+							else {
 								if(tileEntity.clientHasStructure)
 								{
 									return false;
 								}
 							}
 						}
+					default:
+						return super.canCreatureSpawn(type, world, x, y, z);
 				}
 			case BASIC_BLOCK_2:
-				return super.canCreatureSpawn(type, world, x, y, z);
+				switch(meta)
+				{
+					case 1:
+					case 2:
+						TileEntityInductionCasing tileEntity = (TileEntityInductionCasing)world.getTileEntity(x, y, z);
+
+						if(tileEntity != null)
+						{
+							if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+							{
+								if(tileEntity.structure != null)
+								{
+									return false;
+								}
+							} 
+							else {
+								if(tileEntity.clientHasStructure)
+								{
+									return false;
+								}
+							}
+						}
+					default:
+						return super.canCreatureSpawn(type, world, x, y, z);
+				}
 			default:
 				return super.canCreatureSpawn(type, world, x, y, z);
 		}
@@ -652,6 +746,8 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 0:
 					case 1:
 					case 2:
+					case 3:
+					case 4:
 						return true;
 					default:
 						return false;
@@ -690,9 +786,13 @@ public class BlockBasic extends Block implements IBlockCTM
 					case 0:
 						return new TileEntitySolarEvaporationBlock();
 					case 1:
-						return new TileEntityBoiler();
+						return new TileEntityInductionCasing();
 					case 2:
-						return new TileEntityBoilerValve();
+						return new TileEntityInductionPort();
+					case 3:
+						return new TileEntityInductionCell();
+					case 4:
+						return new TileEntityInductionProvider();
 					default:
 						return null;
 				}
@@ -778,6 +878,19 @@ public class BlockBasic extends Block implements IBlockCTM
 				}
 			}
 		}
+		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		{
+			if(ret.getItemDamage() == 3)
+			{
+				TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			}
+			else if(ret.getItemDamage() == 4)
+			{
+				TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			}
+		}
 
 		return ret;
 	}
@@ -833,6 +946,7 @@ public class BlockBasic extends Block implements IBlockCTM
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		
 		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
 		{
 			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
@@ -860,6 +974,7 @@ public class BlockBasic extends Block implements IBlockCTM
 				}
 			}
 		}
+		
 		return valid;
 	}
 

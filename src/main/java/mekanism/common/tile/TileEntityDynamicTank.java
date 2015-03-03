@@ -35,7 +35,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
 	public TileEntityDynamicTank()
 	{
-		this("DynamicTank");
+		super("DynamicTank");
 	}
 
 	public TileEntityDynamicTank(String name)

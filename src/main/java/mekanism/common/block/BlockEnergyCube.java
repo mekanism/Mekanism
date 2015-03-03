@@ -48,6 +48,8 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 0: Basic Energy Cube
  * 1: Advanced Energy Cube
  * 2: Elite Energy Cube
+ * 3: Ultimate Energy Cube
+ * 4: Creative Energy Cube
  * @author AidanBrady
  *
  */
