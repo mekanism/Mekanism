@@ -368,6 +368,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	protected void onFormed() {}
 	
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
+	
+	protected void onStructureDestroyed(T structure) {}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.
@@ -432,6 +434,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			
 			//TODO someday: drop all items in rejectedItems
 			//TODO seriously this needs to happen soon
+			//TODO perhaps drop from pointer?
 
 			cache.apply((T)structureFound);
 
@@ -447,9 +450,14 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 		}
 		else {
-			for(TileEntity tileEntity : iteratedNodes)
+			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
 			{
-				((TileEntityMultiblock<T>)tileEntity).structure = null;
+				if(tileEntity.structure != null)
+				{
+					onStructureDestroyed(tileEntity.structure);
+				}
+				
+				tileEntity.structure = null;
 			}
 		}
 	}

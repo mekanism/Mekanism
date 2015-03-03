@@ -2,6 +2,8 @@ package mekanism.common.content.matrix;
 
 import java.util.List;
 
+import mekanism.api.Coord4D;
+import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.multiblock.MultiblockCache;
@@ -60,6 +62,54 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	@Override
 	protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedMatrixData> cache, MultiblockCache<SynchronizedMatrixData> merge) 
 	{
+		List<ItemStack> rejects = StackUtils.getMergeRejects(((MatrixCache)cache).inventory, ((MatrixCache)merge).inventory);
 		
+		if(!rejects.isEmpty())
+		{
+			rejectedItems.addAll(rejects);
+		}
+		
+		StackUtils.merge(((MatrixCache)cache).inventory, ((MatrixCache)merge).inventory);
+	}
+	
+	@Override
+	protected void onStructureCreated(SynchronizedMatrixData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	{
+		for(Coord4D coord : innerNodes)
+		{
+			TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+			
+			if(tile instanceof TileEntityInductionCell)
+			{
+				structure.cells.add(coord);
+				structure.storageCap += ((TileEntityInductionCell)tile).tier.MAX_ELECTRICITY;
+			}
+			else if(tile instanceof TileEntityInductionProvider)
+			{
+				structure.providers.add(coord);
+				structure.outputCap += ((TileEntityInductionProvider)tile).tier.OUTPUT;
+			}
+		}
+	}
+	
+	@Override
+	protected void onStructureDestroyed(SynchronizedMatrixData structure)
+	{
+		for(Coord4D coord : structure.cells)
+		{
+			if(structure.electricityStored == 0)
+			{
+				break;
+			}
+			
+			if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityInductionCell)
+			{
+				TileEntityInductionCell cell = (TileEntityInductionCell)coord.getTileEntity(pointer.getWorldObj());
+				
+				double toAdd = Math.min(cell.getMaxEnergy()-cell.getEnergy(), structure.electricityStored);
+				cell.setEnergy(cell.getEnergy()+toAdd);
+				structure.electricityStored -= toAdd;
+			}
+		}
 	}
 }

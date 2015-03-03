@@ -1,5 +1,15 @@
 package mekanism.common.tile;
 
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergyConductor;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergySource;
+import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.tile.IEnergyStorage;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -9,30 +19,15 @@ import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.Upgrade;
-import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.IUpgradeTile;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
-import cofh.api.energy.IEnergyHandler;
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
-import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.tile.IEnergyStorage;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
@@ -40,7 +35,7 @@ import ic2.api.tile.IEnergyStorage;
 		@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
 })
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
