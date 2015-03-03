@@ -30,6 +30,8 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	public Coord4D minLocation;
 	public Coord4D maxLocation;
 	
+	public boolean destroyed;
+	
 	public ItemStack[] getInventory()
 	{
 		return null;

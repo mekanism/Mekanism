@@ -452,9 +452,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 		else {
 			for(TileEntityMultiblock<T> tileEntity : iteratedNodes)
 			{
-				if(tileEntity.structure != null)
+				if(tileEntity.structure != null && !tileEntity.structure.destroyed)
 				{
 					onStructureDestroyed(tileEntity.structure);
+					tileEntity.structure.destroyed = true;
 				}
 				
 				tileEntity.structure = null;

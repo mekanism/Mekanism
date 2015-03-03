@@ -73,7 +73,7 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 	}
 	
 	@Override
-	protected void onStructureCreated(SynchronizedMatrixData structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax)
+	protected void onFormed()
 	{
 		for(Coord4D coord : innerNodes)
 		{
@@ -81,14 +81,15 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 			
 			if(tile instanceof TileEntityInductionCell)
 			{
-				structure.cells.add(coord);
-				structure.storageCap += ((TileEntityInductionCell)tile).tier.MAX_ELECTRICITY;
-				structure.electricityStored += ((TileEntityInductionCell)tile).getEnergy();
+				structureFound.cells.add(coord);
+				structureFound.storageCap += ((TileEntityInductionCell)tile).tier.MAX_ELECTRICITY;
+				structureFound.electricityStored += ((TileEntityInductionCell)tile).getEnergy();
+				((TileEntityInductionCell)tile).setEnergy(0);
 			}
 			else if(tile instanceof TileEntityInductionProvider)
 			{
-				structure.providers.add(coord);
-				structure.outputCap += ((TileEntityInductionProvider)tile).tier.OUTPUT;
+				structureFound.providers.add(coord);
+				structureFound.outputCap += ((TileEntityInductionProvider)tile).tier.OUTPUT;
 			}
 		}
 	}
