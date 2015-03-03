@@ -9,8 +9,8 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.ListUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,8 +28,7 @@ import cpw.mods.fml.common.eventhandler.Event.Result;
 
 public class ItemAtomicDisassembler extends ItemEnergized
 {
-	public double ENERGY_USAGE = 10;
-	public double HOE_USAGE = 100;
+	public double HOE_USAGE = 10 * Mekanism.ATOMICDISASSEM_ENERGY_USAGE;
 
 	public ItemAtomicDisassembler()
 	{
@@ -80,10 +79,10 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		if(block.getBlockHardness(world, x, y, z) != 0.0D)
 		{
-			setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*getEfficiency(itemstack)));
+			setEnergy(itemstack, getEnergy(itemstack) - (Mekanism.ATOMICDISASSEM_ENERGY_USAGE*getEfficiency(itemstack)));
 		}
 		else {
-			setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*(getEfficiency(itemstack))/2));
+			setEnergy(itemstack, getEnergy(itemstack) - (Mekanism.ATOMICDISASSEM_ENERGY_USAGE*(getEfficiency(itemstack))/2));
 		}
 
 		return true;
@@ -125,7 +124,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 
 				for(Coord4D coord : found)
 				{
-					if(coord.equals(orig) || getEnergy(itemstack) < (ENERGY_USAGE*getEfficiency(itemstack)))
+					if(coord.equals(orig) || getEnergy(itemstack) < (Mekanism.ATOMICDISASSEM_ENERGY_USAGE*getEfficiency(itemstack)))
 					{
 						continue;
 					}
@@ -138,7 +137,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 					block2.breakBlock(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, block, meta);
 					block2.dropBlockAsItem(player.worldObj, coord.xCoord, coord.yCoord, coord.zCoord, meta, 0);
 
-					setEnergy(itemstack, getEnergy(itemstack) - (ENERGY_USAGE*getEfficiency(itemstack)));
+					setEnergy(itemstack, getEnergy(itemstack) - (Mekanism.ATOMICDISASSEM_ENERGY_USAGE*getEfficiency(itemstack)));
 				}
 			}
 		}
