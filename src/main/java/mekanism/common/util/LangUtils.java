@@ -15,6 +15,11 @@ public final class LangUtils
 	{
 		return MekanismUtils.localize("tooltip." + (b ? "yes" : "no"));
 	}
+	
+	public static String transOutputInput(boolean b)
+	{
+		return MekanismUtils.localize("gui." + (b ? "output" : "input"));
+	}
 
 	public static String localizeFluidStack(FluidStack fluidStack)
 	{

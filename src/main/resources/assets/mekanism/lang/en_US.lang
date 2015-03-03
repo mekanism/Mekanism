@@ -526,6 +526,7 @@ tooltip.configurator.linkMsg=Bound to
 tooltip.configurator.dim=dimension
 tooltip.configurator.setLink=Set link to block
 tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
+tooltip.configurator.inductionPortMode=Toggled Induction Port transfer mode to
 
 tooltip.upgrade.speed=Speed
 tooltip.upgrade.energy=Energy

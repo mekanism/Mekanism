@@ -31,6 +31,7 @@ import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.inventory.container.ContainerFluidicPlenisher;
 import mekanism.common.inventory.container.ContainerGasTank;
+import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.inventory.container.ContainerLaserTractorBeam;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
@@ -481,6 +482,8 @@ public class CommonProxy
 				return new ContainerSolarNeutronActivator(player.inventory, (TileEntitySolarNeutronActivator)tileEntity);
 			case 48:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+			case 49:
+				return new ContainerInductionMatrix(player.inventory, (TileEntityInductionCasing)tileEntity);
 		}
 
 		return null;

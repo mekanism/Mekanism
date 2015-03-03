@@ -1,7 +1,8 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.tile.TileEntityDynamicTank;
+import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
+import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
+import mekanism.common.tile.TileEntityInductionCasing;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -9,15 +10,15 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 
-public class ContainerDynamicTank extends Container
+public class ContainerInductionMatrix extends Container
 {
-	private TileEntityDynamicTank tileEntity;
+	private TileEntityInductionCasing tileEntity;
 
-	public ContainerDynamicTank(InventoryPlayer inventory, TileEntityDynamicTank tentity)
+	public ContainerInductionMatrix(InventoryPlayer inventory, TileEntityInductionCasing tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new Slot(tentity, 0, 146, 20));
-		addSlotToContainer(new SlotOutput(tentity, 1, 146, 51));
+		addSlotToContainer(new SlotCharge(tentity, 0, 146, 20));
+		addSlotToContainer(new SlotDischarge(tentity, 1, 146, 51));
 		int slotX;
 
 		for(slotX = 0; slotX < 3; slotX++)

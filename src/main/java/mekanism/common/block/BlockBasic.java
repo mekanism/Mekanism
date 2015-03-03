@@ -179,13 +179,15 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				//ctms[1][0] = new CTMData("ctm/SteamBoiler", this, Arrays.asList(1, 2)).registerIcons(register);
 				//ctms[2][0] = new CTMData("ctm/BoilerValve", this, Arrays.asList(2, 1)).registerIcons(register);
 				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
-				ctms[2][0] = new CTMData("ctm/InductionPort", this, Arrays.asList(2, 1)).registerIcons(register);
+				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(2, 1)).registerIcons(register);
+				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(2, 1)).registerIcons(register);
 
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				//icons[1][0] = ctms[1][0].mainTextureData.icon;
 				//icons[2][0] = ctms[2][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
 				icons[2][0] = ctms[2][0].mainTextureData.icon;
+				icons[2][1] = ctms[2][1].mainTextureData.icon;
 				icons[3][0] = register.registerIcon("mekanism:InductionCellBasic");
 				icons[3][1] = register.registerIcon("mekanism:InductionCellAdvanced");
 				icons[3][2] = register.registerIcon("mekanism:InductionCellElite");
@@ -243,12 +245,15 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			case BASIC_BLOCK_2:
 				switch(meta)
 				{
+					case 2:
+						TileEntityInductionPort tileEntity = (TileEntityInductionPort)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity.mode ? 1 : 0];
 					case 3:
-						TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
-						return icons[meta][tileEntity.tier.ordinal()];
-					case 4:
-						TileEntityInductionProvider tileEntity1 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+						TileEntityInductionCell tileEntity1 = (TileEntityInductionCell)world.getTileEntity(x, y, z);
 						return icons[meta][tileEntity1.tier.ordinal()];
+					case 4:
+						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity2.tier.ordinal()];
 					default:
 						return getIcon(side, meta);
 				}

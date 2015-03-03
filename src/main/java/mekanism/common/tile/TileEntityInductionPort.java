@@ -13,14 +13,19 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyHandler;
@@ -34,7 +39,7 @@ import cpw.mods.fml.common.Optional.Method;
 	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
 	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
 })
-public class TileEntityInductionPort extends TileEntityInductionCasing implements IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+public class TileEntityInductionPort extends TileEntityInductionCasing implements IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter, IConfigurable
 {
 	public boolean ic2Registered = false;
 	
@@ -392,5 +397,25 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		setEnergy(getEnergy() + toUse);
 
 		return toUse;
+	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side) 
+	{
+		if(!worldObj.isRemote)
+		{
+			mode = !mode;
+			String modeText = " " + (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(mode) + ".";
+			player.addChatMessage(new ChatComponentText(MekanismUtils.localize("tooltip.inductionPortMode") + modeText));
+			markDirty();
+		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side) 
+	{
+		return false;
 	}
 }
