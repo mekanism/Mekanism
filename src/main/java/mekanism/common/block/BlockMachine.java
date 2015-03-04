@@ -73,6 +73,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -687,7 +688,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
-		if(!(blockType == MachineBlock.MACHINE_BLOCK_1 && world.getBlockMetadata(x, y, z) == 13))
+		if(MachineType.get(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
 		{
 			return blockHardness;
 		}
@@ -696,6 +697,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			return tileEntity.canAccess() ? 3.5F : -1;
 		}
 	}
+	
+	@Override
+	public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+		if(MachineType.get(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
+		{
+			return blockResistance;
+		}
+		else {
+			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+			return tileEntity.canAccess() ? 3.5F : -1;
+		}
+    }
 
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)

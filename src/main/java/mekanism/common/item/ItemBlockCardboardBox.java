@@ -79,7 +79,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 			Block block = world.getBlock(x, y, z);
 			int meta = world.getBlockMetadata(x, y, z);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta))
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && block.getBlockHardness(world, x, y, z) != -1)
 			{
 				BlockData data = new BlockData();
 				data.block = block;
