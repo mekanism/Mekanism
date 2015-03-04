@@ -1,14 +1,12 @@
 package mekanism.client.gui;
 
-import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fluids.FluidStack;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,6 +22,7 @@ public class GuiInductionMatrix extends GuiMekanism
 	{
 		super(tentity, new ContainerInductionMatrix(inventory, tentity));
 		tileEntity = tentity;
+		guiElements.add(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, 6, MekanismUtils.getResource(ResourceType.GUI, "GuiInductionMatrix.png")));
 	}
 
 	@Override
@@ -32,12 +31,12 @@ public class GuiInductionMatrix extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", 53, 26, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()), 53, 35, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 53, 35, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.outputCap), 53, 53, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput), 53, 53, 0x00CD00);
 
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)
 		{

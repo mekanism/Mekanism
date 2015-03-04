@@ -404,6 +404,8 @@ gui.heat=Heat
 gui.formed=Formed
 gui.incomplete=Incomplete
 gui.inductionMatrix=Induction Matrix
+gui.matrixStats=Matrix Statistics
+gui.main=Main
 
 gui.reactor.injectionRate=Injection Rate
 

@@ -30,7 +30,6 @@ public class GuiReactorStats extends GuiMekanism
 	public TileEntityReactorController tileEntity;
 	public static NumberFormat nf = NumberFormat.getIntegerInstance();
 
-
 	public GuiReactorStats(InventoryPlayer inventory, final TileEntityReactorController tentity)
 	{
 		super(new ContainerNull(inventory.player, tentity));

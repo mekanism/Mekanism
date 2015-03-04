@@ -484,6 +484,8 @@ public class CommonProxy
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 49:
 				return new ContainerInductionMatrix(player.inventory, (TileEntityInductionCasing)tileEntity);
+			case 50:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 
 		return null;

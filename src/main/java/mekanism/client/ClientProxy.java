@@ -35,6 +35,7 @@ import mekanism.client.gui.GuiGasTank;
 import mekanism.client.gui.GuiInductionMatrix;
 import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiLaserTractorBeam;
+import mekanism.client.gui.GuiMatrixStats;
 import mekanism.client.gui.GuiMetallurgicInfuser;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
@@ -503,6 +504,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiAmbientAccumulator(player, (TileEntityAmbientAccumulator)tileEntity);
 			case 49:
 				return new GuiInductionMatrix(player.inventory, (TileEntityInductionCasing)tileEntity);
+			case 50:
+				return new GuiMatrixStats(player.inventory, (TileEntityInductionCasing)tileEntity);
 		}
 
 		return null;
