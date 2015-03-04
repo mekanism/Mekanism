@@ -660,12 +660,24 @@ public final class MekanismUtils
 	}
 	
 	/**
-	 * A better "isBlockIndirectlyGettingPowered()" that doesn't load chunks
+	 * A better "isBlockIndirectlyGettingPowered()" that doesn't load chunks.
 	 * @param world - the world to perform the check in
 	 * @param coord - the coordinate of the block performing the check
 	 * @return if the block is indirectly getting powered by LOADED chunks
 	 */
 	public static boolean isGettingPowered(World world, Coord4D coord)
+	{
+		return isGettingPowered(world, coord, true);
+	}
+	
+	/**
+	 * Extension of preceding isGettingPowered() method, used to define expansions of the check.
+	 * @param world - the world to perform the check in
+	 * @param coord - the coordinate of the block performing the check
+	 * @param expand - whether or not the check should be recursively called on the surrounding coordinates
+	 * @return if the block is indirectly getting powered by LOADED chunks
+	 */
+	public static boolean isGettingPowered(World world, Coord4D coord, boolean expand)
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -673,14 +685,11 @@ public final class MekanismUtils
 			
 			if(sideCoord.exists(world) && sideCoord.getFromSide(side).exists(world))
 			{
-				if(sideCoord.getFromSide(side).exists(world))
+				if(world.isBlockProvidingPowerTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.getOpposite().ordinal()) > 0)
 				{
-					if(world.getIndirectPowerLevelTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
-					{
-						return true;
-					}
+					return true;
 				}
-				else if(world.isBlockProvidingPowerTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
+				else if(expand && isGettingPowered(world, sideCoord, false))
 				{
 					return true;
 				}
