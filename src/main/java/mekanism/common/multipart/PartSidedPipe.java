@@ -531,6 +531,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		
 		redstonePowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		refreshConnections();
+		tile().notifyTileChange();
 	}
 	
 	@Override
