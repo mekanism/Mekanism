@@ -1349,10 +1349,17 @@ public final class MekanismUtils
 	public static boolean hasUsableWrench(EntityPlayer player, int x, int y, int z)
 	{
 		ItemStack tool = player.getCurrentEquippedItem();
+		
 		if(tool.getItem() instanceof IMekWrench && ((IMekWrench)tool.getItem()).canUseWrench(player, x, y, z))
+		{
 			return true;
+		}
+		
 		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool.getItem() instanceof IToolWrench && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
+		{
 			return true;
+		}
+		
 		return false;
 	}
 

@@ -15,6 +15,9 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage
 {
+	public int clientCells;
+	public int clientProviders;
+	
 	public TileEntityInductionCasing() 
 	{
 		this("InductionCasing");
@@ -55,6 +58,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 			data.add(structure.storageCap);
 			data.add(structure.outputCap);
 			data.add(structure.lastOutput);
+			
+			data.add(structure.volWidth);
+			data.add(structure.volHeight);
+			data.add(structure.volLength);
+			
+			data.add(structure.cells.size());
+			data.add(structure.providers.size());
 		}
 		
 		return data;
@@ -71,6 +81,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 			structure.storageCap = dataStream.readDouble();
 			structure.outputCap = dataStream.readDouble();
 			structure.lastOutput = dataStream.readDouble();
+			
+			structure.volWidth = dataStream.readInt();
+			structure.volHeight = dataStream.readInt();
+			structure.volLength = dataStream.readInt();
+			
+			clientCells = dataStream.readInt();
+			clientProviders = dataStream.readInt();
 		}
 	}
 

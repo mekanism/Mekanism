@@ -406,6 +406,12 @@ gui.incomplete=Incomplete
 gui.inductionMatrix=Induction Matrix
 gui.matrixStats=Matrix Statistics
 gui.main=Main
+gui.outputting=Outputting
+gui.dimensions=Dimensions
+gui.constituents=Constituents
+gui.cells=cells
+gui.providers=providers
+gui.structure=Structure
 
 gui.reactor.injectionRate=Injection Rate
 

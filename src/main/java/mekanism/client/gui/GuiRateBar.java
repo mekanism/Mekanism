@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -9,45 +8,19 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiPowerBar extends GuiElement
+public class GuiRateBar extends GuiElement
 {
 	private int xLocation;
 	private int yLocation;
 
-	private int width = 6;
-	private int height = 56;
-	private int innerOffsetY = 2;
+	private int width = 8;
+	private int height = 60;
 
-	private TileEntityElectricBlock tileEntity;
-	private IPowerInfoHandler handler;
+	private IRateInfoHandler handler;
 
-	public GuiPowerBar(IGuiWrapper gui, TileEntityElectricBlock tile, ResourceLocation def, int x, int y)
+	public GuiRateBar(IGuiWrapper gui, IRateInfoHandler h, ResourceLocation def, int x, int y)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
-		
-		tileEntity = tile;
-		
-		handler = new IPowerInfoHandler() {
-			@Override
-			public String getTooltip()
-			{
-				return MekanismUtils.getEnergyDisplay(tileEntity.getEnergy());
-			}
-			
-			@Override
-			public double getLevel()
-			{
-				return tileEntity.getEnergy()/tileEntity.getMaxEnergy();
-			}
-		};
-		
-		xLocation = x;
-		yLocation = y;
-	}
-	
-	public GuiPowerBar(IGuiWrapper gui, IPowerInfoHandler h, ResourceLocation def, int x, int y)
-	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiRateBar.png"), gui, def);
 		
 		handler = h;
 		
@@ -61,7 +34,7 @@ public class GuiPowerBar extends GuiElement
 		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
 	}
 	
-	public static abstract class IPowerInfoHandler
+	public static abstract class IRateInfoHandler
 	{
 		public String getTooltip()
 		{
@@ -80,8 +53,8 @@ public class GuiPowerBar extends GuiElement
 		
 		if(handler.getLevel() > 0)
 		{
-			int displayInt = (int)(handler.getLevel()*52) + innerOffsetY;
-			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6, height - displayInt, width, displayInt);
+			int displayInt = (int)(handler.getLevel()*58);
+			guiObj.drawTexturedRect(guiWidth + xLocation+1, guiHeight + yLocation + height-1 - displayInt, 8, height-2 - displayInt, width-2, displayInt);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -92,7 +65,7 @@ public class GuiPowerBar extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(handler.getTooltip() != null && xAxis >= xLocation && xAxis <= xLocation + width && yAxis >= yLocation && yAxis <= yLocation + height)
+		if(handler.getTooltip() != null && xAxis >= xLocation+1 && xAxis <= xLocation + width-1 && yAxis >= yLocation+1 && yAxis <= yLocation + height-1)
 		{
 			displayTooltip(handler.getTooltip(), xAxis, yAxis);
 		}
