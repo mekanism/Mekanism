@@ -1,19 +1,24 @@
 package mekanism.common.content.transporter;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
 public abstract class TransporterFilter
 {
+	public static final int MAX_LENGTH = 24;
+	
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ');
+	
 	public EnumColor color;
 
 	public abstract boolean canFilter(ItemStack itemStack);

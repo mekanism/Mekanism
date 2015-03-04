@@ -9,7 +9,6 @@ import mekanism.common.SideData;
 import mekanism.common.base.IInvConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -34,6 +33,28 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		super(container);
 		tileEntity = tile;
+	}
+	
+	public void renderScaledText(String text, int x, int y, int color, int maxX)
+	{
+		int length = fontRendererObj.getStringWidth(text);
+		
+		if(length <= maxX)
+		{
+			fontRendererObj.drawString(text, x, y, color);
+		}
+		else {
+			float scale = (float)maxX/length;
+			float reverse = 1/scale;
+			float yAdd = 4-(scale*8)/2F;
+			
+			GL11.glPushMatrix();
+			
+			GL11.glScalef(scale, scale, scale);
+			fontRendererObj.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
+			
+			GL11.glPopMatrix();
+		}
 	}
 
 	@Override

@@ -173,13 +173,11 @@ public class RenderBin extends TileEntitySpecialRenderer
 		GL11.glScalef(scale, -scale, scale);
 		GL11.glDepthMask(false);
 
-		int offsetX;
-		int offsetY;
 		int realHeight = (int)Math.floor(displayHeight / scale);
 		int realWidth = (int)Math.floor(displayWidth / scale);
 
-		offsetX = (realWidth - requiredWidth) / 2;
-		offsetY = (realHeight - requiredHeight) / 2;
+		int offsetX = (realWidth - requiredWidth) / 2;
+		int offsetY = (realHeight - requiredHeight) / 2;
 
 		GL11.glDisable(GL11.GL_LIGHTING);
 		fontRenderer.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);

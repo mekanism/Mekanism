@@ -9,6 +9,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.ContainerFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
@@ -18,7 +19,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -92,7 +92,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 		}
 
 		oreDictText = new GuiTextField(fontRendererObj, guiWidth + 35, guiHeight + 47, 95, 12);
-		oreDictText.setMaxStringLength(12);
+		oreDictText.setMaxStringLength(TransporterFilter.MAX_LENGTH);
 		oreDictText.setFocused(true);
 	}
 
@@ -110,7 +110,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 			return;
 		}
 
-		if(Character.isLetter(c) || Character.isDigit(c) || c == '*' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
 		{
 			oreDictText.textboxKeyTyped(c, i);
 		}
@@ -160,7 +160,7 @@ public class GuiTOreDictFilter extends GuiMekanism
 
 		fontRendererObj.drawString((isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.oredictFilter"), 43, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.status") + ": " + status, 35, 20, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.key") + ": " + filter.oreDictName, 35, 32, 0x00CD00);
+		renderScaledText(MekanismUtils.localize("gui.key") + ": " + filter.oreDictName, 35, 32, 0x00CD00, 107);
 
 		if(renderStack != null)
 		{
