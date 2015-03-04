@@ -143,7 +143,7 @@ public class MekanismGenerators implements IModule
 			" O ", "OAO", "ECE", Character.valueOf('O'), "ingotOsmium", Character.valueOf('A'), Mekanism.EnrichedAlloy, Character.valueOf('E'), Mekanism.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "circuitBasic"
 		}));
 
-		FuelHandler.addGas(GasRegistry.getGas("ethene"), 40, Mekanism.FROM_H2 + bioGeneration * 80); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+		FuelHandler.addGas(GasRegistry.getGas("ethene"), Mekanism.ETHENE_BURN_TIME, Mekanism.FROM_H2 + bioGeneration * 2 * Mekanism.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*2000ticks/100mB * 2x efficiency bonus
 
 	}
 	

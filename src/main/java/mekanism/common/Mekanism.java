@@ -330,6 +330,8 @@ public class Mekanism
 	public static double FROM_IC2;
 	public static double FROM_TE;
 	public static double FROM_UE = 1/TO_UE;
+	public static int ETHENE_BURN_TIME = 40;
+	public static int ATOMICDISASSEM_ENERGY_USAGE = 10;
 
 	public static boolean blacklistBC;
 	public static boolean blacklistIC2;
