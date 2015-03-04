@@ -369,7 +369,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	
 	protected void onStructureCreated(T structure, int origX, int origY, int origZ, int xmin, int xmax, int ymin, int ymax, int zmin, int zmax) {}
 	
-	protected void onStructureDestroyed(T structure) {}
+	public void onStructureDestroyed(T structure) {}
 
 	/**
 	 * Runs the protocol and updates all nodes that make a part of the multiblock.

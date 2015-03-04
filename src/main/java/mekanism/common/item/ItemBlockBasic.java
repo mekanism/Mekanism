@@ -6,6 +6,8 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
@@ -16,11 +18,13 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -52,7 +56,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author AidanBrady
  *
  */
-public class ItemBlockBasic extends ItemBlock
+public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 {
 	public Block metaBlock;
 
@@ -84,20 +88,6 @@ public class ItemBlockBasic extends ItemBlock
 	}
 
 	@Override
-	public int getItemStackLimit(ItemStack stack)
-	{
-		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
-		{
-			if(stack.getItemDamage() == 6)
-			{
-				return 1;
-			}
-		}
-
-		return 64;
-	}
-
-	@Override
 	public int getMetadata(int i)
 	{
 		return i;
@@ -125,6 +115,11 @@ public class ItemBlockBasic extends ItemBlock
 			else {
 				list.add(EnumColor.DARK_RED + "Empty");
 			}
+		}
+		
+		if(getMaxEnergy(itemstack) > 0)
+		{
+			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 		}
 	}
 
@@ -214,6 +209,13 @@ public class ItemBlockBasic extends ItemBlock
 						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
 					}
 				}
+			}
+			
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			
+			if(tileEntity instanceof IStrictEnergyStorage)
+			{
+				((IStrictEnergyStorage)tileEntity).setEnergy(getEnergy(stack));
 			}
 		}
 
@@ -305,5 +307,70 @@ public class ItemBlockBasic extends ItemBlock
 		}
 
 		return getUnlocalizedName() + "." + name;
+	}
+	
+	@Override
+	public double getEnergy(ItemStack itemStack)
+	{
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
+		{
+			if(itemStack.stackTagCompound == null)
+			{
+				return 0;
+			}
+	
+			return itemStack.stackTagCompound.getDouble("energyStored");
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public void setEnergy(ItemStack itemStack, double amount)
+	{
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
+		{
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+	
+			itemStack.stackTagCompound.setDouble("energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+		}
+	}
+
+	@Override
+	public double getMaxEnergy(ItemStack itemStack)
+	{
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
+		{
+			return InductionCellTier.values()[getTier(itemStack).ordinal()].MAX_ELECTRICITY;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public double getMaxTransfer(ItemStack itemStack)
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canReceive(ItemStack itemStack)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isMetadataSpecific(ItemStack itemStack) 
+	{
+		return true;
 	}
 }

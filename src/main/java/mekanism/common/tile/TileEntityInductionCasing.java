@@ -54,7 +54,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		
 		if(structure != null)
 		{
-			data.add(structure.electricityStored);
+			data.add(structure.getEnergy(worldObj));
 			data.add(structure.storageCap);
 			data.add(structure.outputCap);
 			data.add(structure.lastOutput);
@@ -77,7 +77,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 		
 		if(clientHasStructure)
 		{
-			structure.electricityStored = dataStream.readDouble();
+			structure.clientEnergy = dataStream.readDouble();
 			structure.storageCap = dataStream.readDouble();
 			structure.outputCap = dataStream.readDouble();
 			structure.lastOutput = dataStream.readDouble();
@@ -123,7 +123,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	@Override
 	public double getEnergy()
 	{
-		return structure != null ? structure.electricityStored : 0;
+		if(!worldObj.isRemote)
+		{
+			return structure != null ? structure.getEnergy(worldObj) : 0;
+		}
+		else {
+			return structure.clientEnergy;
+		}
 	}
 
 	@Override
@@ -131,7 +137,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		if(structure != null)
 		{
-			structure.electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
+			structure.setEnergy(worldObj, Math.max(Math.min(energy, getMaxEnergy()), 0));
 			MekanismUtils.saveChunk(this);
 		}
 	}

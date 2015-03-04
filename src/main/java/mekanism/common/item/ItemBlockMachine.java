@@ -187,6 +187,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(hasTank(itemstack) && type != MachineType.PORTABLE_TANK)
 			{
 				FluidStack fluidStack = getFluidStack(itemstack);
+				
 				if(fluidStack != null)
 				{
 					list.add(EnumColor.PINK + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");

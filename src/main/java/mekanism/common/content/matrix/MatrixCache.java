@@ -11,20 +11,16 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 {
 	public ItemStack[] inventory = new ItemStack[2];
 	
-	public double electricityStored;
-	
 	@Override
 	public void apply(SynchronizedMatrixData data) 
 	{
 		data.inventory = inventory;
-		data.electricityStored = electricityStored;
 	}
 
 	@Override
 	public void sync(SynchronizedMatrixData data) 
 	{
 		inventory = data.inventory;
-		electricityStored = data.electricityStored;
 	}
 
 	@Override
@@ -43,8 +39,6 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 				inventory[slotID] = ItemStack.loadItemStackFromNBT(tagCompound);
 			}
 		}
-		
-		electricityStored = nbtTags.getDouble("electricityStored");
 	}
 
 	@Override
@@ -64,7 +58,5 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData>
 		}
 
 		nbtTags.setTag("Items", tagList);
-		
-		nbtTags.setDouble("electricityStored", electricityStored);
 	}
 }

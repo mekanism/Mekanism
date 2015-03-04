@@ -7,6 +7,8 @@ import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
 import mekanism.common.CTMData;
@@ -913,6 +915,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
 			}
 		}
+		
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		
+		if(tileEntity instanceof IStrictEnergyStorage)
+		{
+			IEnergizedItem energizedItem = (IEnergizedItem)ret.getItem();
+			energizedItem.setEnergy(ret, ((IStrictEnergyStorage)tileEntity).getEnergy());
+		}
 
 		return ret;
 	}
@@ -934,7 +944,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -944,7 +954,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
 
 		world.setBlockToAir(x, y, z);
 

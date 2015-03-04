@@ -83,39 +83,11 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 			{
 				structureFound.cells.add(coord);
 				structureFound.storageCap += ((TileEntityInductionCell)tile).tier.MAX_ELECTRICITY;
-				structureFound.electricityStored += ((TileEntityInductionCell)tile).getEnergy();
-				((TileEntityInductionCell)tile).setEnergy(0);
 			}
 			else if(tile instanceof TileEntityInductionProvider)
 			{
 				structureFound.providers.add(coord);
 				structureFound.outputCap += ((TileEntityInductionProvider)tile).tier.OUTPUT;
-			}
-		}
-	}
-	
-	@Override
-	protected void onStructureDestroyed(SynchronizedMatrixData structure)
-	{
-		if(structure.electricityStored <= 0)
-		{
-			return;
-		}
-		
-		for(Coord4D coord : structure.cells)
-		{
-			if(coord.getTileEntity(pointer.getWorldObj()) instanceof TileEntityInductionCell)
-			{
-				TileEntityInductionCell cell = (TileEntityInductionCell)coord.getTileEntity(pointer.getWorldObj());
-				
-				double toAdd = Math.min(cell.getMaxEnergy()-cell.getEnergy(), structure.electricityStored);
-				cell.setEnergy(cell.getEnergy()+toAdd);
-				structure.electricityStored -= toAdd;
-			}
-			
-			if(structure.electricityStored <= 0)
-			{
-				break;
 			}
 		}
 	}

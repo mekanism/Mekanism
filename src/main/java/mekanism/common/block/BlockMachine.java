@@ -8,6 +8,7 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.ClientProxy;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -43,7 +44,6 @@ import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
@@ -709,7 +709,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -861,7 +861,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
@@ -901,10 +901,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
 		}
 
-		if(tileEntity instanceof TileEntityElectricBlock)
+		if(tileEntity instanceof IStrictEnergyStorage)
 		{
 			IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
-			energizedItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
+			energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage)tileEntity).getEnergy());
 		}
 
 		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.length > 0)
@@ -943,7 +943,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
 
 		world.setBlockToAir(x, y, z);
 
