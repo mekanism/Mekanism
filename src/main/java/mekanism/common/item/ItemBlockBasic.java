@@ -116,8 +116,23 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 				list.add(EnumColor.DARK_RED + "Empty");
 			}
 		}
+		else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
+		{
+			if(itemstack.getItemDamage() == 3)
+			{
+				InductionCellTier tier = InductionCellTier.values()[getTier(itemstack).ordinal()];
+				
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.MAX_ELECTRICITY));
+			}
+			else if(itemstack.getItemDamage() == 4)
+			{
+				InductionProviderTier tier = InductionProviderTier.values()[getTier(itemstack).ordinal()];
+				
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.OUTPUT));
+			}
+		}
 		
-		if(getMaxEnergy(itemstack) > 0)
+		if(getMaxEnergy(itemstack) > 0 && itemstack.stackTagCompound != null)
 		{
 			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 		}

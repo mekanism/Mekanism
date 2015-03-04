@@ -55,7 +55,9 @@ public class GuiMatrixStats extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.matrixStats"), 45, 6, 0x404040);
+		String stats = MekanismUtils.localize("gui.matrixStats");
+		
+		fontRendererObj.drawString(stats, (xSize/2)-(fontRendererObj.getStringWidth(stats)/2), 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", 53, 26, 0x797979);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()), 59, 35, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.output") + ":", 53, 46, 0x797979);

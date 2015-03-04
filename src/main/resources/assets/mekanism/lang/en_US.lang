@@ -577,6 +577,7 @@ tooltip.keysFound=Key(s) found
 tooltip.noKey=No key
 tooltip.hp=HP
 tooltip.configureState=Configure State
+tooltip.outputRate=Output Rate
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
