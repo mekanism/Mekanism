@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
 import mekanism.common.content.tank.DynamicFluidTank;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -59,12 +59,18 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+	}
+	
+	@Override
+	public String getInventoryName()
+	{
+		return MekanismUtils.localize("gui.dynamicTank");
 	}
 }

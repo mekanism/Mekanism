@@ -79,7 +79,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 					{
 						push();
 
-						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 						GL11.glTranslated(getX(valveData.location.xCoord), getY(valveData.location.yCoord), getZ(valveData.location.zCoord));
 
 						MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());

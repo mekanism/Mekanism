@@ -66,7 +66,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		
 		World world = getWorld();
 		
-		if(acceptor.getTileEntity(world) == null || acceptor.getTileEntity(world).isInvalid() || transmitter.canConnectToAcceptor(side, true))
+		if(acceptor.getTileEntity(world) == null || acceptor.getTileEntity(world).isInvalid() || !transmitter.canConnectToAcceptor(side, true))
 		{
 			acceptorDirections.get(acceptor).remove(side.getOpposite());
 			

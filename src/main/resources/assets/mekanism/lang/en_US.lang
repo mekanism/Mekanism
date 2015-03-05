@@ -412,6 +412,7 @@ gui.constituents=Constituents
 gui.cells=cells
 gui.providers=providers
 gui.structure=Structure
+gui.dynamicTank=Dynamic Tank
 
 gui.reactor.injectionRate=Injection Rate
 

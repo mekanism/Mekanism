@@ -12,10 +12,8 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.multipart.TMultiPart;
@@ -44,7 +42,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public void refreshTransmitterNetwork()
 	{
-		getTransmitterNetwork().refresh(this);
+		getTransmitterNetwork().refresh((IGridTransmitter<N>)tile());
 		getTransmitterNetwork().refresh();
 	}
 
@@ -245,6 +243,8 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	protected void onModeChange(ForgeDirection side)
 	{
 		super.onModeChange(side);
+		
+		getTransmitterNetwork().refresh((IGridTransmitter<N>)tile());
 
 		if(!world().isRemote)
 		{

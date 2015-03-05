@@ -4,7 +4,6 @@ import mekanism.api.Coord4D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
@@ -39,6 +38,11 @@ public class DynamicFluidTank implements IFluidTank
 			{
 				return 0;
 			}
+			
+			if(dynamicTank.structure.fluidStored != null && !dynamicTank.structure.fluidStored.isFluidEqual(resource))
+			{
+				return 0;
+			}
 
 			if(dynamicTank.structure.fluidStored == null || dynamicTank.structure.fluidStored.fluidID <= 0)
 			{
@@ -47,14 +51,14 @@ public class DynamicFluidTank implements IFluidTank
 					if(doFill)
 					{
 						dynamicTank.structure.fluidStored = resource.copy();
-					}
-
-					if(resource.amount > 0 && doFill)
-					{
-						MekanismUtils.saveChunk(dynamicTank);
-						updateValveData(true);
-						dynamicTank.sendPacketToRenderer();
-						updateValveData(false);
+						
+						if(resource.amount > 0)
+						{
+							MekanismUtils.saveChunk(dynamicTank);
+							updateValveData(true);
+							dynamicTank.sendPacketToRenderer();
+							updateValveData(false);
+						}
 					}
 
 					return resource.amount;
@@ -64,40 +68,32 @@ public class DynamicFluidTank implements IFluidTank
 					{
 						dynamicTank.structure.fluidStored = resource.copy();
 						dynamicTank.structure.fluidStored.amount = getCapacity();
+						
+						if(getCapacity() > 0)
+						{
+							MekanismUtils.saveChunk(dynamicTank);
+							updateValveData(true);
+							dynamicTank.sendPacketToRenderer();
+							updateValveData(false);
+						}
 					}
 
-					if(getCapacity() > 0 && doFill)
+					return getCapacity();
+				}
+			}
+			else if(resource.amount <= getNeeded())
+			{
+				if(doFill)
+				{
+					dynamicTank.structure.fluidStored.amount += resource.amount;
+					
+					if(resource.amount > 0)
 					{
 						MekanismUtils.saveChunk(dynamicTank);
 						updateValveData(true);
 						dynamicTank.sendPacketToRenderer();
 						updateValveData(false);
 					}
-
-					return getCapacity();
-				}
-			}
-
-			if(!dynamicTank.structure.fluidStored.isFluidEqual(resource))
-			{
-				return 0;
-			}
-
-			int space = getCapacity() - dynamicTank.structure.fluidStored.amount;
-
-			if(resource.amount <= space)
-			{
-				if(doFill)
-				{
-					dynamicTank.structure.fluidStored.amount += resource.amount;
-				}
-
-				if(resource.amount > 0 && doFill)
-				{
-					MekanismUtils.saveChunk(dynamicTank);
-					updateValveData(true);
-					dynamicTank.sendPacketToRenderer();
-					updateValveData(false);
 				}
 
 				return resource.amount;
@@ -106,17 +102,17 @@ public class DynamicFluidTank implements IFluidTank
 				if(doFill)
 				{
 					dynamicTank.structure.fluidStored.amount = getCapacity();
+					
+					if(getNeeded() > 0)
+					{
+						MekanismUtils.saveChunk(dynamicTank);
+						updateValveData(true);
+						dynamicTank.sendPacketToRenderer();
+						updateValveData(false);
+					}
 				}
 
-				if(space > 0 && doFill)
-				{
-					MekanismUtils.saveChunk(dynamicTank);
-					updateValveData(true);
-					dynamicTank.sendPacketToRenderer();
-					updateValveData(false);
-				}
-
-				return space;
+				return getNeeded();
 			}
 		}
 
@@ -181,6 +177,11 @@ public class DynamicFluidTank implements IFluidTank
 		}
 
 		return null;
+	}
+	
+	public int getNeeded()
+	{
+		return getCapacity()-getFluidAmount();
 	}
 
 	@Override

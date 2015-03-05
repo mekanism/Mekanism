@@ -89,6 +89,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		{
 			if(structure != null)
 			{
+				if(structure.fluidStored != null && structure.fluidStored.amount <= 0)
+				{
+					structure.fluidStored = null;
+				}
+				
 				manageInventory();
 			}
 		}
@@ -281,28 +286,27 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		{
 			data.add(structure.volume*TankUpdateProtocol.FLUID_PER_TANK);
 			data.add(structure.editMode.ordinal());
-		}
-
-		if(structure != null && structure.fluidStored != null)
-		{
-			data.add(1);
-			data.add(structure.fluidStored.fluidID);
-			data.add(structure.fluidStored.amount);
-		}
-		else {
-			data.add(0);
-		}
-
-		if(structure != null && isRendering)
-		{
-			data.add(structure.valves.size());
-
-			for(ValveData valveData : structure.valves)
+			
+			if(structure.fluidStored != null)
 			{
-				valveData.location.write(data);
+				data.add(1);
+				data.add(structure.fluidStored.fluidID);
+				data.add(structure.fluidStored.amount);
+			}
+			else {
+				data.add(0);
+			}
+			
+			if(isRendering)
+			{
+				data.add(structure.valves.size());
 
-				data.add(valveData.side.ordinal());
-				data.add(valveData.serverFluid);
+				for(ValveData valveData : structure.valves)
+				{
+					valveData.location.write(data);
+					data.add(valveData.side.ordinal());
+					data.add(valveData.serverFluid);
+				}
 			}
 		}
 
@@ -318,47 +322,47 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		{
 			clientCapacity = dataStream.readInt();
 			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
-		}
-
-		if(dataStream.readInt() == 1)
-		{
-			structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
-		}
-		else {
-			structure.fluidStored = null;
-		}
-
-		if(clientHasStructure && isRendering)
-		{
-			int size = dataStream.readInt();
-
-			for(int i = 0; i < size; i++)
+			
+			if(dataStream.readInt() == 1)
 			{
-				ValveData data = new ValveData();
-				data.location = Coord4D.read(dataStream);
-				data.side = ForgeDirection.getOrientation(dataStream.readInt());
-				int viewingTicks = 0;
+				structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
+			}
+			else {
+				structure.fluidStored = null;
+			}
 
-				if(dataStream.readBoolean())
-				{
-					viewingTicks = 30;
-				}
+			if(isRendering)
+			{
+				int size = dataStream.readInt();
 
-				if(viewingTicks == 0)
+				for(int i = 0; i < size; i++)
 				{
-					if(valveViewing.containsKey(data) && valveViewing.get(data) > 0)
+					ValveData data = new ValveData();
+					data.location = Coord4D.read(dataStream);
+					data.side = ForgeDirection.getOrientation(dataStream.readInt());
+					int viewingTicks = 0;
+
+					if(dataStream.readBoolean())
 					{
-						continue;
+						viewingTicks = 30;
 					}
-				}
 
-				valveViewing.put(data, viewingTicks);
+					if(viewingTicks == 0)
+					{
+						if(valveViewing.containsKey(data) && valveViewing.get(data) > 0)
+						{
+							continue;
+						}
+					}
 
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+					valveViewing.put(data, viewingTicks);
 
-				if(tileEntity != null)
-				{
-					tileEntity.clientHasStructure = true;
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+
+					if(tileEntity != null)
+					{
+						tileEntity.clientHasStructure = true;
+					}
 				}
 			}
 		}

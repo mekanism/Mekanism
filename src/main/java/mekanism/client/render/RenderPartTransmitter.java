@@ -358,7 +358,6 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 			pop();
 		}
-
 	}
 
 	private DisplayInteger[] getListAndRender(ForgeDirection side, Fluid fluid)
@@ -492,6 +491,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		}
 
 		push();
+		
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
@@ -509,6 +509,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		MekanismRenderer.disableCullFace();
 		MekanismRenderer.glowOff();
+		
 		pop();
 	}
 
