@@ -1,35 +1,32 @@
 package mekanism.common.tile;
 
+import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
-import mekanism.api.IConfigurable;
 import mekanism.api.IFilterAccess;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.util.InventoryUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
-
-import cofh.api.energy.IEnergyHandler;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import ic2.api.energy.tile.IEnergySink;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
 		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess, IConfigurable
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess
 {
 	@Override
 	public int getSizeInventory()
@@ -492,27 +489,5 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 		}
 		
 		return getInv().getDataType();
-	}
-
-	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
-	{
-		if(getInv() == null)
-		{
-			return false;
-		}
-		
-		return getInv().onSneakRightClick(player, side);
-	}
-
-	@Override
-	public boolean onRightClick(EntityPlayer player, int side) 
-	{
-		if(getInv() == null)
-		{
-			return false;
-		}
-		
-		return getInv().onRightClick(player, side);
 	}
 }

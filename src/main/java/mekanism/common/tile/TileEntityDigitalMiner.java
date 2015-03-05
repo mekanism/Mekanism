@@ -1409,18 +1409,6 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		return "tooltip.filterCard.digitalMiner";
 	}
-
-	@Override
-	public boolean onSneakRightClick(EntityPlayer player, int side)
-	{
-		return clientRendering = !clientRendering;
-	}
-
-	@Override
-	public boolean onRightClick(EntityPlayer player, int side)
-	{
-		return false;
-	}
 	
 	public void writeSustainedData(ItemStack itemStack) 
 	{
