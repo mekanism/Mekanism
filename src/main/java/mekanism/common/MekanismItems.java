@@ -65,9 +65,9 @@ public class MekanismItems
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
 	public static final ItemRobit Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
 	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler().setUnlocalizedName("AtomicDisassembler");
-	public static final Item PortableTeleporter = new ItemPortableTeleporter().setUnlocalizedName("PortableTeleporter");
-	public static final Item Configurator = new ItemConfigurator().setUnlocalizedName("Configurator");
-	public static final Item NetworkReader = new ItemNetworkReader().setUnlocalizedName("NetworkReader");
+	public static final ItemPortableTeleporter PortableTeleporter = (ItemPortableTeleporter)new ItemPortableTeleporter().setUnlocalizedName("PortableTeleporter");
+	public static final ItemConfigurator Configurator = (ItemConfigurator)new ItemConfigurator().setUnlocalizedName("Configurator");
+	public static final ItemNetworkReader NetworkReader = (ItemNetworkReader)new ItemNetworkReader().setUnlocalizedName("NetworkReader");
 	public static final Item WalkieTalkie = new ItemWalkieTalkie().setUnlocalizedName("WalkieTalkie");
 	public static final ItemElectricBow ElectricBow = (ItemElectricBow)new ItemElectricBow().setUnlocalizedName("ElectricBow");
 	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
@@ -81,7 +81,7 @@ public class MekanismItems
 	public static final ItemGasMask GasMask = (ItemGasMask)new ItemGasMask().setUnlocalizedName("GasMask");
 	public static final ItemJetpack Jetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("Jetpack");
 	public static final ItemJetpack ArmoredJetpack = (ItemJetpack)new ItemJetpack().setUnlocalizedName("ArmoredJetpack");
-	public static final Item FreeRunners = new ItemFreeRunners().setUnlocalizedName("FreeRunners");
+	public static final ItemFreeRunners FreeRunners = (ItemFreeRunners)new ItemFreeRunners().setUnlocalizedName("FreeRunners");
 	public static final Item Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
 
 	//Multi-ID Items

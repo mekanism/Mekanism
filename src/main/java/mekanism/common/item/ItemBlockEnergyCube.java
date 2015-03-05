@@ -74,10 +74,10 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
-		ItemStack charged = new ItemStack(this);
-		setEnergyCubeTier(charged, tier);
-		charged.setItemDamage(100);
-		return charged;
+		ItemStack stack = new ItemStack(this);
+		setEnergyCubeTier(stack, tier);
+		stack.setItemDamage(100);
+		return stack;
 	}
 
 	@Override

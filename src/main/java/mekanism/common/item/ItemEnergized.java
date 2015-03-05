@@ -49,9 +49,9 @@ public class ItemEnergized extends ItemMekanism implements IEnergizedItem, ISpec
 
 	public ItemStack getUnchargedItem()
 	{
-		ItemStack charged = new ItemStack(this);
-		charged.setItemDamage(100);
-		return charged;
+		ItemStack stack = new ItemStack(this);
+		stack.setItemDamage(100);
+		return stack;
 	}
 
 	@Override

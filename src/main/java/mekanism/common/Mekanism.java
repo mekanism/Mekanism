@@ -304,7 +304,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.TeleportationCore), new Object[] {
 			"LAL", "GDG", "LAL", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('G'), "ingotGold", Character.valueOf('D'), Items.diamond
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PortableTeleporter), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.PortableTeleporter.getUnchargedItem(), new Object[] {
 			" E ", "CTC", " E ", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), "circuitBasic", Character.valueOf('T'), MekanismItems.TeleportationCore
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 11), new Object[] {
@@ -313,7 +313,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 9), new Object[] {
 			"ECE", "ORO", "ECE", Character.valueOf('C'), "circuitAdvanced", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('O'), "ingotOsmium", Character.valueOf('R'), new ItemStack(MekanismBlocks.MachineBlock, 1, 0)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.Configurator), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.Configurator.getUnchargedItem(), new Object[] {
 			" L ", "AEA", " S ", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('S'), Items.stick
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 9, 7), new Object[] {
@@ -331,14 +331,14 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 13), new Object[] {
 			"SGS", "CcC", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass", Character.valueOf('C'), Blocks.chest, Character.valueOf('c'), "circuitBasic"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 8, 9), new Object[] {
-			" I ", "ISI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('S'), Blocks.cobblestone
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 4, 9), new Object[] {
+			" I ", "IBI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('B'), Items.bucket
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 8, 10), new Object[] {
-			" I ", "IGI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('G'), "blockGlass"
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 4, 10), new Object[] {
+			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9), Character.valueOf('G'), "blockGlass"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 2, 11), new Object[] {
-			" I ", "ICI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('C'), "circuitBasic"
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9), Character.valueOf('C'), "circuitBasic"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock, 1, 14), new Object[] {
 			"PPP", "SES", Character.valueOf('P'), Blocks.stone_pressure_plate, Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
@@ -346,7 +346,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.Robit.getUnchargedItem(), new Object[] {
 			" S ", "ECE", "OIO", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), MekanismItems.AtomicAlloy, Character.valueOf('O'), "ingotRefinedObsidian", Character.valueOf('I'), new ItemStack(MekanismBlocks.MachineBlock, 1, 13)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.NetworkReader), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.NetworkReader.getUnchargedItem(), new Object[] {
 			" G ", "AEA", " I ", Character.valueOf('G'), "blockGlass", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('I'), "ingotSteel"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.WalkieTalkie), new Object[] {
@@ -420,7 +420,7 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 8), new Object[] {
 			"CGC", "ASA", "CGC", Character.valueOf('G'), MekanismUtils.getEmptyGasTank(), Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), MekanismItems.AtomicAlloy, Character.valueOf('S'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.FreeRunners), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.FreeRunners.getUnchargedItem(), new Object[] {
 			"C C", "A A", "T T", Character.valueOf('C'), "circuitBasic", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.ArmoredJetpack.getEmptyItem(), new Object[] {
@@ -430,7 +430,7 @@ public class Mekanism
 			" A ", "ACA", " A ", Character.valueOf('A'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), "circuitBasic"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismItems.SeismicReader.getUnchargedItem(), new Object[] {
-			"SLS", "STS", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4)
+			"SLS", "STS", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 9), new Object[] {
 			"TLT", "CIC", "TTT", Character.valueOf('T'), "ingotTin", Character.valueOf('L'), new ItemStack(Items.dye, 1, 4), Character.valueOf('C'), "circuitBasic", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8)
@@ -456,6 +456,12 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 1), new Object[] {
 			"APA", "CSC", "BBB", Character.valueOf('A'), "alloyElite", Character.valueOf('S'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('P'), MekanismItems.Polyethene, Character.valueOf('B'), "ingotBronze", Character.valueOf('C'), "circuitElite"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 4, 1), new Object[] {
+			" S ", "SES", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 2, 2), new Object[] {
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 1), Character.valueOf('C'), "circuitBasic"
 		}));
 		
 		//Energy Cube recipes
