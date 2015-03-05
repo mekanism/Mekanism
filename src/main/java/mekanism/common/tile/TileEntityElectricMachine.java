@@ -1,9 +1,17 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
+
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
@@ -14,10 +22,8 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -50,6 +56,62 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
+	}
+	
+	public void upgrade(RecipeType type)
+	{
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		
+		//Basic
+		factory.facing = facing;
+		factory.clientFacing = clientFacing;
+		factory.ticker = ticker;
+		factory.redstone = redstone;
+		factory.redstoneLastTick = redstoneLastTick;
+		factory.doAutoSync = doAutoSync;
+		factory.components = components;
+		
+		//Electric
+		factory.electricityStored = electricityStored;
+		factory.ic2Registered = ic2Registered;
+		
+		//Noisy
+		factory.soundURL = soundURL;
+		factory.sound = sound;
+		
+		//Machine
+		factory.sideConfig = sideConfig;
+		factory.progress[0] = operatingTicks;
+		factory.updateDelay = updateDelay;
+		factory.isActive = isActive;
+		factory.clientActive = clientActive;
+		factory.controlType = controlType;
+		factory.prevEnergy = prevEnergy;
+		factory.upgradeComponent = upgradeComponent;
+		factory.upgradeComponent.setUpgradeSlot(0);
+		factory.upgradeComponent.tileEntity = factory;
+		factory.ejectorComponent = ejectorComponent;
+		factory.ejectorComponent.sideData = factory.sideOutputs.get(5);
+		factory.ejectorComponent.tileEntity = factory;
+		factory.recipeType = type;
+		
+		factory.inventory[5] = inventory[0];
+		factory.inventory[1] = inventory[1];
+		factory.inventory[5+3] = inventory[2];
+		factory.inventory[0] = inventory[3];
+		
+		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		{
+			factory.recalculateUpgradables(upgrade);
+		}
+		
+		factory.upgraded = true;
+		
+		factory.markDirty();
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 
 	@Override

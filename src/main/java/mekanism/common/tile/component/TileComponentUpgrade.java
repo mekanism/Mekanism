@@ -88,6 +88,11 @@ public class TileComponentUpgrade implements ITileComponent
 	{
 		return upgradeSlot;
 	}
+	
+	public void setUpgradeSlot(int i)
+	{
+		upgradeSlot = i;
+	}
 
 	public int getScaledUpgradeProgress(int i)
 	{

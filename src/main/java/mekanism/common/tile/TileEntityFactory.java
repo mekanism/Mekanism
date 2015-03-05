@@ -186,7 +186,10 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.sounds = sounds;
 		factory.controlType = controlType;
 		factory.upgradeComponent = upgradeComponent;
+		factory.upgradeComponent.tileEntity = factory;
 		factory.ejectorComponent = ejectorComponent;
+		factory.ejectorComponent.tileEntity = factory;
+		factory.ejectorComponent.sideData = factory.sideOutputs.get(5);
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{
@@ -212,7 +215,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		factory.upgraded = true;
 		
-		markDirty();
+		factory.markDirty();
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 

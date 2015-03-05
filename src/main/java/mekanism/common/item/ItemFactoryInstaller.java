@@ -5,7 +5,9 @@ import java.util.List;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.tile.TileEntityFactory;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -80,7 +82,28 @@ public class ItemFactoryInstaller extends ItemMekanism
 			
 			if(type != null)
 			{
-				
+				if(tile instanceof TileEntityElectricMachine)
+				{
+					((TileEntityElectricMachine)tile).upgrade(type);
+					
+					if(!player.capabilities.isCreativeMode)
+					{
+						stack.stackSize = 0;
+					}
+					
+					return true;
+				}
+				else if(tile instanceof TileEntityAdvancedElectricMachine)
+				{
+					((TileEntityAdvancedElectricMachine)tile).upgrade(type);
+					
+					if(!player.capabilities.isCreativeMode)
+					{
+						stack.stackSize = 0;
+					}
+					
+					return true;
+				}
 			}
 		}
 		
