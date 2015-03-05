@@ -31,6 +31,8 @@ import mekanism.common.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.FluidNetwork.FluidTransferEvent;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.BoilerManager;
@@ -468,6 +470,34 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getEnergyCube(EnergyCubeTier.ULTIMATE), new Object[] {
 			"ATA", "dEd", "ATA", Character.valueOf('A'), "alloyUltimate", Character.valueOf('d'), "gemDiamond", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ELITE)
+		}));
+		
+		//Induction Cell recipes
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionCell(InductionCellTier.BASIC), new Object[] {
+			"TTT", "TET", "TTT", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionCell(InductionCellTier.ADVANCED), new Object[] {
+			"TCT", "CEC", "TCT", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ADVANCED), Character.valueOf('C'), MekanismUtils.getInductionCell(InductionCellTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionCell(InductionCellTier.ELITE), new Object[] {
+			"TCT", "CEC", "TCT", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ELITE), Character.valueOf('C'), MekanismUtils.getInductionCell(InductionCellTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionCell(InductionCellTier.ULTIMATE), new Object[] {
+			"TCT", "CEC", "TCT", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ULTIMATE), Character.valueOf('C'), MekanismUtils.getInductionCell(InductionCellTier.ELITE)
+		}));
+		
+		//Induction Provider recipes
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionProvider(InductionProviderTier.BASIC), new Object[] {
+			"CCC", "CEC", "CCC", Character.valueOf('C'), "circuitBasic", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionProvider(InductionProviderTier.ADVANCED), new Object[] {
+			"CPC", "PEP", "CPC", Character.valueOf('C'), "circuitAdvanced", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ADVANCED), Character.valueOf('P'), MekanismUtils.getInductionProvider(InductionProviderTier.BASIC)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionProvider(InductionProviderTier.ELITE), new Object[] {
+			"CPC", "PEP", "CPC", Character.valueOf('C'), "circuitElite", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ELITE), Character.valueOf('P'), MekanismUtils.getInductionProvider(InductionProviderTier.ADVANCED)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionProvider(InductionProviderTier.ULTIMATE), new Object[] {
+			"CPC", "PEP", "CPC", Character.valueOf('C'), "circuitUltimate", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ULTIMATE), Character.valueOf('P'), MekanismUtils.getInductionProvider(InductionProviderTier.ELITE)
 		}));
 		
 		//Circuit recipes

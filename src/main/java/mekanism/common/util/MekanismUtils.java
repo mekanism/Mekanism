@@ -32,6 +32,8 @@ import mekanism.common.OreDictCache;
 import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
+import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.Upgrade;
 import mekanism.common.Version;
 import mekanism.common.base.IActiveState;
@@ -42,6 +44,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.ContainerElectricChest;
+import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemBlockEnergyCube;
 import mekanism.common.item.ItemBlockGasTank;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
@@ -372,12 +375,31 @@ public final class MekanismUtils
 	/**
 	 * Retrieves an empty Energy Cube with a defined tier.
 	 * @param tier - tier to add to the Energy Cube
-	 * @return empty energy cube with defined tier
+	 * @return empty Energy Cube with defined tier
 	 */
 	public static ItemStack getEnergyCube(EnergyCubeTier tier)
 	{
-		ItemStack itemstack = ((ItemBlockEnergyCube)new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
-		return itemstack;
+		return ((ItemBlockEnergyCube)new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
+	}
+	
+	/**
+	 * Retrieves an empty Induction Cell with a defined tier.
+	 * @param tier - tier to add to the Induction Cell
+	 * @return empty Induction Cell with defined tier
+	 */
+	public static ItemStack getInductionCell(InductionCellTier tier)
+	{
+		return ((ItemBlockBasic)new ItemStack(MekanismBlocks.BasicBlock2, 1, 3).getItem()).getUnchargedCell(tier);
+	}
+	
+	/**
+	 * Retrieves an Induction Provider with a defined tier.
+	 * @param tier - tier to add to the Induction Provider
+	 * @return Induction Provider with defined tier
+	 */
+	public static ItemStack getInductionProvider(InductionProviderTier tier)
+	{
+		return ((ItemBlockBasic)new ItemStack(MekanismBlocks.BasicBlock2, 1, 4).getItem()).getUnchargedProvider(tier);
 	}
 
 	/**

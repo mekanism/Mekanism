@@ -11,6 +11,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.inventory.InventoryBin;
@@ -65,6 +66,20 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 		super(block);
 		metaBlock = block;
 		setHasSubtypes(true);
+	}
+	
+	public ItemStack getUnchargedCell(InductionCellTier tier)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
+		setTier(stack, tier.getBaseTier());
+		return stack;
+	}
+	
+	public ItemStack getUnchargedProvider(InductionProviderTier tier)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
+		setTier(stack, tier.getBaseTier());
+		return stack;
 	}
 	
 	public BaseTier getTier(ItemStack itemstack)
@@ -132,7 +147,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			}
 		}
 		
-		if(getMaxEnergy(itemstack) > 0 && itemstack.stackTagCompound != null)
+		if(getMaxEnergy(itemstack) > 0)
 		{
 			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 		}

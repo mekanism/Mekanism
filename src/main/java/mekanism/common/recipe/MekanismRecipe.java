@@ -11,7 +11,7 @@ import mekanism.common.Upgrade;
 import mekanism.common.base.IEnergyCube;
 import mekanism.common.base.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
-
+import mekanism.common.item.ItemBlockBasic;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -371,6 +371,13 @@ public class MekanismRecipe implements IRecipe
 			if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
 			{
 				if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+				{
+					return false;
+				}
+			}
+			else if(target.getItem() instanceof ItemBlockBasic && input.getItem() instanceof ItemBlockBasic)
+			{
+				if(((ItemBlockBasic)target.getItem()).getTier(target) != ((ItemBlockBasic)input.getItem()).getTier(input))
 				{
 					return false;
 				}
