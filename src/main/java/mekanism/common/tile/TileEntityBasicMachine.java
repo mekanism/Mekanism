@@ -170,6 +170,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
 		operatingTicks = dataStream.readInt();
 		clientActive = dataStream.readBoolean();
+		ticksRequired = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		for(int i = 0; i < 6; i++)
@@ -192,6 +193,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
 		data.add(operatingTicks);
 		data.add(isActive);
+		data.add(ticksRequired);
 		data.add(controlType.ordinal());
 		data.add(sideConfig);
 

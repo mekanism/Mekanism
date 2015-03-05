@@ -28,6 +28,7 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 		ticks = duration;
 	}
 
+	@Override
 	public PressurizedRecipe copy()
 	{
 		return new PressurizedRecipe(getInput().copy(), getOutput().copy(), extraEnergy, ticks);

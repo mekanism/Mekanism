@@ -190,10 +190,12 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	public RECIPE getRecipe()
 	{
 		ItemStackInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
 		}
+		
 		return cachedRecipe;
 	}
 

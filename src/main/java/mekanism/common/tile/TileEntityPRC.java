@@ -15,6 +15,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
 import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -83,7 +84,15 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
+				boolean update = BASE_TICKS_REQUIRED != recipe.ticks;
+				
 				BASE_TICKS_REQUIRED = recipe.ticks;
+				
+				if(update)
+				{
+					recalculateUpgradables(Upgrade.SPEED);
+				}
+				
 				setActive(true);
 
 				if((operatingTicks+1) < ticksRequired)
@@ -155,10 +164,12 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	public PressurizedRecipe getRecipe()
 	{
 		PressurizedInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getPRCRecipe(input);
 		}
+		
 		return cachedRecipe;
 	}
 
