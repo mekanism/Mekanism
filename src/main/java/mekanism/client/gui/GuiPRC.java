@@ -40,7 +40,8 @@ public class GuiPRC extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
+				double extra = tileEntity.getRecipe() != null ? tileEntity.getRecipe().extraEnergy : 0;
+				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.BASE_ENERGY_PER_TICK + extra));
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
 			}
 		}, this, tileEntity.guiLocation));
