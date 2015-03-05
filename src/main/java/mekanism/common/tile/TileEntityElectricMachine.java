@@ -96,6 +96,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.ejectorComponent = ejectorComponent;
 		factory.ejectorComponent.sideData = factory.sideOutputs.get(5);
 		factory.ejectorComponent.tileEntity = factory;
+		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		factory.recipeType = type;
 		
 		factory.inventory[5] = inventory[0];

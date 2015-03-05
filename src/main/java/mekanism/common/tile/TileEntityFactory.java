@@ -190,6 +190,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.ejectorComponent = ejectorComponent;
 		factory.ejectorComponent.tileEntity = factory;
 		factory.ejectorComponent.sideData = factory.sideOutputs.get(5);
+		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{
