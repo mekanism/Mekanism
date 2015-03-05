@@ -5,6 +5,7 @@ import java.io.File;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Pos3D;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
@@ -49,6 +50,7 @@ import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
+import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -103,6 +105,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -287,7 +290,13 @@ public class CommonProxy
 
 		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 64).getInt(64);
 		general.laserEnergyNeededPerHardness = Mekanism.configuration.get("general", "LaserDiggingEnergy", 100000).getInt(100000);
-
+		general.destroyDisabledBlocks = Mekanism.configuration.get("general", "DestroyDisabledBlocks", true).getBoolean(true);
+		
+		for(MachineType type : MachineType.getValidMachines())
+		{
+			machines.setEntry(type, Mekanism.configuration.get("machines", type.name + "Enabled", true).getBoolean(true));
+		}
+		
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
 		usage.osmiumCompressorUsage = Mekanism.configuration.get("usage", "OsmiumCompressorUsage", 100D).getDouble(100D);
 		usage.combinerUsage = Mekanism.configuration.get("usage", "CombinerUsage", 50D).getDouble(50D);
@@ -523,7 +532,20 @@ public class CommonProxy
 		else {
 			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
 		}
+		
 		MachineType.updateAllUsages();
+		
+		for(MachineType type : MachineType.getValidMachines())
+		{
+			if(machines.isEnabled(type))
+			{
+				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
+				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());
+			}
+			else {
+				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
+			}
+		}
 
 		Mekanism.logger.info("Received config from server.");
 	}

@@ -1,11 +1,15 @@
 package mekanism.common.block;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -30,6 +34,7 @@ import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -492,9 +497,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		for(MachineType type : MachineType.values())
+		for(MachineType type : MachineType.getValidMachines())
 		{
-			if(type.typeBlock == blockType)
+			if(type.typeBlock == blockType && type.isEnabled())
 			{
 				switch(type)
 				{
@@ -507,6 +512,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
 							list.add(stack);
 						}
+						
 						break;
 					case PORTABLE_TANK:
 						list.add(new ItemStack(item, 1, type.meta));
@@ -1091,6 +1097,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
+		public Collection<MekanismRecipe> machineRecipes = new HashSet<MekanismRecipe>();
 
 		private MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
 		{
@@ -1102,6 +1109,41 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			isElectric = electric;
 			hasModel = model;
 			supportsUpgrades = upgrades;
+		}
+		
+		public boolean isEnabled()
+		{
+			return machines.isEnabled(this);
+		}
+		
+		public void addRecipes(Collection<MekanismRecipe> recipes)
+		{
+			machineRecipes.addAll(recipes);
+		}
+		
+		public void addRecipe(MekanismRecipe recipe)
+		{
+			machineRecipes.add(recipe);
+		}
+		
+		public Collection<MekanismRecipe> getRecipes()
+		{
+			return machineRecipes;
+		}
+		
+		public static List<MachineType> getValidMachines()
+		{
+			List<MachineType> ret = new ArrayList<MachineType>();
+			
+			for(MachineType type : MachineType.values())
+			{
+				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR)
+				{
+					ret.add(type);
+				}
+			}
+			
+			return ret;
 		}
 
 		public static MachineType get(Block block, int meta)
@@ -1244,12 +1286,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		public static MachineType get(ItemStack stack)
 		{
 			return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
-		}
-
-		@Override
-		public String toString()
-		{
-			return Integer.toString(meta);
 		}
 	}
 

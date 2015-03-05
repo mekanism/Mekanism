@@ -1,7 +1,11 @@
 package mekanism.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.api.util.UnitDisplayUtils.TempType;
+import mekanism.common.block.BlockMachine.MachineType;
 
 public class MekanismConfig
 {
@@ -44,6 +48,7 @@ public class MekanismConfig
 		public static boolean blacklistBC;
 		public static boolean blacklistIC2;
 		public static boolean blacklistRF;
+		public static boolean destroyDisabledBlocks;
 	}
 
 	public static class client
@@ -59,6 +64,21 @@ public class MekanismConfig
 		public static boolean renderCTM = true;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
+	}
+	
+	public static class machines
+	{
+		private static Map<MachineType, Boolean> config = new HashMap<MachineType, Boolean>();
+		
+		public static boolean isEnabled(MachineType type)
+		{
+			return config.get(type) != null && config.get(type);
+		}
+		
+		public static void setEntry(MachineType type, boolean enabled)
+		{
+			config.put(type, enabled);
+		}
 	}
 
 	public static class usage

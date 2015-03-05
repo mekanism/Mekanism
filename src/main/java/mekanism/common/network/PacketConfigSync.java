@@ -1,17 +1,17 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
-
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMessage>
 {
@@ -53,6 +53,11 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
+			
+			for(MachineType type : MachineType.getValidMachines())
+			{
+				dataStream.writeBoolean(machines.isEnabled(type));
+			}
 	
 			dataStream.writeDouble(usage.enrichmentChamberUsage);
 			dataStream.writeDouble(usage.osmiumCompressorUsage);
@@ -115,6 +120,11 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
+			
+			for(MachineType type : MachineType.getValidMachines())
+			{
+				machines.setEntry(type, dataStream.readBoolean());
+			}
 	
 			usage.enrichmentChamberUsage = dataStream.readDouble();
 			usage.osmiumCompressorUsage = dataStream.readDouble();

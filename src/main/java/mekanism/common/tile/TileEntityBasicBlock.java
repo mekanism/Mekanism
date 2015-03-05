@@ -1,18 +1,22 @@
 package mekanism.common.tile;
 
+import ic2.api.tile.IWrenchable;
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,10 +25,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
-import ic2.api.tile.IWrenchable;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork
@@ -52,6 +52,18 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public void updateEntity()
 	{
+		if(!worldObj.isRemote && general.destroyDisabledBlocks)
+		{
+			MachineType type = MachineType.get(getBlockType(), getBlockMetadata());
+			
+			if(type != null && !type.isEnabled())
+			{
+				Mekanism.logger.info("[Mekanism] Destroying machine of type '" + type.name + "' at coords " + Coord4D.get(this) + " as according to config.");
+				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+				return;
+			}
+		}
+		
 		for(ITileComponent component : components)
 		{
 			component.tick();

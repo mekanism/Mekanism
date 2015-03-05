@@ -343,11 +343,13 @@ entity.BabySkeleton.name=Baby Skeleton
 
 //Config Gui
 mekanism.configgui.ctgy.general=Mekanism General Settings
+mekanism.configgui.ctgy.machines=Machine Settings
 mekanism.configgui.ctgy.usage=Usage Settings
 mekanism.configgui.ctgy.client=Client Settings
 
 //Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
 mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 

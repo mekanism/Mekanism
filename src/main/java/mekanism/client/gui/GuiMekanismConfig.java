@@ -25,6 +25,7 @@ public class GuiMekanismConfig extends GuiConfig
 	{
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
 		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.general"), "mekanism.configgui.ctgy.general", GeneralEntry.class));
+		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.machines"), "mekanism.configgui.ctgy.machines", MachinesEntry.class));
 		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.usage"), "mekanism.configgui.ctgy.usage", UsageEntry.class));
 		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.client"), "mekanism.configgui.ctgy.client", ClientEntry.class));
 		return list;
@@ -42,6 +43,23 @@ public class GuiMekanismConfig extends GuiConfig
 		{
 			return new GuiConfig(owningScreen,
 					new ConfigElement(Mekanism.configuration.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(),
+					owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
+					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+		}
+	}
+	
+	public static class MachinesEntry extends CategoryEntry
+	{
+		public MachinesEntry(GuiConfig owningScreen, GuiConfigEntries owningEntryList, IConfigElement prop)
+		{
+			super(owningScreen, owningEntryList, prop);
+		}
+
+		@Override
+		protected GuiScreen buildChildScreen()
+		{
+			return new GuiConfig(owningScreen,
+					new ConfigElement(Mekanism.configuration.getCategory("machines")).getChildElements(),
 					owningScreen.modID, Configuration.CATEGORY_GENERAL, false, false,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
 		}
