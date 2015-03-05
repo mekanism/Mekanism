@@ -2,8 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import mekanism.common.Mekanism;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -23,7 +21,6 @@ public class ItemDust extends ItemMekanism
 	{
 		super();
 		setHasSubtypes(true);
-		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
@@ -44,7 +41,7 @@ public class ItemDust extends ItemMekanism
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter <= 11; ++counter)
+		for(int counter = 0; counter <= 11; counter++)
 		{
 			itemList.add(new ItemStack(item, 1, counter));
 		}

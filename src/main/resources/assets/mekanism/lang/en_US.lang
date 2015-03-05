@@ -181,6 +181,11 @@ tile.EnergyCube.Elite.name=Elite Energy Cube
 tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
 tile.EnergyCube.Creative.name=Creative Energy Cube
 
+//Factory Installers
+item.basicFactoryInstaller.name=Basic Factory Installer
+item.advancedFactoryInstaller.name=Advanced Factory Installer
+item.eliteFactoryInstaller.name=Elite Factory Installer
+
 //Dust
 item.ironDust.name=Iron Dust
 item.goldDust.name=Gold Dust

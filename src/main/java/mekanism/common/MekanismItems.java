@@ -11,6 +11,7 @@ import mekanism.common.item.ItemDirtyDust;
 import mekanism.common.item.ItemDust;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.item.ItemFactoryInstaller;
 import mekanism.common.item.ItemFilterCard;
 import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
@@ -62,6 +63,7 @@ public class MekanismItems
 	public static final Item SpeedUpgrade = new ItemUpgrade(Upgrade.SPEED).setUnlocalizedName("SpeedUpgrade");
 	public static final Item EnergyUpgrade = new ItemUpgrade(Upgrade.ENERGY).setUnlocalizedName("EnergyUpgrade");
 	public static final Item FilterUpgrade = new ItemUpgrade(Upgrade.FILTER).setUnlocalizedName("FilterUpgrade");
+	public static final Item FactoryInstaller = new ItemFactoryInstaller().setUnlocalizedName("FactoryInstaller");
 	public static final ItemEnergized EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
 	public static final ItemRobit Robit = (ItemRobit)new ItemRobit().setUnlocalizedName("Robit");
 	public static final ItemAtomicDisassembler AtomicDisassembler = (ItemAtomicDisassembler)new ItemAtomicDisassembler().setUnlocalizedName("AtomicDisassembler");
@@ -149,6 +151,7 @@ public class MekanismItems
 		GameRegistry.registerItem(GlowPanel, "GlowPanel");
 		GameRegistry.registerItem(Flamethrower, "Flamethrower");
 		GameRegistry.registerItem(GaugeDropper, "GaugeDropper");
+		GameRegistry.registerItem(FactoryInstaller, "FactoryInstaller");
 
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);

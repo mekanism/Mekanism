@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import mekanism.api.util.StackUtils;
 import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
@@ -44,7 +47,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-import io.netty.buffer.ByteBuf;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -104,6 +106,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public GasTank gasTank;
 
 	public boolean sorting;
+	
+	public boolean upgraded;
 
 	public IResettableSound[] sounds = new IResettableSound[RecipeType.values().length];
 
@@ -137,6 +141,79 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		isActive = false;
 
 		gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS*tier.processes);
+	}
+	
+	public void upgrade()
+	{
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5+tier.ordinal()+1, 3);
+		
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		
+		//Basic
+		factory.facing = facing;
+		factory.clientFacing = clientFacing;
+		factory.ticker = ticker;
+		factory.redstone = redstone;
+		factory.redstoneLastTick = redstoneLastTick;
+		factory.doAutoSync = doAutoSync;
+		factory.components = components;
+		
+		//Electric
+		factory.electricityStored = electricityStored;
+		factory.ic2Registered = ic2Registered;
+		
+		//Noisy
+		factory.soundURL = soundURL;
+		factory.sound = sound;
+		
+		//Factory
+		factory.sideConfig = sideConfig;
+		
+		for(int i = 0; i < tier.processes; i++)
+		{
+			factory.progress[i] = progress[i];
+		}
+		
+		factory.recipeTicks = recipeTicks;
+		factory.clientActive = clientActive;
+		factory.isActive = isActive;
+		factory.updateDelay = updateDelay;
+		factory.recipeType = recipeType;
+		factory.prevEnergy = prevEnergy;
+		factory.gasTank.setGas(gasTank.getGas());
+		factory.sorting = sorting;
+		factory.sounds = sounds;
+		factory.controlType = controlType;
+		factory.upgradeComponent = upgradeComponent;
+		factory.ejectorComponent = ejectorComponent;
+		
+		for(int i = 0; i < tier.processes+5; i++)
+		{
+			factory.inventory[i] = inventory[i];
+		}
+		
+		for(int i = 0; i < tier.processes; i++)
+		{
+			int output = getOutputSlot(i);
+			
+			if(inventory[output] != null)
+			{
+				int newOutput = 5+factory.tier.processes+i;
+				
+				factory.inventory[newOutput] = inventory[output];
+			}
+		}
+		
+		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		{
+			factory.recalculateUpgradables(upgrade);
+		}
+		
+		factory.upgraded = true;
+		
+		markDirty();
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 
 	@Override
@@ -588,6 +665,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		recipeTicks = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		sorting = dataStream.readBoolean();
+		upgraded = dataStream.readBoolean();
 
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -612,6 +690,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
+		
+		if(upgraded)
+		{
+			markDirty();
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+			upgraded = false;
 		}
 	}
 
@@ -685,6 +770,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		data.add(recipeTicks);
 		data.add(controlType.ordinal());
 		data.add(sorting);
+		data.add(upgraded);
 		data.add(progress);
 		data.add(sideConfig);
 
@@ -697,18 +783,20 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		else {
 			data.add(false);
 		}
+		
+		upgraded = false;
 
 		return data;
 	}
 
 	public int getInputSlot(int operation)
 	{
-		return operation+5;
+		return 5+operation;
 	}
 
 	public int getOutputSlot(int operation)
 	{
-		return tier.processes+5+operation;
+		return 5+tier.processes+operation;
 	}
 
 	@Override
