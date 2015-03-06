@@ -2,12 +2,15 @@ package mekanism.generators.common.item;
 
 import java.util.List;
 
+import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.item.ItemMekanism;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +26,29 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
+	}
+	
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	{
+		GasStack gasStack = getGas(itemstack);
+
+		if(gasStack == null)
+		{
+			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
+			list.add(EnumColor.DARK_RED + MekanismUtils.localize("tooltip.insufficientFuel"));
+		}
+		else {
+			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			
+			if(gasStack.amount == getMaxGas(itemstack))
+			{
+				list.add(EnumColor.DARK_GREEN + MekanismUtils.localize("tooltip.readyForReaction") + "!");
+			}
+			else {
+				list.add(EnumColor.DARK_RED + MekanismUtils.localize("tooltip.insufficientFuel"));
+			}
+		}
 	}
 	
 	@Override
@@ -59,17 +85,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	@Override
 	public GasStack removeGas(ItemStack itemstack, int amount)
 	{
-		if(getGas(itemstack) == null)
-		{
-			return null;
-		}
-
-		Gas type = getGas(itemstack).getGas();
-
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
-
-		return new GasStack(type, gasToUse);
+		return null;
 	}
 
 	public int getStored(ItemStack itemstack)
@@ -80,7 +96,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 	@Override
 	public boolean canReceiveGas(ItemStack itemstack, Gas type)
 	{
-		return type == GasRegistry.getGas("hydrogen");
+		return type == GasRegistry.getGas("fusionFuelDT");
 	}
 
 	@Override
@@ -140,10 +156,10 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 
 	public ItemStack getEmptyItem()
 	{
-		ItemStack empty = new ItemStack(this);
-		setGas(empty, null);
-		empty.setItemDamage(100);
-		return empty;
+		ItemStack stack = new ItemStack(this);
+		setGas(stack, null);
+		stack.setItemDamage(100);
+		return stack;
 	}
 
 	@Override
@@ -155,7 +171,7 @@ public class ItemHohlraum extends ItemMekanism implements IGasItem
 		list.add(empty);
 
 		ItemStack filled = new ItemStack(this);
-		setGas(filled, new GasStack(GasRegistry.getGas("hydrogen"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
+		setGas(filled, new GasStack(GasRegistry.getGas("fusionFuelDT"), ((IGasItem)filled.getItem()).getMaxGas(filled)));
 		list.add(filled);
 	}
 }

@@ -6,9 +6,10 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,6 +27,20 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 		setMaxStackSize(1);
 		setMaxDamage(100);
 		setNoRepair();
+	}
+	
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
+	{
+		GasStack gasStack = getGas(itemstack);
+
+		if(gasStack == null)
+		{
+			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
+		}
+		else {
+			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+		}
 	}
 	
 	@Override
@@ -71,17 +86,7 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 	@Override
 	public GasStack removeGas(ItemStack itemstack, int amount)
 	{
-		if(getGas(itemstack) == null)
-		{
-			return null;
-		}
-
-		Gas type = getGas(itemstack).getGas();
-
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
-
-		return new GasStack(type, gasToUse);
+		return null;
 	}
 
 	public int getStored(ItemStack itemstack)

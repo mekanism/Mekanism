@@ -15,11 +15,14 @@ import mekanism.common.MekanismItems;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.recipe.MekanismRecipe;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 import buildcraft.api.fuels.BuildcraftFuelRegistry;
 import buildcraft.api.fuels.IFuel;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
@@ -88,7 +91,6 @@ public class MekanismGenerators implements IModule
 		{
 			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
 			{
-
 				if(!(s.getFluid() == null || GasRegistry.containsGas(s.getFluid().getName())))
 				{
 					GasRegistry.register(new Gas(s.getFluid()));
@@ -96,6 +98,11 @@ public class MekanismGenerators implements IModule
 			}
 
 			BuildcraftFuelRegistry.fuel.addFuel(FluidRegistry.getFluid("ethene"), (int)(240 * general.TO_TE), 40 * FluidContainerRegistry.BUCKET_VOLUME);
+		}
+		
+		for(ItemStack ore : OreDictionary.getOres("dustGold"))
+		{
+			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
 		}
 	}
 	

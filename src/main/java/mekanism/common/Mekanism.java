@@ -490,7 +490,7 @@ public class Mekanism
 		
 		//Induction Cell recipes
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionCell(InductionCellTier.BASIC), new Object[] {
-			"TTT", "TET", "TTT", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)
+			"LTL", "TET", "LTL", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), Character.valueOf('L'), "dustLithium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionCell(InductionCellTier.ADVANCED), new Object[] {
 			"TCT", "CEC", "TCT", Character.valueOf('T'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ADVANCED), Character.valueOf('C'), MekanismUtils.getInductionCell(InductionCellTier.BASIC)
@@ -504,7 +504,7 @@ public class Mekanism
 		
 		//Induction Provider recipes
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionProvider(InductionProviderTier.BASIC), new Object[] {
-			"CCC", "CEC", "CCC", Character.valueOf('C'), "circuitBasic", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC)
+			"LCL", "CEC", "LCL", Character.valueOf('C'), "circuitBasic", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), Character.valueOf('L'), "dustLithium"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(MekanismUtils.getInductionProvider(InductionProviderTier.ADVANCED), new Object[] {
 			"CPC", "PEP", "CPC", Character.valueOf('C'), "circuitAdvanced", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.ADVANCED), Character.valueOf('P'), MekanismUtils.getInductionProvider(InductionProviderTier.BASIC)

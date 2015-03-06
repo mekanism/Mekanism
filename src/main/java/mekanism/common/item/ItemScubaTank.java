@@ -11,7 +11,6 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -115,17 +114,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	@Override
 	public GasStack removeGas(ItemStack itemstack, int amount)
 	{
-		if(getGas(itemstack) == null)
-		{
-			return null;
-		}
-
-		Gas type = getGas(itemstack).getGas();
-
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
-
-		return new GasStack(type, gasToUse);
+		return null;
 	}
 
 	public int getStored(ItemStack itemstack)

@@ -136,17 +136,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public GasStack removeGas(ItemStack itemstack, int amount)
 	{
-		if(getGas(itemstack) == null)
-		{
-			return null;
-		}
-
-		Gas type = getGas(itemstack).getGas();
-
-		int gasToUse = Math.min(getStored(itemstack), Math.min(getRate(itemstack), amount));
-		setGas(itemstack, new GasStack(type, getStored(itemstack)-gasToUse));
-
-		return new GasStack(type, gasToUse);
+		return null;
 	}
 
 	public int getStored(ItemStack itemstack)

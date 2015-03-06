@@ -435,6 +435,7 @@ gui.upgrades.effect=Effect
 
 gui.chemicalInfuser.short=C. Infuser
 gui.chemicalDissolutionChamber.short=C. Dissolution Chamber
+gui.solarEvaporationController.short=Solar E. Controller
 
 gui.dictionary.noKey=No key.
 
@@ -589,6 +590,8 @@ tooltip.noKey=No key
 tooltip.hp=HP
 tooltip.configureState=Configure State
 tooltip.outputRate=Output Rate
+tooltip.insufficientFuel=Insufficient Fuel
+tooltip.readyForReaction=Ready for Reaction
 
 tooltip.portableTank.bucketMode=Bucket Mode
 

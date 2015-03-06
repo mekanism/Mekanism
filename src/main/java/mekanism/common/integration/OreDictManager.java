@@ -1,5 +1,8 @@
 package mekanism.common.integration;
 
+import ic2.api.recipe.RecipeInputOreDict;
+import ic2.api.recipe.Recipes;
+
 import java.util.ArrayList;
 
 import mekanism.api.gas.GasRegistry;
@@ -13,7 +16,6 @@ import mekanism.common.MekanismItems;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -24,9 +26,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.Optional.Method;
-
-import ic2.api.recipe.RecipeInputOreDict;
-import ic2.api.recipe.Recipes;
 
 public final class OreDictManager
 {
