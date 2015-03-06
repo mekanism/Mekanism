@@ -44,6 +44,7 @@ item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
+item.BioFuel.name=Bio Fuel
 
 //Control Circuits
 item.BasicControlCircuit.name=Basic Control Circuit
@@ -151,6 +152,7 @@ infuse.diamond=Diamond
 infuse.redstone=Redstone
 infuse.fungi=Fungi
 infuse.obsidian=Obsidian
+infuse.bio=Biomass
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -643,6 +645,7 @@ tooltip.FluidicPlenisher=A machine that is capable of creating entire !nlakes by
 tooltip.Laser=An advanced form of linear energy!ntransfer that utilizes an extremely!ncollimated beam of light.
 tooltip.LaserAmplifier=A block that can be used to merge,!nredirect and amplify laser beams,!nwith fine controls over when to fire
 tooltip.LaserTractorBeam=A block used to merge and!nredirect laser beams. Collects!ndrops from blocks it has broken.
+tooltip.SolarNeutronActivator=A machine that directs the neutron radiation !nof the sun into its internal reservoir, allowing !nfor the slow creation of various isotopes.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.
@@ -729,11 +732,8 @@ nei.rotaryCondensentrator=R. Condensentrator
 //**********//
 
 //Items
-item.BioFuel.name=Bio Fuel
 item.SolarPanel.name=Solar Panel
-
-//Infuse types
-infuse.bio=Biomass
+item.Hohlraum.name=Hohlraum
 
 //Generators
 tile.Generator.HeatGenerator.name=Heat Generator
