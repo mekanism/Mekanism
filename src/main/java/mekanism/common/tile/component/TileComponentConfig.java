@@ -3,7 +3,6 @@ package mekanism.common.tile.component;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -33,17 +32,22 @@ public class TileComponentConfig implements ITileComponent
 	public TileComponentConfig(TileEntityContainerBlock tile, TransmissionType... types)
 	{
 		tileEntity = tile;
-		transmissions = Arrays.asList(types);
 		
-		//Populate SideData list with empty arrays
-		for(TransmissionType transmission : types)
+		for(TransmissionType type : types)
 		{
-			sideOutputs.put(transmission.ordinal(), new ArrayList<SideData>());
-			ejecting.put(transmission.ordinal(), false);
-			canEject.put(transmission.ordinal(), true);
+			addSupported(type);
 		}
 		
 		tile.components.add(this);
+	}
+	
+	public void addSupported(TransmissionType type)
+	{
+		transmissions.add(type);
+		
+		sideOutputs.put(type.ordinal(), new ArrayList<SideData>());
+		ejecting.put(type.ordinal(), false);
+		canEject.put(type.ordinal(), true);
 	}
 	
 	public EnumSet<ForgeDirection> getSidesForData(TransmissionType type, int facing, int dataIndex)
@@ -71,19 +75,26 @@ public class TileComponentConfig implements ITileComponent
 		return canEject.get(type.ordinal());
 	}
 	
+	public void fillConfig(TransmissionType type, int data)
+	{
+		byte sideData = (byte)data;
+		
+		setConfig(type, new byte[] {sideData, sideData, sideData, sideData, sideData, sideData});
+	}
+	
 	public void setIOEnergyConfig()
 	{
-		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.GREY, EnergyState.OFF));
-		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.DARK_GREEN, EnergyState.INPUT));
-		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.DARK_RED, EnergyState.OUTPUT));
+		addOutput(TransmissionType.ENERGY, new SideData("None", EnumColor.GREY, EnergyState.OFF));
+		addOutput(TransmissionType.ENERGY, new SideData("Input", EnumColor.DARK_GREEN, EnergyState.INPUT));
+		addOutput(TransmissionType.ENERGY, new SideData("Output", EnumColor.DARK_RED, EnergyState.OUTPUT));
 		
 		setConfig(TransmissionType.ENERGY, new byte[] {1, 1, 2, 1, 1, 1});
 	}
 	
 	public void setInputEnergyConfig()
 	{
-		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.GREY, EnergyState.OFF));
-		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.DARK_GREEN, EnergyState.INPUT));
+		addOutput(TransmissionType.ENERGY, new SideData("None", EnumColor.GREY, EnergyState.OFF));
+		addOutput(TransmissionType.ENERGY, new SideData("Input", EnumColor.DARK_GREEN, EnergyState.INPUT));
 		
 		setConfig(TransmissionType.ENERGY, new byte[] {1, 1, 1, 1, 1, 1});
 		setCanEject(TransmissionType.ENERGY, false);

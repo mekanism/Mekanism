@@ -10,7 +10,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
-import mekanism.common.SideData.EnergyState;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -49,13 +48,12 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
-		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {2}));
-		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {3}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
 
-		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 4, 3});
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
 		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[4];
@@ -98,7 +96,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.upgradeComponent.tileEntity = factory;
 		factory.ejectorComponent = ejectorComponent;
-		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(5);
+		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
 		factory.ejectorComponent.tileEntity = factory;
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		factory.recipeType = type;

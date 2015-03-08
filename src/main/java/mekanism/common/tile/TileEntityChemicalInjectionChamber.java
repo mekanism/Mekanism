@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -10,12 +11,14 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.SideData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -25,6 +28,11 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	public TileEntityChemicalInjectionChamber()
 	{
 		super("injection", "ChemicalInjectionChamber", usage.chemicalInjectionChamberUsage, 1, 200, MachineType.CHEMICAL_INJECTION_CHAMBER.baseEnergy);
+		
+		configComponent.addSupported(TransmissionType.GAS);
+		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[] {0}));
+		configComponent.fillConfig(TransmissionType.GAS, 1);
 	}
 
 	@Override
@@ -47,7 +55,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		if(isValidGas(stack.getGas()))
+		if(canReceiveGas(side, stack.getGas()))
 		{
 			return gasTank.receive(stack, doTransfer);
 		}
@@ -58,7 +66,12 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return isValidGas(type);
+		if(configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0))
+		{
+			return isValidGas(type);
+		}
+		
+		return false;
 	}
 
 	@Override
@@ -83,7 +96,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return true;
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0);
 	}
 
 	@Override

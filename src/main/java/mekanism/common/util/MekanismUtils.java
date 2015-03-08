@@ -601,7 +601,7 @@ public final class MekanismUtils
 		TileEntity tile = (TileEntity)config;
 		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType());
+		tile.markDirty();
 	}
 
 	/**
@@ -627,7 +627,7 @@ public final class MekanismUtils
 		TileEntity tile = (TileEntity)config;
 		Coord4D coord = Coord4D.get(tile).getFromSide(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, config.getOrientation())));
 
-		tile.getWorldObj().notifyBlockOfNeighborChange(coord.xCoord, coord.yCoord, coord.zCoord, tile.getBlockType());
+		tile.markDirty();
 	}
 
 	/**

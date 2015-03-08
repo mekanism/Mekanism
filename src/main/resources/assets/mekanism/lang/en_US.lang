@@ -680,6 +680,15 @@ tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in t
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
 tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
 
+//Side data
+sideData.None=None
+sideData.Input=Input
+sideData.Output=Output
+sideData.Energy=Energy
+sideData.Gas=Gas
+sideData.Extra=Extra
+sideData.Infuse=Infuse
+
 //Redstone control
 control.disabled=Disabled
 control.high=High
