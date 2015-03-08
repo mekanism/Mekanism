@@ -86,7 +86,7 @@ public class GuiSideConfiguration extends GuiMekanism
 
 		for(int i = 0; i < slotPosMap.size(); i++)
 		{
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			MekanismRenderer.resetColor();
 
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
@@ -95,7 +95,7 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			if(data.color != EnumColor.GREY)
 			{
-				GL11.glColor4f(data.color.getColor(0), data.color.getColor(1), data.color.getColor(2), 1);
+				MekanismRenderer.color(data.color);
 			}
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
@@ -107,7 +107,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			}
 		}
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		MekanismRenderer.resetColor();
 	}
 
 	@Override

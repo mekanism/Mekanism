@@ -5,12 +5,10 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiSideConfiguration.GuiPos;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
@@ -88,16 +86,16 @@ public class GuiTransporterConfig extends GuiMekanism
 		
 		for(int i = 0; i < slotPosMap.size(); i++)
 		{
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			MekanismRenderer.resetColor();
 
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, i);
+			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
 
-			if(data.color != EnumColor.GREY)
+			if(color != null)
 			{
-				GL11.glColor4f(data.color.getColor(0), data.color.getColor(1), data.color.getColor(2), 1);
+				MekanismRenderer.color(color);
 			}
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
@@ -109,7 +107,7 @@ public class GuiTransporterConfig extends GuiMekanism
 			}
 		}
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		MekanismRenderer.resetColor();
 	}
 
 	@Override
