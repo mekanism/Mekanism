@@ -12,6 +12,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
@@ -69,7 +70,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 					if(!player.isSneaking())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation()).color.getName()));
+						SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewMode") + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
 						return true;
 					}
 					else {
@@ -77,7 +79,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						{
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 							MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation()).color.getName()));
+							SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleMode") + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
 
 							if(config instanceof TileEntityBasicBlock)
 							{
