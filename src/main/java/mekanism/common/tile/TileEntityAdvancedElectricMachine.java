@@ -68,7 +68,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	{
 		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"), perTick, ticksRequired, maxEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
@@ -78,6 +78,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {4}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 4, 5, 3});
+		configComponent.setInputEnergyConfig();
 
 		gasTank = new GasTank(MAX_GAS);
 

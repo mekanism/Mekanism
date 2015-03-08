@@ -86,7 +86,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		super("crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.PURPLE, new int[] {0}));
@@ -94,6 +94,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {2}));
 		
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {0, 3, 0, 0, 1, 2});
+		configComponent.setInputEnergyConfig();
 		
 		inventory = new ItemStack[4];
 		

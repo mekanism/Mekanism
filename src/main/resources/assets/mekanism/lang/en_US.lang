@@ -431,6 +431,7 @@ gui.providers=providers
 gui.structure=Structure
 gui.dynamicTank=Dynamic Tank
 gui.visuals=Visuals
+gui.noEject=Can't Eject
 
 gui.reactor.injectionRate=Injection Rate
 

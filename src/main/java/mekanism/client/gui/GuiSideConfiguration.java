@@ -158,7 +158,15 @@ public class GuiSideConfiguration extends GuiMekanism
 
 		String title = currentType.localize() + " " + MekanismUtils.localize("gui.config");
 		fontRendererObj.drawString(title, (xSize/2)-(fontRendererObj.getStringWidth(title)/2), 5, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
+		
+		if(configurable.getConfig().canEject(currentType))
+		{
+			fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
+		}
+		else {
+			fontRendererObj.drawString(MekanismUtils.localize("gui.noEject"), 53, 17, 0x00CD00);
+		}
+		
 		fontRendererObj.drawString(MekanismUtils.localize("gui.slots"), 77, 81, 0x787878);
 
 		for(int i = 0; i < slotPosMap.size(); i++)

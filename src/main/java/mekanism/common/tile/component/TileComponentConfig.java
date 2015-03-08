@@ -8,8 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
+import mekanism.common.SideData.EnergyState;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
@@ -22,6 +24,7 @@ public class TileComponentConfig implements ITileComponent
 	public Map<Integer, byte[]> sideConfigs = new HashMap<Integer, byte[]>();
 	public Map<Integer, ArrayList<SideData>> sideOutputs = new HashMap<Integer, ArrayList<SideData>>();
 	public Map<Integer, Boolean> ejecting = new HashMap<Integer, Boolean>();
+	public Map<Integer, Boolean> canEject = new HashMap<Integer, Boolean>();
 	
 	public List<TransmissionType> transmissions = new ArrayList<TransmissionType>();
 	
@@ -35,9 +38,38 @@ public class TileComponentConfig implements ITileComponent
 		{
 			sideOutputs.put(transmission.ordinal(), new ArrayList<SideData>());
 			ejecting.put(transmission.ordinal(), false);
+			canEject.put(transmission.ordinal(), true);
 		}
 		
 		tile.components.add(this);
+	}
+	
+	public void setCanEject(TransmissionType type, boolean eject)
+	{
+		canEject.put(type.ordinal(), eject);
+	}
+	
+	public boolean canEject(TransmissionType type)
+	{
+		return canEject.get(type.ordinal());
+	}
+	
+	public void setIOEnergyConfig()
+	{
+		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.GREY, EnergyState.OFF));
+		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.DARK_GREEN, EnergyState.INPUT));
+		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.DARK_RED, EnergyState.OUTPUT));
+		
+		setConfig(TransmissionType.ENERGY, new byte[] {1, 1, 2, 1, 1, 1});
+	}
+	
+	public void setInputEnergyConfig()
+	{
+		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.GREY, EnergyState.OFF));
+		addOutput(TransmissionType.ENERGY, new SideData(EnumColor.DARK_GREEN, EnergyState.INPUT));
+		
+		setConfig(TransmissionType.ENERGY, new byte[] {1, 1, 1, 1, 1, 1});
+		setCanEject(TransmissionType.ENERGY, false);
 	}
 	
 	public void setConfig(TransmissionType type, byte[] config)
@@ -85,8 +117,11 @@ public class TileComponentConfig implements ITileComponent
 		{
 			for(TransmissionType type : transmissions)
 			{
-				sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
-				ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
+				if(nbtTags.getByteArray("config" + type.ordinal()).length > 0)
+				{
+					sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
+					ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
+				}
 			}
 		}
 	}
@@ -96,7 +131,10 @@ public class TileComponentConfig implements ITileComponent
 	{
 		for(TransmissionType type : transmissions)
 		{
-			dataStream.readBytes(sideConfigs.get(type.ordinal()));
+			byte[] array = new byte[6];
+			dataStream.readBytes(array);
+			
+			sideConfigs.put(type.ordinal(), array);
 			ejecting.put(type.ordinal(), dataStream.readBoolean());
 		}
 	}

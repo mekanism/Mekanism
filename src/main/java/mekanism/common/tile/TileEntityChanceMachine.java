@@ -29,7 +29,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	{
 		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
@@ -38,6 +38,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {3}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 4, 3});
+		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[5];
 

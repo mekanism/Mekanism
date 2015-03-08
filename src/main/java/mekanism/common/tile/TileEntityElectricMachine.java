@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.SideData.EnergyState;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -46,7 +47,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 	{
 		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), perTick, ticksRequired, maxEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
@@ -55,6 +56,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {3}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 4, 3});
+		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[4];
 

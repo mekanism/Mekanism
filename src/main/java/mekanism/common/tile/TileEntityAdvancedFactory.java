@@ -16,7 +16,7 @@ public class TileEntityAdvancedFactory extends TileEntityFactory
 	{
 		super(FactoryTier.ADVANCED, MachineType.ADVANCED_FACTORY);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {0}));
@@ -26,6 +26,7 @@ public class TileEntityAdvancedFactory extends TileEntityFactory
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {10, 11, 12, 13, 14}));
 		
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {5, 4, 0, 3, 2, 1});
+		configComponent.setInputEnergyConfig();
 
 		upgradeComponent = new TileComponentUpgrade(this, 0);
 		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(5));

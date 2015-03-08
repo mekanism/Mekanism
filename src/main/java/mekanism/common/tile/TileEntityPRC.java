@@ -59,7 +59,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
@@ -68,6 +68,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {3}));
 
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
+		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[4];
 
