@@ -125,7 +125,7 @@ public class TileComponentConfig implements ITileComponent
 	
 	public boolean isEjecting(TransmissionType type)
 	{
-		return ejecting.get(type);
+		return ejecting.get(type.ordinal());
 	}
 
 	public void setEjecting(TransmissionType type, boolean eject)

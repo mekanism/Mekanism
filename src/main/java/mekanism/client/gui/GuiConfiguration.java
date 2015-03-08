@@ -21,7 +21,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -35,8 +34,6 @@ public class GuiConfiguration extends GuiMekanism
 {
 	public Map<Integer, GuiPos> slotPosMap = new HashMap<Integer, GuiPos>();
 
-	public Map<Integer, GuiPos> inputPosMap = new HashMap<Integer, GuiPos>();
-
 	public ISideConfiguration configurable;
 
 	public GuiConfiguration(EntityPlayer player, ISideConfiguration tile)
@@ -47,19 +44,12 @@ public class GuiConfiguration extends GuiMekanism
 
 		configurable = tile;
 
-		slotPosMap.put(0, new GuiPos(126, 64));
-		slotPosMap.put(1, new GuiPos(126, 34));
-		slotPosMap.put(2, new GuiPos(126, 49));
-		slotPosMap.put(3, new GuiPos(111, 64));
-		slotPosMap.put(4, new GuiPos(111, 49));
-		slotPosMap.put(5, new GuiPos(141, 49));
-
-		inputPosMap.put(0, new GuiPos(36, 64));
-		inputPosMap.put(1, new GuiPos(36, 34));
-		inputPosMap.put(2, new GuiPos(36, 49));
-		inputPosMap.put(3, new GuiPos(21, 64));
-		inputPosMap.put(4, new GuiPos(21, 49));
-		inputPosMap.put(5, new GuiPos(51, 49));
+		slotPosMap.put(0, new GuiPos(81, 64));
+		slotPosMap.put(1, new GuiPos(81, 34));
+		slotPosMap.put(2, new GuiPos(81, 49));
+		slotPosMap.put(3, new GuiPos(66, 64));
+		slotPosMap.put(4, new GuiPos(66, 49));
+		slotPosMap.put(5, new GuiPos(96, 49));
 	}
 
 	@Override
@@ -86,14 +76,6 @@ public class GuiConfiguration extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 14, 14, 14, 14);
 		}
 
-		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
-		{
-			drawTexturedModalRect(guiWidth + 156, guiHeight + 21, 176 + 42, 0, 14, 14);
-		}
-		else {
-			drawTexturedModalRect(guiWidth + 156, guiHeight + 21, 176 + 42, 14, 14, 14);
-		}
-
 		if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
 		{
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 0, 14, 14);
@@ -114,29 +96,6 @@ public class GuiConfiguration extends GuiMekanism
 			if(data.color != EnumColor.GREY)
 			{
 				GL11.glColor4f(data.color.getColor(0), data.color.getColor(1), data.color.getColor(2), 1);
-			}
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 0, 14, 14);
-			}
-			else {
-				drawTexturedModalRect(guiWidth + x, guiHeight + y, 176, 14, 14, 14);
-			}
-		}
-
-		for(int i = 0; i < inputPosMap.size(); i++)
-		{
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-			int x = inputPosMap.get(i).xPos;
-			int y = inputPosMap.get(i).yPos;
-
-			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
-
-			if(color != null)
-			{
-				GL11.glColor4f(color.getColor(0), color.getColor(1), color.getColor(2), 1);
 			}
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
@@ -192,19 +151,6 @@ public class GuiConfiguration extends GuiMekanism
 			}
 		}
 
-		for(int i = 0; i < inputPosMap.size(); i++)
-		{
-			int x = inputPosMap.get(i).xPos;
-			int y = inputPosMap.get(i).yPos;
-
-			EnumColor color = configurable.getEjector().getInputColor(ForgeDirection.getOrientation(i));
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-				drawCreativeTabHoveringText(color != null ? color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
-			}
-		}
-
 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
 			if(configurable.getEjector().getOutputColor() != null)
@@ -219,11 +165,6 @@ public class GuiConfiguration extends GuiMekanism
 		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.localize("gui.autoEject"), xAxis, yAxis);
-		}
-
-		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
-		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.configuration.strictInput"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -266,12 +207,6 @@ public class GuiConfiguration extends GuiMekanism
                 SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, TransmissionType.ITEM));
 			}
-
-			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
-			{
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
-			}
 		}
 
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
@@ -294,18 +229,6 @@ public class GuiConfiguration extends GuiMekanism
 			{
                 SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, TransmissionType.ITEM));
-			}
-		}
-
-		for(int i = 0; i < inputPosMap.size(); i++)
-		{
-			int x = inputPosMap.get(i).xPos;
-			int y = inputPosMap.get(i).yPos;
-
-			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
-			{
-                SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i, null));
 			}
 		}
 	}

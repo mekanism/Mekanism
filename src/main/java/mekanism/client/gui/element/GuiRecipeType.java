@@ -9,7 +9,7 @@ import codechicken.lib.vec.Rectangle4i;
 
 public class GuiRecipeType extends GuiElement
 {
-	TileEntityFactory tileEntity;
+	public TileEntityFactory tileEntity;
 
 	public GuiRecipeType(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def)
 	{

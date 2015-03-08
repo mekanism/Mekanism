@@ -18,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiContainerEditMode extends GuiElement
 {
-	TileEntity tileEntity;
+	public TileEntity tileEntity;
 
 	public GuiContainerEditMode(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
