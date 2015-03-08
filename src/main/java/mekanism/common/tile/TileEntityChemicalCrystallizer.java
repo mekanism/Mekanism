@@ -20,11 +20,11 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -86,14 +86,19 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	{
 		super("crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Gas", EnumColor.PURPLE, new int[] {0}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {1}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {2}));
-		
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {0, 3, 0, 0, 1, 2});
+		
+		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.YELLOW, new int[] {0}));
+		configComponent.setConfig(TransmissionType.GAS, new byte[] {0, 0, 0, 0, 1, 0});
+		configComponent.setCanEject(TransmissionType.GAS, false);
+		
 		configComponent.setInputEnergyConfig();
 		
 		inventory = new ItemStack[4];
@@ -332,13 +337,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return side == MekanismUtils.getLeft(facing);
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0);
 	}
 
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return side == MekanismUtils.getLeft(facing) && inputTank.canReceive(type);
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(0) && inputTank.canReceive(type);
 	}
 
 	@Override

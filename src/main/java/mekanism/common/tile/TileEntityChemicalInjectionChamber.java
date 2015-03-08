@@ -33,6 +33,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[] {0}));
 		configComponent.fillConfig(TransmissionType.GAS, 1);
+		configComponent.setCanEject(TransmissionType.GAS, false);
 	}
 
 	@Override

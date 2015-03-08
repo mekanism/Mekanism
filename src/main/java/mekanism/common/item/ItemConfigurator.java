@@ -71,7 +71,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					if(!player.isSneaking())
 					{
 						SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewMode") + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
 						return true;
 					}
 					else {
@@ -80,7 +80,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
 							MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
 							SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleMode") + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
 
 							if(config instanceof TileEntityBasicBlock)
 							{
@@ -188,6 +188,18 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		}
 
 		return false;
+	}
+	
+	public String getViewModeText(TransmissionType type)
+	{
+		String base = MekanismUtils.localize("tooltip.configurator.viewMode");
+		return String.format(base, type.localize().toLowerCase());
+	}
+	
+	public String getToggleModeText(TransmissionType type)
+	{
+		String base = MekanismUtils.localize("tooltip.configurator.toggleMode");
+		return String.format(base, type.localize());
 	}
 
 	public String getStateDisplay(ConfiguratorMode mode)
