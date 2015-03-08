@@ -56,6 +56,7 @@ import mekanism.client.gui.GuiSeismicVibrator;
 import mekanism.client.gui.GuiSolarEvaporationController;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
+import mekanism.client.gui.GuiTransporterConfig;
 import mekanism.client.gui.GuiUpgradeManagement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderGlowPanel;
@@ -506,6 +507,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiInductionMatrix(player.inventory, (TileEntityInductionCasing)tileEntity);
 			case 50:
 				return new GuiMatrixStats(player.inventory, (TileEntityInductionCasing)tileEntity);
+			case 51:
+				return new GuiTransporterConfig(player, (ISideConfiguration)tileEntity);
 		}
 
 		return null;

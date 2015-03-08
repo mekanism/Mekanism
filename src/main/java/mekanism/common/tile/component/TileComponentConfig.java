@@ -21,6 +21,7 @@ public class TileComponentConfig implements ITileComponent
 	
 	public Map<Integer, byte[]> sideConfigs = new HashMap<Integer, byte[]>();
 	public Map<Integer, ArrayList<SideData>> sideOutputs = new HashMap<Integer, ArrayList<SideData>>();
+	public Map<Integer, Boolean> ejecting = new HashMap<Integer, Boolean>();
 	
 	public List<TransmissionType> transmissions = new ArrayList<TransmissionType>();
 	
@@ -33,6 +34,7 @@ public class TileComponentConfig implements ITileComponent
 		for(TransmissionType transmission : types)
 		{
 			sideOutputs.put(transmission.ordinal(), new ArrayList<SideData>());
+			ejecting.put(transmission.ordinal(), false);
 		}
 		
 		tile.components.add(this);
@@ -84,6 +86,7 @@ public class TileComponentConfig implements ITileComponent
 			for(TransmissionType type : transmissions)
 			{
 				sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
+				ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
 			}
 		}
 	}
@@ -94,6 +97,7 @@ public class TileComponentConfig implements ITileComponent
 		for(TransmissionType type : transmissions)
 		{
 			dataStream.readBytes(sideConfigs.get(type.ordinal()));
+			ejecting.put(type.ordinal(), dataStream.readBoolean());
 		}
 	}
 
@@ -103,6 +107,7 @@ public class TileComponentConfig implements ITileComponent
 		for(TransmissionType type : transmissions)
 		{
 			nbtTags.setByteArray("config" + type.ordinal(), sideConfigs.get(type.ordinal()));
+			nbtTags.setBoolean("ejecting" + type.ordinal(), ejecting.get(type.ordinal()));
 		}
 		
 		nbtTags.setBoolean("sideDataStored", true);
@@ -114,6 +119,18 @@ public class TileComponentConfig implements ITileComponent
 		for(TransmissionType type : transmissions)
 		{
 			data.add(sideConfigs.get(type.ordinal()));
+			data.add(ejecting.get(type.ordinal()));
 		}
+	}
+	
+	public boolean isEjecting(TransmissionType type)
+	{
+		return ejecting.get(type);
+	}
+
+	public void setEjecting(TransmissionType type, boolean eject)
+	{
+		ejecting.put(type.ordinal(), eject);
+		MekanismUtils.saveChunk(tileEntity);
 	}
 }

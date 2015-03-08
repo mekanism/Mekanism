@@ -1,11 +1,15 @@
 package mekanism.client.gui;
 
 import mekanism.api.gas.GasTank;
-import mekanism.client.gui.GuiGasGauge.IGasInfoHandler;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiGasGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.util.MekanismUtils;

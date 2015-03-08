@@ -157,8 +157,9 @@ public class GuiConfiguration extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.configuration"), 60, 5, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getEjector().isEjecting() ? "On" : "Off"), 53, 17, 0x00CD00);
+		String title = MekanismUtils.localize("gui.configuration.side");
+		fontRendererObj.drawString(title, fontRendererObj.getStringWidth(title)/2, 5, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(TransmissionType.ITEM) ? "On" : "Off"), 53, 17, 0x00CD00);
 
 		fontRendererObj.drawString(MekanismUtils.localize("gui.input") + " (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")", 18, 81, 0x787878);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.output"), 72, 68, 0x787878);
@@ -263,7 +264,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, null));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, TransmissionType.ITEM));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)

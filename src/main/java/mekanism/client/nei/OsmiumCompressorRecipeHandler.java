@@ -6,12 +6,11 @@ import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiOsmiumCompressor;
-import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.MekanismItems;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.OsmiumCompressorRecipe;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 
 public class OsmiumCompressorRecipeHandler extends AdvancedMachineRecipeHandler

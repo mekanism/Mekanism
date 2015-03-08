@@ -1,20 +1,26 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
+import mekanism.api.Coord4D;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.LangUtils;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import codechicken.lib.vec.Rectangle4i;
 
-public class GuiVisualsTab extends GuiElement
+@SideOnly(Side.CLIENT)
+public class GuiConfigurationTab extends GuiElement
 {
-	private TileEntityDigitalMiner tileEntity;
+	public TileEntity tileEntity;
 
-	public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def)
+	public GuiConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, def);
 
 		tileEntity = tile;
 	}
@@ -31,7 +37,7 @@ public class GuiVisualsTab extends GuiElement
 		mc.renderEngine.bindTexture(RESOURCE);
 
 		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
-		
+
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
 			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
@@ -50,7 +56,7 @@ public class GuiVisualsTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			displayTooltip(MekanismUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.configuration"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -66,8 +72,8 @@ public class GuiVisualsTab extends GuiElement
 		{
 			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 			{
-				tileEntity.clientRendering = !tileEntity.clientRendering;
-	            SoundHandler.playSound("gui.button.press");
+				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 9));
+                SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

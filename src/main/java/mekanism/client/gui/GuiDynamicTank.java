@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.ContainerDynamicTank;
@@ -7,7 +8,6 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;

@@ -6,21 +6,20 @@ import java.util.List;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiElement;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -32,7 +31,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 

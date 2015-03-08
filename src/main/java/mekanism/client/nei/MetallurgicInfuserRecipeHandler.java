@@ -9,21 +9,20 @@ import java.util.Map;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiMetallurgicInfuser;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -31,7 +30,6 @@ import org.lwjgl.opengl.GL11;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 

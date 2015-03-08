@@ -1,8 +1,13 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.util.LangUtils;

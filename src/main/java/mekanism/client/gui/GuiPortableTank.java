@@ -1,13 +1,15 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiContainerEditMode;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerPortableTank;
 import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;

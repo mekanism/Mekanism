@@ -3,8 +3,9 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiGauge.Type;
-import mekanism.client.gui.GuiNumberGauge.INumberInfoHandler;
+import mekanism.client.gui.element.GuiNumberGauge;
+import mekanism.client.gui.element.GuiGauge.Type;
+import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
@@ -12,7 +13,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.IIcon;

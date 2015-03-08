@@ -1,14 +1,13 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
 import java.util.List;
 
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)

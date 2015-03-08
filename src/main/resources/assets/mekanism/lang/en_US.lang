@@ -447,6 +447,8 @@ gui.solarEvaporationController.short=Solar E. Controller
 gui.dictionary.noKey=No key.
 
 gui.configuration=Configuration
+gui.configuration.side=Side Configuration
+gui.configuration.transporter=Transporter Configuration
 gui.configuration.strictInput=Strict Input
 
 gui.rotaryCondensentrator.toggleOperation=Toggle operation

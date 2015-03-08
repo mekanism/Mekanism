@@ -6,11 +6,10 @@ import java.util.List;
 import mekanism.api.gas.Gas;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 

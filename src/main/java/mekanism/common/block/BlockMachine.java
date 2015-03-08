@@ -901,10 +901,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		{
 			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			itemStack.stackTagCompound.setBoolean("hasSideData", true);
-
-			itemStack.stackTagCompound.setBoolean("ejecting", config.getEjector().isEjecting());
-
 			config.getConfig().write(itemStack.stackTagCompound);
 		}
 		

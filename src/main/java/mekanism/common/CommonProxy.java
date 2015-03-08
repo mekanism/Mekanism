@@ -50,7 +50,6 @@ import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
-import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -496,6 +495,8 @@ public class CommonProxy
 			case 49:
 				return new ContainerInductionMatrix(player.inventory, (TileEntityInductionCasing)tileEntity);
 			case 50:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+			case 51:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 

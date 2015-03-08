@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.GuiMatrixTab.MatrixTab;
+import mekanism.client.gui.element.GuiMatrixTab;
+import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;

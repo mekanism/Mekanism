@@ -10,7 +10,6 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -209,33 +208,5 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 		display.endList();
 
 		return display;
-	}
-	
-	public static class OverlayRenderData
-	{
-		public EnumColor color;
-		public TransmissionType type;
-		
-		public OverlayRenderData(EnumColor c, TransmissionType t)
-		{
-			color = c;
-			type = t;
-		}
-		
-		@Override
-		public boolean equals(Object data)
-		{
-			return data instanceof OverlayRenderData && ((OverlayRenderData)data).color == color &&
-					((OverlayRenderData)data).type == type;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			int code = 1;
-			code = 31 * code + color.ordinal();
-			code = 31 * code + type.ordinal();
-			return code;
-		}
 	}
 }

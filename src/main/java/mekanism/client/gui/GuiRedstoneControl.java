@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
@@ -8,10 +9,8 @@ import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketRedstoneControl.RedstoneControlMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-
 import codechicken.lib.vec.Rectangle4i;
 
 public class GuiRedstoneControl extends GuiElement

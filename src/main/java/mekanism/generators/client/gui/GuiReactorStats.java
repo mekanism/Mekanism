@@ -7,8 +7,8 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.GuiEnergyInfo;
-import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerNull;
@@ -17,7 +17,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

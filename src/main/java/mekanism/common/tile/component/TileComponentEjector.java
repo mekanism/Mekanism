@@ -30,8 +30,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 	public boolean strictInput;
 
-	public boolean ejecting;
-
 	public EnumColor outputColor;
 
 	public EnumColor[] inputColors = new EnumColor[] {null, null, null, null, null, null};
@@ -84,7 +82,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void onOutput()
 	{
-		if(!ejecting || tileEntity.getWorldObj().isRemote)
+		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorldObj().isRemote)
 		{
 			return;
 		}
@@ -151,19 +149,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 
 	@Override
-	public boolean isEjecting()
-	{
-		return ejecting;
-	}
-
-	@Override
-	public void setEjecting(boolean eject)
-	{
-		ejecting = eject;
-		MekanismUtils.saveChunk(tileEntity);
-	}
-
-	@Override
 	public boolean hasStrictInput()
 	{
 		return strictInput;
@@ -205,7 +190,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void read(NBTTagCompound nbtTags)
 	{
-		ejecting = nbtTags.getBoolean("ejecting");
 		strictInput = nbtTags.getBoolean("strictInput");
 
 		if(nbtTags.hasKey("ejectColor"))
@@ -238,7 +222,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void read(ByteBuf dataStream)
 	{
-		ejecting = dataStream.readBoolean();
 		strictInput = dataStream.readBoolean();
 
 		int c = dataStream.readInt();
@@ -268,7 +251,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setBoolean("ejecting", ejecting);
 		nbtTags.setBoolean("strictInput", strictInput);
 
 		if(outputColor != null)
@@ -296,7 +278,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void write(ArrayList data)
 	{
-		data.add(ejecting);
 		data.add(strictInput);
 
 		if(outputColor != null)
@@ -317,5 +298,10 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				data.add(TransporterUtils.colors.indexOf(inputColors[i]));
 			}
 		}
+	}
+	
+	private boolean getEjecting(TransmissionType type)
+	{
+		return ((ISideConfiguration)tileEntity).getConfig().isEjecting(type);
 	}
 }

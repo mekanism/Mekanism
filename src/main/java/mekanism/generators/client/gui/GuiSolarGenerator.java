@@ -3,19 +3,18 @@ package mekanism.generators.client.gui;
 import java.util.List;
 
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.GuiEnergyInfo;
-import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.GuiPowerBar;
 import mekanism.client.gui.GuiRedstoneControl;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerSolarGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

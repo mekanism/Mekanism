@@ -1,10 +1,10 @@
 package mekanism.client.gui;
 
+import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

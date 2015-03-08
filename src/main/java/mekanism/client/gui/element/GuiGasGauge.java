@@ -1,34 +1,36 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
+
+import java.util.Arrays;
 
 import mekanism.api.Coord4D;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasTank;
+import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IDropperHandler;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
-import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidTank;
-import scala.actors.threadpool.Arrays;
 
-public class GuiFluidGauge extends GuiGauge<Fluid>
+public class GuiGasGauge extends GuiGauge<Gas>
 {
-	IFluidInfoHandler infoHandler;
+	IGasInfoHandler infoHandler;
 
-	public GuiFluidGauge(IFluidInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
+	public GuiGasGauge(IGasInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
 		super(type, gui, def, x, y);
 
 		infoHandler = handler;
 	}
 	
-	public static GuiFluidGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
+	public static GuiGasGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
-		GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, def, x, y);
+		GuiGasGauge gauge = new GuiGasGauge(null, type, gui, def, x, y);
 		gauge.dummy = true;
 		
 		return gauge;
@@ -66,7 +68,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			return height-2;
 		}
 		
-		return infoHandler.getTank().getFluid() != null ? infoHandler.getTank().getFluidAmount()*(height-2) / infoHandler.getTank().getCapacity() : 0;
+		return infoHandler.getTank().getGas() != null ? infoHandler.getTank().getStored()*(height-2) / infoHandler.getTank().getMaxGas() : 0;
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 			return dummyType.getIcon();
 		}
 		
-		return infoHandler.getTank().getFluid().getFluid().getIcon();
+		return (infoHandler.getTank() != null && infoHandler.getTank().getGas() != null && infoHandler.getTank().getGas().getGas() != null) ? infoHandler.getTank().getGas().getGas().getIcon() : null;
 	}
 
 	@Override
@@ -85,14 +87,14 @@ public class GuiFluidGauge extends GuiGauge<Fluid>
 	{
 		if(dummy)
 		{
-			return dummyType.getLocalizedName(null);
+			return dummyType.getLocalizedName();
 		}
 		
-		return infoHandler.getTank().getFluid() != null ? LangUtils.localizeFluidStack(infoHandler.getTank().getFluid()) + ": " + infoHandler.getTank().getFluidAmount() + "mB" : MekanismUtils.localize("gui.empty");
+		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : MekanismUtils.localize("gui.empty");
 	}
 
-	public static interface IFluidInfoHandler
+	public static interface IGasInfoHandler
 	{
-		public FluidTank getTank();
+		public GasTank getTank();
 	}
 }

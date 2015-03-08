@@ -1,10 +1,8 @@
 package mekanism.client.nei;
 
-import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiMekanism;
-
+import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.gui.inventory.GuiContainer;
-
 import codechicken.lib.vec.Rectangle4i;
 import codechicken.nei.api.INEIGuiAdapter;
 

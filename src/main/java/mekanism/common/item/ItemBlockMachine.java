@@ -274,9 +274,8 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			{
 				ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasSideData"))
+				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("sideDataStored"))
 				{
-					config.getEjector().setEjecting(stack.stackTagCompound.getBoolean("ejecting"));
 					config.getConfig().read(stack.stackTagCompound);
 				}
 			}

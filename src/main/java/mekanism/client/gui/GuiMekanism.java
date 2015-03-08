@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;

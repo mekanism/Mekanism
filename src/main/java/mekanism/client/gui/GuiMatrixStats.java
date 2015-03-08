@@ -1,9 +1,12 @@
 package mekanism.client.gui;
 
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.gui.GuiEnergyGauge.IEnergyInfoHandler;
-import mekanism.client.gui.GuiMatrixTab.MatrixTab;
-import mekanism.client.gui.GuiRateBar.IRateInfoHandler;
+import mekanism.client.gui.element.GuiEnergyGauge;
+import mekanism.client.gui.element.GuiMatrixTab;
+import mekanism.client.gui.element.GuiRateBar;
+import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
+import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
+import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;

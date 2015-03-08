@@ -1,19 +1,17 @@
 package mekanism.generators.client.gui;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGui.GeneratorsGuiMessage;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)

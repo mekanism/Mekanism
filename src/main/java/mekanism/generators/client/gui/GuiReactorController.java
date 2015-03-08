@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.GuiEnergyInfo;
-import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

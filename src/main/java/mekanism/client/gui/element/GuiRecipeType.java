@@ -1,11 +1,10 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.util.ResourceLocation;
-
 import codechicken.lib.vec.Rectangle4i;
 
 public class GuiRecipeType extends GuiElement

@@ -1,11 +1,11 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -168,7 +168,7 @@ public class GuiScrollList extends GuiElement
 	}
 	
 	@Override
-	protected void mouseClickMove(int xAxis, int yAxis, int button, long ticks)
+	public void mouseClickMove(int xAxis, int yAxis, int button, long ticks)
 	{
 		super.mouseClickMove(xAxis, yAxis, button, ticks);
 
@@ -179,7 +179,7 @@ public class GuiScrollList extends GuiElement
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int xAxis, int yAxis, int type)
+	public void mouseMovedOrUp(int xAxis, int yAxis, int type)
 	{
 		super.mouseMovedOrUp(xAxis, yAxis, type);
 

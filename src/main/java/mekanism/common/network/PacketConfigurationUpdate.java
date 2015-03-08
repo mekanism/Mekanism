@@ -37,7 +37,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 
 			if(message.packetType == ConfigurationPacket.EJECT)
 			{
-				config.getEjector().setEjecting(!config.getEjector().isEjecting());
+				config.getConfig().setEjecting(message.transmission, !config.getConfig().isEjecting(message.transmission));
 			}
 			else if(message.packetType == ConfigurationPacket.SIDE_DATA)
 			{
@@ -123,6 +123,11 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			packetType = type;
 	
 			coord4D = coord;
+			
+			if(packetType == ConfigurationPacket.EJECT)
+			{
+				transmission = trans;
+			}
 	
 			if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{
@@ -158,6 +163,11 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			{
 				dataStream.writeInt(clickType);
 			}
+			
+			if(packetType == ConfigurationPacket.EJECT)
+			{
+				dataStream.writeInt(transmission.ordinal());
+			}
 	
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
@@ -178,7 +188,11 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	
 			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	
-			if(packetType == ConfigurationPacket.SIDE_DATA)
+			if(packetType == ConfigurationPacket.EJECT)
+			{
+				transmission = TransmissionType.values()[dataStream.readInt()];
+			}
+			else if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
 				clickType = dataStream.readInt();
 				configIndex = dataStream.readInt();

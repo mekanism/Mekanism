@@ -3,15 +3,20 @@ package mekanism.client.gui;
 import java.util.List;
 
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.GuiEnergyInfo.IInfoHandler;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiConfigurationTab;
+import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerElectricMachine;
 import mekanism.common.tile.TileEntityElectricMachine;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

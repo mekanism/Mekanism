@@ -1,8 +1,8 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
+import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-
 import static java.lang.Math.min;
 
 public class GuiNumberGauge extends GuiGauge

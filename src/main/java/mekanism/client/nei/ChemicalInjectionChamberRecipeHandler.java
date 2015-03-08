@@ -8,11 +8,10 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
-import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 

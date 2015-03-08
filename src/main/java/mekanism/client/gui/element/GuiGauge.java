@@ -1,5 +1,6 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.IDropperHandler;
 import mekanism.common.util.MekanismUtils;
