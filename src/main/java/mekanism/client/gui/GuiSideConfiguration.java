@@ -178,7 +178,7 @@ public class GuiSideConfiguration extends GuiMekanism
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
-				drawCreativeTabHoveringText(data.color != null ? data.color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
+				drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
 			}
 		}
 

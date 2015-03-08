@@ -5,10 +5,11 @@ import java.util.Arrays;
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IDropperHandler;
+import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.util.MekanismUtils;
@@ -37,6 +38,12 @@ public class GuiGasGauge extends GuiGauge<Gas>
 	}
 	
 	@Override
+	public TransmissionType getTransmission()
+	{
+		return TransmissionType.GAS;
+	}
+	
+	@Override
 	public void mouseClicked(int xAxis, int yAxis, int button)
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
@@ -47,9 +54,9 @@ public class GuiGasGauge extends GuiGauge<Gas>
 			{
 				TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
 				
-				if(tile instanceof IDropperHandler)
+				if(tile instanceof ITankManager)
 				{
-					int index = Arrays.asList(((IDropperHandler)tile).getTanks()).indexOf(infoHandler.getTank());
+					int index = Arrays.asList(((ITankManager)tile).getTanks()).indexOf(infoHandler.getTank());
 					
 					if(index != -1)
 					{

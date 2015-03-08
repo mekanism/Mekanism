@@ -73,7 +73,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 	
 					push();
 	
-					MekanismRenderer.color(color, 0.4F);
+					MekanismRenderer.color(color, 0.6F);
 	
 					bindTexture(MekanismRenderer.getBlocksTexture());
 					GL11.glTranslatef((float)x, (float)y, (float)z);

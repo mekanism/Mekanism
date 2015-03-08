@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public interface IDropperHandler 
+public interface ITankManager 
 {
 	public Object[] getTanks();
 	

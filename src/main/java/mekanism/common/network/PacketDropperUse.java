@@ -3,8 +3,8 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.IDropperHandler;
-import mekanism.common.base.IDropperHandler.DropperHandler;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.ITankManager.DropperHandler;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -18,10 +18,10 @@ public class PacketDropperUse implements IMessageHandler<DropperUseMessage, IMes
 	{
 		TileEntity tileEntity = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
 		
-		if(tileEntity instanceof IDropperHandler)
+		if(tileEntity instanceof ITankManager)
 		{
 			try {
-				Object tank = ((IDropperHandler)tileEntity).getTanks()[message.tankId];
+				Object tank = ((ITankManager)tileEntity).getTanks()[message.tankId];
 				
 				if(tank != null)
 				{

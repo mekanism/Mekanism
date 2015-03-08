@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -23,6 +24,12 @@ public class GuiEnergyGauge extends GuiGauge
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
 		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
+	}
+	
+	@Override
+	public TransmissionType getTransmission()
+	{
+		return TransmissionType.ENERGY;
 	}
 
 	@Override

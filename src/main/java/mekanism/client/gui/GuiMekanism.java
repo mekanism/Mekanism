@@ -7,7 +7,6 @@ import java.util.Set;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiGauge;
 import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
@@ -75,23 +74,6 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 		if(tileEntity instanceof ISideConfiguration)
 		{
-			for(GuiElement element : guiElements)
-			{
-				if(element instanceof GuiGauge)
-				{
-					int guiWidth = (width - xSize) / 2;
-					int guiHeight = (height - ySize) / 2;
-					
-					if(element.getBounds(guiWidth, guiHeight).contains(xAxis, yAxis))
-					{
-						if(((GuiGauge)element).color != null)
-						{
-							drawCreativeTabHoveringText(((GuiGauge)element).color.getName(), xAxis, yAxis);
-						}
-					}
-				}
-			}
-			
 			Slot hovering = null;
 
 			for(int i = 0; i < inventorySlots.inventorySlots.size(); i++)

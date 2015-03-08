@@ -688,6 +688,7 @@ sideData.Energy=Energy
 sideData.Gas=Gas
 sideData.Extra=Extra
 sideData.Infuse=Infuse
+sideData.Fluid=Fluid
 
 //Redstone control
 control.disabled=Disabled

@@ -55,28 +55,28 @@ public class GuiPRC extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.BASE_ENERGY_PER_TICK + extra));
 				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
 			}
-		}, this, tileEntity.guiLocation));
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
 			@Override
 			public FluidTank getTank()
 			{
 				return tileEntity.inputFluidTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 5, 10));
+		}, GuiGauge.Type.STANDARD_YELLOW, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 5, 10));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.inputGasTank;
 			}
-		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 28, 10));
+		}, GuiGauge.Type.STANDARD_RED, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 28, 10));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
 			@Override
 			public GasTank getTank()
 			{
 				return tileEntity.outputGasTank;
 			}
-		}, GuiGauge.Type.SMALL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 140, 40));
+		}, GuiGauge.Type.SMALL_BLUE, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 140, 40));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 164, 15));
 
 		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 53, 34));

@@ -1,10 +1,17 @@
 package mekanism.client.gui.element;
 
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.SideData;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
@@ -113,7 +120,34 @@ public abstract class GuiGauge<T> extends GuiElement
 	{
 		if(xAxis >= xLocation + 1 && xAxis <= xLocation + width - 1 && yAxis >= yLocation + 1 && yAxis <= yLocation + height - 1)
 		{
-			guiObj.displayTooltip(getTooltipText(), xAxis, yAxis);
+			ItemStack stack = mc.thePlayer.inventory.getItemStack();
+
+			if(stack != null && stack.getItem() instanceof ItemConfigurator && color != null)
+			{
+				if(guiObj instanceof GuiMekanism && ((GuiMekanism)guiObj).getTileEntity() != null)
+				{
+					TileEntity tile = ((GuiMekanism)guiObj).getTileEntity();
+					
+					if(tile instanceof ISideConfiguration && getTransmission() != null)
+					{
+						SideData data = null;
+						
+						for(SideData iterData : ((ISideConfiguration)tile).getConfig().getOutputs(getTransmission()))
+						{
+							if(iterData.color == color)
+							{
+								data = iterData;
+								break;
+							}
+						}
+						
+						guiObj.displayTooltip(color + data.localize() + " (" + color.getName() + ")", xAxis, yAxis);
+					}
+				}
+			}
+			else {
+				guiObj.displayTooltip(getTooltipText(), xAxis, yAxis);
+			}
 		}
 	}
 
@@ -128,6 +162,8 @@ public abstract class GuiGauge<T> extends GuiElement
 	{
 		
 	}
+	
+	public abstract TransmissionType getTransmission();
 
 	public void setDummyType(T type)
 	{

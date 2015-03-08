@@ -17,8 +17,8 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
-import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemUpgrade;
 import mekanism.common.recipe.RecipeHandler;
@@ -31,7 +31,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -48,7 +47,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedProducts, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData, IDropperHandler
+public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, PressurizedProducts, PressurizedRecipe> implements IFluidHandler, IGasHandler, ITubeConnection, ISustainedData, ITankManager
 {
 	public FluidTank inputFluidTank = new FluidTank(10000);
 	public GasTank inputGasTank = new GasTank(10000);
@@ -59,14 +58,24 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
-		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
-
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
+		
+		configComponent.addOutput(TransmissionType.FLUID, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.FLUID, new SideData("Fluid", EnumColor.YELLOW, new int[] {0}));
+		configComponent.setConfig(TransmissionType.FLUID, new byte[] {0, 0, 0, 1, 0, 0});
+		configComponent.setCanEject(TransmissionType.FLUID, false);
+		
+		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[] {1}));
+		configComponent.addOutput(TransmissionType.GAS, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
+		configComponent.setConfig(TransmissionType.GAS, new byte[] {0, 0, 0, 0, 1, 2});
+		
 		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[4];
@@ -128,7 +137,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 			prevEnergy = getEnergy();
 
-			if(outputGasTank.getGas() != null)
+			if(outputGasTank.getGas() != null && configComponent.isEjecting(TransmissionType.GAS))
 			{
 				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
 
@@ -330,7 +339,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		if(canFill(from, resource.getFluid()))
 		{
 			return inputFluidTank.fill(resource, doFill);
 		}
@@ -353,7 +362,9 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		if(from == ForgeDirection.getOrientation(facing).getOpposite())
+		SideData data = configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing);
+		
+		if(data.hasSlot(0))
 		{
 			return inputFluidTank.getFluid() == null || inputFluidTank.getFluid().getFluid() == fluid;
 		}
@@ -370,18 +381,15 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public FluidTankInfo[] getTankInfo(ForgeDirection from)
 	{
-		if(from == ForgeDirection.getOrientation(facing).getOpposite())
-		{
-			return new FluidTankInfo[] {new FluidTankInfo(inputFluidTank)};
-		}
+		SideData data = configComponent.getOutput(TransmissionType.FLUID, from.ordinal(), facing);
 		
-		return PipeUtils.EMPTY;
+		return data.getFluidTankInfo(this);
 	}
 
 	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		if(side == MekanismUtils.getLeft(facing))
+		if(canReceiveGas(side, stack.getGas()))
 		{
 			return inputGasTank.receive(stack, doTransfer);
 		}
@@ -392,7 +400,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
-		if(side == MekanismUtils.getRight(facing))
+		if(canDrawGas(side, null))
 		{
 			return outputGasTank.draw(amount, doTransfer);
 		}
@@ -403,19 +411,19 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	@Override
 	public boolean canReceiveGas(ForgeDirection side, Gas type)
 	{
-		return side == MekanismUtils.getLeft(facing) && (inputGasTank.getGas() == null || inputGasTank.getGas().getGas() == type);
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(1) && inputGasTank.canReceive(type);
 	}
 
 	@Override
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
-		return side == MekanismUtils.getRight(facing) && outputGasTank.getGas() != null && outputGasTank.getGas().getGas() == type;
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(2) && outputGasTank.canDraw(type);
 	}
 
 	@Override
 	public boolean canTubeConnect(ForgeDirection side)
 	{
-		return side == MekanismUtils.getLeft(facing) || side == MekanismUtils.getRight(facing);
+		return configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).hasSlot(1, 2);
 	}
 
 	@Override
