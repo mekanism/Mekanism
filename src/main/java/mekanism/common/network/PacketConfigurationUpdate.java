@@ -162,6 +162,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			if(packetType == ConfigurationPacket.SIDE_DATA)
 			{
 				dataStream.writeInt(configIndex);
+				dataStream.writeInt(transmission.ordinal());
 			}
 	
 			if(packetType == ConfigurationPacket.INPUT_COLOR)
@@ -181,6 +182,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			{
 				clickType = dataStream.readInt();
 				configIndex = dataStream.readInt();
+				transmission = TransmissionType.values()[dataStream.readInt()];
 			}
 			else if(packetType == ConfigurationPacket.EJECT_COLOR)
 			{

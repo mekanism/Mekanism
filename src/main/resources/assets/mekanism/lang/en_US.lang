@@ -319,6 +319,13 @@ oregas.silver=Silver Ore
 oregas.obsidian=Obsidian Ore
 oregas.lead=Lead Ore
 
+//Transmission types
+transmission.Energy=Energy
+transmission.Fluids=Fluids
+transmission.Gases=Gases
+transmission.Items=Items
+transmission.Heat=Heat
+
 //Update handler text
 update.consider=Consider updating to version
 update.newFeatures=New features

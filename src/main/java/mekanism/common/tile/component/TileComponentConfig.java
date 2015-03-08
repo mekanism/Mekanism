@@ -4,7 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
@@ -17,8 +19,8 @@ public class TileComponentConfig implements ITileComponent
 {
 	public TileEntityContainerBlock tileEntity;
 	
-	public List<byte[]> sideConfigs = new ArrayList<byte[]>();
-	public List<ArrayList<SideData>> sideOutputs = new ArrayList<ArrayList<SideData>>();
+	public Map<Integer, byte[]> sideConfigs = new HashMap<Integer, byte[]>();
+	public Map<Integer, ArrayList<SideData>> sideOutputs = new HashMap<Integer, ArrayList<SideData>>();
 	
 	public List<TransmissionType> transmissions = new ArrayList<TransmissionType>();
 	
@@ -27,21 +29,22 @@ public class TileComponentConfig implements ITileComponent
 		tileEntity = tile;
 		transmissions = Arrays.asList(types);
 		
+		//Populate SideData list with empty arrays
+		for(TransmissionType transmission : types)
+		{
+			sideOutputs.put(transmission.ordinal(), new ArrayList<SideData>());
+		}
+		
 		tile.components.add(this);
 	}
 	
 	public void setConfig(TransmissionType type, byte[] config)
 	{
-		sideConfigs.set(type.ordinal(), config);
+		sideConfigs.put(type.ordinal(), config);
 	}
 	
 	public void addOutput(TransmissionType type, SideData data)
 	{
-		if(sideOutputs.get(type.ordinal()) == null)
-		{
-			sideOutputs.set(type.ordinal(), new ArrayList<SideData>());
-		}
-		
 		sideOutputs.get(type.ordinal()).add(data);
 	}
 	
@@ -80,7 +83,7 @@ public class TileComponentConfig implements ITileComponent
 		{
 			for(TransmissionType type : transmissions)
 			{
-				sideConfigs.set(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
+				sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
 			}
 		}
 	}

@@ -262,10 +262,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	
 	public static enum ConfiguratorMode
 	{
-		CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.getName() + ")", EnumColor.BRIGHT_GREEN, true),
-		CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.getName() + ")", EnumColor.BRIGHT_GREEN, true),
-		CONFIGURATE_GASES("configurate", "(" + TransmissionType.GAS.getName() + ")", EnumColor.BRIGHT_GREEN, true),
-		CONFIGURATE_ENERGY("configurate", "(" + TransmissionType.ENERGY.getName() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_GASES("configurate", "(" + TransmissionType.GAS.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_ENERGY("configurate", "(" + TransmissionType.ENERGY.localize() + ")", EnumColor.BRIGHT_GREEN, true),
 		EMPTY("empty", "", EnumColor.DARK_RED, false),
 		ROTATE("rotate", "", EnumColor.YELLOW, false),
 		WRENCH("wrench", "", EnumColor.PINK, false);
@@ -285,7 +285,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		
 		public String getName()
 		{
-			return MekanismUtils.localize("tooltip.configurator." + name) + info;
+			return MekanismUtils.localize("tooltip.configurator." + name) + " " + info;
 		}
 		
 		public EnumColor getColor()
