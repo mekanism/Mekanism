@@ -54,6 +54,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 					((ISideConfiguration)tile).getConfig().getConfig(message.transmission)[message.configIndex] = 0;
 				}
 
+				tile.markDirty();
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
 			}
 			else if(message.packetType == ConfigurationPacket.EJECT_COLOR)

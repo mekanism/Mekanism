@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -36,6 +37,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -198,6 +200,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 			prevEnergy = getEnergy();
 		}
+	}
+	
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
 
 	@Override

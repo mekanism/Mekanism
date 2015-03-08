@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileComponentConfig implements ITileComponent
 {
@@ -42,6 +44,21 @@ public class TileComponentConfig implements ITileComponent
 		}
 		
 		tile.components.add(this);
+	}
+	
+	public EnumSet<ForgeDirection> getSidesForData(TransmissionType type, int facing, int dataIndex)
+	{
+		EnumSet<ForgeDirection> ret = EnumSet.noneOf(ForgeDirection.class);
+		
+		for(byte b = 0; b < 6; b++)
+		{
+			if(getConfig(type)[b] == dataIndex)
+			{
+				ret.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(b, facing)));
+			}
+		}
+		
+		return ret;
 	}
 	
 	public void setCanEject(TransmissionType type, boolean eject)

@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
@@ -25,6 +26,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -120,6 +122,12 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 				}
 			}
 		}
+	}
+	
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
 
 	@Override

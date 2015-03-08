@@ -33,6 +33,7 @@ import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
+import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -1298,6 +1299,10 @@ public class Mekanism
 					if(tileEntity instanceof TileEntityElectricBlock && MekanismUtils.useIC2())
 					{
 						((TileEntityElectricBlock)tileEntity).register();
+					}
+					else if(tileEntity instanceof IChunkLoadHandler)
+					{
+						((IChunkLoadHandler)tileEntity).onChunkLoad();
 					}
 				}
 			}

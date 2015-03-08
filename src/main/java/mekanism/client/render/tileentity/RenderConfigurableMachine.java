@@ -78,7 +78,7 @@ public class RenderConfigurableMachine extends TileEntitySpecialRenderer
 					bindTexture(MekanismRenderer.getBlocksTexture());
 					GL11.glTranslatef((float)x, (float)y, (float)z);
 	
-					int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), TransmissionType.ITEM).display;
+					int display = getOverlayDisplay(world, ForgeDirection.getOrientation(pos.sideHit), type).display;
 					GL11.glCallList(display);
 	
 					pop();

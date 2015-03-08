@@ -11,6 +11,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -27,7 +28,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
 @Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
-public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork
+public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler
 {
 	/** The direction this block is facing. */
 	public int facing;
@@ -86,6 +87,12 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 
 		ticker++;
 		redstoneLastTick = redstone;
+	}
+	
+	@Override
+	public void onChunkLoad()
+	{
+		markDirty();
 	}
 
 	public void open(EntityPlayer player)
