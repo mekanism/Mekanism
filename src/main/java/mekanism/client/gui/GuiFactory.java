@@ -4,10 +4,11 @@ import java.util.List;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.element.GuiConfigurationTab;
+import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiSortingTab;
+import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
@@ -36,7 +37,8 @@ public class GuiFactory extends GuiMekanism
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiRecipeType(this, tileEntity, tileEntity.tier.guiLocation));
-		guiElements.add(new GuiConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
+		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.tier.guiLocation));
+		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiSortingTab(this, tileEntity, tileEntity.tier.guiLocation));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override

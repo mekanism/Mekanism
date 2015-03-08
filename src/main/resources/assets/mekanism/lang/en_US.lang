@@ -392,6 +392,7 @@ gui.config=Config
 gui.teleport=Teleport
 gui.eject=Eject
 gui.input=Input
+gui.strictInput=Strict Input
 gui.slots=Slots
 gui.state=State
 gui.on=On
@@ -447,8 +448,8 @@ gui.solarEvaporationController.short=Solar E. Controller
 gui.dictionary.noKey=No key.
 
 gui.configuration=Configuration
-gui.configuration.side=Side Configuration
-gui.configuration.transporter=Transporter Configuration
+gui.configuration.side=Side Config
+gui.configuration.transporter=Transporter Config
 gui.configuration.strictInput=Strict Input
 
 gui.rotaryCondensentrator.toggleOperation=Toggle operation

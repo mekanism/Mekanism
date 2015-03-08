@@ -16,7 +16,7 @@ import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
 import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.client.gui.GuiConfiguration;
+import mekanism.client.gui.GuiSideConfiguration;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
@@ -405,7 +405,7 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
-				return new GuiConfiguration(player, (ISideConfiguration)tileEntity);
+				return new GuiSideConfiguration(player, (ISideConfiguration)tileEntity);
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

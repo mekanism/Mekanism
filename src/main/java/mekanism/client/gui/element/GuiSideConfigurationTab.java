@@ -14,11 +14,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
-public class GuiConfigurationTab extends GuiElement
+public class GuiSideConfigurationTab extends GuiElement
 {
 	public TileEntity tileEntity;
 
-	public GuiConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
+	public GuiSideConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, def);
 
@@ -56,7 +56,7 @@ public class GuiConfigurationTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			displayTooltip(MekanismUtils.localize("gui.configuration"), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.configuration.side"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -6,7 +6,8 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.gui.GuiConfiguration.GuiPos;
+import mekanism.client.gui.GuiSideConfiguration.GuiPos;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
@@ -25,6 +26,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -76,12 +78,12 @@ public class GuiTransporterConfig extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 14, 14, 14, 14);
 		}
 		
-		if(xAxis >= 6 && xAxis <= 20 && yAxis >= 6 && yAxis <= 20)
+		if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 		{
-			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 0, 14, 14);
+			drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 28, 0, 14, 14);
 		}
 		else {
-			drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176 + 28, 14, 14, 14);
+			drawTexturedModalRect(guiWidth + 156, guiHeight + 6, 176 + 28, 14, 14, 14);
 		}
 		
 		for(int i = 0; i < slotPosMap.size(); i++)
@@ -116,8 +118,27 @@ public class GuiTransporterConfig extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String title = MekanismUtils.localize("gui.configuration.transporter");
-		fontRendererObj.drawString(title, fontRendererObj.getStringWidth(title)/2, 14, 0x404040);
+		String text = MekanismUtils.localize("gui.configuration.transporter");
+		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 5, 0x404040);
+		text = MekanismUtils.localize("gui.strictInput") + " (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")";
+		renderScaledText(text, 53, 17, 0x00CD00, 70);
+		
+		fontRendererObj.drawString(MekanismUtils.localize("gui.input"), 48, 81, 0x787878);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.output"), 114, 68, 0x787878);
+		
+		if(configurable.getEjector().getOutputColor() != null)
+		{
+			GL11.glPushMatrix();
+			GL11.glColor4f(1, 1, 1, 1);
+			GL11.glEnable(GL11.GL_LIGHTING);
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
+			mc.getTextureManager().bindTexture(MekanismRenderer.getBlocksTexture());
+			itemRender.renderIcon(122, 49, MekanismRenderer.getColorIcon(configurable.getEjector().getOutputColor()), 16, 16);
+
+			GL11.glDisable(GL11.GL_LIGHTING);
+			GL11.glPopMatrix();
+		}
 		
 		for(int i = 0; i < slotPosMap.size(); i++)
 		{
@@ -129,6 +150,17 @@ public class GuiTransporterConfig extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
 				drawCreativeTabHoveringText(color != null ? color.getName() : MekanismUtils.localize("gui.none"), xAxis, yAxis);
+			}
+		}
+		
+		if(xAxis >= 122 && xAxis <= 138 && yAxis >= 49 && yAxis <= 65)
+		{
+			if(configurable.getEjector().getOutputColor() != null)
+			{
+				drawCreativeTabHoveringText(configurable.getEjector().getOutputColor().getName(), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 		
@@ -169,6 +201,12 @@ public class GuiTransporterConfig extends GuiMekanism
 		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && button == 0)
 		{
 			button = 2;
+		}
+		
+		if(xAxis >= 122 && xAxis <= 138 && yAxis >= 49 && yAxis <= 65)
+		{
+            SoundHandler.playSound("gui.button.press");
+			Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0, null));
 		}
 		
 		for(int i = 0; i < slotPosMap.size(); i++)

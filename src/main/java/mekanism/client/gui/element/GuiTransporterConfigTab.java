@@ -17,19 +17,20 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiTransporterConfigTab extends GuiElement
 {
 	public TileEntity tileEntity;
-	public int yAxis;
+	public int yPos;
 
 	public GuiTransporterConfigTab(IGuiWrapper gui, int y, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTransporterConfigTab.png"), gui, def);
 
+		yPos = y;
 		tileEntity = tile;
 	}
 	
 	@Override
 	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + yAxis, 26, 26);
+		return new Rectangle4i(guiWidth - 26, guiHeight + yPos, 26, 26);
 	}
 
 	@Override
@@ -37,14 +38,14 @@ public class GuiTransporterConfigTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yAxis, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yPos, 0, 0, 26, 26);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yAxis+4 && yAxis <= yAxis+22)
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yAxis+4, 26, 0, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos+4, 26, 0, 18, 18);
 		}
 		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yAxis+4, 26, 18, 18, 18);
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos+4, 26, 18, 18, 18);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -55,9 +56,9 @@ public class GuiTransporterConfigTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yAxis+4 && yAxis <= yAxis+22)
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 		{
-			displayTooltip(MekanismUtils.localize("gui.configuration"), xAxis, yAxis);
+			displayTooltip(MekanismUtils.localize("gui.configuration.transporter"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -71,7 +72,7 @@ public class GuiTransporterConfigTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= yAxis+4 && yAxis <= yAxis+22)
+			if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 			{
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 51));
                 SoundHandler.playSound("gui.button.press");
