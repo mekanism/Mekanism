@@ -38,7 +38,7 @@ public class GuiTransporterConfig extends GuiMekanism
 
 	public GuiTransporterConfig(EntityPlayer player, ISideConfiguration tile)
 	{
-		super(new ContainerNull(player, (TileEntityContainerBlock)tile));
+		super((TileEntityContainerBlock)tile, new ContainerNull(player, (TileEntityContainerBlock)tile));
 
 		ySize = 95;
 

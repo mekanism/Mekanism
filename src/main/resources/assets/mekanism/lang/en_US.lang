@@ -448,6 +448,7 @@ gui.solarEvaporationController.short=Solar E. Controller
 gui.dictionary.noKey=No key.
 
 gui.configuration=Configuration
+gui.config=Config
 gui.configuration.side=Side Config
 gui.configuration.transporter=Transporter Config
 gui.configuration.strictInput=Strict Input

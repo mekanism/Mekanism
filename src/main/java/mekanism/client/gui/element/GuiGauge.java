@@ -1,11 +1,10 @@
 package mekanism.client.gui.element;
 
+import mekanism.api.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.base.IDropperHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import codechicken.lib.vec.Rectangle4i;
@@ -14,10 +13,14 @@ public abstract class GuiGauge<T> extends GuiElement
 {
 	protected int xLocation;
 	protected int yLocation;
+	
+	protected int texX;
+	protected int texY;
 
 	protected int width;
 	protected int height;
 
+	public EnumColor color;
 	protected int number;
 	protected boolean dummy;
 	
@@ -32,6 +35,11 @@ public abstract class GuiGauge<T> extends GuiElement
 
 		width = type.width;
 		height = type.height;
+		
+		texX = type.texX;
+		texY = type.texY;
+		
+		color = type.color;
 		number = type.number;
 	}
 
@@ -46,7 +54,7 @@ public abstract class GuiGauge<T> extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, texX, texY, width, height);
 		
 		if(!dummy)
 		{
@@ -134,19 +142,37 @@ public abstract class GuiGauge<T> extends GuiElement
 	
 	public static enum Type
 	{
-		STANDARD(18, 60, 1, "GuiGaugeStandard.png"),
-		WIDE(66, 50, 4, "GuiGaugeWide.png"),
-		SMALL(18, 30, 1, "GuiGaugeSmall.png");
+		STANDARD(null, 18, 60, 0, 0, 1, "GuiGaugeStandard.png"),
+		STANDARD_YELLOW(EnumColor.YELLOW, 18, 60, 0, 60, 1, "GuiGaugeStandard.png"),
+		STANDARD_RED(EnumColor.DARK_RED, 18, 60, 0, 120, 1, "GuiGaugeStandard.png"),
+		STANDARD_ORANGE(EnumColor.ORANGE, 18, 60, 0, 180, 1, "GuiGaugeStandard.png"),
+		STANDARD_BLUE(EnumColor.DARK_BLUE, 18, 60, 0, 240, 1, "GuiGaugeStandard.png"),
+		WIDE(null, 66, 50, 0, 0, 4, "GuiGaugeWide.png"),
+		WIDE_YELLOW(EnumColor.YELLOW, 66, 50, 0, 50, 4, "GuiGaugeWide.png"),
+		WIDE_RED(EnumColor.DARK_RED, 66, 50, 0, 100, 4, "GuiGaugeWide.png"),
+		WIDE_ORANGE(EnumColor.ORANGE, 66, 50, 0, 150, 4, "GuiGaugeWide.png"),
+		WIDE_BLUE(EnumColor.DARK_BLUE, 66, 50, 0, 200, 4, "GuiGaugeWide.png"),
+		SMALL(null, 18, 30, 0, 0, 1, "GuiGaugeSmall.png"),
+		SMALL_YELLOW(EnumColor.YELLOW, 18, 30, 0, 30, 1, "GuiGaugeSmall.png"),
+		SMALL_RED(EnumColor.DARK_RED, 18, 30, 0, 60, 1, "GuiGaugeSmall.png"),
+		SMALL_ORANGE(EnumColor.ORANGE, 18, 30, 0, 90, 1, "GuiGaugeSmall.png"),
+		SMALL_BLUE(EnumColor.DARK_BLUE, 18, 30, 0, 120, 1, "GuiGaugeSmall.png");
 
+		public EnumColor color;
 		public int width;
 		public int height;
+		public int texX;
+		public int texY;
 		public int number;
 		public String textureLocation;
 
-		private Type(int w, int h, int n, String t)
+		private Type(EnumColor c, int w, int h, int tx, int ty, int n, String t)
 		{
+			color = c;
 			width = w;
 			height = h;
+			texX = tx;
+			texY = ty;
 			number = n;
 			textureLocation = t;
 		}

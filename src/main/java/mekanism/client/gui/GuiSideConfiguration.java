@@ -6,6 +6,8 @@ import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.element.GuiConfigTypeTab;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -24,7 +26,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,14 +36,25 @@ public class GuiSideConfiguration extends GuiMekanism
 	public Map<Integer, GuiPos> slotPosMap = new HashMap<Integer, GuiPos>();
 
 	public ISideConfiguration configurable;
+	
+	public TransmissionType currentType;
 
 	public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile)
 	{
-		super(new ContainerNull(player, (TileEntityContainerBlock)tile));
+		super((TileEntityContainerBlock)tile, new ContainerNull(player, (TileEntityContainerBlock)tile));
 
 		ySize = 95;
 
 		configurable = tile;
+		
+		for(TransmissionType type : configurable.getConfig().transmissions)
+		{
+			guiElements.add(new GuiConfigTypeTab(this, (TileEntity)configurable, type, MekanismUtils.getResource(ResourceType.GUI, "GuiConfiguration.png")));
+		}
+		
+		currentType = getTopTransmission();
+		
+		updateTabs();
 
 		slotPosMap.put(0, new GuiPos(81, 64));
 		slotPosMap.put(1, new GuiPos(81, 34));
@@ -50,6 +62,34 @@ public class GuiSideConfiguration extends GuiMekanism
 		slotPosMap.put(3, new GuiPos(66, 64));
 		slotPosMap.put(4, new GuiPos(66, 49));
 		slotPosMap.put(5, new GuiPos(96, 49));
+	}
+	
+	public TransmissionType getTopTransmission()
+	{
+		return configurable.getConfig().transmissions.get(0);
+	}
+	
+	public void updateTabs()
+	{
+		int rendered = 0;
+		
+		for(GuiElement element : guiElements)
+		{
+			if(element instanceof GuiConfigTypeTab)
+			{
+				GuiConfigTypeTab tab = (GuiConfigTypeTab)element;
+				
+				tab.visible = currentType != tab.transmission;
+				
+				if(tab.visible)
+				{
+					tab.left = rendered >= 0 && rendered <= 2;
+					tab.setY(2+((rendered%3)*(26+2)));
+				}
+				
+				rendered++;
+			}
+		}
 	}
 
 	@Override
@@ -91,7 +131,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, i);
+			SideData data = configurable.getConfig().getOutput(currentType, i);
 
 			if(data.color != EnumColor.GREY)
 			{
@@ -116,9 +156,9 @@ public class GuiSideConfiguration extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String title = MekanismUtils.localize("gui.configuration.side");
+		String title = currentType.localize() + " " + MekanismUtils.localize("gui.config");
 		fontRendererObj.drawString(title, (xSize/2)-(fontRendererObj.getStringWidth(title)/2), 5, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(TransmissionType.ITEM) ? "On" : "Off"), 53, 17, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + (configurable.getConfig().isEjecting(currentType) ? "On" : "Off"), 53, 17, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.slots"), 77, 81, 0x787878);
 
 		for(int i = 0; i < slotPosMap.size(); i++)
@@ -126,7 +166,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, i);
+			SideData data = configurable.getConfig().getOutput(currentType, i);
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
@@ -177,7 +217,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, TransmissionType.ITEM));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType));
 			}
 		}
 
@@ -194,7 +234,7 @@ public class GuiSideConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, TransmissionType.ITEM));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, currentType));
 			}
 		}
 	}
