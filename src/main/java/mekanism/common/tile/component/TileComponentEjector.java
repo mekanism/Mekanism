@@ -1,28 +1,28 @@
 package mekanism.common.tile.component;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.IEjector;
-import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileComponentEjector implements ITileComponent, IEjector
 {
@@ -91,11 +91,11 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
 
-		IInvConfiguration configurable = (IInvConfiguration)tileEntity;
+		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
-		for(int i = 0; i < configurable.getConfiguration().length; i++)
+		for(int i = 0; i < configurable.getConfig().getConfig(TransmissionType.ITEM).length; i++)
 		{
-			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
+			if(configurable.getConfig().getConfig(TransmissionType.ITEM)[i] == configurable.getConfig().getOutputs(TransmissionType.ITEM).indexOf(sideData))
 			{
 				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
 			}

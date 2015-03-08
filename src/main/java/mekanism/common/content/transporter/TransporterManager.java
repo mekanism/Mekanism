@@ -7,7 +7,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.InventoryUtils;
@@ -96,9 +96,9 @@ public class TransporterManager
 	{
 		ItemStack toInsert = stack.itemStack.copy();
 
-		if(stack.pathType != Path.HOME && inv instanceof IInvConfiguration)
+		if(stack.pathType != Path.HOME && inv instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)inv;
+			ISideConfiguration config = (ISideConfiguration)inv;
 			int tileSide = config.getOrientation();
 			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
@@ -242,9 +242,9 @@ public class TransporterManager
 			return itemStack;
 		}
 
-		if(tileEntity instanceof IInvConfiguration)
+		if(tileEntity instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 			int tileSide = config.getOrientation();
 			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 

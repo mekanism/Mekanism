@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -9,6 +11,7 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
@@ -16,8 +19,8 @@ import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
-import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -25,33 +28,24 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.InfusionInput;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl
 {
-	/** This machine's side configuration. */
-	public byte[] sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
-
-	/** An arraylist of SideData for this machine. */
-	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
 
@@ -86,22 +80,29 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
 		super("metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {2}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {3}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {4}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.PURPLE, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {2}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {3}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {4}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 5, 3, 4});
 
 		inventory = new ItemStack[5];
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
+		
+		upgradeComponent = new TileComponentUpgrade(this, 3);
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(4));
 	}
 
 	@Override
@@ -295,14 +296,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		infuseStored.amount = nbtTags.getInteger("infuseStored");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
-
-		if(nbtTags.hasKey("sideDataStored"))
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				sideConfig[i] = nbtTags.getByte("config"+i);
-			}
-		}
 	}
 
 	@Override
@@ -324,11 +317,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		}
 
 		nbtTags.setBoolean("sideDataStored", true);
-
-		for(int i = 0; i < 6; i++)
-		{
-			nbtTags.setByte("config"+i, sideConfig[i]);
-		}
 	}
 
 	@Override
@@ -347,11 +335,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		infuseStored.amount = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
-
-		for(int i = 0; i < 6; i++)
-		{
-			sideConfig[i] = dataStream.readByte();
-		}
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
@@ -379,7 +362,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			data.add("null");
 		}
 
-		data.add(sideConfig);
 		return data;
 	}
 
@@ -443,7 +425,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
@@ -473,15 +455,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 	}
 
 	@Override
-	public ArrayList<SideData> getSideData()
+	public TileComponentConfig getConfig()
 	{
-		return sideOutputs;
-	}
-
-	@Override
-	public byte[] getConfiguration()
-	{
-		return sideConfig;
+		return configComponent;
 	}
 
 	@Override

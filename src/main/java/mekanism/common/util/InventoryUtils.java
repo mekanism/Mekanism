@@ -2,7 +2,7 @@ package mekanism.common.util;
 
 import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.tile.TileEntityBin;
@@ -366,9 +366,9 @@ public final class InventoryUtils
 			return ((TileEntityLogisticalSorter)tileEntity).canSendHome(itemStack);
 		}
 
-		if(!force && tileEntity instanceof IInvConfiguration)
+		if(!force && tileEntity instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 			int tileSide = config.getOrientation();
 			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 

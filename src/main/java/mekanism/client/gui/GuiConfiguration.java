@@ -5,11 +5,12 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
@@ -18,16 +19,16 @@ import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiConfiguration extends GuiMekanism
@@ -36,9 +37,9 @@ public class GuiConfiguration extends GuiMekanism
 
 	public Map<Integer, GuiPos> inputPosMap = new HashMap<Integer, GuiPos>();
 
-	public IInvConfiguration configurable;
+	public ISideConfiguration configurable;
 
-	public GuiConfiguration(EntityPlayer player, IInvConfiguration tile)
+	public GuiConfiguration(EntityPlayer player, ISideConfiguration tile)
 	{
 		super(new ContainerNull(player, (TileEntityContainerBlock)tile));
 
@@ -108,7 +109,7 @@ public class GuiConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getSideData().get(configurable.getConfiguration()[i]);
+			SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, i);
 
 			if(data.color != EnumColor.GREY)
 			{
@@ -182,7 +183,7 @@ public class GuiConfiguration extends GuiMekanism
 			int x = slotPosMap.get(i).xPos;
 			int y = slotPosMap.get(i).yPos;
 
-			SideData data = configurable.getSideData().get(configurable.getConfiguration()[i]);
+			SideData data = configurable.getConfig().getOutput(TransmissionType.ITEM, i);
 
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
@@ -262,13 +263,13 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 6 && yAxis <= 20)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, null));
 			}
 
 			if(xAxis >= 156 && xAxis <= 170 && yAxis >= 21 && yAxis <= 35)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null));
 			}
 		}
 
@@ -280,7 +281,7 @@ public class GuiConfiguration extends GuiMekanism
 		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 49 && yAxis <= 65)
 		{
             SoundHandler.playSound("gui.button.press");
-			Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0));
+			Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), button, 0, null));
 		}
 
 		for(int i = 0; i < slotPosMap.size(); i++)
@@ -291,7 +292,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.SIDE_DATA, Coord4D.get(tile), button, i, TransmissionType.ITEM));
 			}
 		}
 
@@ -303,7 +304,7 @@ public class GuiConfiguration extends GuiMekanism
 			if(xAxis >= x && xAxis <= x+14 && yAxis >= y && yAxis <= y+14)
 			{
                 SoundHandler.playSound("gui.button.press");
-				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i));
+				Mekanism.packetHandler.sendToServer(new ConfigurationUpdateMessage(ConfigurationPacket.INPUT_COLOR, Coord4D.get(tile), button, i, null));
 			}
 		}
 	}

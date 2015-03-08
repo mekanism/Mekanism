@@ -1,45 +1,38 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IElectricMachine;
-import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.inputs.MachineInput;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl
+public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl
 {
-	/** This machine's side configuration. */
-	public byte[] sideConfig;
-
-	/** An arraylist of SideData for this machine. */
-	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-
 	/** How much energy this machine uses per tick, un-upgraded. */
 	public double BASE_ENERGY_PER_TICK;
 
@@ -77,6 +70,7 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
 
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -136,14 +130,6 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		clientActive = isActive = nbtTags.getBoolean("isActive");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
-		if(nbtTags.hasKey("sideDataStored"))
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				sideConfig[i] = nbtTags.getByte("config"+i);
-			}
-		}
 	}
 
 	@Override
@@ -154,13 +140,6 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
-
-		nbtTags.setBoolean("sideDataStored", true);
-
-		for(int i = 0; i < 6; i++)
-		{
-			nbtTags.setByte("config"+i, sideConfig[i]);
-		}
 	}
 
 	@Override
@@ -172,11 +151,6 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		clientActive = dataStream.readBoolean();
 		ticksRequired = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		for(int i = 0; i < 6; i++)
-		{
-			sideConfig[i] = dataStream.readByte();
-		}
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
@@ -195,7 +169,6 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 		data.add(isActive);
 		data.add(ticksRequired);
 		data.add(controlType.ordinal());
-		data.add(sideConfig);
 
 		return data;
 	}
@@ -275,19 +248,13 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
-	public ArrayList<SideData> getSideData()
+	public TileComponentConfig getConfig()
 	{
-		return sideOutputs;
-	}
-
-	@Override
-	public byte[] getConfiguration()
-	{
-		return sideConfig;
+		return configComponent;
 	}
 
 	@Override

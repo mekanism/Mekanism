@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.IFactory;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISustainedData;
@@ -270,18 +270,14 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				}
 			}
 
-			if(tileEntity instanceof IInvConfiguration)
+			if(tileEntity instanceof ISideConfiguration)
 			{
-				IInvConfiguration config = (IInvConfiguration)tileEntity;
+				ISideConfiguration config = (ISideConfiguration)tileEntity;
 
 				if(stack.stackTagCompound != null && stack.stackTagCompound.hasKey("hasSideData"))
 				{
 					config.getEjector().setEjecting(stack.stackTagCompound.getBoolean("ejecting"));
-
-					for(int i = 0; i < 6; i++)
-					{
-						config.getConfiguration()[i] = stack.stackTagCompound.getByte("config"+i);
-					}
+					config.getConfig().read(stack.stackTagCompound);
 				}
 			}
 			

@@ -1,10 +1,13 @@
 package mekanism.common.tile;
 
 import mekanism.api.EnumColor;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.InventoryUtils;
 
 public class TileEntityEliteFactory extends TileEntityFactory
@@ -13,13 +16,18 @@ public class TileEntityEliteFactory extends TileEntityFactory
 	{
 		super(FactoryTier.ELITE, MachineType.ELITE_FACTORY);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {4}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {5, 6, 7, 8, 9, 10, 11}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {12, 13, 14, 15, 16, 17, 18}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.PURPLE, new int[] {4}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {5, 6, 7, 8, 9, 10, 11}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {12, 13, 14, 15, 16, 17, 18}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {5, 4, 0, 3, 2, 1});
 
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(5));
+		upgradeComponent = new TileComponentUpgrade(this, 0);
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(5));
 	}
 }

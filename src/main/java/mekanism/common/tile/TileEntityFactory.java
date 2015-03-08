@@ -17,6 +17,7 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.StackUtils;
 import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.TileSound;
@@ -28,13 +29,14 @@ import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -53,16 +55,10 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IPeripheral, IInvConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
-
-	/** This machine's side configuration. */
-	public byte[] sideConfig = new byte[] {5, 4, 0, 3, 2, 1};
-
-	/** An arraylist of SideData for this machine. */
-	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
 
 	/** An int[] used to track all current operations' progress. */
 	public int[] progress;
@@ -114,21 +110,27 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
 
 	public TileEntityFactory()
 	{
 		this(FactoryTier.BASIC, MachineType.BASIC_FACTORY);
+		
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {4}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {5, 6, 7}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {8, 9, 10}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.PURPLE, new int[] {4}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {5, 6, 7}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {8, 9, 10}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {5, 4, 0, 3, 2, 1});
 
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(5));
+		upgradeComponent = new TileComponentUpgrade(this, 0);
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(5));
 	}
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
@@ -157,7 +159,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.redstone = redstone;
 		factory.redstoneLastTick = redstoneLastTick;
 		factory.doAutoSync = doAutoSync;
-		factory.components = components;
 		
 		//Electric
 		factory.electricityStored = electricityStored;
@@ -168,7 +169,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.sound = sound;
 		
 		//Factory
-		factory.sideConfig = sideConfig;
 		
 		for(int i = 0; i < tier.processes; i++)
 		{
@@ -189,7 +189,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.upgradeComponent.tileEntity = factory;
 		factory.ejectorComponent = ejectorComponent;
 		factory.ejectorComponent.tileEntity = factory;
-		factory.ejectorComponent.sideData = factory.sideOutputs.get(5);
+		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(5);
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		
 		for(int i = 0; i < tier.processes+5; i++)
@@ -676,11 +676,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			progress[i] = dataStream.readInt();
 		}
 
-		for(int i = 0; i < 6; i++)
-		{
-			sideConfig[i] = dataStream.readByte();
-		}
-
 		if(dataStream.readBoolean())
 		{
 			gasTank.setGas(new GasStack(dataStream.readInt(), dataStream.readInt()));
@@ -727,14 +722,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			progress[i] = nbtTags.getInteger("progress" + i);
 		}
 
-		if(nbtTags.hasKey("sideDataStored"))
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				sideConfig[i] = nbtTags.getByte("config"+i);
-			}
-		}
-
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
 	}
 
@@ -754,13 +741,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			nbtTags.setInteger("progress" + i, progress[i]);
 		}
 
-		nbtTags.setBoolean("sideDataStored", true);
-
-		for(int i = 0; i < 6; i++)
-		{
-			nbtTags.setByte("config"+i, sideConfig[i]);
-		}
-
 		nbtTags.setTag("gasTank", gasTank.write(new NBTTagCompound()));
 	}
 
@@ -776,7 +756,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		data.add(sorting);
 		data.add(upgraded);
 		data.add(progress);
-		data.add(sideConfig);
 
 		if(gasTank.getGas() != null)
 		{
@@ -909,7 +888,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
@@ -919,15 +898,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	}
 
 	@Override
-	public ArrayList<SideData> getSideData()
+	public TileComponentConfig getConfig()
 	{
-		return sideOutputs;
-	}
-
-	@Override
-	public byte[] getConfiguration()
-	{
-		return sideConfig;
+		return configComponent;
 	}
 
 	@Override

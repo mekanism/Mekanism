@@ -1,12 +1,15 @@
 package mekanism.client.render;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderPortableTank;
@@ -52,6 +55,8 @@ public class MekanismRenderer
 	public static IIcon energyIcon;
 	public static IIcon heatIcon;
 	
+	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
+	
 	private static float lightmapLastX;
     private static float lightmapLastY;
 	private static boolean optifineBreak = false;
@@ -71,6 +76,11 @@ public class MekanismRenderer
 			for(EnumColor color : EnumColor.values())
 			{
 				colors[color.ordinal()] = event.map.registerIcon("mekanism:overlay/overlay_" + color.unlocalizedName);
+			}
+			
+			for(TransmissionType type : TransmissionType.values())
+			{
+				overlays.put(type, event.map.registerIcon("mekanism:overlay/" + type.getTransmission() + "Overlay"));
 			}
 			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");

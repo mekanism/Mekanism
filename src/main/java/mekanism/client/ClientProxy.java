@@ -104,7 +104,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.base.IElectricChest;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityBabySkeleton;
@@ -404,7 +404,7 @@ public class ClientProxy extends CommonProxy
 			case 8:
 				return new GuiEnergyCube(player.inventory, (TileEntityEnergyCube)tileEntity);
 			case 9:
-				return new GuiConfiguration(player, (IInvConfiguration)tileEntity);
+				return new GuiConfiguration(player, (ISideConfiguration)tileEntity);
 			case 10:
 				return new GuiGasTank(player.inventory, (TileEntityGasTank)tileEntity);
 			case 11:

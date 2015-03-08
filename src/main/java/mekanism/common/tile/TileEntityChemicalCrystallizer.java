@@ -16,13 +16,14 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IDropperHandler;
 import mekanism.common.base.IEjector;
-import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -30,6 +31,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.GasInput;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -43,14 +45,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, IInvConfiguration, IUpgradeTile, ISustainedData, IDropperHandler
+public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISideConfiguration, IUpgradeTile, ISustainedData, IDropperHandler
 {
 	public static final int MAX_GAS = 10000;
-
-	public byte[] sideConfig = new byte[] {0, 3, 0, 0, 1, 2};
-
-	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-
+	
 	public GasTank inputTank = new GasTank(MAX_GAS);
 
 	public int updateDelay;
@@ -80,20 +78,27 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
+	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
+	public TileComponentConfig configComponent;
 
 	public TileEntityChemicalCrystallizer()
 	{
 		super("crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {2}));
-
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.PURPLE, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {2}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {0, 3, 0, 0, 1, 2});
+		
 		inventory = new ItemStack[4];
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(2));
+		
+		upgradeComponent = new TileComponentUpgrade(this, 3);
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 
 	@Override
@@ -218,12 +223,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 		isActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
-
-		for(int i = 0; i < 6; i++)
-		{
-			sideConfig[i] = dataStream.readByte();
-		}
-
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		if(dataStream.readBoolean())
@@ -245,7 +244,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 		data.add(isActive);
 		data.add(operatingTicks);
-		data.add(sideConfig);
 		data.add(controlType.ordinal());
 
 		if(inputTank.getGas() != null)
@@ -271,14 +269,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 
 		inputTank.read(nbtTags.getCompoundTag("rightTank"));
-
-		if(nbtTags.hasKey("sideDataStored"))
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				sideConfig[i] = nbtTags.getByte("config"+i);
-			}
-		}
 	}
 
 	@Override
@@ -293,11 +283,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		nbtTags.setTag("rightTank", inputTank.write(new NBTTagCompound()));
 
 		nbtTags.setBoolean("sideDataStored", true);
-
-		for(int i = 0; i < 6; i++)
-		{
-			nbtTags.setByte("config"+i, sideConfig[i]);
-		}
 	}
 
 	@Override
@@ -434,32 +419,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		if(side == MekanismUtils.getLeft(facing).ordinal())
-		{
-			return new int[] {0};
-		}
-		else if(side == MekanismUtils.getRight(facing).ordinal())
-		{
-			return new int[] {1};
-		}
-		else if(side == 0 || side == 1)
-		{
-			return new int[2];
-		}
-
-		return InventoryUtils.EMPTY;
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
-	public ArrayList<SideData> getSideData()
+	public TileComponentConfig getConfig()
 	{
-		return sideOutputs;
-	}
-
-	@Override
-	public byte[] getConfiguration()
-	{
-		return sideConfig;
+		return configComponent;
 	}
 
 	@Override

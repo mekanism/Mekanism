@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
 import net.minecraft.client.gui.FontRenderer;
@@ -70,7 +71,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			element.renderForeground(xAxis, yAxis);
 		}
 
-		if(tileEntity instanceof IInvConfiguration)
+		if(tileEntity instanceof ISideConfiguration)
 		{
 			Slot hovering = null;
 
@@ -108,9 +109,9 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		if(slot.slotNumber < tileEntity.getSizeInventory())
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			for(SideData data : config.getSideData())
+			for(SideData data : config.getConfig().getOutputs(TransmissionType.ITEM))
 			{
 				for(int id : data.availableSlots)
 				{

@@ -14,6 +14,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IDropperHandler;
@@ -24,6 +25,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.PressurizedInput;
 import mekanism.common.recipe.machines.PressurizedRecipe;
 import mekanism.common.recipe.outputs.PressurizedProducts;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -57,18 +59,20 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 	{
 		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2}));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {3}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {2}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {3}));
 
-		sideConfig = new byte[] {2, 1, 0, 0, 0, 3};
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
 
 		inventory = new ItemStack[4];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 
 	@Override

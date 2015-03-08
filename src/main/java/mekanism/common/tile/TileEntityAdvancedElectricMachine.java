@@ -12,6 +12,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
@@ -23,6 +24,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -66,14 +68,16 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	{
 		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiAdvancedMachine.png"), perTick, ticksRequired, maxEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {3}));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {4}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_RED, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.PURPLE, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_BLUE, new int[] {2}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.DARK_GREEN, new int[] {3}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData(EnumColor.ORANGE, new int[] {4}));
 
-		sideConfig = new byte[] {2, 1, 0, 4, 5, 3};
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 4, 5, 3});
 
 		gasTank = new GasTank(MAX_GAS);
 
@@ -83,7 +87,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		secondaryEnergyPerTick = secondaryPerTick;
 
 		upgradeComponent = new TileComponentUpgrade(this, 4);
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 	
 	public void upgrade(RecipeType type)
@@ -100,7 +104,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.redstone = redstone;
 		factory.redstoneLastTick = redstoneLastTick;
 		factory.doAutoSync = doAutoSync;
-		factory.components = components;
 		
 		//Electric
 		factory.electricityStored = electricityStored;
@@ -111,7 +114,6 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.sound = sound;
 		
 		//Machine
-		factory.sideConfig = sideConfig;
 		factory.progress[0] = operatingTicks;
 		factory.updateDelay = updateDelay;
 		factory.isActive = isActive;
@@ -122,7 +124,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.upgradeComponent.tileEntity = factory;
 		factory.ejectorComponent = ejectorComponent;
-		factory.ejectorComponent.sideData = factory.sideOutputs.get(5);
+		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(5);
 		factory.ejectorComponent.tileEntity = factory;
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		factory.recipeType = type;

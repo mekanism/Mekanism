@@ -13,6 +13,7 @@ import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.ClientProxy;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -22,7 +23,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
@@ -896,18 +897,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			((IUpgradeTile)tileEntity).getComponent().write(itemStack.stackTagCompound);
 		}
 
-		if(tileEntity instanceof IInvConfiguration)
+		if(tileEntity instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
 			itemStack.stackTagCompound.setBoolean("hasSideData", true);
 
 			itemStack.stackTagCompound.setBoolean("ejecting", config.getEjector().isEjecting());
 
-			for(int i = 0; i < 6; i++)
-			{
-				itemStack.stackTagCompound.setByte("config"+i, config.getConfiguration()[i]);
-			}
+			config.getConfig().write(itemStack.stackTagCompound);
 		}
 		
 		if(tileEntity instanceof ISustainedData)

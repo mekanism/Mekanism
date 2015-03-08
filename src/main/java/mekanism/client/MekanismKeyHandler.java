@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.ItemElectricBow;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
@@ -22,13 +23,15 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
+
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -36,8 +39,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class MekanismKeyHandler extends MekKeyHandler
@@ -75,11 +76,13 @@ public class MekanismKeyHandler extends MekKeyHandler
 			ItemStack toolStack = player.getCurrentEquippedItem();
 
 			Item item = StackUtils.getItem(toolStack);
+			
 			if(player.isSneaking() && item instanceof ItemConfigurator)
 			{
 				ItemConfigurator configurator = (ItemConfigurator)item;
 
-				configurator.setState(toolStack, (byte) (configurator.getState(toolStack) < 3 ? configurator.getState(toolStack) + 1 : 0));
+				int toSet = configurator.getState(toolStack).ordinal() < ConfiguratorMode.values().length-1 ? configurator.getState(toolStack).ordinal() + 1 : 0;
+				configurator.setState(toolStack, ConfiguratorMode.values()[toSet]);
 				Mekanism.packetHandler.sendToServer(new ConfiguratorStateMessage(configurator.getState(toolStack)));
 				player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configureState") + ": " + configurator.getColor(configurator.getState(toolStack)) + configurator.getStateDisplay(configurator.getState(toolStack))));
 			}

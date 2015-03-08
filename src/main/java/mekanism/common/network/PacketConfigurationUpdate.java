@@ -1,19 +1,21 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.IInvConfiguration;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
@@ -22,8 +24,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-import io.netty.buffer.ByteBuf;
-
 public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationUpdateMessage, IMessage>
 {
 	@Override
@@ -31,9 +31,9 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 	{
 		TileEntity tile = message.coord4D.getTileEntity(PacketHandler.getPlayer(context).worldObj);
 		
-		if(tile instanceof IInvConfiguration)
+		if(tile instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)tile;
+			ISideConfiguration config = (ISideConfiguration)tile;
 
 			if(message.packetType == ConfigurationPacket.EJECT)
 			{
@@ -43,15 +43,15 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			{
 				if(message.clickType == 0)
 				{
-					MekanismUtils.incrementOutput((IInvConfiguration)tile, message.configIndex);
+					MekanismUtils.incrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
 				}
 				else if(message.clickType == 1)
 				{
-					MekanismUtils.decrementOutput((IInvConfiguration)tile, message.configIndex);
+					MekanismUtils.decrementOutput((ISideConfiguration)tile, message.transmission, message.configIndex);
 				}
 				else if(message.clickType == 2)
 				{
-					((IInvConfiguration)tile).getConfiguration()[message.configIndex] = 0;
+					((ISideConfiguration)tile).getConfig().getConfig(message.transmission)[message.configIndex] = 0;
 				}
 
 				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(message.coord4D, ((ITileNetwork)tile).getNetworkedData(new ArrayList())), new Range4D(message.coord4D));
@@ -109,6 +109,8 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 		public int configIndex;
 	
 		public int inputSide;
+		
+		public TransmissionType transmission;
 	
 		public int clickType;
 	
@@ -116,7 +118,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 		
 		public ConfigurationUpdateMessage() {}
 	
-		public ConfigurationUpdateMessage(ConfigurationPacket type, Coord4D coord, int click, int extra)
+		public ConfigurationUpdateMessage(ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans)
 		{
 			packetType = type;
 	
@@ -131,6 +133,7 @@ public class PacketConfigurationUpdate implements IMessageHandler<ConfigurationU
 			{
 				clickType = click;
 				configIndex = extra;
+				transmission = trans;
 			}
 	
 			if(packetType == ConfigurationPacket.INPUT_COLOR)

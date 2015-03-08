@@ -23,6 +23,7 @@ import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.UnitDisplayUtils;
 import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
@@ -39,9 +40,9 @@ import mekanism.common.Version;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.IInvConfiguration;
 import mekanism.common.base.IModule;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.item.ItemBlockBasic;
@@ -580,20 +581,21 @@ public final class MekanismUtils
 	/**
 	 * Increments the output type of a machine's side.
 	 * @param config - configurable machine
+	 * @param type - the TransmissionType to modify
 	 * @param side - side to increment output of
 	 */
-	public static void incrementOutput(IInvConfiguration config, int side)
+	public static void incrementOutput(ISideConfiguration config, TransmissionType type, int side)
 	{
-		int max = config.getSideData().size()-1;
-		int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
+		int max = config.getConfig().getOutputs(type).size()-1;
+		int current = config.getConfig().getOutputs(type).indexOf(config.getConfig().getOutputs(type).get(config.getConfig().getConfig(type)[side]));
 
 		if(current < max)
 		{
-			config.getConfiguration()[side] = (byte)(current+1);
+			config.getConfig().getConfig(type)[side] = (byte)(current+1);
 		}
 		else if(current == max)
 		{
-			config.getConfiguration()[side] = 0;
+			config.getConfig().getConfig(type)[side] = 0;
 		}
 
 		TileEntity tile = (TileEntity)config;
@@ -605,20 +607,21 @@ public final class MekanismUtils
 	/**
 	 * Decrements the output type of a machine's side.
 	 * @param config - configurable machine
+	 * @param type - the TransmissionType to modify
 	 * @param side - side to increment output of
 	 */
-	public static void decrementOutput(IInvConfiguration config, int side)
+	public static void decrementOutput(ISideConfiguration config, TransmissionType type, int side)
 	{
-		int max = config.getSideData().size()-1;
-		int current = config.getSideData().indexOf(config.getSideData().get(config.getConfiguration()[side]));
+		int max = config.getConfig().getOutputs(type).size()-1;
+		int current = config.getConfig().getOutputs(type).indexOf(config.getConfig().getOutputs(type).get(config.getConfig().getConfig(type)[side]));
 
 		if(current > 0)
 		{
-			config.getConfiguration()[side] = (byte)(current-1);
+			config.getConfig().getConfig(type)[side] = (byte)(current-1);
 		}
 		else if(current == 0)
 		{
-			config.getConfiguration()[side] = (byte)max;
+			config.getConfig().getConfig(type)[side] = (byte)max;
 		}
 
 		TileEntity tile = (TileEntity)config;
