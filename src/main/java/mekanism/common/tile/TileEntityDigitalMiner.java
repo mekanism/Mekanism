@@ -739,6 +739,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				inverse = !inverse;
 			}
+			
+			MekanismUtils.saveChunk(this);
 
 			for(EntityPlayer player : playersUsing)
 			{
