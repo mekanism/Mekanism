@@ -32,9 +32,9 @@ public class GuiSeismicReader extends GuiScreen {
     public Coord4D pos;
 
     protected int xSize = 137;
-    protected int ySize = 179;
+    protected int ySize = 182;
 
-    private Rectangle upButton, downButton;
+    private Rectangle upButton, downButton, tooltip;
 
     private int currentLayer = 0;
 
@@ -52,6 +52,7 @@ public class GuiSeismicReader extends GuiScreen {
     public void initGui() {
 	upButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 75, 13, 13);
 	downButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 92, 13, 13);
+	tooltip = new Rectangle((width - xSize) / 2 + 30, (height - ySize) / 2 + 82, 16, 16);
 	super.initGui();
     }
 
@@ -66,17 +67,20 @@ public class GuiSeismicReader extends GuiScreen {
 	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
 
 	drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+	//Draws the up button
 	if (upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
 	    GL11.glColor3f(0.5f, 0.5f, 1f);
 	}
 	drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
 	GL11.glColor3f(1, 1, 1);
+	//Draws the down button
 	if (downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
 	    GL11.glColor3f(0.5f, 0.5f, 1f);
 	}
 	drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
 	GL11.glColor3f(1, 1, 1);
 
+	//Fix the overlapping if > 100
 	GL11.glPushMatrix();
 	GL11.glTranslatef(guiWidth + 48, guiHeight + 87, 0);
 	if (currentLayer >= 100) {
@@ -86,21 +90,30 @@ public class GuiSeismicReader extends GuiScreen {
 	fontRendererObj.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
 	GL11.glPopMatrix();
 
-	for (int i = 0; i < 7; i++) {
+	//Render the item stacks
+	for (int i = 0; i < 9; i++) {
 	    int centralX = guiWidth + 32, centralY = guiHeight + 103;
-	    int layer = currentLayer + (i - 4);
+	    int layer = currentLayer + (i - 5);
 	    if (0 <= layer && layer < blockList.size()) {
 		ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
 		if (stack.getItem() == null) {
 		    continue;
 		}
 		GL11.glPushMatrix();
-		GL11.glTranslatef(centralX - 2, centralY - i * 20 + (20 * 2), 0);
+		GL11.glTranslatef(centralX - 2, centralY - i * 16 + (22 * 2), 0);
+		if (i < 4) {
+		    GL11.glTranslatef(0.2f, 2.5f, 0);
+		}
+		if (i != 4) {
+		    GL11.glTranslatef(1.5f, 0, 0);
+		    GL11.glScalef(0.8f, 0.8f, 0.8f);
+		}
 		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, this.mc.getTextureManager(), stack, 0, 0);
 		GL11.glPopMatrix();
 	    }
 	}
-	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
+	
+	//Get the name from the stack and render it
 	if (currentLayer - 1 >= 0) {
 	    ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 0, blockList.get(currentLayer - 1).getLeft());
 	    String renderString = "unknown";
@@ -120,7 +133,19 @@ public class GuiSeismicReader extends GuiScreen {
 	    GL11.glScalef(renderScale, renderScale, renderScale);
 	    fontRendererObj.drawString(capitalised, 0, 0, 0x919191);
 	    GL11.glPopMatrix();
+	    if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
+		int fontLengthX = fontRendererObj.getStringWidth(capitalised) + 5;
+		int renderX = mouseX + 10, renderY = mouseY - 5;
+		GL11.glPushMatrix();
+		GL11.glColor3f(1, 1, 1);
+		drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
+		drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
+		fontRendererObj.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
+		GL11.glPopMatrix();
+	    }
 	}
+
 	int frequency = 0;
 	for (Pair<Integer, Block> pair : blockList) {
 	    if (blockList.get(currentLayer - 1) != null) {
