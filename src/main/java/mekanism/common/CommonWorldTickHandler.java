@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
+import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
-
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -72,6 +72,11 @@ public class CommonWorldTickHandler
 			if(!MultiblockManager.loaded)
 			{
 				MultiblockManager.load(world);
+			}
+			
+			if(!FrequencyManager.loaded)
+			{
+				FrequencyManager.load(world);
 			}
 		}
 	}
