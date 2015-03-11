@@ -28,6 +28,7 @@ public class BlockPlastic extends Block
 		setHardness(this == MekanismBlocks.ReinforcedPlasticBlock ? 50F : 5F);
 		setResistance(this == MekanismBlocks.ReinforcedPlasticBlock ? 2000F : 10F);
 		setCreativeTab(Mekanism.tabMekanism);
+		
 		if(this == MekanismBlocks.SlickPlasticBlock)
 		{
 			slipperiness = 0.98F;
@@ -100,7 +101,6 @@ public class BlockPlastic extends Block
 	{
 		EnumColor colour = EnumColor.DYES[meta];
 		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
-
 	}
 
 	@Override
@@ -114,14 +114,17 @@ public class BlockPlastic extends Block
 		return 0;
 	}
 
+	@Override
 	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		if (meta != (15 - colour))
+		
+		if(meta != (15 - colour))
 		{
 			world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
 			return true;
 		}
+		
 		return false;
 	}
 

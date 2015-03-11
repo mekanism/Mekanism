@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,13 +12,14 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.PacketHandler;
 import mekanism.common.Teleporter;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.frequency.Frequency;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,9 +37,6 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -59,6 +59,10 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public boolean shouldRender;
 
 	public boolean prevShouldRender;
+	
+	public String owner;
+	
+	public Frequency frequency;
 
 	/** This teleporter's current status. */
 	public byte status = 0;
@@ -138,11 +142,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			case 3:
 				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
 			case 4:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.exceeds");
-			case 5:
 				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
-			case 6:
-				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.idle");
 		}
 		
 		return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
@@ -188,9 +188,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	 * 1: yes
 	 * 2: no frame
 	 * 3: no link found
-	 * 4: too many links
-	 * 5: not enough electricity
-	 * 6: nothing to teleport
+	 * 4: not enough electricity
 	 * @return
 	 */
 	public byte canTeleport()
@@ -203,11 +201,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		if(!Mekanism.teleporters.containsKey(code) || Mekanism.teleporters.get(code).isEmpty())
 		{
 			return 3;
-		}
-
-		if(Mekanism.teleporters.get(code).size() > 2)
-		{
-			return 4;
 		}
 
 		if(Mekanism.teleporters.get(code).size() == 2)
@@ -232,20 +225,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				electricityNeeded += calculateEnergyCost(entity, closestCoords);
 			}
 
-			if(entitiesInPortal.size() == 0)
-			{
-				return 6;
-			}
-
 			if(getEnergy() < electricityNeeded)
 			{
-				return 5;
+				return 4;
 			}
 
 			return 1;
 		}
 
-		return 3;
+		return 1;
 	}
 
 	public void teleport()
@@ -445,6 +433,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		code.digitTwo = nbtTags.getInteger("digitTwo");
 		code.digitThree = nbtTags.getInteger("digitThree");
 		code.digitFour = nbtTags.getInteger("digitFour");
+		
+		if(nbtTags.hasKey("owner"))
+		{
+			owner = nbtTags.getString("owner");
+		}
+		
+		if(nbtTags.hasKey("frequency"))
+		{
+			frequency = new Frequency(nbtTags);
+		}
 	}
 
 	@Override
@@ -456,6 +454,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		nbtTags.setInteger("digitTwo", code.digitTwo);
 		nbtTags.setInteger("digitThree", code.digitThree);
 		nbtTags.setInteger("digitFour", code.digitFour);
+		
+		if(owner != null)
+		{
+			nbtTags.setString("owner", owner);
+		}
+		
+		if(frequency != null)
+		{
+			frequency.write(nbtTags);
+		}
 	}
 
 	@Override
@@ -496,6 +504,22 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 
 		super.handlePacketData(dataStream);
+		
+		if(dataStream.readBoolean())
+		{
+			owner = PacketHandler.readString(dataStream);
+		}
+		else {
+			owner = null;
+		}
+		
+		if(dataStream.readBoolean())
+		{
+			frequency = new Frequency(dataStream);
+		}
+		else {
+			frequency = null;
+		}
 
 		status = dataStream.readByte();
 		code.digitOne = dataStream.readInt();
@@ -509,6 +533,24 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
+		if(owner != null)
+		{
+			data.add(true);
+			data.add(owner);
+		}
+		else {
+			data.add(false);
+		}
+		
+		if(frequency != null)
+		{
+			data.add(true);
+			frequency.write(data);
+		}
+		else {
+			data.add(false);
+		}
 
 		data.add(status);
 		data.add(code.digitOne);

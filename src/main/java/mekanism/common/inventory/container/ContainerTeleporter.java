@@ -17,21 +17,21 @@ public class ContainerTeleporter extends Container
 	public ContainerTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 27, 14));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 153, 7));
 		
-		int slotY;
+		int slotX;
 
-		for(slotY = 0; slotY < 3; slotY++)
+		for(slotX = 0; slotX < 3; slotX++)
 		{
-			for(int slotX = 0; slotX < 9; slotX++)
+			for(int slotY = 0; slotY < 9; slotY++)
 			{
-				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
+				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
 			}
 		}
 
-		for(slotY = 0; slotY < 9; slotY++)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
-			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
+			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
 		}
 
 		tileEntity.open(inventory.player);

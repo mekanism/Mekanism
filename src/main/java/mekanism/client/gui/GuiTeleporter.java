@@ -1,37 +1,200 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerTeleporter;
-import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiTeleporter extends GuiMekanism
 {
+	public static int MAX_LENGTH = 16;
+	
 	public TileEntityTeleporter tileEntity;
+	
+	public GuiButton publicButton;
+	public GuiButton privateButton;
+	
+	public GuiButton setButton;
+	public GuiButton deleteButton;
+	
+	public GuiScrollList scrollList;
+	
+	public GuiTextField frequencyField;
+	
+	public boolean privateMode;
 
 	public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
 	{
 		super(tentity, new ContainerTeleporter(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 164, 15));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 26, 13).with(SlotOverlay.POWER));
+		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 158, 26));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 152, 6).with(SlotOverlay.POWER));
+		guiElements.add(scrollList = new GuiScrollList(this, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 28, 37, 120, 4));
+		
+		ySize+=64;
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+
+		buttonList.clear();
+		
+		publicButton = new GuiButton(0, guiWidth + 27, guiHeight + 14, 60, 20, MekanismUtils.localize("gui.public"));
+		privateButton = new GuiButton(1, guiWidth + 89, guiHeight + 14, 60, 20, MekanismUtils.localize("gui.private"));
+		
+		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, MekanismUtils.localize("gui.set"));
+		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, MekanismUtils.localize("gui.delete"));
+		
+		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
+		frequencyField.setMaxStringLength(MAX_LENGTH);
+		frequencyField.setEnableBackgroundDrawing(false);
+		
+		updateButtons();
+
+		buttonList.add(publicButton);
+		buttonList.add(privateButton);
+		buttonList.add(setButton);
+		buttonList.add(deleteButton);
+	}
+	
+	public void setFrequency()
+	{
+		String text = frequencyField.getText();
+		
+		if(text.isEmpty())
+		{
+			return;
+		}
+	}
+	
+	public String getSecurity()
+	{
+		return privateMode ? EnumColor.DARK_RED + MekanismUtils.localize("gui.private") : MekanismUtils.localize("gui.public");
+	}
+	
+	public void updateButtons()
+	{
+		if(privateMode)
+		{
+			publicButton.enabled = true;
+			privateButton.enabled = false;
+		}
+		else {
+			publicButton.enabled = false;
+			privateButton.enabled = true;
+		}
+		
+		if(scrollList.hasSelection())
+		{
+			setButton.enabled = true;
+			deleteButton.enabled = true;
+		}
+		else {
+			setButton.enabled = false;
+			deleteButton.enabled = false;
+		}
+	}
+	
+	@Override
+	public void updateScreen()
+	{
+		super.updateScreen();
+		
+		frequencyField.updateCursorCounter();
+	}
+	
+	@Override
+	public void mouseClicked(int mouseX, int mouseY, int button)
+	{
+		super.mouseClicked(mouseX, mouseY, button);
+		
+		updateButtons();
+
+		frequencyField.mouseClicked(mouseX, mouseY, button);
+		
+		if(button == 0)
+		{
+			int xAxis = (mouseX - (width - xSize) / 2);
+			int yAxis = (mouseY - (height - ySize) / 2);
+			
+			if(xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114)
+			{
+				setFrequency();
+	            SoundHandler.playSound("gui.button.press");
+			}
+		}
+	}
+	
+	@Override
+	public void keyTyped(char c, int i)
+	{
+		if(!frequencyField.isFocused() || i == Keyboard.KEY_ESCAPE)
+		{
+			super.keyTyped(c, i);
+		}
+
+		if(i == Keyboard.KEY_RETURN)
+		{
+			if(frequencyField.isFocused())
+			{
+				setFrequency();
+			}
+		}
+
+		if(Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		{
+			frequencyField.textboxKeyTyped(c, i);
+		}
+		
+		updateButtons();
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		super.actionPerformed(guibutton);
+
+		if(guibutton.id == 0)
+		{
+			privateMode = false;
+		}
+		else if(guibutton.id == 1)
+		{
+			privateMode = true;
+		}
+		else if(guibutton.id == 2)
+		{
+			
+		}
+		else if(guibutton.id == 2)
+		{
+			
+		}
+		
+		updateButtons();
 	}
 
 	@Override
@@ -40,88 +203,30 @@ public class GuiTeleporter extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize-96)+2, 0x404040);
-		fontRendererObj.drawString(tileEntity.getStatusDisplay(), 66, 19, 0x00CD00);
-
-		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + tileEntity.owner != null ? tileEntity.owner : MekanismUtils.localize("gui.none"), 8, (ySize-96)+4, 0x404040);
+		
+		fontRendererObj.drawString(MekanismUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.security") + ":", 32, 91, 0x404040);
+		
+		fontRendererObj.drawString(" " + (tileEntity.frequency != null ? tileEntity.frequency.name : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.freq") + ":"), 81, 0x797979);
+		fontRendererObj.drawString(" " + getSecurity(), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.security") + ":"), 91, 0x797979);
+		
+		String str = MekanismUtils.localize("gui.set") + ":";
+		renderScaledText(str, 27, 104, 0x404040, 20);
+		
+		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
+			if(tileEntity.frequency == null)
+			{
+				drawCreativeTabHoveringText(EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
+			}
+			else {
+				drawCreativeTabHoveringText(tileEntity.getStatusDisplay(), xAxis, yAxis);
+			}
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int button)
-	{
-		super.mouseClicked(x, y, button);
-
-		int xAxis = (x-(width-xSize)/2);
-		int yAxis = (y-(height-ySize)/2);
-
-		handleButtonClick(xAxis, yAxis, button, 23, 37, 44, 58, 0);
-		handleButtonClick(xAxis, yAxis, button, 62, 76, 44, 58, 1);
-		handleButtonClick(xAxis, yAxis, button, 101, 115, 44, 58, 2);
-		handleButtonClick(xAxis, yAxis, button, 140, 154, 44, 58, 3);
-	}
-
-	private void handleButtonClick(int xAxis, int yAxis, int mouseButton, int xmin, int xmax, int ymin, int ymax, int buttonIndex)
-	{
-		if(xAxis > xmin && xAxis < xmax && yAxis > ymin && yAxis < ymax)
-		{
-			ArrayList data = new ArrayList();
-
-			int incrementedNumber = getUpdatedNumber(getButtonValue(buttonIndex), mouseButton);
-
-			data.add(buttonIndex);
-			data.add(incrementedNumber);
-
-			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-			setButton(buttonIndex, incrementedNumber);
-			SoundHandler.playSound("gui.button.press");
-		}
-	}
-
-	public void setButton(int index, int number)
-	{
-		if(index == 0)
-		{
-			tileEntity.code.digitOne = number;
-		}
-		if(index == 1)
-		{
-			tileEntity.code.digitTwo = number;
-		}
-		if(index == 2)
-		{
-			tileEntity.code.digitThree = number;
-		}
-		if(index == 3)
-		{
-			tileEntity.code.digitFour = number;
-		}
-	}
-
-	public int getButtonValue(int index)
-	{
-		if(index == 0)
-		{
-			return tileEntity.code.digitOne;
-		}
-		if(index == 1)
-		{
-			return tileEntity.code.digitTwo;
-		}
-		if(index == 2)
-		{
-			return tileEntity.code.digitThree;
-		}
-		if(index == 3)
-		{
-			return tileEntity.code.digitFour;
-		}
-		return 0;//should never happen
 	}
 
 	@Override
@@ -132,40 +237,25 @@ public class GuiTeleporter extends GuiMekanism
 		int guiWidth = (width-xSize)/2;
 		int guiHeight = (height-ySize)/2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-		int displayInt;
-
-		displayInt = tileEntity.getScaledEnergyLevel(52);
-		drawTexturedModalRect(guiWidth+165, guiHeight+17+52-displayInt, 176+13, 52-displayInt, 4, displayInt);
-
-		displayInt = getYAxisForNumber(tileEntity.code.digitOne);
-		drawTexturedModalRect(guiWidth+23, guiHeight+44, 176, displayInt, 13, 13);
-
-		displayInt = getYAxisForNumber(tileEntity.code.digitTwo);
-		drawTexturedModalRect(guiWidth+62, guiHeight+44, 176, displayInt, 13, 13);
-
-		displayInt = getYAxisForNumber(tileEntity.code.digitThree);
-		drawTexturedModalRect(guiWidth+101, guiHeight+44, 176, displayInt, 13, 13);
-
-		displayInt = getYAxisForNumber(tileEntity.code.digitFour);
-		drawTexturedModalRect(guiWidth+140, guiHeight+44, 176, displayInt, 13, 13);
+		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+		
+		if(xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114)
+		{
+			drawTexturedModalRect(guiWidth + 137, guiHeight + 103, xSize, 0, 11, 11);
+		}
+		else {
+			drawTexturedModalRect(guiWidth + 137, guiHeight + 103, xSize, 11, 11, 11);
+		}
+		
+		int y = tileEntity.frequency == null ? 94 : (tileEntity.status == 2 ? 22 : (tileEntity.status == 3 ? 40 : 
+			(tileEntity.status == 4 ? 58 : 76)));
+		
+		drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, y, 18, 18);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-	}
-
-	public int getUpdatedNumber(int i, int mouseButton)
-	{
-		if(mouseButton == 1) //right click
-		{
-			return (i-1+10)%10; //add 10 to ensure postive result
-		}
-		else
-		{
-			return (i+1)%10;
-		}
-	}
-
-	public int getYAxisForNumber(int i)
-	{
-		return i*13;
+		
+		frequencyField.drawTextBox();
 	}
 }

@@ -2,6 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -91,6 +93,28 @@ public abstract class GuiElement
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public void renderScaledText(String text, int x, int y, int color, int maxX)
+	{
+		int length = getFontRenderer().getStringWidth(text);
+		
+		if(length <= maxX)
+		{
+			getFontRenderer().drawString(text, x, y, color);
+		}
+		else {
+			float scale = (float)maxX/length;
+			float reverse = 1/scale;
+			float yAdd = 4-(scale*8)/2F;
+			
+			GL11.glPushMatrix();
+			
+			GL11.glScalef(scale, scale, scale);
+			getFontRenderer().drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
+			
+			GL11.glPopMatrix();
 		}
 	}
 

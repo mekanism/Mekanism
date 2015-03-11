@@ -432,6 +432,14 @@ gui.structure=Structure
 gui.dynamicTank=Dynamic Tank
 gui.visuals=Visuals
 gui.noEject=Can't Eject
+gui.undefined=Undefined
+gui.owner=Owner
+gui.public=Public
+gui.private=Private
+gui.add=Add
+gui.set=Set
+gui.freq=Freq
+gui.security=Security
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -525,6 +533,8 @@ gui.teleporter.noFrame=No frame
 gui.teleporter.noLink=No link
 gui.teleporter.exceeds=Links > 2
 gui.teleporter.needsEnergy=Needs energy
+gui.teleporter.noAccess=You don't have access to this teleporter.
+gui.teleporter.noFreq=No frequency
 
 gui.digitalMinerConfig=Digital Miner Config
 

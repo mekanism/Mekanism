@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.authlib.GameProfile;
+
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -1348,6 +1350,11 @@ public final class MekanismUtils
 		}
 		
 		return false;
+	}
+	
+	public static boolean isOp(EntityPlayerMP player)
+	{
+		return player.mcServer.getConfigurationManager().func_152596_g(player.getGameProfile());
 	}
 	
 	public static String getMod(ItemStack stack)

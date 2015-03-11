@@ -52,6 +52,8 @@ import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.entity.EntityObsidianTNT;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.OreDictManager;
 import mekanism.common.multiblock.MultiblockManager;
@@ -169,6 +171,9 @@ public class Mekanism
 	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("inductionMatrix", MatrixCache.class);
 	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine", TurbineCache.class);
 	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new BoilerManager("thermoelectricBoiler");
+	
+	/** FrequencyManagers for various networks */
+	public static FrequencyManager teleporterManager = new FrequencyManager(Frequency.class);
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();

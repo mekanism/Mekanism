@@ -49,6 +49,16 @@ public class FrequencyManager
 		}
 	}
 	
+	public void validateFrequency(Frequency freq)
+	{
+		if(frequencies.contains(freq))
+		{
+			return;
+		}
+		
+		
+	}
+	
 	public void createOrLoad(World world)
 	{
 		if(dataHandler == null)

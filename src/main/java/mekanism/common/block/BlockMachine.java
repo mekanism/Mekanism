@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.ClientProxy;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -23,8 +23,8 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ISpecialBounds;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ISustainedInventory;
@@ -90,6 +90,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -270,6 +271,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					}
 				}
 			}
+		}
+		else if(tileEntity instanceof TileEntityTeleporter)
+		{
+			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
+			teleporter.owner = entityliving.getCommandSenderName();
 		}
 
 		tileEntity.setFacing((short)change);
@@ -637,6 +643,26 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				case LOGISTICAL_SORTER:
 					LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
 					return true;
+				case TELEPORTER:
+					if(!entityplayer.isSneaking())
+					{
+						TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
+						
+						if(teleporter.owner == null)
+						{
+							teleporter.owner = entityplayer.getCommandSenderName();
+						}
+						
+						if(teleporter.owner.equals(entityplayer.getCommandSenderName()) || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
+						{
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						}
+						else {
+							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("gui.teleporter.noAccess")));
+						}
+						
+						return true;
+					}
 				default:
 					if(!entityplayer.isSneaking() && type.guiId != -1)
 					{

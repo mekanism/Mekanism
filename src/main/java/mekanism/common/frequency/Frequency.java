@@ -18,6 +18,16 @@ public class Frequency
 		owner = o;
 	}
 	
+	public Frequency(NBTTagCompound nbtTags)
+	{
+		read(nbtTags);
+	}
+	
+	public Frequency(ByteBuf dataStream)
+	{
+		read(dataStream);
+	}
+	
 	public void write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setString("name", name);
