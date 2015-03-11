@@ -146,11 +146,13 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		Frequency freq = new Frequency(name, owner).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
+		
+		frequency = freq;
 	}
 	
 	public FrequencyManager getManager(Frequency freq)
 	{
-		if(owner == null)
+		if(owner == null || freq == null)
 		{
 			return null;
 		}

@@ -1,5 +1,9 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiScrollList;
@@ -7,7 +11,10 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.Mekanism;
+import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerTeleporter;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -88,6 +95,15 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			return;
 		}
+		
+		ArrayList data = new ArrayList();
+		data.add(0);
+		data.add(text);
+		data.add(!privateMode);
+		
+		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+		
+		frequencyField.setText("");
 	}
 	
 	public String getSecurity()
@@ -97,6 +113,11 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public void updateButtons()
 	{
+		if(tileEntity.owner == null)
+		{
+			return;
+		}
+		
 		if(privateMode)
 		{
 			publicButton.enabled = true;
@@ -109,8 +130,23 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(scrollList.hasSelection())
 		{
-			setButton.enabled = true;
-			deleteButton.enabled = true;
+			Frequency freq = privateMode ? tileEntity.privateCache.get(scrollList.selected) : tileEntity.publicCache.get(scrollList.selected);
+			
+			if(tileEntity.frequency == null || !tileEntity.frequency.equals(freq))
+			{
+				setButton.enabled = true;
+			}
+			else {
+				setButton.enabled = false;
+			}
+			
+			if(tileEntity.owner.equals(freq.owner))
+			{
+				deleteButton.enabled = true;
+			}
+			else {
+				deleteButton.enabled = false;
+			}
 		}
 		else {
 			setButton.enabled = false;
@@ -124,6 +160,24 @@ public class GuiTeleporter extends GuiMekanism
 		super.updateScreen();
 		
 		updateButtons();
+		
+		List<String> text = new ArrayList<String>();
+		
+		if(privateMode)
+		{
+			for(Frequency freq : tileEntity.privateCache)
+			{
+				text.add(freq.name);
+			}
+		}
+		else {
+			for(Frequency freq : tileEntity.publicCache)
+			{
+				text.add(freq.name + " (" + freq.owner + ")");
+			}
+		}
+		
+		scrollList.setText(text);
 		
 		frequencyField.updateCursorCounter();
 	}
@@ -145,6 +199,7 @@ public class GuiTeleporter extends GuiMekanism
 			if(xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114)
 			{
 				setFrequency();
+				frequencyField.setText("");
 	            SoundHandler.playSound("gui.button.press");
 			}
 		}
@@ -189,11 +244,25 @@ public class GuiTeleporter extends GuiMekanism
 		}
 		else if(guibutton.id == 2)
 		{
-			
+			setFrequency();
 		}
 		else if(guibutton.id == 3)
 		{
+			int selection = scrollList.getSelection();
 			
+			if(selection != -1)
+			{
+				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
+				
+				ArrayList data = new ArrayList();
+				data.add(1);
+				data.add(freq.name);
+				data.add(freq.publicFreq);
+				
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				
+				scrollList.selected = -1;
+			}
 		}
 		
 		updateButtons();
@@ -206,7 +275,7 @@ public class GuiTeleporter extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + tileEntity.owner != null ? tileEntity.owner : MekanismUtils.localize("gui.none"), 8, (ySize-96)+4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + (tileEntity.owner != null ? tileEntity.owner : MekanismUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
 		
 		fontRendererObj.drawString(MekanismUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.security") + ":", 32, 91, 0x404040);
