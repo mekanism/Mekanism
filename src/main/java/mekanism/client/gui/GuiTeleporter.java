@@ -123,6 +123,8 @@ public class GuiTeleporter extends GuiMekanism
 	{
 		super.updateScreen();
 		
+		updateButtons();
+		
 		frequencyField.updateCursorCounter();
 	}
 	
@@ -189,7 +191,7 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			
 		}
-		else if(guibutton.id == 2)
+		else if(guibutton.id == 3)
 		{
 			
 		}

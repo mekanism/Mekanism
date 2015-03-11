@@ -1,28 +1,26 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.PacketHandler;
-import mekanism.common.Teleporter;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleport.PortableTeleportMessage;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketPortableTeleport implements IMessageHandler<PortableTeleportMessage, IMessage>
 {
@@ -39,7 +37,7 @@ public class PacketPortableTeleport implements IMessageHandler<PortableTeleportM
 			
 			if(item.getStatus(itemstack) == 1)
 			{
-				Coord4D coords = MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
+				Coord4D coords = null;//TODO MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
 				
 				World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
 				TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);

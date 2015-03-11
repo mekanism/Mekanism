@@ -4,8 +4,10 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import mekanism.api.Coord4D;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
@@ -49,14 +51,47 @@ public class FrequencyManager
 		}
 	}
 	
-	public void validateFrequency(Frequency freq)
+	public Frequency update(String user, Coord4D coord, Frequency freq)
 	{
-		if(frequencies.contains(freq))
+		for(Frequency iterFreq : frequencies)
 		{
-			return;
+			if(freq.equals(iterFreq))
+			{
+				iterFreq.activeCoords.add(coord);
+				return iterFreq;
+			}
 		}
 		
+		return null;
+	}
+	
+	public void deactivate(Coord4D coord)
+	{
+		for(Frequency freq : frequencies)
+		{
+			freq.activeCoords.remove(coord);
+		}
+	}
+	
+	public Frequency validateFrequency(String user, Coord4D coord, Frequency freq)
+	{
+		for(Frequency iterFreq : frequencies)
+		{
+			if(freq.equals(iterFreq))
+			{
+				iterFreq.activeCoords.add(coord);
+				return iterFreq;
+			}
+		}
 		
+		if(user.equals(freq.owner))
+		{
+			freq.activeCoords.add(coord);
+			frequencies.add(freq);
+			return freq;
+		}
+		
+		return null;
 	}
 	
 	public void createOrLoad(World world)
@@ -125,6 +160,17 @@ public class FrequencyManager
 	public String getName()
 	{
 		return owner != null ? owner + "FrequencyHandler" : "FrequencyHandler";
+	}
+	
+	public static void reset()
+	{
+		for(FrequencyManager manager : managers)
+		{
+			manager.frequencies.clear();
+			manager.dataHandler = null;
+		}
+		
+		loaded = false;
 	}
 	
 	public static class FrequencyDataHandler extends WorldSavedData

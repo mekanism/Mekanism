@@ -15,8 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.authlib.GameProfile;
-
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -32,7 +30,6 @@ import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.OreDictCache;
-import mekanism.common.Teleporter;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Tier.InductionCellTier;
@@ -236,7 +233,7 @@ public final class MekanismUtils
 	/**
 	 * Returns the closest teleporter between a selection of one or two.
 	 */
-	public static Coord4D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
+	/*public static Coord4D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
 	{
 		if(Mekanism.teleporters.get(teleCode).size() == 1)
 		{
@@ -284,7 +281,7 @@ public final class MekanismUtils
 		}
 
 		return null;
-	}
+	}TODO*/
 
 	/**
 	 * Checks if the mod doesn't need an update.

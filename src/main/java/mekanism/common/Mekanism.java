@@ -163,9 +163,6 @@ public class Mekanism
 	/** Mekanism version number */
 	public static Version versionNumber = new Version(8, 0, 0);
 	
-	/** Map of Teleporters */
-	public static Map<Teleporter.Code, ArrayList<Coord4D>> teleporters = new HashMap<Teleporter.Code, ArrayList<Coord4D>>();
-	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", TankCache.class);
 	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("inductionMatrix", MatrixCache.class);
@@ -173,7 +170,8 @@ public class Mekanism
 	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new BoilerManager("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
-	public static FrequencyManager teleporterManager = new FrequencyManager(Frequency.class);
+	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class);
+	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
 	
 	/** Mekanism creative tab */
 	public static CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -1064,7 +1062,6 @@ public class Mekanism
 		}
 		
 		//Clear all cache data
-		teleporters.clear();
 		jetpackOn.clear();
 		gasmaskOn.clear();
 		activeVibrators.clear();
@@ -1072,6 +1069,7 @@ public class Mekanism
 		
 		//Reset consistent managers
 		MultiblockManager.reset();
+		FrequencyManager.reset();
 		TransporterManager.reset();
 		PathfinderCache.reset();
 	}

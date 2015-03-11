@@ -39,7 +39,7 @@ public class CommonPlayerTickHandler
 			ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
 			ItemStack itemstack = player.getCurrentEquippedItem();
 
-			Teleporter.Code teleCode = new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3));
+			/*Teleporter.Code teleCode = new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3));
 
 			if(Mekanism.teleporters.containsKey(teleCode))
 			{
@@ -85,7 +85,7 @@ public class CommonPlayerTickHandler
 					item.setStatus(itemstack, 4);
 					Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
 				}
-			}
+			}TODO*/
 		}
 
 		if(player.getEquipmentInSlot(1) != null && player.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
