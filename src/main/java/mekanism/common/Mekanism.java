@@ -332,6 +332,8 @@ public class Mekanism
 	public static double FROM_UE = 1/TO_UE;
 	public static int ETHENE_BURN_TIME = 40;
 	public static int ATOMICDISASSEM_ENERGY_USAGE = 10;
+	public static int maxEnergyUpgrades = 8;
+	public static int maxSpeedUpgrades = 8;
 
 	public static boolean blacklistBC;
 	public static boolean blacklistIC2;
@@ -957,8 +959,8 @@ public class Mekanism
 		CompressedObsidian = new ItemMekanism().setUnlocalizedName("CompressedObsidian");
 		TeleportationCore = new ItemMekanism().setUnlocalizedName("TeleportationCore");
 		ElectrolyticCore = new ItemMekanism().setUnlocalizedName("ElectrolyticCore");
-		SpeedUpgrade = new ItemMachineUpgrade().setUnlocalizedName("SpeedUpgrade");
-		EnergyUpgrade = new ItemMachineUpgrade().setUnlocalizedName("EnergyUpgrade");
+		SpeedUpgrade = new ItemMachineUpgrade().setUnlocalizedName("SpeedUpgrade").setMaxStackSize(maxSpeedUpgrades);
+		EnergyUpgrade = new ItemMachineUpgrade().setUnlocalizedName("EnergyUpgrade").setMaxStackSize(maxEnergyUpgrades);
 		EnergyTablet = (ItemEnergized)new ItemEnergized(1000000).setUnlocalizedName("EnergyTablet");
 		Dictionary = new ItemDictionary().setUnlocalizedName("Dictionary");
 		FilterCard = new ItemFilterCard().setUnlocalizedName("FilterCard");
