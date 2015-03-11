@@ -46,7 +46,7 @@ public class TileComponentUpgrade implements ITileComponent
 		{
 			if(tileEntity.inventory[upgradeSlot] != null)
 			{
-				if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < 8)
+				if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.EnergyUpgrade)) && energyMultiplier < Mekanism.maxEnergyUpgrades)
 				{
 					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{
@@ -67,7 +67,7 @@ public class TileComponentUpgrade implements ITileComponent
 						tileEntity.markDirty();
 					}
 				}
-				else if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < 8)
+				else if(tileEntity.inventory[upgradeSlot].isItemEqual(new ItemStack(Mekanism.SpeedUpgrade)) && speedMultiplier < Mekanism.maxSpeedUpgrades)
 				{
 					if(upgradeTicks < UPGRADE_TICKS_REQUIRED)
 					{

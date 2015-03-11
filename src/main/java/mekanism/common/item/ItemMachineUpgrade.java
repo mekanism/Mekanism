@@ -7,7 +7,6 @@ public class ItemMachineUpgrade extends ItemMekanism
 	public ItemMachineUpgrade()
 	{
 		super();
-		setMaxStackSize(8);
 		setCreativeTab(Mekanism.tabMekanism);
 	}
 }

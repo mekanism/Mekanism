@@ -46,6 +46,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(Mekanism.ATOMICDISASSEM_ENERGY_USAGE);
 			dataStream.writeInt(Mekanism.VOICE_PORT);
 			dataStream.writeInt(Mekanism.maxUpgradeMultiplier);
+			dataStream.writeInt(Mekanism.maxSpeedUpgrades);
+			dataStream.writeInt(Mekanism.maxEnergyUpgrades);
 			dataStream.writeInt(Mekanism.activeType.ordinal());
 	
 			dataStream.writeDouble(Mekanism.enrichmentChamberUsage);
@@ -102,6 +104,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			Mekanism.ATOMICDISASSEM_ENERGY_USAGE = dataStream.readInt();
 			Mekanism.VOICE_PORT = dataStream.readInt();
 			Mekanism.maxUpgradeMultiplier = dataStream.readInt();
+			Mekanism.maxSpeedUpgrades = dataStream.readInt();
+			Mekanism.maxEnergyUpgrades = dataStream.readInt();
 			Mekanism.activeType = EnergyType.values()[dataStream.readInt()];
 	
 			Mekanism.enrichmentChamberUsage = dataStream.readDouble();

@@ -207,6 +207,8 @@ public class CommonProxy
 		Mekanism.ETHENE_BURN_TIME = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EthyleneBurnTime", 40).getInt(40);
 		Mekanism.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble(10000D);
 		Mekanism.ATOMICDISASSEM_ENERGY_USAGE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AtomicDisassemblerEnergyUsage", 10).getInt(10);
+		Mekanism.maxSpeedUpgrades = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "maxSpeedUpgrades", 8).getInt();
+		Mekanism.maxEnergyUpgrades = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "maxEnergyUpgrades", 8).getInt();
 		Mekanism.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123, null, 1, 65535).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
 		Mekanism.maxUpgradeMultiplier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10, null, 1, Integer.MAX_VALUE).getInt();
