@@ -1,425 +1,228 @@
 package mekanism.client.gui;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.IFluidBlock;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.Rectangle;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 @SideOnly(Side.CLIENT)
-public class GuiSeismicReader extends GuiScreen
-{
-	private World worldObj = Minecraft.getMinecraft().theWorld;
+public class GuiSeismicReader extends GuiScreen {
+    private World worldObj;
+
+    public ItemStack itemStack;
+
+    private ArrayList<Pair<Integer, Block>> blockList = new ArrayList<Pair<Integer, Block>>();
+
+    public Coord4D pos;
+
+    protected int xSize = 137;
+    protected int ySize = 182;
+
+    private Rectangle upButton, downButton, tooltip;
+
+    private int currentLayer = 0;
+
+    public GuiSeismicReader(World world, Coord4D coord, ItemStack stack) {
+	pos = coord;
+	pos.yCoord = Math.min(255, pos.yCoord);
+	worldObj = world;
+
+	itemStack = stack;
+	calculate();
+	currentLayer = Math.max(0, blockList.size() - 1);
+    }
+
+    @Override
+    public void initGui() {
+	upButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 75, 13, 13);
+	downButton = new Rectangle((width - xSize) / 2 + 70, (height - ySize) / 2 + 92, 13, 13);
+	tooltip = new Rectangle((width - xSize) / 2 + 30, (height - ySize) / 2 + 82, 16, 16);
+	super.initGui();
+    }
+
+    int rotation = 0;
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTick) {
+	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	int guiWidth = (width - xSize) / 2;
+	int guiHeight = (height - ySize) / 2;
+
+	mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
+
+	drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+	//Draws the up button
+	if (upButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+	    GL11.glColor3f(0.5f, 0.5f, 1f);
+	}
+	drawTexturedModalRect(upButton.getX(), upButton.getY(), 137, 0, upButton.getWidth(), upButton.getHeight());
+	GL11.glColor3f(1, 1, 1);
+	//Draws the down button
+	if (downButton.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+	    GL11.glColor3f(0.5f, 0.5f, 1f);
+	}
+	drawTexturedModalRect(downButton.getX(), downButton.getY(), 150, 0, downButton.getWidth(), downButton.getHeight());
+	GL11.glColor3f(1, 1, 1);
+
+	//Fix the overlapping if > 100
+	GL11.glPushMatrix();
+	GL11.glTranslatef(guiWidth + 48, guiHeight + 87, 0);
+	if (currentLayer >= 100) {
+	    GL11.glTranslatef(0, 1, 0);
+	    GL11.glScalef(0.7f, 0.7f, 0.7f);
+	}
+	fontRendererObj.drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
+	GL11.glPopMatrix();
+
+	//Render the item stacks
+	for (int i = 0; i < 9; i++) {
+	    int centralX = guiWidth + 32, centralY = guiHeight + 103;
+	    int layer = currentLayer + (i - 5);
+	    if (0 <= layer && layer < blockList.size()) {
+		ItemStack stack = new ItemStack(blockList.get(layer).getRight(), 1, blockList.get(layer).getLeft());
+		if (stack.getItem() == null) {
+		    continue;
+		}
+		GL11.glPushMatrix();
+		GL11.glTranslatef(centralX - 2, centralY - i * 16 + (22 * 2), 0);
+		if (i < 4) {
+		    GL11.glTranslatef(0.2f, 2.5f, 0);
+		}
+		if (i != 4) {
+		    GL11.glTranslatef(1.5f, 0, 0);
+		    GL11.glScalef(0.8f, 0.8f, 0.8f);
+		}
+		itemRender.renderItemAndEffectIntoGUI(fontRendererObj, this.mc.getTextureManager(), stack, 0, 0);
+		GL11.glPopMatrix();
+	    }
+	}
 	
-	public ItemStack itemStack;
-	
-	public int scroll;
-	
-	public int prevMouseY;
-	
-	public Coord4D pos;
-	
-	public boolean prevMouseDown;
-	
-	public boolean isDragging = false;
-	
-	public List<SeismicType> seismicCalculation = new ArrayList<SeismicType>();
-	
-	public int scrollStartX = 10;
-	public int scrollStartY = 12;
-	
-	protected int xSize = 118;
-	protected int ySize = 166;
-	
-	public GuiSeismicReader(Coord4D coord, ItemStack stack)
-	{
-		pos = coord;
-		pos.yCoord = Math.min(255, pos.yCoord);
-		
-		itemStack = stack;
-		
-		calculate();
+	//Get the name from the stack and render it
+	if (currentLayer - 1 >= 0) {
+	    ItemStack nameStack = new ItemStack(blockList.get(currentLayer - 1).getRight(), 0, blockList.get(currentLayer - 1).getLeft());
+	    String renderString = "unknown";
+	    if (nameStack.getItem() != null) {
+		renderString = nameStack.getDisplayName();
+	    } else if (blockList.get(currentLayer - 1).getRight() == Blocks.air) {
+		renderString = "Air";
+	    }
+	    String capitalised = renderString.substring(0, 1).toUpperCase() + renderString.substring(1);
+	    float renderScale = 1.0f;
+	    int lengthX = fontRendererObj.getStringWidth(capitalised);
+
+	    renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
+
+	    GL11.glPushMatrix();
+	    GL11.glTranslatef(guiWidth + 72, guiHeight + 16, 0);
+	    GL11.glScalef(renderScale, renderScale, renderScale);
+	    fontRendererObj.drawString(capitalised, 0, 0, 0x919191);
+	    GL11.glPopMatrix();
+	    if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
+		int fontLengthX = fontRendererObj.getStringWidth(capitalised) + 5;
+		int renderX = mouseX + 10, renderY = mouseY - 5;
+		GL11.glPushMatrix();
+		GL11.glColor3f(1, 1, 1);
+		drawTexturedModalRect(renderX, renderY, 0, 0, fontLengthX, 16);
+		drawTexturedModalRect(renderX + fontLengthX, renderY, 0, 16, 2, 16);
+		fontRendererObj.drawString(capitalised, renderX + 4, renderY + 4, 0x919191);
+		GL11.glPopMatrix();
+	    }
 	}
 
-	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTick)
-	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
+	int frequency = 0;
+	for (Pair<Integer, Block> pair : blockList) {
+	    if (blockList.get(currentLayer - 1) != null) {
+		Block block = blockList.get(currentLayer - 1).getRight();
+		if (pair.getRight() == block && pair.getLeft() == blockList.get(currentLayer - 1).getLeft()) {
+		    frequency++;
+		}
+	    }
+	}
+	GL11.glPushMatrix();
+	GL11.glTranslatef(guiWidth + 72, guiHeight + 26, 0);
+	GL11.glScalef(0.70f, 0.70f, 0.70f);
+	fontRendererObj.drawString(String.format("Abundancy: %s", frequency), 0, 0, 0x919191);
+	GL11.glPopMatrix();
+	super.drawScreen(mouseX, mouseY, partialTick);
+    }
 
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
-		
-		if(Mouse.isButtonDown(0))
-		{
-			if(!isDragging && (xAxis >= 10 && xAxis <= 48 && yAxis >= 12 && yAxis <= 154))
-			{
-				if(!prevMouseDown)
-				{
-					prevMouseDown = true;
-				}
-				else {
-					int mouseDiff = prevMouseY-yAxis;
-					
-					scroll = Math.max(0, Math.min(scroll+mouseDiff, calcMaxScroll()));
-				}
-			}
-			
-			int maxScroll = calcMaxScroll();
-			
-			if(!isDragging && maxScroll > 0 && (xAxis >= 49 && xAxis <= 53 && yAxis >= getScrollButtonY() && yAxis <= getScrollButtonY()+4))
-			{	
-				if(!prevMouseDown)
-				{
-					prevMouseDown = true;
-					isDragging = true;
-				}
-			}
-			
-			if(isDragging)
-			{
-				int relY = Math.max(13, Math.min(149, yAxis))-13;
-				scroll = calcScrollFromButton(relY);
-			}
-			
-			prevMouseY = yAxis;
-		}
-		else {
-			prevMouseDown = false;
-			isDragging = false;
-		}
-		
-		drawTexturedModalRect(guiWidth + scrollStartX, guiHeight + scrollStartY, xSize, 13, 38, 142);
-		
-		drawChartLayer(guiWidth, guiHeight);
-		
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-		
-		drawTexturedModalRect(guiWidth + scrollStartX + 38 + 1, guiHeight + getScrollButtonY(), xSize, 0, 4, 4);
-		
-		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.short"), guiWidth + 62, guiHeight + 18, 0x000000);
-		
-		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.solids"), guiWidth + 70, guiHeight + 40, 0x0404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.fluids"), guiWidth + 70, guiHeight + 62, 0x0404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.empty"), guiWidth + 70, guiHeight + 78, 0x0404040);
-		
-		fontRendererObj.drawString(MekanismUtils.localize("gui.seismicReader.reading"), guiWidth + 62, guiHeight + 114, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", guiWidth + 62, guiHeight + 132, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(getEnergy()), guiWidth + 62, guiHeight + 141, 0x00CD00);
-		
-		super.drawScreen(mouseX, mouseY, partialTick);
+    public String wrapString(String str, int index) {
+	String string = str;
+	for (int i = 0; i < string.length(); i++) {
+	    if (i == index) {
+		string = string.substring(0, i) + "\n" + string.substring(i);
+	    }
 	}
-	
-	public double getEnergy()
-	{
-		return ((ItemSeismicReader)itemStack.getItem()).getEnergy(itemStack);
-	}
-	
-	public void drawChartLayer(int guiWidth, int guiHeight)
-	{
-		if(scroll <= 5)
-		{
-			drawTexturedModalRect(guiWidth + scrollStartX, guiHeight + scrollStartY+5-scroll, xSize, 4, 38, 1);
-		}
-		
-		int amount = Math.min((142/2)+Math.min(0, (scroll/2)-3), pos.yCoord);
-		int start = pos.yCoord-(scroll/2)+Math.min(3, scroll/2);
-		int yStart = scrollStartY + Math.max(0, 6-scroll);
-		
-		drawScale(guiWidth, guiHeight, amount, start, yStart, scroll%2==1);
-		
-		if(calcMaxScroll() > 0 && scroll == calcMaxScroll())
-		{
-			drawTexturedModalRect(guiWidth + scrollStartX, guiHeight + scrollStartY+142-1, xSize, 4, 38, 1);
-		}
-		else if(calcMaxScroll() <= 0)
-		{
-			int dist = yStart + amount*2;
-			drawTexturedModalRect(guiWidth + scrollStartX, guiHeight + dist, xSize, 4, 38, 1);
-		}
-	}
-	
-	public void drawScale(int guiWidth, int guiHeight, int amount, int start, int yStart, boolean half)
-	{
-		int starting = 0;
-		int toRender = amount;
-		int nextRender = guiHeight + yStart;
-		
-		if(half)
-		{
-			starting++;
-		}
-		
-		if(scroll < 6)
-		{
-			nextRender += (half ? 1 : 0);
-		}
-		
-		if(start%4 != 0)
-		{
-			starting += (4-(start%4))*2;
-			drawTexturedModalRect(guiWidth + 30, nextRender, xSize, 5+starting, 3, 8-starting);
-			toRender -= (8-starting)/2;
-			nextRender += (8-starting);
-			
-			if(!seismicCalculation.isEmpty())
-			{
-				int rendered = 8-starting+(half && scroll > 6 ? 1 : 0);
-				int nextY = guiHeight + yStart - (half && scroll > 6 ? 1 : 0);
-				
-				seismicCalculation.get(start-1).render(this, xSize, guiWidth, nextY);
-				
-				if(rendered > 2)
-				{
-					seismicCalculation.get(start-2).render(this, xSize, guiWidth, nextY+2);
-				}
-				
-				if(rendered > 4)
-				{
-					seismicCalculation.get(start-3).render(this, xSize, guiWidth, nextY+4);
-				}
-			}
-		}
-		else {
-			nextRender -= half ? 1 : 0;
-		}
-		
-		while(toRender >= 4)
-		{
-			toRender -= 4;
-			
-			drawTexturedModalRect(guiWidth + 30, nextRender, xSize, 5, 3, 8);
-			
-			int index = start-(amount-toRender);
-			
-			if((index-1)%2 == 0)
-			{
-				index -= 1;
-			}
-			
-			if(index%8 == 0 && pos.yCoord-index > 6)
-			{
-				int yPos = nextRender+2;
-				
-				if(index == 0)
-				{
-					yPos -= 2;
-				}
-				
-				fontRendererObj.drawString(Integer.toString(index), guiWidth + 28-fontRendererObj.getStringWidth(Integer.toString(index)), yPos, 0xFFFFFF);
-				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSeismicReader.png"));
-			}
-			
-			if(!seismicCalculation.isEmpty())
-			{
-				seismicCalculation.get(index+3).render(this, xSize, guiWidth, nextRender);
-				seismicCalculation.get(index+2).render(this, xSize, guiWidth, nextRender+2);
-				seismicCalculation.get(index+1).render(this, xSize, guiWidth, nextRender+4);
-				seismicCalculation.get(index+0).render(this, xSize, guiWidth, nextRender+6);
-			}
-			
-			nextRender += 8;
-		}
-		
-		if(toRender > 0)
-		{
-			drawTexturedModalRect(guiWidth + 30, nextRender, xSize, 5, 3, toRender*2);
-			
-			if(!seismicCalculation.isEmpty())
-			{
-				int index = start-(amount-toRender);
-				
-				if((index-1)%2 == 0)
-				{
-					index -= 1;
-				}
-				
-				if(index-1 >= 0)
-				{
-					seismicCalculation.get(index-1).render(this, xSize, guiWidth, nextRender);
-				}
-				
-				if(toRender > 1 && index-2 >= 0)
-				{
-					seismicCalculation.get(index-2).render(this, xSize, guiWidth, nextRender+2);
-				}
-				
-				if(toRender > 2 && index-3 >= 0)
-				{
-					seismicCalculation.get(index-3).render(this, xSize, guiWidth, nextRender+4);
-				}
-			}
-		}
-	}
-	
-	public int getScrollButtonY()
-	{
-		int max = calcMaxScroll();
-		
-		if(max == 0)
-		{
-			return scrollStartY+1;
-		}
-		
-		return scrollStartY+1+(int)(((float)scroll/max)*136);
-	}
-	
-	public int calcScrollFromButton(int relButtonY)
-	{
-		return (int)(((float)relButtonY/136)*calcMaxScroll());
-	}
-	
-	public int calcMaxScroll()
-	{
-		int ret = 6;
-		
-		ret += (pos.yCoord*2); //2 pixels per block
-		ret += 1; //Bottom layer thing
-		ret -= 142; //142 total pixels lengthwise on display
-		
-		return ret;
-	}
-	
-	public void calculate()
-	{
-		seismicCalculation.clear();
-		
-		for(int y = 1; y <= pos.yCoord; y++)
-		{
-			Coord4D coord = new Coord4D(pos.xCoord, y, pos.zCoord, pos.dimensionId);
-			
-			if(coord.isAirBlock(worldObj))
-			{
-				seismicCalculation.add(SeismicType.EMPTY);
-				continue;
-			}
-			
-			Block block = coord.getBlock(worldObj);
-			int meta = coord.getMetadata(worldObj);
+	return string;
+    }
 
-			if(block == Blocks.grass)
-			{
-				seismicCalculation.add(SeismicType.GRASS);
-				continue;
-			}
-			else if(block == Blocks.dirt)
-			{
-				seismicCalculation.add(SeismicType.DIRT);
-				continue;
-			}
-			else if(block == Blocks.stone)
-			{
-				seismicCalculation.add(SeismicType.STONE);
-				continue;
-			}
-			else if(block == Blocks.bedrock)
-			{
-				seismicCalculation.add(SeismicType.BEDROCK);
-				continue;
-			}
-			else if(block == Blocks.water || block == Blocks.flowing_water)
-			{
-				seismicCalculation.add(SeismicType.WATER);
-				continue;
-			}
-			else if(block == Blocks.lava || block == Blocks.flowing_lava)
-			{
-				seismicCalculation.add(SeismicType.LAVA);
-				continue;
-			}
-			
-			if(block instanceof IFluidBlock)
-			{
-				Fluid fluid = ((IFluidBlock)block).getFluid();
-				
-				if(fluid != null)
-				{
-					String name = fluid.getName().toLowerCase();
-					
-					if(name.equals("water"))
-					{
-						seismicCalculation.add(SeismicType.WATER);
-						continue;
-					}
-					else if(name.equals("lava"))
-					{
-						seismicCalculation.add(SeismicType.LAVA);
-						continue;
-					}
-					else if(name.equals("oil"))
-					{
-						seismicCalculation.add(SeismicType.OIL);
-						continue;
-					}
-				}
-			}
-			
-			List<String> oreDictNames = MekanismUtils.getOreDictName(new ItemStack(block, 1, meta));
-			boolean foundName = false;
-			
-			if(oreDictNames != null && !oreDictNames.isEmpty())
-			{
-				for(String s : oreDictNames)
-				{
-					if(s.trim().startsWith("ore"))
-					{
-						seismicCalculation.add(SeismicType.ORE);
-						foundName = true;
-						break;
-					}
-				}
-			}
-			
-			if(foundName)
-			{
-				continue;
-			}
-			
-			seismicCalculation.add(SeismicType.OTHER);
-		}
+    @Override
+    public void drawBackground(int p_146278_1_) {
+	super.drawBackground(p_146278_1_);
+    }
+
+    @Override
+    public void onGuiClosed() {
+	blockList.clear();
+	super.onGuiClosed();
+    }
+
+    public void calculate() {
+	for (int y = 0; y < pos.yCoord; y++) {
+	    Block block = worldObj.getBlock(pos.xCoord - 1, y, pos.zCoord - 1);
+	    int metadata = worldObj.getBlockMetadata(pos.xCoord - 1, y, pos.zCoord - 1);
+	    blockList.add(Pair.of(metadata, block));
 	}
-	
-	@Override
-	public boolean doesGuiPauseGame()
-	{
-		return false;
-	}		
-	
-	public static enum SeismicType
-	{
-		GRASS,
-		DIRT,
-		OTHER,
-		ORE,
-		STONE,
-		BEDROCK,
-		WATER,
-		LAVA,
-		OIL,
-		EMPTY;
-		
-		public void render(GuiSeismicReader gui, int xSize, int guiWidth, int y)
-		{
-			gui.drawTexturedModalRect(guiWidth + 33, y, xSize, 155+(ordinal()*2), 4, 2);
-		}
+    }
+
+    @Override
+    protected void mouseClicked(int xPos, int yPos, int buttonClicked) {
+	if (upButton.intersects(new Rectangle(xPos, yPos, 1, 1))) {
+	    if (currentLayer + 1 <= blockList.size() - 1) {
+		currentLayer++;
+	    }
 	}
+	if (downButton.intersects(new Rectangle(xPos, yPos, 1, 1))) {
+	    if (currentLayer - 1 >= 1) {
+		currentLayer--;
+	    }
+	}
+	super.mouseClicked(xPos, yPos, buttonClicked);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+	super.actionPerformed(button);
+    }
+
+    @Override
+    protected void keyTyped(char c, int p_73869_2_) {
+	super.keyTyped(c, p_73869_2_);
+    }
+
+    public double getEnergy() {
+	return ((ItemSeismicReader) itemStack.getItem()).getEnergy(itemStack);
+    }
+
+    @Override
+    public boolean doesGuiPauseGame() {
+	return false;
+    }
 }
