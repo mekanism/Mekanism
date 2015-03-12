@@ -1066,6 +1066,7 @@ public class Mekanism
 		gasmaskOn.clear();
 		activeVibrators.clear();
 		worldTickHandler.resetRegenChunks();
+		privateTeleporters.clear();
 		
 		//Reset consistent managers
 		MultiblockManager.reset();
