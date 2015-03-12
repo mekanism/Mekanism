@@ -3,7 +3,6 @@ package mekanism.common.network;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -73,20 +72,28 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					break;
 				case DEL_FREQ:
 					FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
-					
-					for(Iterator<Frequency> iter = manager.getFrequencies().iterator(); iter.hasNext();)
-					{
-						Frequency iterFreq = iter.next();
-						
-						if(iterFreq.name.equals(message.frequency.name) && iterFreq.owner.equals(player.getCommandSenderName()))
-						{
-							iter.remove();
-						}
-					}
+					manager.remove(message.frequency.name, player.getCommandSenderName());
 					
 					break;
 				case TELEPORT:
-					Coord4D coords = null;//TODO MekanismUtils.getClosestCoords(new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3)), player);
+					FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getCommandSenderName(), world);
+					Frequency found = null;
+					
+					for(Frequency freq : manager2.getFrequencies())
+					{
+						if(message.frequency.name.equals(freq.name))
+						{
+							found = freq;
+							break;
+						}
+					}
+					
+					if(found == null)
+					{
+						break;
+					}
+					
+					Coord4D coords = found.getClosestCoords(new Coord4D(player));
 					
 					World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
 					TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
@@ -104,12 +111,8 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 								MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 							}
 							
-							if(world.provider.dimensionId != coords.dimensionId)
-							{
-								((EntityPlayerMP)player).travelToDimension(coords.dimensionId);
-							}
-							
-							((EntityPlayerMP)player).playerNetServerHandler.setPlayerLocation(coords.xCoord+0.5, coords.yCoord+1, coords.zCoord+0.5, player.rotationYaw, player.rotationPitch);
+							Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)), coords.getTargetPoint(40D));
+							TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP)player, coords, teleporter);
 							
 							world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
 							Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
@@ -301,6 +304,11 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 				buffer.writeBoolean(frequency.publicFreq);
 			}
 			else if(packetType == PortableTeleporterPacketType.DEL_FREQ)
+			{
+				PacketHandler.writeString(buffer, frequency.name);
+				buffer.writeBoolean(frequency.publicFreq);
+			}
+			else if(packetType == PortableTeleporterPacketType.TELEPORT)
 			{
 				PacketHandler.writeString(buffer, frequency.name);
 				buffer.writeBoolean(frequency.publicFreq);

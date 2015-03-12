@@ -54,6 +54,8 @@ public class GuiTeleporter extends GuiMekanism
 	public GuiButton setButton;
 	public GuiButton deleteButton;
 	
+	public GuiButton teleportButton;
+	
 	public GuiScrollList scrollList;
 	
 	public GuiTextField frequencyField;
@@ -113,7 +115,7 @@ public class GuiTeleporter extends GuiMekanism
 		}, resource, 158, 26));
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		
-		ySize = 147;
+		ySize = 175;
 	}
 	
 	@Override
@@ -132,6 +134,11 @@ public class GuiTeleporter extends GuiMekanism
 		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, MekanismUtils.localize("gui.set"));
 		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, MekanismUtils.localize("gui.delete"));
 		
+		if(itemStack != null)
+		{
+			teleportButton = new GuiButton(4, guiWidth + 42, guiHeight + 140, 92, 20, MekanismUtils.localize("gui.teleport"));
+		}
+		
 		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
 		frequencyField.setMaxStringLength(MAX_LENGTH);
 		frequencyField.setEnableBackgroundDrawing(false);
@@ -142,6 +149,11 @@ public class GuiTeleporter extends GuiMekanism
 		buttonList.add(privateButton);
 		buttonList.add(setButton);
 		buttonList.add(deleteButton);
+		
+		if(itemStack != null)
+		{
+			buttonList.add(teleportButton);
+		}
 		
 		Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
 	}
@@ -232,6 +244,17 @@ public class GuiTeleporter extends GuiMekanism
 		else {
 			setButton.enabled = false;
 			deleteButton.enabled = false;
+		}
+		
+		if(itemStack != null)
+		{
+			if(clientFreq != null && clientStatus == 1)
+			{
+				teleportButton.enabled = true;
+			}
+			else {
+				teleportButton.enabled = false;
+			}
 		}
 	}
 	
@@ -341,6 +364,14 @@ public class GuiTeleporter extends GuiMekanism
 				scrollList.selected = -1;
 			}
 		}
+		else if(guibutton.id == 4)
+		{
+			if(clientFreq != null && clientStatus == 1)
+			{
+				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, clientFreq));
+				mc.setIngameFocus();
+			}
+		}
 		
 		updateButtons();
 	}
@@ -352,7 +383,7 @@ public class GuiTeleporter extends GuiMekanism
 		int yAxis = (mouseY-(height-ySize)/2);
 
 		fontRendererObj.drawString(getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(getInventoryName())/2), 4, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : MekanismUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : MekanismUtils.localize("gui.none")), 8, itemStack != null ? ySize-12 : (ySize-96)+4, 0x404040);
 		
 		fontRendererObj.drawString(MekanismUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.security") + ":", 32, 91, 0x404040);
@@ -405,8 +436,6 @@ public class GuiTeleporter extends GuiMekanism
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		
 		frequencyField.drawTextBox();
-		
-		System.out.println(xSize + " " + ySize);
 	}
 	
 	public String getStatusDisplay()

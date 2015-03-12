@@ -335,14 +335,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 
-	public void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter)
+	public static void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter)
 	{
 		if(player.dimension != coord.dimensionId)
 		{
 			int id = player.dimension;
-			WorldServer oldWorld = server.worldServerForDimension(player.dimension);
+			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
-			WorldServer newWorld = server.worldServerForDimension(player.dimension);
+			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 			oldWorld.removePlayerEntityDangerously(player);
 			player.isDead = false;
@@ -355,11 +355,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				player.setWorld(newWorld);
 			}
 
-			server.getConfigurationManager().func_72375_a(player, oldWorld);
+			player.mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
 			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 			player.theItemInWorldManager.setWorld(newWorld);
-			server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
-			server.getConfigurationManager().syncPlayerInventory(player);
+			player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
+			player.mcServer.getConfigurationManager().syncPlayerInventory(player);
 			Iterator iterator = player.getActivePotionEffects().iterator();
 
 			while(iterator.hasNext())
@@ -512,15 +512,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				
 				if(manager != null)
 				{
-					for(Iterator<Frequency> iter = manager.getFrequencies().iterator(); iter.hasNext();)
-					{
-						Frequency iterFreq = iter.next();
-						
-						if(iterFreq.name.equals(freq) && iterFreq.owner.equals(owner))
-						{
-							iter.remove();
-						}
-					}
+					manager.remove(freq, owner);
 				}
 			}
 			

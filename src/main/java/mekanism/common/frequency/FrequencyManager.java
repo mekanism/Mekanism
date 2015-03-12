@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -65,6 +66,20 @@ public class FrequencyManager
 		}
 		
 		return null;
+	}
+	
+	public void remove(String name, String owner)
+	{
+		for(Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext();)
+		{
+			Frequency iterFreq = iter.next();
+			
+			if(iterFreq.name.equals(name) && iterFreq.owner.equals(owner))
+			{
+				iter.remove();
+				dataHandler.markDirty();
+			}
+		}
 	}
 	
 	public void deactivate(Coord4D coord)
