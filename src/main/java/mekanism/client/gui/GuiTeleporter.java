@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -13,14 +14,19 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerTeleporter;
+import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -33,7 +39,12 @@ public class GuiTeleporter extends GuiMekanism
 {
 	public static int MAX_LENGTH = 16;
 	
+	public ResourceLocation resource;
+	
 	public TileEntityTeleporter tileEntity;
+	public ItemStack itemStack;
+	
+	public EntityPlayer entityPlayer;
 	
 	public GuiButton publicButton;
 	public GuiButton privateButton;
@@ -51,12 +62,50 @@ public class GuiTeleporter extends GuiMekanism
 	{
 		super(tentity, new ContainerTeleporter(inventory, tentity));
 		tileEntity = tentity;
+		resource = MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png");
 
-		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 158, 26));
-		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 152, 6).with(SlotOverlay.POWER));
-		guiElements.add(scrollList = new GuiScrollList(this, MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"), 28, 37, 120, 4));
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public String getTooltip()
+			{
+				return MekanismUtils.getEnergyDisplay(getEnergy());
+			}
+			
+			@Override
+			public double getLevel()
+			{
+				return getEnergy()/getMaxEnergy();
+			}
+		}, resource, 158, 26));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
+		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		
 		ySize+=64;
+	}
+	
+	public GuiTeleporter(EntityPlayer player, ItemStack stack)
+	{
+		super(new ContainerNull());
+		itemStack = stack;
+		entityPlayer = player;
+		resource = MekanismUtils.getResource(ResourceType.GUI, "GuiPortableTeleporter.png");
+		
+		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
+			@Override
+			public String getTooltip()
+			{
+				return MekanismUtils.getEnergyDisplay(getEnergy());
+			}
+			
+			@Override
+			public double getLevel()
+			{
+				return getEnergy()/getMaxEnergy();
+			}
+		}, resource, 158, 26));
+		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
+		
+		ySize = 147;
 	}
 	
 	@Override
@@ -109,7 +158,7 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public void updateButtons()
 	{
-		if(tileEntity.owner == null)
+		if(getOwner() == null)
 		{
 			return;
 		}
@@ -146,7 +195,7 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			Frequency freq = privateMode ? tileEntity.privateCache.get(scrollList.selected) : tileEntity.publicCache.get(scrollList.selected);
 			
-			if(tileEntity.frequency == null || !tileEntity.frequency.equals(freq))
+			if(getFrequency() == null || !getFrequency().equals(freq))
 			{
 				setButton.enabled = true;
 			}
@@ -154,7 +203,7 @@ public class GuiTeleporter extends GuiMekanism
 				setButton.enabled = false;
 			}
 			
-			if(tileEntity.owner.equals(freq.owner))
+			if(getOwner().equals(freq.owner))
 			{
 				deleteButton.enabled = true;
 			}
@@ -277,26 +326,26 @@ public class GuiTeleporter extends GuiMekanism
 		int xAxis = (mouseX-(width-xSize)/2);
 		int yAxis = (mouseY-(height-ySize)/2);
 
-		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + (tileEntity.owner != null ? tileEntity.owner : MekanismUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
+		fontRendererObj.drawString(getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(getInventoryName())/2), 4, 0x404040);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : MekanismUtils.localize("gui.none")), 8, (ySize-96)+4, 0x404040);
 		
 		fontRendererObj.drawString(MekanismUtils.localize("gui.freq") + ":", 32, 81, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("gui.security") + ":", 32, 91, 0x404040);
 		
-		fontRendererObj.drawString(" " + (tileEntity.frequency != null ? tileEntity.frequency.name : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.freq") + ":"), 81, 0x797979);
-		fontRendererObj.drawString(" " + (tileEntity.frequency != null ? getSecurity(tileEntity.frequency) : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.security") + ":"), 91, 0x797979);
+		fontRendererObj.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.freq") + ":"), 81, 0x797979);
+		fontRendererObj.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.security") + ":"), 91, 0x797979);
 		
 		String str = MekanismUtils.localize("gui.set") + ":";
 		renderScaledText(str, 27, 104, 0x404040, 20);
 		
 		if(xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24)
 		{
-			if(tileEntity.frequency == null)
+			if(getFrequency() == null)
 			{
 				drawCreativeTabHoveringText(EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(tileEntity.getStatusDisplay(), xAxis, yAxis);
+				drawCreativeTabHoveringText(getStatusDisplay(), xAxis, yAxis);
 			}
 		}
 
@@ -306,7 +355,7 @@ public class GuiTeleporter extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiTeleporter.png"));
+		mc.renderEngine.bindTexture(resource);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width-xSize)/2;
 		int guiHeight = (height-ySize)/2;
@@ -323,13 +372,70 @@ public class GuiTeleporter extends GuiMekanism
 			drawTexturedModalRect(guiWidth + 137, guiHeight + 103, xSize, 11, 11, 11);
 		}
 		
-		int y = tileEntity.frequency == null ? 94 : (tileEntity.status == 2 ? 22 : (tileEntity.status == 3 ? 40 : 
-			(tileEntity.status == 4 ? 58 : 76)));
+		int y = getFrequency() == null ? 94 : (getStatus() == 2 ? 22 : (getStatus() == 3 ? 40 : 
+			(getStatus() == 4 ? 58 : 76)));
 		
 		drawTexturedModalRect(guiWidth + 6, guiHeight + 6, 176, y, 18, 18);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		
 		frequencyField.drawTextBox();
+	}
+	
+	public String getStatusDisplay()
+	{
+		switch(getStatus())
+		{
+			case 1:
+				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
+			case 2:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
+			case 3:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
+			case 4:
+				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
+		}
+		
+		return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
+	}
+	
+	private String getOwner()
+	{
+		return tileEntity != null ? tileEntity.owner : entityPlayer.getCommandSenderName();
+	}
+	
+	private byte getStatus()
+	{
+		return tileEntity.status;
+	}
+	
+	private Frequency getFrequency()
+	{
+		return tileEntity.frequency;
+	}
+	
+	private String getInventoryName()
+	{
+		return tileEntity != null ? tileEntity.getInventoryName() : itemStack.getDisplayName();
+	}
+	
+	private double getEnergy()
+	{
+		if(itemStack != null)
+		{
+			return ((ItemPortableTeleporter)itemStack.getItem()).getEnergy(itemStack);
+		}
+		
+		return tileEntity.getEnergy();
+	}
+	
+	private double getMaxEnergy()
+	{
+		if(itemStack != null)
+		{
+			return ((ItemPortableTeleporter)itemStack.getItem()).getMaxEnergy(itemStack);
+		}
+		
+		return tileEntity.getMaxEnergy();
 	}
 }

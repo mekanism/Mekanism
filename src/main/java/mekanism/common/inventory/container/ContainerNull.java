@@ -16,19 +16,29 @@ public class ContainerNull extends Container
 		tileEntity.open(player);
 		tileEntity.openInventory();
 	}
+	
+	public ContainerNull() {}
 
 	@Override
 	public void onContainerClosed(EntityPlayer entityplayer)
 	{
 		super.onContainerClosed(entityplayer);
 
-		tileEntity.close(entityplayer);
-		tileEntity.closeInventory();
+		if(tileEntity != null)
+		{
+			tileEntity.close(entityplayer);
+			tileEntity.closeInventory();
+		}
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
-		return tileEntity.isUseableByPlayer(entityplayer);
+		if(tileEntity != null)
+		{
+			return tileEntity.isUseableByPlayer(entityplayer);
+		}
+		
+		return true;
 	}
 }

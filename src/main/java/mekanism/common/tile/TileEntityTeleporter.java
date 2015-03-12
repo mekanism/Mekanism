@@ -187,23 +187,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 	
-	public String getStatusDisplay()
-	{
-		switch(status)
-		{
-			case 1:
-				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
-			case 2:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
-			case 3:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
-			case 4:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
-		}
-		
-		return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
-	}
-	
 	@Override
 	public void onChunkUnload()
 	{

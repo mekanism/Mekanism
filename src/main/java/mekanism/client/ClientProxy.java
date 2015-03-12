@@ -16,7 +16,6 @@ import mekanism.client.gui.GuiChemicalInjectionChamber;
 import mekanism.client.gui.GuiChemicalOxidizer;
 import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.client.gui.GuiSideConfiguration;
 import mekanism.client.gui.GuiCredits;
 import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiDictionary;
@@ -42,7 +41,6 @@ import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPasswordEnter;
 import mekanism.client.gui.GuiPasswordModify;
 import mekanism.client.gui.GuiPortableTank;
-import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRobitCrafting;
@@ -53,6 +51,7 @@ import mekanism.client.gui.GuiRobitSmelting;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.client.gui.GuiSeismicReader;
 import mekanism.client.gui.GuiSeismicVibrator;
+import mekanism.client.gui.GuiSideConfiguration;
 import mekanism.client.gui.GuiSolarEvaporationController;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiTeleporter;
@@ -419,7 +418,7 @@ public class ClientProxy extends CommonProxy
 
 				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
 				{
-					return new GuiPortableTeleporter(player, itemStack);
+					return new GuiTeleporter(player, itemStack);
 				}
 			case 15:
 				return new GuiPurificationChamber(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
