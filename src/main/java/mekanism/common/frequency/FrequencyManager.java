@@ -2,9 +2,9 @@ package mekanism.common.frequency;
 
 import io.netty.buffer.ByteBuf;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -58,6 +58,8 @@ public class FrequencyManager
 			if(freq.equals(iterFreq))
 			{
 				iterFreq.activeCoords.add(coord);
+				dataHandler.markDirty();
+				
 				return iterFreq;
 			}
 		}
@@ -70,6 +72,7 @@ public class FrequencyManager
 		for(Frequency freq : frequencies)
 		{
 			freq.activeCoords.remove(coord);
+			dataHandler.markDirty();
 		}
 	}
 	
@@ -80,6 +83,8 @@ public class FrequencyManager
 			if(freq.equals(iterFreq))
 			{
 				iterFreq.activeCoords.add(coord);
+				dataHandler.markDirty();
+				
 				return iterFreq;
 			}
 		}
@@ -88,6 +93,8 @@ public class FrequencyManager
 		{
 			freq.activeCoords.add(coord);
 			frequencies.add(freq);
+			dataHandler.markDirty();
+			
 			return freq;
 		}
 		
@@ -96,15 +103,17 @@ public class FrequencyManager
 	
 	public void createOrLoad(World world)
 	{
+		String name = getName();
+		
 		if(dataHandler == null)
 		{
-			dataHandler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, getName());
+			dataHandler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
 			
 			if(dataHandler == null)
 			{
-				dataHandler = new FrequencyDataHandler(getName());
+				dataHandler = new FrequencyDataHandler(name);
 				dataHandler.setManager(this);
-				world.perWorldStorage.setData(getName(), dataHandler);
+				world.perWorldStorage.setData(name, dataHandler);
 			}
 			else {
 				dataHandler.setManager(this);
@@ -121,6 +130,7 @@ public class FrequencyManager
 	public void addFrequency(Frequency freq)
 	{
 		frequencies.add(freq);
+		dataHandler.markDirty();
 	}
 	
 	public boolean containsFrequency(Frequency freq)
@@ -178,6 +188,7 @@ public class FrequencyManager
 		public FrequencyManager manager;
 		
 		public Set<Frequency> loadedFrequencies;
+		public String loadedOwner;
 		
 		public FrequencyDataHandler(String tagName)
 		{
@@ -194,6 +205,7 @@ public class FrequencyManager
 			if(loadedFrequencies != null)
 			{
 				manager.frequencies = loadedFrequencies;
+				manager.owner = loadedOwner;
 			}
 		}
 		
@@ -205,10 +217,10 @@ public class FrequencyManager
 				
 				if(nbtTags.hasKey("owner"))
 				{
-					manager.owner = nbtTags.getString("owner");
+					loadedOwner = nbtTags.getString("owner");
 				}
 				
-				NBTTagList list = nbtTags.getTagList("invList", NBT.TAG_COMPOUND);
+				NBTTagList list = nbtTags.getTagList("freqList", NBT.TAG_COMPOUND);
 				
 				loadedFrequencies = new HashSet<Frequency>();
 				
@@ -216,8 +228,8 @@ public class FrequencyManager
 				{
 					NBTTagCompound compound = list.getCompoundTagAt(i);
 					
-					Frequency freq = (Frequency)Class.forName(frequencyClass).newInstance();
-					freq.read(compound);
+					Constructor c = Class.forName(frequencyClass).getConstructor(new Class[] {NBTTagCompound.class});
+					Frequency freq = (Frequency)c.newInstance(compound);
 					
 					loadedFrequencies.add(freq);
 				}

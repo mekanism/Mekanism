@@ -87,28 +87,24 @@ public class GuiTeleporter extends GuiMekanism
 		buttonList.add(deleteButton);
 	}
 	
-	public void setFrequency()
+	public void setFrequency(String freq)
 	{
-		String text = frequencyField.getText();
-		
-		if(text.isEmpty())
+		if(freq.isEmpty())
 		{
 			return;
 		}
 		
 		ArrayList data = new ArrayList();
 		data.add(0);
-		data.add(text);
+		data.add(freq);
 		data.add(!privateMode);
 		
 		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-		
-		frequencyField.setText("");
 	}
 	
-	public String getSecurity()
+	public String getSecurity(Frequency freq)
 	{
-		return privateMode ? EnumColor.DARK_RED + MekanismUtils.localize("gui.private") : MekanismUtils.localize("gui.public");
+		return !freq.publicFreq ? EnumColor.DARK_RED + MekanismUtils.localize("gui.private") : MekanismUtils.localize("gui.public");
 	}
 	
 	public void updateButtons()
@@ -117,6 +113,24 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			return;
 		}
+		
+		List<String> text = new ArrayList<String>();
+		
+		if(privateMode)
+		{
+			for(Frequency freq : tileEntity.privateCache)
+			{
+				text.add(freq.name);
+			}
+		}
+		else {
+			for(Frequency freq : tileEntity.publicCache)
+			{
+				text.add(freq.name + " (" + freq.owner + ")");
+			}
+		}
+		
+		scrollList.setText(text);
 		
 		if(privateMode)
 		{
@@ -161,24 +175,6 @@ public class GuiTeleporter extends GuiMekanism
 		
 		updateButtons();
 		
-		List<String> text = new ArrayList<String>();
-		
-		if(privateMode)
-		{
-			for(Frequency freq : tileEntity.privateCache)
-			{
-				text.add(freq.name);
-			}
-		}
-		else {
-			for(Frequency freq : tileEntity.publicCache)
-			{
-				text.add(freq.name + " (" + freq.owner + ")");
-			}
-		}
-		
-		scrollList.setText(text);
-		
 		frequencyField.updateCursorCounter();
 	}
 	
@@ -198,7 +194,7 @@ public class GuiTeleporter extends GuiMekanism
 			
 			if(xAxis >= 137 && xAxis <= 148 && yAxis >= 103 && yAxis <= 114)
 			{
-				setFrequency();
+				setFrequency(frequencyField.getText());
 				frequencyField.setText("");
 	            SoundHandler.playSound("gui.button.press");
 			}
@@ -217,7 +213,8 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			if(frequencyField.isFocused())
 			{
-				setFrequency();
+				setFrequency(frequencyField.getText());
+				frequencyField.setText("");
 			}
 		}
 
@@ -244,7 +241,13 @@ public class GuiTeleporter extends GuiMekanism
 		}
 		else if(guibutton.id == 2)
 		{
-			setFrequency();
+			int selection = scrollList.getSelection();
+			
+			if(selection != -1)
+			{
+				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
+				setFrequency(freq.name);
+			}
 		}
 		else if(guibutton.id == 3)
 		{
@@ -281,7 +284,7 @@ public class GuiTeleporter extends GuiMekanism
 		fontRendererObj.drawString(MekanismUtils.localize("gui.security") + ":", 32, 91, 0x404040);
 		
 		fontRendererObj.drawString(" " + (tileEntity.frequency != null ? tileEntity.frequency.name : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.freq") + ":"), 81, 0x797979);
-		fontRendererObj.drawString(" " + getSecurity(), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.security") + ":"), 91, 0x797979);
+		fontRendererObj.drawString(" " + (tileEntity.frequency != null ? getSecurity(tileEntity.frequency) : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.security") + ":"), 91, 0x797979);
 		
 		String str = MekanismUtils.localize("gui.set") + ":";
 		renderScaledText(str, 27, 104, 0x404040, 20);

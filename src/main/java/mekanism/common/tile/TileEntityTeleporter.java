@@ -91,6 +91,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				if(frequency != null && !frequency.valid)
 				{
 					frequency = manager.validateFrequency(owner, Coord4D.get(this), frequency);
+					System.out.println(frequency);
 				}
 				
 				frequency = manager.update(owner, Coord4D.get(this), frequency);
@@ -128,17 +129,19 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	
 	public void setFrequency(String name, boolean publicFreq)
 	{
+		if(name.equals(frequency))
+		{
+			return;
+		}
+		
 		FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
 		
 		for(Frequency freq : manager.getFrequencies())
 		{
-			if(freq.equals(frequency))
-			{
-				return;
-			}
-			else if(freq.name.equals(name))
+			if(freq.name.equals(name))
 			{
 				frequency = freq;
+				frequency.activeCoords.add(Coord4D.get(this));
 				return;
 			}
 		}
@@ -146,8 +149,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		Frequency freq = new Frequency(name, owner).setPublic(publicFreq);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
-		
 		frequency = freq;
+		
+		MekanismUtils.saveChunk(this);
 	}
 	
 	public FrequencyManager getManager(Frequency freq)
@@ -485,7 +489,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		
 		if(nbtTags.hasKey("frequency"))
 		{
-			frequency = new Frequency(nbtTags);
+			frequency = new Frequency(nbtTags.getCompoundTag("frequency"));
 			frequency.valid = false;
 		}
 	}
@@ -502,7 +506,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		
 		if(frequency != null)
 		{
-			frequency.write(nbtTags);
+			NBTTagCompound frequencyTag = new NBTTagCompound();
+			frequency.write(frequencyTag);
+			nbtTags.setTag("frequency", frequencyTag);
 		}
 	}
 

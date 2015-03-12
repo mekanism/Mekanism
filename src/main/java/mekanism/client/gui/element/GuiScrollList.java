@@ -56,8 +56,6 @@ public class GuiScrollList extends GuiElement
 	
 	public void setText(List<String> text)
 	{
-		scroll = 0;
-		
 		if(text == null)
 		{
 			textEntries.clear();
@@ -70,6 +68,11 @@ public class GuiScrollList extends GuiElement
 		}
 		
 		textEntries = text;
+		
+		if(textEntries.size()<=size)
+		{
+			scroll = 0;	
+		}
 	}
 	
 	@Override
