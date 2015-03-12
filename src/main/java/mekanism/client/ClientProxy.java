@@ -116,6 +116,7 @@ import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
 import mekanism.common.tile.TileEntityAmbientAccumulator;
@@ -509,8 +510,24 @@ public class ClientProxy extends CommonProxy
 			case 51:
 				return new GuiTransporterConfig(player, (ISideConfiguration)tileEntity);
 		}
-
+		
 		return null;
+	}
+	
+	@Override
+	public void handleTeleporterUpdate(PortableTeleporterMessage message)
+	{
+		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+		
+		if(screen instanceof GuiTeleporter && ((GuiTeleporter)screen).itemStack != null)
+		{
+			GuiTeleporter teleporter = (GuiTeleporter)screen;
+			
+			teleporter.clientStatus = message.status;
+			teleporter.clientFreq = message.frequency;
+			teleporter.clientPublicCache = message.publicCache;
+			teleporter.clientPrivateCache = message.privateCache;
+		}
 	}
 	
 	@Override

@@ -17,6 +17,8 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.item.ItemPortableTeleporter;
+import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
+import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
@@ -57,6 +59,12 @@ public class GuiTeleporter extends GuiMekanism
 	public GuiTextField frequencyField;
 	
 	public boolean privateMode;
+	
+	public Frequency clientFreq;
+	public byte clientStatus;
+	
+	public List<Frequency> clientPublicCache = new ArrayList<Frequency>();
+	public List<Frequency> clientPrivateCache = new ArrayList<Frequency>();
 
 	public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
 	{
@@ -134,6 +142,8 @@ public class GuiTeleporter extends GuiMekanism
 		buttonList.add(privateButton);
 		buttonList.add(setButton);
 		buttonList.add(deleteButton);
+		
+		Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
 	}
 	
 	public void setFrequency(String freq)
@@ -143,12 +153,20 @@ public class GuiTeleporter extends GuiMekanism
 			return;
 		}
 		
-		ArrayList data = new ArrayList();
-		data.add(0);
-		data.add(freq);
-		data.add(!privateMode);
-		
-		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+		if(tileEntity != null)
+		{
+			ArrayList data = new ArrayList();
+			data.add(0);
+			data.add(freq);
+			data.add(!privateMode);
+			
+			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+		}
+		else {
+			Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
+			
+			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.SET_FREQ, newFreq));
+		}
 	}
 	
 	public String getSecurity(Frequency freq)
@@ -167,13 +185,13 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(privateMode)
 		{
-			for(Frequency freq : tileEntity.privateCache)
+			for(Frequency freq : getPrivateCache())
 			{
 				text.add(freq.name);
 			}
 		}
 		else {
-			for(Frequency freq : tileEntity.publicCache)
+			for(Frequency freq : getPublicCache())
 			{
 				text.add(freq.name + " (" + freq.owner + ")");
 			}
@@ -193,7 +211,7 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(scrollList.hasSelection())
 		{
-			Frequency freq = privateMode ? tileEntity.privateCache.get(scrollList.selected) : tileEntity.publicCache.get(scrollList.selected);
+			Frequency freq = privateMode ? getPrivateCache().get(scrollList.selected) : getPublicCache().get(scrollList.selected);
 			
 			if(getFrequency() == null || !getFrequency().equals(freq))
 			{
@@ -294,7 +312,7 @@ public class GuiTeleporter extends GuiMekanism
 			
 			if(selection != -1)
 			{
-				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
+				Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
 				setFrequency(freq.name);
 			}
 		}
@@ -304,14 +322,21 @@ public class GuiTeleporter extends GuiMekanism
 			
 			if(selection != -1)
 			{
-				Frequency freq = privateMode ? tileEntity.privateCache.get(selection) : tileEntity.publicCache.get(selection);
+				Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
 				
-				ArrayList data = new ArrayList();
-				data.add(1);
-				data.add(freq.name);
-				data.add(freq.publicFreq);
-				
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				if(tileEntity != null)
+				{
+					ArrayList data = new ArrayList();
+					data.add(1);
+					data.add(freq.name);
+					data.add(freq.publicFreq);
+					
+					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				}
+				else {
+					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DEL_FREQ, freq));
+					Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, null));
+				}
 				
 				scrollList.selected = -1;
 			}
@@ -380,6 +405,8 @@ public class GuiTeleporter extends GuiMekanism
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 		
 		frequencyField.drawTextBox();
+		
+		System.out.println(xSize + " " + ySize);
 	}
 	
 	public String getStatusDisplay()
@@ -406,12 +433,22 @@ public class GuiTeleporter extends GuiMekanism
 	
 	private byte getStatus()
 	{
-		return tileEntity.status;
+		return tileEntity != null ? tileEntity.status : clientStatus;
+	}
+	
+	private List<Frequency> getPublicCache()
+	{
+		return tileEntity != null ? tileEntity.publicCache : clientPublicCache;
+	}
+	
+	private List<Frequency> getPrivateCache()
+	{
+		return tileEntity != null ? tileEntity.privateCache : clientPrivateCache;
 	}
 	
 	private Frequency getFrequency()
 	{
-		return tileEntity.frequency;
+		return tileEntity != null ? tileEntity.frequency : clientFreq;
 	}
 	
 	private String getInventoryName()

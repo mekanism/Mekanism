@@ -1,8 +1,11 @@
 package mekanism.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,8 +17,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes
@@ -44,6 +45,19 @@ public class Coord4D
 		zCoord = z;
 
 		dimensionId = 0;
+	}
+	
+	/**
+	 * Creates a Coord4D from an entity's position, rounded down.
+	 * @param entity - entity to create the Coord4D from
+	 */
+	public Coord4D(Entity entity)
+	{
+		xCoord = (int)entity.posX;
+		yCoord = (int)entity.posY;
+		zCoord = (int)entity.posZ;
+		
+		dimensionId = entity.worldObj.provider.dimensionId;
 	}
 
 	/**
