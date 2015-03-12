@@ -54,6 +54,47 @@ public class Frequency
 		return !publicFreq;
 	}
 	
+	public Coord4D getClosestCoords(Coord4D coord)
+	{
+		Coord4D closest = null;
+		
+		for(Coord4D iterCoord : activeCoords)
+		{
+			if(iterCoord.equals(coord))
+			{
+				continue;
+			}
+			
+			if(closest == null)
+			{
+				closest = iterCoord;
+				continue;
+			}
+			
+			if(coord.dimensionId != closest.dimensionId && coord.dimensionId == iterCoord.dimensionId)
+			{
+				closest = iterCoord;
+				continue;
+			}
+			else if(coord.dimensionId == closest.dimensionId && coord.dimensionId != iterCoord.dimensionId)
+			{
+				continue;
+			}
+			else {
+				if(coord.distanceTo(closest) > coord.distanceTo(iterCoord))
+				{
+					closest = iterCoord;
+					continue;
+				}
+				else {
+					continue;
+				}
+			}
+		}
+		
+		return closest;
+	}
+	
 	public void write(NBTTagCompound nbtTags)
 	{
 		nbtTags.setString("name", name);

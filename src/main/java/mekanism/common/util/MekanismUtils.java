@@ -231,59 +231,6 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Returns the closest teleporter between a selection of one or two.
-	 */
-	/*public static Coord4D getClosestCoords(Teleporter.Code teleCode, EntityPlayer player)
-	{
-		if(Mekanism.teleporters.get(teleCode).size() == 1)
-		{
-			return Mekanism.teleporters.get(teleCode).get(0);
-		}
-		else {
-			int dimensionId = player.worldObj.provider.dimensionId;
-
-			Coord4D coords0 = Mekanism.teleporters.get(teleCode).get(0);
-			Coord4D coords1 = Mekanism.teleporters.get(teleCode).get(1);
-
-			int distance0 = (int)player.getDistance(coords0.xCoord, coords0.yCoord, coords0.zCoord);
-			int distance1 = (int)player.getDistance(coords1.xCoord, coords1.yCoord, coords1.zCoord);
-
-			if(dimensionId == coords0.dimensionId && dimensionId != coords1.dimensionId)
-			{
-				return coords0;
-			}
-			else if(dimensionId == coords1.dimensionId && dimensionId != coords0.dimensionId)
-			{
-				return coords1;
-			}
-			else if(dimensionId == coords0.dimensionId && dimensionId == coords1.dimensionId)
-			{
-				if(distance0 < distance1)
-				{
-					return coords0;
-				}
-				else if(distance0 > distance1)
-				{
-					return coords1;
-				}
-			}
-			else if(dimensionId != coords0.dimensionId && dimensionId != coords1.dimensionId)
-			{
-				if(distance0 < distance1)
-				{
-					return coords0;
-				}
-				else if(distance0 > distance1)
-				{
-					return coords1;
-				}
-			}
-		}
-
-		return null;
-	}TODO*/
-
-	/**
 	 * Checks if the mod doesn't need an update.
 	 * @return if mod doesn't need an update
 	 */

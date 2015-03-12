@@ -16,6 +16,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -124,6 +125,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 
 		ChargeUtils.discharge(0, this);
+	}
+	
+	public Coord4D getClosest()
+	{
+		if(frequency != null)
+		{
+			return frequency.getClosestCoords(Coord4D.get(this));
+		}
+		
+		return null;
 	}
 	
 	public void setFrequency(String name, boolean publicFreq)
@@ -275,40 +286,28 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			return 2;
 		}
 		
-		//TODO if no link return 3
-
-		if(true/*TODO if has link*/)
+		if(getClosest() == null)
 		{
-			List<Entity> entitiesInPortal = getToTeleport();
+			return 3;
+		}
 
-			Coord4D closestCoords = null;
+		List<Entity> entitiesInPortal = getToTeleport();
+		Coord4D closestCoords = getClosest();
 
-			/*for(Coord4D coords : Mekanism.teleporters.get(code))
-			{
-				if(!coords.equals(Coord4D.get(this)))
-				{
-					closestCoords = coords;
-					break;
-				}
-			}*/
+		int electricityNeeded = 0;
 
-			int electricityNeeded = 0;
+		for(Entity entity : entitiesInPortal)
+		{
+			electricityNeeded += calculateEnergyCost(entity, closestCoords);
+		}
 
-			for(Entity entity : entitiesInPortal)
-			{
-				electricityNeeded += calculateEnergyCost(entity, closestCoords);
-			}
-
-			if(getEnergy() < electricityNeeded)
-			{
-				return 4;
-			}
-
-			return 1;
+		if(getEnergy() < electricityNeeded)
+		{
+			return 4;
 		}
 
 		return 1;
-	}
+}
 
 	public void teleport()
 	{
@@ -316,16 +315,12 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 		List<Entity> entitiesInPortal = getToTeleport();
 
-		Coord4D closestCoords = null;
-
-		/*for(Coord4D coords : Mekanism.teleporters.get(code))
+		Coord4D closestCoords = getClosest();
+		
+		if(closestCoords == null)
 		{
-			if(!coords.equals(Coord4D.get(this)))
-			{
-				closestCoords = coords;
-				break;
-			}
-		}*/
+			return;
+		}
 
 		for(Entity entity : entitiesInPortal)
 		{
@@ -345,10 +340,10 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 					teleportEntityTo(entity, closestCoords, teleporter);
 				}
 
-				/*for(Coord4D coords : Mekanism.teleporters.get(code))
+				for(Coord4D coords : frequency.activeCoords)
 				{
 					Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
-				}*/
+				}
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
 
