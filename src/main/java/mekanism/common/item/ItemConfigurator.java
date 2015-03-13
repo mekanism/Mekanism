@@ -325,9 +325,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					return TransmissionType.GAS;
 				case CONFIGURATE_ENERGY:
 					return TransmissionType.ENERGY;
+				default:
+					return null;
 			}
-			
-			return null;
 		}
 	}
 }

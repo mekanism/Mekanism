@@ -36,6 +36,7 @@ import mekanism.client.gui.GuiLaserAmplifier;
 import mekanism.client.gui.GuiLaserTractorBeam;
 import mekanism.client.gui.GuiMatrixStats;
 import mekanism.client.gui.GuiMetallurgicInfuser;
+import mekanism.client.gui.GuiOredictionificator;
 import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPasswordEnter;
@@ -92,6 +93,7 @@ import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
+import mekanism.client.render.tileentity.RenderOredictionificator;
 import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
@@ -156,6 +158,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityObsidianTNT;
+import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPortableTank;
@@ -332,6 +335,7 @@ public class ClientProxy extends CommonProxy
 		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
 		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
+		ClientRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator", new RenderOredictionificator());
 	}
 
 	@Override
@@ -509,6 +513,8 @@ public class ClientProxy extends CommonProxy
 				return new GuiMatrixStats(player.inventory, (TileEntityInductionCasing)tileEntity);
 			case 51:
 				return new GuiTransporterConfig(player, (ISideConfiguration)tileEntity);
+			case 52:
+				return new GuiOredictionificator(player.inventory, (TileEntityOredictionificator)tileEntity);
 		}
 		
 		return null;

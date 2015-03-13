@@ -64,6 +64,7 @@ import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPortableTank;
@@ -1057,9 +1058,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				return false;
 			case PORTABLE_TANK:
 				return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
+			default:
+				return true;
 		}
-
-		return true;
 	}
 
 	public static enum MachineBlock
@@ -1120,7 +1121,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
 		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false),
-		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false);
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false),
+		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, true, false);
 
 		public MachineBlock typeBlock;
 		public int meta;

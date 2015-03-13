@@ -37,6 +37,7 @@ import mekanism.common.inventory.container.ContainerLaserAmplifier;
 import mekanism.common.inventory.container.ContainerLaserTractorBeam;
 import mekanism.common.inventory.container.ContainerMetallurgicInfuser;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.inventory.container.ContainerPRC;
 import mekanism.common.inventory.container.ContainerPortableTank;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
@@ -91,6 +92,7 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.TileEntityObsidianTNT;
+import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPortableTank;
@@ -173,6 +175,7 @@ public class CommonProxy
 		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
 		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
+		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
 	}
 	
 	public void handleTeleporterUpdate(PortableTeleporterMessage message) {}
@@ -501,6 +504,8 @@ public class CommonProxy
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 51:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
+			case 52:
+				return new ContainerOredictionificator(player.inventory, (TileEntityOredictionificator)tileEntity);
 		}
 
 		return null;

@@ -26,6 +26,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	private TileEntityContainerBlock tileEntity;
 
+	//Try not to use
 	public GuiMekanism(Container container)
 	{
 		super(container);

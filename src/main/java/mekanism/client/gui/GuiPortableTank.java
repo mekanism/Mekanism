@@ -42,7 +42,7 @@ public class GuiPortableTank extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 47, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
