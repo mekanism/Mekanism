@@ -8,12 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
@@ -32,6 +33,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
@@ -43,7 +47,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral, IChunkLoader
 {
 	private MinecraftServer server = MinecraftServer.getServer();
 
@@ -63,6 +67,8 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
+	
+	public Ticket chunkTicket;
 
 	/** This teleporter's current status. */
 	public byte status = 0;
@@ -85,6 +91,20 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 		if(!worldObj.isRemote)
 		{
+			if(chunkTicket == null)
+			{
+				Ticket ticket = ForgeChunkManager.requestTicket(Mekanism.instance, worldObj, Type.NORMAL);
+				
+				if(ticket != null)
+				{
+					ticket.getModData().setInteger("xCoord", xCoord);
+					ticket.getModData().setInteger("yCoord", yCoord);
+					ticket.getModData().setInteger("zCoord", zCoord);
+					
+					forceChunks(ticket);
+				}
+			}
+			
 			FrequencyManager manager = getManager(frequency);
 			
 			if(manager != null)
@@ -145,6 +165,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 		
 		FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
+		manager.deactivate(Coord4D.get(this));
 		
 		for(Frequency freq : manager.getFrequencies())
 		{
@@ -187,6 +208,16 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 	
+	public static FrequencyManager loadManager(String owner, World world)
+	{
+		if(Mekanism.privateTeleporters.containsKey(owner))
+		{
+			return Mekanism.privateTeleporters.get(owner);
+		}
+		
+		return FrequencyManager.loadOnly(world, owner, Frequency.class);
+	}
+	
 	@Override
 	public void onChunkUnload()
 	{
@@ -208,13 +239,18 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		super.invalidate();
 		
-		if(!worldObj.isRemote && frequency != null)
+		if(!worldObj.isRemote)
 		{
-			FrequencyManager manager = getManager(frequency);
+			releaseChunks();
 			
-			if(manager != null)
+			if(frequency != null)
 			{
-				manager.deactivate(Coord4D.get(this));
+				FrequencyManager manager = getManager(frequency);
+				
+				if(manager != null)
+				{
+					manager.deactivate(Coord4D.get(this));
+				}
 			}
 		}
 	}
@@ -678,5 +714,23 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public void forceChunks(Ticket ticket)
+	{
+		releaseChunks();
+		chunkTicket = ticket;
+		
+		ForgeChunkManager.forceChunk(chunkTicket, new Chunk3D(Coord4D.get(this)).toPair());
+	}
+	
+	public void releaseChunks()
+	{
+		if(chunkTicket != null)
+		{
+			ForgeChunkManager.releaseTicket(chunkTicket);
+			chunkTicket = null;
+		}
 	}
 }

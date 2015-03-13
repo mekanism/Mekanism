@@ -780,6 +780,20 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				return false;
 		}
 	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onAdded();
+			}
+		}
+	}
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)

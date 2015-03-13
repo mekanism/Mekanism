@@ -37,6 +37,7 @@ import mekanism.common.base.IChunkLoadHandler;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IModule;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.content.boiler.BoilerManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.matrix.MatrixCache;
@@ -92,6 +93,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManager;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -1155,6 +1157,9 @@ public class Mekanism
 		
 		//Get data from server.
 		new ThreadGetData();
+		
+		//Register with ForgeChunkManager
+		ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());
 		
 		//Register to receive subscribed events
 		FMLCommonHandler.instance().bus().register(this);

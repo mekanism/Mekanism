@@ -82,6 +82,39 @@ public class FrequencyManager
 		}
 	}
 	
+	public void remove(String name)
+	{
+		for(Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext();)
+		{
+			Frequency iterFreq = iter.next();
+			
+			if(iterFreq.name.equals(name))
+			{
+				iter.remove();
+				dataHandler.markDirty();
+			}
+		}
+	}
+	
+	public int removeAll(String user)
+	{
+		int amount = 0;
+		
+		for(Iterator<Frequency> iter = getFrequencies().iterator(); iter.hasNext();)
+		{
+			Frequency iterFreq = iter.next();
+			
+			if(iterFreq.owner.equals(user))
+			{
+				iter.remove();
+				dataHandler.markDirty();
+				amount++;
+			}
+		}
+		
+		return amount;
+	}
+	
 	public void deactivate(Coord4D coord)
 	{
 		for(Frequency freq : frequencies)
@@ -137,6 +170,25 @@ public class FrequencyManager
 		}
 	}
 	
+	public static FrequencyManager loadOnly(World world, String owner, Class<? extends Frequency> freqClass)
+	{
+		FrequencyManager manager = new FrequencyManager(freqClass);
+		String name = manager.getName();
+		
+		FrequencyDataHandler handler = (FrequencyDataHandler)world.perWorldStorage.loadData(FrequencyDataHandler.class, name);
+		
+		if(handler == null)
+		{
+			return null;
+		}
+		else {
+			manager.dataHandler = handler;
+			manager.dataHandler.syncManager();
+			
+			return manager;
+		}
+	}
+	
 	public Set<Frequency> getFrequencies()
 	{
 		return frequencies;
@@ -148,9 +200,17 @@ public class FrequencyManager
 		dataHandler.markDirty();
 	}
 	
-	public boolean containsFrequency(Frequency freq)
+	public boolean containsFrequency(String name)
 	{
-		return frequencies.contains(freq);
+		for(Frequency freq : frequencies)
+		{
+			if(freq.name.equals(name))
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void writeFrequencies(ArrayList data)
