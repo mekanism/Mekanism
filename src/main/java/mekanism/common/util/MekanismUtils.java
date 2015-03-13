@@ -155,8 +155,8 @@ public final class MekanismUtils
 	 */
 	public static String getLatestVersion()
 	{
-		String[] text = merge(getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
-		if(!text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("http")) return text[0];
+		String[] text = merge(getHTML("https://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
+		if(text.length > 1 && !text[0].contains("UTF-8") && !text[0].contains("HTML") && !text[0].contains("http")) return text[0];
 		return "null";
 	}
 
@@ -166,7 +166,7 @@ public final class MekanismUtils
 	 */
 	public static String getRecentNews()
 	{
-		String[] text = merge(getHTML("http://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
+		String[] text = merge(getHTML("https://dl.dropbox.com/u/90411166/Mod%20Versions/Mekanism.txt")).split(":");
 		if(text.length > 1 && !text[1].contains("UTF-8") && !text[1].contains("HTML") && !text[1].contains("http")) return text[1];
 		return "null";
 	}
