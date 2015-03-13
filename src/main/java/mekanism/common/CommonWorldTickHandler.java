@@ -86,6 +86,7 @@ public class CommonWorldTickHandler
 		if(!world.isRemote)
 		{
 			MultiblockManager.tick(world);
+			FrequencyManager.tick(world);
 			
 			if(chunkRegenMap == null) 
 			{ 

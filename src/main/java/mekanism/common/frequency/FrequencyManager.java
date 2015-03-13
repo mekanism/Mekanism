@@ -9,8 +9,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -64,6 +66,8 @@ public class FrequencyManager
 				return iterFreq;
 			}
 		}
+		
+		deactivate(coord);
 		
 		return null;
 	}
@@ -211,6 +215,54 @@ public class FrequencyManager
 		}
 		
 		return false;
+	}
+	
+	public static void tick(World world)
+	{
+		if(!loaded)
+		{
+			load(world);
+		}
+		
+		for(FrequencyManager manager : managers)
+		{
+			manager.tickSelf(world);
+		}
+	}
+
+	public void tickSelf(World world)
+	{
+		for(Frequency iterFreq : frequencies)
+		{
+			for(Iterator<Coord4D> iter = iterFreq.activeCoords.iterator(); iter.hasNext();)
+			{
+				Coord4D coord = iter.next();
+				
+				if(coord.dimensionId == world.provider.dimensionId)
+				{
+					if(!coord.exists(world))
+					{
+						iter.remove();
+					}
+					else {
+						TileEntity tile = coord.getTileEntity(world);
+						
+						if(!(tile instanceof TileEntityTeleporter))
+						{
+							iter.remove();
+						}
+						else {
+							Frequency freq = ((TileEntityTeleporter)tile).frequency;
+							
+							if(freq == null || !freq.equals(iterFreq))
+							{
+								iter.remove();
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void writeFrequencies(ArrayList data)
