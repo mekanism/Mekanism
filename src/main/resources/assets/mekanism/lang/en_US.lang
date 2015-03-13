@@ -629,6 +629,7 @@ tooltip.filterCard.set=Injected filter data of type %s
 tooltip.filterCard.unequal=Unequal filter data formats
 tooltip.filterCard.logisticalSorter=Logistical Sorter
 tooltip.filterCard.digitalMiner=Digital Miner
+tooltip.filterCard.oredictionificator=Oredictionificator
 
 tooltip.balloon=Balloon
 

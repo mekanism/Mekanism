@@ -1,5 +1,7 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -11,7 +13,8 @@ import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-
+import mekanism.common.tile.TileEntityOredictionificator;
+import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -19,8 +22,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessage>
 {
@@ -53,6 +54,17 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
 				}
 			}
+			else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+			{
+				TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
+				
+				oredictionificator.filters.add(message.oFilter);
+				
+				for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
+				{
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+				}
+			}
 		}
 		
 		return null;
@@ -65,6 +77,8 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 		public TransporterFilter tFilter;
 
 		public MinerFilter mFilter;
+		
+		public OredictionificatorFilter oFilter;
 
 		public byte type = -1;
 		
@@ -83,6 +97,11 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 			{
 				mFilter = (MinerFilter)filter;
 				type = 1;
+			}
+			else if(filter instanceof OredictionificatorFilter)
+			{
+				oFilter = (OredictionificatorFilter)filter;
+				type = 2;
 			}
 		}
 	
@@ -107,6 +126,10 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 			{
 				mFilter.write(data);
 			}
+			else if(type == 3)
+			{
+				oFilter.write(data);
+			}
 	
 			PacketHandler.encode(data.toArray(), dataStream);
 		}
@@ -124,6 +147,10 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 			else if(type == 1)
 			{
 				mFilter = MinerFilter.readFromPacket(dataStream);
+			}
+			else if(type == 2)
+			{
+				oFilter = OredictionificatorFilter.readFromPacket(dataStream);
 			}
 		}
 	}

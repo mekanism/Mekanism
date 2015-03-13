@@ -3,10 +3,13 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import org.lwjgl.opengl.GL11;
@@ -18,6 +21,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiOredictionificator extends GuiMekanism
 {
 	public TileEntityOredictionificator tileEntity;
+	
+	public boolean isDragging = false;
+
+	public int dragOffset = 0;
+	
+	public float scroll;
 	
 	public GuiOredictionificator(InventoryPlayer inventory, TileEntityOredictionificator tentity)
 	{
@@ -32,6 +41,38 @@ public class GuiOredictionificator extends GuiMekanism
 				return 1;//tileEntity.isActive ? 1 : 0;
 			}
 		}, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png"), 62, 118));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png"), 25, 114));
+		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png"), 133, 114));
+		
+		ySize+=64;
+	}
+	
+	public int getScroll()
+	{
+		return Math.max(Math.min((int)(scroll*88), 88), 0);
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		int guiWidth = (width - xSize) / 2;
+		int guiHeight = (height - ySize) / 2;
+
+		buttonList.clear();
+		buttonList.add(new GuiButton(0, guiWidth + 10, guiHeight + 86, 142, 20, MekanismUtils.localize("gui.newFilter")));
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		super.actionPerformed(guibutton);
+
+		if(guibutton.id == 0)
+		{
+			
+		}
 	}
 	
 	@Override
@@ -57,6 +98,8 @@ public class GuiOredictionificator extends GuiMekanism
 
 		int xAxis = mouseX - guiWidth;
 		int yAxis = mouseY - guiHeight;
+		
+		drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

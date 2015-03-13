@@ -359,7 +359,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		data.add(isActive);
 		data.add(operatingTicks);
-		data.add(infuseStored);
+		data.add(infuseStored.amount);
 		data.add(controlType.ordinal());
 
 		if(infuseStored.type != null)

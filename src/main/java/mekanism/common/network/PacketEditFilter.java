@@ -1,5 +1,7 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -11,7 +13,8 @@ import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-
+import mekanism.common.tile.TileEntityOredictionificator;
+import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -19,8 +22,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMessage>
 {
@@ -77,6 +78,29 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(miner), miner.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
 				}
 			}
+			else if(message.type == 2 && message.coord4D.getTileEntity(worldServer) instanceof TileEntityOredictionificator)
+			{
+				TileEntityOredictionificator oredictionificator = (TileEntityOredictionificator)message.coord4D.getTileEntity(worldServer);
+
+				if(!oredictionificator.filters.contains(message.oFilter))
+				{
+					return null;
+				}
+
+				int index = oredictionificator.filters.indexOf(message.oFilter);
+
+				oredictionificator.filters.remove(index);
+
+				if(!message.delete)
+				{
+					oredictionificator.filters.add(index, message.oEdited);
+				}
+
+				for(EntityPlayer iterPlayer : oredictionificator.playersUsing)
+				{
+					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(oredictionificator), oredictionificator.getFilterPacket(new ArrayList())), (EntityPlayerMP)iterPlayer);
+				}
+			}
 		}
 	
 		return null;
@@ -91,6 +115,9 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 	
 		public MinerFilter mFilter;
 		public MinerFilter mEdited;
+		
+		public OredictionificatorFilter oFilter;
+		public OredictionificatorFilter oEdited;
 	
 		public byte type = -1;
 	
@@ -124,6 +151,17 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 				}
 	
 				type = 1;
+			}
+			else if(filter instanceof OredictionificatorFilter)
+			{
+				oFilter = (OredictionificatorFilter)filter;
+				
+				if(!delete)
+				{
+					oEdited = (OredictionificatorFilter)edited;
+				}
+				
+				type = 2;
 			}
 		}
 	
@@ -160,6 +198,15 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 					mEdited.write(data);
 				}
 			}
+			else if(type == 2)
+			{
+				oFilter.write(data);
+				
+				if(!delete)
+				{
+					oEdited.write(data);
+				}
+			}
 	
 			PacketHandler.encode(data.toArray(), dataStream);
 		}
@@ -188,6 +235,15 @@ public class PacketEditFilter implements IMessageHandler<EditFilterMessage, IMes
 				if(!delete)
 				{
 					mEdited = MinerFilter.readFromPacket(dataStream);
+				}
+			}
+			else if(type == 2)
+			{
+				oFilter = OredictionificatorFilter.readFromPacket(dataStream);
+				
+				if(!delete)
+				{
+					oEdited = OredictionificatorFilter.readFromPacket(dataStream);
 				}
 			}
 		}
