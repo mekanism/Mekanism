@@ -1,12 +1,19 @@
 package mekanism.client.gui;
 
+import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerOredictionificator;
+import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
+import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiPacket;
 import mekanism.common.tile.TileEntityOredictionificator;
+import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -52,6 +59,16 @@ public class GuiOredictionificator extends GuiMekanism
 		return Math.max(Math.min((int)(scroll*88), 88), 0);
 	}
 	
+	public int getFilterIndex()
+	{
+		if(tileEntity.filters.size() <= 4)
+		{
+			return 0;
+		}
+
+		return (int)((tileEntity.filters.size()*scroll) - ((4F/(float)tileEntity.filters.size()))*scroll);
+	}
+	
 	@Override
 	public void initGui()
 	{
@@ -71,7 +88,7 @@ public class GuiOredictionificator extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			
+			Mekanism.packetHandler.sendToServer(new OredictionificatorGuiMessage(OredictionificatorGuiPacket.SERVER, Coord4D.get(tileEntity), 1, 0, 0));
 		}
 	}
 	
@@ -84,6 +101,27 @@ public class GuiOredictionificator extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
+		for(int i = 0; i < 4; i++)
+		{
+			if(tileEntity.filters.get(getFilterIndex()+i) != null)
+			{
+				OredictionificatorFilter filter = tileEntity.filters.get(getFilterIndex()+i);
+				int yStart = i*22 + 18;
+
+				/*
+				if(itemFilter.itemType != null)
+				{
+					GL11.glPushMatrix();
+					GL11.glEnable(GL11.GL_LIGHTING);
+					itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemFilter.itemType, 59, yStart + 3);
+					GL11.glDisable(GL11.GL_LIGHTING);
+					GL11.glPopMatrix();
+				}*/
+
+				fontRendererObj.drawString(MekanismUtils.localize("gui.filter"), 78, yStart + 2, 0x404040);
+			}
+		}
+		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
@@ -100,7 +138,51 @@ public class GuiOredictionificator extends GuiMekanism
 		int yAxis = mouseY - guiHeight;
 		
 		drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
-
+		
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(tileEntity.filters.get(getFilterIndex()+i) != null)
+			{
+				int yStart = i*22 + 18;
+				boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22;
+				
+				if(mouseOver)
+				{
+					MekanismRenderer.color(EnumColor.GREY, 3.0F);
+				}
+				
+				drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, 0, 166, 142, 22);
+				
+				MekanismRenderer.resetColor();
+			}
+		}
+	}
+	
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks)
+	{
+		super.mouseClickMove(mouseX, mouseY, button, ticks);
+
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		if(isDragging)
+		{
+			scroll = Math.min(Math.max((float)(yAxis-18-dragOffset)/88F, 0), 1);
+		}
+	}
+	
+	@Override
+	protected void mouseMovedOrUp(int x, int y, int type)
+	{
+		super.mouseMovedOrUp(x, y, type);
+
+		if(type == 0 && isDragging)
+		{
+			dragOffset = 0;
+			isDragging = false;
+		}
 	}
 }

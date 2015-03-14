@@ -38,6 +38,8 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
+import mekanism.common.network.PacketOredictionificatorGui;
+import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
 import mekanism.common.network.PacketPortableTankState;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketPortableTeleporter;
@@ -97,7 +99,9 @@ public class PacketHandler
 		netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.SERVER);
 		netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Side.CLIENT);
 		netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
-		//EMPTY SLOTS 8 & 9
+		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
+		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
+		//EMPTY SLOT 9
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
 		netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Side.SERVER);

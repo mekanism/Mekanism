@@ -399,6 +399,7 @@ gui.state=State
 gui.on=On
 gui.off=Off
 gui.filters=Filters
+gui.filter=Filter
 gui.idle=Idle
 gui.data=Data
 gui.newFilter=New Filter
@@ -441,6 +442,7 @@ gui.add=Add
 gui.set=Set
 gui.freq=Freq
 gui.security=Security
+gui.index=Index
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -489,6 +491,8 @@ gui.oredictFilter.sameKey=Same key
 gui.modIDFilter=Mod ID Filter
 gui.modIDFilter.noID=No ID
 gui.modIDFilter.sameID=Same ID
+
+gui.oredictionificatorFilter=Oredictionificator Filter
 
 gui.itemFilter=Item Filter
 gui.itemFilter.noItem=No item
@@ -673,6 +677,7 @@ tooltip.Laser=An advanced form of linear energy!ntransfer that utilizes an extre
 tooltip.LaserAmplifier=A block that can be used to merge,!nredirect and amplify laser beams,!nwith fine controls over when to fire
 tooltip.LaserTractorBeam=A block used to merge and!nredirect laser beams. Collects!ndrops from blocks it has broken.
 tooltip.SolarNeutronActivator=A machine that directs the neutron radiation !nof the sun into its internal reservoir, allowing !nfor the slow creation of various isotopes.
+tooltip.Oredictionificator=A machine used to unify and translate between various items !nand blocks using the Ore Dictionary.
 
 tooltip.HeatGenerator=A generator that uses the heat of lava or !nother burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power !nof the sun to produce energy.

@@ -330,6 +330,16 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 
 			return filter;
 		}
+		
+		@Override
+		public OredictionificatorFilter clone()
+		{
+			OredictionificatorFilter newFilter = new OredictionificatorFilter();
+			newFilter.filter = filter;
+			newFilter.index = index;
+
+			return newFilter;
+		}
 
 		@Override
 		public int hashCode()
