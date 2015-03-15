@@ -468,7 +468,7 @@ public class Mekanism
 			" S ", "SES", " S ", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem()
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 2, 2), new Object[] {
-			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 1), Character.valueOf('C'), "circuitBasic"
+			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 1), Character.valueOf('C'), "circuitElite"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.FactoryInstaller, 1, 0), new Object[] {
 			"RCR", "iWi", "RCR", Character.valueOf('R'), "alloyBasic", Character.valueOf('C'), "circuitBasic", Character.valueOf('i'), "ingotIron", Character.valueOf('W'), "plankWood"
@@ -478,6 +478,18 @@ public class Mekanism
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.FactoryInstaller, 1, 2), new Object[] {
 			"RCR", "gWg", "RCR", Character.valueOf('R'), "alloyElite", Character.valueOf('C'), "circuitElite", Character.valueOf('g'), "ingotGold", Character.valueOf('W'), "plankWood"
+		}));
+		MachineType.OREDICTIONIFICATOR.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 3), new Object[] {
+			"SGS", "CBC", "SWS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "paneGlass", Character.valueOf('C'), "circuitBasic", Character.valueOf('B'), MekanismItems.Dictionary, Character.valueOf('W'), Blocks.chest
+		}));
+		MachineType.LASER.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 13), new Object[] {
+			"RE ", "RCD", "RE ", Character.valueOf('R'), "alloyElite", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('D'), "gemDiamond"
+		}));
+		MachineType.LASER_AMPLIFIER.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 14), new Object[] {
+			"SSS", "SED", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('D'), "gemDiamond"
+		}));
+		MachineType.LASER_TRACTOR_BEAM.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 15), new Object[] {
+			"C", "F", Character.valueOf('C'), new ItemStack(MekanismBlocks.MachineBlock, 1, 13), Character.valueOf('F'), new ItemStack(MekanismBlocks.MachineBlock2, 1, 14)
 		}));
 		
 		//Energy Cube recipes

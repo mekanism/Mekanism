@@ -28,19 +28,19 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 	@Override
 	public float getXPosF()
 	{
-		return (float) player.posX;
+		return (float)player.posX;
 	}
 
 	@Override
 	public float getYPosF()
 	{
-		return (float) player.posY;
+		return (float)player.posY;
 	}
 
 	@Override
 	public float getZPosF()
 	{
-		return (float) player.posZ;
+		return (float)player.posZ;
 	}
 
 	public PlayerSound setFadeIn(int fade) 
@@ -51,7 +51,6 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 
 	public PlayerSound setFadeOut(int fade) 
 	{
-
 		fadeOut = Math.min(0, fade);
 		return this;
 	}

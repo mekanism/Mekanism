@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
  *
  */
 @SideOnly(Side.CLIENT)
-public class Sound implements ISound {
-
+public class Sound implements ISound 
+{
 	protected AttenuationType attenuation;
 	
 	protected ResourceLocation sound;

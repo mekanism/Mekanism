@@ -126,7 +126,7 @@ public class PacketNewFilter implements IMessageHandler<NewFilterMessage, IMessa
 			{
 				mFilter.write(data);
 			}
-			else if(type == 3)
+			else if(type == 2)
 			{
 				oFilter.write(data);
 			}

@@ -118,7 +118,7 @@ public class GuiOredictionificator extends GuiMekanism
 					GL11.glPopMatrix();
 				}*/
 
-				fontRendererObj.drawString(MekanismUtils.localize("gui.filter"), 78, yStart + 2, 0x404040);
+				fontRendererObj.drawString(MekanismUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
 			}
 		}
 		
@@ -146,14 +146,14 @@ public class GuiOredictionificator extends GuiMekanism
 			if(tileEntity.filters.get(getFilterIndex()+i) != null)
 			{
 				int yStart = i*22 + 18;
-				boolean mouseOver = xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22;
+				boolean mouseOver = xAxis >= 10 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+22;
 				
 				if(mouseOver)
 				{
 					MekanismRenderer.color(EnumColor.GREY, 3.0F);
 				}
 				
-				drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, 0, 166, 142, 22);
+				drawTexturedModalRect(guiWidth + 10, guiHeight + yStart, 0, 230, 142, 22);
 				
 				MekanismRenderer.resetColor();
 			}

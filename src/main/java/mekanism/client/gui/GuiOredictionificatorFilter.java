@@ -63,7 +63,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 	public void setFilter()
 	{
 		String newFilter = filterText.getText();
-		boolean has = true;
+		boolean has = false;
 		
 		for(String s : possibleFilters)
 		{
@@ -125,6 +125,8 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		filterText = new GuiTextField(fontRendererObj, guiWidth + 33, guiHeight + 48, 96, 12);
 		filterText.setMaxStringLength(TileEntityOredictionificator.MAX_LENGTH);
 		filterText.setFocused(true);
+		
+		updateButtons();
 	}
 	
 	@Override
