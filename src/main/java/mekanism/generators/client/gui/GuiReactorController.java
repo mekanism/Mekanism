@@ -50,8 +50,6 @@ public class GuiReactorController extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 46, 6, 0x404040);
 		
 		if(tileEntity.getActive())
@@ -61,6 +59,8 @@ public class GuiReactorController extends GuiMekanism
 		else {
 			fontRendererObj.drawString(MekanismUtils.localize("gui.incomplete"), 8, 16, 0x404040);
 		}
+		
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 
 	@Override

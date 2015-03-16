@@ -12,8 +12,8 @@ public class GasMaskSound extends PlayerSound
 	{
 		super(player, new ResourceLocation("mekanism", "item.gasMask"));
 		
-		setFadeIn(30);
-		setFadeOut(10);
+		setFadeIn(10);
+		setFadeOut(5);
 	}
 
 	@Override

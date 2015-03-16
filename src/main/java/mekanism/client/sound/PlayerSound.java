@@ -45,13 +45,13 @@ public abstract class PlayerSound extends Sound implements IResettableSound
 
 	public PlayerSound setFadeIn(int fade) 
 	{
-		fadeIn = Math.min(0, fade);
+		fadeIn = Math.max(0, fade);
 		return this;
 	}
 
 	public PlayerSound setFadeOut(int fade) 
 	{
-		fadeOut = Math.min(0, fade);
+		fadeOut = Math.max(0, fade);
 		return this;
 	}
 
