@@ -50,6 +50,8 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		
 		origFilter = tileEntity.filters.get(index);
 		filter = ((OredictionificatorFilter)tentity.filters.get(index)).clone();
+		
+		updateRenderStack();
 	}
 	
 	public GuiOredictionificatorFilter(EntityPlayer player, TileEntityOredictionificator tentity)

@@ -350,9 +350,9 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		}
 
 		@Override
-		public boolean equals(Object filter)
+		public boolean equals(Object obj)
 		{
-			return filter instanceof OredictionificatorFilter && ((OredictionificatorFilter)filter).filter.equals(filter);
+			return obj instanceof OredictionificatorFilter && ((OredictionificatorFilter)obj).filter.equals(filter);
 		}
 	}
 }
