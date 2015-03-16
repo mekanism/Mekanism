@@ -36,6 +36,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
+	public boolean didProcess;
+	
 	public TileEntityOredictionificator()
 	{
 		super(MachineType.OREDICTIONIFICATOR.name);
@@ -57,6 +59,8 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 				}
 			}
 			
+			didProcess = false;
+			
 			if(inventory[0] != null && getValidName(inventory[0]) != null)
 			{
 				ItemStack result = getResult(inventory[0]);
@@ -73,6 +77,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						}
 						
 						inventory[1] = result;
+						didProcess = true;
 					}
 					else if(inventory[0].isItemEqual(result) && inventory[0].stackSize < inventory[0].getMaxStackSize())
 					{
@@ -84,6 +89,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						}
 						
 						inventory[1].stackSize++;
+						didProcess = true;
 					}
 					
 					markDirty();
@@ -188,6 +194,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		if(type == 0)
 		{
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			didProcess = dataStream.readBoolean();
 
 			filters.clear();
 
@@ -201,6 +208,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		else if(type == 1)
 		{
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			didProcess = dataStream.readBoolean();
 		}
 		else if(type == 2)
 		{
@@ -223,6 +231,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		data.add(0);
 
 		data.add(controlType.ordinal());
+		data.add(didProcess);
 
 		data.add(filters.size());
 
@@ -241,6 +250,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		data.add(1);
 
 		data.add(controlType.ordinal());
+		data.add(didProcess);
 
 		return data;
 

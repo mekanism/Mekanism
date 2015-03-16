@@ -54,7 +54,7 @@ public class GuiOredictionificator extends GuiMekanism
 			@Override
 			public double getProgress()
 			{
-				return 1;//tileEntity.isActive ? 1 : 0;
+				return tileEntity.didProcess ? 1 : 0;
 			}
 		}, ProgressBar.LARGE_RIGHT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png"), 62, 118));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiOredictionificator.png"), 25, 114));

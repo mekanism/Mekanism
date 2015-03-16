@@ -80,7 +80,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricPump.png"));
 			electricPump.render(0.0560F);
 		}
-		else if(type == MachineType.METALLURGIC_INFUSER || type == MachineType.OREDICTIONIFICATOR/*TODO*/)
+		else if(type == MachineType.METALLURGIC_INFUSER)
 		{
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);

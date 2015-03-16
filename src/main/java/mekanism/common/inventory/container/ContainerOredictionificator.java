@@ -1,11 +1,15 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotOutput;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.tile.TileEntityOredictionificator;
+import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class ContainerOredictionificator extends Container
 {
@@ -49,5 +53,81 @@ public class ContainerOredictionificator extends Container
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
 		return tileEntity.isUseableByPlayer(entityplayer);
+	}
+	
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
+	{
+		ItemStack stack = null;
+		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+
+		if(currentSlot != null && currentSlot.getHasStack())
+		{
+			ItemStack slotStack = currentSlot.getStack();
+			stack = slotStack.copy();
+
+			if(slotID == 1)
+			{
+				if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+				{
+					return null;
+				}
+			}
+			else if(tileEntity.getResult(slotStack) != null)
+			{
+				if(slotID != 0 && slotID != 1)
+				{
+					if(!mergeItemStack(slotStack, 0, 1, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+			else {
+				if(slotID >= 2 && slotID <= 28)
+				{
+					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), false))
+					{
+						return null;
+					}
+				}
+				else if(slotID > 28)
+				{
+					if(!mergeItemStack(slotStack, 2, 28, false))
+					{
+						return null;
+					}
+				}
+				else {
+					if(!mergeItemStack(slotStack, 2, inventorySlots.size(), true))
+					{
+						return null;
+					}
+				}
+			}
+
+			if(slotStack.stackSize == 0)
+			{
+				currentSlot.putStack((ItemStack)null);
+			}
+			else {
+				currentSlot.onSlotChanged();
+			}
+
+			if(slotStack.stackSize == stack.stackSize)
+			{
+				return null;
+			}
+
+			currentSlot.onPickupFromSlot(player, slotStack);
+		}
+
+		return stack;
 	}
 }

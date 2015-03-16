@@ -148,6 +148,8 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 2:0: Entangled Block
  * 2:1: Solar Neutron Activator
  * 2:2: Ambient Accumulator
+ * 2:3: Oredictionificator
+ * 
  * @author AidanBrady
  *
  */
@@ -214,6 +216,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
 				icons[2][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[3][0] = register.registerIcon("mekanism:OredictionificatorBack");
+				icons[3][1] = register.registerIcon("mekanism:OredictionificatorFront");
+				icons[3][2] = register.registerIcon("mekanism:OredictionificatorPort");
+				icons[3][3] = register.registerIcon("mekanism:OredictionificatorSide");
 				break;
 		}
 
@@ -382,8 +388,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(side == 3)
 						{
 							return icons[meta][0];
-						} else
-						{
+						}
+						else {
 							return icons[meta][2];
 						}
 					case 5:
@@ -392,11 +398,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(side == 3)
 						{
 							return icons[meta][0];
-						} else if(side == 0 || side == 1)
+						} 
+						else if(side == 0 || side == 1)
 						{
 							return icons[meta][2];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][1];
 						}
 					default:
@@ -410,8 +417,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						if(side == 3)
 						{
 							return icons[meta][0];
-						} else
-						{
+						} 
+						else {
 							return icons[meta][2];
 						}
 					default:
@@ -422,6 +429,22 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				{
 					default:
 						return icons[meta][0];
+					case 3:
+						if(side == 3)
+						{
+							return icons[3][1];
+						}
+						else if(side == 4 || side == 5)
+						{
+							return icons[3][2];
+						}
+						else if(side == 2)
+						{
+							return icons[3][0];
+						}
+						else {
+							return icons[3][3];
+						}
 				}
 			default:
 				return null;
@@ -488,6 +511,22 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			case MACHINE_BLOCK_3:
 				switch(meta)
 				{
+					case 3:
+						if(side == tileEntity.facing)
+						{
+							return icons[3][1];
+						}
+						else if(side == MekanismUtils.getLeft(tileEntity.facing).ordinal() || side == MekanismUtils.getRight(tileEntity.facing).ordinal())
+						{
+							return icons[3][2];
+						}
+						else if(side == ForgeDirection.OPPOSITES[tileEntity.facing])
+						{
+							return icons[3][0];
+						}
+						else {
+							return icons[3][3];
+						}
 					default:
 						return icons[meta][0];
 				}
@@ -1122,7 +1161,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false),
 		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false),
 		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false),
-		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, true, false);
+		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false);
 
 		public MachineBlock typeBlock;
 		public int meta;

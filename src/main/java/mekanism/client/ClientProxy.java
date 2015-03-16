@@ -335,7 +335,7 @@ public class ClientProxy extends CommonProxy
 		GameRegistry.registerTileEntity(TileEntityInductionPort.class, "InductionPort");
 		GameRegistry.registerTileEntity(TileEntityInductionCell.class, "InductionCell");
 		GameRegistry.registerTileEntity(TileEntityInductionProvider.class, "InductionProvider");
-		ClientRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator", new RenderOredictionificator());
+		GameRegistry.registerTileEntity(TileEntityOredictionificator.class, "Oredictionificator");
 	}
 
 	@Override

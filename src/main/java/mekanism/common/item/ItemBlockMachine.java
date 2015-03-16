@@ -104,6 +104,7 @@ import ic2.api.item.ISpecialElectricItem;
  * 2:0: Entangled Block
  * 2:1: Solar Neutron Activator
  * 2:2: Ambient Accumulator
+ * 2:3: Oredictionificator
  * @author AidanBrady
  *
  */
