@@ -29,8 +29,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiOredictionificatorFilter extends GuiMekanism
 {
-	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust");
-	
 	public TileEntityOredictionificator tileEntity;
 	
 	public OredictionificatorFilter origFilter;
@@ -67,7 +65,7 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		String newFilter = filterText.getText();
 		boolean has = false;
 		
-		for(String s : possibleFilters)
+		for(String s : TileEntityOredictionificator.possibleFilters)
 		{
 			if(newFilter.startsWith(s))
 			{

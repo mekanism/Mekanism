@@ -3,29 +3,36 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IFilterAccess;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class TileEntityOredictionificator extends TileEntityContainerBlock implements IRedstoneControl, IFilterAccess, ISustainedData
 {
 	public static final int MAX_LENGTH = 24;
 	
 	public HashList<OredictionificatorFilter> filters = new HashList<OredictionificatorFilter>();
+	
+	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust");
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -49,7 +56,86 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 					Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getGenericPacket(new ArrayList())), (EntityPlayerMP)player);
 				}
 			}
+			
+			if(inventory[0] != null && getValidName(inventory[0]) != null)
+			{
+				ItemStack result = getResult(inventory[0]);
+				
+				if(result != null)
+				{
+					if(inventory[1] == null)
+					{
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize <= 0)
+						{
+							inventory[0] = null;
+						}
+						
+						inventory[1] = result;
+					}
+					else if(inventory[0].isItemEqual(result) && inventory[0].stackSize < inventory[0].getMaxStackSize())
+					{
+						inventory[0].stackSize--;
+						
+						if(inventory[0].stackSize <= 0)
+						{
+							inventory[0] = null;
+						}
+						
+						inventory[1].stackSize++;
+					}
+					
+					markDirty();
+				}
+			}
 		}
+	}
+	
+	public String getValidName(ItemStack stack)
+	{
+		List<String> def = OreDictCache.getOreDictName(stack);
+		
+		for(String s : def)
+		{
+			for(String pre : possibleFilters)
+			{
+				if(s.startsWith(pre))
+				{
+					return s;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public ItemStack getResult(ItemStack stack)
+	{
+		String s = getValidName(stack);
+		
+		if(s == null)
+		{
+			return null;
+		}
+		
+		List<ItemStack> ores = OreDictionary.getOres(s);
+		
+		for(OredictionificatorFilter filter : filters)
+		{
+			if(filter.filter.equals(s))
+			{
+				if(ores.size()-1 >= filter.index)
+				{
+					return MekanismUtils.size(ores.get(filter.index), 1);
+				}
+				else {
+					return null;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override
