@@ -34,7 +34,7 @@ import cofh.api.item.IToolHammer;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
-@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
+@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
@@ -244,14 +244,14 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	@Method(modid = "BuildCraftAPI|tools")
+	@Method(modid = "BuildCraft")
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
 		return canUseWrench(player, x, y, z);
 	}
 
 	@Override
-	@Method(modid = "BuildCraftAPI|tools")
+	@Method(modid = "BuildCraft")
 	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
 
 	@Override

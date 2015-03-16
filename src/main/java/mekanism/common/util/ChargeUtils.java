@@ -78,7 +78,7 @@ public final class ChargeUtils
 			{
 				storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(inv.getStackInSlot(slotID), storer.getEnergy()));
 			}
-			else if(Mekanism.hooks.IC2APILoaded && inv.getStackInSlot(slotID).getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useIC2() && inv.getStackInSlot(slotID).getItem() instanceof IElectricItem)
 			{
 				double sent = ElectricItem.manager.charge(inv.getStackInSlot(slotID), (int)(storer.getEnergy()* general.TO_IC2), 4, true, false)* general.FROM_IC2;
 				storer.setEnergy(storer.getEnergy() - sent);

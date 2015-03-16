@@ -14,7 +14,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
+		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
 		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
 public interface IAdvancedBoundingBlock extends IBoundingBlock, ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IStrictEnergyStorage, IEnergyHandler, IPeripheral, IFilterAccess

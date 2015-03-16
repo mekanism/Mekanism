@@ -207,7 +207,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
@@ -226,7 +226,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
@@ -245,21 +245,21 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getEnergy()* general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getMaxEnergy()* general.TO_TE);

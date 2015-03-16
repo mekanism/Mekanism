@@ -23,7 +23,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 @InterfaceList({
 		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
+		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
 		@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 })
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements ISidedInventory, IEnergySink, IStrictEnergyAcceptor, IEnergyHandler, IPeripheral, IFilterAccess
@@ -201,7 +201,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getInv() == null)
@@ -213,7 +213,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getInv() == null)
@@ -225,7 +225,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -237,7 +237,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)
@@ -249,7 +249,7 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		if(getInv() == null)

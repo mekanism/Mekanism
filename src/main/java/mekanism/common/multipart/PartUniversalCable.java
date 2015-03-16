@@ -33,7 +33,7 @@ import cofh.api.energy.IEnergyProvider;
 import ic2.api.energy.tile.IEnergySource;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
+		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
 })
 public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implements IStrictEnergyAcceptor, IEnergyHandler
 {
@@ -279,7 +279,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(canReceiveEnergy(from))
@@ -291,28 +291,28 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return canConnect(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getTransmitterNetwork().getEnergyNeeded()*general.TO_TE);

@@ -41,8 +41,8 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
+		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
+		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
 public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
 {
@@ -136,28 +136,28 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return true;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public double getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public int getTier(ItemStack itemStack)
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public double getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
@@ -310,21 +310,21 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public Item getChargedItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;

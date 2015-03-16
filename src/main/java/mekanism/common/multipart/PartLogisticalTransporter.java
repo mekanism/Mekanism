@@ -43,7 +43,6 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Interface(iface = "buildcraft.api.transport.IPipeTile", modid = "BuildCraftAPI|transport")
 public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter
 {
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 4);

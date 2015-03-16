@@ -16,7 +16,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.common.event.FMLInterModComms;
 
@@ -37,10 +36,8 @@ public final class MekanismHooks
 	private Class BuildCraftEnergy;
 
 	public boolean IC2Loaded = false;
-	public boolean IC2APILoaded = false;
 	public boolean RailcraftLoaded = false;
-	public boolean BuildCraftPowerLoaded = false;
-	public boolean RedstoneFluxLoaded = false;
+	public boolean CoFHCoreLoaded = false;
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
 
@@ -49,9 +46,7 @@ public final class MekanismHooks
 
 	public void hook()
 	{
-		if(ModAPIManager.INSTANCE.hasAPI("IC2API")) IC2APILoaded = true;
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|power")) BuildCraftPowerLoaded = true;
-		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI|energy")) RedstoneFluxLoaded = true;
+		if(Loader.isModLoaded("CoFHCore")) CoFHCoreLoaded = true;
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
@@ -70,11 +65,6 @@ public final class MekanismHooks
 			Mekanism.logger.info("Hooked into IC2 successfully.");
 		}
 
-		if(BuildCraftPowerLoaded)
-		{
-			Mekanism.logger.info("Hooked into BuildCraft successfully.");
-		}
-		
 		if(CCLoaded)
 		{
 			loadCCPeripheralProviders();

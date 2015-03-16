@@ -36,7 +36,7 @@ import cpw.mods.fml.common.Optional.Method;
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
 	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
-	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
+	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
 })
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable
 {
@@ -225,7 +225,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
@@ -244,7 +244,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
@@ -264,21 +264,21 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return structure != null;
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getEnergy()* general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
 		return (int)Math.round(getMaxEnergy()* general.TO_TE);

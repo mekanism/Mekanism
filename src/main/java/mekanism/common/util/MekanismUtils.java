@@ -1159,16 +1159,6 @@ public final class MekanismUtils
 	}
 
 	/**
-	 * Whether or not BuildCraft power should be used, taking into account whether it is installed or another mod is
-	 * providing its API.
-	 * @return if BuildCraft power should be used
-	 */
-	public static boolean useBuildCraft()
-	{
-		return Mekanism.hooks.BuildCraftPowerLoaded && !general.blacklistBC;
-	}
-
-	/**
 	 * Whether or not IC2 power should be used, taking into account whether or not it is installed or another mod is
 	 * providing its API.
 	 * @return if IC2 power should be used
@@ -1185,7 +1175,7 @@ public final class MekanismUtils
 	 */
 	public static boolean useRF()
 	{
-		return Mekanism.hooks.RedstoneFluxLoaded && !general.blacklistRF;
+		return Mekanism.hooks.CoFHCoreLoaded && !general.blacklistRF;
 	}
 
 	/**
