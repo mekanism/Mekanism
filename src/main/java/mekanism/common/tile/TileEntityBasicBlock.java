@@ -27,7 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 
-@Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2API")
+@Interface(iface = "ic2.api.tile.IWrenchable", modid = "IC2")
 public abstract class TileEntityBasicBlock extends TileEntity implements IWrenchable, ITileNetwork, IChunkLoadHandler
 {
 	/** The direction this block is facing. */
@@ -183,14 +183,14 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public boolean wrenchCanSetFacing(EntityPlayer entityPlayer, int side)
 	{
 		return true;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public short getFacing()
 	{
 		return (short)facing;
@@ -223,21 +223,21 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public boolean wrenchCanRemove(EntityPlayer entityPlayer)
 	{
 		return true;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public float getWrenchDropRate()
 	{
 		return 1.0F;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
 		return getBlockType().getPickBlock(null, worldObj, xCoord, yCoord, zCoord, entityPlayer);
