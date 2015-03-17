@@ -54,6 +54,8 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	
 	public float prevScale;
 	
+	public boolean needsPacket;
+	
 	public TileEntityPortableTank() 
 	{
 		super("PortableTank");
@@ -91,8 +93,6 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			}
 		}
 		else {
-			boolean needsPacket = false;
-			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -135,6 +135,8 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			{
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
 			}
+			
+			needsPacket = false;
 		}
 	}
 	
@@ -506,6 +508,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			
 			if(filled > 0 && from == ForgeDirection.UP)
 			{
+				if(valve == 0)
+				{
+					needsPacket = true;
+				}
+				
 				valve = 20;
 				valveFluid = resource.getFluid();
 			}
