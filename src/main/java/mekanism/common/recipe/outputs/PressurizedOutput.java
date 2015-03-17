@@ -5,18 +5,18 @@ import mekanism.api.gas.GasTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class PressurizedProducts extends MachineOutput<PressurizedProducts>
+public class PressurizedOutput extends MachineOutput<PressurizedOutput>
 {
 	private ItemStack itemOutput;
 	private GasStack gasOutput;
 
-	public PressurizedProducts(ItemStack item, GasStack gas)
+	public PressurizedOutput(ItemStack item, GasStack gas)
 	{
 		itemOutput = item;
 		gasOutput = gas;
 	}
 	
-	public PressurizedProducts() {}
+	public PressurizedOutput() {}
 	
 	@Override
 	public void load(NBTTagCompound nbtTags)
@@ -77,8 +77,8 @@ public class PressurizedProducts extends MachineOutput<PressurizedProducts>
 	}
 
 	@Override
-	public PressurizedProducts copy()
+	public PressurizedOutput copy()
 	{
-		return new PressurizedProducts(itemOutput.copy(), gasOutput.copy());
+		return new PressurizedOutput(itemOutput.copy(), gasOutput.copy());
 	}
 }

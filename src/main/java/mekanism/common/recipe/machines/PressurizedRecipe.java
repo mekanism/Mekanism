@@ -3,13 +3,13 @@ package mekanism.common.recipe.machines;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.common.recipe.inputs.PressurizedInput;
-import mekanism.common.recipe.outputs.PressurizedProducts;
+import mekanism.common.recipe.outputs.PressurizedOutput;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
-public class PressurizedRecipe extends MachineRecipe<PressurizedInput, PressurizedProducts, PressurizedRecipe>
+public class PressurizedRecipe extends MachineRecipe<PressurizedInput, PressurizedOutput, PressurizedRecipe>
 {
 	public double extraEnergy;
 
@@ -17,10 +17,10 @@ public class PressurizedRecipe extends MachineRecipe<PressurizedInput, Pressuriz
 
 	public PressurizedRecipe(ItemStack inputSolid, FluidStack inputFluid, GasStack inputGas, ItemStack outputSolid, GasStack outputGas, double energy, int duration)
 	{
-		this(new PressurizedInput(inputSolid, inputFluid, inputGas), new PressurizedProducts(outputSolid, outputGas), energy, duration);
+		this(new PressurizedInput(inputSolid, inputFluid, inputGas), new PressurizedOutput(outputSolid, outputGas), energy, duration);
 	}
 
-	public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedProducts pressurizedProducts, double energy, int duration)
+	public PressurizedRecipe(PressurizedInput pressurizedInput, PressurizedOutput pressurizedProducts, double energy, int duration)
 	{
 		super(pressurizedInput, pressurizedProducts);
 
