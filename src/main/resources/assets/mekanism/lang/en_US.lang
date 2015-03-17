@@ -193,7 +193,8 @@ item.eliteFactoryInstaller.name=Elite Factory Installer
 item.ironDust.name=Iron Dust
 item.goldDust.name=Gold Dust
 item.osmiumDust.name=Osmium Dust
-item.obsidianDust.name=Refined Obsidian Dust
+item.obsidianDust.name=Obsidian Dust
+item.refinedobsidianDust.name=Refined Obsidian Dust
 item.diamondDust.name=Diamond Dust
 item.steelDust.name=Steel Dust
 item.copperDust.name=Copper Dust
@@ -210,7 +211,6 @@ item.osmiumClump.name=Osmium Clump
 item.copperClump.name=Copper Clump
 item.tinClump.name=Tin Clump
 item.silverClump.name=Silver Clump
-item.obsidianClump.name=Obsidian Clump
 item.leadClump.name=Lead Clump
 
 //Shards
@@ -220,7 +220,6 @@ item.osmiumShard.name=Osmium Shard
 item.copperShard.name=Copper Shard
 item.tinShard.name=Tin Shard
 item.silverShard.name=Silver Shard
-item.obsidianShard.name=Obsidian Shard
 item.leadShard.name=Lead Shard
 
 //Crystals
@@ -230,7 +229,6 @@ item.osmiumCrystal.name=Osmium Crystal
 item.copperCrystal.name=Copper Crystal
 item.tinCrystal.name=Tin Crystal
 item.silverCrystal.name=Silver Crystal
-item.obsidianCrystal.name=Obsidian Crystal
 item.leadCrystal.name=Lead Crystal
 
 //Dirty Dust
@@ -240,7 +238,6 @@ item.dirtyOsmiumDust.name=Dirty Osmium Dust
 item.dirtyCopperDust.name=Dirty Copper Dust
 item.dirtyTinDust.name=Dirty Tin Dust
 item.dirtySilverDust.name=Dirty Silver Dust
-item.dirtyObsidianDust.name=Dirty Obsidian Dust
 item.dirtyLeadDust.name=Dirty Lead Dust
 
 //Ingots

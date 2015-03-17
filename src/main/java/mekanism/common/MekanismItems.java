@@ -22,6 +22,7 @@ import mekanism.common.item.ItemIngot;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemMekanism;
 import mekanism.common.item.ItemNetworkReader;
+import mekanism.common.item.ItemOtherDust;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
@@ -87,6 +88,7 @@ public class MekanismItems
 	public static final Item Balloon = new ItemBalloon().setUnlocalizedName("Balloon");
 
 	//Multi-ID Items
+	public static final Item OtherDust = new ItemOtherDust();
 	public static final Item Dust = new ItemDust();
 	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
@@ -152,6 +154,7 @@ public class MekanismItems
 		GameRegistry.registerItem(Flamethrower, "Flamethrower");
 		GameRegistry.registerItem(GaugeDropper, "GaugeDropper");
 		GameRegistry.registerItem(FactoryInstaller, "FactoryInstaller");
+		GameRegistry.registerItem(OtherDust, "OtherDust");
 
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("brine"), new ItemStack(BrineBucket), FluidContainerRegistry.EMPTY_BUCKET);
 		FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluid("lithium"), new ItemStack(LithiumBucket), FluidContainerRegistry.EMPTY_BUCKET);

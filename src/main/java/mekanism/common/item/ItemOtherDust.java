@@ -8,26 +8,26 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public class ItemIngot extends ItemMekanism
+public class ItemOtherDust extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
-
-	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", 
-										"Glowstone", "Steel", "Copper", 
-										"Tin"};
-
-	public ItemIngot()
+	
+	public static String[] subtypes = {"Diamond", "Steel", "Lead", 
+									  "Sulfur", "Lithium", "RefinedObsidian",
+									  "Obsidian"};
+	
+	public ItemOtherDust()
 	{
 		super();
 		setHasSubtypes(true);
 	}
-
+	
 	@Override
 	public void registerIcons(IIconRegister register)
 	{
-		for(int i = 0; i <= 6; i++)
+		for(int i = 0; i < subtypes.length; i++)
 		{
-			icons[i] = register.registerIcon("mekanism:" + en_USNames[i] + "Ingot");
+			icons[i] = register.registerIcon("mekanism:" + subtypes[i] + "Dust");
 		}
 	}
 
@@ -40,15 +40,15 @@ public class ItemIngot extends ItemMekanism
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter <= 6; counter++)
+		for(int counter = 0; counter < subtypes.length; counter++)
 		{
-			itemList.add(new ItemStack(item, 1, counter));
+			itemList.add(new ItemStack(this, 1, counter));
 		}
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + en_USNames[item.getItemDamage()].toLowerCase() + "Ingot";
+		return "item." + subtypes[item.getItemDamage()].toLowerCase() + "Dust";
 	}
 }
