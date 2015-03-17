@@ -32,9 +32,13 @@ import net.minecraftforge.common.util.ForgeDirection;
 import buildcraft.api.tools.IToolWrench;
 import cofh.api.item.IToolHammer;
 import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 
-@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft")
+@InterfaceList({
+		@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft"),
+		@Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHCore")
+})
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
