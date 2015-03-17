@@ -170,8 +170,9 @@ public final class InventoryUtils
 		return toInsert;
 	}
 
-	public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
-    		return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
+	public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) 
+	{
+    	return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
   	}
 
   	public static InvStack takeTopItem(IInventory inventory, int side)
