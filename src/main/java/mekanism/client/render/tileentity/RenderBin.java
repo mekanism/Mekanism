@@ -88,9 +88,10 @@ public class RenderBin extends TileEntitySpecialRenderer
 				TextureManager renderEngine = Minecraft.getMinecraft().renderEngine;
 
 				GL11.glDisable(GL11.GL_LIGHTING);
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
 
 				renderItem.renderItemAndEffectIntoGUI(func_147498_b()/*getFontRenderer()*/, renderEngine, itemStack, 0, 0);
-
+				
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			}

@@ -364,9 +364,15 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 		}
 		else if(i == 1)
 		{
-			if(isValid(itemstack))
+			if(itemstack == null)
 			{
-				add(itemstack);
+				topStack = null;
+			}
+			else {
+				if(isValid(itemstack) && itemstack.stackSize > StackUtils.getSize(topStack))
+				{
+					add(StackUtils.size(itemstack, itemstack.stackSize-StackUtils.getSize(topStack)));
+				}
 			}
 		}
 	}
