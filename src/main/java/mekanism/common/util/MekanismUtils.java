@@ -80,6 +80,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.GameData;
@@ -1321,6 +1322,11 @@ public final class MekanismUtils
 		}
 		
 		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool.getItem() instanceof IToolWrench && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
+		{
+			return true;
+		}
+		
+		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI") && tool.getItem() instanceof IToolHammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, x, y, z))
 		{
 			return true;
 		}
