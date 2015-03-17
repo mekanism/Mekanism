@@ -1230,11 +1230,6 @@ public class Mekanism
 		
 		//Success message
 		logger.info("Mod loaded.");
-		
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setTag("input", new ItemStack(Blocks.bedrock).writeToNBT(new NBTTagCompound()));
-		tag.setTag("output", new ItemStack(Items.diamond).writeToNBT(new NBTTagCompound()));
-		FMLInterModComms.sendMessage("Mekanism", "EnrichmentChamberRecipe", tag);
 	}	
 	
 	@EventHandler
