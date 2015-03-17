@@ -95,7 +95,7 @@ public final class InventoryUtils
 					inventory.setInventorySlotContents(i, toInsert);
 					return null;
 				}
-				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 				{
 					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -151,7 +151,7 @@ public final class InventoryUtils
 						inventory.setInventorySlotContents(slotID, toInsert);
 						return null;
 					}
-					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 					{
 						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 						{
@@ -398,7 +398,7 @@ public final class InventoryUtils
 				{
 					return true;
 				}
-				else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 				{
 					if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -444,7 +444,7 @@ public final class InventoryUtils
 					{
 						return true;
 					}
-					else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 					{
 						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize())
 						{
