@@ -1,5 +1,7 @@
 package mekanism.common.recipe.inputs;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 {
 	public abstract boolean isValid();
@@ -7,6 +9,8 @@ public abstract class MachineInput<INPUT extends MachineInput<INPUT>>
 	public abstract INPUT copy();
 
 	public abstract int hashIngredients();
+	
+	public abstract void load(NBTTagCompound nbtTags);
 
 	/**
 	 * Test equality to another input.

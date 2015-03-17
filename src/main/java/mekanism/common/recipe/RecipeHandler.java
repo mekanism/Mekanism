@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.Set;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.util.StackUtils;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.inputs.ChemicalPairInput;
 import mekanism.common.recipe.inputs.FluidInput;
@@ -39,7 +41,15 @@ import mekanism.common.recipe.machines.SmeltingRecipe;
 import mekanism.common.recipe.machines.SolarEvaporationRecipe;
 import mekanism.common.recipe.machines.SolarNeutronRecipe;
 import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
+import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.recipe.outputs.FluidOutput;
+import mekanism.common.recipe.outputs.GasOutput;
+import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.recipe.outputs.PressurizedProducts;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -460,6 +470,7 @@ public final class RecipeHandler
 	{
 		HashMap<IntegerInput, AmbientGasRecipe> recipes = Recipe.AMBIENT_ACCUMULATOR.get();
 		AmbientGasRecipe recipe = recipes.get(input);
+		
 		return recipe == null ? null : recipe.copy();
 	}
 
@@ -511,45 +522,88 @@ public final class RecipeHandler
 	public static <RECIPE extends MachineRecipe<ItemStackInput, ?, RECIPE>> RECIPE getRecipeTryWildcard(ItemStackInput input, Map<ItemStackInput, RECIPE> recipes)
 	{
 		RECIPE recipe = recipes.get(input);
+		
 		if(recipe == null)
 		{
 			recipe = recipes.get(input.wildCopy());
 		}
+		
 		return recipe;
 	}
 
 	public static enum Recipe
 	{
-		ENERGIZED_SMELTER(new HashMap<ItemStackInput, SmeltingRecipe>()),
-		ENRICHMENT_CHAMBER(new HashMap<ItemStackInput, EnrichmentRecipe>()),
-		OSMIUM_COMPRESSOR(new HashMap<AdvancedMachineInput, OsmiumCompressorRecipe>()),
-		COMBINER(new HashMap<AdvancedMachineInput, CombinerRecipe>()),
-		CRUSHER(new HashMap<ItemStackInput, CrusherRecipe>()),
-		PURIFICATION_CHAMBER(new HashMap<AdvancedMachineInput, PurificationRecipe>()),
-		METALLURGIC_INFUSER(new HashMap<InfusionInput, MetallurgicInfuserRecipe>()),
-		CHEMICAL_INFUSER(new HashMap<ChemicalPairInput, ChemicalInfuserRecipe>()),
-		CHEMICAL_OXIDIZER(new HashMap<ItemStackInput, OxidationRecipe>()),
-		CHEMICAL_INJECTION_CHAMBER(new HashMap<AdvancedMachineInput, InjectionRecipe>()),
-		ELECTROLYTIC_SEPARATOR(new HashMap<FluidInput, SeparatorRecipe>()),
-		PRECISION_SAWMILL(new HashMap<ItemStackInput, SawmillRecipe>()),
-		CHEMICAL_DISSOLUTION_CHAMBER(new HashMap<ItemStackInput, DissolutionRecipe>()),
-		CHEMICAL_WASHER(new HashMap<GasInput, WasherRecipe>()),
-		CHEMICAL_CRYSTALLIZER(new HashMap<GasInput, CrystallizerRecipe>()),
-		PRESSURIZED_REACTION_CHAMBER(new HashMap<PressurizedInput, PressurizedRecipe>()),
-		AMBIENT_ACCUMULATOR(new HashMap<IntegerInput, AmbientGasRecipe>()),
-		SOLAR_EVAPORATION_PLANT(new HashMap<FluidInput, SolarEvaporationRecipe>()),
-		SOLAR_NEUTRON_ACTIVATOR(new HashMap<GasInput, SolarNeutronRecipe>());
+		ENERGIZED_SMELTER(MachineType.ENERGIZED_SMELTER.name, ItemStackInput.class, ItemStackOutput.class, SmeltingRecipe.class),
+		ENRICHMENT_CHAMBER(MachineType.ENRICHMENT_CHAMBER.name, ItemStackInput.class, ItemStackOutput.class, EnrichmentRecipe.class),
+		OSMIUM_COMPRESSOR(MachineType.OSMIUM_COMPRESSOR.name, AdvancedMachineInput.class, ItemStackOutput.class, OsmiumCompressorRecipe.class),
+		COMBINER(MachineType.COMBINER.name, AdvancedMachineInput.class, ItemStackOutput.class, CombinerRecipe.class),
+		CRUSHER(MachineType.CRUSHER.name, ItemStackInput.class, ItemStackOutput.class, CrusherRecipe.class),
+		PURIFICATION_CHAMBER(MachineType.PURIFICATION_CHAMBER.name, AdvancedMachineInput.class, ItemStackOutput.class, PurificationRecipe.class),
+		METALLURGIC_INFUSER(MachineType.METALLURGIC_INFUSER.name, InfusionInput.class, ItemStackOutput.class, MetallurgicInfuserRecipe.class),
+		CHEMICAL_INFUSER(MachineType.CHEMICAL_INFUSER.name, ChemicalPairInput.class, GasOutput.class, ChemicalInfuserRecipe.class),
+		CHEMICAL_OXIDIZER(MachineType.CHEMICAL_OXIDIZER.name, ItemStackInput.class, GasOutput.class, OxidationRecipe.class),
+		CHEMICAL_INJECTION_CHAMBER(MachineType.CHEMICAL_INJECTION_CHAMBER.name, AdvancedMachineInput.class, ItemStackOutput.class, InjectionRecipe.class),
+		ELECTROLYTIC_SEPARATOR(MachineType.ELECTROLYTIC_SEPARATOR.name, FluidInput.class, ChemicalPairOutput.class, SeparatorRecipe.class),
+		PRECISION_SAWMILL(MachineType.PRECISION_SAWMILL.name, ItemStackInput.class, ChanceOutput.class, SawmillRecipe.class),
+		CHEMICAL_DISSOLUTION_CHAMBER(MachineType.CHEMICAL_DISSOLUTION_CHAMBER.name, ItemStackInput.class, GasOutput.class, DissolutionRecipe.class),
+		CHEMICAL_WASHER(MachineType.CHEMICAL_WASHER.name, GasInput.class, GasOutput.class, WasherRecipe.class),
+		CHEMICAL_CRYSTALLIZER(MachineType.CHEMICAL_CRYSTALLIZER.name, GasInput.class, ItemStackOutput.class, CrystallizerRecipe.class),
+		PRESSURIZED_REACTION_CHAMBER(MachineType.PRESSURIZED_REACTION_CHAMBER.name, PressurizedInput.class, PressurizedProducts.class, PressurizedRecipe.class),
+		AMBIENT_ACCUMULATOR(MachineType.AMBIENT_ACCUMULATOR.name, IntegerInput.class, GasOutput.class, AmbientGasRecipe.class),
+		SOLAR_EVAPORATION_PLANT("SolarEvaporationPlant", FluidInput.class, FluidOutput.class, SolarEvaporationRecipe.class),
+		SOLAR_NEUTRON_ACTIVATOR(MachineType.SOLAR_NEUTRON_ACTIVATOR.name, GasInput.class, GasOutput.class, SolarNeutronRecipe.class);
 
 		private HashMap recipes;
+		private String recipeName;
+		
+		private Class<? extends MachineInput> inputClass;
+		private Class<? extends MachineOutput> outputClass;
+		private Class<? extends MachineRecipe> recipeClass;
 
-		private <INPUT extends MachineInput<INPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(HashMap<INPUT, RECIPE> map)
+		private <INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, ?, RECIPE>> Recipe(String name, Class<INPUT> input, Class<OUTPUT> output, Class<RECIPE> recipe)
 		{
-			recipes = map;
+			recipeName = name;
+			
+			inputClass = input;
+			outputClass = output;
+			recipeClass = recipe;
+			
+			recipes = new HashMap<INPUT, RECIPE>();
 		}
 
-		public <RECIPE extends MachineRecipe<?, ?, RECIPE>>void put(RECIPE recipe)
+		public <RECIPE extends MachineRecipe<?, ?, RECIPE>> void put(RECIPE recipe)
 		{
 			recipes.put(recipe.getInput(), recipe);
+		}
+		
+		public String getRecipeName()
+		{
+			return recipeName;
+		}
+		
+		public <INPUT> INPUT createInput(NBTTagCompound nbtTags)
+		{
+			try {
+				MachineInput input = inputClass.newInstance();
+				input.load(nbtTags);
+				
+				return (INPUT)input;
+			} catch(Exception e) {
+				return null;
+			}
+		}
+		
+		public <RECIPE, INPUT> RECIPE createRecipe(INPUT input, NBTTagCompound nbtTags)
+		{
+			try {
+				MachineOutput output = outputClass.newInstance();
+				output.load(nbtTags);
+				
+				Constructor<? extends MachineRecipe> construct = recipeClass.getDeclaredConstructor(inputClass, outputClass);
+				return (RECIPE)construct.newInstance(input, output);
+			} catch(Exception e) {
+				return null;
+			}
 		}
 
 		public boolean containsRecipe(ItemStack input)

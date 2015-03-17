@@ -1,8 +1,8 @@
 package mekanism.common.recipe.inputs;
 
 import mekanism.api.util.StackUtils;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemStackInput extends MachineInput<ItemStackInput>
@@ -12,6 +12,14 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 	public ItemStackInput(ItemStack stack)
 	{
 		ingredient = stack;
+	}
+	
+	public ItemStackInput() {}
+	
+	@Override
+	public void load(NBTTagCompound nbtTags)
+	{
+		ingredient = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("input"));
 	}
 
 	@Override

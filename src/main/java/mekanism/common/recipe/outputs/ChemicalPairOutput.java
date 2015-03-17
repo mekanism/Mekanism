@@ -1,5 +1,6 @@
 package mekanism.common.recipe.outputs;
 
+import net.minecraft.nbt.NBTTagCompound;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 
@@ -25,6 +26,15 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput>
 	{
 		leftGas = left;
 		rightGas = right;
+	}
+	
+	public ChemicalPairOutput() {}
+	
+	@Override
+	public void load(NBTTagCompound nbtTags)
+	{
+		leftGas = GasStack.readFromNBT(nbtTags.getCompoundTag("leftOutput"));
+		rightGas = GasStack.readFromNBT(nbtTags.getCompoundTag("rightOutput"));
 	}
 
 	/**
@@ -135,6 +145,7 @@ public class ChemicalPairOutput extends MachineOutput<ChemicalPairOutput>
 		return input.leftGas.amount >= leftGas.amount && input.rightGas.amount >= rightGas.amount;
 	}
 
+	@Override
 	public ChemicalPairOutput copy()
 	{
 		return new ChemicalPairOutput(leftGas.copy(), rightGas.copy());

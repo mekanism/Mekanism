@@ -1,10 +1,11 @@
 package mekanism.common.recipe.inputs;
 
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.util.StackUtils;
 import mekanism.common.InfuseStorage;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * An infusion input, containing the type of and amount of infuse the operation requires, as well as the input ItemStack.
@@ -29,6 +30,17 @@ public class InfusionInput extends MachineInput<InfusionInput>
 		infuse = new InfuseStorage(infusionType, required);
 		inputStack = itemStack;
 	}
+	
+	@Override
+	public void load(NBTTagCompound nbtTags)
+	{
+		inputStack = ItemStack.loadItemStackFromNBT(nbtTags.getCompoundTag("input"));
+		InfuseType type = InfuseRegistry.get(nbtTags.getString("infuseType"));
+		int amount = nbtTags.getInteger("infuseAmount");
+		infuse = new InfuseStorage(type, amount);
+	}
+	
+	public InfusionInput() {}
 
 	@Override
 	public InfusionInput copy()

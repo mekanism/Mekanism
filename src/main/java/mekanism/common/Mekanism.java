@@ -120,6 +120,8 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
@@ -1090,6 +1092,12 @@ public class Mekanism
 	}
 	
 	@EventHandler
+	public void loadComplete(FMLLoadCompleteEvent event)
+	{
+		new IMCHandler().onIMCEvent(FMLInterModComms.fetchRuntimeMessages(this));
+	}
+	
+	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		File config = event.getSuggestedConfigurationFile();
@@ -1222,6 +1230,11 @@ public class Mekanism
 		
 		//Success message
 		logger.info("Mod loaded.");
+		
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setTag("input", new ItemStack(Blocks.bedrock).writeToNBT(new NBTTagCompound()));
+		tag.setTag("output", new ItemStack(Items.diamond).writeToNBT(new NBTTagCompound()));
+		FMLInterModComms.sendMessage("Mekanism", "EnrichmentChamberRecipe", tag);
 	}	
 	
 	@EventHandler

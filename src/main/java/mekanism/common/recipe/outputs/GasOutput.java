@@ -1,5 +1,6 @@
 package mekanism.common.recipe.outputs;
 
+import net.minecraft.nbt.NBTTagCompound;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 
@@ -10,6 +11,14 @@ public class GasOutput extends MachineOutput<GasOutput>
 	public GasOutput(GasStack stack)
 	{
 		output = stack;
+	}
+	
+	public GasOutput() {}
+	
+	@Override
+	public void load(NBTTagCompound nbtTags)
+	{
+		output = GasStack.readFromNBT(nbtTags.getCompoundTag("output"));
 	}
 
 	@Override
