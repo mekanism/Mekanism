@@ -17,6 +17,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
@@ -38,7 +39,7 @@ import cpw.mods.fml.common.Optional.Method;
 	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
 	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
 })
-public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable
+public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState
 {
 	public boolean ic2Registered = false;
 	
@@ -444,6 +445,30 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side) 
+	{
+		return false;
+	}
+
+	@Override
+	public boolean getActive()
+	{
+		return mode;
+	}
+
+	@Override
+	public void setActive(boolean active)
+	{
+		mode = active;
+	}
+
+	@Override
+	public boolean renderUpdate()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean lightUpdate()
 	{
 		return false;
 	}

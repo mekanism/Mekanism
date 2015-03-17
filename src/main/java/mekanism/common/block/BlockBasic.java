@@ -179,16 +179,14 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			case BASIC_BLOCK_2:
 				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
 				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
-				//ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
-				//ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
 				//TODO @unpairedbracket, mind fixing this?
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
-				//icons[2][0] = ctms[2][0].facingOverride.icon;
-				//icons[2][1] = ctms[2][1].facingOverride.icon;
-				icons[2][0] = register.registerIcon("mekanism:InductionPortInput");
-				icons[2][1] = register.registerIcon("mekanism:InductionPortOutput");
+				icons[2][0] = ctms[2][0].mainTextureData.icon;
+				icons[2][1] = ctms[2][1].mainTextureData.icon;
 				icons[3][0] = register.registerIcon("mekanism:InductionCellBasic");
 				icons[3][1] = register.registerIcon("mekanism:InductionCellAdvanced");
 				icons[3][2] = register.registerIcon("mekanism:InductionCellElite");
