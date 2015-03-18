@@ -4,7 +4,10 @@ import mekanism.client.ClientTickHandler;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class FlamethrowerSound extends PlayerSound
 {
 	public boolean inUse;

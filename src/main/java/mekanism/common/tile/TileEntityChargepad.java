@@ -23,6 +23,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import io.netty.buffer.ByteBuf;
 
 import cofh.api.energy.IEnergyContainerItem;
@@ -202,6 +205,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
 		return 0.4F;

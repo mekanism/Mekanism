@@ -11,11 +11,13 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.ThreadSparkle.INodeChecker;
+import mekanism.client.sound.IHasSound;
+import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.ISoundSource;
+import mekanism.client.sound.SoundHandler;
+import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
-import mekanism.common.base.SoundWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
@@ -48,9 +50,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public AxisAlignedBB box;
 	
+	@SideOnly(Side.CLIENT)
 	public ResourceLocation soundURL = new ResourceLocation("mekanism", "tile.machine.fusionreactor");
 	
-	public SoundWrapper sound;
+	@SideOnly(Side.CLIENT)
+	public IResettableSound sound;
 
 	public double clientTemp = 0;
 	public boolean clientBurning = false;
@@ -104,10 +108,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
+		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
 		{
 			getSound().reset();
-			getSound().play();
+			SoundHandler.playSound(getSound());
 		}
 
 		if(isFormed())
@@ -322,54 +326,63 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 	
 	@Override
-	public SoundWrapper getSound()
+	@SideOnly(Side.CLIENT)
+	public IResettableSound getSound()
 	{
 		return sound;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldPlaySound()
 	{
 		return isBurning() && !isInvalid();
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public ResourceLocation getSoundLocation()
 	{
 		return soundURL;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
 		return 2F;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getPitch()
 	{
 		return 1F;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Pos3D getSoundPosition()
 	{
 		return new Pos3D(xCoord+0.5, yCoord+0.5, zCoord+0.5);
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldRepeat()
 	{
 		return true;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRepeatDelay()
 	{
 		return 0;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public AttenuationType getAttenuation()
 	{
 		return AttenuationType.LINEAR;
@@ -380,11 +393,15 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.validate();
 
-		initSounds();
+		if(worldObj.isRemote)
+		{
+			initSounds();
+		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void initSounds()
 	{
-		sound = new SoundWrapper(this, this);
+		sound = new TileSound(this, this);
 	}
 }

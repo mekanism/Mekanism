@@ -7,6 +7,9 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CrusherRecipe;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 {
 	public TileEntityCrusher()
@@ -21,6 +24,7 @@ public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
 		return 0.5F;

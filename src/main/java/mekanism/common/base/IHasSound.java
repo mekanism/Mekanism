@@ -11,7 +11,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public interface IHasSound
 {
-	public SoundWrapper getSound();
+	@SideOnly(Side.CLIENT)
+	public ISound getSound();
 
+	@SideOnly(Side.CLIENT)
 	public boolean shouldPlaySound();
 }

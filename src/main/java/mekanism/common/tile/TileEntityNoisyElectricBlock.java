@@ -2,14 +2,16 @@ package mekanism.common.tile;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.Pos3D;
+import mekanism.client.sound.IHasSound;
+import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.ISoundSource;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.sound.TileSound;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IHasSound;
-import mekanism.common.base.SoundWrapper;
+
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,9 +20,9 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	/** The ResourceLocation of the machine's sound */
 	public ResourceLocation soundURL;
 
-	/** The SoundWrapper containing this machine's sound object */
+	/** The bundled URL of this machine's sound effect */
 	@SideOnly(Side.CLIENT)
-	public SoundWrapper sound;
+	public IResettableSound sound;
 
 	/**
 	 * The base of all blocks that deal with electricity and make noise.
@@ -37,48 +39,55 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public SoundWrapper getSound()
+	public IResettableSound getSound()
 	{
 		return sound;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldPlaySound()
 	{
 		return getActive() && !isInvalid();
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public ResourceLocation getSoundLocation()
 	{
 		return soundURL;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
 		return 1F;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getPitch()
 	{
 		return 1F;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Pos3D getSoundPosition()
 	{
 		return new Pos3D(xCoord+0.5, yCoord+0.5, zCoord+0.5);
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldRepeat()
 	{
 		return true;
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRepeatDelay()
 	{
 		return 0;
@@ -96,18 +105,16 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		super.validate();
 
-		try {
-			if(worldObj.isRemote)
-			{
-				initSounds();
-			}
-		} catch(Throwable t) {}
+		if(worldObj.isRemote)
+		{
+			initSounds();
+		}
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void initSounds()
 	{
-		sound = new SoundWrapper(this, this);
+		sound = new TileSound(this, this);
 	}
 
 	@Override
@@ -115,12 +122,19 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	{
 		super.onUpdate();
 		
-		try {
-			if(worldObj.isRemote && shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
-			{
-				getSound().reset();
-				getSound().play();
-			}
-		} catch(Throwable t) {}
+		if(worldObj.isRemote)
+		{
+			updateSound();
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void updateSound()
+	{
+		if(shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
+		{
+			getSound().reset();
+			SoundHandler.playSound(getSound());
+		}
 	}
 }

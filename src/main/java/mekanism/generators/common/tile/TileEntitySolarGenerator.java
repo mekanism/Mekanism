@@ -13,6 +13,8 @@ import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -48,6 +50,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getVolume()
 	{
 		return 0.05F;

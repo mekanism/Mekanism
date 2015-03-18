@@ -1,10 +1,12 @@
 package mekanism.client.sound;
 
-import mekanism.common.base.IHasSound;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileSound extends Sound implements IResettableSound
-{
+@SideOnly(Side.CLIENT)
+public class TileSound extends Sound implements IResettableSound {
+
 	IHasSound source;
 	
 	boolean beginFadeOut;
@@ -86,7 +88,7 @@ public class TileSound extends Sound implements IResettableSound
 				ticks++;
 			}
 			
-			if(!(source.shouldPlaySound() && source.getSound().sound == this))
+			if(!(source.shouldPlaySound() && source.getSound() == this))
 			{
 				beginFadeOut = true;
 				ticks = 0;
