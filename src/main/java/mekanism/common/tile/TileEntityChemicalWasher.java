@@ -636,6 +636,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
 		}
 	}
 	

@@ -125,6 +125,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					fluidStack = (FluidStack)data[0];
 					didFluidTransfer = (Boolean)data[1];
 					break;
+				default:
+					break;
 			}
 		}
 	
@@ -152,6 +154,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
 					dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
 					dataStream.writeBoolean(didFluidTransfer);
+					break;
+				default:
 					break;
 			}
 		}

@@ -224,6 +224,8 @@ public class ItemBalloon extends ItemMekanism
 					case EAST:
 						pos.translate(0.5, -1, 0);
 						break;
+					default:
+						break;
 				}
 				
 				if(!source.getWorld().isRemote)

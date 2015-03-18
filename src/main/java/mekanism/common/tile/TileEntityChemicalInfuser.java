@@ -535,6 +535,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
 		}
 	}
 	

@@ -1474,6 +1474,8 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
 		}
 	}
 }
