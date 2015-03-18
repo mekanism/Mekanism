@@ -60,7 +60,31 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 		{
 			if(on)
 			{
-				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), lastFired, worldObj);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+
+				if(hitCoord == null || !hitCoord.equals(digging))
+				{
+					digging = hitCoord;
+					diggingProgress = 0;
+				}
+
+				if(hitCoord != null)
+				{
+					Block blockHit = hitCoord.getBlock(worldObj);
+					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					{
+						diggingProgress += lastFired;
+
+						if(diggingProgress < hardness * general.laserEnergyNeededPerHardness)
+						{
+							Mekanism.proxy.addHitEffects(hitCoord, mop);
+						}
+					}
+				}
+
 			}
 		}
 		else
@@ -99,10 +123,6 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 							List<ItemStack> drops = LaserManager.breakBlock(hitCoord, false, worldObj);
 							if(drops != null) receiveDrops(drops);
 							diggingProgress = 0;
-						}
-						else
-						{
-							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, mop);
 						}
 					}
 				}

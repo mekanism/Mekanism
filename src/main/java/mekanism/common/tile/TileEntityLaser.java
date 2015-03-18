@@ -47,7 +47,31 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 		{
 			if(isActive)
 			{
-				LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				MovingObjectPosition mop = LaserManager.fireLaserClient(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+
+				if(hitCoord == null || !hitCoord.equals(digging))
+				{
+					digging = hitCoord;
+					diggingProgress = 0;
+				}
+
+				if(hitCoord != null)
+				{
+					Block blockHit = hitCoord.getBlock(worldObj);
+					TileEntity tileHit = hitCoord.getTileEntity(worldObj);
+					float hardness = blockHit.getBlockHardness(worldObj, hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord);
+
+					if(!(hardness < 0 || (tileHit instanceof ILaserReceptor && !((ILaserReceptor)tileHit).canLasersDig())))
+					{
+						diggingProgress += usage.laserUsage;
+
+						if(diggingProgress < hardness*general.laserEnergyNeededPerHardness)
+						{
+							Mekanism.proxy.addHitEffects(hitCoord, mop);
+						}
+					}
+				}
 			}
 		}
 		else {
@@ -78,9 +102,6 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 						{
 							LaserManager.breakBlock(hitCoord, true, worldObj);
 							diggingProgress = 0;
-						}
-						else {
-							Minecraft.getMinecraft().effectRenderer.addBlockHitEffects(hitCoord.xCoord, hitCoord.yCoord, hitCoord.zCoord, mop);
 						}
 					}
 				}
@@ -127,7 +148,7 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 	@Override
 	public boolean lightUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override

@@ -75,12 +75,12 @@ public class LaserManager
 		return ret;
 	}
 
-	public static void fireLaserClient(TileEntity from, ForgeDirection direction, double energy, World world)
+	public static MovingObjectPosition fireLaserClient(TileEntity from, ForgeDirection direction, double energy, World world)
 	{
-		fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
+		return fireLaserClient(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
 	}
 
-	public static void fireLaserClient(Pos3D from, ForgeDirection direction, double energy, World world)
+	public static MovingObjectPosition fireLaserClient(Pos3D from, ForgeDirection direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 		MovingObjectPosition mop = world.rayTraceBlocks(Vec3.createVectorHelper(from.xPos, from.yPos, from.zPos), Vec3.createVectorHelper(to.xPos, to.yPos, to.zPos));
@@ -92,5 +92,6 @@ public class LaserManager
 		
 		from.translate(direction, -0.501);
 		Mekanism.proxy.renderLaser(world, from, to, direction, energy);
+		return mop;
 	}
 }
