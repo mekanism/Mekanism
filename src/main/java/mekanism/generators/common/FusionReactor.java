@@ -20,10 +20,12 @@ import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemCoal;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
@@ -87,7 +89,17 @@ public class FusionReactor implements IFusionReactor
 
 	public boolean hasHohlraum()
 	{
-		return controller != null && controller.inventory[0] != null && controller.inventory[0].getItem() instanceof ItemCoal;
+		if(controller != null)
+		{
+			ItemStack hohlraum = controller.inventory[0];
+			if(hohlraum != null && hohlraum.getItem() instanceof ItemHohlraum)
+			{
+				GasStack gasStack = ((ItemHohlraum)hohlraum.getItem()).getGas(hohlraum);
+				return gasStack.getGas() == GasRegistry.getGas("fusionFuelDT") && gasStack.amount > 0;
+			}
+		}
+
+		return false;
 	}
 
 	@Override
@@ -149,14 +161,11 @@ public class FusionReactor implements IFusionReactor
 
 	public void vaporiseHohlraum()
 	{
-		getFuelTank().receive(new GasStack(GasRegistry.getGas("fusionFuelDT"), 10), true);
-		controller.inventory[0].stackSize -= 1;
-		
-		if(controller.inventory[0].stackSize == 0)
-		{
-			controller.inventory[0] = null;
-		}
-		
+		getFuelTank().receive(((ItemHohlraum)controller.inventory[0].getItem()).getGas(controller.inventory[0]), true);
+		lastPlasmaTemperature = plasmaTemperature;
+
+		controller.inventory[0] = null;
+
 		burning = true;
 	}
 
