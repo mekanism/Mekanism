@@ -684,7 +684,7 @@ tooltip.AdvancedSolarGenerator=An advanced generator that directly !nabsorbs the
 tooltip.WindTurbine=A generator that uses the strength of the wind !nto produce energy, with greater efficiency !nat higher levels.
 
 tooltip.ReactorGlass=Reinforced glass that can be used in !nthe Fusion Reactor multiblock.
-tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !n is capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
+tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that !nis capable of absorbing optical energy and !nthereby heating up the Fusion Reactor.
 tooltip.ReactorController=The controlling block for the entire !nFusion Reactor structure.
 tooltip.ReactorFrame=Reinforced framing that can be used in !nthe Fusion Reactor multiblock.
 tooltip.ReactorNeutronCapturePlate=A block that can be used to !nboth block Fusion Reactor radiation and assist !nin the production of Tritium.
