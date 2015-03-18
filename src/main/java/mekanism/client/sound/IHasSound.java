@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.client.sound;
 
 import net.minecraft.client.audio.ISound;
 import cpw.mods.fml.relauncher.Side;
