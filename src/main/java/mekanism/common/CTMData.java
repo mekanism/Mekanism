@@ -27,6 +27,8 @@ public class CTMData
 
 	public int facing;
 
+	public boolean renderConvexConnections = false;
+
 	public CTMData(String textureName, Block block, List<Integer> connectableMeta)
 	{
 		mainTextureData = new CTMTextureData(textureName);
@@ -110,6 +112,12 @@ public class CTMData
 	public CTMData addOtherBlockConnectivities(Block block, List<Integer> connectableMeta)
 	{
 		acceptableBlockMetas.put(block, connectableMeta);
+		return this;
+	}
+
+	public CTMData setRenderConvexConnections()
+	{
+		renderConvexConnections = true;
 		return this;
 	}
 
