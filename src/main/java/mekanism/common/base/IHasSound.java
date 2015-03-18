@@ -1,6 +1,8 @@
-package mekanism.client.sound;
+package mekanism.common.base;
 
 import net.minecraft.client.audio.ISound;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Implement this if your TileEntity has a specific sound.
@@ -9,7 +11,7 @@ import net.minecraft.client.audio.ISound;
  */
 public interface IHasSound
 {
-	public ISound getSound();
+	public SoundWrapper getSound();
 
 	public boolean shouldPlaySound();
 }

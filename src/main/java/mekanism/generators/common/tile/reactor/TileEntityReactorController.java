@@ -11,13 +11,11 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.client.ThreadSparkle.INodeChecker;
-import mekanism.client.sound.IHasSound;
-import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.ISoundSource;
-import mekanism.client.sound.SoundHandler;
-import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IHasSound;
+import mekanism.common.base.SoundWrapper;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
@@ -52,7 +50,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	
 	public ResourceLocation soundURL = new ResourceLocation("mekanism", "tile.machine.fusionreactor");
 	
-	public IResettableSound sound;
+	public SoundWrapper sound;
 
 	public double clientTemp = 0;
 	public boolean clientBurning = false;
@@ -106,10 +104,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
+		if(worldObj.isRemote && shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
 		{
 			getSound().reset();
-			SoundHandler.playSound(getSound());
+			getSound().play();
 		}
 
 		if(isFormed())
@@ -324,7 +322,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	}
 	
 	@Override
-	public IResettableSound getSound()
+	public SoundWrapper getSound()
 	{
 		return sound;
 	}
@@ -387,6 +385,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public void initSounds()
 	{
-		sound = new TileSound(this, this);
+		sound = new SoundWrapper(this, this);
 	}
 }
