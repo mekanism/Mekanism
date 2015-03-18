@@ -197,11 +197,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
-	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
-
 	@Override
 	public void loadConfiguration()
 	{

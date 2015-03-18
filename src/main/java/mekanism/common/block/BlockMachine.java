@@ -752,10 +752,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.MACHINE_RENDER_ID;
+		return Mekanism.proxy.MACHINE_RENDER_ID;
 	}
 
 	@Override

@@ -129,9 +129,8 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.PLASTIC_RENDER_ID;
+		return Mekanism.proxy.PLASTIC_RENDER_ID;
 	}
 }

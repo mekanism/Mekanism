@@ -715,10 +715,9 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.CTM_RENDER_ID;
+		return Mekanism.proxy.CTM_RENDER_ID;
 	}
 
 	@Override

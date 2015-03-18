@@ -398,10 +398,9 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return GeneratorsClientProxy.GENERATOR_RENDER_ID;
+		return MekanismGenerators.proxy.GENERATOR_RENDER_ID;
 	}
 
 	/*This method is not used, metadata manipulation is required to create a Tile Entity.*/

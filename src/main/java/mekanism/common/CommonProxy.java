@@ -113,6 +113,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -125,6 +126,12 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
  */
 public class CommonProxy
 {
+	public static int MACHINE_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int BASIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+
+
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
 	 */

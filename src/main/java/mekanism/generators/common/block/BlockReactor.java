@@ -275,7 +275,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	@Override
 	public int getRenderType()
 	{
-		return ClientProxy.CTM_RENDER_ID;
+		return Mekanism.proxy.CTM_RENDER_ID;
 	}
 
 	@Override
