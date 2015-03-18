@@ -18,6 +18,8 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 		gasType = gas;
 	}
 	
+	public AdvancedMachineInput() {}
+	
 	@Override
 	public void load(NBTTagCompound nbtTags)
 	{
