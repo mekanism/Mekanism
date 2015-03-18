@@ -646,6 +646,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
 		}
 	}
 

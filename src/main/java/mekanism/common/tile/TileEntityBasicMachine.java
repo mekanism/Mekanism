@@ -222,6 +222,8 @@ public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, 
 			case ENERGY: //and SPEED fall-through.
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
 		}
 	}
 
