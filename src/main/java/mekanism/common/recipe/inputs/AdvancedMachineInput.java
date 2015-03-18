@@ -12,6 +12,10 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 
 	public Gas gasType;
 
+	public AdvancedMachineInput()
+	{
+	}
+
 	public AdvancedMachineInput(ItemStack item, Gas gas)
 	{
 		itemStack = item;
