@@ -47,8 +47,10 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 			{
 				inventory[index] = StackUtils.subtract(inventory[index], itemStack);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 
@@ -59,6 +61,7 @@ public class AdvancedMachineInput extends MachineInput<AdvancedMachineInput>
 			gasTank.draw(amountToUse, deplete);
 			return true;
 		}
+		
 		return false;
 	}
 
