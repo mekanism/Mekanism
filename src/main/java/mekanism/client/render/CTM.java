@@ -81,14 +81,14 @@ public class CTM
 			{},
 	};
 
-	public static int[] getSubmapIndices(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static int[] getSubmapIndices(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas, boolean convexConnections)
 	{
-		int index = getTexture(world, x, y, z, side, blockMetas);
+		int index = getTexture(world, x, y, z, side, blockMetas, convexConnections);
 
 		return submaps[index];
 	}
 
-	public static int getTexture(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static int getTexture(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas, boolean convexConnections)
 	{
 		if(world == null)
 		{
@@ -98,157 +98,135 @@ public class CTM
 		int texture = 0;
 
 		boolean b[] = new boolean[6];
-		
+
 		if(side <= 1)
 		{
-			b[0] = isConnected(world, x - 1, y, z, side, blockMetas);
-			b[1] = isConnected(world, x + 1, y, z, side, blockMetas);
-			b[2] = isConnected(world, x, y, z + 1, side, blockMetas);
-			b[3] = isConnected(world, x, y, z - 1, side, blockMetas);
-		} 
-		else if(side == 2)
+			b[0] = isConnected(world, x - 1, y, z, side, blockMetas, convexConnections);
+			b[1] = isConnected(world, x + 1, y, z, side, blockMetas, convexConnections);
+			b[2] = isConnected(world, x, y, z + 1, side, blockMetas, convexConnections);
+			b[3] = isConnected(world, x, y, z - 1, side, blockMetas, convexConnections);
+		} else if(side == 2)
 		{
-			b[0] = isConnected(world, x + 1, y, z, side, blockMetas);
-			b[1] = isConnected(world, x - 1, y, z, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
-		} 
-		else if(side == 3)
+			b[0] = isConnected(world, x + 1, y, z, side, blockMetas, convexConnections);
+			b[1] = isConnected(world, x - 1, y, z, side, blockMetas, convexConnections);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas, convexConnections);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas, convexConnections);
+		} else if(side == 3)
 		{
-			b[0] = isConnected(world, x - 1, y, z, side, blockMetas);
-			b[1] = isConnected(world, x + 1, y, z, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
-		} 
-		else if(side == 4)
+			b[0] = isConnected(world, x - 1, y, z, side, blockMetas, convexConnections);
+			b[1] = isConnected(world, x + 1, y, z, side, blockMetas, convexConnections);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas, convexConnections);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas, convexConnections);
+		} else if(side == 4)
 		{
-			b[0] = isConnected(world, x, y, z - 1, side, blockMetas);
-			b[1] = isConnected(world, x, y, z + 1, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
-		} 
-		else if(side == 5)
+			b[0] = isConnected(world, x, y, z - 1, side, blockMetas, convexConnections);
+			b[1] = isConnected(world, x, y, z + 1, side, blockMetas, convexConnections);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas, convexConnections);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas, convexConnections);
+		} else if(side == 5)
 		{
-			b[0] = isConnected(world, x, y, z + 1, side, blockMetas);
-			b[1] = isConnected(world, x, y, z - 1, side, blockMetas);
-			b[2] = isConnected(world, x, y - 1, z, side, blockMetas);
-			b[3] = isConnected(world, x, y + 1, z, side, blockMetas);
+			b[0] = isConnected(world, x, y, z + 1, side, blockMetas, convexConnections);
+			b[1] = isConnected(world, x, y, z - 1, side, blockMetas, convexConnections);
+			b[2] = isConnected(world, x, y - 1, z, side, blockMetas, convexConnections);
+			b[3] = isConnected(world, x, y + 1, z, side, blockMetas, convexConnections);
 		}
-		
+
 		if(b[0] & !b[1] & !b[2] & !b[3])
 		{
 			texture = 3;
-		}
-		else if(!b[0] & b[1] & !b[2] & !b[3])
+		} else if(!b[0] & b[1] & !b[2] & !b[3])
 		{
 			texture = 1;
-		}
-		else if(!b[0] & !b[1] & b[2] & !b[3])
+		} else if(!b[0] & !b[1] & b[2] & !b[3])
 		{
 			texture = 16;
-		}
-		else if(!b[0] & !b[1] & !b[2] & b[3])
+		} else if(!b[0] & !b[1] & !b[2] & b[3])
 		{
 			texture = 48;
-		}
-		else if(b[0] & b[1] & !b[2] & !b[3])
+		} else if(b[0] & b[1] & !b[2] & !b[3])
 		{
 			texture = 2;
-		}
-		else if(!b[0] & !b[1] & b[2] & b[3])
+		} else if(!b[0] & !b[1] & b[2] & b[3])
 		{
 			texture = 32;
-		}
-		else if(b[0] & !b[1] & b[2] & !b[3])
+		} else if(b[0] & !b[1] & b[2] & !b[3])
 		{
 			texture = 19;
-		}
-		else if(b[0] & !b[1] & !b[2] & b[3])
+		} else if(b[0] & !b[1] & !b[2] & b[3])
 		{
 			texture = 51;
-		}
-		else if(!b[0] & b[1] & b[2] & !b[3])
+		} else if(!b[0] & b[1] & b[2] & !b[3])
 		{
 			texture = 17;
-		}
-		else if(!b[0] & b[1] & !b[2] & b[3])
+		} else if(!b[0] & b[1] & !b[2] & b[3])
 		{
 			texture = 49;
-		}
-		else if(!b[0] & b[1] & b[2] & b[3])
+		} else if(!b[0] & b[1] & b[2] & b[3])
 		{
 			texture = 33;
-		}
-		else if(b[0] & !b[1] & b[2] & b[3])
+		} else if(b[0] & !b[1] & b[2] & b[3])
 		{
 			texture = 35;
-		}
-		else if(b[0] & b[1] & !b[2] & b[3])
+		} else if(b[0] & b[1] & !b[2] & b[3])
 		{
 			texture = 50;
-		}
-		else if(b[0] & b[1] & b[2] & !b[3])
+		} else if(b[0] & b[1] & b[2] & !b[3])
 		{
 			texture = 18;
-		}
-		else if(b[0] & b[1] & b[2] & b[3])
+		} else if(b[0] & b[1] & b[2] & b[3])
 		{
 			texture = 34;
 		}
 
 		boolean b2[] = new boolean[6];
-		
+
 		if(side <= 1)
 		{
-			b2[0] = !isConnected(world, x + 1, y, z + 1, side, blockMetas);
-			b2[1] = !isConnected(world, x - 1, y, z + 1, side, blockMetas);
-			b2[2] = !isConnected(world, x + 1, y, z - 1, side, blockMetas);
-			b2[3] = !isConnected(world, x - 1, y, z - 1, side, blockMetas);
-		} 
-		else if(side == 2)
+			b2[0] = !isConnected(world, x + 1, y, z + 1, side, blockMetas, convexConnections);
+			b2[1] = !isConnected(world, x - 1, y, z + 1, side, blockMetas, convexConnections);
+			b2[2] = !isConnected(world, x + 1, y, z - 1, side, blockMetas, convexConnections);
+			b2[3] = !isConnected(world, x - 1, y, z - 1, side, blockMetas, convexConnections);
+		} else if(side == 2)
 		{
-			b2[0] = !isConnected(world, x - 1, y - 1, z, side, blockMetas);
-			b2[1] = !isConnected(world, x + 1, y - 1, z, side, blockMetas);
-			b2[2] = !isConnected(world, x - 1, y + 1, z, side, blockMetas);
-			b2[3] = !isConnected(world, x + 1, y + 1, z, side, blockMetas);
-		} 
-		else if(side == 3)
+			b2[0] = !isConnected(world, x - 1, y - 1, z, side, blockMetas, convexConnections);
+			b2[1] = !isConnected(world, x + 1, y - 1, z, side, blockMetas, convexConnections);
+			b2[2] = !isConnected(world, x - 1, y + 1, z, side, blockMetas, convexConnections);
+			b2[3] = !isConnected(world, x + 1, y + 1, z, side, blockMetas, convexConnections);
+		} else if(side == 3)
 		{
-			b2[0] = !isConnected(world, x + 1, y - 1, z, side, blockMetas);
-			b2[1] = !isConnected(world, x - 1, y - 1, z, side, blockMetas);
-			b2[2] = !isConnected(world, x + 1, y + 1, z, side, blockMetas);
-			b2[3] = !isConnected(world, x - 1, y + 1, z, side, blockMetas);
-		} 
-		else if(side == 4)
+			b2[0] = !isConnected(world, x + 1, y - 1, z, side, blockMetas, convexConnections);
+			b2[1] = !isConnected(world, x - 1, y - 1, z, side, blockMetas, convexConnections);
+			b2[2] = !isConnected(world, x + 1, y + 1, z, side, blockMetas, convexConnections);
+			b2[3] = !isConnected(world, x - 1, y + 1, z, side, blockMetas, convexConnections);
+		} else if(side == 4)
 		{
-			b2[0] = !isConnected(world, x, y - 1, z + 1, side, blockMetas);
-			b2[1] = !isConnected(world, x, y - 1, z - 1, side, blockMetas);
-			b2[2] = !isConnected(world, x, y + 1, z + 1, side, blockMetas);
-			b2[3] = !isConnected(world, x, y + 1, z - 1, side, blockMetas);
-		} 
-		else if(side == 5)
+			b2[0] = !isConnected(world, x, y - 1, z + 1, side, blockMetas, convexConnections);
+			b2[1] = !isConnected(world, x, y - 1, z - 1, side, blockMetas, convexConnections);
+			b2[2] = !isConnected(world, x, y + 1, z + 1, side, blockMetas, convexConnections);
+			b2[3] = !isConnected(world, x, y + 1, z - 1, side, blockMetas, convexConnections);
+		} else if(side == 5)
 		{
-			b2[0] = !isConnected(world, x, y - 1, z - 1, side, blockMetas);
-			b2[1] = !isConnected(world, x, y - 1, z + 1, side, blockMetas);
-			b2[2] = !isConnected(world, x, y + 1, z - 1, side, blockMetas);
-			b2[3] = !isConnected(world, x, y + 1, z + 1, side, blockMetas);
+			b2[0] = !isConnected(world, x, y - 1, z - 1, side, blockMetas, convexConnections);
+			b2[1] = !isConnected(world, x, y - 1, z + 1, side, blockMetas, convexConnections);
+			b2[2] = !isConnected(world, x, y + 1, z - 1, side, blockMetas, convexConnections);
+			b2[3] = !isConnected(world, x, y + 1, z + 1, side, blockMetas, convexConnections);
 		}
 
 		if(texture == 17 && b2[0])
 		{
 			texture = 4;
 		}
-		
+
 		if(texture == 19 && b2[1])
 		{
 			texture = 5;
 		}
-		
+
 		if(texture == 49 && b2[2])
 		{
 			texture = 20;
 		}
-		
+
 		if(texture == 51 && b2[3])
 		{
 			texture = 21;
@@ -258,17 +236,17 @@ public class CTM
 		{
 			texture = 7;
 		}
-		
+
 		if(texture == 33 && b2[0] && b2[2])
 		{
 			texture = 6;
 		}
-		
+
 		if(texture == 35 && b2[3] && b2[1])
 		{
 			texture = 23;
 		}
-		
+
 		if(texture == 50 && b2[3] && b2[2])
 		{
 			texture = 22;
@@ -278,17 +256,17 @@ public class CTM
 		{
 			texture = 39;
 		}
-		
+
 		if(texture == 33 && b2[0] && !b2[2])
 		{
 			texture = 38;
 		}
-		
+
 		if(texture == 35 && !b2[3] && b2[1])
 		{
 			texture = 53;
 		}
-		
+
 		if(texture == 50 && b2[3] && !b2[2])
 		{
 			texture = 52;
@@ -298,17 +276,17 @@ public class CTM
 		{
 			texture = 37;
 		}
-		
+
 		if(texture == 33 && !b2[0] && b2[2])
 		{
 			texture = 36;
 		}
-		
+
 		if(texture == 35 && b2[3] && !b2[1])
 		{
 			texture = 55;
 		}
-		
+
 		if(texture == 50 && !b2[3] && b2[2])
 		{
 			texture = 54;
@@ -323,17 +301,17 @@ public class CTM
 		{
 			texture = 9;
 		}
-		
+
 		if(texture == 34 && b2[0] && !b2[1] && b2[2] && b2[3])
 		{
 			texture = 25;
 		}
-		
+
 		if(texture == 34 && b2[0] && b2[1] && !b2[2] && b2[3])
 		{
 			texture = 8;
 		}
-		
+
 		if(texture == 34 && b2[0] && b2[1] && b2[2] && !b2[3])
 		{
 			texture = 24;
@@ -343,17 +321,17 @@ public class CTM
 		{
 			texture = 11;
 		}
-		
+
 		if(texture == 34 && !b2[0] && !b2[1] && b2[2] && b2[3])
 		{
 			texture = 26;
 		}
-		
+
 		if(texture == 34 && !b2[0] && b2[1] && !b2[2] && b2[3])
 		{
 			texture = 27;
 		}
-		
+
 		if(texture == 34 && b2[0] && !b2[1] && b2[2] && !b2[3])
 		{
 			texture = 10;
@@ -372,26 +350,26 @@ public class CTM
 		{
 			texture = 40;
 		}
-		
+
 		if(texture == 34 && !b2[0] && b2[1] && !b2[2] && !b2[3])
 		{
 			texture = 41;
 		}
-		
+
 		if(texture == 34 && !b2[0] && !b2[1] && b2[2] && !b2[3])
 		{
 			texture = 56;
 		}
-		
+
 		if(texture == 34 && !b2[0] && !b2[1] && !b2[2] && b2[3])
 		{
 			texture = 57;
 		}
-		
+
 		return texture;
 	}
 
-	public static boolean isConnected(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas)
+	public static boolean isConnected(IBlockAccess world, int x, int y, int z, int side, HashMap<Block, List<Integer>> blockMetas, boolean convexConnections)
 	{
 		int x2 = x, y2 = y, z2 = z;
 
@@ -430,7 +408,7 @@ public class CTM
 		{
 			validBlockMeta1 |= block1.equals(entry.getKey()) && entry.getValue().contains(meta1);
 
-			invalidBlockMeta2 &= !(block2.equals(entry.getKey()) && entry.getValue().contains(meta2));
+			invalidBlockMeta2 &= convexConnections || !(block2.equals(entry.getKey()) && entry.getValue().contains(meta2));
 		}
 
 		return validBlockMeta1 && invalidBlockMeta2;

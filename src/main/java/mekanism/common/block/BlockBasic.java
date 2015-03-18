@@ -91,7 +91,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][6];
 
-	public CTMData[][] ctms = new CTMData[16][2];
+	public CTMData[][] ctms = new CTMData[16][4];
 
 	public BasicBlock blockType;
 
@@ -181,20 +181,28 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
 				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
 				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[3][0] = new CTMData("ctm/InductionCellBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[3][1] = new CTMData("ctm/InductionCellAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[3][2] = new CTMData("ctm/InductionCellElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[3][3] = new CTMData("ctm/InductionCellUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][0] = new CTMData("ctm/InductionProviderBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				//TODO @unpairedbracket, mind fixing this?
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
 				icons[2][0] = ctms[2][0].mainTextureData.icon;
 				icons[2][1] = ctms[2][1].mainTextureData.icon;
-				icons[3][0] = register.registerIcon("mekanism:InductionCellBasic");
-				icons[3][1] = register.registerIcon("mekanism:InductionCellAdvanced");
-				icons[3][2] = register.registerIcon("mekanism:InductionCellElite");
-				icons[3][3] = register.registerIcon("mekanism:InductionCellUltimate");
-				icons[4][0] = register.registerIcon("mekanism:InductionProviderBasic");
-				icons[4][1] = register.registerIcon("mekanism:InductionProviderAdvanced");
-				icons[4][2] = register.registerIcon("mekanism:InductionProviderElite");
-				icons[4][3] = register.registerIcon("mekanism:InductionProviderUltimate");
+				icons[3][0] = ctms[3][0].mainTextureData.icon;
+				icons[3][1] = ctms[3][1].mainTextureData.icon;
+				icons[3][2] = ctms[3][2].mainTextureData.icon;
+				icons[3][3] = ctms[3][3].mainTextureData.icon;
+				icons[4][0] = ctms[4][0].mainTextureData.icon;
+				icons[4][1] = ctms[4][1].mainTextureData.icon;
+				icons[4][2] = ctms[4][2].mainTextureData.icon;
+				icons[4][3] = ctms[4][3].mainTextureData.icon;
 				break;
 		}
 	}
@@ -1047,6 +1055,17 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
 		{
 			return ctms[meta][1];
+		}
+
+		if(meta == 3)
+		{
+			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+			return ctms[meta][tileEntity.tier.ordinal()];
+		}
+		if(meta == 4)
+		{
+			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+			return ctms[meta][tileEntity.tier.ordinal()];
 		}
 
 		return ctms[meta][0];
