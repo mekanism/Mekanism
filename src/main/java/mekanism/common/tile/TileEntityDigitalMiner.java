@@ -91,10 +91,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	public boolean doPull = false;
 	
 	public ItemStack missingStack = null;
+	
+	public int BASE_DELAY = 80;
 
 	public int delay;
 
-	public int delayLength;
+	public int delayLength = BASE_DELAY;
 
 	public int clientToMine;
 
@@ -275,9 +277,9 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 					{
 						oresToMine.remove(chunk);
 					}
+					
+					delay = getDelay();
 				}
-				
-				delay = getDelay();
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -1470,7 +1472,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		switch(upgrade)
 		{
 			case SPEED:
-				delayLength = MekanismUtils.getTicks(this, 80);
+				delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);

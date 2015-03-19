@@ -4,37 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.GasTank;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.gui.element.GuiGasGauge;
+import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
-import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.element.GuiGasGauge.IGasInfoHandler;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
+import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiElectrolyticSeparator extends GuiMekanism
@@ -56,7 +57,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 				
 				if(tileEntity.getRecipe() != null)
 				{
-					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*tileEntity.getRecipe().extraEnergy;
+					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*MekanismUtils.getPureEnergyPerTick(tileEntity, tileEntity.getRecipe().extraEnergy);
 				}
 				
 				String multiplier = MekanismUtils.getEnergyDisplay(usage);
@@ -132,11 +133,11 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 	{
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 
-		String name = tileEntity.dumpLeft ? "Dumping..." : tileEntity.leftTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.leftTank.getGas().getGas().getLocalizedName();
-		fontRendererObj.drawString(name, 21, 73, 0x404040);
+		String name = chooseByMode(tileEntity.dumpLeft, MekanismUtils.localize("gui.idle"), MekanismUtils.localize("gui.dumping"), MekanismUtils.localize("gui.dumping_excess"));
+		renderScaledText(name, 21, 73, 0x404040, 66);
 
-		name = tileEntity.dumpRight ? "Dumping..." : tileEntity.rightTank.getGas() == null ? MekanismUtils.localize("gui.none") : tileEntity.rightTank.getGas().getGas().getLocalizedName();
-		fontRendererObj.drawString(name, 156-fontRendererObj.getStringWidth(name), 73, 0x404040);
+		name = chooseByMode(tileEntity.dumpRight, MekanismUtils.localize("gui.idle"), MekanismUtils.localize("gui.dumping"), MekanismUtils.localize("gui.dumping_excess"));
+		renderScaledText(name, 156-(int)(fontRendererObj.getStringWidth(name)*getNeededScale(name, 66)), 73, 0x404040, 66);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
@@ -150,12 +151,30 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int displayInt = tileEntity.dumpLeft ? 60 : 52;
+		int displayInt = chooseByMode(tileEntity.dumpLeft, 52, 60, 68);
 		drawTexturedModalRect(guiWidth + 8, guiHeight + 73, 176, displayInt, 8, 8);
 
-		displayInt = tileEntity.dumpRight ? 60 : 52;
+		displayInt = chooseByMode(tileEntity.dumpRight, 52, 60, 68);
 		drawTexturedModalRect(guiWidth + 160, guiHeight + 73, 176, displayInt, 8, 8);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+	}
+	
+	private <T> T chooseByMode(TileEntityGasTank.GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption)
+	{
+		if(dumping.equals(TileEntityGasTank.GasMode.IDLE))
+		{
+			return idleOption;
+		}
+		else if(dumping.equals(TileEntityGasTank.GasMode.DUMPING))
+		{
+			return dumpingOption;
+		}
+		else if(dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS))
+		{
+			return dumpingExcessOption;
+		}
+		
+		return idleOption; //should not happen;
 	}
 }

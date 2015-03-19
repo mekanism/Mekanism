@@ -278,14 +278,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE) && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
-					int usage = getUpgradedUsage();
+					int operations = getUpgradedUsage();
 					
 					setActive(true);
-					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), usage), true);
-					fluidTank.drain(usage, true);
-					setEnergy(getEnergy() - BASE_ENERGY_USAGE*usage);
+					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
+					fluidTank.drain(operations, true);
+					setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)*operations);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -311,7 +311,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			possibleProcess = Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
 		}
 		
-		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)), possibleProcess);
 		
 		return possibleProcess;
 	}

@@ -38,6 +38,20 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 		tileEntity = tile;
 	}
 	
+	public float getNeededScale(String text, int maxX)
+	{
+		int length = fontRendererObj.getStringWidth(text);
+		
+		if(length <= maxX)
+		{
+			return 1;
+		}
+		else {
+			return (float)maxX/length;
+		}
+	}
+	
+	/** returns scale */
 	public void renderScaledText(String text, int x, int y, int color, int maxX)
 	{
 		int length = fontRendererObj.getStringWidth(text);

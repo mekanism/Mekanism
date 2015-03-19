@@ -119,10 +119,10 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			
 			ChemicalInfuserRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE) && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - BASE_ENERGY_USAGE);
+				setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE));
 
 				operate(recipe);
 			}
@@ -167,7 +167,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		}
 		
 		possibleProcess = Math.min(centerTank.getNeeded()/recipe.recipeOutput.output.amount, possibleProcess);
-		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)), possibleProcess);
 		
 		return possibleProcess;
 	}

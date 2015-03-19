@@ -123,13 +123,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			
 			WasherRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE) && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 
 				int operations = operate(recipe);
 
-				setEnergy(getEnergy() - BASE_ENERGY_USAGE*operations);
+				setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)*operations);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -264,7 +264,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
 		possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)), possibleProcess);
 		
 		return Math.min(fluidTank.getFluidAmount()/WATER_USAGE, possibleProcess);
 	}

@@ -111,7 +111,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= energyPerTick;
+					electricityStored -= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy);
 				}
 				else if((operatingTicks+1) >= ticksRequired && getEnergy() >= MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK + recipe.extraEnergy))
 				{

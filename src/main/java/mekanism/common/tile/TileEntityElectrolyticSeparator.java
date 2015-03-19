@@ -18,8 +18,8 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -28,6 +28,7 @@ import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.inputs.FluidInput;
 import mekanism.common.recipe.machines.SeparatorRecipe;
 import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -71,10 +72,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public int output = 256;
 
 	/** The type of gas this block is outputting. */
-	public boolean dumpLeft = false;
+	public GasMode dumpLeft = GasMode.IDLE;
 
 	/** Type type of gas this block is dumping. */
-	public boolean dumpRight = false;
+	public GasMode dumpRight = GasMode.IDLE;
 
 	public boolean isActive = false;
 
@@ -143,13 +144,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			
 			SeparatorRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= recipe.extraEnergy)
+			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, recipe.extraEnergy))
 			{
 				setActive(true);
 				
 				int operations = operate(recipe);
 				
-				setEnergy(getEnergy() - recipe.extraEnergy*operations);
+				setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, recipe.extraEnergy)*operations);
 			}
 			else {
 				setActive(false);
@@ -159,7 +160,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			if(leftTank.getGas() != null)
 			{
-				if(!dumpLeft)
+				if(dumpLeft != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(leftTank.getGas().getGas(), Math.min(leftTank.getStored(), output));
 
@@ -173,9 +174,20 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				else {
+				else if(dumpLeft == GasMode.DUMPING)
+				{
 					leftTank.draw(dumpAmount, true);
 
+					if(worldObj.rand.nextInt(3) == 2)
+					{
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
+					}
+				}
+				
+				if(dumpRight == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
+				{
+					leftTank.draw(output, true);
+					
 					if(worldObj.rand.nextInt(3) == 2)
 					{
 						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
@@ -185,7 +197,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			if(rightTank.getGas() != null)
 			{
-				if(!dumpRight)
+				if(dumpRight != GasMode.DUMPING)
 				{
 					GasStack toSend = new GasStack(rightTank.getGas().getGas(), Math.min(rightTank.getStored(), output));
 
@@ -199,12 +211,23 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 						}
 					}
 				}
-				else {
+				else if(dumpRight == GasMode.DUMPING)
+				{
 					rightTank.draw(dumpAmount, true);
 
 					if(worldObj.rand.nextInt(3) == 2)
 					{
 						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), new Range4D(Coord4D.get(this)));
+					}
+				}
+				
+				if(dumpRight == GasMode.DUMPING_EXCESS && rightTank.getNeeded() < output)
+				{
+					rightTank.draw(output, true);
+					
+					if(worldObj.rand.nextInt(3) == 2)
+					{
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
 					}
 				}
 			}
@@ -227,7 +250,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		
 		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
-		possibleProcess = Math.min((int)(getEnergy()/recipe.extraEnergy), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, recipe.extraEnergy)), possibleProcess);
 		
 		return Math.min(fluidTank.getFluidAmount()/recipe.recipeInput.ingredient.amount, possibleProcess);
 	}
@@ -378,11 +401,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 			if(type == 0)
 			{
-				dumpLeft ^= true;
+				dumpLeft = GasMode.values()[dumpLeft.ordinal() == GasMode.values().length-1 ? 0 : dumpLeft.ordinal()+1];
 			}
 			else if(type == 1)
 			{
-				dumpRight ^= true;
+				dumpRight = GasMode.values()[dumpRight.ordinal() == GasMode.values().length-1 ? 0 : dumpRight.ordinal()+1];
 			}
 
 			return;
@@ -418,8 +441,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				rightTank.setGas(null);
 			}
 
-			dumpLeft = dataStream.readBoolean();
-			dumpRight = dataStream.readBoolean();
+			dumpLeft = GasMode.values()[dataStream.readInt()];
+			dumpRight = GasMode.values()[dataStream.readInt()];
 			isActive = dataStream.readBoolean();
 		}
 		else if(type == 1)
@@ -465,8 +488,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			data.add(false);
 		}
 
-		data.add(dumpLeft);
-		data.add(dumpRight);
+		data.add(dumpLeft.ordinal());
+		data.add(dumpRight.ordinal());
 		data.add(isActive);
 
 		return data;
@@ -493,8 +516,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		leftTank.read(nbtTags.getCompoundTag("leftTank"));
 		rightTank.read(nbtTags.getCompoundTag("rightTank"));
 
-		dumpLeft = nbtTags.getBoolean("dumpLeft");
-		dumpRight = nbtTags.getBoolean("dumpRight");
+		dumpLeft = GasMode.values()[nbtTags.getInteger("dumpLeft")];
+		dumpRight = GasMode.values()[nbtTags.getInteger("dumpRight")];
 	}
 
 	@Override
@@ -510,8 +533,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		nbtTags.setTag("leftTank", leftTank.write(new NBTTagCompound()));
 		nbtTags.setTag("rightTank", rightTank.write(new NBTTagCompound()));
 
-		nbtTags.setBoolean("dumpLeft", dumpLeft);
-		nbtTags.setBoolean("dumpRight", dumpRight);
+		nbtTags.setInteger("dumpLeft", dumpLeft.ordinal());
+		nbtTags.setInteger("dumpRight", dumpRight.ordinal());
 	}
 
 	@Override

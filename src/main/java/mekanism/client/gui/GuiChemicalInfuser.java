@@ -51,7 +51,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				
 				if(tileEntity.getRecipe() != null)
 				{
-					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*tileEntity.BASE_ENERGY_USAGE;
+					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*MekanismUtils.getPureEnergyPerTick(tileEntity, tileEntity.BASE_ENERGY_USAGE);
 				}
 				
 				String multiplier = MekanismUtils.getEnergyDisplay(usage);

@@ -2,8 +2,6 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -13,7 +11,11 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
+
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiGasTank extends GuiMekanism
@@ -86,17 +88,17 @@ public class GuiGasTank extends GuiMekanism
 		}
 	}
 
-	private <T> T chooseByMode(TileEntityGasTank.Mode dumping, T idleOption, T dumpingOption, T dumpingExcessOption)
+	private <T> T chooseByMode(TileEntityGasTank.GasMode dumping, T idleOption, T dumpingOption, T dumpingExcessOption)
 	{
-		if(dumping.equals(TileEntityGasTank.Mode.IDLE))
+		if(dumping.equals(TileEntityGasTank.GasMode.IDLE))
 		{
 			return idleOption;
 		}
-		else if(dumping.equals(TileEntityGasTank.Mode.DUMPING))
+		else if(dumping.equals(TileEntityGasTank.GasMode.DUMPING))
 		{
 			return dumpingOption;
 		}
-		else if(dumping.equals(TileEntityGasTank.Mode.DUMPING_EXCESS))
+		else if(dumping.equals(TileEntityGasTank.GasMode.DUMPING_EXCESS))
 		{
 			return dumpingExcessOption;
 		}
