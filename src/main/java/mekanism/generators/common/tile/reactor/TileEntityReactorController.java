@@ -50,7 +50,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
 	public AxisAlignedBB box;
 	
-	@SideOnly(Side.CLIENT)
 	public ResourceLocation soundURL = new ResourceLocation("mekanism", "tile.machine.fusionreactor");
 	
 	@SideOnly(Side.CLIENT)
