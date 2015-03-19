@@ -18,6 +18,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.reactor.IFusionReactor;
 import mekanism.api.reactor.INeutronCapture;
 import mekanism.api.reactor.IReactorBlock;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -41,7 +42,7 @@ public class FusionReactor implements IFusionReactor
 	public Set<INeutronCapture> neutronCaptors = new HashSet<INeutronCapture>();
 	public Set<IHeatTransfer> heatTransfers = new HashSet<IHeatTransfer>();
 
-	//Current stores of temperature
+	//Current stores of temperature - internally uses ambient-relative kelvin units
 	public double plasmaTemperature;
 	public double caseTemperature;
 
@@ -52,7 +53,7 @@ public class FusionReactor implements IFusionReactor
 	public double heatToAbsorb = 0;
 
 	//Reaction characteristics
-	public static double burnTemperature = 1E8;
+	public static double burnTemperature = TemperatureUnit.AMBIENT.convertFromK(1E8);
 	public static double burnRatio = 1;
 	public static double energyPerFuel = 5E6;
 	public int injectionRate = 0;
