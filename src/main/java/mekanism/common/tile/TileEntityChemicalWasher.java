@@ -71,6 +71,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	public double prevEnergy;
 
 	public final double BASE_ENERGY_USAGE = usage.chemicalWasherUsage;
+	
+	public double energyPerTick = BASE_ENERGY_USAGE;
 
 	public WasherRecipe cachedRecipe;
 	
@@ -123,13 +125,13 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 			
 			WasherRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE) && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 
 				int operations = operate(recipe);
 
-				setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)*operations);
+				setEnergy(getEnergy() - energyPerTick*operations);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -264,7 +266,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	{
 		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
 		possibleProcess = Math.min(Math.min(inputTank.getStored(), outputTank.getNeeded()), possibleProcess);
-		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/energyPerTick), possibleProcess);
 		
 		return Math.min(fluidTank.getFluidAmount()/WATER_USAGE, possibleProcess);
 	}
@@ -636,6 +638,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
 			default:
 				break;
 		}

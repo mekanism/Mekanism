@@ -67,6 +67,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
 	
+	public double energyPerTick = BASE_ENERGY_USAGE;
+	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 5);
 
 	/** This machine's current RedstoneControl type. */
@@ -171,14 +173,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					int usage = getUpgradedUsage();
 					
 					setActive(true);
 					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), usage), true);
 					gasTank.draw(usage, true);
-					setEnergy(getEnergy() - BASE_ENERGY_USAGE*usage);
+					setEnergy(getEnergy() - energyPerTick*usage);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -278,14 +280,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE) && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					int operations = getUpgradedUsage();
 					
 					setActive(true);
 					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
 					fluidTank.drain(operations, true);
-					setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)*operations);
+					setEnergy(getEnergy() - energyPerTick*operations);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -311,7 +313,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			possibleProcess = Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
 		}
 		
-		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/energyPerTick), possibleProcess);
 		
 		return possibleProcess;
 	}
@@ -646,6 +648,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
 			default:
 				break;
 		}

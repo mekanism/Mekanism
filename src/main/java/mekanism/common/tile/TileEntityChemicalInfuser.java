@@ -58,6 +58,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	public double prevEnergy;
 
 	public final double BASE_ENERGY_USAGE = usage.chemicalInfuserUsage;
+	
+	public double energyPerTick = BASE_ENERGY_USAGE;
 
 	public ChemicalInfuserRecipe cachedRecipe;
 	
@@ -119,10 +121,10 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 			
 			ChemicalInfuserRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE) && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyPerTick && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE));
+				setEnergy(getEnergy() - energyPerTick);
 
 				operate(recipe);
 			}
@@ -167,7 +169,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		}
 		
 		possibleProcess = Math.min(centerTank.getNeeded()/recipe.recipeOutput.output.amount, possibleProcess);
-		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, BASE_ENERGY_USAGE)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/energyPerTick), possibleProcess);
 		
 		return possibleProcess;
 	}
@@ -535,6 +537,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
 			default:
 				break;
 		}

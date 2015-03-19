@@ -599,7 +599,7 @@ public final class MekanismUtils
 		return def * Math.pow(general.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/(float)Upgrade.ENERGY.getMax());
 	}
 	
-	public static double getPureEnergyPerTick(IUpgradeTile mgmt, double def)
+	public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
 		return def * Math.pow(general.maxUpgradeMultiplier, -(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
 	}

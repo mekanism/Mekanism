@@ -10,12 +10,12 @@ import net.minecraftforge.fluids.FluidTank;
 
 public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutput, SeparatorRecipe>
 {
-	public double extraEnergy;
+	public double energyUsage;
 
 	public SeparatorRecipe(FluidInput input, double energy, ChemicalPairOutput output)
 	{
 		super(input, output);
-		extraEnergy = energy;
+		energyUsage = energy;
 	}
 
 	public SeparatorRecipe(FluidStack input, double energy, GasStack left, GasStack right)
@@ -26,7 +26,7 @@ public class SeparatorRecipe extends MachineRecipe<FluidInput, ChemicalPairOutpu
 	@Override
 	public SeparatorRecipe copy()
 	{
-		return new SeparatorRecipe(getInput().copy(), extraEnergy, getOutput().copy());
+		return new SeparatorRecipe(getInput().copy(), energyUsage, getOutput().copy());
 	}
 
 	public boolean canOperate(FluidTank fluidTank, GasTank leftTank, GasTank rightTank)

@@ -57,7 +57,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 				
 				if(tileEntity.getRecipe() != null)
 				{
-					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*MekanismUtils.getPureEnergyPerTick(tileEntity, tileEntity.getRecipe().extraEnergy);
+					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*tileEntity.energyPerTick;
 				}
 				
 				String multiplier = MekanismUtils.getEnergyDisplay(usage);

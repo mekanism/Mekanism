@@ -76,6 +76,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	/** Type type of gas this block is dumping. */
 	public GasMode dumpRight = GasMode.IDLE;
+	
+	public double BASE_ENERGY_USAGE;
+	
+	public double energyPerTick;
 
 	public boolean isActive = false;
 
@@ -144,13 +148,22 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			
 			SeparatorRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= MekanismUtils.getPureEnergyPerTick(this, recipe.extraEnergy))
+			if(canOperate(recipe) && getEnergy() >= energyPerTick)
 			{
+				boolean update = BASE_ENERGY_USAGE != recipe.energyUsage;
+				
+				BASE_ENERGY_USAGE = recipe.energyUsage;
+				
+				if(update)
+				{
+					recalculateUpgradables(Upgrade.ENERGY);
+				}
+				
 				setActive(true);
 				
 				int operations = operate(recipe);
 				
-				setEnergy(getEnergy() - MekanismUtils.getPureEnergyPerTick(this, recipe.extraEnergy)*operations);
+				setEnergy(getEnergy() - energyPerTick*operations);
 			}
 			else {
 				setActive(false);
@@ -250,7 +263,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 		
 		possibleProcess = Math.min((int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), possibleProcess);
-		possibleProcess = Math.min((int)(getEnergy()/MekanismUtils.getPureEnergyPerTick(this, recipe.extraEnergy)), possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/energyPerTick), possibleProcess);
 		
 		return Math.min(fluidTank.getFluidAmount()/recipe.recipeInput.ingredient.amount, possibleProcess);
 	}
@@ -734,6 +747,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		{
 			case ENERGY:
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				energyPerTick = MekanismUtils.getBaseEnergyPerTick(this, BASE_ENERGY_USAGE);
 			default:
 				break;
 		}
