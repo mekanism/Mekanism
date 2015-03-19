@@ -151,7 +151,18 @@ public class TileComponentConfig implements ITileComponent
 						sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
 						ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
 					}
-				} catch(Exception e) {}
+				} catch(Exception e) {
+					try {
+						byte[] bytes = new byte[6];
+						
+						for(int i = 0; i < 6; i++)
+						{
+							bytes[i] = nbtTags.getByte("config"+i);
+						}
+						
+						sideConfigs.put(TransmissionType.ITEM.ordinal(), bytes);
+					} catch(Exception e1) {}
+				}
 			}
 		}
 	}
