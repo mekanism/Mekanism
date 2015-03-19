@@ -351,10 +351,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		if(client.enableAmbientLighting)
+		if(general.enableAmbientLighting)
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 	
@@ -362,7 +361,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			{
 				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
 				{
-					return client.ambientLightingLevel;
+					return general.ambientLightingLevel;
 				}
 			}
 		}

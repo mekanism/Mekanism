@@ -720,7 +720,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
