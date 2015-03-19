@@ -30,9 +30,9 @@ public class UnitDisplayUtils
 	public static enum TemperatureUnit
 	{
 		KELVIN("Kelvin", "K", 0, 1),
-		CELSIUS("Celsius", "C", 273.15, 1),
+		CELSIUS("Celsius", "°C", 273.15, 1),
 		RANKINE("Rankine", "R", 0, 5/9),
-		FAHRENHEIT("Fahrenheit", "F", 459.67, 5/9),
+		FAHRENHEIT("Fahrenheit", "°F", 459.67, 5/9),
 		AMBIENT("Ambient", "+STP", 300, 1);
 
 		public String name;
@@ -226,7 +226,7 @@ public class UnitDisplayUtils
 
 		if(value == 0)
 		{
-			return value + " " + unitName;
+			return value + (isShort ? "" : " ") + unitName;
 		}
 		else {
 			for(int i = 0; i < MeasurementUnit.values().length; i++)
@@ -235,24 +235,24 @@ public class UnitDisplayUtils
 
 				if(lowerMeasure.below(value) && lowerMeasure.ordinal() == 0)
 				{
-					return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
+					return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
 				}
 
 				if(lowerMeasure.ordinal() + 1 >= MeasurementUnit.values().length)
 				{
-					return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
+					return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
 				}
 
 				MeasurementUnit upperMeasure = MeasurementUnit.values()[i + 1];
 
 				if((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value)
 				{
-					return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.getName(isShort) + unitName;
+					return prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + (isShort ? "" : " ") + lowerMeasure.getName(isShort) + unitName;
 				}
 			}
 		}
 
-		return prefix + roundDecimals(value, decimalPlaces) + " " + unitName;
+		return prefix + roundDecimals(value, decimalPlaces) + (isShort ? "" : " ") + unitName;
 	}
 
 	public static String getDisplayShort(double value, TemperatureUnit unit)

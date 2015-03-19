@@ -60,7 +60,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.src.FMLRenderAccessLibrary;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -173,7 +172,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.BasicBlock && item.getItemDamage() == 6)
 		{
-			FMLRenderAccessLibrary.renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
+			RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], MekanismBlocks.BasicBlock, item.getItemDamage(), ClientProxy.BASIC_RENDER_ID);
 
 			if(binRenderer == null || binRenderer.func_147498_b()/*getFontRenderer()*/ == null)
 			{

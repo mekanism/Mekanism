@@ -6,6 +6,7 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.util.ListUtils;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiEnergyGauge;
 import mekanism.client.gui.element.GuiEnergyInfo;
@@ -65,7 +66,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return tileEntity.getPlasmaTemp();
+				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getPlasmaTemp());
 			}
 
 			@Override
@@ -77,7 +78,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Plasma: " + MekanismUtils.getTemperatureDisplay(level);
+				return "Plasma: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 7, 50));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
@@ -99,7 +100,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public double getLevel()
 			{
-				return tileEntity.getCaseTemp();
+				return TemperatureUnit.AMBIENT.convertToK(tileEntity.getCaseTemp());
 			}
 
 			@Override
@@ -111,7 +112,7 @@ public class GuiReactorHeat extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Case: " + MekanismUtils.getTemperatureDisplay(level);
+				return "Case: " + MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png"), 61, 50));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()

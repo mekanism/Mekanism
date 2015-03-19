@@ -1145,20 +1145,21 @@ public final class MekanismUtils
 	 * @param T - temperature to display
 	 * @return rounded energy display
 	 */
-	public static String getTemperatureDisplay(double T)
+	public static String getTemperatureDisplay(double T, TemperatureUnit unit)
 	{
+		double TK = unit.convertToK(T);
 		switch(general.tempUnit)
 		{
 			case K:
-				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.KELVIN);
+				return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.KELVIN);
 			case C:
-				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.CELSIUS);
+				return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.CELSIUS);
 			case R:
-				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.RANKINE);
+				return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.RANKINE);
 			case F:
-				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.FAHRENHEIT);
+				return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.FAHRENHEIT);
 			case STP:
-				return UnitDisplayUtils.getDisplayShort(T, TemperatureUnit.AMBIENT);
+				return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
 		}
 
 		return "error";

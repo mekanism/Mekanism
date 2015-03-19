@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.api.gas.GasStack;
+import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
@@ -77,16 +78,16 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 	private String getTemp()
 	{
-		float temp = (float)Math.round((tileEntity.getTemperature()*200)*10)/10F;
+		float temp = tileEntity.getTemperature()*200;
 
-		return temp + " F";
+		return MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.AMBIENT);
 	}
 
 	private String getMaxTemp()
 	{
-		float temp = (float)Math.round((tileEntity.getMaxTemperature()*200)*10)/10F;
+		float temp = tileEntity.getMaxTemperature()*200;
 
-		return temp + " F";
+		return MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.AMBIENT);
 	}
 
 	private String getTempMult()
@@ -106,9 +107,6 @@ public class GuiSolarEvaporationController extends GuiMekanism
 		int guiWidth = (width - xSize) / 2;
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
 
 		int displayInt;
 
@@ -140,7 +138,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 		while(true)
 		{
-			int renderRemaining = 0;
+			int renderRemaining;
 
 			if(scale > 16)
 			{
