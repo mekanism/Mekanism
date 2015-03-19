@@ -632,11 +632,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		
 		FrequencyManager manager = getManager(new Frequency(null, null).setPublic(false));
 		
-		data.add(manager.getFrequencies().size());
-		
-		for(Frequency freq : manager.getFrequencies())
+		if(manager != null)
 		{
-			freq.write(data);
+			data.add(manager.getFrequencies().size());
+			
+			for(Frequency freq : manager.getFrequencies())
+			{
+				freq.write(data);
+			}
+		}
+		else {
+			data.add(0);
 		}
 
 		return data;
