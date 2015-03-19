@@ -108,10 +108,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		//Electric
 		factory.electricityStored = electricityStored;
 		factory.ic2Registered = ic2Registered;
-		
+
 		//Noisy
 		factory.soundURL = soundURL;
-		factory.sound = sound;
 		
 		//Machine
 		factory.progress[0] = operatingTicks;

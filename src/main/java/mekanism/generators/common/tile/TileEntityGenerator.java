@@ -116,17 +116,6 @@ public abstract class TileEntityGenerator extends TileEntityNoisyElectricBlock i
 		return EnumSet.of(ForgeDirection.getOrientation(facing));
 	}
 
-	@Override
-	public void validate()
-	{
-		super.validate();
-
-		if(worldObj.isRemote)
-		{
-			sound = new TileSound(this, this);
-		}
-	}
-
 	/**
 	 * Whether or not this generator can operate.
 	 * @return if the generator can operate

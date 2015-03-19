@@ -108,10 +108,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 	{
 		super.onUpdate();
 		
-		if(worldObj.isRemote && shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
+		if(worldObj.isRemote)
 		{
-			getSound().reset();
-			SoundHandler.playSound(getSound());
+			updateSound();
 		}
 
 		if(isFormed())
@@ -126,7 +125,17 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 			}
 		}
 	}
-	
+
+	@SideOnly(Side.CLIENT)
+	public void updateSound()
+	{
+		if(shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
+		{
+			getSound().reset();
+			SoundHandler.playSound(getSound());
+		}
+	}
+
 	@Override
 	public void onChunkUnload()
 	{

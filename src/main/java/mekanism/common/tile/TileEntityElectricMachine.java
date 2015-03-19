@@ -83,7 +83,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		
 		//Noisy
 		factory.soundURL = soundURL;
-		factory.sound = sound;
+
 		
 		//Machine
 		factory.progress[0] = operatingTicks;
