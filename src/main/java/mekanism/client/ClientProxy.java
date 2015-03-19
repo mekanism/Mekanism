@@ -93,7 +93,6 @@ import mekanism.client.render.tileentity.RenderLaserTractorBeam;
 import mekanism.client.render.tileentity.RenderLogisticalSorter;
 import mekanism.client.render.tileentity.RenderMetallurgicInfuser;
 import mekanism.client.render.tileentity.RenderObsidianTNT;
-import mekanism.client.render.tileentity.RenderOredictionificator;
 import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderPressurizedReactionChamber;
 import mekanism.client.render.tileentity.RenderRotaryCondensentrator;
@@ -212,8 +211,6 @@ public class ClientProxy extends CommonProxy
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
-		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean(true);
-        client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt(15);
 
 		if(Mekanism.configuration.hasChanged())
 		{

@@ -303,6 +303,8 @@ public class CommonProxy
 		general.laserRange = Mekanism.configuration.get("general", "LaserRange", 64).getInt(64);
 		general.laserEnergyNeededPerHardness = Mekanism.configuration.get("general", "LaserDiggingEnergy", 100000).getInt(100000);
 		general.destroyDisabledBlocks = Mekanism.configuration.get("general", "DestroyDisabledBlocks", true).getBoolean(true);
+		general.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean(true);
+		general.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt(15);
 		
 		for(MachineType type : MachineType.getValidMachines())
 		{
