@@ -1,16 +1,17 @@
 package mekanism.common.util;
 
-import mekanism.api.energy.EnergizedItemManager;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.Mekanism;
-import mekanism.common.tile.TileEntityElectricBlock;
-
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-
-import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.energy.EnergizedItemManager;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.common.Mekanism;
+import mekanism.common.tile.TileEntityContainerBlock;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import cofh.api.energy.IEnergyContainerItem;
 
 public final class ChargeUtils
 {
@@ -19,42 +20,44 @@ public final class ChargeUtils
 	 * @param slotID - ID of the slot of which to charge
 	 * @param storer - TileEntity the item is being charged in
 	 */
-	public static void discharge(int slotID, TileEntityElectricBlock storer)
+	public static void discharge(int slotID, IStrictEnergyStorage storer)
 	{
-		if(storer.inventory[slotID] != null && storer.getEnergy() < storer.getMaxEnergy())
+		IInventory inv = (TileEntityContainerBlock)storer;
+		
+		if(inv.getStackInSlot(slotID) != null && storer.getEnergy() < storer.getMaxEnergy())
 		{
-			if(storer.inventory[slotID].getItem() instanceof IEnergizedItem)
+			if(inv.getStackInSlot(slotID).getItem() instanceof IEnergizedItem)
 			{
-				storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(storer.inventory[slotID], storer.getMaxEnergy() - storer.getEnergy()));
+				storer.setEnergy(storer.getEnergy() + EnergizedItemManager.discharge(inv.getStackInSlot(slotID), storer.getMaxEnergy() - storer.getEnergy()));
 			}
-			else if(MekanismUtils.useIC2() && storer.inventory[slotID].getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useIC2() && inv.getStackInSlot(slotID).getItem() instanceof IElectricItem)
 			{
-				IElectricItem item = (IElectricItem)storer.inventory[slotID].getItem();
+				IElectricItem item = (IElectricItem)inv.getStackInSlot(slotID).getItem();
 
-				if(item.canProvideEnergy(storer.inventory[slotID]))
+				if(item.canProvideEnergy(inv.getStackInSlot(slotID)))
 				{
-					double gain = ElectricItem.manager.discharge(storer.inventory[slotID], (int)((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_IC2), 4, true, true, false)*Mekanism.FROM_IC2;
+					double gain = ElectricItem.manager.discharge(inv.getStackInSlot(slotID), (int)((storer.getMaxEnergy() - storer.getEnergy())* general.TO_IC2), 4, true, true, false)* general.FROM_IC2;
 					storer.setEnergy(storer.getEnergy() + gain);
 				}
 			}
-			else if(MekanismUtils.useRF() && storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
+			else if(MekanismUtils.useRF() && inv.getStackInSlot(slotID).getItem() instanceof IEnergyContainerItem)
 			{
-				ItemStack itemStack = storer.inventory[slotID];
-				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
+				ItemStack itemStack = inv.getStackInSlot(slotID);
+				IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(slotID).getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getEnergyStored(itemStack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())*Mekanism.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, ((storer.getMaxEnergy() - storer.getEnergy())* general.TO_TE)));
 
-				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() + (item.extractEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 			}
-			else if(storer.inventory[slotID].getItem() == Items.redstone && storer.getEnergy()+Mekanism.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
+			else if(inv.getStackInSlot(slotID).getItem() == Items.redstone && storer.getEnergy()+ general.ENERGY_PER_REDSTONE <= storer.getMaxEnergy())
 			{
-				storer.setEnergy(storer.getEnergy() + Mekanism.ENERGY_PER_REDSTONE);
-				storer.inventory[slotID].stackSize--;
+				storer.setEnergy(storer.getEnergy() + general.ENERGY_PER_REDSTONE);
+				inv.getStackInSlot(slotID).stackSize--;
 
-				if(storer.inventory[slotID].stackSize <= 0)
+				if(inv.getStackInSlot(slotID).stackSize <= 0)
 				{
-					storer.inventory[slotID] = null;
+					inv.setInventorySlotContents(slotID, null);
 				}
 			}
 		}
@@ -65,28 +68,30 @@ public final class ChargeUtils
 	 * @param slotID - ID of the slot of which to discharge
 	 * @param storer - TileEntity the item is being discharged in
 	 */
-	public static void charge(int slotID, TileEntityElectricBlock storer)
+	public static void charge(int slotID, IStrictEnergyStorage storer)
 	{
-		if(storer.inventory[slotID] != null && storer.getEnergy() > 0)
+		IInventory inv = (TileEntityContainerBlock)storer;
+		
+		if(inv.getStackInSlot(slotID) != null && storer.getEnergy() > 0)
 		{
-			if(storer.inventory[slotID].getItem() instanceof IEnergizedItem)
+			if(inv.getStackInSlot(slotID).getItem() instanceof IEnergizedItem)
 			{
-				storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(storer.inventory[slotID], storer.getEnergy()));
+				storer.setEnergy(storer.getEnergy() - EnergizedItemManager.charge(inv.getStackInSlot(slotID), storer.getEnergy()));
 			}
-			else if(Mekanism.hooks.IC2APILoaded && storer.inventory[slotID].getItem() instanceof IElectricItem)
+			else if(MekanismUtils.useIC2() && inv.getStackInSlot(slotID).getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(storer.inventory[slotID], (int)(storer.getEnergy()*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(inv.getStackInSlot(slotID), (int)(storer.getEnergy()* general.TO_IC2), 4, true, false)* general.FROM_IC2;
 				storer.setEnergy(storer.getEnergy() - sent);
 			}
-			else if(MekanismUtils.useRF() && storer.inventory[slotID].getItem() instanceof IEnergyContainerItem)
+			else if(MekanismUtils.useRF() && inv.getStackInSlot(slotID).getItem() instanceof IEnergyContainerItem)
 			{
-				ItemStack itemStack = storer.inventory[slotID];
-				IEnergyContainerItem item = (IEnergyContainerItem)storer.inventory[slotID].getItem();
+				ItemStack itemStack = inv.getStackInSlot(slotID);
+				IEnergyContainerItem item = (IEnergyContainerItem)inv.getStackInSlot(slotID).getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemStack)), item.getMaxEnergyStored(itemStack) - item.getEnergyStored(itemStack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()*Mekanism.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (storer.getEnergy()* general.TO_TE)));
 
-				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)*Mekanism.FROM_TE));
+				storer.setEnergy(storer.getEnergy() - (item.receiveEnergy(itemStack, toTransfer, false)* general.FROM_TE));
 			}
 		}
 	}
@@ -125,12 +130,6 @@ public final class ChargeUtils
 	 */
 	public static boolean canBeOutputted(ItemStack itemstack, boolean chargeSlot)
 	{
-		if(chargeSlot)
-		{
-			return MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem;
-		}
-		else {
-			return MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem && ((IElectricItem)itemstack.getItem()).canProvideEnergy(itemstack);
-		}
+		return true; //this is too much of a hassle to manage
 	}
 }

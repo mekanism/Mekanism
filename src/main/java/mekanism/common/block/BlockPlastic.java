@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.client.ClientProxy;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -24,10 +25,11 @@ public class BlockPlastic extends Block
 	public BlockPlastic()
 	{
 		super(Material.wood);
-		setHardness(5F);
-		setResistance(10F);
+		setHardness(this == MekanismBlocks.ReinforcedPlasticBlock ? 50F : 5F);
+		setResistance(this == MekanismBlocks.ReinforcedPlasticBlock ? 2000F : 10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		if(this == Mekanism.BlockSlickHDPE)
+		
+		if(this == MekanismBlocks.SlickPlasticBlock)
 		{
 			slipperiness = 0.98F;
 		}
@@ -37,23 +39,23 @@ public class BlockPlastic extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == Mekanism.BlockHDPE)
+		if(this == MekanismBlocks.PlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:PlasticBlock");
 		}
-		else if(this == Mekanism.BlockSlickHDPE)
+		else if(this == MekanismBlocks.SlickPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:SlickPlasticBlock");
 		}
-		else if(this == Mekanism.BlockGlowHDPE)
+		else if(this == MekanismBlocks.GlowPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:GlowPlasticBlock");
 		}
-		else if(this == Mekanism.BlockReinforcedHDPE)
+		else if(this == MekanismBlocks.ReinforcedPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:ReinforcedPlasticBlock");
 		}
-		else if(this == Mekanism.BlockRoadHDPE)
+		else if(this == MekanismBlocks.RoadPlasticBlock)
 		{
 			blockIcon = register.registerIcon("mekanism:RoadPlasticBlock");
 		}
@@ -62,7 +64,7 @@ public class BlockPlastic extends Block
 	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity e)
 	{
-		if(this == Mekanism.BlockRoadHDPE)
+		if(this == MekanismBlocks.RoadPlasticBlock)
 		{
 			double boost = 1.6;
 
@@ -99,13 +101,12 @@ public class BlockPlastic extends Block
 	{
 		EnumColor colour = EnumColor.DYES[meta];
 		return (int)(colour.getColor(0)*255) << 16 | (int)(colour.getColor(1)*255) << 8 | (int)(colour.getColor(2)*255);
-
 	}
 
 	@Override
-	public int getLightValue(IBlockAccess world, int x, int y, int z)
+	public int getLightValue()
 	{
-		if(this == Mekanism.BlockGlowHDPE)
+		if(this == MekanismBlocks.GlowPlasticBlock)
 		{
 			return 10;
 		}
@@ -113,21 +114,23 @@ public class BlockPlastic extends Block
 		return 0;
 	}
 
+	@Override
 	public boolean recolourBlock(World world, int x, int y, int z, ForgeDirection side, int colour)
 	{
 		int meta = world.getBlockMetadata(x, y, z);
-		if (meta != (15 - colour))
+		
+		if(meta != (15 - colour))
 		{
 			world.setBlockMetadataWithNotify(x, y, z, 15-colour, 3);
 			return true;
 		}
+		
 		return false;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.PLASTIC_RENDER_ID;
+		return Mekanism.proxy.PLASTIC_RENDER_ID;
 	}
 }

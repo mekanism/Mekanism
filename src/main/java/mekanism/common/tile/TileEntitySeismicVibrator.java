@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
-import mekanism.common.IActiveState;
-import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
@@ -69,10 +71,10 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 			
 			ChargeUtils.discharge(0, this);
 			
-			if(MekanismUtils.canFunction(this) && getEnergy() >= Mekanism.seismicVibratorUsage)
+			if(MekanismUtils.canFunction(this) && getEnergy() >= usage.seismicVibratorUsage)
 			{
 				setActive(true);
-				setEnergy(getEnergy()-Mekanism.seismicVibratorUsage);
+				setEnergy(getEnergy()- usage.seismicVibratorUsage);
 			}
 			else {
 				setActive(false);
@@ -124,7 +126,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 		
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -186,7 +188,7 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	}
 	
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.UP);
 	}
@@ -196,5 +198,11 @@ public class TileEntitySeismicVibrator extends TileEntityElectricBlock implement
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
 	}
 }

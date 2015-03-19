@@ -16,11 +16,11 @@ import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiRotaryCondensentrator;
-import mekanism.client.gui.GuiSalinationController;
-import mekanism.common.Mekanism;
-
+import mekanism.client.gui.GuiSolarEvaporationController;
+import mekanism.client.gui.GuiSolarNeutronActivator;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import net.minecraft.item.ItemStack;
-
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.guihook.GuiContainerManager;
@@ -69,8 +69,8 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new PrecisionSawmillRecipeHandler());
 		API.registerUsageHandler(new PrecisionSawmillRecipeHandler());
 
-		API.registerRecipeHandler(new SalinationControllerRecipeHandler());
-		API.registerUsageHandler(new SalinationControllerRecipeHandler());
+		API.registerRecipeHandler(new SolarEvaporationRecipeHandler());
+		API.registerUsageHandler(new SolarEvaporationRecipeHandler());
 
 		API.registerRecipeHandler(new ChemicalDissolutionChamberRecipeHandler());
 		API.registerUsageHandler(new ChemicalDissolutionChamberRecipeHandler());
@@ -83,6 +83,9 @@ public class NEIMekanismConfig implements IConfigureNEI
 		
 		API.registerRecipeHandler(new PRCRecipeHandler());
 		API.registerUsageHandler(new PRCRecipeHandler());
+		
+		API.registerRecipeHandler(new SolarNeutronRecipeHandler());
+		API.registerUsageHandler(new SolarNeutronRecipeHandler());
 
 		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
 		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
@@ -96,18 +99,20 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
-		API.setGuiOffset(GuiSalinationController.class, SalinationControllerRecipeHandler.xOffset, SalinationControllerRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalCrystallizer.class, ChemicalCrystallizerRecipeHandler.xOffset, ChemicalCrystallizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiPRC.class, PRCRecipeHandler.xOffset, PRCRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
+		API.setGuiOffset(GuiSolarNeutronActivator.class, SolarNeutronRecipeHandler.xOffset, SolarNeutronRecipeHandler.yOffset);
 		
 		GuiContainerManager.addSlotClickHandler(new MekanismSlotClickHandler());
 		
 		API.registerNEIGuiHandler(new ElementBoundHandler());
 
-		API.hideItem(new ItemStack(Mekanism.BoundingBlock));
-		API.hideItem(new ItemStack(Mekanism.ItemProxy));
+		API.hideItem(new ItemStack(MekanismBlocks.BoundingBlock));
+		API.hideItem(new ItemStack(MekanismItems.ItemProxy));
 	}
 
 	@Override
@@ -119,6 +124,6 @@ public class NEIMekanismConfig implements IConfigureNEI
 	@Override
 	public String getVersion()
 	{
-		return "1.3";
+		return "8.0.0";
 	}
 }

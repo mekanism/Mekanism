@@ -1,17 +1,17 @@
 package mekanism.client.nei;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
-import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.api.util.ListUtils;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.PurificationRecipe;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -36,9 +36,9 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	}
 
 	@Override
-	public Set getRecipes()
+	public Collection<PurificationRecipe> getRecipes()
 	{
-		return Recipe.PURIFICATION_CHAMBER.get().entrySet();
+		return Recipe.PURIFICATION_CHAMBER.get().values();
 	}
 	
 	@Override

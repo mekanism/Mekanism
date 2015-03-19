@@ -42,6 +42,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 		}
 		else {
 			FMLCommonHandler.instance().showGuiScreen(SimpleGuiMessage.getGui(message.guiId, player, player.worldObj, message.coord4D));
+			player.openContainer.windowId = message.windowId;
 		}
 		
 		return null;
@@ -53,12 +54,20 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 		public int guiId;
 		
+		public int windowId;
+		
 		public SimpleGuiMessage() {}
 	
 		public SimpleGuiMessage(Coord4D coord, int gui)
 		{
 			coord4D = coord;
 			guiId = gui;
+		}
+		
+		public SimpleGuiMessage(Coord4D coord, int gui, int id)
+		{
+			this(coord, gui);
+			windowId = id;
 		}
 	
 		public static void openServerGui(int id, EntityPlayerMP playerMP, World world, Coord4D obj)
@@ -68,7 +77,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 	
 			int window = playerMP.currentWindowId;
 	
-			Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, id), playerMP);
+			Mekanism.packetHandler.sendTo(new SimpleGuiMessage(obj, id, window), playerMP);
 	
 			playerMP.openContainer = Mekanism.proxy.getServerGui(id, playerMP, world, obj.xCoord, obj.yCoord, obj.zCoord);
 			playerMP.openContainer.windowId = window;
@@ -91,6 +100,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 			dataStream.writeInt(coord4D.dimensionId);
 	
 			dataStream.writeInt(guiId);
+			dataStream.writeInt(windowId);
 		}
 	
 		@Override
@@ -99,6 +109,7 @@ public class PacketSimpleGui implements IMessageHandler<SimpleGuiMessage, IMessa
 			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 	
 			guiId = dataStream.readInt();
+			windowId = dataStream.readInt();
 		}
 	}
 }

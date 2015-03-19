@@ -1,17 +1,20 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalWasher;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.WasherRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -23,9 +26,6 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 {
@@ -63,9 +63,9 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicalwasher";
 	}
 
-	public Set<Entry<GasStack, GasStack>> getRecipes()
+	public Collection<WasherRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_WASHER.get().entrySet();
+		return Recipe.CHEMICAL_WASHER.get().values();
 	}
 
 	@Override
@@ -115,16 +115,16 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(WasherRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
+			for(WasherRecipe irecipe : getRecipes())
 			{
-				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
+				if(((GasStack)results[0]).isGasEqual(irecipe.getOutput().output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -142,7 +142,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		{
 			if(((FluidStack)ingredients[0]).getFluid() == FluidRegistry.WATER)
 			{
-				for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
+				for(WasherRecipe irecipe : getRecipes())
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -150,9 +150,9 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 		}
 		else if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<GasStack, GasStack> irecipe : getRecipes())
+			for(WasherRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getKey().isGasEqual((GasStack)ingredients[0]))
+				if(irecipe.getInput().ingredient.isGasEqual((GasStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -173,15 +173,15 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 5+13 && yAxis <= 63+13)
 		{
-			currenttip.add(FluidRegistry.WATER.getLocalizedName());
+			currenttip.add(FluidRegistry.WATER.getLocalizedName(null));
 		}
 		else if(xAxis >= 27 && xAxis <= 43 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).inputStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).inputStack));
 		}
 		else if(xAxis >= 134 && xAxis <= 150 && yAxis >= 14+13 && yAxis <= 72+13)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).outputStack));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -340,9 +340,9 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 			outputStack = output;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(WasherRecipe recipe)
 		{
-			this((GasStack)recipe.getKey(), (GasStack)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

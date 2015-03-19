@@ -2,23 +2,24 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
-import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.CombinerRecipe;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityCombiner extends TileEntityAdvancedElectricMachine
+public class TileEntityCombiner extends TileEntityAdvancedElectricMachine<CombinerRecipe>
 {
 	public TileEntityCombiner()
 	{
-		super("Combiner.ogg", "Combiner", Mekanism.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
+		super("combiner", "Combiner", usage.combinerUsage, 1, 200, MachineType.COMBINER.baseEnergy);
 	}
 
 	@Override

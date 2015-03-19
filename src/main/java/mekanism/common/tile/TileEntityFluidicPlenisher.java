@@ -8,8 +8,8 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.common.ISustainedTank;
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.usage;
+import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
@@ -130,7 +130,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				}
 			}
 			
-			if(getEnergy() >= Mekanism.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+			if(getEnergy() >= usage.fluidicPlenisherUsage && worldObj.getWorldTime() % 10 == 0 && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 			{
 				if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 				{
@@ -141,13 +141,13 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 					else {
 						Coord4D below = Coord4D.get(this).getFromSide(ForgeDirection.DOWN);
 						
-						if(canReplace(below, false, false) && getEnergy() >= Mekanism.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
+						if(canReplace(below, false, false) && getEnergy() >= usage.fluidicPlenisherUsage && fluidTank.getFluidAmount() >= FluidContainerRegistry.BUCKET_VOLUME)
 						{
 							if(fluidTank.getFluid().getFluid().canBePlacedInWorld())
 							{
 								worldObj.setBlock(below.xCoord, below.yCoord, below.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 								
-								setEnergy(getEnergy() - Mekanism.fluidicPlenisherUsage);
+								setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 								fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 							}
 						}
@@ -195,7 +195,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 				{
 					worldObj.setBlock(coord.xCoord, coord.yCoord, coord.zCoord, MekanismUtils.getFlowingBlock(fluidTank.getFluid().getFluid()), 0, 3);
 
-					setEnergy(getEnergy() - Mekanism.fluidicPlenisherUsage);
+					setEnergy(getEnergy() - usage.fluidicPlenisherUsage);
 					fluidTank.drain(FluidContainerRegistry.BUCKET_VOLUME, true);
 
 				}
@@ -395,7 +395,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}

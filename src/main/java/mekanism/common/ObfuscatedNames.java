@@ -11,4 +11,5 @@ public final class ObfuscatedNames
 	public static String[] NetHandlerPlayServer_floatingTickCount = new String[] {"floatingTickCount", "field_147365_f"};
 	public static String[] SoundHandler_sndManager = new String[] {"sndManager", "field_147694_f"};
 	public static String[] SoundManager_sndSystem = new String[] {"sndSystem", "field_148620_e"};
+	public static String[] SoundManager_invPlayingSounds = new String[] {"invPlayingSounds", "field_148630_i"};
 }

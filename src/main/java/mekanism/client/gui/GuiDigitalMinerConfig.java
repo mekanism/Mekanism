@@ -13,12 +13,12 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
+import mekanism.common.content.miner.MItemStackFilter;
+import mekanism.common.content.miner.MMaterialFilter;
+import mekanism.common.content.miner.MModIDFilter;
+import mekanism.common.content.miner.MOreDictFilter;
+import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.inventory.container.ContainerNull;
-import mekanism.common.miner.MItemStackFilter;
-import mekanism.common.miner.MMaterialFilter;
-import mekanism.common.miner.MModIDFilter;
-import mekanism.common.miner.MOreDictFilter;
-import mekanism.common.miner.MinerFilter;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -58,7 +58,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 	public GuiDigitalMinerConfig(EntityPlayer player, TileEntityDigitalMiner tentity)
 	{
-		super(new ContainerNull(player, tentity));
+		super(tentity, new ContainerNull(player, tentity));
 		tileEntity = tentity;
 	}
 
@@ -197,8 +197,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
-				dragOffset = yAxis - (getScroll()+18);
-				isDragging = true;
+				if(tileEntity.filters.size()>4)
+				{
+					dragOffset = yAxis - (getScroll()+18);
+					isDragging = true;
+				}
+				else {
+					scroll = 0;
+				}
 			}
 
 			for(int i = 0; i < 4; i++)

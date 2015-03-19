@@ -2,44 +2,47 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.api.ChanceOutput;
 import mekanism.api.EnumColor;
-import mekanism.common.Mekanism;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-
-public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
+public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ChanceOutput, RECIPE>
 {
 	public TileEntityChanceMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
 	{
 		super(soundPath, name, location, perTick, ticksRequired, maxEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2, 4}));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {3}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2, 4}));
 
-		sideConfig = new byte[] {2, 1, 0, 0, 4, 3};
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
+		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[5];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 
 	@Override
@@ -51,21 +54,23 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 		{
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			RECIPE recipe = getRecipe();
+
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
 				setActive(true);
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				electricityStored -= energyPerTick;
+
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				else
 				{
-					operate();
+					operate(recipe);
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
 			}
 			else {
@@ -75,7 +80,7 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 				}
 			}
 
-			if(!canOperate())
+			if(!canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
@@ -89,7 +94,7 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 	{
 		if(slotID == 3)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 0)
 		{
@@ -104,91 +109,24 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 	}
 
 	@Override
-	public void operate()
+	public ItemStackInput getInput()
 	{
-		ChanceOutput output = RecipeHandler.getChanceOutput(inventory[0], true, getRecipes());
+		return new ItemStackInput(inventory[0]);
+	}
 
-		if(inventory[0].stackSize <= 0)
-		{
-			inventory[0] = null;
-		}
-
-		if(output.hasPrimary())
-		{
-			if(inventory[2] == null)
-			{
-				inventory[2] = output.primaryOutput;
-			}
-			else {
-				inventory[2].stackSize += output.primaryOutput.stackSize;
-			}
-		}
-
-		if(output.hasSecondary() && output.checkSecondary())
-		{
-			if(inventory[4] == null)
-			{
-				inventory[4] = output.secondaryOutput;
-			}
-			else {
-				inventory[4].stackSize += output.secondaryOutput.stackSize;
-			}
-		}
+	@Override
+	public void operate(RECIPE recipe)
+	{
+		recipe.operate(inventory);
 
 		markDirty();
 		ejectorComponent.onOutput();
 	}
 
 	@Override
-	public boolean canOperate()
+	public boolean canOperate(RECIPE recipe)
 	{
-		if(inventory[0] == null)
-		{
-			return false;
-		}
-
-		ChanceOutput output = RecipeHandler.getChanceOutput(inventory[0], false, getRecipes());
-
-		if(output == null)
-		{
-			return false;
-		}
-
-		if(output.hasPrimary())
-		{
-			if(inventory[2] != null)
-			{
-				if(!inventory[2].isItemEqual(output.primaryOutput))
-				{
-					return false;
-				}
-				else {
-					if(inventory[2].stackSize + output.primaryOutput.stackSize > inventory[2].getMaxStackSize())
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		if(output.hasSecondary())
-		{
-			if(inventory[4] != null)
-			{
-				if(!inventory[4].isItemEqual(output.secondaryOutput))
-				{
-					return false;
-				}
-				else {
-					if(inventory[4].stackSize + output.secondaryOutput.stackSize > inventory[4].getMaxStackSize())
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		return true;
+		return recipe != null && recipe.canOperate(inventory, 0, 2, 4);
 	}
 
 	@Override
@@ -207,7 +145,18 @@ public abstract class TileEntityChanceMachine extends TileEntityBasicMachine
 	}
 
 	@Override
-	public Map getRecipes()
+	public RECIPE getRecipe()
+	{
+		ItemStackInput input = getInput();
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
+		{
+			cachedRecipe = RecipeHandler.getChanceRecipe(input, getRecipes());
+		}
+		return cachedRecipe;
+	}
+
+	@Override
+	public Map<ItemStackInput, RECIPE> getRecipes()
 	{
 		return null;
 	}

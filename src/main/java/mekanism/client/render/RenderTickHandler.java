@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import mekanism.api.Pos3D;
 import mekanism.client.render.particle.EntityJetpackFlameFX;
 import mekanism.client.render.particle.EntityJetpackSmokeFX;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
@@ -162,6 +164,49 @@ public class RenderTickHandler
 						v = playerPos.clone().translate(vCenter);
 						spawnAndSetParticle("flame", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
 						spawnAndSetParticle("smoke", world, v.xPos, v.yPos, v.zPos, mCenter.xPos, mCenter.yPos, mCenter.zPos);
+					}
+				}
+				
+				if(world.getWorldTime() % 4 == 0)
+				{
+					for(EntityPlayer p : (List<EntityPlayer>)world.playerEntities)
+					{
+						if(!Mekanism.flamethrowerActive.contains(p.getCommandSenderName()) && !p.isSwingInProgress && p.getCurrentEquippedItem() != null && p.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+						{
+							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
+							{
+								Pos3D playerPos = new Pos3D(p);
+								
+								Pos3D flameVec = new Pos3D();
+								
+								if(p.isSneaking())
+								{
+									flameVec.yPos -= 0.35F;
+									flameVec.zPos -= 0.15F;
+								}
+								
+								Pos3D flameMotion = new Pos3D(p.motionX, p.onGround ? 0 : p.motionY, p.motionZ);
+								
+								if(player == p && mc.gameSettings.thirdPersonView == 0)
+								{
+									flameVec = new Pos3D(0.8, 0.8, 0.8);
+									
+									flameVec.multiply(new Pos3D(p.getLook(90)));
+									flameVec.rotateYaw(15);
+								}
+								else {
+									flameVec.xPos -= 0.45F;
+									flameVec.yPos -= 0.5F;
+									flameVec.zPos += 1.05F;
+									
+									flameVec.rotateYaw(p.renderYawOffset);
+								}
+								
+								Pos3D mergedVec = playerPos.clone().translate(flameVec);
+								
+								spawnAndSetParticle("flame", world, mergedVec.xPos, mergedVec.yPos, mergedVec.zPos, flameMotion.xPos, flameMotion.yPos, flameMotion.zPos);
+							}
+						}
 					}
 				}
 			}

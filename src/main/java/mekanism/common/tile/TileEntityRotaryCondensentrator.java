@@ -1,8 +1,12 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -11,17 +15,21 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.IActiveState;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
+import mekanism.common.Upgrade.IUpgradeInfoHandler;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -36,9 +44,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl
+public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock implements IActiveState, ISustainedData, IFluidHandler, IGasHandler, ITubeConnection, IRedstoneControl, IUpgradeTile, IUpgradeInfoHandler, ITankManager
 {
 	public GasTank gasTank = new GasTank(MAX_FLUID);
 
@@ -46,12 +52,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public static final int MAX_FLUID = 10000;
 
-	public int updateDelay;
-
 	/** 0: gas -> fluid; 1: fluid -> gas */
 	public int mode;
 
-	public int gasOutput = 16;
+	public int gasOutput = 256;
+	
+	public int updateDelay;
 
 	public boolean isActive;
 
@@ -59,7 +65,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 	public double prevEnergy;
 
-	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
+	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 5);
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -67,12 +75,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	public TileEntityRotaryCondensentrator()
 	{
 		super("RotaryCondensentrator", MachineType.ROTARY_CONDENSENTRATOR.baseEnergy);
-		inventory = new ItemStack[5];
+		inventory = new ItemStack[6];
 	}
 
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote)
 		{
 			if(updateDelay > 0)
@@ -105,7 +115,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 			{
 				if(inventory[1] != null && (gasTank.getGas() == null || gasTank.getStored() < gasTank.getMaxGas()))
 				{
-					gasTank.receive(GasTransmission.removeGas(inventory[1], null, gasTank.getNeeded()), true);
+					gasTank.receive(GasTransmission.removeGas(inventory[1], gasTank.getGasType(), gasTank.getNeeded()), true);
 				}
 
 				if(inventory[2] != null)
@@ -161,12 +171,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
+					int usage = getUpgradedUsage();
+					
 					setActive(true);
-					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), 1), true);
-					gasTank.draw(1, true);
-					setEnergy(getEnergy() - ENERGY_USAGE);
+					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), usage), true);
+					gasTank.draw(usage, true);
+					setEnergy(getEnergy() - BASE_ENERGY_USAGE*usage);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -192,7 +204,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					{
 						if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing).getOpposite(), gasTank.getGas().getGas()))
 						{
-							gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend), true);
+							gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing).getOpposite(), toSend, true), true);
 						}
 					}
 				}
@@ -266,12 +278,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 					}
 				}
 
-				if(getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
+				if(getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
+					int usage = getUpgradedUsage();
+					
 					setActive(true);
-					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), 1), true);
-					fluidTank.drain(1, true);
-					setEnergy(getEnergy() - ENERGY_USAGE);
+					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), usage), true);
+					fluidTank.drain(usage, true);
+					setEnergy(getEnergy() - BASE_ENERGY_USAGE*usage);
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -283,6 +297,23 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 			prevEnergy = getEnergy();
 		}
+	}
+	
+	public int getUpgradedUsage()
+	{
+		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+		
+		if(mode == 0) //Gas to fluid
+		{
+			possibleProcess = Math.min(Math.min(gasTank.getStored(), fluidTank.getCapacity()-fluidTank.getFluidAmount()), possibleProcess);
+		}
+		else { //Fluid to gas
+			possibleProcess = Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
+		}
+		
+		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
+		
+		return possibleProcess;
 	}
 
 	public boolean isValidGas(GasStack g)
@@ -481,15 +512,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		return gasTank.receive(stack, true);
+		return gasTank.receive(stack, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
-		return gasTank.draw(amount, true);
+		return gasTank.draw(amount, doTransfer);
 	}
 
 	@Override
@@ -592,5 +623,43 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+	
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case ENERGY:
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public List<String> getInfo(Upgrade upgrade) 
+	{
+		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {gasTank, fluidTank};
 	}
 }

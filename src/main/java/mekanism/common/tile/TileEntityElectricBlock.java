@@ -1,50 +1,36 @@
 package mekanism.common.tile;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
-import mekanism.api.Coord4D;
-import mekanism.api.energy.ICableOutputter;
-import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.ITileNetwork;
-import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.Optional.Interface;
-import cpw.mods.fml.common.Optional.InterfaceList;
-import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
-import cofh.api.energy.IEnergyHandler;
 import ic2.api.energy.EnergyNet;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyConductor;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergySource;
 import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.tile.IEnergyStorage;
+import io.netty.buffer.ByteBuf;
 
-@InterfaceList({
-		@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
-		@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-		@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
-		@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHAPI|energy"),
-})
-public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements ITileNetwork, IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter
+import java.util.ArrayList;
+import java.util.EnumSet;
+
+import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.base.IEnergyWrapper;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
+import cpw.mods.fml.common.Optional.Method;
+
+public abstract class TileEntityElectricBlock extends TileEntityContainerBlock implements IEnergyWrapper
 {
 	/** How much energy is stored in this block. */
 	public double electricityStored;
 
 	/** Maximum amount of energy this machine can hold. */
-	public double MAX_ELECTRICITY;
+	public double BASE_MAX_ENERGY;
+
+	/** Actual maximum energy storage, including upgrades */
+	public double maxEnergy;
 
 	/** Is this registered with IC2 */
 	public boolean ic2Registered = false;
@@ -53,12 +39,13 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	 * The base of all blocks that deal with electricity. It has a facing state, initialized state,
 	 * and a current amount of stored energy.
 	 * @param name - full name of this block
-	 * @param maxEnergy - how much energy this block can store
+	 * @param baseMaxEnergy - how much energy this block can store
 	 */
-	public TileEntityElectricBlock(String name, double maxEnergy)
+	public TileEntityElectricBlock(String name, double baseMaxEnergy)
 	{
 		super(name);
-		MAX_ELECTRICITY = maxEnergy;
+		BASE_MAX_ENERGY = baseMaxEnergy;
+		maxEnergy = BASE_MAX_ENERGY;
 	}
 
 	@Method(modid = "IC2")
@@ -67,6 +54,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(!worldObj.isRemote)
 		{
 			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			
 			if(registered != this)
 			{
 				if(registered instanceof IEnergyTile)
@@ -88,6 +76,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		if(!worldObj.isRemote)
 		{
 			TileEntity registered = EnergyNet.instance.getTileEntity(worldObj, xCoord, yCoord, zCoord);
+			
 			if(registered instanceof IEnergyTile)
 			{
 				MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent((IEnergyTile)registered));
@@ -99,21 +88,26 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void onUpdate()
 	{
 		if(!ic2Registered && MekanismUtils.useIC2())
+		{
 			register();
+		}
 	}
 
+	@Override
 	public EnumSet<ForgeDirection> getOutputtingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
 	}
 
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		EnumSet set = EnumSet.allOf(ForgeDirection.class);
 		set.remove(ForgeDirection.UNKNOWN);
 		return set;
 	}
 
+	@Override
 	public double getMaxOutput()
 	{
 		return 0;
@@ -135,7 +129,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Override
 	public double getMaxEnergy()
 	{
-		return MAX_ELECTRICITY;
+		return maxEnergy;
 	}
 
 	@Override
@@ -152,12 +146,25 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		data.add(getEnergy());
 		return data;
 	}
+	
+	@Override
+	public void onAdded()
+	{
+		super.onAdded();
+		
+		if(MekanismUtils.useIC2())
+		{
+			register();
+		}
+	}
 
 	@Override
 	public void onChunkUnload()
 	{
 		if(MekanismUtils.useIC2())
+		{
 			deregister();
+		}
 
 		super.onChunkUnload();
 	}
@@ -168,7 +175,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 		super.invalidate();
 
 		if(MekanismUtils.useIC2())
+		{
 			deregister();
+		}
 	}
 
 	@Override
@@ -198,62 +207,62 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
 	{
 		if(getConsumingSides().contains(from))
 		{
-			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*Mekanism.FROM_TE);
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive* general.FROM_TE);
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() + toAdd);
 			}
 
-			return (int)Math.round(toAdd*Mekanism.TO_TE);
+			return (int)Math.round(toAdd* general.TO_TE);
 		}
 
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
 	{
 		if(getOutputtingSides().contains(from))
 		{
-			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*Mekanism.FROM_TE));
+			double toSend = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract* general.FROM_TE));
 
 			if(!simulate)
 			{
 				setEnergy(getEnergy() - toSend);
 			}
 
-			return (int)Math.round(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend* general.TO_TE);
 		}
 
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public boolean canConnectEnergy(ForgeDirection from)
 	{
 		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getEnergy()*Mekanism.TO_TE);
+		return (int)Math.round(getEnergy()* general.TO_TE);
 	}
 
 	@Override
-	@Method(modid = "CoFHAPI|energy")
+	@Method(modid = "CoFHCore")
 	public int getMaxEnergyStored(ForgeDirection from)
 	{
-		return (int)Math.round(getMaxEnergy()*Mekanism.TO_TE);
+		return (int)Math.round(getMaxEnergy()* general.TO_TE);
 	}
 
 	@Override
@@ -274,15 +283,15 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public void setStored(int energy)
 	{
-		setEnergy(energy*Mekanism.FROM_IC2);
+		setEnergy(energy*general.FROM_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int addEnergy(int amount)
 	{
-		setEnergy(getEnergy() + amount*Mekanism.FROM_IC2);
-		return (int)Math.round(getEnergy()*Mekanism.TO_IC2);
+		setEnergy(getEnergy() + amount*general.FROM_IC2);
+		return (int)Math.round(getEnergy()*general.TO_IC2);
 	}
 
 	@Override
@@ -316,35 +325,35 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public int getStored()
 	{
-		return (int)Math.round(getEnergy() * Mekanism.TO_IC2);
+		return (int)Math.round(getEnergy()*general.TO_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getCapacity()
 	{
-		return (int)Math.round(getMaxEnergy() * Mekanism.TO_IC2);
+		return (int)Math.round(getMaxEnergy()*general.TO_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getOutput()
 	{
-		return (int)Math.round(getMaxOutput()*Mekanism.TO_IC2);
+		return (int)Math.round(getMaxOutput()*general.TO_IC2);
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public double getDemandedEnergy()
 	{
-		return (getMaxEnergy() - getEnergy()) * Mekanism.TO_IC2;
+		return (getMaxEnergy() - getEnergy())*general.TO_IC2;
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public double getOfferedEnergy()
 	{
-		return Math.min(getEnergy(), getMaxOutput()) * Mekanism.TO_IC2;
+		return Math.min(getEnergy(), getMaxOutput())*general.TO_IC2;
 	}
 
 	@Override
@@ -357,7 +366,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public double getOutputEnergyUnitsPerTick()
 	{
-		return getMaxOutput() * Mekanism.TO_IC2;
+		return getMaxOutput()*general.TO_IC2;
 	}
 
 	@Override
@@ -369,14 +378,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 			return amount;
 		}
 
-		return amount-transferEnergyToAcceptor(direction, amount*Mekanism.FROM_IC2)*Mekanism.TO_IC2;
+		return amount-transferEnergyToAcceptor(direction, amount*general.FROM_IC2)*general.TO_IC2;
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public void drawEnergy(double amount)
 	{
-		setEnergy(Math.max(getEnergy() - (amount * Mekanism.FROM_IC2), 0));
+		setEnergy(Math.max(getEnergy() - (amount*general.FROM_IC2), 0));
 	}
 
 	@Override

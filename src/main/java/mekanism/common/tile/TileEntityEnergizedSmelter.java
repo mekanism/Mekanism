@@ -1,25 +1,23 @@
 package mekanism.common.tile;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.SmeltingRecipe;
 
-import net.minecraft.item.ItemStack;
-
-public class TileEntityEnergizedSmelter extends TileEntityElectricMachine
+public class TileEntityEnergizedSmelter extends TileEntityElectricMachine<SmeltingRecipe>
 {
-	public static Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<ItemStack, ItemStack>();
-
 	public TileEntityEnergizedSmelter()
 	{
-		super("Smelter.ogg", "EnergizedSmelter", Mekanism.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
+		super("smelter", "EnergizedSmelter", usage.energizedSmelterUsage, 200, MachineType.ENERGIZED_SMELTER.baseEnergy);
 	}
 
 	@Override
-	public Map getRecipes()
+	public Map<ItemStackInput, SmeltingRecipe> getRecipes()
 	{
-		return furnaceRecipes;
+		return Recipe.ENERGIZED_SMELTER.get();
 	}
 }

@@ -1,23 +1,21 @@
 package mekanism.client.nei;
 
 import java.awt.*;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Collection;
 
-import mekanism.api.ChanceOutput;
-import mekanism.client.gui.GuiElement;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.common.recipe.machines.ChanceMachineRecipe;
+import mekanism.common.recipe.outputs.ChanceOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -25,7 +23,6 @@ import org.lwjgl.opengl.GL11;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawString;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
@@ -36,7 +33,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract String getRecipeId();
 
-	public abstract Set<Entry<ItemStack, ChanceOutput>> getRecipes();
+	public abstract Collection<? extends ChanceMachineRecipe> getRecipes();
 	
 	public abstract ProgressBar getProgressType();
 	
@@ -106,7 +103,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(ChanceMachineRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -119,13 +116,13 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry<ItemStack, ChanceOutput> irecipe : getRecipes())
+		for(ChanceMachineRecipe<?> irecipe : getRecipes())
 		{
-			if(irecipe.getValue().hasPrimary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().primaryOutput, result))
+			if(irecipe.getOutput().hasPrimary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().primaryOutput, result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
-			else if(irecipe.getValue().hasSecondary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().secondaryOutput, result))
+			else if(irecipe.getOutput().hasSecondary() && NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().secondaryOutput, result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -141,9 +138,9 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(ChanceMachineRecipe<?> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getInput().ingredient, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -189,9 +186,9 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			output = chance;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(ChanceMachineRecipe<?> recipe)
 		{
-			this((ItemStack)recipe.getKey(), (ChanceOutput)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput());
 		}
 	}
 }

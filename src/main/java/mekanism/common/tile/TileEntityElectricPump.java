@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,14 +13,17 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
-import mekanism.common.ISustainedTank;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.usage;
+import mekanism.common.Upgrade;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.IUpgradeTile;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,9 +40,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager
 {
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
@@ -47,11 +50,16 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 3);
 
 	public TileEntityElectricPump()
 	{
 		super("ElectricPump", 10000);
-		inventory = new ItemStack[3];
+		inventory = new ItemStack[4];
+		
+		upgradeComponent.clearSupportedTypes();
+		upgradeComponent.setSupported(Upgrade.FILTER);
 	}
 
 	@Override
@@ -126,13 +134,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			if(MekanismUtils.canFunction(this))
 			{
-				if(getEnergy() >= Mekanism.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
+				if(getEnergy() >= usage.electricPumpUsage && (fluidTank.getFluid() == null || fluidTank.getFluid().amount + FluidContainerRegistry.BUCKET_VOLUME <= fluidTank.getCapacity()))
 				{
 					suck(true);
 				}
 			}
-			else
-			{
+			else {
 				ticker--;
 			}
 		}
@@ -158,6 +165,11 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 			}
 		}
 	}
+	
+	public boolean hasFilter()
+	{
+		return upgradeComponent.getInstalledTypes().contains(Upgrade.FILTER);
+	}
 
 	public boolean suck(boolean take)
 	{
@@ -171,13 +183,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
+						setEnergy(getEnergy() - usage.electricPumpUsage);
 						recurringNodes.add(wrapper.clone());
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 
@@ -192,12 +204,12 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		{
 			if(MekanismUtils.isFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord))
 			{
-				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord).isFluidEqual(fluidTank.getFluid()))
+				if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
 				{
 					if(take)
 					{
-						setEnergy(getEnergy() - Mekanism.electricPumpUsage);
-						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord), true);
+						setEnergy(getEnergy() - usage.electricPumpUsage);
+						fluidTank.fill(MekanismUtils.getFluid(worldObj, wrapper.xCoord, wrapper.yCoord, wrapper.zCoord, hasFilter()), true);
 						worldObj.setBlockToAir(wrapper.xCoord, wrapper.yCoord, wrapper.zCoord);
 					}
 
@@ -214,13 +226,13 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 				{
 					if(MekanismUtils.isFluid(worldObj, side.xCoord, side.yCoord, side.zCoord))
 					{
-						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord).isFluidEqual(fluidTank.getFluid()))
+						if(fluidTank.getFluid() == null || MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord, hasFilter()).isFluidEqual(fluidTank.getFluid()))
 						{
 							if(take)
 							{
-								setEnergy(getEnergy() - Mekanism.electricPumpUsage);
+								setEnergy(getEnergy() - usage.electricPumpUsage);
 								recurringNodes.add(side);
-								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord), true);
+								fluidTank.fill(MekanismUtils.getFluid(worldObj, side.xCoord, side.yCoord, side.zCoord, hasFilter()), true);
 								worldObj.setBlockToAir(side.xCoord, side.yCoord, side.zCoord);
 							}
 
@@ -365,7 +377,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.getOrientation(facing).getOpposite());
 	}
@@ -488,5 +500,23 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return true;
+	}
+
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {fluidTank};
 	}
 }

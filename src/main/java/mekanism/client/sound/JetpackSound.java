@@ -4,45 +4,31 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemJetpack;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class JetpackSound extends PlayerSound
 {
-	public JetpackSound(String id, EntityPlayer entity)
+	public JetpackSound(EntityPlayer player)
 	{
-		super(id, "Jetpack.ogg", entity);
+		super(player, new ResourceLocation("mekanism", "item.jetpack"));
+		
+		setFadeIn(10);
+		setFadeOut(5);
 	}
 
 	@Override
-	public boolean update(World world)
+	public boolean isDonePlaying()
 	{
-		if(!super.update(world))
-		{
-			return false;
-		}
-		else if(!hasJetpack(player))
-		{
-			return false;
-		}
-		else {
-			if(ClientTickHandler.isJetpackOn(player) != isPlaying)
-			{
-				if(ClientTickHandler.isJetpackOn(player))
-				{
-					play();
-				}
-				else {
-					stopLoop();
-				}
-			}
-		}
+		return donePlaying;
+	}
 
-		if(isPlaying)
-		{
-			ticksSincePlay++;
-		}
-
-		return true;
+	@Override
+	public boolean shouldPlaySound()
+	{
+		return hasJetpack(player) && ClientTickHandler.isJetpackOn(player);
 	}
 
 	private boolean hasJetpack(EntityPlayer player)

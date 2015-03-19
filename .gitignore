@@ -12,6 +12,9 @@ MDK.zip
 *.classpath
 *.project
 /.settings
+/eclipse
+gradlew
+*.txt
 
 *.mtl
 *.blend1

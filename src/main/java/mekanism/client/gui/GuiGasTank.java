@@ -2,6 +2,8 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mekanism.api.Coord4D;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -10,11 +12,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
@@ -24,7 +22,7 @@ public class GuiGasTank extends GuiMekanism
 
 	public GuiGasTank(InventoryPlayer inventory, TileEntityGasTank tentity)
 	{
-		super(new ContainerGasTank(inventory, tentity));
+		super(tentity, new ContainerGasTank(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiGasTank.png")));
 	}
@@ -39,7 +37,7 @@ public class GuiGasTank extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize / 2) - (fontRendererObj.getStringWidth(tileEntity.getInventoryName()) / 2), 6, 0x404040);
 		fontRendererObj.drawString(capacityInfo, 45, 40, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() : MekanismUtils.localize("gui.none")), 45, 49, 0x404040);
+		renderScaledText(MekanismUtils.localize("gui.gas") + ": " + (tileEntity.gasTank.getGas() != null ? tileEntity.gasTank.getGas().getGas().getLocalizedName() : MekanismUtils.localize("gui.none")), 45, 49, 0x404040, 112);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		String name = chooseByMode(tileEntity.dumping, MekanismUtils.localize("gui.idle"), MekanismUtils.localize("gui.dumping"), MekanismUtils.localize("gui.dumping_excess"));
@@ -94,14 +92,15 @@ public class GuiGasTank extends GuiMekanism
 		{
 			return idleOption;
 		}
-		if(dumping.equals(TileEntityGasTank.Mode.DUMPING))
+		else if(dumping.equals(TileEntityGasTank.Mode.DUMPING))
 		{
 			return dumpingOption;
 		}
-		if(dumping.equals(TileEntityGasTank.Mode.DUMPING_EXCESS))
+		else if(dumping.equals(TileEntityGasTank.Mode.DUMPING_EXCESS))
 		{
 			return dumpingExcessOption;
 		}
+		
 		return idleOption; //should not happen;
 	}
 }

@@ -2,47 +2,19 @@ package mekanism.common.tile;
 
 import java.util.Map;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.CrusherRecipe;
 
-public class TileEntityCrusher extends TileEntityElectricMachine
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+public class TileEntityCrusher extends TileEntityElectricMachine<CrusherRecipe>
 {
-	public float crushMatrix = 0;
-
 	public TileEntityCrusher()
 	{
-		super("Crusher.ogg", "Crusher", Mekanism.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
-	}
-
-	@Override
-	public void onUpdate()
-	{
-		super.onUpdate();
-
-		if(worldObj.isRemote)
-		{
-			if(crushMatrix < 6)
-			{
-				crushMatrix+=0.2F;
-			}
-			else {
-				crushMatrix = 0;
-			}
-		}
-	}
-
-	public float getMatrix()
-	{
-		float matrix = 0;
-
-		if(crushMatrix <= 3)
-		{
-			return crushMatrix;
-		}
-		else {
-			return 3 - (crushMatrix-3);
-		}
+		super("crusher", "Crusher", usage.crusherUsage, 200, MachineType.CRUSHER.baseEnergy);
 	}
 
 	@Override
@@ -52,7 +24,8 @@ public class TileEntityCrusher extends TileEntityElectricMachine
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	@SideOnly(Side.CLIENT)
+	public float getVolume()
 	{
 		return 0.5F;
 	}

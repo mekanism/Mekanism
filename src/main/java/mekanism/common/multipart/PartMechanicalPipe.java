@@ -32,7 +32,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 
-	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 1);
+	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 2);
 
 	public float currentScale;
 
@@ -202,7 +202,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	{
 		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced",
 				"MechanicalPipeElite", "MechanicalPipeUltimate"});
-		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeSide"});
+		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVertical", "MechanicalPipeHorizontal"});
 	}
 
 	@Override
@@ -215,6 +215,12 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	public IIcon getSideIcon()
 	{
 		return pipeIcons.getSideIcon(0);
+	}
+
+	@Override
+	public IIcon getSideIconRotated()
+	{
+		return pipeIcons.getSideIcon(1);
 	}
 
 	@Override

@@ -1,17 +1,17 @@
 package mekanism.client.nei;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-import mekanism.api.ListUtils;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiChemicalInjectionChamber;
-import mekanism.client.gui.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.InjectionRecipe;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -36,9 +36,9 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 	}
 
 	@Override
-	public Set getRecipes()
+	public Collection<InjectionRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_INJECTION_CHAMBER.get().entrySet();
+		return Recipe.CHEMICAL_INJECTION_CHAMBER.get().values();
 	}
 
 	@Override

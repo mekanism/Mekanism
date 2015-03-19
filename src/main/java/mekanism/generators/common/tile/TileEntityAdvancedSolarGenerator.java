@@ -4,9 +4,9 @@ import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
-import mekanism.common.IBoundingBlock;
+import mekanism.api.MekanismConfig.generators;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -14,8 +14,8 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 {
 	public TileEntityAdvancedSolarGenerator()
 	{
-		super("AdvancedSolarGenerator", 200000, MekanismGenerators.advancedSolarGeneration*2);
-		GENERATION_RATE = MekanismGenerators.advancedSolarGeneration;
+		super("AdvancedSolarGenerator", 200000, generators.advancedSolarGeneration*2);
+		GENERATION_RATE = generators.advancedSolarGeneration;
 	}
 
 	@Override

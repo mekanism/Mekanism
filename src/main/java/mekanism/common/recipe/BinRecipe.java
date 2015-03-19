@@ -1,6 +1,6 @@
 package mekanism.common.recipe;
 
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.item.ItemProxy;
@@ -17,7 +17,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 public class BinRecipe implements IRecipe
 {
 	private static boolean registered;
-
+	
 	public BinRecipe()
 	{
 		if(!registered)
@@ -165,7 +165,7 @@ public class BinRecipe implements IRecipe
 
 				if(testRemain != null && testRemain.stackSize > 0)
 				{
-					ItemStack proxy = new ItemStack(Mekanism.ItemProxy);
+					ItemStack proxy = new ItemStack(MekanismItems.ItemProxy);
 					((ItemProxy)proxy.getItem()).setSavedItem(proxy, testRemain.copy());
 					event.craftMatrix.setInventorySlotContents(other, proxy);
 				}

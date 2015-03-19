@@ -5,11 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mekanism.common.IInvConfiguration;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.common.SideData;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.TileEntityContainerBlock;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -25,6 +26,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 	private TileEntityContainerBlock tileEntity;
 
+	//Try not to use
 	public GuiMekanism(Container container)
 	{
 		super(container);
@@ -34,6 +36,28 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		super(container);
 		tileEntity = tile;
+	}
+	
+	public void renderScaledText(String text, int x, int y, int color, int maxX)
+	{
+		int length = fontRendererObj.getStringWidth(text);
+		
+		if(length <= maxX)
+		{
+			fontRendererObj.drawString(text, x, y, color);
+		}
+		else {
+			float scale = (float)maxX/length;
+			float reverse = 1/scale;
+			float yAdd = 4-(scale*8)/2F;
+			
+			GL11.glPushMatrix();
+			
+			GL11.glScalef(scale, scale, scale);
+			fontRendererObj.drawString(text, (int)(x*reverse), (int)((y*reverse)+yAdd), color);
+			
+			GL11.glPopMatrix();
+		}
 	}
 
 	@Override
@@ -49,7 +73,7 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 			element.renderForeground(xAxis, yAxis);
 		}
 
-		if(tileEntity instanceof IInvConfiguration)
+		if(tileEntity instanceof ISideConfiguration)
 		{
 			Slot hovering = null;
 
@@ -72,19 +96,24 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 
 				if(data != null)
 				{
-					drawCreativeTabHoveringText(data.color.getName(), xAxis, yAxis);
+					drawCreativeTabHoveringText(data.color + data.localize() + " (" + data.color.getName() + ")", xAxis, yAxis);
 				}
 			}
 		}
+	}
+	
+	public TileEntityContainerBlock getTileEntity()
+	{
+		return tileEntity;
 	}
 
 	private SideData getFromSlot(Slot slot)
 	{
 		if(slot.slotNumber < tileEntity.getSizeInventory())
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			for(SideData data : config.getSideData())
+			for(SideData data : config.getConfig().getOutputs(TransmissionType.ITEM))
 			{
 				for(int id : data.availableSlots)
 				{
@@ -180,6 +209,34 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	public FontRenderer getFont()
 	{
 		return fontRendererObj;
+	}
+	
+	@Override
+	protected void mouseClickMove(int mouseX, int mouseY, int button, long ticks)
+	{
+		super.mouseClickMove(mouseX, mouseY, button, ticks);
+
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		for(GuiElement element : guiElements)
+		{
+			element.mouseClickMove(xAxis, yAxis, button, ticks);
+		}
+	}
+
+	@Override
+	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
+	{
+		super.mouseMovedOrUp(mouseX, mouseY, type);
+		
+		int xAxis = (mouseX - (width - xSize) / 2);
+		int yAxis = (mouseY - (height - ySize) / 2);
+
+		for(GuiElement element : guiElements)
+		{
+			element.mouseMovedOrUp(xAxis, yAxis, type);
+		}
 	}
 	
 	public void handleMouse(Slot slot, int slotIndex, int button, int modifier)

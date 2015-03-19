@@ -15,16 +15,18 @@ public class StatUtils
 
 	public static int inversePoisson(double mean)
 	{
-		double r = rand.nextDouble() * exp(mean);
+		double r = rand.nextDouble()*exp(mean);
 		int m = 0;
 		double p = 1;
-		double stirlingValue = mean * E;
-		double stirlingCoeff = 1 / sqrt(2 * PI);
-		while ((p < r) && (m < 3*ceil(mean)))
+		double stirlingValue = mean*E;
+		double stirlingCoeff = 1/sqrt(2*PI);
+		
+		while((p < r) && (m < 3*ceil(mean)))
 		{
-			m ++;
-			p += stirlingCoeff/sqrt(m) * pow((stirlingValue/m), m);
+			m++;
+			p += stirlingCoeff/sqrt(m)*pow((stirlingValue/m), m);
 		}
+		
 		return m;
 	}
 }

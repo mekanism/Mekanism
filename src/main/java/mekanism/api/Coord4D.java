@@ -1,8 +1,13 @@
 package mekanism.api;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -12,8 +17,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes
@@ -42,6 +45,19 @@ public class Coord4D
 		zCoord = z;
 
 		dimensionId = 0;
+	}
+	
+	/**
+	 * Creates a Coord4D from an entity's position, rounded down.
+	 * @param entity - entity to create the Coord4D from
+	 */
+	public Coord4D(Entity entity)
+	{
+		xCoord = (int)entity.posX;
+		yCoord = (int)entity.posY;
+		zCoord = (int)entity.posZ;
+		
+		dimensionId = entity.worldObj.provider.dimensionId;
 	}
 
 	/**
@@ -165,9 +181,27 @@ public class Coord4D
 		return getFromSide(side, 1);
 	}
 
+	/**
+	 * Creates and returns a new Coord4D translated to the defined offsets of the side by the defined amount.
+	 * @param side - side to translate this Coord4D to
+	 * @param amount - how far to translate this Coord4D
+	 * @return translated Coord4D
+	 */
 	public Coord4D getFromSide(ForgeDirection side, int amount)
 	{
 		return new Coord4D(xCoord+(side.offsetX*amount), yCoord+(side.offsetY*amount), zCoord+(side.offsetZ*amount), dimensionId);
+	}
+	
+	public ItemStack getStack(IBlockAccess world)
+	{
+		Block block = getBlock(world);
+		
+		if(block == null || block == Blocks.air)
+		{
+			return null;
+		}
+		
+		return new ItemStack(block, 1, getMetadata(world));
 	}
 
 	/**
@@ -312,6 +346,16 @@ public class Coord4D
 	public boolean isAirBlock(IBlockAccess world)
 	{
 		return world.isAirBlock(xCoord, yCoord, zCoord);
+	}
+	
+	/**
+	 * Whether or not this block this Coord4D represents is replaceable.
+	 * @param world - world this Coord4D is in
+	 * @return if this Coord4D is replaceable
+	 */
+	public boolean isReplaceable(IBlockAccess world)
+	{
+		return getBlock(world).isReplaceable(world, xCoord, yCoord, zCoord);
 	}
 	
 	/**

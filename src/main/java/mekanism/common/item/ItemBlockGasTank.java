@@ -9,8 +9,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ISustainedInventory;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +36,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	public int MAX_GAS = 96000;
 
 	/** How fast this tank can transfer gas. */
-	public static final int TRANSFER_RATE = 16;
+	public static final int TRANSFER_RATE = 256;
 
 	public ItemBlockGasTank(Block block)
 	{

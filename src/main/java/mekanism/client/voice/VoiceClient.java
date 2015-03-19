@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 
 import cpw.mods.fml.relauncher.Side;
@@ -42,7 +43,7 @@ public class VoiceClient extends Thread
 		Mekanism.logger.info("VoiceServer: Starting client connection...");
 
 		try {
-			socket = new Socket(ip, Mekanism.VOICE_PORT);
+			socket = new Socket(ip, general.VOICE_PORT);
 			running = true;
 
 			input = new DataInputStream(new BufferedInputStream(socket.getInputStream()));

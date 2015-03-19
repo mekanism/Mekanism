@@ -2,9 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import mekanism.common.Mekanism;
 import mekanism.common.Resource;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -19,7 +17,6 @@ public class ItemShard extends ItemMekanism
 	{
 		super();
 		setHasSubtypes(true);
-		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override

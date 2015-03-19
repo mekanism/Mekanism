@@ -14,7 +14,6 @@ public class GuiGeneratorsConfig extends GuiConfig
 	public GuiGeneratorsConfig(GuiScreen parent)
 	{
 		super(parent, new ConfigElement(Mekanism.configuration.getCategory("generation")).getChildElements(),
-				"MekanismGenerators", false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+				"MekanismGenerators", false, false, "MekanismGenerators");
 	}
-
 }

@@ -7,8 +7,8 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tank.TankUpdateProtocol;
-import mekanism.common.tile.TileEntitySalinationController;
+import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -29,12 +29,12 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 	@Override
 	public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float partialTick)
 	{
-		renderAModelAt((TileEntitySalinationController)tileEntity, x, y, z, partialTick);
+		renderAModelAt((TileEntitySolarEvaporationController)tileEntity, x, y, z, partialTick);
 	}
 
-	public void renderAModelAt(TileEntitySalinationController tileEntity, double x, double y, double z, float partialTick)
+	public void renderAModelAt(TileEntitySolarEvaporationController tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.structured && tileEntity.waterTank.getFluid() != null)
+		if(tileEntity.structured && tileEntity.inputTank.getFluid() != null)
 		{
 			SalinationRenderData data = new SalinationRenderData();
 
@@ -42,8 +42,8 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			data.side = ForgeDirection.getOrientation(tileEntity.facing);
 
 			bindTexture(MekanismRenderer.getBlocksTexture());
-
-			if(data.height >= 2 && tileEntity.waterTank.getCapacity() > 0)
+			
+			if(data.height >= 1 && tileEntity.inputTank.getCapacity() > 0)
 			{
 				Coord4D renderLoc = tileEntity.getRenderLocation();
 
@@ -51,10 +51,10 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 
 				GL11.glTranslated(getX(renderLoc.xCoord), getY(renderLoc.yCoord), getZ(renderLoc.zCoord));
 
-				MekanismRenderer.glowOn(tileEntity.waterTank.getFluid().getFluid().getLuminosity());
+				MekanismRenderer.glowOn(tileEntity.inputTank.getFluid().getFluid().getLuminosity());
 
-				DisplayInteger[] displayList = getListAndRender(data, tileEntity.waterTank.getFluid().getFluid());
-				displayList[(int)(((float)tileEntity.waterTank.getFluidAmount()/tileEntity.waterTank.getCapacity())*((float)getStages(data.height)-1))].render();
+				DisplayInteger[] displayList = getListAndRender(data, tileEntity.inputTank.getFluid().getFluid());
+				displayList[(int)(((float)tileEntity.inputTank.getFluidAmount()/tileEntity.inputTank.getCapacity())*((float)getStages(data.height)-1))].render();
 
 				MekanismRenderer.glowOff();
 
@@ -202,5 +202,10 @@ public class RenderSalinationController extends TileEntitySpecialRenderer
 			return data instanceof SalinationRenderData && ((SalinationRenderData)data).height == height &&
 					((SalinationRenderData)data).side == side;
 		}
+	}
+
+	public static void resetDisplayInts()
+	{
+		cachedCenterFluids.clear();
 	}
 }

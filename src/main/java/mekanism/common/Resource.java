@@ -8,7 +8,6 @@ public enum Resource
 	COPPER("Copper"),
 	TIN("Tin"),
 	SILVER("Silver"),
-	OBSIDIAN("Obsidian"),
 	LEAD("Lead");
 
 	private String name;

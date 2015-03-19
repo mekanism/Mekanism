@@ -24,7 +24,7 @@ import codechicken.lib.vec.Vector3;
 
 public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements IGasHandler
 {
-	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 1);
+	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 2);
 
 	public float currentScale;
 
@@ -58,6 +58,27 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 					MekanismUtils.saveChunk(tile());
 				}
 			}
+
+			IGasHandler[] connectedAcceptors = GasTransmission.getConnectedAcceptors(tile());
+
+			for(ForgeDirection side : getConnections(ConnectionType.PULL))
+			{
+				if(connectedAcceptors[side.ordinal()] != null)
+				{
+					IGasHandler container = connectedAcceptors[side.ordinal()];
+
+					if(container != null)
+					{
+						GasStack received = container.drawGas(side.getOpposite(), 100, false);
+
+						if(received != null && received.amount != 0)
+						{
+							container.drawGas(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
+						}
+					}
+				}
+			}
+
 		}
 		else {
 			float targetScale = getTransmitterNetwork().gasScale;
@@ -179,7 +200,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	public static void registerIcons(IIconRegister register)
 	{
 		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
-		tubeIcons.registerSideIcons(register, new String[] {"TransmitterSideSmall"});
+		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVertical", "SmallTransmitterHorizontal"});
 	}
 
 	@Override
@@ -192,6 +213,12 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	public IIcon getSideIcon()
 	{
 		return tubeIcons.getSideIcon(0);
+	}
+
+	@Override
+	public IIcon getSideIconRotated()
+	{
+		return tubeIcons.getSideIcon(1);
 	}
 
 	@Override
@@ -259,18 +286,18 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack) 
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL)
 		{
-			return getTransmitterNetwork().emit(stack);
+			return getTransmitterNetwork().emit(stack, doTransfer);
 		}
 		
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount) 
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

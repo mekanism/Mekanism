@@ -2,9 +2,9 @@ package mekanism.common.network;
 
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.common.IElectricChest;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.IElectricChest;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.InventoryElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
@@ -103,7 +103,7 @@ public class PacketElectricChest implements IMessageHandler<ElectricChestMessage
 				{
 					TileEntityElectricChest tileEntity = (TileEntityElectricChest)message.coord4D.getTileEntity(player.worldObj);
 					tileEntity.locked = message.locked;
-					player.worldObj.notifyBlocksOfNeighborChange(message.coord4D.xCoord,message.coord4D.yCoord,message.coord4D.zCoord,Mekanism.MachineBlock);
+					player.worldObj.notifyBlocksOfNeighborChange(message.coord4D.xCoord, message.coord4D.yCoord, message.coord4D.zCoord, tileEntity.getBlockType());
 				}
 				else {
 					ItemStack stack = player.getCurrentEquippedItem();

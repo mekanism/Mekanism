@@ -1,16 +1,31 @@
 package mekanism.common.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.Tier.InductionCellTier;
+import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBin;
-
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -32,13 +47,17 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Salination Controller
- * 0:15: Salination Valve
- * 1:0: Salination Block
+ * 0:14: Solar Evaporation Controller
+ * 0:15: Solar Evaporation Valve
+ * 1:0: Solar Evaporation Block
+ * 1:1: Induction Casing
+ * 1:2: Induction Port
+ * 1:3: Induction Cell
+ * 1:4: Induction Provider
  * @author AidanBrady
  *
  */
-public class ItemBlockBasic extends ItemBlock
+public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 {
 	public Block metaBlock;
 
@@ -48,19 +67,39 @@ public class ItemBlockBasic extends ItemBlock
 		metaBlock = block;
 		setHasSubtypes(true);
 	}
-
-	@Override
-	public int getItemStackLimit(ItemStack stack)
+	
+	public ItemStack getUnchargedCell(InductionCellTier tier)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
+		setTier(stack, tier.getBaseTier());
+		return stack;
+	}
+	
+	public ItemStack getUnchargedProvider(InductionProviderTier tier)
+	{
+		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 4);
+		setTier(stack, tier.getBaseTier());
+		return stack;
+	}
+	
+	public BaseTier getTier(ItemStack itemstack)
+	{
+		if(itemstack.stackTagCompound == null)
 		{
-			if(stack.getItemDamage() == 6)
-			{
-				return 1;
-			}
+			return BaseTier.BASIC;
 		}
 
-		return 64;
+		return BaseTier.values()[itemstack.stackTagCompound.getInteger("tier")];
+	}
+
+	public void setTier(ItemStack itemstack, BaseTier tier)
+	{
+		if(itemstack.stackTagCompound == null)
+		{
+			itemstack.setTagCompound(new NBTTagCompound());
+		}
+
+		itemstack.stackTagCompound.setInteger("tier", tier.ordinal());
 	}
 
 	@Override
@@ -79,7 +118,7 @@ public class ItemBlockBasic extends ItemBlock
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock && itemstack.getItemDamage() == 6)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && itemstack.getItemDamage() == 6)
 		{
 			InventoryBin inv = new InventoryBin(itemstack);
 
@@ -92,6 +131,26 @@ public class ItemBlockBasic extends ItemBlock
 				list.add(EnumColor.DARK_RED + "Empty");
 			}
 		}
+		else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
+		{
+			if(itemstack.getItemDamage() == 3)
+			{
+				InductionCellTier tier = InductionCellTier.values()[getTier(itemstack).ordinal()];
+				
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.MAX_ELECTRICITY));
+			}
+			else if(itemstack.getItemDamage() == 4)
+			{
+				InductionProviderTier tier = InductionProviderTier.values()[getTier(itemstack).ordinal()];
+				
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.OUTPUT));
+			}
+		}
+		
+		if(getMaxEnergy(itemstack) > 0)
+		{
+			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+		}
 	}
 
 	@Override
@@ -103,7 +162,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public boolean doesContainerItemLeaveCraftingGrid(ItemStack stack)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			if(stack.getItemDamage() != 6)
 			{
@@ -122,7 +181,7 @@ public class ItemBlockBasic extends ItemBlock
 	@Override
 	public ItemStack getContainerItem(ItemStack stack)
 	{
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			if(stack.getItemDamage() != 6 || stack.stackTagCompound == null || !stack.stackTagCompound.hasKey("newCount"))
 			{
@@ -143,7 +202,7 @@ public class ItemBlockBasic extends ItemBlock
 
 		if(place)
 		{
-			if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+			if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 			{
 				if(stack.getItemDamage() == 6 && stack.stackTagCompound != null)
 				{
@@ -158,6 +217,36 @@ public class ItemBlockBasic extends ItemBlock
 					tileEntity.setItemCount(inv.getItemCount());
 				}
 			}
+			else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
+			{
+				if(stack.getItemDamage() == 3)
+				{
+					TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+					tileEntity.tier = InductionCellTier.values()[getTier(stack).ordinal()];
+					
+					if(!world.isRemote)
+					{
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					}
+				}
+				else if(stack.getItemDamage() == 4)
+				{
+					TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+					tileEntity.tier = InductionProviderTier.values()[getTier(stack).ordinal()];
+					
+					if(!world.isRemote)
+					{
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					}
+				}
+			}
+			
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+			
+			if(tileEntity instanceof IStrictEnergyStorage)
+			{
+				((IStrictEnergyStorage)tileEntity).setEnergy(getEnergy(stack));
+			}
 		}
 
 		return place;
@@ -168,7 +257,7 @@ public class ItemBlockBasic extends ItemBlock
 	{
 		String name = "";
 
-		if(Block.getBlockFromItem(this) == Mekanism.BasicBlock)
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock)
 		{
 			switch(itemstack.getItemDamage())
 			{
@@ -215,26 +304,103 @@ public class ItemBlockBasic extends ItemBlock
 					name = "TinBlock";
 					break;
 				case 14:
-					name = "SalinationController";
+					name = "SolarEvaporationController";
 					break;
 				case 15:
-					name = "SalinationValve";
+					name = "SolarEvaporationValve";
 					break;
 				default:
 					name = "Unknown";
 					break;
 			}
 		}
-		else if(Block.getBlockFromItem(this) == Mekanism.BasicBlock2)
+		else if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2)
 		{
 			switch(itemstack.getItemDamage())
 			{
 				case 0:
-					name = "SalinationBlock";
+					name = "SolarEvaporationBlock";
+					break;
+				case 1:
+					name = "InductionCasing";
+					break;
+				case 2:
+					name = "InductionPort";
+					break;
+				case 3:
+					name = "InductionCell" + getTier(itemstack).getName();
+					break;
+				case 4:
+					name = "InductionProvider" + getTier(itemstack).getName();
 					break;
 			}
 		}
 
 		return getUnlocalizedName() + "." + name;
+	}
+	
+	@Override
+	public double getEnergy(ItemStack itemStack)
+	{
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
+		{
+			if(itemStack.stackTagCompound == null)
+			{
+				return 0;
+			}
+	
+			return itemStack.stackTagCompound.getDouble("energyStored");
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public void setEnergy(ItemStack itemStack, double amount)
+	{
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
+		{
+			if(itemStack.stackTagCompound == null)
+			{
+				itemStack.setTagCompound(new NBTTagCompound());
+			}
+	
+			itemStack.stackTagCompound.setDouble("energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+		}
+	}
+
+	@Override
+	public double getMaxEnergy(ItemStack itemStack)
+	{
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
+		{
+			return InductionCellTier.values()[getTier(itemStack).ordinal()].MAX_ELECTRICITY;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public double getMaxTransfer(ItemStack itemStack)
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean canReceive(ItemStack itemStack)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean canSend(ItemStack itemStack)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isMetadataSpecific(ItemStack itemStack) 
+	{
+		return true;
 	}
 }

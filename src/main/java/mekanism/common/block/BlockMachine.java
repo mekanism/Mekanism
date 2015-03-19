@@ -1,30 +1,42 @@
 package mekanism.common.block;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.client;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.machines;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.ClientProxy;
-import mekanism.common.IActiveState;
-import mekanism.common.IBoundingBlock;
-import mekanism.common.IElectricChest;
-import mekanism.common.IFactory;
-import mekanism.common.IFactory.RecipeType;
-import mekanism.common.IInvConfiguration;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISpecialBounds;
-import mekanism.common.ISustainedData;
-import mekanism.common.ISustainedInventory;
-import mekanism.common.ISustainedTank;
-import mekanism.common.IUpgradeManagement;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IElectricChest;
+import mekanism.common.base.IFactory;
+import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ISpecialBounds;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ISustainedInventory;
+import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.IUpgradeTile;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
+import mekanism.common.recipe.MekanismRecipe;
 import mekanism.common.tile.TileEntityAdvancedFactory;
+import mekanism.common.tile.TileEntityAmbientAccumulator;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -37,17 +49,21 @@ import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEliteFactory;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityEntangledBlock;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
+import mekanism.common.tile.TileEntityLaser;
+import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.TileEntityLaserTractorBeam;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import mekanism.common.tile.TileEntityPRC;
 import mekanism.common.tile.TileEntityPortableTank;
@@ -55,14 +71,15 @@ import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
+import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,21 +90,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 
@@ -121,6 +140,15 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  * 1:9: Seismic Vibrator
  * 1:10: Pressurized Reaction Chamber
  * 1:11: Portable Tank
+ * 1:12: Fluidic Plenisher
+ * 1:13: Laser
+ * 1:14: Laser Amplifier
+ * 1:15: Laser Tractor Beam
+ * 2:0: Entangled Block
+ * 2:1: Solar Neutron Activator
+ * 2:2: Ambient Accumulator
+ * 2:3: Oredictionificator
+ * 
  * @author AidanBrady
  *
  */
@@ -128,65 +156,72 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
 	public IIcon[][] icons = new IIcon[16][16];
-	public Random machineRand = new Random();
 
-	public BlockMachine()
+	public MachineBlock blockType;
+
+	public BlockMachine(MachineBlock type)
 	{
 		super(Material.iron);
 		setHardness(3.5F);
-		setResistance(8F);
+		setResistance(16F);
 		setCreativeTab(Mekanism.tabMekanism);
+		blockType = type;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == Mekanism.MachineBlock)
+		switch(blockType)
 		{
-			icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
-			icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
-			icons[0][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
-			icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
-			icons[1][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
-			icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
-			icons[2][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
-			icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
-			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
-			icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
-			icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
-			icons[6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
-			icons[6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
-			icons[6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
-			icons[7][0] = register.registerIcon("mekanism:EliteFactoryFront");
-			icons[7][1] = register.registerIcon("mekanism:EliteFactorySide");
-			icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
-			icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
-			icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
-			icons[9][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
-			icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
-			icons[10][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[11][0] = register.registerIcon("mekanism:Teleporter");
+			case MACHINE_BLOCK_1:
+				icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
+				icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
+				icons[0][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
+				icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
+				icons[1][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
+				icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
+				icons[2][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
+				icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
+				icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
+				icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
+				icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
+				icons[6][0] = register.registerIcon("mekanism:AdvancedFactoryFront");
+				icons[6][1] = register.registerIcon("mekanism:AdvancedFactorySide");
+				icons[6][2] = register.registerIcon("mekanism:AdvancedFactoryTop");
+				icons[7][0] = register.registerIcon("mekanism:EliteFactoryFront");
+				icons[7][1] = register.registerIcon("mekanism:EliteFactorySide");
+				icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
+				icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
+				icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
+				icons[9][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
+				icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
+				icons[10][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[11][0] = register.registerIcon("mekanism:Teleporter");
+				break;
+			case MACHINE_BLOCK_2:
+				icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
+				icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
+				icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
+				icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
+				icons[5][2] = register.registerIcon("mekanism:SteelCasing");
+				break;
+			case MACHINE_BLOCK_3:
+				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
+				icons[2][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[3][0] = register.registerIcon("mekanism:OredictionificatorBack");
+				icons[3][1] = register.registerIcon("mekanism:OredictionificatorFront");
+				icons[3][2] = register.registerIcon("mekanism:OredictionificatorPort");
+				icons[3][3] = register.registerIcon("mekanism:OredictionificatorSide");
+				break;
 		}
-		else if(this == Mekanism.MachineBlock2)
-		{
-			icons[2][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
-			icons[2][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-			icons[2][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
-			icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-			icons[3][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
-			icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
-			icons[5][2] = register.registerIcon("mekanism:SteelCasing");
-			icons[9][0] = register.registerIcon("mekanism:SteelBlock");
-			icons[9][1] = register.registerIcon("mekanism:SeismicVibrator");
-		}
+
 	}
 
 	@Override
@@ -243,6 +278,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				}
 			}
 		}
+		else if(tileEntity instanceof TileEntityTeleporter)
+		{
+			TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
+			teleporter.owner = entityliving.getCommandSenderName();
+		}
 
 		tileEntity.setFacing((short)change);
 		tileEntity.redstone = world.isBlockIndirectlyGettingPowered(x, y, z);
@@ -272,7 +312,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && Mekanism.machineEffects)
+		if(MekanismUtils.isActive(world, x, y, z) && ((IActiveState)tileEntity).renderUpdate() && client.machineEffects)
 		{
 			float xRandom = (float)x + 0.5F;
 			float yRandom = (float)y + 0.0F + random.nextFloat() * 6.0F / 16.0F;
@@ -313,13 +353,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-		if(Mekanism.machineEffects && tileEntity instanceof IActiveState)
+		if(general.enableAmbientLighting)
 		{
-			if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
+	
+			if(tileEntity instanceof IActiveState)
 			{
-				return 15;
+				if(((IActiveState)tileEntity).getActive() && ((IActiveState)tileEntity).lightUpdate())
+				{
+					return general.ambientLightingLevel;
+				}
 			}
 		}
 
@@ -330,282 +373,163 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(this == Mekanism.MachineBlock)
+		switch(blockType)
 		{
-			if(meta == 0)
-			{
-				if(side == 3)
+			case MACHINE_BLOCK_1:
+				switch(meta)
 				{
-					return icons[0][0];
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 9:
+					case 10:
+						if(side == 3)
+						{
+							return icons[meta][0];
+						}
+						else {
+							return icons[meta][2];
+						}
+					case 5:
+					case 6:
+					case 7:
+						if(side == 3)
+						{
+							return icons[meta][0];
+						} 
+						else if(side == 0 || side == 1)
+						{
+							return icons[meta][2];
+						} 
+						else {
+							return icons[meta][1];
+						}
+					default:
+						return icons[11][0];
 				}
-				else {
-					return icons[0][2];
-				}
-			}
-			else if(meta == 1)
-			{
-				if(side == 3)
+			case MACHINE_BLOCK_2:
+				switch(meta)
 				{
-					return icons[1][0];
+					case 3:
+					case 5:
+						if(side == 3)
+						{
+							return icons[meta][0];
+						} 
+						else {
+							return icons[meta][2];
+						}
+					default:
+						return icons[meta][0];
 				}
-				else {
-					return icons[1][2];
-				}
-			}
-			else if(meta == 2)
-			{
-				if(side == 3)
+			case MACHINE_BLOCK_3:
+				switch(meta)
 				{
-					return icons[2][0];
+					default:
+						return icons[meta][0];
+					case 3:
+						if(side == 3)
+						{
+							return icons[3][1];
+						}
+						else if(side == 4 || side == 5)
+						{
+							return icons[3][2];
+						}
+						else if(side == 2)
+						{
+							return icons[3][0];
+						}
+						else {
+							return icons[3][3];
+						}
 				}
-				else {
-					return icons[2][2];
-				}
-			}
-			else if(meta == 3)
-			{
-				if(side == 3)
-				{
-					return icons[3][0];
-				}
-				else {
-					return icons[3][2];
-				}
-			}
-			else if(meta == 5)
-			{
-				if(side == 3)
-				{
-					return icons[5][0];
-				}
-				else if(side == 0 || side == 1)
-				{
-					return icons[5][2];
-				}
-				else {
-					return icons[5][1];
-				}
-			}
-			else if(meta == 6)
-			{
-				if(side == 3)
-				{
-					return icons[6][0];
-				}
-				else if(side == 0 || side == 1)
-				{
-					return icons[6][2];
-				}
-				else {
-					return icons[6][1];
-				}
-			}
-			else if(meta == 7)
-			{
-				if(side == 3)
-				{
-					return icons[7][0];
-				}
-				else if(side == 0 || side == 1)
-				{
-					return icons[7][2];
-				}
-				else {
-					return icons[7][1];
-				}
-			}
-			else if(meta == 9)
-			{
-				if(side == 3)
-				{
-					return icons[9][0];
-				}
-				else {
-					return icons[9][2];
-				}
-			}
-			else if(meta == 10)
-			{
-				if(side == 3)
-				{
-					return icons[10][0];
-				}
-				else {
-					return icons[10][2];
-				}
-			}
-			else if(meta == 11)
-			{
-				return icons[11][0];
-			}
+			default:
+				return null;
 		}
-		else if(this == Mekanism.MachineBlock2)
-		{
-			if(meta == 3 || meta == 5)
-			{
-				if(side == 3)
-				{
-					return icons[meta][0];
-				}
-				else {
-					return icons[meta][2];
-				}
-			}
-			else if(meta == 9)
-			{
-				if(side == 3)
-				{
-					return icons[meta][1];
-				}
-				else {
-					return icons[meta][0];
-				}
-			}
-		}
-
-		return null;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		int meta = world.getBlockMetadata(x, y, z);
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-		if(this == Mekanism.MachineBlock)
+		switch(blockType)
 		{
-			if(metadata == 0)
-			{
-				if(side == tileEntity.facing)
+			case MACHINE_BLOCK_1:
+				switch(meta)
 				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[0][1] : icons[0][0];
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 9:
+					case 10:
+						if(side == tileEntity.facing)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
+						} 
+						else {
+							return icons[meta][2];
+						}
+					case 5:
+					case 6:
+					case 7:
+						if(side == tileEntity.facing)
+						{
+							return icons[meta][0];
+						} 
+						else if(side == 0 || side == 1)
+						{
+							return icons[meta][2];
+						} 
+						else {
+							return icons[meta][1];
+						}
+					default:
+						return icons[meta][0];
 				}
-				else {
-					return icons[0][2];
-				}
-			}
-			else if(metadata == 1)
-			{
-				if(side == tileEntity.facing)
+			case MACHINE_BLOCK_2:
+				switch(meta)
 				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[1][1] : icons[1][0];
+					case 3:
+					case 5:
+						if(side == tileEntity.facing)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
+						} 
+						else {
+							return icons[meta][2];
+						}
+					default:
+						return icons[meta][0];
 				}
-				else {
-					return icons[1][2];
-				}
-			}
-			else if(metadata == 2)
-			{
-				if(side == tileEntity.facing)
+			case MACHINE_BLOCK_3:
+				switch(meta)
 				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[2][1] : icons[2][0];
+					case 3:
+						if(side == tileEntity.facing)
+						{
+							return icons[3][1];
+						}
+						else if(side == MekanismUtils.getLeft(tileEntity.facing).ordinal() || side == MekanismUtils.getRight(tileEntity.facing).ordinal())
+						{
+							return icons[3][2];
+						}
+						else if(side == ForgeDirection.OPPOSITES[tileEntity.facing])
+						{
+							return icons[3][0];
+						}
+						else {
+							return icons[3][3];
+						}
+					default:
+						return icons[meta][0];
 				}
-				else {
-					return icons[2][2];
-				}
-			}
-			else if(metadata == 3)
-			{
-				if(side == tileEntity.facing)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[3][1] : icons[3][0];
-				}
-				else {
-					return icons[3][2];
-				}
-			}
-			else if(metadata == 5)
-			{
-				if(side == tileEntity.facing)
-				{
-					return icons[5][0];
-				}
-				else if(side == 0 || side == 1)
-				{
-					return icons[5][2];
-				}
-				else {
-					return icons[5][1];
-				}
-			}
-			else if(metadata == 6)
-			{
-				if(side == tileEntity.facing)
-				{
-					return icons[6][0];
-				}
-				else if(side == 0 || side == 1)
-				{
-					return icons[6][2];
-				}
-				else {
-					return icons[6][1];
-				}
-			}
-			else if(metadata == 7)
-			{
-				if(side == tileEntity.facing)
-				{
-					return icons[7][0];
-				}
-				else if(side == 0 || side == 1)
-				{
-					return icons[7][2];
-				}
-				else {
-					return icons[7][1];
-				}
-			}
-			else if(metadata == 9)
-			{
-				if(side == tileEntity.facing)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[9][1] : icons[9][0];
-				}
-				else {
-					return icons[9][2];
-				}
-			}
-			else if(metadata == 10)
-			{
-				if(side == tileEntity.facing)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[10][1] : icons[10][0];
-				}
-				else {
-					return icons[10][2];
-				}
-			}
-			else if(metadata == 11)
-			{
-				return icons[11][0];
-			}
 		}
-		else if(this == Mekanism.MachineBlock2)
-		{
-			if(metadata == 3 || metadata == 5)
-			{
-				if(side == tileEntity.facing)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[metadata][1] : icons[metadata][0];
-				}
-				else {
-					return icons[metadata][2];
-				}
-			}
-			else if(metadata == 9)
-			{
-				if(side == tileEntity.facing)
-				{
-					return icons[metadata][1];
-				}
-				else {
-					return icons[metadata][0];
-				}
-			}
-		}
-
 		return null;
 	}
 
@@ -619,21 +543,39 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		for(MachineType type : MachineType.values())
+		for(MachineType type : MachineType.getValidMachines())
 		{
-			if(type.typeBlock == this)
+			if(type.typeBlock == blockType && type.isEnabled())
 			{
-				if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
+				switch(type)
 				{
-					for(RecipeType recipe : RecipeType.values())
-					{
-						ItemStack stack = new ItemStack(item, 1, type.meta);
-						((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
-						list.add(stack);
-					}
-				}
-				else {
-					list.add(new ItemStack(item, 1, type.meta));
+					case BASIC_FACTORY:
+					case ADVANCED_FACTORY:
+					case ELITE_FACTORY:
+						for(RecipeType recipe : RecipeType.values())
+						{
+							ItemStack stack = new ItemStack(item, 1, type.meta);
+							((IFactory)stack.getItem()).setRecipeType(recipe.ordinal(), stack);
+							list.add(stack);
+						}
+						
+						break;
+					case PORTABLE_TANK:
+						list.add(new ItemStack(item, 1, type.meta));
+
+						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+
+						for(Fluid f : FluidRegistry.getRegisteredFluids().values())
+						{
+							ItemStack filled = new ItemStack(item, 1, type.meta);
+							itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
+							itemMachine.setPrevScale(filled, 1);
+							list.add(filled);
+						}
+						
+						break;
+					default:
+						list.add(new ItemStack(item, 1, type.meta));
 				}
 			}
 		}
@@ -661,14 +603,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 			if(MekanismUtils.hasUsableWrench(entityplayer, x, y, z))
 			{
-				if(entityplayer.isSneaking() && metadata != 13)
+				if(entityplayer.isSneaking() && MachineType.get(world.getBlock(x, y, z), metadata) != MachineType.ELECTRIC_CHEST)
 				{
 					dismantleBlock(world, x, y, z, false);
 					return true;
 				}
 
 				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
+				{
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
+				}
 
 				int change = ForgeDirection.ROTATION_MATRIX[ForgeDirection.UP.ordinal()][tileEntity.facing];
 
@@ -698,59 +642,76 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		if(tileEntity != null)
 		{
 			MachineType type = MachineType.get(this, metadata);
-			
-			if(type == MachineType.ELECTRIC_CHEST)
-			{
-				TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
 
-				if(!(entityplayer.isSneaking() || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN)))
-				{
-					if(electricChest.canAccess())
-					{
-						MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
-					}
-					else if(!electricChest.authenticated)
-					{
-						Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
-					}
-					else {
-						Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
-					}
-
-					return true;
-				}
-			}
-			else if(type == MachineType.PORTABLE_TANK)
+			switch(type)
 			{
-				if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
-				{
-					if(manageInventory(entityplayer, (TileEntityPortableTank)tileEntity))
+				case ELECTRIC_CHEST:
+					TileEntityElectricChest electricChest = (TileEntityElectricChest)tileEntity;
+
+					if(!(entityplayer.isSneaking() || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN)))
 					{
-						entityplayer.inventory.markDirty();
+						if(electricChest.canAccess())
+						{
+							MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
+						} 
+						else if(!electricChest.authenticated)
+						{
+							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 2, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+						} 
+						else {
+							Mekanism.packetHandler.sendTo(new ElectricChestMessage(ElectricChestPacketType.CLIENT_OPEN, true, false, 1, 0, null, Coord4D.get(electricChest)), (EntityPlayerMP)entityplayer);
+						}
+
 						return true;
 					}
-				}
-				else {
-					entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
-				}
-				
-				return true;
-			}
-			else if(type == MachineType.LOGISTICAL_SORTER)
-			{
-				TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter)tileEntity;
-				LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
-				return true;
-			}
-			else {
-				if(!entityplayer.isSneaking() && type.guiId != -1)
-				{
-					entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+					break;
+				case PORTABLE_TANK:
+					if(entityplayer.getCurrentEquippedItem() != null && FluidContainerRegistry.isContainer(entityplayer.getCurrentEquippedItem()))
+					{
+						if(manageInventory(entityplayer, (TileEntityPortableTank)tileEntity))
+						{
+							entityplayer.inventory.markDirty();
+							return true;
+						}
+					} 
+					else {
+						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+					}
+					
 					return true;
-				}
+				case LOGISTICAL_SORTER:
+					LogisticalSorterGuiMessage.openServerGui(SorterGuiPacket.SERVER, 0, world, (EntityPlayerMP)entityplayer, Coord4D.get(tileEntity), -1);
+					return true;
+				case TELEPORTER:
+					if(!entityplayer.isSneaking())
+					{
+						TileEntityTeleporter teleporter = (TileEntityTeleporter)tileEntity;
+						
+						if(teleporter.owner == null)
+						{
+							teleporter.owner = entityplayer.getCommandSenderName();
+						}
+						
+						if(teleporter.owner.equals(entityplayer.getCommandSenderName()) || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
+						{
+							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						}
+						else {
+							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("gui.teleporter.noAccess")));
+						}
+						
+						return true;
+					}
+				default:
+					if(!entityplayer.isSneaking() && type.guiId != -1)
+					{
+						entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
+						return true;
+					}
+					
+					return false;
 			}
 		}
-		
 		return false;
 	}
 
@@ -790,16 +751,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.MACHINE_RENDER_ID;
+		return Mekanism.proxy.MACHINE_RENDER_ID;
 	}
 
 	@Override
 	public float getBlockHardness(World world, int x, int y, int z)
 	{
-		if(world.getBlockMetadata(x, y, z) != 13)
+		if(MachineType.get(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
 		{
 			return blockHardness;
 		}
@@ -808,6 +768,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			return tileEntity.canAccess() ? 3.5F : -1;
 		}
 	}
+	
+	@Override
+	public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ)
+    {
+		if(MachineType.get(world.getBlock(x, y, z), world.getBlockMetadata(x, y, z)) != MachineType.ELECTRIC_CHEST)
+		{
+			return blockResistance;
+		}
+		else {
+			TileEntityElectricChest tileEntity = (TileEntityElectricChest)world.getTileEntity(x, y, z);
+			return tileEntity.canAccess() ? 3.5F : -1;
+		}
+    }
 
 	@Override
 	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest)
@@ -821,7 +794,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -973,7 +946,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
@@ -983,26 +956,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
 
-		if(((IUpgradeManagement)itemStack.getItem()).supportsUpgrades(itemStack))
+		if(tileEntity instanceof IUpgradeTile)
 		{
-			IUpgradeManagement upgrade = (IUpgradeManagement)itemStack.getItem();
-
-			upgrade.setEnergyMultiplier(((IUpgradeManagement)tileEntity).getEnergyMultiplier(), itemStack);
-			upgrade.setSpeedMultiplier(((IUpgradeManagement)tileEntity).getSpeedMultiplier(), itemStack);
+			((IUpgradeTile)tileEntity).getComponent().write(itemStack.stackTagCompound);
 		}
 
-		if(tileEntity instanceof IInvConfiguration)
+		if(tileEntity instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 
-			itemStack.stackTagCompound.setBoolean("hasSideData", true);
-
-			itemStack.stackTagCompound.setBoolean("ejecting", config.getEjector().isEjecting());
-
-			for(int i = 0; i < 6; i++)
-			{
-				itemStack.stackTagCompound.setByte("config"+i, config.getConfiguration()[i]);
-			}
+			config.getConfig().write(itemStack.stackTagCompound);
 		}
 		
 		if(tileEntity instanceof ISustainedData)
@@ -1016,10 +979,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			itemStack.stackTagCompound.setInteger("controlType", control.getControlType().ordinal());
 		}
 
-		if(tileEntity instanceof TileEntityElectricBlock)
+		if(tileEntity instanceof IStrictEnergyStorage)
 		{
 			IEnergizedItem energizedItem = (IEnergizedItem)itemStack.getItem();
-			energizedItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
+			energizedItem.setEnergy(itemStack, ((IStrictEnergyStorage)tileEntity).getEnergy());
 		}
 
 		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).inventory.length > 0)
@@ -1050,15 +1013,29 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		if(tileEntity instanceof TileEntityFactory)
 		{
 			IFactory factoryItem = (IFactory)itemStack.getItem();
-			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType, itemStack);
+			factoryItem.setRecipeType(((TileEntityFactory)tileEntity).recipeType.ordinal(), itemStack);
 		}
 
 		return itemStack;
 	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+
+		if(!world.isRemote)
+		{
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onAdded();
+			}
+		}
+	}
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
 
 		world.setBlockToAir(x, y, z);
 
@@ -1082,16 +1059,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		MachineType type = MachineType.get(this, world.getBlockMetadata(x, y, z));
 
-		if(type == MachineType.CHARGEPAD)
+		switch(type)
 		{
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
-		}
-		else if(type == MachineType.PORTABLE_TANK)
-		{
-			setBlockBounds(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
-		}
-		else {
-			setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+			case CHARGEPAD:
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
+				break;
+			case PORTABLE_TANK:
+				setBlockBounds(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+				break;
+			default:
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				break;
 		}
 	}
 
@@ -1109,53 +1087,81 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		MachineType type = MachineType.get(this, world.getBlockMetadata(x, y, z));
+		MachineType type = MachineType.get(blockType, world.getBlockMetadata(x, y, z));
 
-		if(type == MachineType.CHARGEPAD)
+		switch(type)
 		{
-			return false;
+			case CHARGEPAD:
+				return false;
+			case PORTABLE_TANK:
+				return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
+			default:
+				return true;
 		}
-		else if(type == MachineType.PORTABLE_TANK)
-		{
-			return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
-		}
+	}
 
-		return true;
+	public static enum MachineBlock
+	{
+		MACHINE_BLOCK_1,
+		MACHINE_BLOCK_2,
+		MACHINE_BLOCK_3;
+
+		public Block getBlock()
+		{
+			switch(this)
+			{
+				case MACHINE_BLOCK_1:
+					return MekanismBlocks.MachineBlock;
+				case MACHINE_BLOCK_2:
+					return MekanismBlocks.MachineBlock2;
+				case MACHINE_BLOCK_3:
+					return MekanismBlocks.MachineBlock3;
+				default:
+					return null;
+			}
+		}
 	}
 
 	public static enum MachineType
 	{
-		ENRICHMENT_CHAMBER(Mekanism.MachineBlock, 0, "EnrichmentChamber", 3, Mekanism.enrichmentChamberUsage*400, TileEntityEnrichmentChamber.class, true, false, true),
-		OSMIUM_COMPRESSOR(Mekanism.MachineBlock, 1, "OsmiumCompressor", 4, Mekanism.osmiumCompressorUsage*400, TileEntityOsmiumCompressor.class, true, false, true),
-		COMBINER(Mekanism.MachineBlock, 2, "Combiner", 5, Mekanism.combinerUsage*400, TileEntityCombiner.class, true, false, true),
-		CRUSHER(Mekanism.MachineBlock, 3, "Crusher", 6, Mekanism.crusherUsage*400, TileEntityCrusher.class, true, false, true),
-		DIGITAL_MINER(Mekanism.MachineBlock, 4, "DigitalMiner", 2, 100000, TileEntityDigitalMiner.class, true, true, true),
-		BASIC_FACTORY(Mekanism.MachineBlock, 5, "BasicFactory", 11, Mekanism.factoryUsage*3*400, TileEntityFactory.class, true, false, true),
-		ADVANCED_FACTORY(Mekanism.MachineBlock, 6, "AdvancedFactory", 11, Mekanism.factoryUsage*5*400, TileEntityAdvancedFactory.class, true, false, true),
-		ELITE_FACTORY(Mekanism.MachineBlock, 7, "EliteFactory", 11, Mekanism.factoryUsage*7*400, TileEntityEliteFactory.class, true, false, true),
-		METALLURGIC_INFUSER(Mekanism.MachineBlock, 8, "MetallurgicInfuser", 12, Mekanism.metallurgicInfuserUsage*400, TileEntityMetallurgicInfuser.class, true, true, true),
-		PURIFICATION_CHAMBER(Mekanism.MachineBlock, 9, "PurificationChamber", 15, Mekanism.purificationChamberUsage*400, TileEntityPurificationChamber.class, true, false, true),
-		ENERGIZED_SMELTER(Mekanism.MachineBlock, 10, "EnergizedSmelter", 16, Mekanism.energizedSmelterUsage*400, TileEntityEnergizedSmelter.class, true, false, true),
-		TELEPORTER(Mekanism.MachineBlock, 11, "Teleporter", 13, 5000000, TileEntityTeleporter.class, true, false, false),
-		ELECTRIC_PUMP(Mekanism.MachineBlock, 12, "ElectricPump", 17, 10000, TileEntityElectricPump.class, true, true, false),
-		ELECTRIC_CHEST(Mekanism.MachineBlock, 13, "ElectricChest", -1, 12000, TileEntityElectricChest.class, true, true, false),
-		CHARGEPAD(Mekanism.MachineBlock, 14, "Chargepad", -1, 10000, TileEntityChargepad.class, true, true, false),
-		LOGISTICAL_SORTER(Mekanism.MachineBlock, 15, "LogisticalSorter", -1, 0, TileEntityLogisticalSorter.class, false, true, false),
-		ROTARY_CONDENSENTRATOR(Mekanism.MachineBlock2, 0, "RotaryCondensentrator", 7, 20000, TileEntityRotaryCondensentrator.class, true, true, false),
-		CHEMICAL_OXIDIZER(Mekanism.MachineBlock2, 1, "ChemicalOxidizer", 29, 20000, TileEntityChemicalOxidizer.class, true, true, true),
-		CHEMICAL_INFUSER(Mekanism.MachineBlock2, 2, "ChemicalInfuser", 30, 20000, TileEntityChemicalInfuser.class, true, true, false),
-		CHEMICAL_INJECTION_CHAMBER(Mekanism.MachineBlock2, 3, "ChemicalInjectionChamber", 31, Mekanism.chemicalInjectionChamberUsage*400, TileEntityChemicalInjectionChamber.class, true, false, true),
-		ELECTROLYTIC_SEPARATOR(Mekanism.MachineBlock2, 4, "ElectrolyticSeparator", 32, 400000, TileEntityElectrolyticSeparator.class, true, true, false),
-		PRECISION_SAWMILL(Mekanism.MachineBlock2, 5, "PrecisionSawmill", 34, Mekanism.precisionSawmillUsage*400, TileEntityPrecisionSawmill.class, true, false, true),
-		CHEMICAL_DISSOLUTION_CHAMBER(Mekanism.MachineBlock2, 6, "ChemicalDissolutionChamber", 35, 20000, TileEntityChemicalDissolutionChamber.class, true, true, true),
-		CHEMICAL_WASHER(Mekanism.MachineBlock2, 7, "ChemicalWasher", 36, 20000, TileEntityChemicalWasher.class, true, true, false),
-		CHEMICAL_CRYSTALLIZER(Mekanism.MachineBlock2, 8, "ChemicalCrystallizer", 37, 20000, TileEntityChemicalCrystallizer.class, true, true, true),
-		SEISMIC_VIBRATOR(Mekanism.MachineBlock2, 9, "SeismicVibrator", 39, 20000, TileEntitySeismicVibrator.class, true, true, false),
-		PRESSURIZED_REACTION_CHAMBER(Mekanism.MachineBlock2, 10, "PressurizedReactionChamber", 40, 20000, TileEntityPRC.class, true, true, false),
-		PORTABLE_TANK(Mekanism.MachineBlock2, 11, "PortableTank", 41, 0, TileEntityPortableTank.class, false, true, false),
-		FLUIDIC_PLENISHER(Mekanism.MachineBlock2, 12, "FluidicPlenisher", 42, 10000, TileEntityFluidicPlenisher.class, true, true, false);
+		ENRICHMENT_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 0, "EnrichmentChamber", 3, TileEntityEnrichmentChamber.class, true, false, true),
+		OSMIUM_COMPRESSOR(MachineBlock.MACHINE_BLOCK_1, 1, "OsmiumCompressor", 4, TileEntityOsmiumCompressor.class, true, false, true),
+		COMBINER(MachineBlock.MACHINE_BLOCK_1, 2, "Combiner", 5, TileEntityCombiner.class, true, false, true),
+		CRUSHER(MachineBlock.MACHINE_BLOCK_1, 3, "Crusher", 6, TileEntityCrusher.class, true, false, true),
+		DIGITAL_MINER(MachineBlock.MACHINE_BLOCK_1, 4, "DigitalMiner", 2, TileEntityDigitalMiner.class, true, true, true),
+		BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "BasicFactory", 11, TileEntityFactory.class, true, false, true),
+		ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "AdvancedFactory", 11, TileEntityAdvancedFactory.class, true, false, true),
+		ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "EliteFactory", 11, TileEntityEliteFactory.class, true, false, true),
+		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12, TileEntityMetallurgicInfuser.class, true, true, true),
+		PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15, TileEntityPurificationChamber.class, true, false, true),
+		ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, TileEntityEnergizedSmelter.class, true, false, true),
+		TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, TileEntityTeleporter.class, true, false, false),
+		ELECTRIC_PUMP(MachineBlock.MACHINE_BLOCK_1, 12, "ElectricPump", 17, TileEntityElectricPump.class, true, true, false),
+		ELECTRIC_CHEST(MachineBlock.MACHINE_BLOCK_1, 13, "ElectricChest", -1, TileEntityElectricChest.class, true, true, false),
+		CHARGEPAD(MachineBlock.MACHINE_BLOCK_1, 14, "Chargepad", -1, TileEntityChargepad.class, true, true, false),
+		LOGISTICAL_SORTER(MachineBlock.MACHINE_BLOCK_1, 15, "LogisticalSorter", -1, TileEntityLogisticalSorter.class, false, true, false),
+		ROTARY_CONDENSENTRATOR(MachineBlock.MACHINE_BLOCK_2, 0, "RotaryCondensentrator", 7, TileEntityRotaryCondensentrator.class, true, true, false),
+		CHEMICAL_OXIDIZER(MachineBlock.MACHINE_BLOCK_2, 1, "ChemicalOxidizer", 29, TileEntityChemicalOxidizer.class, true, true, true),
+		CHEMICAL_INFUSER(MachineBlock.MACHINE_BLOCK_2, 2, "ChemicalInfuser", 30, TileEntityChemicalInfuser.class, true, true, false),
+		CHEMICAL_INJECTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 3, "ChemicalInjectionChamber", 31, TileEntityChemicalInjectionChamber.class, true, false, true),
+		ELECTROLYTIC_SEPARATOR(MachineBlock.MACHINE_BLOCK_2, 4, "ElectrolyticSeparator", 32, TileEntityElectrolyticSeparator.class, true, true, false),
+		PRECISION_SAWMILL(MachineBlock.MACHINE_BLOCK_2, 5, "PrecisionSawmill", 34, TileEntityPrecisionSawmill.class, true, false, true),
+		CHEMICAL_DISSOLUTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 6, "ChemicalDissolutionChamber", 35, TileEntityChemicalDissolutionChamber.class, true, true, true),
+		CHEMICAL_WASHER(MachineBlock.MACHINE_BLOCK_2, 7, "ChemicalWasher", 36, TileEntityChemicalWasher.class, true, true, false),
+		CHEMICAL_CRYSTALLIZER(MachineBlock.MACHINE_BLOCK_2, 8, "ChemicalCrystallizer", 37, TileEntityChemicalCrystallizer.class, true, true, true),
+		SEISMIC_VIBRATOR(MachineBlock.MACHINE_BLOCK_2, 9, "SeismicVibrator", 39, TileEntitySeismicVibrator.class, true, true, false),
+		PRESSURIZED_REACTION_CHAMBER(MachineBlock.MACHINE_BLOCK_2, 10, "PressurizedReactionChamber", 40, TileEntityPRC.class, true, true, false),
+		PORTABLE_TANK(MachineBlock.MACHINE_BLOCK_2, 11, "PortableTank", 41, TileEntityPortableTank.class, false, true, false),
+		FLUIDIC_PLENISHER(MachineBlock.MACHINE_BLOCK_2, 12, "FluidicPlenisher", 42, TileEntityFluidicPlenisher.class, true, true, false),
+		LASER(MachineBlock.MACHINE_BLOCK_2, 13, "Laser", -1, TileEntityLaser.class, true, true, false),
+		LASER_AMPLIFIER(MachineBlock.MACHINE_BLOCK_2, 14, "LaserAmplifier", 44, TileEntityLaserAmplifier.class, false, true, false),
+		LASER_TRACTOR_BEAM(MachineBlock.MACHINE_BLOCK_2, 15, "LaserTractorBeam", 45, TileEntityLaserTractorBeam.class, false, true, false),
+		ENTANGLED_BLOCK(MachineBlock.MACHINE_BLOCK_3, 0, "EntangledBlock", 46, TileEntityEntangledBlock.class, true, false, false),
+		SOLAR_NEUTRON_ACTIVATOR(MachineBlock.MACHINE_BLOCK_3, 1, "SolarNeutronActivator", 47, TileEntitySolarNeutronActivator.class, false, true, false),
+		AMBIENT_ACCUMULATOR(MachineBlock.MACHINE_BLOCK_3, 2, "AmbientAccumulator", 48, TileEntityAmbientAccumulator.class, true, false, false),
+		OREDICTIONIFICATOR(MachineBlock.MACHINE_BLOCK_3, 3, "Oredictionificator", 52, TileEntityOredictionificator.class, false, false, false);
 
-		public Block typeBlock;
+		public MachineBlock typeBlock;
 		public int meta;
 		public String name;
 		public int guiId;
@@ -1164,21 +1170,66 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		public boolean isElectric;
 		public boolean hasModel;
 		public boolean supportsUpgrades;
+		public Collection<MekanismRecipe> machineRecipes = new HashSet<MekanismRecipe>();
 
-		private MachineType(Block block, int i, String s, int j, double k, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
+		private MachineType(MachineBlock block, int i, String s, int j, Class<? extends TileEntity> tileClass, boolean electric, boolean model, boolean upgrades)
 		{
 			typeBlock = block;
 			meta = i;
 			name = s;
 			guiId = j;
-			baseEnergy = k;
 			tileEntityClass = tileClass;
 			isElectric = electric;
 			hasModel = model;
 			supportsUpgrades = upgrades;
 		}
+		
+		public boolean isEnabled()
+		{
+			return machines.isEnabled(this);
+		}
+		
+		public void addRecipes(Collection<MekanismRecipe> recipes)
+		{
+			machineRecipes.addAll(recipes);
+		}
+		
+		public void addRecipe(MekanismRecipe recipe)
+		{
+			machineRecipes.add(recipe);
+		}
+		
+		public Collection<MekanismRecipe> getRecipes()
+		{
+			return machineRecipes;
+		}
+		
+		public static List<MachineType> getValidMachines()
+		{
+			List<MachineType> ret = new ArrayList<MachineType>();
+			
+			for(MachineType type : MachineType.values())
+			{
+				if(type != ENTANGLED_BLOCK && type != AMBIENT_ACCUMULATOR)
+				{
+					ret.add(type);
+				}
+			}
+			
+			return ret;
+		}
 
 		public static MachineType get(Block block, int meta)
+		{
+			if(block instanceof BlockMachine)
+			{
+				return get(((BlockMachine)block).blockType, meta);
+			}
+
+			return null;
+		}
+
+		public static MachineType get(MachineBlock block, int meta)
 		{
 			for(MachineType type : values())
 			{
@@ -1202,6 +1253,99 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			}
 		}
 
+		/** Used for getting the base energy storage. */
+		public double getUsage()
+		{
+			switch(this)
+			{
+				case ENRICHMENT_CHAMBER:
+					return usage.enrichmentChamberUsage;
+				case OSMIUM_COMPRESSOR:
+					return usage.osmiumCompressorUsage;
+				case COMBINER:
+					return usage.combinerUsage;
+				case CRUSHER:
+					return usage.crusherUsage;
+				case DIGITAL_MINER:
+					return usage.digitalMinerUsage;
+				case BASIC_FACTORY:
+					return usage.factoryUsage * 3;
+				case ADVANCED_FACTORY:
+					return usage.factoryUsage * 5;
+				case ELITE_FACTORY:
+					return usage.factoryUsage * 7;
+				case METALLURGIC_INFUSER:
+					return usage.metallurgicInfuserUsage;
+				case PURIFICATION_CHAMBER:
+					return usage.purificationChamberUsage;
+				case ENERGIZED_SMELTER:
+					return usage.energizedSmelterUsage;
+				case TELEPORTER:
+					return 12500;
+				case ELECTRIC_PUMP:
+					return usage.electricPumpUsage;
+				case ELECTRIC_CHEST:
+					return 30;
+				case CHARGEPAD:
+					return 25;
+				case LOGISTICAL_SORTER:
+					return 0;
+				case ROTARY_CONDENSENTRATOR:
+					return usage.rotaryCondensentratorUsage;
+				case CHEMICAL_OXIDIZER:
+					return usage.oxidationChamberUsage;
+				case CHEMICAL_INFUSER:
+					return usage.chemicalInfuserUsage;
+				case CHEMICAL_INJECTION_CHAMBER:
+					return usage.chemicalInjectionChamberUsage;
+				case ELECTROLYTIC_SEPARATOR:
+					return general.FROM_H2 * 2;
+				case PRECISION_SAWMILL:
+					return usage.precisionSawmillUsage;
+				case CHEMICAL_DISSOLUTION_CHAMBER:
+					return usage.chemicalDissolutionChamberUsage;
+				case CHEMICAL_WASHER:
+					return usage.chemicalWasherUsage;
+				case CHEMICAL_CRYSTALLIZER:
+					return usage.chemicalCrystallizerUsage;
+				case SEISMIC_VIBRATOR:
+					return usage.seismicVibratorUsage;
+				case PRESSURIZED_REACTION_CHAMBER:
+					return usage.pressurizedReactionBaseUsage;
+				case PORTABLE_TANK:
+					return 0;
+				case FLUIDIC_PLENISHER:
+					return usage.fluidicPlenisherUsage;
+				case LASER:
+					return usage.laserUsage;
+				case LASER_AMPLIFIER:
+					return 0;
+				case LASER_TRACTOR_BEAM:
+					return 0;
+				case ENTANGLED_BLOCK:
+					return 0;
+				case SOLAR_NEUTRON_ACTIVATOR:
+					return 0;
+				case AMBIENT_ACCUMULATOR:
+					return 0;
+				default:
+					return 0;
+			}
+		}
+
+		public static void updateAllUsages()
+		{
+			for(MachineType type : values())
+			{
+				type.updateUsage();
+			}
+		}
+
+		public void updateUsage()
+		{
+			baseEnergy = 400 * getUsage();
+		}
+
 		public String getDescription()
 		{
 			return MekanismUtils.localize("tooltip." + name);
@@ -1209,18 +1353,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		public ItemStack getStack()
 		{
-			return new ItemStack(typeBlock, 1, meta);
+			return new ItemStack(typeBlock.getBlock(), 1, meta);
 		}
 
 		public static MachineType get(ItemStack stack)
 		{
 			return get(Block.getBlockFromItem(stack.getItem()), stack.getItemDamage());
-		}
-
-		@Override
-		public String toString()
-		{
-			return Integer.toString(meta);
 		}
 	}
 
@@ -1252,9 +1390,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		ForgeDirection[] valid = new ForgeDirection[6];
+		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
@@ -1263,6 +1403,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				}
 			}
 		}
+		
 		return valid;
 	}
 
@@ -1270,15 +1411,18 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
+		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			
 			if(basicTile.canSetFacing(axis.ordinal()))
 			{
 				basicTile.setFacing((short)axis.ordinal());
 				return true;
 			}
 		}
+		
 		return false;
 	}
 }

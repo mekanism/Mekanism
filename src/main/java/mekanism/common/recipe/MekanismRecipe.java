@@ -2,20 +2,22 @@ package mekanism.common.recipe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.IEnergyCube;
-import mekanism.common.IFactory;
-import mekanism.common.IUpgradeManagement;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
-
+import mekanism.common.item.ItemBlockBasic;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -202,27 +204,31 @@ public class MekanismRecipe implements IRecipe
 			}
 		}
 
-		if(toReturn.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)toReturn.getItem()).supportsUpgrades(toReturn))
+		if(MachineType.get(toReturn).supportsUpgrades)
 		{
-			int speedUpgrades = 0;
-			int energyUpgrades = 0;
+			Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
 
 			for(int i = 0; i < 9; i++)
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null)
+				if(itemstack != null && MachineType.get(itemstack).supportsUpgrades)
 				{
-					if(itemstack.getItem() instanceof IUpgradeManagement && ((IUpgradeManagement)itemstack.getItem()).supportsUpgrades(toReturn))
+					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.stackTagCompound);
+					
+					for(Map.Entry<Upgrade, Integer> entry : stackMap.entrySet())
 					{
-						speedUpgrades = Math.min(8, speedUpgrades + ((IUpgradeManagement)itemstack.getItem()).getSpeedMultiplier(itemstack));
-						energyUpgrades = Math.min(8, energyUpgrades + ((IUpgradeManagement)itemstack.getItem()).getEnergyMultiplier(itemstack));
+						upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), upgrades.get(entry.getKey()) + entry.getValue()));
 					}
 				}
 			}
-
-			((IUpgradeManagement)toReturn.getItem()).setSpeedMultiplier(speedUpgrades, toReturn);
-			((IUpgradeManagement)toReturn.getItem()).setEnergyMultiplier(energyUpgrades, toReturn);
+			
+			if(toReturn.stackTagCompound == null)
+			{
+				toReturn.setTagCompound(new NBTTagCompound());
+			}
+			
+			Upgrade.saveMap(upgrades, toReturn.stackTagCompound);
 		}
 
 		return toReturn;
@@ -365,6 +371,13 @@ public class MekanismRecipe implements IRecipe
 			if(target.getItem() instanceof IEnergyCube && input.getItem() instanceof IEnergyCube)
 			{
 				if(((IEnergyCube)target.getItem()).getEnergyCubeTier(target) != ((IEnergyCube)input.getItem()).getEnergyCubeTier(input))
+				{
+					return false;
+				}
+			}
+			else if(target.getItem() instanceof ItemBlockBasic && input.getItem() instanceof ItemBlockBasic)
+			{
+				if(((ItemBlockBasic)target.getItem()).getTier(target) != ((ItemBlockBasic)input.getItem()).getTier(input))
 				{
 					return false;
 				}

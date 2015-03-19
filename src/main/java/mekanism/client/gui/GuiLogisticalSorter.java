@@ -13,16 +13,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
+import mekanism.common.content.transporter.TItemStackFilter;
+import mekanism.common.content.transporter.TMaterialFilter;
+import mekanism.common.content.transporter.TModIDFilter;
+import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.transporter.TItemStackFilter;
-import mekanism.common.transporter.TMaterialFilter;
-import mekanism.common.transporter.TModIDFilter;
-import mekanism.common.transporter.TOreDictFilter;
-import mekanism.common.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
@@ -54,7 +54,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 	public GuiLogisticalSorter(EntityPlayer player, TileEntityLogisticalSorter tentity)
 	{
-		super(new ContainerNull(player, tentity));
+		super(tentity, new ContainerNull(player, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiLogisticalSorter.png")));
 	}
@@ -186,8 +186,14 @@ public class GuiLogisticalSorter extends GuiMekanism
 		{
 			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
-				dragOffset = yAxis - (getScroll()+18);
-				isDragging = true;
+				if(tileEntity.filters.size()>4)
+				{
+					dragOffset = yAxis - (getScroll()+18);
+					isDragging = true;
+				}
+				else {
+					scroll = 0;
+				}
 			}
 
 			for(int i = 0; i < 4; i++)
@@ -274,9 +280,9 @@ public class GuiLogisticalSorter extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseMovedOrUp(int x, int y, int type)
+	protected void mouseMovedOrUp(int mouseX, int mouseY, int type)
 	{
-		super.mouseMovedOrUp(x, y, type);
+		super.mouseMovedOrUp(mouseX, mouseY, type);
 
 		if(type == 0 && isDragging)
 		{

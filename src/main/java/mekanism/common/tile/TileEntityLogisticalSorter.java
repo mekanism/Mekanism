@@ -8,18 +8,18 @@ import mekanism.api.EnumColor;
 import mekanism.api.IFilterAccess;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
-import mekanism.common.IActiveState;
-import mekanism.common.ILogisticalTransporter;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.content.transporter.Finder.FirstFinder;
+import mekanism.common.content.transporter.InvStack;
+import mekanism.common.content.transporter.TItemStackFilter;
+import mekanism.common.content.transporter.TransporterFilter;
+import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.transporter.Finder.FirstFinder;
-import mekanism.common.transporter.InvStack;
-import mekanism.common.transporter.TItemStackFilter;
-import mekanism.common.transporter.TransporterFilter;
-import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -488,7 +488,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 			return new int[] {0};
 		}
 
-		return null;
+		return InventoryUtils.EMPTY;
 	}
 
 	@Override
@@ -510,6 +510,12 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return true;
 	}
 
 	@Override
@@ -549,7 +555,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.noneOf(ForgeDirection.class);
 	}

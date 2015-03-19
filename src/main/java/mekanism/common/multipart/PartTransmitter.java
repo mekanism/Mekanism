@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
@@ -13,10 +12,8 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import codechicken.lib.data.MCDataInput;
 import codechicken.lib.data.MCDataOutput;
 import codechicken.multipart.TMultiPart;
@@ -45,7 +42,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public void refreshTransmitterNetwork()
 	{
-		getTransmitterNetwork().refresh(this);
+		getTransmitterNetwork().refresh((IGridTransmitter<N>)tile());
 		getTransmitterNetwork().refresh();
 	}
 
@@ -196,7 +193,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	@Override
 	public void fixTransmitterNetwork()
 	{
-		getTransmitterNetwork().fixMessedUpNetwork((IGridTransmitter<N>) tile());
+		getTransmitterNetwork().fixMessedUpNetwork((IGridTransmitter<N>)tile());
 	}
 
 	public abstract N createNetworkFromSingleTransmitter(IGridTransmitter<N> transmitter);
@@ -208,7 +205,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	{
 		super.onChunkUnload();
 
-		getTransmitterNetwork().split(this);
+		getTransmitterNetwork().split((IGridTransmitter<N>)tile());
 
 		if(!world().isRemote)
 		{
@@ -246,10 +243,12 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	protected void onModeChange(ForgeDirection side)
 	{
 		super.onModeChange(side);
+		
+		getTransmitterNetwork().refresh((IGridTransmitter<N>)tile());
 
 		if(!world().isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), new Range4D(Coord4D.get(tile())));
+			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
 		}
 	}
 
@@ -260,7 +259,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 
 		if(!world().isRemote)
 		{
-			Mekanism.packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), new Range4D(Coord4D.get(tile())));
+			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
 		}
 	}
 	
@@ -277,6 +276,7 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	public void readDesc(MCDataInput packet)
 	{
 		super.readDesc(packet);
+		
 		if(packet.readBoolean())
 		{
 			mergeNewSideNets(packet.readByte());
@@ -287,14 +287,14 @@ public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends Pa
 	public void writeDesc(MCDataOutput packet)
 	{
 		super.writeDesc(packet);
+		
 		if(newSidesMerged != 0x00)
 		{
 			packet.writeBoolean(true);
 			packet.writeByte(newSidesMerged);
 			newSidesMerged = 0x00;
 		}
-		else
-		{
+		else {
 			packet.writeBoolean(false);
 		}
 	}

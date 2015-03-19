@@ -1,12 +1,12 @@
 package mekanism.common.util;
 
 import mekanism.api.EnumColor;
-import mekanism.api.StackUtils;
-import mekanism.common.IInvConfiguration;
+import mekanism.api.util.StackUtils;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.content.transporter.Finder;
+import mekanism.common.content.transporter.InvStack;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.transporter.Finder;
-import mekanism.common.transporter.InvStack;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -19,6 +19,18 @@ import net.minecraftforge.common.util.ForgeDirection;
 public final class InventoryUtils
 {
 	public static final int[] EMPTY = new int[] {};
+
+	public static int[] getIntRange(int start, int end)
+	{
+		int[] ret = new int[1 + end - start];
+
+		for(int i = start; i <= end; i++)
+		{
+			ret[i - start] = i;
+		}
+
+		return ret;
+	}
 
 	public static IInventory checkChestInv(IInventory inv)
 	{
@@ -83,7 +95,7 @@ public final class InventoryUtils
 					inventory.setInventorySlotContents(i, toInsert);
 					return null;
 				}
-				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 				{
 					if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -139,7 +151,7 @@ public final class InventoryUtils
 						inventory.setInventorySlotContents(slotID, toInsert);
 						return null;
 					}
-					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 					{
 						if(inSlot.stackSize + toInsert.stackSize <= inSlot.getMaxStackSize())
 						{
@@ -355,9 +367,9 @@ public final class InventoryUtils
 			return ((TileEntityLogisticalSorter)tileEntity).canSendHome(itemStack);
 		}
 
-		if(!force && tileEntity instanceof IInvConfiguration)
+		if(!force && tileEntity instanceof ISideConfiguration)
 		{
-			IInvConfiguration config = (IInvConfiguration)tileEntity;
+			ISideConfiguration config = (ISideConfiguration)tileEntity;
 			int tileSide = config.getOrientation();
 			EnumColor configColor = config.getEjector().getInputColor(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(side, tileSide)).getOpposite());
 
@@ -387,7 +399,7 @@ public final class InventoryUtils
 				{
 					return true;
 				}
-				else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+				else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 				{
 					if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize())
 					{
@@ -433,7 +445,7 @@ public final class InventoryUtils
 					{
 						return true;
 					}
-					else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize())
+					else if(areItemsStackable(itemStack, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
 					{
 						if(inSlot.stackSize + itemStack.stackSize <= inSlot.getMaxStackSize())
 						{

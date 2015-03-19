@@ -1,29 +1,28 @@
 package mekanism.common.integration;
 
-import java.util.List;
-import java.util.Map;
-
-import mekanism.common.Mekanism;
-import mekanism.common.block.BlockMachine;
-import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.block.Block;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModAPIManager;
-import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.common.event.FMLInterModComms;
-
-import dan200.computercraft.api.ComputerCraftAPI;
 import ic2.api.recipe.IRecipeInput;
 import ic2.api.recipe.RecipeInputItemStack;
 import ic2.api.recipe.RecipeInputOreDict;
 import ic2.api.recipe.RecipeOutput;
 import ic2.api.recipe.Recipes;
+
+import java.util.List;
+import java.util.Map;
+
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
+import mekanism.common.Resource;
+import mekanism.common.block.BlockMachine;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import dan200.computercraft.api.ComputerCraftAPI;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -35,10 +34,8 @@ public final class MekanismHooks
 	private Class BuildCraftEnergy;
 
 	public boolean IC2Loaded = false;
-	public boolean IC2APILoaded = false;
 	public boolean RailcraftLoaded = false;
-	public boolean BuildCraftPowerLoaded = false;
-	public boolean RedstoneFluxLoaded = false;
+	public boolean CoFHCoreLoaded = false;
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
 
@@ -47,9 +44,7 @@ public final class MekanismHooks
 
 	public void hook()
 	{
-		if(ModAPIManager.INSTANCE.hasAPI("IC2API")) IC2APILoaded = true;
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|power")) BuildCraftPowerLoaded = true;
-		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI|energy")) RedstoneFluxLoaded = true;
+		if(Loader.isModLoaded("CoFHCore")) CoFHCoreLoaded = true;
 		if(Loader.isModLoaded("IC2")) IC2Loaded = true;
 		if(Loader.isModLoaded("Railcraft")) RailcraftLoaded = true;
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
@@ -68,11 +63,6 @@ public final class MekanismHooks
 			Mekanism.logger.info("Hooked into IC2 successfully.");
 		}
 
-		if(BuildCraftPowerLoaded)
-		{
-			Mekanism.logger.info("Hooked into BuildCraft successfully.");
-		}
-		
 		if(CCLoaded)
 		{
 			loadCCPeripheralProviders();
@@ -108,39 +98,35 @@ public final class MekanismHooks
 		}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(Mekanism.Dust, 2, 2));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("oreOsmium"), null, new ItemStack(MekanismItems.Dust, 2, Resource.OSMIUM.ordinal()));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(Mekanism.Dust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(Mekanism.Dust, 1, 3));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotOsmium"), null, new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal()));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedObsidian"), null, new ItemStack(MekanismItems.OtherDust, 1, 5));
 			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotRefinedGlowstone"), null, new ItemStack(Items.glowstone_dust));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(Mekanism.Dust, 1, 5));
+			Recipes.macerator.addRecipe(new RecipeInputOreDict("ingotSteel"), null, new ItemStack(MekanismItems.OtherDust, 1, 1));
 		} catch(Exception e) {}
 
 		try {
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpIron"), null, new ItemStack(Mekanism.DirtyDust, 1, 0));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpGold"), null, new ItemStack(Mekanism.DirtyDust, 1, 1));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpOsmium"), null, new ItemStack(Mekanism.DirtyDust, 1, 2));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpCopper"), null, new ItemStack(Mekanism.DirtyDust, 1, 3));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpTin"), null, new ItemStack(Mekanism.DirtyDust, 1, 4));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpSilver"), null, new ItemStack(Mekanism.DirtyDust, 1, 5));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpObsidian"), null, new ItemStack(Mekanism.DirtyDust, 1, 6));
-			Recipes.macerator.addRecipe(new RecipeInputOreDict("clumpLead"), null, new ItemStack(Mekanism.DirtyDust, 1, 7));
+			for(Resource resource : Resource.values())
+			{
+				Recipes.macerator.addRecipe(new RecipeInputOreDict("clump" + resource.getName()), null, new ItemStack(MekanismItems.DirtyDust, 1, resource.ordinal()));
+			}
 		} catch(Exception e) {}
 
 		NBTTagCompound tag = new NBTTagCompound();
 
 		tag.setInteger("amplification", 50000);
 
-		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(Mekanism.EnrichedAlloy), 1), tag);
+		Recipes.matterAmplifier.addRecipe(new RecipeInputItemStack(new ItemStack(MekanismItems.EnrichedAlloy), 1), tag);
 	}
 
 	@Method(modid = "ComputerCraft")
 	public void loadCCPeripheralProviders()
 	{
 		try {
-			ComputerCraftAPI.registerPeripheralProvider((BlockMachine)Mekanism.MachineBlock);
+			ComputerCraftAPI.registerPeripheralProvider((BlockMachine) MekanismBlocks.MachineBlock);
 		} catch(Exception ex) {}
 	}
 
@@ -153,29 +139,5 @@ public final class MekanismHooks
 		nbtTags.setTag("primaryOutput", output.writeToNBT(new NBTTagCompound()));
 
 		FMLInterModComms.sendMessage("mekanism", "PulverizerRecipe", nbtTags);
-	}
-
-	public ItemStack getBuildCraftItem(String name)
-	{
-		try {
-			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("buildcraft.BuildCraftEnergy");
-			if(BuildCraftEnergy == null) BuildCraftEnergy = Class.forName("net.minecraft.src.buildcraft.BuildCraftEnergy");
-			Object ret = BuildCraftEnergy.getField(name).get(null);
-
-			if(ret instanceof Item)
-			{
-				return new ItemStack((Item)ret);
-			}
-			else if(ret instanceof Block)
-			{
-				return new ItemStack((Block)ret);
-			}
-			else {
-				throw new Exception("not instanceof ItemStack");
-			}
-		} catch(Exception e) {
-			Mekanism.logger.error("Unable to retrieve BuildCraft item " + name + ".");
-			return null;
-		}
 	}
 }

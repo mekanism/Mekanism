@@ -1,7 +1,7 @@
 package mekanism.common.network;
 
-import mekanism.api.BlockInfo;
 import mekanism.api.MekanismAPI;
+import mekanism.api.util.BlockInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
 

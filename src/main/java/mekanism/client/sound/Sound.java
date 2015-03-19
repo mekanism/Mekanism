@@ -1,166 +1,185 @@
 package mekanism.client.sound;
 
-import java.net.URL;
+import mekanism.api.MekanismConfig.client;
 
-import mekanism.api.Pos3D;
-import mekanism.client.MekanismClient;
-import mekanism.common.Mekanism;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.World;
-
-public abstract class Sound
+/**
+ * Generic ISound class with lots of constructor functionality.
+ * Required because - of course - Mojang has no generic that
+ * lets you specify *any* arguments for this.
+ *
+ * Taken from CoFHLib
+ *
+ * @author skyboy
+ *
+ */
+@SideOnly(Side.CLIENT)
+public class Sound implements ISound 
 {
-	/** The bundled path where the sound is */
-	public String soundPath;
+	protected AttenuationType attenuation;
+	
+	protected ResourceLocation sound;
+	
+	protected float volume;
+	
+	protected float pitch;
+	
+	protected float x;
+	
+	protected float y;
+	
+	protected float z;
+	
+	protected boolean repeat;
+	
+	protected int repeatDelay;
 
-	/** A unique identifier for this sound */
-	public String identifier;
-
-	/** Whether or not this sound is playing */
-	public boolean isPlaying = false;
-
-	public int ticksSincePlay = 0;
-
-	private Object objRef;
-
-	protected Minecraft mc = Minecraft.getMinecraft();
-
-	/**
-	 * A sound that runs off of the PaulsCode sound system.
-	 * @param id - unique identifier
-	 * @param sound - bundled path to the sound
-	 * @param tileentity - the tile this sound is playing from.
-	 */
-	public Sound(String id, String sound, Object obj, Pos3D loc)
+	public Sound(String sound) 
 	{
-		if(MekanismClient.audioHandler.getFrom(obj) != null)
-		{
-			return;
-		}
-
-		synchronized(MekanismClient.audioHandler.sounds)
-		{
-			soundPath = sound;
-			identifier = id;
-			objRef = obj;
-
-			URL url = getClass().getClassLoader().getResource("assets/mekanism/sounds/" + sound);
-
-			if(url == null)
-			{
-				Mekanism.logger.error("Invalid sound file: " + sound);
-			}
-
-			if(SoundHandler.getSoundSystem() != null)
-			{
-				SoundHandler.getSoundSystem().newSource(false, id, url, sound, true, (float)loc.xPos, (float)loc.yPos, (float)loc.zPos, 0, 16F);
-				updateVolume();
-				SoundHandler.getSoundSystem().activate(id);
-			}
-
-			MekanismClient.audioHandler.sounds.put(obj, this);
-		}
+		this(sound, 0);
 	}
 
-	/**
-	 * Start looping the sound effect
-	 */
-	public void play()
+	public Sound(String sound, float volume) 
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
-		{
-			if(isPlaying)
-			{
-				return;
-			}
-
-			ticksSincePlay = 0;
-
-			if(SoundHandler.getSoundSystem() != null)
-			{
-				updateVolume();
-				SoundHandler.getSoundSystem().play(identifier);
-			}
-
-			isPlaying = true;
-		}
+		this(sound, volume, 0);
 	}
 
-	/**
-	 * Stop looping the sound effect
-	 */
-	public void stopLoop()
+	public Sound(String sound, float volume, float pitch)
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
-		{
-			if(!isPlaying)
-			{
-				return;
-			}
-
-			if(SoundHandler.getSoundSystem() != null)
-			{
-				updateVolume();
-				SoundHandler.getSoundSystem().stop(identifier);
-			}
-
-			isPlaying = false;
-		}
+		this(sound, volume, pitch, false, 0);
 	}
 
-	/**
-	 * Remove the sound effect from the PaulsCode SoundSystem
-	 */
-	public void remove()
+	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay) 
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
-		{
-			if(isPlaying)
-			{
-				stopLoop();
-			}
-
-			MekanismClient.audioHandler.sounds.remove(objRef);
-
-			if(SoundHandler.getSoundSystem() != null)
-			{
-				updateVolume();
-				SoundHandler.getSoundSystem().removeSource(identifier);
-			}
-		}
+		this(sound, volume, pitch, repeat, repeatDelay, 0, 0, 0, AttenuationType.NONE);
 	}
 
-	public abstract boolean update(World world);
-
-	public abstract Pos3D getLocation();
-
-	public float getMultiplier()
+	public Sound(String sound, float volume, float pitch, double x, double y, double z)
 	{
-		return Math.min(1, ((float)ticksSincePlay/30F));
+		this(sound, volume, pitch, false, 0, x, y, z);
 	}
 
-	/**
-	 * Updates the volume based on how far away the player is from the machine.
-	 * @param entityplayer - player who is near the machine, always Minecraft.thePlayer
-	 */
-	public void updateVolume()
+	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
 	{
-		synchronized(MekanismClient.audioHandler.sounds)
-		{
-			try {
-				float multiplier = getMultiplier();
-				float volume = 0;
-				float masterVolume = MekanismClient.audioHandler.getMasterVolume();
-				double distance = mc.thePlayer.getDistance(getLocation().xPos, getLocation().yPos, getLocation().zPos);
-				volume = (float)Math.min(Math.max(masterVolume-((distance*.08F)*masterVolume), 0)*multiplier, 1);
-				volume *= Math.max(0, Math.min(1, MekanismClient.baseSoundVolume));
+		this(sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
+	}
 
-				if(SoundHandler.getSoundSystem() != null)
-				{
-					SoundHandler.getSoundSystem().setVolume(identifier, volume);
-				}
-			} catch(Exception e) {}
-		}
+	public Sound(String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation) 
+	{
+		this(new ResourceLocation(sound), volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
+	}
+
+	public Sound(ResourceLocation sound)
+	{
+		this(sound, 0);
+	}
+
+	public Sound(ResourceLocation sound, float volume)
+	{
+		this(sound, volume, 0);
+	}
+
+	public Sound(ResourceLocation sound, float volume, float pitch) 
+	{
+		this(sound, volume, pitch, false, 0);
+	}
+
+	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay) 
+	{
+		this(sound, volume, pitch, repeat, repeatDelay, 0, 0, 0, AttenuationType.NONE);
+	}
+
+	public Sound(ResourceLocation sound, float volume, float pitch, double x, double y, double z) 
+	{
+		this(sound, volume, pitch, false, 0, x, y, z);
+	}
+
+	public Sound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	{
+		this(sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
+	}
+
+	public Sound(ResourceLocation resource, float v, float p, boolean rep, int delay, double xPos, double yPos, double zPos, AttenuationType att)
+	{
+		attenuation = att;
+		sound = resource;
+		volume = v;
+		pitch = p;
+		x = (float)xPos;
+		y = (float)yPos;
+		z = (float)zPos;
+		repeat = rep;
+		repeatDelay = delay;
+	}
+
+	public Sound(Sound other) 
+	{
+		attenuation = other.attenuation;
+		sound = other.sound;
+		volume = other.volume;
+		pitch = other.pitch;
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		repeat = other.repeat;
+		repeatDelay = other.repeatDelay;
+	}
+
+	@Override
+	public AttenuationType getAttenuationType() 
+	{
+		return attenuation;
+	}
+
+	@Override
+	public ResourceLocation getPositionedSoundLocation() 
+	{
+		return sound;
+	}
+
+	@Override
+	public float getVolume() 
+	{
+		return volume * client.baseSoundVolume;
+	}
+
+	@Override
+	public float getPitch() 
+	{
+		return pitch;
+	}
+
+	@Override
+	public float getXPosF() 
+	{
+		return x;
+	}
+
+	@Override
+	public float getYPosF() 
+	{
+		return y;
+	}
+
+	@Override
+	public float getZPosF() 
+	{
+		return z;
+	}
+
+	@Override
+	public boolean canRepeat()
+	{
+		return repeat;
+	}
+
+	@Override
+	public int getRepeatDelay() 
+	{
+		return repeatDelay;
 	}
 }

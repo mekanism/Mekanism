@@ -10,14 +10,16 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.IMekWrench;
 import mekanism.api.Range4D;
-import mekanism.common.IInvConfiguration;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.SideData;
+import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -27,13 +29,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import buildcraft.api.tools.IToolWrench;
+import cofh.api.item.IToolHammer;
 import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 
-import buildcraft.api.tools.IToolWrench;
-
-@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraftAPI|tools")
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench
+@InterfaceList({
+		@Interface(iface = "buildcraft.api.tools.IToolWrench", modid = "BuildCraft"),
+		@Interface(iface = "cofh.api.item.IToolHammer", modid = "CoFHCore")
+})
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IToolWrench, IToolHammer
 {
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -49,7 +55,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add(EnumColor.PINK + MekanismUtils.localize("gui.state") + ": " + EnumColor.GREY + getStateDisplay(getState(itemstack)));
+		list.add(EnumColor.PINK + MekanismUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
 	}
 
 	@Override
@@ -60,23 +66,25 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			Block block = world.getBlock(x, y, z);
 			TileEntity tile = world.getTileEntity(x, y, z);
 
-			if(getState(stack) == 0) //Configurate
+			if(getState(stack).isConfigurating()) //Configurate
 			{
-				if(tile instanceof IInvConfiguration)
+				if(tile instanceof ISideConfiguration && ((ISideConfiguration)tile).getConfig().supports(getState(stack).getTransmission()))
 				{
-					IInvConfiguration config = (IInvConfiguration)tile;
+					ISideConfiguration config = (ISideConfiguration)tile;
 
 					if(!player.isSneaking())
 					{
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+						SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getViewModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
 						return true;
 					}
 					else {
 						if(getEnergy(stack) >= ENERGY_PER_CONFIGURE)
 						{
 							setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-							MekanismUtils.incrementOutput(config, MekanismUtils.getBaseOrientation(side, config.getOrientation()));
-							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + config.getSideData().get(config.getConfiguration()[MekanismUtils.getBaseOrientation(side, config.getOrientation())]).color.getName()));
+							MekanismUtils.incrementOutput(config, getState(stack).getTransmission(), MekanismUtils.getBaseOrientation(side, config.getOrientation()));
+							SideData data = config.getConfig().getOutput(getState(stack).getTransmission(), side, config.getOrientation());
+							player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + getToggleModeText(getState(stack).getTransmission()) + ": " + data.color + data.localize() + " (" + data.color.getName() + ")"));
 
 							if(config instanceof TileEntityBasicBlock)
 							{
@@ -101,7 +109,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					}
 				}
 			}
-			else if(getState(stack) == 1) //Empty
+			else if(getState(stack) == ConfiguratorMode.EMPTY) //Empty
 			{
 				if(tile instanceof IInventory)
 				{
@@ -161,7 +169,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 					}
 				}
 			}
-			else if(getState(stack) == 2) //Rotate
+			else if(getState(stack) == ConfiguratorMode.ROTATE) //Rotate
 			{
 				ForgeDirection axis = ForgeDirection.getOrientation(side);
 				List<ForgeDirection> l = Arrays.asList(block.getValidRotations(world, x, y, z));
@@ -170,13 +178,14 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 				{
 					block.rotateBlock(world, x, y, z, axis);
 				}
-				else if(player.isSneaking() && l.contains(axis.getOpposite())) {
+				else if(player.isSneaking() && l.contains(axis.getOpposite()))
+				{
 					block.rotateBlock(world, x, y, z, axis.getOpposite());
 				}
 
 				return true;
 			}
-			else if(getState(stack) == 3) //Wrench
+			else if(getState(stack) == ConfiguratorMode.WRENCH) //Wrench
 			{
 				return false;
 			}
@@ -184,66 +193,52 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 
 		return false;
 	}
-
-	public String getStateDisplay(int state)
+	
+	public String getViewModeText(TransmissionType type)
 	{
-		switch(state)
-		{
-			case 0:
-				return MekanismUtils.localize("tooltip.configurator.configurate");
-			case 1:
-				return MekanismUtils.localize("tooltip.configurator.empty");
-			case 2:
-				return MekanismUtils.localize("tooltip.configurator.rotate");
-			case 3:
-				return MekanismUtils.localize("tooltip.configurator.wrench");
-		}
-
-		return "unknown";
+		String base = MekanismUtils.localize("tooltip.configurator.viewMode");
+		return String.format(base, type.localize().toLowerCase());
+	}
+	
+	public String getToggleModeText(TransmissionType type)
+	{
+		String base = MekanismUtils.localize("tooltip.configurator.toggleMode");
+		return String.format(base, type.localize());
 	}
 
-	public EnumColor getColor(int state)
+	public String getStateDisplay(ConfiguratorMode mode)
 	{
-		switch(state)
-		{
-			case 0:
-				return EnumColor.BRIGHT_GREEN;
-			case 1:
-				return EnumColor.AQUA;
-			case 2:
-				return EnumColor.YELLOW;
-			case 3:
-				return EnumColor.PINK;
-		}
-
-		return EnumColor.GREY;
+		return mode.getName();
 	}
 
-	public void setState(ItemStack itemstack, byte state)
+	public EnumColor getColor(ConfiguratorMode mode)
+	{
+		return mode.getColor();
+	}
+
+	public void setState(ItemStack itemstack, ConfiguratorMode state)
 	{
 		if(itemstack.stackTagCompound == null)
 		{
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setByte("state", state);
+		itemstack.stackTagCompound.setInteger("state", state.ordinal());
 	}
 
-	public byte getState(ItemStack itemstack)
+	public ConfiguratorMode getState(ItemStack itemstack)
 	{
 		if(itemstack.stackTagCompound == null)
 		{
-			return 0;
+			return ConfiguratorMode.CONFIGURATE_ITEMS;
 		}
-
-		byte state = 0;
 
 		if(itemstack.stackTagCompound.getTag("state") != null)
 		{
-			state = itemstack.stackTagCompound.getByte("state");
+			return ConfiguratorMode.values()[itemstack.stackTagCompound.getInteger("state")];
 		}
 
-		return state;
+		return ConfiguratorMode.CONFIGURATE_ITEMS;
 	}
 
 	@Override
@@ -253,25 +248,90 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	}
 
 	@Override
-	@Method(modid = "BuildCraftAPI|tools")
+	@Method(modid = "BuildCraft")
 	public boolean canWrench(EntityPlayer player, int x, int y, int z)
 	{
 		return canUseWrench(player, x, y, z);
 	}
 
 	@Override
-	@Method(modid = "BuildCraftAPI|tools")
+	@Method(modid = "BuildCraft")
 	public void wrenchUsed(EntityPlayer player, int x, int y, int z) {}
 
 	@Override
 	public boolean canUseWrench(EntityPlayer player, int x, int y, int z)
 	{
-		return getState(player.getCurrentEquippedItem()) == 3;
+		return getState(player.getCurrentEquippedItem()) == ConfiguratorMode.WRENCH;
 	}
 
 	@Override
 	public boolean doesSneakBypassUse(World world, int x, int y, int z, EntityPlayer player)
 	{
-		return getState(player.getCurrentEquippedItem()) == 3;
+		return getState(player.getCurrentEquippedItem()) == ConfiguratorMode.WRENCH;
+	}
+
+	@Override
+	public boolean isUsable(ItemStack item, EntityLivingBase user, int x, int y, int z) 
+	{
+		return user instanceof EntityPlayer && canUseWrench((EntityPlayer)user, x, y, z);
+	}
+
+	@Override
+	public void toolUsed(ItemStack item, EntityLivingBase user, int x, int y, int z) {}
+	
+	public static enum ConfiguratorMode
+	{
+		CONFIGURATE_ITEMS("configurate", "(" + TransmissionType.ITEM.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_FLUIDS("configurate", "(" + TransmissionType.FLUID.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_GASES("configurate", "(" + TransmissionType.GAS.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		CONFIGURATE_ENERGY("configurate", "(" + TransmissionType.ENERGY.localize() + ")", EnumColor.BRIGHT_GREEN, true),
+		EMPTY("empty", "", EnumColor.DARK_RED, false),
+		ROTATE("rotate", "", EnumColor.YELLOW, false),
+		WRENCH("wrench", "", EnumColor.PINK, false);
+		
+		private String name;
+		private String info;
+		private EnumColor color;
+		private boolean configurating;
+		
+		private ConfiguratorMode(String s, String s1, EnumColor c, boolean b)
+		{
+			name = s;
+			info = s1;
+			color = c;
+			configurating = b;
+		}
+		
+		public String getName()
+		{
+			return MekanismUtils.localize("tooltip.configurator." + name) + " " + info;
+		}
+		
+		public EnumColor getColor()
+		{
+			return color;
+		}
+		
+		public boolean isConfigurating()
+		{
+			return configurating;
+		}
+		
+		public TransmissionType getTransmission()
+		{
+			switch(this)
+			{
+				case CONFIGURATE_ITEMS:
+					return TransmissionType.ITEM;
+				case CONFIGURATE_FLUIDS:
+					return TransmissionType.FLUID;
+				case CONFIGURATE_GASES:
+					return TransmissionType.GAS;
+				case CONFIGURATE_ENERGY:
+					return TransmissionType.ENERGY;
+				default:
+					return null;
+			}
+		}
 	}
 }

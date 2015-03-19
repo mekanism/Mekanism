@@ -2,30 +2,27 @@ package mekanism.client.nei;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionInput;
-import mekanism.api.infuse.InfusionOutput;
-import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.GuiMetallurgicInfuser;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
@@ -33,7 +30,6 @@ import org.lwjgl.opengl.GL11;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
@@ -109,9 +105,9 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 		return ret;
 	}
 
-	public Set<Entry<InfusionInput, InfusionOutput>> getRecipes()
+	public Collection<MetallurgicInfuserRecipe> getRecipes()
 	{
-		return Recipe.METALLURGIC_INFUSER.get().entrySet();
+		return Recipe.METALLURGIC_INFUSER.get().values();
 	}
 
 	@Override
@@ -158,9 +154,9 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(MetallurgicInfuserRecipe irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
+				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(irecipe.getInput().infuse.type), irecipe.getInput().infuse.type));
 			}
 		}
 		else {
@@ -177,11 +173,11 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(MetallurgicInfuserRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting(((InfusionOutput)irecipe.getValue()).resource, result))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().output, result))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
+				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(irecipe.getInput().infuse.type), irecipe.getInput().infuse.type));
 			}
 		}
 	}
@@ -189,22 +185,22 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(MetallurgicInfuserRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting(((InfusionInput)irecipe.getKey()).inputStack, ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().inputStack, ingredient))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType), ((InfusionInput)irecipe.getKey()).infusionType));
+				arecipes.add(new CachedIORecipe(irecipe, getInfuseStacks(irecipe.getInput().infuse.type), irecipe.getInput().infuse.type));
 			}
 			
 			List<ItemStack> infuses;
 			
-			for(ItemStack stack : getInfuseStacks(((InfusionInput)irecipe.getKey()).infusionType)) 
+			for(ItemStack stack : getInfuseStacks(irecipe.getInput().infuse.type)) 
 			{
 				if(NEIServerUtils.areStacksSameTypeCrafting(stack, ingredient))
 				{
 					infuses = new ArrayList<ItemStack>();
 					infuses.add(stack);
-					arecipes.add(new CachedIORecipe(irecipe, infuses, ((InfusionInput)irecipe.getKey()).infusionType));
+					arecipes.add(new CachedIORecipe(irecipe, infuses, irecipe.getInput().infuse.type));
 				}
 			}
 		}
@@ -249,9 +245,9 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 			infusionType = type;
 		}
 
-		public CachedIORecipe(Map.Entry recipe, List<ItemStack> infuses, InfuseType type)
+		public CachedIORecipe(MetallurgicInfuserRecipe recipe, List<ItemStack> infuses, InfuseType type)
 		{
-			this(((InfusionInput)recipe.getKey()).inputStack, ((InfusionOutput)recipe.getValue()).resource, infuses, type);
+			this(recipe.getInput().inputStack, recipe.getOutput().output, infuses, type);
 		}
 	}
 }

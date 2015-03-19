@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -22,15 +22,15 @@ public class GuiToolsConfig extends GuiConfig
 	public GuiToolsConfig(GuiScreen parent)
 	{
 		super(parent, getConfigElements(),
-				"Mekanism", false, false, GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
+				"MekanismTools", false, false, "MekanismTools");
 	}
 
 	private static List<IConfigElement> getConfigElements()
 	{
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
-		list.add(new DummyCategoryElement("General", "mekanism.configgui.ctgy.tools.general", GeneralEntry.class));
-		list.add(new DummyCategoryElement("Armor Balance", "mekanism.configgui.ctgy.tools.armor", ArmorEntry.class));
-		list.add(new DummyCategoryElement("Tools Balance", "mekanism.configgui.ctgy.tools.tools", ToolsEntry.class));
+		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.tools.general"), "mekanism.configgui.ctgy.tools.general", GeneralEntry.class));
+		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.tools.armor"), "mekanism.configgui.ctgy.tools.armor", ArmorEntry.class));
+		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.tools.tools"), "mekanism.configgui.ctgy.tools.tools", ToolsEntry.class));
 		return list;
 	}
 
@@ -44,10 +44,10 @@ public class GuiToolsConfig extends GuiConfig
 		@Override
 		protected GuiScreen buildChildScreen()
 		{
-			return new GuiConfig(this.owningScreen,
+			return new GuiConfig(owningScreen,
 					new ConfigElement(Mekanism.configuration.getCategory("tools.general")).getChildElements(),
-					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
-					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+					owningScreen.modID, Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
+					configElement.requiresMcRestart() || owningScreen.allRequireMcRestart,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
 		}
 	}
@@ -62,10 +62,10 @@ public class GuiToolsConfig extends GuiConfig
 		@Override
 		protected GuiScreen buildChildScreen()
 		{
-			return new GuiConfig(this.owningScreen,
+			return new GuiConfig(owningScreen,
 					new ConfigElement(Mekanism.configuration.getCategory("tools.armor-balance")).getChildElements(),
-					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
-					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+					owningScreen.modID, Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
+					configElement.requiresMcRestart() || owningScreen.allRequireMcRestart,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
 		}
 	}
@@ -80,10 +80,10 @@ public class GuiToolsConfig extends GuiConfig
 		@Override
 		protected GuiScreen buildChildScreen()
 		{
-			return new GuiConfig(this.owningScreen,
+			return new GuiConfig(owningScreen,
 					new ConfigElement(Mekanism.configuration.getCategory("tools.tool-balance")).getChildElements(),
-					this.owningScreen.modID, Configuration.CATEGORY_GENERAL, this.configElement.requiresWorldRestart() || this.owningScreen.allRequireWorldRestart,
-					this.configElement.requiresMcRestart() || this.owningScreen.allRequireMcRestart,
+					owningScreen.modID, Configuration.CATEGORY_GENERAL, configElement.requiresWorldRestart() || owningScreen.allRequireWorldRestart,
+					configElement.requiresMcRestart() || owningScreen.allRequireMcRestart,
 					GuiConfig.getAbridgedConfigPath(Mekanism.configuration.toString()));
 		}
 	}

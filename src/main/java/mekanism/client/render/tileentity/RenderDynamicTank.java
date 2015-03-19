@@ -7,8 +7,8 @@ import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tank.SynchronizedTankData.ValveData;
-import mekanism.common.tank.TankUpdateProtocol;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -55,6 +55,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
 
 				MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
+				MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());
 
 				DisplayInteger[] displayList = getListAndRender(data, tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj());
 
@@ -68,6 +69,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 				}
 
 				MekanismRenderer.glowOff();
+				MekanismRenderer.resetColor();
 
 				pop();
 
@@ -84,6 +86,7 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 						getValveDisplay(ValveRenderData.get(data, valveData), tileEntity.structure.fluidStored.getFluid(), tileEntity.getWorldObj()).render();
 
 						MekanismRenderer.glowOff();
+						MekanismRenderer.resetColor();
 
 						pop();
 					}
@@ -132,8 +135,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			cachedCenterFluids.put(data, map);
 		}
 
-		MekanismRenderer.colorFluid(fluid);
-
 		for(int i = 0; i < stages; i++)
 		{
 			displays[i] = DisplayInteger.createAndStart();
@@ -153,8 +154,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 
 			GL11.glEndList();
 		}
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		return displays;
 	}
@@ -181,8 +180,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			map.put(fluid, display);
 			cachedValveFluids.put(data, map);
 		}
-
-		MekanismRenderer.colorFluid(fluid);
 
 		switch(data.side)
 		{
@@ -264,8 +261,6 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 		}
 		
 		display.endList();
-
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
 		return display;
 	}
@@ -357,5 +352,11 @@ public class RenderDynamicTank extends TileEntitySpecialRenderer
 			code = 31 * code + valveLocation.hashCode();
 			return code;
 		}
+	}
+
+	public static void resetDisplayInts()
+	{
+		cachedCenterFluids.clear();
+		cachedValveFluids.clear();
 	}
 }

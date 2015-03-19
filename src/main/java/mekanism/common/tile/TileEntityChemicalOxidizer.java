@@ -1,8 +1,11 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -11,29 +14,27 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISustainedData;
-import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.OxidationRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IUpgradeTile, ISustainedData
+public class TileEntityChemicalOxidizer extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IUpgradeTile, ISustainedData, ITankManager
 {
 	public GasTank gasTank = new GasTank(MAX_GAS);
 
@@ -41,7 +42,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 	public int updateDelay;
 
-	public int gasOutput = 16;
+	public int gasOutput = 256;
 
 	public boolean isActive;
 
@@ -51,9 +52,15 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 	public int operatingTicks = 0;
 
-	public int TICKS_REQUIRED = 100;
+	public int BASE_TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = Mekanism.rotaryCondensentratorUsage;
+	public int ticksRequired = BASE_TICKS_REQUIRED;
+
+	public final double BASE_ENERGY_USAGE = usage.rotaryCondensentratorUsage;
+
+	public double energyUsage = BASE_ENERGY_USAGE;
+
+	public OxidationRecipe cachedRecipe;
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -61,26 +68,23 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 	public TileEntityChemicalOxidizer()
 	{
-		super("ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
+		super("machine.oxidizer", "ChemicalOxidizer", MachineType.CHEMICAL_OXIDIZER.baseEnergy);
 		inventory = new ItemStack[4];
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		super.onUpdate();
+		
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -102,27 +106,22 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 			{
 				gasTank.draw(GasTransmission.addGas(inventory[2], gasTank.getGas()), true);
 			}
+			
+			OxidationRecipe recipe = getRecipe();
 
-			if(canOperate() && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyUsage && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
+				setEnergy(getEnergy() - energyUsage);
 
-				if(operatingTicks < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if(operatingTicks < ticksRequired)
 				{
 					operatingTicks++;
 				}
 				else {
-					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], true, Recipe.CHEMICAL_OXIDIZER.get());
+					operate(recipe);
 
-					gasTank.receive(stack, true);
 					operatingTicks = 0;
-
-					if(inventory[0].stackSize <= 0)
-					{
-						inventory[0] = null;
-					}
-
 					markDirty();
 				}
 			}
@@ -145,7 +144,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), gasTank.getGas().getGas()))
 					{
-						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
+						gasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -157,7 +156,7 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	{
 		if(slotID == 0)
 		{
-			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_OXIDIZER.get()) != null;
+			return RecipeHandler.getOxidizerRecipe(new ItemStackInput(itemstack)) != null;
 		}
 		else if(slotID == 1)
 		{
@@ -199,24 +198,36 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
-	public boolean canOperate()
+	public OxidationRecipe getRecipe()
 	{
-		if(inventory[0] == null)
+		ItemStackInput input = getInput();
+		
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
-			return false;
+			cachedRecipe = RecipeHandler.getOxidizerRecipe(getInput());
 		}
+		
+		return cachedRecipe;
+	}
 
-		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[0], false, Recipe.CHEMICAL_OXIDIZER.get());
+	public ItemStackInput getInput()
+	{
+		return new ItemStackInput(inventory[0]);
+	}
 
-		if(stack == null || (gasTank.getGas() != null && (gasTank.getGas().getGas() != stack.getGas() || gasTank.getNeeded() < stack.amount)))
-		{
-			return false;
-		}
+	public boolean canOperate(OxidationRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(inventory, gasTank);
+	}
 
-		return true;
+	public void operate(OxidationRecipe recipe)
+	{
+		recipe.operate(inventory, gasTank);
+
+		markDirty();
 	}
 
 	@Override
@@ -290,17 +301,6 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	}
 	
 	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	public int getScaledGasLevel(int i)
-	{
-		return gasTank.getGas() != null ? gasTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	@Override
 	public void setActive(boolean active)
 	{
 		isActive = active;
@@ -352,47 +352,9 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	}
 
 	@Override
-	public String getSoundPath()
+	public boolean canPulse()
 	{
-		return "ChemicalInfuser.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data) 
-	{
-		return true;
+		return false;
 	}
 
 	@Override
@@ -414,5 +376,28 @@ public class TileEntityChemicalOxidizer extends TileEntityElectricBlock implemen
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		gasTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("gasTank")));
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
+		}
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {gasTank};
 	}
 }

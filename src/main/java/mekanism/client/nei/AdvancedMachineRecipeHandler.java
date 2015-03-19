@@ -1,27 +1,25 @@
 package mekanism.client.nei;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import mekanism.api.AdvancedInput;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiElement;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
+import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -33,7 +31,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
@@ -43,7 +40,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 
 	public abstract String getRecipeId();
 
-	public abstract Set<Entry<AdvancedInput, ItemStack>> getRecipes();
+	public abstract Collection<? extends AdvancedMachineRecipe> getRecipes();
 
 	public abstract List<ItemStack> getFuelStacks(Gas gasType);
 	
@@ -117,9 +114,9 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
+			for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getInput().gasType)));
 			}
 		}
 		else {
@@ -130,11 +127,11 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
+		for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getValue(), result))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getOutput().output, result))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getInput().gasType)));
 			}
 		}
 	}
@@ -150,11 +147,11 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
+			for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 			{
-				if(irecipe.getKey().gasType == ((GasStack)ingredients[0]).getGas())
+				if(irecipe.getInput().gasType == ((GasStack)ingredients[0]).getGas())
 				{
-					arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
+					arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getInput().gasType)));
 				}
 			}
 		}
@@ -166,11 +163,11 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry<AdvancedInput, ItemStack> irecipe : getRecipes())
+		for(AdvancedMachineRecipe<?> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getKey().itemStack, ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().itemStack, ingredient))
 			{
-				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getKey().gasType)));
+				arecipes.add(new CachedIORecipe(irecipe, getFuelStacks(irecipe.getInput().gasType)));
 			}
 		}
 	}
@@ -270,7 +267,7 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 	{
 		public List<ItemStack> fuelStacks;
 
-		public AdvancedInput input;
+		public AdvancedMachineInput input;
 
 		public PositionedStack outputStack;
 
@@ -292,16 +289,16 @@ public abstract class AdvancedMachineRecipeHandler extends BaseRecipeHandler
 			return new PositionedStack(fuelStacks.get(cycleticks/40 % fuelStacks.size()), 40, 48);
 		}
 
-		public CachedIORecipe(AdvancedInput adv, ItemStack output, List<ItemStack> fuels)
+		public CachedIORecipe(AdvancedMachineInput adv, ItemStack output, List<ItemStack> fuels)
 		{
 			input = adv;
 			outputStack = new PositionedStack(output, 100, 30);
 			fuelStacks = fuels;
 		}
 
-		public CachedIORecipe(Map.Entry recipe, List<ItemStack> fuels)
+		public CachedIORecipe(AdvancedMachineRecipe<?> recipe, List<ItemStack> fuels)
 		{
-			this((AdvancedInput)recipe.getKey(), (ItemStack)recipe.getValue(), fuels);
+			this(recipe.getInput(), recipe.getOutput().output, fuels);
 		}
 	}
 }

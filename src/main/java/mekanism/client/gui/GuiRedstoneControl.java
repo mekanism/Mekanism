@@ -1,17 +1,16 @@
 package mekanism.client.gui;
 
 import mekanism.api.Coord4D;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.IRedstoneControl.RedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketRedstoneControl.RedstoneControlMessage;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-
 import codechicken.lib.vec.Rectangle4i;
 
 public class GuiRedstoneControl extends GuiElement
@@ -81,6 +80,7 @@ public class GuiRedstoneControl extends GuiElement
 			{
 				RedstoneControl current = control.getControlType();
 				int ordinalToSet = current.ordinal() < (RedstoneControl.values().length-1) ? current.ordinal()+1 : 0;
+				if(ordinalToSet == RedstoneControl.PULSE.ordinal() && !control.canPulse()) ordinalToSet = 0;
 
 				SoundHandler.playSound("gui.button.press");
 				Mekanism.packetHandler.sendToServer(new RedstoneControlMessage(Coord4D.get(tileEntity), RedstoneControl.values()[ordinalToSet]));

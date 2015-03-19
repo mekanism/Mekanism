@@ -1,69 +1,68 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionInput;
-import mekanism.api.infuse.InfusionOutput;
-import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
-import mekanism.common.IEjector;
-import mekanism.common.IInvConfiguration;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.IUpgradeTile;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.InfuseStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IEjector;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.InfusionInput;
+import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implements IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
+public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock implements IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl
 {
-	/** This machine's side configuration. */
-	public byte[] sideConfig = new byte[] {2, 1, 0, 5, 3, 4};
-
-	/** An arraylist of SideData for this machine. */
-	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-
-	/** The type of infuse this machine stores. */
-	public InfuseType type = null;
-
 	/** The maxiumum amount of infuse this machine can store. */
 	public int MAX_INFUSE = 1000;
 
 	/** How much energy this machine consumes per-tick. */
-	public double ENERGY_PER_TICK = Mekanism.metallurgicInfuserUsage;
+	public double BASE_ENERGY_PER_TICK = usage.metallurgicInfuserUsage;
+
+	public double energyPerTick = BASE_ENERGY_PER_TICK;
 
 	/** How many ticks it takes to run an operation. */
-	public int TICKS_REQUIRED = 200;
+	public int BASE_TICKS_REQUIRED = 200;
+
+	public int ticksRequired = BASE_TICKS_REQUIRED;
 
 	/** The amount of infuse this machine has stored. */
-	public int infuseStored;
+	public InfuseStorage infuseStored = new InfuseStorage();
 
 	/** How many ticks this machine has been operating for. */
 	public int operatingTicks;
@@ -83,22 +82,29 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 0);
+	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
 
 	public TileEntityMetallurgicInfuser()
 	{
-		super("MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
+		super("metalinfuser", "MetallurgicInfuser", MachineType.METALLURGIC_INFUSER.baseEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.PURPLE, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {2}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {3}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {4}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Infuse", EnumColor.PURPLE, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {2}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {3}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {4}));
+		
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {1, 0, 0, 4, 2, 3});
+		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[5];
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(4));
+		
+		upgradeComponent = new TileComponentUpgrade(this, 3);
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(4));
 	}
 
 	@Override
@@ -106,19 +112,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote)
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -134,7 +135,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 
-			ChargeUtils.discharge(4, this);
+			ChargeUtils.discharge(0, this);
 
 			if(inventory[1] != null)
 			{
@@ -142,12 +143,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				{
 					InfuseObject infuse = InfuseRegistry.getObject(inventory[1]);
 
-					if(type == null || type == infuse.type)
+					if(infuseStored.type == null || infuseStored.type == infuse.type)
 					{
-						if(infuseStored+infuse.stored <= MAX_INFUSE)
+						if(infuseStored.amount + infuse.stored <= MAX_INFUSE)
 						{
-							infuseStored+=infuse.stored;
-							type = infuse.type;
+							infuseStored.amount += infuse.stored;
+							infuseStored.type = infuse.type;
 							inventory[1].stackSize--;
 
 							if(inventory[1].stackSize <= 0)
@@ -159,21 +160,23 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(getInput());
+
+			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
-				setActive(true);
-
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if(canOperate(recipe))
 				{
-					operatingTicks++;
-					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
-				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
-				{
-					operate();
+					setActive(true);
+					setEnergy(getEnergy() - energyPerTick);
 
-					operatingTicks = 0;
-					setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK));
+					if((operatingTicks + 1) < ticksRequired)
+					{
+						operatingTicks++;
+					} else
+					{
+						operate(recipe);
+						operatingTicks = 0;
+					}
 				}
 			}
 			else {
@@ -183,19 +186,25 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				}
 			}
 
-			if(!canOperate())
+			if(!canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
 
-			if(infuseStored <= 0)
+			if(infuseStored.amount <= 0)
 			{
-				infuseStored = 0;
-				type = null;
+				infuseStored.amount = 0;
+				infuseStored.type = null;
 			}
 
 			prevEnergy = getEnergy();
 		}
+	}
+	
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
 	}
 
 	@Override
@@ -222,17 +231,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		}
 		else if(slotID == 1)
 		{
-			return InfuseRegistry.getObject(itemstack) != null && (type == null || type == InfuseRegistry.getObject(itemstack).type);
+			return InfuseRegistry.getObject(itemstack) != null && (infuseStored.type == null || infuseStored.type == InfuseRegistry.getObject(itemstack).type);
 		}
 		else if(slotID == 0)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 2)
 		{
-			if(type != null)
+			if(infuseStored.type != null)
 			{
-				if(RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, itemstack), false) != null)
+				if(RecipeHandler.getMetallurgicInfuserRecipe(new InfusionInput(infuseStored, itemstack)) != null)
 				{
 					return true;
 				}
@@ -241,6 +250,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 				for(Object obj : Recipe.METALLURGIC_INFUSER.get().keySet())
 				{
 					InfusionInput input = (InfusionInput)obj;
+					
 					if(input.inputStack.isItemEqual(itemstack))
 					{
 						return true;
@@ -256,85 +266,32 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 		return false;
 	}
 
-	public void operate()
+	public InfusionInput getInput()
 	{
-		if(!canOperate())
-		{
-			return;
-		}
+		return new InfusionInput(infuseStored, inventory[2]);
+	}
 
-		InfusionOutput output = RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), true);
+	public void operate(MetallurgicInfuserRecipe recipe)
+	{
+		recipe.output(inventory, infuseStored);
 
-		infuseStored -= output.getInfuseRequired();
-
-		if(inventory[2].stackSize <= 0)
-		{
-			inventory[2] = null;
-		}
-
-		if(inventory[3] == null)
-		{
-			inventory[3] = output.resource.copy();
-		}
-		else {
-			inventory[3].stackSize += output.resource.stackSize;
-		}
-
+		markDirty();
 		ejectorComponent.onOutput();
 	}
 
-	public boolean canOperate()
+	public boolean canOperate(MetallurgicInfuserRecipe recipe)
 	{
-		if(inventory[2] == null)
-		{
-			return false;
-		}
-
-		InfusionOutput output = RecipeHandler.getMetallurgicInfuserOutput(InfusionInput.getInfusion(type, infuseStored, inventory[2]), false);
-
-		if(output == null)
-		{
-			return false;
-		}
-
-		if(infuseStored-output.getInfuseRequired() < 0)
-		{
-			return false;
-		}
-
-		if(inventory[3] == null)
-		{
-			return true;
-		}
-
-		if(!inventory[3].isItemEqual(output.resource))
-		{
-			return false;
-		}
-		else {
-			return inventory[3].stackSize + output.resource.stackSize <= inventory[3].getMaxStackSize();
-		}
+		return recipe != null && recipe.canOperate(inventory, infuseStored);
 	}
 
 	public int getScaledInfuseLevel(int i)
 	{
-		return infuseStored*i / MAX_INFUSE;
+		return infuseStored.amount * i / MAX_INFUSE;
 	}
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
-	}
-
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	@Override
@@ -344,17 +301,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 		clientActive = isActive = nbtTags.getBoolean("isActive");
 		operatingTicks = nbtTags.getInteger("operatingTicks");
-		infuseStored = nbtTags.getInteger("infuseStored");
+		infuseStored.amount = nbtTags.getInteger("infuseStored");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-		type = InfuseRegistry.get(nbtTags.getString("type"));
-
-		if(nbtTags.hasKey("sideDataStored"))
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				sideConfig[i] = nbtTags.getByte("config"+i);
-			}
-		}
+		infuseStored.type = InfuseRegistry.get(nbtTags.getString("type"));
 	}
 
 	@Override
@@ -364,23 +313,18 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("operatingTicks", operatingTicks);
-		nbtTags.setInteger("infuseStored", infuseStored);
+		nbtTags.setInteger("infuseStored", infuseStored.amount);
 		nbtTags.setInteger("controlType", controlType.ordinal());
 
-		if(type != null)
+		if(infuseStored.type != null)
 		{
-			nbtTags.setString("type", type.name);
+			nbtTags.setString("type", infuseStored.type.name);
 		}
 		else {
 			nbtTags.setString("type", "null");
 		}
 
 		nbtTags.setBoolean("sideDataStored", true);
-
-		for(int i = 0; i < 6; i++)
-		{
-			nbtTags.setByte("config"+i, sideConfig[i]);
-		}
 	}
 
 	@Override
@@ -388,7 +332,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	{
 		if(!worldObj.isRemote)
 		{
-			infuseStored = dataStream.readInt();
+			infuseStored.amount = dataStream.readInt();
 			return;
 		}
 
@@ -396,18 +340,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 		clientActive = dataStream.readBoolean();
 		operatingTicks = dataStream.readInt();
-		infuseStored = dataStream.readInt();
+		infuseStored.amount = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-		type = InfuseRegistry.get(PacketHandler.readString(dataStream));
-
-		for(int i = 0; i < 6; i++)
-		{
-			sideConfig[i] = dataStream.readByte();
-		}
+		infuseStored.type = InfuseRegistry.get(PacketHandler.readString(dataStream));
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -420,18 +359,17 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 
 		data.add(isActive);
 		data.add(operatingTicks);
-		data.add(infuseStored);
+		data.add(infuseStored.amount);
 		data.add(controlType.ordinal());
 
-		if(type != null)
+		if(infuseStored.type != null)
 		{
-			data.add(type.name);
+			data.add(infuseStored.type.name);
 		}
 		else {
 			data.add("null");
 		}
 
-		data.add(sideConfig);
 		return data;
 	}
 
@@ -462,7 +400,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			case 2:
 				return new Object[] {facing};
 			case 3:
-				return new Object[] {canOperate()};
+				return new Object[] {canOperate(RecipeHandler.getMetallurgicInfuserRecipe(getInput()))};
 			case 4:
 				return new Object[] {getMaxEnergy()};
 			case 5:
@@ -470,7 +408,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 			case 6:
 				return new Object[] {infuseStored};
 			case 7:
-				return new Object[] {MAX_INFUSE-infuseStored};
+				return new Object[] {MAX_INFUSE-infuseStored.amount};
 			default:
 				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
@@ -495,13 +433,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
@@ -531,65 +463,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
-	public ArrayList<SideData> getSideData()
+	public TileComponentConfig getConfig()
 	{
-		return sideOutputs;
-	}
-
-	@Override
-	public byte[] getConfiguration()
-	{
-		return sideConfig;
+		return configComponent;
 	}
 
 	@Override
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		return true;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return "MetallurgicInfuser.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override
@@ -618,6 +500,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	}
 
 	@Override
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
 	public TileComponentUpgrade getComponent()
 	{
 		return upgradeComponent;
@@ -627,5 +515,22 @@ public class TileEntityMetallurgicInfuser extends TileEntityElectricBlock implem
 	public IEjector getEjector()
 	{
 		return ejectorComponent;
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
+		}
 	}
 }

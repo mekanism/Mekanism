@@ -4,45 +4,31 @@ import mekanism.client.ClientTickHandler;
 import mekanism.common.item.ItemGasMask;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GasMaskSound extends PlayerSound
 {
-	public GasMaskSound(String id, EntityPlayer entity)
+	public GasMaskSound(EntityPlayer player)
 	{
-		super(id, "GasMask.ogg", entity);
+		super(player, new ResourceLocation("mekanism", "item.gasMask"));
+		
+		setFadeIn(10);
+		setFadeOut(5);
 	}
 
 	@Override
-	public boolean update(World world)
+	public boolean isDonePlaying()
 	{
-		if(!super.update(world))
-		{
-			return false;
-		}
-		else if(!hasGasMask(player))
-		{
-			return false;
-		}
-		else {
-			if(ClientTickHandler.isGasMaskOn(player) != isPlaying)
-			{
-				if(ClientTickHandler.isGasMaskOn(player))
-				{
-					play();
-				}
-				else {
-					stopLoop();
-				}
-			}
-		}
+		return donePlaying;
+	}
 
-		if(isPlaying)
-		{
-			ticksSincePlay++;
-		}
-
-		return true;
+	@Override
+	public boolean shouldPlaySound()
+	{
+		return hasGasMask(player) && ClientTickHandler.isGasMaskOn(player);
 	}
 
 	private boolean hasGasMask(EntityPlayer player)

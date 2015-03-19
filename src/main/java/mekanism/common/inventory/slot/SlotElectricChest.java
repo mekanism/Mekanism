@@ -1,6 +1,6 @@
 package mekanism.common.inventory.slot;
 
-import mekanism.common.IElectricChest;
+import mekanism.common.base.IElectricChest;
 import mekanism.common.block.BlockMachine.MachineType;
 
 import net.minecraft.entity.player.EntityPlayer;

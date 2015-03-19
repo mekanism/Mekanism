@@ -27,7 +27,10 @@ public class ItemControlCircuit extends ItemMekanism
 	{
 		for(BaseTier tier : BaseTier.values())
 		{
-			icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "ControlCircuit");
+			if(tier.isObtainable())
+			{
+				icons[tier.ordinal()] = register.registerIcon("mekanism:" + tier.getName() + "ControlCircuit");
+			}
 		}
 	}
 
@@ -42,7 +45,10 @@ public class ItemControlCircuit extends ItemMekanism
 	{
 		for(BaseTier tier : BaseTier.values())
 		{
-			itemList.add(new ItemStack(item, 1, tier.ordinal()));
+			if(tier.isObtainable())
+			{
+				itemList.add(new ItemStack(item, 1, tier.ordinal()));
+			}
 		}
 	}
 

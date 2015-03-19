@@ -1,15 +1,14 @@
 package mekanism.common;
 
 import mekanism.api.gas.GasStack;
+import mekanism.common.entity.EntityFlame;
+import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
-import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.network.PacketStatusUpdate.StatusUpdateMessage;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -32,60 +31,6 @@ public class CommonPlayerTickHandler
 
 	public void tickEnd(EntityPlayer player)
 	{
-		if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemPortableTeleporter)
-		{
-			ItemPortableTeleporter item = (ItemPortableTeleporter)player.getCurrentEquippedItem().getItem();
-			ItemStack itemstack = player.getCurrentEquippedItem();
-
-			Teleporter.Code teleCode = new Teleporter.Code(item.getDigit(itemstack, 0), item.getDigit(itemstack, 1), item.getDigit(itemstack, 2), item.getDigit(itemstack, 3));
-
-			if(Mekanism.teleporters.containsKey(teleCode))
-			{
-				if(Mekanism.teleporters.get(teleCode).size() > 0 && Mekanism.teleporters.get(teleCode).size() <= 2)
-				{
-					int energyNeeded = item.calculateEnergyCost(player, MekanismUtils.getClosestCoords(teleCode, player));
-
-					if(item.getEnergy(itemstack) < energyNeeded)
-					{
-						if(item.getStatus(itemstack) != 2)
-						{
-							item.setStatus(itemstack, 2);
-							Mekanism.packetHandler.sendTo(new StatusUpdateMessage(2), (EntityPlayerMP)player);
-						}
-					}
-					else {
-						if(item.getStatus(itemstack) != 1)
-						{
-							item.setStatus(itemstack, 1);
-							Mekanism.packetHandler.sendTo(new StatusUpdateMessage(1), (EntityPlayerMP)player);
-						}
-					}
-				}
-				else if(Mekanism.teleporters.get(teleCode).size() > 2)
-				{
-					if(item.getStatus(itemstack) != 3)
-					{
-						item.setStatus(itemstack, 3);
-						Mekanism.packetHandler.sendTo(new StatusUpdateMessage(3), (EntityPlayerMP)player);
-					}
-				}
-				else {
-					if(item.getStatus(itemstack) != 4)
-					{
-						item.setStatus(itemstack, 4);
-						Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
-					}
-				}
-			}
-			else {
-				if(item.getStatus(itemstack) != 4)
-				{
-					item.setStatus(itemstack, 4);
-					Mekanism.packetHandler.sendTo(new StatusUpdateMessage(4), (EntityPlayerMP)player);
-				}
-			}
-		}
-
 		if(player.getEquipmentInSlot(1) != null && player.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)
 		{
 			player.stepHeight = 1.002F;
@@ -95,6 +40,11 @@ public class CommonPlayerTickHandler
 			{
 				player.stepHeight = 0.5F;
 			}
+		}
+		
+		if(isFlamethrowerOn(player))
+		{
+			player.worldObj.spawnEntityInWorld(new EntityFlame(player));
 		}
 
 		if(isJetpackOn(player))
@@ -209,6 +159,19 @@ public class CommonPlayerTickHandler
 			}
 		}
 
+		return false;
+	}
+	
+	public static boolean isFlamethrowerOn(EntityPlayer player)
+	{
+		if(Mekanism.flamethrowerActive.contains(player.getCommandSenderName()))
+		{
+			if(player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemFlamethrower)
+			{
+				return true;
+			}
+		}
+		
 		return false;
 	}
 }

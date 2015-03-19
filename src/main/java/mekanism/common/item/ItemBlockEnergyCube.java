@@ -5,14 +5,15 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
-import mekanism.common.IEnergyCube;
-import mekanism.common.ISustainedInventory;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier.EnergyCubeTier;
+import mekanism.common.base.IEnergyCube;
+import mekanism.common.base.ISustainedInventory;
 import mekanism.common.integration.IC2ItemManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityEnergyCube;
@@ -40,8 +41,8 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 @InterfaceList({
-		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHAPI|energy"),
-		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2API")
+		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
+		@Interface(iface = "ic2.api.item.ISpecialElectricItem", modid = "IC2")
 })
 public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IEnergyCube, ISpecialElectricItem, ISustainedInventory, IEnergyContainerItem
 {
@@ -73,16 +74,16 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 
 	public ItemStack getUnchargedItem(EnergyCubeTier tier)
 	{
-		ItemStack charged = new ItemStack(this);
-		setEnergyCubeTier(charged, tier);
-		charged.setItemDamage(100);
-		return charged;
+		ItemStack stack = new ItemStack(this);
+		setEnergyCubeTier(stack, tier);
+		stack.setItemDamage(100);
+		return stack;
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + getEnergyCubeTier(itemstack).name;
+		return getUnlocalizedName() + "." + getEnergyCubeTier(itemstack).getBaseTier().getName();
 	}
 
 	@Override
@@ -131,32 +132,32 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 
-		itemstack.stackTagCompound.setString("tier", tier.name);
+		itemstack.stackTagCompound.setString("tier", tier.getBaseTier().getName());
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public boolean canProvideEnergy(ItemStack itemStack)
 	{
 		return true;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public double getMaxCharge(ItemStack itemStack)
 	{
 		return 0;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public int getTier(ItemStack itemStack)
 	{
 		return 4;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public double getTransferLimit(ItemStack itemStack)
 	{
 		return 0;
@@ -213,6 +214,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public void setEnergy(ItemStack itemStack, double amount)
 	{
+		if(getEnergyCubeTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Integer.MAX_VALUE)
+		{
+			return;
+		}
+		
 		if(itemStack.stackTagCompound == null)
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
@@ -253,14 +259,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(canReceive(theItem))
 		{
 			double energyNeeded = getMaxEnergy(theItem)-getEnergy(theItem);
-			double toReceive = Math.min(energy*Mekanism.FROM_TE, energyNeeded);
+			double toReceive = Math.min(energy* general.FROM_TE, energyNeeded);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) + toReceive);
 			}
 
-			return (int)Math.round(toReceive*Mekanism.TO_TE);
+			return (int)Math.round(toReceive* general.TO_TE);
 		}
 
 		return 0;
@@ -272,14 +278,14 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		if(canSend(theItem))
 		{
 			double energyRemaining = getEnergy(theItem);
-			double toSend = Math.min((energy*Mekanism.FROM_TE), energyRemaining);
+			double toSend = Math.min((energy* general.FROM_TE), energyRemaining);
 
 			if(!simulate)
 			{
 				setEnergy(theItem, getEnergy(theItem) - toSend);
 			}
 
-			return (int)Math.round(toSend*Mekanism.TO_TE);
+			return (int)Math.round(toSend* general.TO_TE);
 		}
 
 		return 0;
@@ -288,13 +294,13 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)*Mekanism.TO_TE);
+		return (int)(getMaxEnergy(theItem)* general.TO_TE);
 	}
 
 	@Override
@@ -304,21 +310,21 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public IElectricItemManager getManager(ItemStack itemStack)
 	{
 		return IC2ItemManager.getManager(this);
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public Item getChargedItem(ItemStack itemStack)
 	{
 		return this;
 	}
 
 	@Override
-	@Method(modid = "IC2API")
+	@Method(modid = "IC2")
 	public Item getEmptyItem(ItemStack itemStack)
 	{
 		return this;

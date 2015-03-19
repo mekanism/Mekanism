@@ -79,7 +79,7 @@ public class GasTank
 	 */
 	public int receive(GasStack amount, boolean doReceive)
 	{
-		if(amount == null || (stored != null && stored.amount == getMaxGas()))
+		if(amount == null || (stored != null && !(stored.amount != getMaxGas() && stored.isGasEqual(amount))))
 		{
 			return 0;
 		}
@@ -164,6 +164,14 @@ public class GasTank
 	}
 
 	/**
+	 * Sets the maximum amount of gas this tank can hold
+	 */
+	public void setMaxGas(int capacity)
+	{
+		maxGas = capacity;
+	}
+
+	/**
 	 * Gets the GasStack held by this GasTank.
 	 * @return - GasStakc held by this tank
 	 */
@@ -197,7 +205,7 @@ public class GasTank
 	 */
 	public NBTTagCompound write(NBTTagCompound nbtTags)
 	{
-		if(stored != null)
+		if(stored != null && stored.getGas() != null)
 		{
 			nbtTags.setTag("stored", stored.write(new NBTTagCompound()));
 		}

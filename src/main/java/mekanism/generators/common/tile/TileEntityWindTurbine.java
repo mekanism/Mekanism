@@ -1,14 +1,16 @@
 package mekanism.generators.common.tile;
 
 import mekanism.api.Coord4D;
-import mekanism.common.IBoundingBlock;
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IBoundingBlock;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -21,7 +23,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 
 	public TileEntityWindTurbine()
 	{
-		super("WindTurbine", 200000, (MekanismGenerators.windGenerationMax)*2);
+		super("wind", "WindTurbine", 200000, (generators.windGenerationMax)*2);
 		inventory = new ItemStack[1];
 	}
 
@@ -37,7 +39,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			if(canOperate())
 			{
 				setActive(true);
-				setEnergy(electricityStored + (MekanismGenerators.windGenerationMin*getMultiplier()));
+				setEnergy(electricityStored + (generators.windGenerationMin*getMultiplier()));
 			}
 			else {
 				setActive(false);
@@ -50,10 +52,10 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	{
 		if(worldObj.canBlockSeeTheSky(xCoord, yCoord+4, zCoord)) 
 		{
-			final float minY = (float)MekanismGenerators.windGenerationMinY;
-			final float maxY = (float)MekanismGenerators.windGenerationMaxY;
-			final float minG = (float)MekanismGenerators.windGenerationMin;
-			final float maxG = (float)MekanismGenerators.windGenerationMax;
+			final float minY = (float)generators.windGenerationMinY;
+			final float maxY = (float)generators.windGenerationMaxY;
+			final float minG = (float)generators.windGenerationMin;
+			final float maxG = (float)generators.windGenerationMax;
 
 			final float slope = (maxG - minG) / (maxY - minY);
 			final float intercept = minG - slope * minY;
@@ -69,7 +71,8 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	@SideOnly(Side.CLIENT)
+	public float getVolume()
 	{
 		return 1.5F;
 	}
@@ -92,9 +95,9 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {BASE_MAX_ENERGY};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
 			case 4:
 				return new Object[] {getMultiplier()};
 			default:
@@ -106,7 +109,7 @@ public class TileEntityWindTurbine extends TileEntityGenerator implements IBound
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
+		return electricityStored < BASE_MAX_ENERGY && getMultiplier() > 0 && MekanismUtils.canFunction(this);
 	}
 
 	@Override

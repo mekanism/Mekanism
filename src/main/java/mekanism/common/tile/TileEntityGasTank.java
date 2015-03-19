@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
@@ -11,11 +13,10 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.common.IRedstoneControl;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -23,8 +24,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityGasTank extends TileEntityContainerBlock implements IGasHandler, ITubeConnection, IRedstoneControl
 {
@@ -53,6 +52,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public TileEntityGasTank()
 	{
 		super("GasTank");
+		
 		inventory = new ItemStack[2];
 		dumping = Mode.IDLE;
 		controlType = RedstoneControl.DISABLED;
@@ -81,7 +81,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			{
 				if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), gasTank.getGas().getGas()))
 				{
-					gasTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
+					gasTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
 				}
 			}
 		}
@@ -100,10 +100,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			int newGasAmount = gasTank.getStored();
 			
-			if(newGasAmount != this.currentGasAmount)
+			if(newGasAmount != currentGasAmount)
 			{
 				markDirty();
-				this.currentGasAmount = newGasAmount;
+				currentGasAmount = newGasAmount;
 			}
 		}
 	}
@@ -146,13 +146,13 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
-		return gasTank.receive(stack, true);
+		return gasTank.receive(stack, doTransfer);
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}
@@ -201,8 +201,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		{
 			gasTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
-		else
-		{
+		else {
 			gasTank.setGas(null);
 		}
 
@@ -218,22 +217,23 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 		super.readFromNBT(nbtTags);
 
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
+		
 		if(nbtTags.hasKey("dumpingMode"))
 		{
 			dumping = Mode.valueOf(nbtTags.getString("dumpingMode"));
 		}
-		else //For backwards compatibility
-		{
+		else {
 			boolean dumpingBool = nbtTags.getBoolean("dumping");
+			
 			if(dumpingBool)
 			{
 				dumping = Mode.DUMPING;
 			}
-			else
-			{
+			else {
 				dumping = Mode.IDLE;
 			}
 		}
+		
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
 	}
 
@@ -258,8 +258,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 			data.add(gasTank.getGas().getGas().getID());
 			data.add(gasTank.getStored());
 		}
-		else
-		{
+		else {
 			data.add(false);
 		}
 
@@ -285,7 +284,10 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	{
 		int stored = gasTank.getStored();
 		
-		if(stored == 0) return 0;
+		if(stored == 0) 
+		{
+			return 0;
+		}
 		
 		return MathHelper.floor_float((float)stored / (float)MAX_GAS * 14.0f + 1.0f);
 	}
@@ -300,5 +302,11 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 	public void setControlType(RedstoneControl type)
 	{
 		controlType = type;
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
 	}
 }

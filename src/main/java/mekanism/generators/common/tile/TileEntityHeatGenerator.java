@@ -2,18 +2,22 @@ package mekanism.generators.common.tile;
 
 import java.util.ArrayList;
 
-import mekanism.common.ISustainedData;
+import mekanism.api.Coord4D;
+import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.generators.common.MekanismGenerators;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -32,14 +36,22 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData, IHeatTransfer
 {
 	/** The FluidTank for this generator. */
 	public FluidTank lavaTank = new FluidTank(24000);
 
+	public double temperature = 0;
+
+	public double thermalEfficiency = 0.5D;
+
+	public double invHeatCapacity = 1;
+
+	public double heatToAbsorb = 0;
+
 	public TileEntityHeatGenerator()
 	{
-		super("HeatGenerator", 160000, MekanismGenerators.heatGeneration*2);
+		super("heat", "HeatGenerator", 160000, generators.heatGeneration*2);
 		inventory = new ItemStack[2];
 	}
 
@@ -111,18 +123,20 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				}
 			}
 
-			setEnergy(electricityStored + getBoost());
+			transferHeatTo(getBoost());
 
 			if(canOperate())
 			{
 				setActive(true);
 
 				lavaTank.drain(10, true);
-				setEnergy(electricityStored + MekanismGenerators.heatGeneration);
+				transferHeatTo(generators.heatGeneration);
 			}
 			else {
 				setActive(false);
 			}
+			simulateHeat();
+			applyTemperatureChange();
 		}
 	}
 
@@ -144,7 +158,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
+		return electricityStored < BASE_MAX_ENERGY && lavaTank.getFluid() != null && lavaTank.getFluid().amount >= 10 && MekanismUtils.canFunction(this);
 	}
 
 	@Override
@@ -203,9 +217,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
  			lavaBoost+=1;
 
 		if(worldObj.provider.dimensionId == -1)
-			netherBoost = MekanismGenerators.heatGenerationNether;
+			netherBoost = generators.heatGenerationNether;
 
-		return (MekanismGenerators.heatGenerationLava * lavaBoost) + netherBoost;
+		return (generators.heatGenerationLava * lavaBoost) + netherBoost;
 	}
 	
 	private boolean isLava(int x, int y, int z)
@@ -220,7 +234,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			return 1000;
 		}
 
-		return TileEntityFurnace.getItemBurnTime(itemstack)/20;
+		return TileEntityFurnace.getItemBurnTime(itemstack)/2;
 	}
 
 	@Override
@@ -289,9 +303,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {BASE_MAX_ENERGY};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
 			case 4:
 				return new Object[] {lavaTank.getFluid() != null ? lavaTank.getFluid().amount : 0};
 			case 5:
@@ -361,5 +375,71 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public void readSustainedData(ItemStack itemStack) 
 	{
 		lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(itemStack.stackTagCompound.getCompoundTag("lavaTank")));
+	}
+
+	@Override
+	public double getTemp()
+	{
+		return temperature;
+	}
+
+	@Override
+	public double getInverseConductionCoefficient()
+	{
+		return 1;
+	}
+
+	@Override
+	public double getInsulationCoefficient(ForgeDirection side)
+	{
+		return canConnectHeat(side) ? 0 : 10000;
+	}
+
+	@Override
+	public void transferHeatTo(double heat)
+	{
+		heatToAbsorb += heat;
+	}
+
+	@Override
+	public double[] simulateHeat()
+	{
+		if(getTemp() > 0)
+		{
+			double carnotEfficiency = getTemp() / (getTemp() + IHeatTransfer.AMBIENT_TEMP);
+			double heatLost = thermalEfficiency * getTemp();
+			double workDone = heatLost * carnotEfficiency;
+			transferHeatTo(-heatLost);
+			setEnergy(getEnergy() + workDone);
+		}
+		return HeatUtils.simulate(this);
+	}
+
+	@Override
+	public double applyTemperatureChange()
+	{
+		temperature += invHeatCapacity * heatToAbsorb;
+		heatToAbsorb = 0;
+		return temperature;
+	}
+
+	@Override
+	public boolean canConnectHeat(ForgeDirection side)
+	{
+		return side == ForgeDirection.DOWN;
+	}
+
+	@Override
+	public IHeatTransfer getAdjacent(ForgeDirection side)
+	{
+		if(canConnectHeat(side))
+		{
+			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			if(adj instanceof IHeatTransfer)
+			{
+				return (IHeatTransfer)adj;
+			}
+		}
+		return null;
 	}
 }

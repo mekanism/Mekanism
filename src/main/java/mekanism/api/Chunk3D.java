@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
@@ -73,6 +74,15 @@ public class Chunk3D
 	public Chunk getChunk(World world)
 	{
 		return world.getChunkFromChunkCoords(xCoord, zCoord);
+	}
+	
+	/**
+	 * Returns this Chunk3D in the Minecraft-based ChunkCoordIntPair format.
+	 * @return this Chunk3D as a ChunkCoordIntPair
+	 */
+	public ChunkCoordIntPair toPair()
+	{
+		return new ChunkCoordIntPair(xCoord, zCoord);
 	}
 	
 	@Override

@@ -1,22 +1,26 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.EnumColor;
-import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
-import mekanism.common.Teleporter;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.PacketHandler;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.chunkloading.IChunkLoader;
+import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -29,26 +33,23 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral
+public class TileEntityTeleporter extends TileEntityElectricBlock implements IPeripheral, IChunkLoader
 {
 	private MinecraftServer server = MinecraftServer.getServer();
-
-	/** This teleporter's frequency. */
-	public Teleporter.Code code;
 
 	public AxisAlignedBB teleportBounds = null;
 
@@ -59,6 +60,15 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public boolean shouldRender;
 
 	public boolean prevShouldRender;
+	
+	public String owner;
+	
+	public Frequency frequency;
+	
+	public List<Frequency> publicCache = new ArrayList<Frequency>();
+	public List<Frequency> privateCache = new ArrayList<Frequency>();
+	
+	public Ticket chunkTicket;
 
 	/** This teleporter's current status. */
 	public byte status = 0;
@@ -67,7 +77,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		super("Teleporter", MachineType.TELEPORTER.baseEnergy);
 		inventory = new ItemStack[1];
-		code = new Teleporter.Code(0, 0, 0, 0);
 	}
 
 	@Override
@@ -82,22 +91,36 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 		if(!worldObj.isRemote)
 		{
-			if(Mekanism.teleporters.containsKey(code))
+			if(chunkTicket == null)
 			{
-				if(!Mekanism.teleporters.get(code).contains(Coord4D.get(this)) && hasFrame())
+				Ticket ticket = ForgeChunkManager.requestTicket(Mekanism.instance, worldObj, Type.NORMAL);
+				
+				if(ticket != null)
 				{
-					Mekanism.teleporters.get(code).add(Coord4D.get(this));
-				}
-				else if(Mekanism.teleporters.get(code).contains(Coord4D.get(this)) && !hasFrame())
-				{
-					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
+					ticket.getModData().setInteger("xCoord", xCoord);
+					ticket.getModData().setInteger("yCoord", yCoord);
+					ticket.getModData().setInteger("zCoord", zCoord);
+					
+					forceChunks(ticket);
 				}
 			}
-			else if(hasFrame())
+			
+			FrequencyManager manager = getManager(frequency);
+			
+			if(manager != null)
 			{
-				ArrayList<Coord4D> newCoords = new ArrayList<Coord4D>();
-				newCoords.add(Coord4D.get(this));
-				Mekanism.teleporters.put(code, newCoords);
+				if(frequency != null && !frequency.valid)
+				{
+					frequency = manager.validateFrequency(owner, Coord4D.get(this), frequency);
+				}
+				
+				if(frequency != null)
+				{
+					frequency = manager.update(owner, Coord4D.get(this), frequency);
+				}
+			}
+			else {
+				frequency = null;
 			}
 			
 			status = canTeleport();
@@ -116,7 +139,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 			if(shouldRender != prevShouldRender)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(40D));
 			}
 
 			prevShouldRender = shouldRender;
@@ -127,25 +150,112 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		ChargeUtils.discharge(0, this);
 	}
 	
-	public String getStatusDisplay()
+	public Coord4D getClosest()
 	{
-		switch(status)
+		if(frequency != null)
 		{
-			case 1:
-				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
-			case 2:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
-			case 3:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
-			case 4:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.exceeds");
-			case 5:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
-			case 6:
-				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.idle");
+			return frequency.getClosestCoords(Coord4D.get(this));
 		}
 		
-		return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
+		return null;
+	}
+	
+	public void setFrequency(String name, boolean publicFreq)
+	{
+		if(name.equals(frequency))
+		{
+			return;
+		}
+		
+		FrequencyManager manager = getManager(new Frequency(name, null).setPublic(publicFreq));
+		manager.deactivate(Coord4D.get(this));
+		
+		for(Frequency freq : manager.getFrequencies())
+		{
+			if(freq.name.equals(name))
+			{
+				frequency = freq;
+				frequency.activeCoords.add(Coord4D.get(this));
+				return;
+			}
+		}
+		
+		Frequency freq = new Frequency(name, owner).setPublic(publicFreq);
+		freq.activeCoords.add(Coord4D.get(this));
+		manager.addFrequency(freq);
+		frequency = freq;
+		
+		MekanismUtils.saveChunk(this);
+	}
+	
+	public FrequencyManager getManager(Frequency freq)
+	{
+		if(owner == null || freq == null)
+		{
+			return null;
+		}
+		
+		if(freq.isPublic())
+		{
+			return Mekanism.publicTeleporters;
+		}
+		else {
+			if(!Mekanism.privateTeleporters.containsKey(owner))
+			{
+				FrequencyManager manager = new FrequencyManager(Frequency.class, owner);
+				Mekanism.privateTeleporters.put(owner, manager);
+				manager.createOrLoad(worldObj);
+			}
+			
+			return Mekanism.privateTeleporters.get(owner);
+		}
+	}
+	
+	public static FrequencyManager loadManager(String owner, World world)
+	{
+		if(Mekanism.privateTeleporters.containsKey(owner))
+		{
+			return Mekanism.privateTeleporters.get(owner);
+		}
+		
+		return FrequencyManager.loadOnly(world, owner, Frequency.class);
+	}
+	
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+		
+		if(!worldObj.isRemote && frequency != null)
+		{
+			FrequencyManager manager = getManager(frequency);
+			
+			if(manager != null)
+			{
+				manager.deactivate(Coord4D.get(this));
+			}
+		}
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		
+		if(!worldObj.isRemote)
+		{
+			releaseChunks();
+			
+			if(frequency != null)
+			{
+				FrequencyManager manager = getManager(frequency);
+				
+				if(manager != null)
+				{
+					manager.deactivate(Coord4D.get(this));
+				}
+			}
+		}
 	}
 
 	public void cleanTeleportCache()
@@ -188,9 +298,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	 * 1: yes
 	 * 2: no frame
 	 * 3: no link found
-	 * 4: too many links
-	 * 5: not enough electricity
-	 * 6: nothing to teleport
+	 * 4: not enough electricity
 	 * @return
 	 */
 	public byte canTeleport()
@@ -199,54 +307,29 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		{
 			return 2;
 		}
-
-		if(!Mekanism.teleporters.containsKey(code) || Mekanism.teleporters.get(code).isEmpty())
+		
+		if(getClosest() == null)
 		{
 			return 3;
 		}
 
-		if(Mekanism.teleporters.get(code).size() > 2)
+		List<Entity> entitiesInPortal = getToTeleport();
+		Coord4D closestCoords = getClosest();
+
+		int electricityNeeded = 0;
+
+		for(Entity entity : entitiesInPortal)
+		{
+			electricityNeeded += calculateEnergyCost(entity, closestCoords);
+		}
+
+		if(getEnergy() < electricityNeeded)
 		{
 			return 4;
 		}
 
-		if(Mekanism.teleporters.get(code).size() == 2)
-		{
-			List<Entity> entitiesInPortal = getToTeleport();
-
-			Coord4D closestCoords = null;
-
-			for(Coord4D coords : Mekanism.teleporters.get(code))
-			{
-				if(!coords.equals(Coord4D.get(this)))
-				{
-					closestCoords = coords;
-					break;
-				}
-			}
-
-			int electricityNeeded = 0;
-
-			for(Entity entity : entitiesInPortal)
-			{
-				electricityNeeded += calculateEnergyCost(entity, closestCoords);
-			}
-
-			if(entitiesInPortal.size() == 0)
-			{
-				return 6;
-			}
-
-			if(getEnergy() < electricityNeeded)
-			{
-				return 5;
-			}
-
-			return 1;
-		}
-
-		return 3;
-	}
+		return 1;
+}
 
 	public void teleport()
 	{
@@ -254,15 +337,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 		List<Entity> entitiesInPortal = getToTeleport();
 
-		Coord4D closestCoords = null;
-
-		for(Coord4D coords : Mekanism.teleporters.get(code))
+		Coord4D closestCoords = getClosest();
+		
+		if(closestCoords == null)
 		{
-			if(!coords.equals(Coord4D.get(this)))
-			{
-				closestCoords = coords;
-				break;
-			}
+			return;
 		}
 
 		for(Entity entity : entitiesInPortal)
@@ -283,9 +362,9 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 					teleportEntityTo(entity, closestCoords, teleporter);
 				}
 
-				for(Coord4D coords : Mekanism.teleporters.get(code))
+				for(Coord4D coords : frequency.activeCoords)
 				{
-					Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
+					Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(coords), coords.getTargetPoint(40D));
 				}
 
 				setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
@@ -295,14 +374,14 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		}
 	}
 
-	public void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter)
+	public static void teleportPlayerTo(EntityPlayerMP player, Coord4D coord, TileEntityTeleporter teleporter)
 	{
 		if(player.dimension != coord.dimensionId)
 		{
 			int id = player.dimension;
-			WorldServer oldWorld = server.worldServerForDimension(player.dimension);
+			WorldServer oldWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.dimension = coord.dimensionId;
-			WorldServer newWorld = server.worldServerForDimension(player.dimension);
+			WorldServer newWorld = player.mcServer.worldServerForDimension(player.dimension);
 			player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 			oldWorld.removePlayerEntityDangerously(player);
 			player.isDead = false;
@@ -315,11 +394,11 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				player.setWorld(newWorld);
 			}
 
-			server.getConfigurationManager().func_72375_a(player, oldWorld);
+			player.mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
 			player.playerNetServerHandler.setPlayerLocation(coord.xCoord+0.5, coord.yCoord+1, coord.zCoord+0.5, player.rotationYaw, player.rotationPitch);
 			player.theItemInWorldManager.setWorld(newWorld);
-			server.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
-			server.getConfigurationManager().syncPlayerInventory(player);
+			player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
+			player.mcServer.getConfigurationManager().syncPlayerInventory(player);
 			Iterator iterator = player.getActivePotionEffects().iterator();
 
 			while(iterator.hasNext())
@@ -379,28 +458,6 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 		return ret;
 	}
 
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(!worldObj.isRemote)
-		{
-			if(Mekanism.teleporters.containsKey(code))
-			{
-				if(Mekanism.teleporters.get(code).contains(Coord4D.get(this)))
-				{
-					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
-				}
-
-				if(Mekanism.teleporters.get(code).isEmpty())
-				{
-					Mekanism.teleporters.remove(code);
-				}
-			}
-		}
-	}
-
 	public int calculateEnergyCost(Entity entity, Coord4D coords)
 	{
 		int energyCost = 1000;
@@ -433,29 +490,42 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 
 	public boolean isFrame(int x, int y, int z)
 	{
-		return worldObj.getBlock(x, y, z) == Mekanism.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
+		return worldObj.getBlock(x, y, z) == MekanismBlocks.BasicBlock && worldObj.getBlockMetadata(x, y, z) == 7;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
 	{
 		super.readFromNBT(nbtTags);
-
-		code.digitOne = nbtTags.getInteger("digitOne");
-		code.digitTwo = nbtTags.getInteger("digitTwo");
-		code.digitThree = nbtTags.getInteger("digitThree");
-		code.digitFour = nbtTags.getInteger("digitFour");
+		
+		if(nbtTags.hasKey("owner"))
+		{
+			owner = nbtTags.getString("owner");
+		}
+		
+		if(nbtTags.hasKey("frequency"))
+		{
+			frequency = new Frequency(nbtTags.getCompoundTag("frequency"));
+			frequency.valid = false;
+		}
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbtTags)
 	{
 		super.writeToNBT(nbtTags);
-
-		nbtTags.setInteger("digitOne", code.digitOne);
-		nbtTags.setInteger("digitTwo", code.digitTwo);
-		nbtTags.setInteger("digitThree", code.digitThree);
-		nbtTags.setInteger("digitFour", code.digitFour);
+		
+		if(owner != null)
+		{
+			nbtTags.setString("owner", owner);
+		}
+		
+		if(frequency != null)
+		{
+			NBTTagCompound frequencyTag = new NBTTagCompound();
+			frequency.write(frequencyTag);
+			nbtTags.setTag("frequency", frequencyTag);
+		}
 	}
 
 	@Override
@@ -463,59 +533,117 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	{
 		if(!worldObj.isRemote)
 		{
-			if(Mekanism.teleporters.containsKey(code))
-			{
-				if(Mekanism.teleporters.get(code).contains(Coord4D.get(this)))
-				{
-					Mekanism.teleporters.get(code).remove(Coord4D.get(this));
-				}
-
-				if(Mekanism.teleporters.get(code).isEmpty()) Mekanism.teleporters.remove(code);
-			}
-
 			int type = dataStream.readInt();
-
+			
 			if(type == 0)
 			{
-				code.digitOne = dataStream.readInt();
+				String name = PacketHandler.readString(dataStream);
+				boolean isPublic = dataStream.readBoolean();
+				
+				setFrequency(name, isPublic);
 			}
 			else if(type == 1)
 			{
-				code.digitTwo = dataStream.readInt();
-			}
-			else if(type == 2)
-			{
-				code.digitThree = dataStream.readInt();
-			}
-			else if(type == 3)
-			{
-				code.digitFour = dataStream.readInt();
+				String freq = PacketHandler.readString(dataStream);
+				boolean isPublic = dataStream.readBoolean();
+				
+				FrequencyManager manager = getManager(new Frequency(freq, null).setPublic(isPublic));
+				
+				if(manager != null)
+				{
+					manager.remove(freq, owner);
+				}
 			}
 			
 			return;
 		}
 
 		super.handlePacketData(dataStream);
+		
+		if(dataStream.readBoolean())
+		{
+			owner = PacketHandler.readString(dataStream);
+		}
+		else {
+			owner = null;
+		}
+		
+		if(dataStream.readBoolean())
+		{
+			frequency = new Frequency(dataStream);
+		}
+		else {
+			frequency = null;
+		}
 
 		status = dataStream.readByte();
-		code.digitOne = dataStream.readInt();
-		code.digitTwo = dataStream.readInt();
-		code.digitThree = dataStream.readInt();
-		code.digitFour = dataStream.readInt();
 		shouldRender = dataStream.readBoolean();
+		
+		publicCache.clear();
+		privateCache.clear();
+		
+		int amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
+		{
+			publicCache.add(new Frequency(dataStream));
+		}
+		
+		amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
+		{
+			privateCache.add(new Frequency(dataStream));
+		}
 	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
+		if(owner != null)
+		{
+			data.add(true);
+			data.add(owner);
+		}
+		else {
+			data.add(false);
+		}
+		
+		if(frequency != null)
+		{
+			data.add(true);
+			frequency.write(data);
+		}
+		else {
+			data.add(false);
+		}
 
 		data.add(status);
-		data.add(code.digitOne);
-		data.add(code.digitTwo);
-		data.add(code.digitThree);
-		data.add(code.digitFour);
 		data.add(shouldRender);
+		
+		data.add(Mekanism.publicTeleporters.getFrequencies().size());
+		
+		for(Frequency freq : Mekanism.publicTeleporters.getFrequencies())
+		{
+			freq.write(data);
+		}
+		
+		FrequencyManager manager = getManager(new Frequency(null, null).setPublic(false));
+		
+		if(manager != null)
+		{
+			data.add(manager.getFrequencies().size());
+			
+			for(Frequency freq : manager.getFrequencies())
+			{
+				freq.write(data);
+			}
+		}
+		else {
+			data.add(0);
+		}
 
 		return data;
 	}
@@ -558,31 +686,17 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 				teleport();
 				return new Object[] {"Attempted to teleport."};
 			case 5:
-				if(!(arguments[0] instanceof Double) || !(arguments[1] instanceof Double))
+				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean))
 				{
 					return new Object[] {"Invalid parameters."};
 				}
-
-				int digit = ((Double)arguments[0]).intValue();
-				int newDigit = ((Double)arguments[1]).intValue();
-
-				switch(digit)
-				{
-					case 0:
-						code.digitOne = newDigit;
-						break;
-					case 1:
-						code.digitTwo = newDigit;
-						break;
-					case 2:
-						code.digitThree = newDigit;
-						break;
-					case 3:
-						code.digitFour = newDigit;
-						break;
-					default:
-						return new Object[] {"No digit found."};
-				}
+				
+				String freq = ((String)arguments[0]).trim();
+				boolean isPublic = (Boolean)arguments[1];
+				
+				setFrequency(freq, isPublic);
+				
+				return new Object[] {"Frequency set."};
 			default:
 				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
 				return new Object[] {"Unknown command."};
@@ -609,5 +723,23 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
+	}
+
+	@Override
+	public void forceChunks(Ticket ticket)
+	{
+		releaseChunks();
+		chunkTicket = ticket;
+		
+		ForgeChunkManager.forceChunk(chunkTicket, new Chunk3D(Coord4D.get(this)).toPair());
+	}
+	
+	public void releaseChunks()
+	{
+		if(chunkTicket != null)
+		{
+			ForgeChunkManager.releaseTicket(chunkTicket);
+			chunkTicket = null;
+		}
 	}
 }

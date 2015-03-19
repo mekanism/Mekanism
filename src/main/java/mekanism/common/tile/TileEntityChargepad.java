@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
-import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.entity.EntityRobit;
@@ -24,13 +23,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import io.netty.buffer.ByteBuf;
 
 import cofh.api.energy.IEnergyContainerItem;
 import ic2.api.item.ElectricItem;
 import ic2.api.item.IElectricItem;
 
-public class TileEntityChargepad extends TileEntityElectricBlock implements IActiveState, IHasSound
+public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 {
 	public boolean isActive;
 
@@ -40,7 +42,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 
 	public TileEntityChargepad()
 	{
-		super("Chargepad", MachineType.CHARGEPAD.baseEnergy);
+		super("chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 
@@ -52,8 +54,8 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 		if(!worldObj.isRemote)
 		{
 			isActive = false;
-			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord+1, yCoord+0.2, zCoord+1));
-			
+			List<EntityLivingBase> entities = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 0.2, zCoord + 1));
+
 			for(EntityLivingBase entity : entities)
 			{
 				if(entity instanceof EntityPlayer || entity instanceof EntityRobit)
@@ -65,17 +67,17 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 				{
 					if(entity instanceof EntityRobit)
 					{
-						EntityRobit robit = (EntityRobit)entity;
+						EntityRobit robit = (EntityRobit) entity;
 
 						double canGive = Math.min(getEnergy(), 1000);
-						double toGive = Math.min(robit.MAX_ELECTRICITY-robit.getEnergy(), canGive);
+						double toGive = Math.min(robit.MAX_ELECTRICITY - robit.getEnergy(), canGive);
 
 						robit.setEnergy(robit.getEnergy() + toGive);
 						setEnergy(getEnergy() - toGive);
-					}
+					} 
 					else if(entity instanceof EntityPlayer)
 					{
-						EntityPlayer player = (EntityPlayer)entity;
+						EntityPlayer player = (EntityPlayer) entity;
 
 						double prevEnergy = getEnergy();
 
@@ -108,13 +110,9 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 				setActive(isActive);
 			}
 		}
-		else {
-			Mekanism.proxy.registerSound(this);
-
-			if(isActive)
-			{
-				worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
-			}
+		else if(isActive)
+		{
+			worldObj.spawnParticle("reddust", xCoord+random.nextDouble(), yCoord+0.15, zCoord+random.nextDouble(), 0, 0, 0);
 		}
 	}
 
@@ -128,7 +126,7 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 			}
 			else if(MekanismUtils.useIC2() && itemstack.getItem() instanceof IElectricItem)
 			{
-				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*Mekanism.TO_IC2), 4, true, false)*Mekanism.FROM_IC2;
+				double sent = ElectricItem.manager.charge(itemstack, (int)(getEnergy()*general.TO_IC2), 4, true, false)*general.FROM_IC2;
 				setEnergy(getEnergy() - sent);
 			}
 			else if(MekanismUtils.useRF() && itemstack.getItem() instanceof IEnergyContainerItem)
@@ -136,26 +134,15 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 				IEnergyContainerItem item = (IEnergyContainerItem)itemstack.getItem();
 
 				int itemEnergy = (int)Math.round(Math.min(Math.sqrt(item.getMaxEnergyStored(itemstack)), item.getMaxEnergyStored(itemstack) - item.getEnergyStored(itemstack)));
-				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*Mekanism.TO_TE)));
+				int toTransfer = (int)Math.round(Math.min(itemEnergy, (getEnergy()*general.TO_TE)));
 
-				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*Mekanism.FROM_TE));
+				setEnergy(getEnergy() - (item.receiveEnergy(itemstack, toTransfer, false)*general.FROM_TE));
 			}
 		}
 	}
 
 	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
-	}
-
-	@Override
-	protected EnumSet<ForgeDirection> getConsumingSides()
+	public EnumSet<ForgeDirection> getConsumingSides()
 	{
 		return EnumSet.of(ForgeDirection.DOWN, ForgeDirection.getOrientation(facing).getOpposite());
 	}
@@ -218,13 +205,8 @@ public class TileEntityChargepad extends TileEntityElectricBlock implements IAct
 	}
 
 	@Override
-	public String getSoundPath()
-	{
-		return "Chargepad.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
+	@SideOnly(Side.CLIENT)
+	public float getVolume()
 	{
 		return 0.4F;
 	}

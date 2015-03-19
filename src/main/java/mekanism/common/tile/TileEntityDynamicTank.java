@@ -1,69 +1,41 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.common.IFluidContainerManager;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.content.tank.SynchronizedTankData;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tank.DynamicTankCache;
-import mekanism.common.tank.SynchronizedTankData;
-import mekanism.common.tank.SynchronizedTankData.ValveData;
-import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
-import mekanism.common.util.MekanismUtils;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityDynamicTank extends TileEntityContainerBlock implements IFluidContainerManager
+public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
 {
-	/** Unique inventory ID for the dynamic tank, serves as a way to retrieve cached inventories. */
-	public int inventoryID = -1;
-
-	/** The tank data for this structure. */
-	public SynchronizedTankData structure;
-	
-	/** The cache used by this specific tank segment */
-	public DynamicTankCache cachedData = new DynamicTankCache();
-
-	/** Whether or not to send this tank's structure in the next update packet. */
-	public boolean sendStructure;
-
-	/** This tank's previous "has structure" state. */
-	public boolean prevStructure;
-
-	/** Whether or not this tank has it's structure, for the client side mechanics. */
-	public boolean clientHasStructure;
-
 	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
 	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
 
 	/** The capacity this tank has on the client-side. */
 	public int clientCapacity;
 
-	/** Whether or not this tank segment is rendering the structure. */
-	public boolean isRendering;
-
 	public float prevScale;
 
 	public TileEntityDynamicTank()
 	{
-		this("DynamicTank");
+		super("DynamicTank");
 	}
 
 	public TileEntityDynamicTank(String name)
@@ -72,29 +44,13 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		inventory = new ItemStack[2];
 	}
 
-	public void update()
-	{
-		if(!worldObj.isRemote && (structure == null || !structure.didTick))
-		{
-			new TankUpdateProtocol(this).updateTanks();
-
-			if(structure != null)
-			{
-				structure.didTick = true;
-			}
-		}
-	}
-
 	@Override
 	public void onUpdate()
 	{
+		super.onUpdate();
+		
 		if(worldObj.isRemote)
 		{
-			if(structure == null)
-			{
-				structure = new SynchronizedTankData();
-			}
-
 			if(structure != null && clientHasStructure && isRendering)
 			{
 				for(ValveData data : valveViewing.keySet())
@@ -105,11 +61,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 					}
 				}
 
-				if(!prevStructure)
-				{
-					Mekanism.proxy.doTankAnimation(this);
-				}
-
 				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
 
 				if(Math.abs(prevScale - targetScale) > 0.01)
@@ -117,8 +68,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 					prevScale = (9*prevScale + targetScale)/10;
 				}
 			}
-
-			prevStructure = clientHasStructure;
 
 			if(!clientHasStructure || !isRendering)
 			{
@@ -136,65 +85,15 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 			}
 		}
 
-		if(playersUsing.size() > 0 && ((worldObj.isRemote && !clientHasStructure) || (!worldObj.isRemote && structure == null)))
-		{
-			for(EntityPlayer player : playersUsing)
-			{
-				player.closeScreen();
-			}
-		}
-
 		if(!worldObj.isRemote)
 		{
-			if(structure == null)
-			{
-				isRendering = false;
-			}
-
-			if(inventoryID != -1 && structure == null)
-			{
-				MekanismUtils.updateCache(inventoryID, cachedData, this);
-			}
-
-			if(structure == null && ticker == 5)
-			{
-				update();
-			}
-
-			if(prevStructure != (structure != null))
-			{
-				if(structure != null && !structure.hasRenderer)
-				{
-					structure.hasRenderer = true;
-					isRendering = true;
-					sendStructure = true;
-				}
-
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-				{
-					Coord4D obj = Coord4D.get(this).getFromSide(side);
-
-					if(!obj.isAirBlock(worldObj) && !(obj.getTileEntity(worldObj) instanceof TileEntityDynamicTank))
-					{
-						obj.getBlock(worldObj).onNeighborChange(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, xCoord, yCoord, zCoord);
-					}
-				}
-
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
-			}
-
-			prevStructure = structure != null;
-
 			if(structure != null)
 			{
-				structure.didTick = false;
-
-				if(inventoryID != -1)
+				if(structure.fluidStored != null && structure.fluidStored.amount <= 0)
 				{
-					cachedData.sync(structure);
-					MekanismUtils.updateCache(inventoryID, cachedData, this);
+					structure.fluidStored = null;
 				}
-
+				
 				manageInventory();
 			}
 		}
@@ -202,7 +101,7 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 
 	public void manageInventory()
 	{
-		int max = structure.volume*TankUpdateProtocol.FLUID_PER_TANK;
+		int max = structure.volume * TankUpdateProtocol.FLUID_PER_TANK;
 
 		if(structure.inventory[0] != null)
 		{
@@ -359,57 +258,55 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 			}
 		}
 	}
+	
+	@Override
+	protected SynchronizedTankData getNewStructure()
+	{
+		return new SynchronizedTankData();
+	}
+	
+	@Override
+	protected TankUpdateProtocol getProtocol()
+	{
+		return new TankUpdateProtocol(this);
+	}
+	
+	@Override
+	public MultiblockManager<SynchronizedTankData> getManager()
+	{
+		return Mekanism.tankManager;
+	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-
-		data.add(isRendering);
-		data.add(structure != null);
 		
 		if(structure != null)
 		{
 			data.add(structure.volume*TankUpdateProtocol.FLUID_PER_TANK);
 			data.add(structure.editMode.ordinal());
-		}
-
-		if(structure != null && structure.fluidStored != null)
-		{
-			data.add(1);
-			data.add(structure.fluidStored.fluidID);
-			data.add(structure.fluidStored.amount);
-		}
-		else {
-			data.add(0);
-		}
-
-		if(structure != null && isRendering)
-		{
-			if(sendStructure)
+			
+			if(structure.fluidStored != null)
 			{
-				sendStructure = false;
-
-				data.add(true);
-
-				data.add(structure.volHeight);
-				data.add(structure.volWidth);
-				data.add(structure.volLength);
-
-				structure.renderLocation.write(data);
+				data.add(1);
+				data.add(structure.fluidStored.fluidID);
+				data.add(structure.fluidStored.amount);
 			}
 			else {
-				data.add(false);
+				data.add(0);
 			}
-
-			data.add(structure.valves.size());
-
-			for(ValveData valveData : structure.valves)
+			
+			if(isRendering)
 			{
-				valveData.location.write(data);
+				data.add(structure.valves.size());
 
-				data.add(valveData.side.ordinal());
-				data.add(valveData.serverFluid);
+				for(ValveData valveData : structure.valves)
+				{
+					valveData.location.write(data);
+					data.add(valveData.side.ordinal());
+					data.add(valveData.serverFluid);
+				}
 			}
 		}
 
@@ -420,85 +317,52 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
-
-		if(structure == null)
-		{
-			structure = new SynchronizedTankData();
-		}
-
-		isRendering = dataStream.readBoolean();
-		clientHasStructure = dataStream.readBoolean();
 		
 		if(clientHasStructure)
 		{
 			clientCapacity = dataStream.readInt();
 			structure.editMode = ContainerEditMode.values()[dataStream.readInt()];
-		}
-
-		if(dataStream.readInt() == 1)
-		{
-			structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
-		}
-		else {
-			structure.fluidStored = null;
-		}
-
-		if(clientHasStructure && isRendering)
-		{
-			if(dataStream.readBoolean())
+			
+			if(dataStream.readInt() == 1)
 			{
-				structure.volHeight = dataStream.readInt();
-				structure.volWidth = dataStream.readInt();
-				structure.volLength = dataStream.readInt();
-
-				structure.renderLocation = Coord4D.read(dataStream);
+				structure.fluidStored = new FluidStack(dataStream.readInt(), dataStream.readInt());
+			}
+			else {
+				structure.fluidStored = null;
 			}
 
-			int size = dataStream.readInt();
-
-			for(int i = 0; i < size; i++)
+			if(isRendering)
 			{
-				ValveData data = new ValveData();
-				data.location = Coord4D.read(dataStream);
-				data.side = ForgeDirection.getOrientation(dataStream.readInt());
-				int viewingTicks = 0;
+				int size = dataStream.readInt();
 
-				if(dataStream.readBoolean())
+				for(int i = 0; i < size; i++)
 				{
-					viewingTicks = 30;
-				}
+					ValveData data = new ValveData();
+					data.location = Coord4D.read(dataStream);
+					data.side = ForgeDirection.getOrientation(dataStream.readInt());
+					int viewingTicks = 0;
 
-				if(viewingTicks == 0)
-				{
-					if(valveViewing.containsKey(data) && valveViewing.get(data) > 0)
+					if(dataStream.readBoolean())
 					{
-						continue;
+						viewingTicks = 30;
 					}
-				}
 
-				valveViewing.put(data, viewingTicks);
+					if(viewingTicks == 0)
+					{
+						if(valveViewing.containsKey(data) && valveViewing.get(data) > 0)
+						{
+							continue;
+						}
+					}
 
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
+					valveViewing.put(data, viewingTicks);
 
-				if(tileEntity != null)
-				{
-					tileEntity.clientHasStructure = true;
-				}
-			}
-		}
-	}
+					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
 
-	public void sendPacketToRenderer()
-	{
-		if(structure != null)
-		{
-			for(Coord4D obj : structure.locations)
-			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)obj.getTileEntity(worldObj);
-
-				if(tileEntity != null && tileEntity.isRendering)
-				{
-					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					if(tileEntity != null)
+					{
+						tileEntity.clientHasStructure = true;
+					}
 				}
 			}
 		}
@@ -512,62 +376,6 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		}
 
 		return structure.fluidStored.amount*i / clientCapacity;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slotID)
-	{
-		return structure != null ? structure.inventory[slotID] : null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int slotID, ItemStack itemstack)
-	{
-		if(structure != null)
-		{
-			structure.inventory[slotID] = itemstack;
-
-			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
-			{
-				itemstack.stackSize = getInventoryStackLimit();
-			}
-		}
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound nbtTags)
-	{
-		super.readFromNBT(nbtTags);
-
-		if(structure == null)
-		{
-			inventoryID = nbtTags.getInteger("inventoryID");
-
-			if(inventoryID != -1)
-			{
-				cachedData.load(nbtTags);
-			}
-		}
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbtTags)
-	{
-		super.writeToNBT(nbtTags);
-
-		nbtTags.setInteger("inventoryID", inventoryID);
-
-		if(inventoryID != -1)
-		{
-			cachedData.save(nbtTags);
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
-	{
-		return INFINITE_EXTENT_AABB;
 	}
 
 	@Override
@@ -590,11 +398,5 @@ public class TileEntityDynamicTank extends TileEntityContainerBlock implements I
 		}
 		
 		structure.editMode = mode;
-	}
-	
-	@Override
-	public boolean handleInventory()
-	{
-		return false;
 	}
 }

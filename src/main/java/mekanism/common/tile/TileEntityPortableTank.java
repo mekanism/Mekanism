@@ -1,21 +1,24 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.IActiveState;
-import mekanism.common.IFluidContainerManager;
-import mekanism.common.ISustainedTank;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.base.ISustainedTank;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,9 +33,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager
+public class TileEntityPortableTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager
 {
 	public boolean isActive;
 
@@ -52,6 +53,8 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	public Fluid valveFluid;
 	
 	public float prevScale;
+	
+	public boolean needsPacket;
 	
 	public TileEntityPortableTank() 
 	{
@@ -90,8 +93,6 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			}
 		}
 		else {
-			boolean needsPacket = false;
-			
 			if(updateDelay > 0)
 			{
 				updateDelay--;
@@ -132,8 +133,10 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			
 			if(needsPacket)
 			{
-				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
 			}
+			
+			needsPacket = false;
 		}
 	}
 	
@@ -394,7 +397,7 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 		
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -476,8 +479,12 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side)
 	{
-		setActive(!getActive());
-		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		if(!worldObj.isRemote)
+		{
+			setActive(!getActive());
+			worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		}
+		
 		return true;
 	}
 
@@ -501,6 +508,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 			
 			if(filled > 0 && from == ForgeDirection.UP)
 			{
+				if(valve == 0)
+				{
+					needsPacket = true;
+				}
+				
 				valve = 20;
 				valveFluid = resource.getFluid();
 			}
@@ -602,5 +614,11 @@ public class TileEntityPortableTank extends TileEntityContainerBlock implements 
 	public void setContainerEditMode(ContainerEditMode mode) 
 	{
 		editMode = mode;
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {fluidTank};
 	}
 }

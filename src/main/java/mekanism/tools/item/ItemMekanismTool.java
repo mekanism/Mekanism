@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import mekanism.api.StackUtils;
+import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
 import mekanism.tools.common.MekanismTools;
 
@@ -45,7 +46,7 @@ public class ItemMekanismTool extends ItemTool
     {
     	if(material == MekanismTools.toolOBSIDIAN || material == MekanismTools.toolOBSIDIAN2)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 0);
+    		return new ItemStack(MekanismItems.Ingot, 1, 0);
     	}
     	else if(material == MekanismTools.toolLAZULI || material == MekanismTools.toolLAZULI2)
     	{
@@ -53,19 +54,19 @@ public class ItemMekanismTool extends ItemTool
     	}
     	else if(material == MekanismTools.toolOSMIUM || material == MekanismTools.toolOSMIUM2)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 1);
+    		return new ItemStack(MekanismItems.Ingot, 1, 1);
     	}
     	else if(material == MekanismTools.toolBRONZE || material == MekanismTools.toolBRONZE2)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 2);
+    		return new ItemStack(MekanismItems.Ingot, 1, 2);
     	}
     	else if(material == MekanismTools.toolGLOWSTONE || material == MekanismTools.toolGLOWSTONE2)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 3);
+    		return new ItemStack(MekanismItems.Ingot, 1, 3);
     	}
     	else if(material == MekanismTools.toolSTEEL || material == MekanismTools.toolSTEEL2)
     	{
-    		return new ItemStack(Mekanism.Ingot, 1, 4);
+    		return new ItemStack(MekanismItems.Ingot, 1, 4);
     	}
     	
     	return new ItemStack(material.func_150995_f());

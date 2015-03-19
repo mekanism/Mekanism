@@ -1,32 +1,36 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import mekanism.api.PressurizedReactants;
-import mekanism.api.PressurizedRecipe;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiElement;
-import mekanism.client.gui.GuiFluidGauge;
-import mekanism.client.gui.GuiGasGauge;
-import mekanism.client.gui.GuiGauge;
 import mekanism.client.gui.GuiPRC;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiGasGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.PressurizedInput;
+import mekanism.common.recipe.machines.PressurizedRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,9 +43,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class PRCRecipeHandler extends BaseRecipeHandler
 {
@@ -87,7 +88,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		return ProgressBar.MEDIUM;
 	}
 	
-	public Set<Entry<PressurizedReactants, PressurizedRecipe>> getRecipes()
+	public Set<Entry<PressurizedInput, PressurizedRecipe>> getRecipes()
 	{
 		return Recipe.PRESSURIZED_REACTION_CHAMBER.get().entrySet();
 	}
@@ -158,21 +159,21 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	{
 		CachedIORecipe recipe = (CachedIORecipe)arecipes.get(i);
 		
-		if(recipe.pressurizedRecipe.reactants.getFluid() != null)
+		if(recipe.pressurizedRecipe.getInput().getFluid() != null)
 		{
-			fluidInput.setDummyType(recipe.pressurizedRecipe.reactants.getFluid().getFluid());
+			fluidInput.setDummyType(recipe.pressurizedRecipe.getInput().getFluid().getFluid());
 			fluidInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
-		if(recipe.pressurizedRecipe.reactants.getGas() != null)
+		if(recipe.pressurizedRecipe.getInput().getGas() != null)
 		{
-			gasInput.setDummyType(recipe.pressurizedRecipe.reactants.getGas().getGas());
+			gasInput.setDummyType(recipe.pressurizedRecipe.getInput().getGas().getGas());
 			gasInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
-		if(recipe.pressurizedRecipe.products.getGasOutput() != null)
+		if(recipe.pressurizedRecipe.getOutput().getGasOutput() != null)
 		{
-			gasOutput.setDummyType(recipe.pressurizedRecipe.products.getGasOutput().getGas());
+			gasOutput.setDummyType(recipe.pressurizedRecipe.getOutput().getGasOutput().getGas());
 			gasOutput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 	}
@@ -189,9 +190,9 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
-				if(irecipe.getValue().products.getGasOutput().isGasEqual((GasStack)results[0]))
+				if(irecipe.getValue().getOutput().getGasOutput().isGasEqual((GasStack)results[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -205,9 +206,9 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadCraftingRecipes(ItemStack result)
 	{
-		for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+		for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().products.getItemOutput(), result))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getValue().getOutput().getItemOutput(), result))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -219,7 +220,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("gas") && ingredients.length == 1 && ingredients[0] instanceof GasStack)
 		{
-			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
 				if(irecipe.getKey().containsType((GasStack)ingredients[0]))
 				{
@@ -229,7 +230,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 		}
 		else if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+			for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 			{
 				if(irecipe.getKey().containsType((FluidStack)ingredients[0]))
 				{
@@ -245,7 +246,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry<PressurizedReactants, PressurizedRecipe> irecipe : getRecipes())
+		for(Map.Entry<PressurizedInput, PressurizedRecipe> irecipe : getRecipes())
 		{
 			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getKey().getSolid(), ingredient))
 			{
@@ -265,15 +266,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid().getFluid().getLocalizedName());
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getFluid()));
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas().getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas()));
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput().getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput()));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -293,15 +294,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
+			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getFluid();
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas();
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput();
 		}
 
 		if(gas != null)
@@ -356,15 +357,15 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6-5 && xAxis <= 22-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getFluid();
+			fluid = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getFluid();
 		}
 		else if(xAxis >= 29-5 && xAxis <= 45-5 && yAxis >= 11-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.reactants.getGas();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getInput().getGas();
 		}
 		else if(xAxis >= 141-5 && xAxis <= 157-5 && yAxis >= 41-10 && yAxis <= 69-10)
 		{
-			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.products.getGasOutput();
+			gas = ((CachedIORecipe)arecipes.get(recipe)).pressurizedRecipe.getOutput().getGasOutput();
 		}
 
 		if(gas != null)
@@ -430,8 +431,8 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 			
 			pressurizedRecipe = recipe;
 			
-			input = new PositionedStack(recipe.reactants.getSolid(), 54-xOffset, 35-yOffset);
-			output = new PositionedStack(recipe.products.getItemOutput(), 116-xOffset, 35-yOffset);
+			input = new PositionedStack(recipe.getInput().getSolid(), 54-xOffset, 35-yOffset);
+			output = new PositionedStack(recipe.getOutput().getItemOutput(), 116-xOffset, 35-yOffset);
 		}
 
 		public CachedIORecipe(Map.Entry recipe)

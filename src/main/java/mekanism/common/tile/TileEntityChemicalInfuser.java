@@ -1,8 +1,12 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -12,18 +16,22 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
+import mekanism.common.Upgrade.IUpgradeInfoHandler;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ChemicalPairInput;
+import mekanism.common.recipe.machines.ChemicalInfuserRecipe;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -31,9 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityChemicalInfuser extends TileEntityElectricBlock implements IActiveState, IGasHandler, ITubeConnection, IRedstoneControl, IHasSound, ISustainedData
+public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock implements IGasHandler, ITubeConnection, IRedstoneControl, ISustainedData, IUpgradeTile, IUpgradeInfoHandler, ITankManager
 {
 	public GasTank leftTank = new GasTank(MAX_GAS);
 	public GasTank rightTank = new GasTank(MAX_GAS);
@@ -51,33 +57,34 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 
 	public double prevEnergy;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalInfuserUsage;
+	public final double BASE_ENERGY_USAGE = usage.chemicalInfuserUsage;
+
+	public ChemicalInfuserRecipe cachedRecipe;
+	
+	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
 	public TileEntityChemicalInfuser()
 	{
-		super("ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
-		inventory = new ItemStack[4];
+		super("machine.cheminfuser", "ChemicalInfuser", MachineType.CHEMICAL_INFUSER.baseEnergy);
+		inventory = new ItemStack[5];
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		super.onUpdate();
+		
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -109,15 +116,15 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			{
 				centerTank.draw(GasTransmission.addGas(inventory[2], centerTank.getGas()), true);
 			}
+			
+			ChemicalInfuserRecipe recipe = getRecipe();
 
-			if(canOperate() && getEnergy() >= ENERGY_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= BASE_ENERGY_USAGE && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				GasStack stack = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, true);
+				setEnergy(getEnergy() - BASE_ENERGY_USAGE);
 
-				centerTank.receive(stack, true);
-
-				setEnergy(getEnergy() - ENERGY_USAGE);
+				operate(recipe);
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -136,7 +143,7 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(ForgeDirection.getOrientation(facing).getOpposite(), centerTank.getGas().getGas()))
 					{
-						centerTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend), true);
+						centerTank.draw(((IGasHandler)tileEntity).receiveGas(ForgeDirection.getOrientation(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -144,27 +151,54 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 			prevEnergy = getEnergy();
 		}
 	}
-
-	public boolean canOperate()
+	
+	public int getUpgradedUsage(ChemicalInfuserRecipe recipe)
 	{
-		if(leftTank.getGas() == null || rightTank.getGas() == null || centerTank.getNeeded() == 0)
+		int possibleProcess = (int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+		
+		if(leftTank.getGasType() == recipe.recipeInput.leftGas.getGas())
 		{
-			return false;
+			possibleProcess = Math.min(leftTank.getStored()/recipe.recipeInput.leftGas.amount, possibleProcess);
+			possibleProcess = Math.min(rightTank.getStored()/recipe.recipeInput.rightGas.amount, possibleProcess);
 		}
+		else {
+			possibleProcess = Math.min(leftTank.getStored()/recipe.recipeInput.rightGas.amount, possibleProcess);
+			possibleProcess = Math.min(rightTank.getStored()/recipe.recipeInput.leftGas.amount, possibleProcess);
+		}
+		
+		possibleProcess = Math.min(centerTank.getNeeded()/recipe.recipeOutput.output.amount, possibleProcess);
+		possibleProcess = Math.min((int)(getEnergy()/BASE_ENERGY_USAGE), possibleProcess);
+		
+		return possibleProcess;
+	}
 
-		GasStack out = RecipeHandler.getChemicalInfuserOutput(leftTank, rightTank, false);
+	public ChemicalPairInput getInput()
+	{
+		return new ChemicalPairInput(leftTank.getGas(), rightTank.getGas());
+	}
 
-		if(out == null || centerTank.getGas() != null && centerTank.getGas().getGas() != out.getGas())
+	public ChemicalInfuserRecipe getRecipe()
+	{
+		ChemicalPairInput input = getInput();
+		
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
-			return false;
+			cachedRecipe = RecipeHandler.getChemicalInfuserRecipe(getInput());
 		}
+		
+		return cachedRecipe;
+	}
 
-		if(centerTank.getNeeded() < out.amount)
-		{
-			return false;
-		}
+	public boolean canOperate(ChemicalInfuserRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(leftTank, rightTank, centerTank);
+	}
 
-		return true;
+	public void operate(ChemicalInfuserRecipe recipe)
+	{
+		recipe.operate(leftTank, rightTank, centerTank);
+
+		markDirty();
 	}
 
 	@Override
@@ -315,21 +349,6 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		return null;
 	}
 
-	public int getScaledLeftGasLevel(int i)
-	{
-		return leftTank != null ? leftTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledRightGasLevel(int i)
-	{
-		return rightTank != null ? rightTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledCenterGasLevel(int i)
-	{
-		return centerTank != null ? centerTank.getStored()*i / MAX_GAS : 0;
-	}
-
 	@Override
 	public void setActive(boolean active)
 	{
@@ -388,22 +407,28 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public boolean canPulse()
+	{
+		return false;
+	}
+
+	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack != null ? stack.getGas() : null))
 		{
-			return getTank(side).receive(stack, true);
+			return getTank(side).receive(stack, doTransfer);
 		}
 
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(canDrawGas(side, null))
 		{
-			return getTank(side).draw(amount, true);
+			return getTank(side).draw(amount, doTransfer);
 		}
 
 		return null;
@@ -469,18 +494,6 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 	}
 
 	@Override
-	public String getSoundPath()
-	{
-		return "ChemicalInfuser.ogg";
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
-	}
-
-	@Override
 	public void writeSustainedData(ItemStack itemStack) 
 	{
 		if(leftTank.getGas() != null)
@@ -505,5 +518,37 @@ public class TileEntityChemicalInfuser extends TileEntityElectricBlock implement
 		leftTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("leftTank")));
 		rightTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("rightTank")));
 		centerTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("centerTank")));
+	}
+	
+	@Override
+	public TileComponentUpgrade getComponent() 
+	{
+		return upgradeComponent;
+	}
+	
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case ENERGY:
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
+		}
+	}
+	
+	@Override
+	public List<String> getInfo(Upgrade upgrade) 
+	{
+		return upgrade == Upgrade.SPEED ? upgrade.getExpScaledInfo(this) : upgrade.getMultScaledInfo(this);
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {leftTank, rightTank, centerTank};
 	}
 }

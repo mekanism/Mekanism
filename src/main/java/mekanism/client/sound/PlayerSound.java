@@ -1,50 +1,116 @@
 package mekanism.client.sound;
 
-import mekanism.api.Pos3D;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class PlayerSound extends Sound
+@SideOnly(Side.CLIENT)
+public abstract class PlayerSound extends Sound implements IResettableSound
 {
-	/** The TileEntity this sound is associated with. */
 	public EntityPlayer player;
 
-	public PlayerSound(String id, String sound, EntityPlayer entity)
-	{
-		super(id, sound, entity, new Pos3D(entity));
+	boolean beginFadeOut;
+	
+	boolean donePlaying = true;
+	
+	int ticks = 0;
+	
+	int fadeIn;
+	
+	int fadeOut;
+	
+	float baseVolume = 0.3F;
 
-		player = entity;
+	public PlayerSound(EntityPlayer p, ResourceLocation location)
+	{
+		super(location, 0.3F, 1, true, 0, (float)p.posX, (float)p.posY, (float)p.posZ, AttenuationType.LINEAR);
+		player = p;
 	}
 
 	@Override
-	public float getMultiplier()
+	public float getXPosF()
 	{
-		return super.getMultiplier()*0.3F;
+		return (float)player.posX;
 	}
 
 	@Override
-	public boolean update(World world)
+	public float getYPosF()
 	{
-		if(player.isDead)
-		{
-			return false;
-		}
-		else if(player.worldObj != world)
-		{
-			return false;
-		}
-		else if(!world.loadedEntityList.contains(player))
-		{
-			return false;
-		}
-
-		return true;
+		return (float)player.posY;
 	}
 
 	@Override
-	public Pos3D getLocation()
+	public float getZPosF()
 	{
-		return new Pos3D(player);
+		return (float)player.posZ;
+	}
+
+	public PlayerSound setFadeIn(int fade) 
+	{
+		fadeIn = Math.max(0, fade);
+		return this;
+	}
+
+	public PlayerSound setFadeOut(int fade) 
+	{
+		fadeOut = Math.max(0, fade);
+		return this;
+	}
+
+	public float getFadeInMultiplier()
+	{
+		return ticks >= fadeIn ? 1 : (ticks / (float)fadeIn);
+	}
+
+	public float getFadeOutMultiplier() 
+	{
+		return ticks >= fadeOut ? 0 : ((fadeOut - ticks) / (float)fadeOut);
+	}
+
+	@Override
+	public void update()
+	{
+		if(!beginFadeOut)
+		{
+			if(ticks < fadeIn)
+			{
+				ticks++;
+			}
+			
+			if(!shouldPlaySound())
+			{
+				beginFadeOut = true;
+				ticks = 0;
+			}
+		} 
+		else {
+			ticks++;
+		}
+		
+		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
+		volume = baseVolume * multiplier;
+
+		if(multiplier <= 0)
+		{
+			donePlaying = true;
+		}
+	}
+
+	@Override
+	public boolean isDonePlaying()
+	{
+		return donePlaying;
+	}
+
+	public abstract boolean shouldPlaySound();
+
+	@Override
+	public void reset()
+	{
+		donePlaying = false;
+		beginFadeOut = false;
+		volume = baseVolume;
+		ticks = 0;
 	}
 }

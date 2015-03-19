@@ -1,36 +1,34 @@
 package mekanism.common.tile.component;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.common.IEjector;
-import mekanism.common.IInvConfiguration;
-import mekanism.common.ILogisticalTransporter;
-import mekanism.common.ITileComponent;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
+import mekanism.common.base.IEjector;
+import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITileComponent;
+import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.transporter.TransporterManager;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
 public class TileComponentEjector implements ITileComponent, IEjector
 {
 	public TileEntityContainerBlock tileEntity;
 
 	public boolean strictInput;
-
-	public boolean ejecting;
 
 	public EnumColor outputColor;
 
@@ -84,18 +82,18 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void onOutput()
 	{
-		if(!ejecting || tileEntity.getWorldObj().isRemote)
+		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorldObj().isRemote)
 		{
 			return;
 		}
 
 		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
 
-		IInvConfiguration configurable = (IInvConfiguration)tileEntity;
+		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
 
-		for(int i = 0; i < configurable.getConfiguration().length; i++)
+		for(int i = 0; i < configurable.getConfig().getConfig(TransmissionType.ITEM).length; i++)
 		{
-			if(configurable.getConfiguration()[i] == configurable.getSideData().indexOf(sideData))
+			if(configurable.getConfig().getConfig(TransmissionType.ITEM)[i] == configurable.getConfig().getOutputs(TransmissionType.ITEM).indexOf(sideData))
 			{
 				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
 			}
@@ -151,19 +149,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	}
 
 	@Override
-	public boolean isEjecting()
-	{
-		return ejecting;
-	}
-
-	@Override
-	public void setEjecting(boolean eject)
-	{
-		ejecting = eject;
-		MekanismUtils.saveChunk(tileEntity);
-	}
-
-	@Override
 	public boolean hasStrictInput()
 	{
 		return strictInput;
@@ -205,7 +190,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void read(NBTTagCompound nbtTags)
 	{
-		ejecting = nbtTags.getBoolean("ejecting");
 		strictInput = nbtTags.getBoolean("strictInput");
 
 		if(nbtTags.hasKey("ejectColor"))
@@ -238,7 +222,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void read(ByteBuf dataStream)
 	{
-		ejecting = dataStream.readBoolean();
 		strictInput = dataStream.readBoolean();
 
 		int c = dataStream.readInt();
@@ -268,7 +251,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void write(NBTTagCompound nbtTags)
 	{
-		nbtTags.setBoolean("ejecting", ejecting);
 		nbtTags.setBoolean("strictInput", strictInput);
 
 		if(outputColor != null)
@@ -296,7 +278,6 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	@Override
 	public void write(ArrayList data)
 	{
-		data.add(ejecting);
 		data.add(strictInput);
 
 		if(outputColor != null)
@@ -317,5 +298,10 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				data.add(TransporterUtils.colors.indexOf(inputColors[i]));
 			}
 		}
+	}
+	
+	private boolean getEjecting(TransmissionType type)
+	{
+		return ((ISideConfiguration)tileEntity).getConfig().isEjecting(type);
 	}
 }

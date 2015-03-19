@@ -14,5 +14,7 @@ public class ClientPlayerTracker
 	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event)
 	{
 		Mekanism.jetpackOn.remove(event.player);
+		Mekanism.gasmaskOn.remove(event.player);
+		Mekanism.flamethrowerActive.remove(event.player);
 	}
 }

@@ -1,5 +1,7 @@
 package mekanism.common;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,16 +18,18 @@ import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
-import mekanism.common.network.PacketDigitUpdate;
-import mekanism.common.network.PacketDigitUpdate.DigitUpdateMessage;
 import mekanism.common.network.PacketDigitalMinerGui;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
+import mekanism.common.network.PacketDropperUse;
+import mekanism.common.network.PacketDropperUse.DropperUseMessage;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketEditFilter.EditFilterMessage;
 import mekanism.common.network.PacketElectricBowState;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
+import mekanism.common.network.PacketFlamethrowerActive;
+import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketJetpackData.JetpackDataMessage;
 import mekanism.common.network.PacketKey;
@@ -34,10 +38,12 @@ import mekanism.common.network.PacketLogisticalSorterGui;
 import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMessage;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.network.PacketNewFilter.NewFilterMessage;
+import mekanism.common.network.PacketOredictionificatorGui;
+import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiMessage;
 import mekanism.common.network.PacketPortableTankState;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
-import mekanism.common.network.PacketPortableTeleport;
-import mekanism.common.network.PacketPortableTeleport.PortableTeleportMessage;
+import mekanism.common.network.PacketPortableTeleporter;
+import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.network.PacketPortalFX.PortalFXMessage;
 import mekanism.common.network.PacketRedstoneControl;
@@ -50,15 +56,12 @@ import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketSimpleGui;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
-import mekanism.common.network.PacketStatusUpdate;
-import mekanism.common.network.PacketStatusUpdate.StatusUpdateMessage;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.network.PacketWalkieTalkieState;
 import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -74,8 +77,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * Mekanism packet handler. As always, use packets sparingly!
@@ -98,9 +99,11 @@ public class PacketHandler
 		netHandler.registerMessage(PacketTileEntity.class, TileEntityMessage.class, 5, Side.SERVER);
 		netHandler.registerMessage(PacketPortalFX.class, PortalFXMessage.class, 6, Side.CLIENT);
 		netHandler.registerMessage(PacketDataRequest.class, DataRequestMessage.class, 7, Side.SERVER);
-		netHandler.registerMessage(PacketStatusUpdate.class, StatusUpdateMessage.class, 8, Side.CLIENT);
-		netHandler.registerMessage(PacketDigitUpdate.class, DigitUpdateMessage.class, 9, Side.SERVER);
-		netHandler.registerMessage(PacketPortableTeleport.class, PortableTeleportMessage.class, 10, Side.SERVER);
+		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.CLIENT);
+		netHandler.registerMessage(PacketOredictionificatorGui.class, OredictionificatorGuiMessage.class, 8, Side.SERVER);
+		//EMPTY SLOT 9
+		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.CLIENT);
+		netHandler.registerMessage(PacketPortableTeleporter.class, PortableTeleporterMessage.class, 10, Side.SERVER);
 		netHandler.registerMessage(PacketRemoveUpgrade.class, RemoveUpgradeMessage.class, 11, Side.SERVER);
 		netHandler.registerMessage(PacketRedstoneControl.class, RedstoneControlMessage.class, 12, Side.SERVER);
 		netHandler.registerMessage(PacketWalkieTalkieState.class, WalkieTalkieStateMessage.class, 13, Side.SERVER);
@@ -122,6 +125,8 @@ public class PacketHandler
 		netHandler.registerMessage(PacketBoxBlacklist.class, BoxBlacklistMessage.class, 24, Side.CLIENT);
 		netHandler.registerMessage(PacketPortableTankState.class, PortableTankStateMessage.class, 25, Side.SERVER);
 		netHandler.registerMessage(PacketContainerEditMode.class, ContainerEditModeMessage.class, 26, Side.SERVER);
+		netHandler.registerMessage(PacketFlamethrowerActive.class, FlamethrowerActiveMessage.class, 27, Side.SERVER);
+		netHandler.registerMessage(PacketDropperUse.class, DropperUseMessage.class, 28, Side.SERVER);
 	}
 	
 	/**
@@ -267,15 +272,7 @@ public class PacketHandler
 	{
 		return Mekanism.proxy.getPlayer(context);
 	}
-	
-	/**
-	 * Send this message to everyone.
-	 * @param message - the message to send
-	 */
-	public void sendToAll(IMessage message)
-	{
-		netHandler.sendToAll(message);
-	}
+
 
 	/**
 	 * Send this message to the specified player.

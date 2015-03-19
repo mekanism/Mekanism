@@ -2,11 +2,9 @@ package mekanism.common.inventory.container;
 
 import java.util.Map;
 
-import mekanism.api.AdvancedInput;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
 import mekanism.common.inventory.slot.SlotOutput;
-import mekanism.common.item.ItemMachineUpgrade;
+import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.ChargeUtils;
 
@@ -27,21 +25,20 @@ public class ContainerAdvancedElectricMachine extends Container
 		addSlotToContainer(new Slot(tentity, 1, 56, 53));
 		addSlotToContainer(new SlotOutput(tentity, 2, 116, 35));
 		addSlotToContainer(new SlotDischarge(tentity, 3, 31, 35));
-		addSlotToContainer(new SlotMachineUpgrade(tentity, 4, 180, 11));
 
-		int slotX;
+		int slotY;
 
-		for(slotX = 0; slotX < 3; ++slotX)
+		for(slotY = 0; slotY < 3; slotY++)
 		{
-			for(int slotY = 0; slotY < 9; ++slotY)
+			for(int slotX = 0; slotX < 9; slotX++)
 			{
-				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 84 + slotX * 18));
+				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotY = 0; slotY < 9; slotY++)
 		{
-			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 142));
+			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
 		}
 
 		tileEntity.open(inventory.player);
@@ -76,7 +73,7 @@ public class ContainerAdvancedElectricMachine extends Container
 
 			if(slotID == 2)
 			{
-				if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+				if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 				{
 					return null;
 				}
@@ -91,7 +88,7 @@ public class ContainerAdvancedElectricMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -107,7 +104,7 @@ public class ContainerAdvancedElectricMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -123,45 +120,29 @@ public class ContainerAdvancedElectricMachine extends Container
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
-					{
-						return null;
-					}
-				}
-			}
-			else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-			{
-				if(slotID != 4)
-				{
-					if(!mergeItemStack(slotStack, 4, 5, false))
-					{
-						return null;
-					}
-				}
-				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
 				}
 			}
 			else {
-				if(slotID >= 5 && slotID <= 31)
+				if(slotID >= 4 && slotID <= 30)
 				{
-					if(!mergeItemStack(slotStack, 32, inventorySlots.size(), false))
+					if(!mergeItemStack(slotStack, 31, inventorySlots.size(), false))
 					{
 						return null;
 					}
 				}
-				else if(slotID > 31)
+				else if(slotID > 30)
 				{
-					if(!mergeItemStack(slotStack, 5, 31, false))
+					if(!mergeItemStack(slotStack, 4, 30, false))
 					{
 						return null;
 					}
 				}
 				else {
-					if(!mergeItemStack(slotStack, 5, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 4, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -189,7 +170,7 @@ public class ContainerAdvancedElectricMachine extends Container
 
 	private boolean isInputItem(ItemStack itemstack)
 	{
-		for(Map.Entry<AdvancedInput, ItemStack> entry : ((Map<AdvancedInput, ItemStack>)tileEntity.getRecipes()).entrySet())
+		for(Map.Entry<AdvancedMachineInput, ItemStack> entry : ((Map<AdvancedMachineInput, ItemStack>)tileEntity.getRecipes()).entrySet())
 		{
 			if(entry.getKey().itemStack.isItemEqual(itemstack))
 			{

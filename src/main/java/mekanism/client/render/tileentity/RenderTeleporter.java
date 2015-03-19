@@ -8,7 +8,7 @@ import mekanism.api.gas.GasRegistry;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.tile.TileEntityTeleporter;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -42,7 +42,7 @@ public class RenderTeleporter extends TileEntitySpecialRenderer
 			Coord4D obj = Coord4D.get(tileEntity).getFromSide(ForgeDirection.WEST);
 			int type = 0;
 
-			if(obj.getBlock(tileEntity.getWorldObj()) == Mekanism.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)
+			if(obj.getBlock(tileEntity.getWorldObj()) == MekanismBlocks.BasicBlock && obj.getMetadata(tileEntity.getWorldObj()) == 7)
 			{
 				type = 1;
 			}

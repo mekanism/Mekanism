@@ -3,13 +3,13 @@ package mekanism.generators.common.tile;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import mekanism.client.sound.TileSound;
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.FluidSlot;
-import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,8 +21,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.Optional.Method;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -32,16 +30,12 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandler, ISustainedData
 {
-	/** The Sound instance for this machine. */
-	@SideOnly(Side.CLIENT)
-	public TileSound audio;
-
 	/** The FluidSlot biofuel instance for this generator. */
 	public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
 
 	public TileEntityBioGenerator()
 	{
-		super("BioGenerator", 160000, MekanismGenerators.bioGeneration*2);
+		super("bio", "BioGenerator", 160000, generators.bioGeneration*2);
 		inventory = new ItemStack[2];
 	}
 
@@ -118,7 +112,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			}
 
 			bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
-			setEnergy(electricityStored + MekanismGenerators.bioGeneration);
+			setEnergy(electricityStored + generators.bioGeneration);
 		}
 		else {
 			if(!worldObj.isRemote)
@@ -163,7 +157,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < MAX_ELECTRICITY && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
+		return electricityStored < BASE_MAX_ENERGY && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
 	}
 
 	@Override
@@ -184,7 +178,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
 	public int getFuel(ItemStack itemstack)
 	{
-		return itemstack.getItem() == Mekanism.BioFuel ? 200 : 0;
+		return itemstack.getItem() == MekanismItems.BioFuel ? 200 : 0;
 	}
 
 	/**
@@ -248,9 +242,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {BASE_MAX_ENERGY};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
 			case 4:
 				return new Object[] {bioFuelSlot.fluidStored};
 			case 5:

@@ -1,27 +1,30 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiChemicalOxidizer;
-import mekanism.client.gui.GuiElement;
-import mekanism.client.gui.GuiGasGauge;
-import mekanism.client.gui.GuiGauge;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiGasGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.machines.OxidationRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 
@@ -33,9 +36,6 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 {
@@ -94,9 +94,9 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 		return "mekanism.chemicaloxidizer";
 	}
 
-	public Set<Entry<ItemStack, GasStack>> getRecipes()
+	public Collection<OxidationRecipe> getRecipes()
 	{
-		return Recipe.CHEMICAL_OXIDIZER.get().entrySet();
+		return Recipe.CHEMICAL_OXIDIZER.get().values();
 	}
 
 	@Override
@@ -143,16 +143,16 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(OxidationRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<ItemStack, GasStack> irecipe : getRecipes())
+			for(OxidationRecipe irecipe : getRecipes())
 			{
-				if(((GasStack)results[0]).isGasEqual(irecipe.getValue()))
+				if(((GasStack)results[0]).isGasEqual(irecipe.getOutput().output))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -174,7 +174,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 134-5 && xAxis <= 150-5 && yAxis >= 14-11 && yAxis <= 72-11)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).outputStack.getGas().getLocalizedName());
+			currenttip.add(LangUtils.localizeGasStack(((CachedIORecipe)arecipes.get(recipe)).outputStack));
 		}
 
 		return super.handleTooltip(gui, currenttip, recipe);
@@ -253,9 +253,9 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadUsageRecipes(ItemStack ingredient)
 	{
-		for(Map.Entry irecipe : getRecipes())
+		for(OxidationRecipe irecipe : getRecipes())
 		{
-			if(NEIServerUtils.areStacksSameTypeCrafting((ItemStack)irecipe.getKey(), ingredient))
+			if(NEIServerUtils.areStacksSameTypeCrafting(irecipe.getInput().ingredient, ingredient))
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
@@ -285,9 +285,9 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 			outputStack = output;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(OxidationRecipe recipe)
 		{
-			this((ItemStack)recipe.getKey(), (GasStack)recipe.getValue());
+			this(recipe.getInput().ingredient, recipe.getOutput().output);
 		}
 	}
 }

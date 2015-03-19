@@ -1,14 +1,13 @@
 package mekanism.common.network;
 
 import mekanism.api.Coord4D;
-import mekanism.common.IUpgradeManagement;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.network.PacketRemoveUpgrade.RemoveUpgradeMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -24,28 +23,16 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
 		EntityPlayer player = PacketHandler.getPlayer(context);
 		TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 		
-		if(tileEntity instanceof IUpgradeManagement && tileEntity instanceof TileEntityBasicBlock)
+		if(tileEntity instanceof IUpgradeTile && tileEntity instanceof TileEntityBasicBlock)
 		{
-			IUpgradeManagement upgradeTile = (IUpgradeManagement)tileEntity;
+			IUpgradeTile upgradeTile = (IUpgradeTile)tileEntity;
+			Upgrade upgrade = Upgrade.values()[message.upgradeType];
 
-			if(message.upgradeType == 0)
+			if(upgradeTile.getComponent().getUpgrades(upgrade) > 0)
 			{
-				if(upgradeTile.getSpeedMultiplier() > 0)
+				if(player.inventory.addItemStackToInventory(upgrade.getStack()))
 				{
-					if(player.inventory.addItemStackToInventory(new ItemStack(Mekanism.SpeedUpgrade)))
-					{
-						upgradeTile.setSpeedMultiplier(upgradeTile.getSpeedMultiplier()-1);
-					}
-				}
-			}
-			else if(message.upgradeType == 1)
-			{
-				if(upgradeTile.getEnergyMultiplier() > 0)
-				{
-					if(player.inventory.addItemStackToInventory(new ItemStack(Mekanism.EnergyUpgrade)))
-					{
-						upgradeTile.setEnergyMultiplier(upgradeTile.getEnergyMultiplier()-1);
-					}
+					upgradeTile.getComponent().removeUpgrade(upgrade);
 				}
 			}
 		}
@@ -57,11 +44,11 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
 	{
 		public Coord4D coord4D;
 	
-		public byte upgradeType;
+		public int upgradeType;
 		
 		public RemoveUpgradeMessage() {}
 	
-		public RemoveUpgradeMessage(Coord4D coord, byte type)
+		public RemoveUpgradeMessage(Coord4D coord, int type)
 		{
 			coord4D = coord;
 			upgradeType = type;
@@ -75,7 +62,7 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
 			dataStream.writeInt(coord4D.zCoord);
 			dataStream.writeInt(coord4D.dimensionId);
 	
-			dataStream.writeByte(upgradeType);
+			dataStream.writeInt(upgradeType);
 		}
 	
 		@Override
@@ -83,7 +70,7 @@ public class PacketRemoveUpgrade implements IMessageHandler<RemoveUpgradeMessage
 		{
 			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 			
-			upgradeType = dataStream.readByte();
+			upgradeType = dataStream.readInt();
 		}
 	}
 }

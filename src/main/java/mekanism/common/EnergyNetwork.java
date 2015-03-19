@@ -3,6 +3,7 @@ package mekanism.common;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,11 +11,12 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.ListUtils;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.util.ListUtils;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 
@@ -80,18 +82,15 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
     @Override
-	protected void updateMeanCapacity()
+	protected synchronized void updateMeanCapacity()
 	{
         int numCables = transmitters.size();
         double reciprocalSum = 0;
-
-		synchronized(transmitters)
-		{
-			for(IGridTransmitter<EnergyNetwork> cable : transmitters)
-			{
-				reciprocalSum += 1.0 / (double)cable.getCapacity();
-			}
-		}
+        
+        for(IGridTransmitter<EnergyNetwork> cable : transmitters)
+        {
+            reciprocalSum += 1.0/(double)cable.getCapacity();
+        }
 
         meanCapacity = (double)numCables / reciprocalSum;            
 	}
@@ -122,7 +121,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
     	}
     }
 	
-	public double getEnergyNeeded()
+	public synchronized double getEnergyNeeded()
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -132,7 +131,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return getCapacity()-electricityStored;
 	}
 
-	public double tickEmit(double energyToSend)
+	public synchronized double tickEmit(double energyToSend)
 	{
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -156,7 +155,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		return sent;
 	}
 
-	public double emit(double energyToSend, boolean doEmit)
+	public synchronized double emit(double energyToSend, boolean doEmit)
 	{
 		double toUse = Math.min(getEnergyNeeded(), energyToSend);
 		if(doEmit)
@@ -169,7 +168,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	/**
 	 * @return sent
 	 */
-	public double doEmit(double energyToSend, boolean tryAgain)
+	public synchronized double doEmit(double energyToSend, boolean tryAgain)
 	{
 		double sent = 0;
 
@@ -189,30 +188,38 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 				{
 					TileEntity acceptor = (TileEntity)obj;
 					double currentSending = sending+remaining;
-					ForgeDirection side = acceptorDirections.get(acceptor);
+					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get(acceptor));
 
-					if(side == null)
+					if(sides == null || sides.isEmpty())
 					{
 						continue;
 					}
 
-					remaining = 0;
-
-					if(acceptor instanceof IStrictEnergyAcceptor)
+					for(ForgeDirection side : sides)
 					{
-						sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
-					}
-					else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
-					{
-						IEnergyReceiver handler = (IEnergyReceiver)acceptor;
-						int used = handler.receiveEnergy(side.getOpposite(), (int) Math.round(currentSending * Mekanism.TO_TE), false);
-						sent += used * Mekanism.FROM_TE;
-					}
-					else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
-					{
-						double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)acceptor).getSinkTier())*Mekanism.FROM_IC2);
-						toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*Mekanism.FROM_IC2);
-						sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*Mekanism.TO_IC2, 0)*Mekanism.FROM_IC2));
+						double prev = sent;
+						
+						if(acceptor instanceof IStrictEnergyAcceptor)
+						{
+							sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
+						}
+						else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
+						{
+							IEnergyReceiver handler = (IEnergyReceiver)acceptor;
+							int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*general.TO_TE), false);
+							sent += used*general.FROM_TE;
+						}
+						else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
+						{
+							double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)acceptor).getSinkTier())*general.FROM_IC2);
+							toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*general.FROM_IC2);
+							sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
+						}
+						
+						if(sent > prev)
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -222,7 +229,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public Set<TileEntity> getAcceptors(Object... data)
+	public synchronized Set<TileEntity> getAcceptors(Object... data)
 	{
 		Set<TileEntity> toReturn = new HashSet<TileEntity>();
 
@@ -231,52 +238,59 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			return toReturn;
 		}
 
-		for(TileEntity acceptor : possibleAcceptors.values())
+		for(Coord4D coord : possibleAcceptors.keySet())
 		{
-			ForgeDirection side = acceptorDirections.get(acceptor);
+			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			TileEntity acceptor = coord.getTileEntity(getWorld());
 
-			if(side == null)
+			if(sides == null || sides.isEmpty())
 			{
 				continue;
 			}
 
-			if(acceptor instanceof IStrictEnergyAcceptor)
+			for(ForgeDirection side : sides)
 			{
-				IStrictEnergyAcceptor handler = (IStrictEnergyAcceptor)acceptor;
-
-				if(handler.canReceiveEnergy(side.getOpposite()))
+				if(acceptor instanceof IStrictEnergyAcceptor)
 				{
-					if(handler.getMaxEnergy() - handler.getEnergy() > 0)
+					IStrictEnergyAcceptor handler = (IStrictEnergyAcceptor)acceptor;
+	
+					if(handler.canReceiveEnergy(side.getOpposite()))
 					{
-						toReturn.add(acceptor);
+						if(handler.getMaxEnergy() - handler.getEnergy() > 0)
+						{
+							toReturn.add(acceptor);
+							break;
+						}
 					}
 				}
-			}
-			else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
-			{
-				IEnergyReceiver handler = (IEnergyReceiver)acceptor;
-
-				if(handler.canConnectEnergy(side.getOpposite()))
+				else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
 				{
-					if(handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
+					IEnergyReceiver handler = (IEnergyReceiver)acceptor;
+	
+					if(handler.canConnectEnergy(side.getOpposite()))
 					{
-						toReturn.add(acceptor);
+						if(handler.receiveEnergy(side.getOpposite(), 1, true) > 0)
+						{
+							toReturn.add(acceptor);
+							break;
+						}
 					}
 				}
-			}
-			else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
-			{
-				IEnergySink handler = (IEnergySink)acceptor;
-
-				if(handler.acceptsEnergyFrom(null, side.getOpposite()))
+				else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
 				{
-					double demanded = handler.getDemandedEnergy()*Mekanism.FROM_IC2;
-					int tier = Math.min(handler.getSinkTier(), 8);
-					double max = EnergyNet.instance.getPowerFromTier(tier)*Mekanism.FROM_IC2;
-					
-					if(Math.min(demanded, max) > 0)
+					IEnergySink handler = (IEnergySink)acceptor;
+	
+					if(handler.acceptsEnergyFrom(null, side.getOpposite()))
 					{
-						toReturn.add(acceptor);
+						double demanded = handler.getDemandedEnergy()*general.FROM_IC2;
+						int tier = Math.min(handler.getSinkTier(), 8);
+						double max = EnergyNet.instance.getPowerFromTier(tier)*general.FROM_IC2;
+						
+						if(Math.min(demanded, max) > 0)
+						{
+							toReturn.add(acceptor);
+							break;
+						}
 					}
 				}
 			}
@@ -286,15 +300,37 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	public void refresh()
+	public synchronized void refresh()
 	{
-		super.refresh();
+		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
+		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
+		boolean networkChanged = false;
+
+		while(it.hasNext())
+		{
+			IGridTransmitter<EnergyNetwork> conductor = (IGridTransmitter<EnergyNetwork>)it.next();
+
+			if(conductor == null || conductor.getTile().isInvalid())
+			{
+				it.remove();
+				transmitters.remove(conductor);
+				networkChanged = true;
+			}
+			else {
+				conductor.setTransmitterNetwork(this);
+			}
+		}
+
+		if(networkChanged) 
+		{
+			updateCapacity();
+		}
 
 		needsUpdate = true;
 	}
 	
 	@Override
-	public void refresh(IGridTransmitter<EnergyNetwork> transmitter)
+	public synchronized void refresh(IGridTransmitter<EnergyNetwork> transmitter)
 	{
 		TileEntity[] acceptors = CableUtils.getConnectedEnergyAcceptors(transmitter.getTile());
 		
@@ -307,7 +343,7 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
 			{
 				possibleAcceptors.put(Coord4D.get(acceptor), acceptor);
-				acceptorDirections.put(acceptor, ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
+				addSide(Coord4D.get(acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
 			}
 		}
 	}
@@ -378,18 +414,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	}
 
 	@Override
-	protected EnergyNetwork create(IGridTransmitter<EnergyNetwork>... varTransmitters)
-	{
-		EnergyNetwork network = new EnergyNetwork(varTransmitters);
-		network.clientEnergyScale = clientEnergyScale;
-		network.jouleBufferLastTick = jouleBufferLastTick;
-		network.joulesTransmitted = joulesTransmitted;
-		network.lastPowerScale = lastPowerScale;
-		network.electricityStored += electricityStored;
-		return network;
-	}
-
-	@Override
 	protected EnergyNetwork create(Collection<IGridTransmitter<EnergyNetwork>> collection)
 	{
 		EnergyNetwork network = new EnergyNetwork(collection);
@@ -400,12 +424,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 		network.electricityStored += electricityStored;
 		network.updateCapacity();
 		return network;
-	}
-
-	@Override
-	protected EnergyNetwork create(Set<EnergyNetwork> networks)
-	{
-		return new EnergyNetwork(networks);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import java.util.ArrayList;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -12,8 +13,8 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
-import mekanism.common.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 
@@ -41,7 +42,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
 	public TileEntityGasGenerator()
 	{
-		super("GasGenerator", Mekanism.FROM_H2*100, Mekanism.FROM_H2*2);
+		super("gas", "GasGenerator", general.FROM_H2*100, general.FROM_H2*2);
 		inventory = new ItemStack[2];
 		fuelTank = new GasTank(MAX_GAS);
 	}
@@ -240,7 +241,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		boolean isTankEmpty = (fuelTank.getGas() == null);
 		
@@ -290,7 +291,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}

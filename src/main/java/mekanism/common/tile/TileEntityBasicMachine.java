@@ -1,53 +1,54 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
-import mekanism.common.IEjector;
-import mekanism.common.IElectricMachine;
-import mekanism.common.IInvConfiguration;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.IUpgradeTile;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.SideData;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IEjector;
+import mekanism.common.base.IElectricMachine;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.inputs.MachineInput;
+import mekanism.common.recipe.machines.MachineRecipe;
+import mekanism.common.recipe.outputs.MachineOutput;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
-public abstract class TileEntityBasicMachine extends TileEntityElectricBlock implements IElectricMachine, IPeripheral, IActiveState, IInvConfiguration, IUpgradeTile, IHasSound, IRedstoneControl
+public abstract class TileEntityBasicMachine<INPUT extends MachineInput<INPUT>, OUTPUT extends MachineOutput<OUTPUT>, RECIPE extends MachineRecipe<INPUT, OUTPUT, RECIPE>> extends TileEntityNoisyElectricBlock implements IElectricMachine<INPUT, OUTPUT, RECIPE>, IPeripheral, ISideConfiguration, IUpgradeTile, IRedstoneControl
 {
-	/** This machine's side configuration. */
-	public byte[] sideConfig;
+	/** How much energy this machine uses per tick, un-upgraded. */
+	public double BASE_ENERGY_PER_TICK;
 
-	/** An arraylist of SideData for this machine. */
-	public ArrayList<SideData> sideOutputs = new ArrayList<SideData>();
-
-	/** The bundled URL of this machine's sound effect */
-	public String soundURL;
-
-	/** How much energy this machine uses per tick. */
-	public double ENERGY_PER_TICK;
+	/**	How much energy this machine uses per tick including upgrades */
+	public double energyPerTick;
 
 	/** How many ticks this machine has operated for. */
 	public int operatingTicks = 0;
 
-	/** Ticks required to operate -- or smelt an item. */
-	public int TICKS_REQUIRED;
+	/** Un-upgraded ticks required to operate -- or smelt an item. */
+	public int BASE_TICKS_REQUIRED;
+
+	/** Ticks required including upgrades */
+	public int ticksRequired;
 
 	/** How many ticks must pass until this block's active state can sync with the client. */
 	public int updateDelay;
@@ -67,8 +68,11 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	/** This machine's previous amount of energy. */
 	public double prevEnergy;
 
+	public RECIPE cachedRecipe = null;
+
 	public TileComponentUpgrade upgradeComponent;
 	public TileComponentEjector ejectorComponent;
+	public TileComponentConfig configComponent;
 
 	/**
 	 * The foundation of all machines - a simple tile entity with a facing, active state, initialized state, sound effect, and animated texture.
@@ -76,15 +80,16 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 * @param name - full name of this machine
 	 * @param location - GUI texture path of this machine
 	 * @param perTick - the energy this machine consumes every tick in it's active state
-	 * @param ticksRequired - how many ticks it takes to run a cycle
+	 * @param baseTicksRequired - how many ticks it takes to run a cycle
 	 * @param maxEnergy - how much energy this machine can store
 	 */
-	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int ticksRequired, double maxEnergy)
+	public TileEntityBasicMachine(String soundPath, String name, ResourceLocation location, double perTick, int baseTicksRequired, double maxEnergy)
 	{
-		super(name, maxEnergy);
-		ENERGY_PER_TICK = perTick;
-		TICKS_REQUIRED = ticksRequired;
-		soundURL = soundPath;
+		super("machine." + soundPath, name, maxEnergy);
+		BASE_ENERGY_PER_TICK = perTick;
+		energyPerTick = perTick;
+		BASE_TICKS_REQUIRED = baseTicksRequired;
+		ticksRequired = baseTicksRequired;
 		guiLocation = location;
 		isActive = false;
 	}
@@ -94,19 +99,14 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		super.onUpdate();
 
-		if(worldObj.isRemote)
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -123,6 +123,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 			}
 		}
 	}
+	
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides()
+	{
+		return configComponent.getSidesForData(TransmissionType.ENERGY, facing, 1);
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTags)
@@ -132,14 +138,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		operatingTicks = nbtTags.getInteger("operatingTicks");
 		clientActive = isActive = nbtTags.getBoolean("isActive");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
-
-		if(nbtTags.hasKey("sideDataStored"))
-		{
-			for(int i = 0; i < 6; i++)
-			{
-				sideConfig[i] = nbtTags.getByte("config"+i);
-			}
-		}
 	}
 
 	@Override
@@ -150,13 +148,6 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 		nbtTags.setInteger("operatingTicks", operatingTicks);
 		nbtTags.setBoolean("isActive", isActive);
 		nbtTags.setInteger("controlType", controlType.ordinal());
-
-		nbtTags.setBoolean("sideDataStored", true);
-
-		for(int i = 0; i < 6; i++)
-		{
-			nbtTags.setByte("config"+i, sideConfig[i]);
-		}
 	}
 
 	@Override
@@ -166,16 +157,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 		operatingTicks = dataStream.readInt();
 		clientActive = dataStream.readBoolean();
+		ticksRequired = dataStream.readInt();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
-
-		for(int i = 0; i < 6; i++)
-		{
-			sideConfig[i] = dataStream.readByte();
-		}
 
 		if(updateDelay == 0 && clientActive != isActive)
 		{
-			updateDelay = Mekanism.UPDATE_DELAY;
+			updateDelay = general.UPDATE_DELAY;
 			isActive = clientActive;
 			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 		}
@@ -188,21 +175,10 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 		data.add(operatingTicks);
 		data.add(isActive);
+		data.add(ticksRequired);
 		data.add(controlType.ordinal());
-		data.add(sideConfig);
 
 		return data;
-	}
-
-	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-
-		if(worldObj.isRemote)
-		{
-			Mekanism.proxy.unregisterSound(this);
-		}
 	}
 
 	/**
@@ -211,13 +187,7 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	 */
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)MekanismUtils.getTicks(this, TICKS_REQUIRED));
-	}
-
-	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
 	@Override
@@ -237,6 +207,23 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 
 			updateDelay = 10;
 			clientActive = active;
+		}
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY: //and SPEED fall-through.
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
 		}
 	}
 
@@ -271,69 +258,19 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side)
 	{
-		return sideOutputs.get(sideConfig[MekanismUtils.getBaseOrientation(side, facing)]).availableSlots;
+		return configComponent.getOutput(TransmissionType.ITEM, side, facing).availableSlots;
 	}
 
 	@Override
-	public ArrayList<SideData> getSideData()
+	public TileComponentConfig getConfig()
 	{
-		return sideOutputs;
-	}
-
-	@Override
-	public byte[] getConfiguration()
-	{
-		return sideConfig;
+		return configComponent;
 	}
 
 	@Override
 	public int getOrientation()
 	{
 		return facing;
-	}
-
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data)
-	{
-		return true;
-	}
-
-	@Override
-	public String getSoundPath()
-	{
-		return soundURL;
-	}
-
-	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
 	}
 
 	@Override
@@ -359,6 +296,12 @@ public abstract class TileEntityBasicMachine extends TileEntityElectricBlock imp
 	{
 		controlType = type;
 		MekanismUtils.saveChunk(this);
+	}
+
+	@Override
+	public boolean canPulse()
+	{
+		return false;
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.LangUtils;
@@ -79,7 +79,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 			Block block = world.getBlock(x, y, z);
 			int meta = world.getBlockMetadata(x, y, z);
 
-			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta))
+			if(!world.isRemote && MekanismAPI.isBlockCompatible(Item.getItemFromBlock(block), meta) && block.getBlockHardness(world, x, y, z) != -1)
 			{
 				BlockData data = new BlockData();
 				data.block = block;
@@ -101,7 +101,7 @@ public class ItemBlockCardboardBox extends ItemBlock
 					stack.stackSize--;
 				}
 
-				world.setBlock(x, y, z, Mekanism.CardboardBox, 1, 3);
+				world.setBlock(x, y, z, MekanismBlocks.CardboardBox, 1, 3);
 
 				isMonitoring = false;
 

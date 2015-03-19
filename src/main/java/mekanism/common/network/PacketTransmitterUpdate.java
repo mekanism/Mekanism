@@ -6,6 +6,7 @@ import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
 import mekanism.common.PacketHandler;
@@ -42,7 +43,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.ENERGY)
 			{
 				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = message.power;
 			}
@@ -51,7 +52,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.GAS)
 			{
 				GasNetwork net = ((IGridTransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
 
@@ -68,7 +69,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.FLUID)
 			{
 				FluidNetwork net = ((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
 
@@ -124,6 +125,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					fluidStack = (FluidStack)data[0];
 					didFluidTransfer = (Boolean)data[1];
 					break;
+				default:
+					break;
 			}
 		}
 	
@@ -151,6 +154,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
 					dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
 					dataStream.writeBoolean(didFluidTransfer);
+					break;
+				default:
 					break;
 			}
 		}

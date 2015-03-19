@@ -6,8 +6,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,6 +39,12 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	{
 		return transporterIcons.getCenterIcon(2);
 	}
+	
+	@Override
+	public boolean renderCenter()
+	{
+		return true;
+	}
 
 	@Override
 	public void load(NBTTagCompound nbtTags)
@@ -57,7 +63,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public void handlePacketData(ByteBuf dataStream)
+	public void handlePacketData(ByteBuf dataStream) throws Exception
 	{
 		super.handlePacketData(dataStream);
 		

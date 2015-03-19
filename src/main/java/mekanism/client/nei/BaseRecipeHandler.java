@@ -5,18 +5,15 @@ import java.util.List;
 import java.util.Set;
 
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.GuiElement;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.FluidStack;
-
 import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
 import static codechicken.lib.gui.GuiDraw.changeTexture;
 import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 import static codechicken.lib.gui.GuiDraw.gui;

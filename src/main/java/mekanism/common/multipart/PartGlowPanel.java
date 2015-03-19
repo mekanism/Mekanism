@@ -5,7 +5,7 @@ import java.util.Collections;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.client.render.RenderGlowPanel;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.item.ItemStack;
@@ -89,7 +89,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	{
 		if(!world().isRemote && !canStay())
 		{
-			TileMultipart.dropItem(new ItemStack(Mekanism.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
+			TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
 			tile().remPart(this);
 		}
 	}
@@ -99,7 +99,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	{
 		if(!world().isRemote && !canStay())
 		{
-			TileMultipart.dropItem(new ItemStack(Mekanism.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
+			TileMultipart.dropItem(new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue()), world(), Vector3.fromTileEntityCenter(tile()));
 			tile().remPart(this);
 		}
 	}
@@ -196,7 +196,7 @@ public class PartGlowPanel extends JCuboidPart implements JNormalOcclusion, JIco
 	@Override
 	public ItemStack pickItem(MovingObjectPosition hit)
 	{
-		return new ItemStack(Mekanism.GlowPanel, 1, colour.getMetaValue());
+		return new ItemStack(MekanismItems.GlowPanel, 1, colour.getMetaValue());
 	}
 
 	@Override

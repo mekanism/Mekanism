@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
-import mekanism.common.tank.DynamicFluidTank;
+import mekanism.common.content.tank.DynamicFluidTank;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -34,9 +34,9 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
 	{
-		if(fluidTank.dynamicTank.structure != null && fluidTank.dynamicTank.structure.fluidStored != null)
+		if(structure != null && structure.fluidStored != null)
 		{
-			if(resource.getFluid() == fluidTank.dynamicTank.structure.fluidStored.getFluid())
+			if(resource.getFluid() == structure.fluidStored.getFluid())
 			{
 				return fluidTank.drain(resource.amount, doDrain);
 			}
@@ -48,7 +48,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		if(fluidTank.dynamicTank.structure != null)
+		if(structure != null)
 		{
 			return fluidTank.drain(maxDrain, doDrain);
 		}
@@ -59,12 +59,18 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return true;
+		return ((!worldObj.isRemote && structure != null) || (worldObj.isRemote && clientHasStructure));
+	}
+	
+	@Override
+	public String getInventoryName()
+	{
+		return MekanismUtils.localize("gui.dynamicTank");
 	}
 }

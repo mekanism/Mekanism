@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container;
 
-import mekanism.common.IElectricChest;
+import mekanism.common.base.IElectricChest;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.inventory.slot.SlotElectricChest;
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
@@ -14,6 +14,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import invtweaks.api.container.ChestContainer;
+
+@ChestContainer(isLargeChest=true)
 public class ContainerElectricChest extends Container
 {
 	private TileEntityElectricChest tileEntity;

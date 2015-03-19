@@ -2,8 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 
-import mekanism.common.Mekanism;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -14,13 +12,14 @@ public class ItemIngot extends ItemMekanism
 {
 	public IIcon[] icons = new IIcon[256];
 
-	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", "Glowstone", "Steel", "Copper", "Tin"};
+	public static String[] en_USNames = {"Obsidian", "Osmium", "Bronze", 
+										"Glowstone", "Steel", "Copper", 
+										"Tin"};
 
 	public ItemIngot()
 	{
 		super();
 		setHasSubtypes(true);
-		setCreativeTab(Mekanism.tabMekanism);
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class ItemIngot extends ItemMekanism
 	@Override
 	public void getSubItems(Item item, CreativeTabs tabs, List itemList)
 	{
-		for(int counter = 0; counter <= 6; ++counter)
+		for(int counter = 0; counter <= 6; counter++)
 		{
 			itemList.add(new ItemStack(item, 1, counter));
 		}

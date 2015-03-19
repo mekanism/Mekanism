@@ -1,8 +1,6 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.inventory.slot.SlotEnergy.SlotDischarge;
-import mekanism.common.inventory.slot.SlotMachineUpgrade;
-import mekanism.common.item.ItemMachineUpgrade;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.ChargeUtils;
 
@@ -29,19 +27,18 @@ public class ContainerDigitalMiner extends Container
 		}
 
 		addSlotToContainer(new SlotDischarge(tentity, 27, 152, 6));
-		addSlotToContainer(new SlotMachineUpgrade(tentity, 28, 180, 11));
 
 		int slotX;
 
-		for(slotX = 0; slotX < 3; ++slotX)
+		for(slotX = 0; slotX < 3; slotX++)
 		{
-			for(int slotY = 0; slotY < 9; ++slotY)
+			for(int slotY = 0; slotY < 9; slotY++)
 			{
 				addSlotToContainer(new Slot(inventory, slotY + slotX * 9 + 9, 8 + slotY * 18, 148 + slotX * 18));
 			}
 		}
 
-		for(slotX = 0; slotX < 9; ++slotX)
+		for(slotX = 0; slotX < 9; slotX++)
 		{
 			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 206));
 		}
@@ -87,23 +84,7 @@ public class ContainerDigitalMiner extends Container
 				}
 				else if(slotID == 27)
 				{
-					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
-					{
-						return null;
-					}
-				}
-			}
-			else if(slotStack.getItem() instanceof ItemMachineUpgrade)
-			{
-				if(slotID != 27 && slotID != 28)
-				{
-					if(!mergeItemStack(slotStack, 28, 29, false))
-					{
-						return null;
-					}
-				}
-				else {
-					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), true))
 					{
 						return null;
 					}
@@ -112,7 +93,7 @@ public class ContainerDigitalMiner extends Container
 			else {
 				if(slotID < 27)
 				{
-					if(!mergeItemStack(slotStack, 29, inventorySlots.size(), true))
+					if(!mergeItemStack(slotStack, 28, inventorySlots.size(), true))
 					{
 						return null;
 					}

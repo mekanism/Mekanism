@@ -1,8 +1,11 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
@@ -12,40 +15,41 @@ import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
-import mekanism.client.sound.IHasSound;
-import mekanism.common.IActiveState;
-import mekanism.common.IRedstoneControl;
-import mekanism.common.ISustainedData;
-import mekanism.common.IUpgradeTile;
 import mekanism.common.Mekanism;
+import mekanism.common.Upgrade;
+import mekanism.common.base.ITankManager;
+import mekanism.common.base.IRedstoneControl;
+import mekanism.common.base.ISustainedData;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
-import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.DissolutionRecipe;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBlock implements IActiveState, ITubeConnection, IRedstoneControl, IHasSound, IGasHandler, IUpgradeTile, ISustainedData
+public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectricBlock implements ITubeConnection, IRedstoneControl, IGasHandler, IUpgradeTile, ISustainedData, ITankManager
 {
 	public GasTank injectTank = new GasTank(MAX_GAS);
 	public GasTank outputTank = new GasTank(MAX_GAS);
 
 	public static final int MAX_GAS = 10000;
 
-	public static final int INJECT_USAGE = 1;
+	public static final int BASE_INJECT_USAGE = 1;
+
+	public int injectUsage = 1;
 
 	public int updateDelay;
 
-	public int gasOutput = 16;
+	public int gasOutput = 256;
 
 	public boolean isActive;
 
@@ -55,9 +59,15 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public int operatingTicks = 0;
 
-	public int TICKS_REQUIRED = 100;
+	public int BASE_TICKS_REQUIRED = 100;
 
-	public final double ENERGY_USAGE = Mekanism.chemicalDissolutionChamberUsage;
+	public int ticksRequired = 100;
+
+	public final double BASE_ENERGY_USAGE = usage.chemicalDissolutionChamberUsage;
+
+	public double energyUsage = usage.chemicalDissolutionChamberUsage;
+
+	public DissolutionRecipe cachedRecipe;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
@@ -65,26 +75,21 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public TileEntityChemicalDissolutionChamber()
 	{
-		super("ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
+		super("machine.dissolution", "ChemicalDissolutionChamber", MachineType.CHEMICAL_DISSOLUTION_CHAMBER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 
 	@Override
 	public void onUpdate()
 	{
-		if(worldObj.isRemote)
+		if(worldObj.isRemote && updateDelay > 0)
 		{
-			Mekanism.proxy.registerSound(this);
+			updateDelay--;
 
-			if(updateDelay > 0)
+			if(updateDelay == 0 && clientActive != isActive)
 			{
-				updateDelay--;
-
-				if(updateDelay == 0 && clientActive != isActive)
-				{
-					isActive = clientActive;
-					MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
-				}
+				isActive = clientActive;
+				MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
 			}
 		}
 
@@ -102,7 +107,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 			ChargeUtils.discharge(3, this);
 
-			if(inventory[0] != null && (injectTank.getGas() == null || injectTank.getStored() < injectTank.getMaxGas()))
+			if(inventory[0] != null && injectTank.getNeeded() > 0)
 			{
 				injectTank.receive(GasTransmission.removeGas(inventory[0], GasRegistry.getGas("sulfuricAcid"), injectTank.getNeeded()), true);
 			}
@@ -113,31 +118,22 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 			}
 
 			boolean changed = false;
+			
+			DissolutionRecipe recipe = getRecipe();
 
-			if(canOperate() && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE) && injectTank.getStored() >= INJECT_USAGE && MekanismUtils.canFunction(this))
+			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsage && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
-				setEnergy(getEnergy() - MekanismUtils.getEnergyPerTick(this, ENERGY_USAGE));
+				setEnergy(getEnergy() - energyUsage);
+				minorOperate();
 
-				if(operatingTicks < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					injectTank.draw(INJECT_USAGE, true);
 				}
 				else {
-					GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], true, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
-
-					outputTank.receive(stack, true);
-					injectTank.draw(INJECT_USAGE, true);
-
+					operate(recipe);
 					operatingTicks = 0;
-
-					if(inventory[1].stackSize <= 0)
-					{
-						inventory[1] = null;
-					}
-
-					markDirty();
 				}
 			}
 			else {
@@ -148,7 +144,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				}
 			}
 
-			if(changed && !canOperate())
+			if(changed && !canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
@@ -165,7 +161,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 				{
 					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getRight(facing).getOpposite(), outputTank.getGas().getGas()))
 					{
-						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend), true);
+						outputTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getRight(facing).getOpposite(), toSend, true), true);
 					}
 				}
 			}
@@ -177,7 +173,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	{
 		if(slotID == 1)
 		{
-			return RecipeHandler.getItemToGasOutput(itemstack, false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get()) != null;
+			return RecipeHandler.getDissolutionRecipe(new ItemStackInput(itemstack)) != null;
 		}
 		else if(slotID == 3)
 		{
@@ -219,24 +215,41 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 
 	public double getScaledProgress()
 	{
-		return ((double)operatingTicks) / ((double)TICKS_REQUIRED);
+		return ((double)operatingTicks) / ((double)ticksRequired);
 	}
 
-	public boolean canOperate()
+	public DissolutionRecipe getRecipe()
 	{
-		if(inventory[1] == null)
+		ItemStackInput input = getInput();
+		
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
-			return false;
+			cachedRecipe = RecipeHandler.getDissolutionRecipe(getInput());
 		}
+		 
+		return cachedRecipe;
+	}
 
-		GasStack stack = RecipeHandler.getItemToGasOutput(inventory[1], false, Recipe.CHEMICAL_DISSOLUTION_CHAMBER.get());
+	public ItemStackInput getInput()
+	{
+		return new ItemStackInput(inventory[1]);
+	}
 
-		if(stack == null || (outputTank.getGas() != null && (outputTank.getGas().getGas() != stack.getGas() || outputTank.getNeeded() < stack.amount)))
-		{
-			return false;
-		}
+	public boolean canOperate(DissolutionRecipe recipe)
+	{
+		return recipe != null && recipe.canOperate(inventory, outputTank);
+	}
 
-		return true;
+	public void operate(DissolutionRecipe recipe)
+	{
+		recipe.operate(inventory, outputTank);
+
+		markDirty();
+	}
+
+	public void minorOperate()
+	{
+		injectTank.draw(injectUsage, true);
 	}
 
 	@Override
@@ -330,22 +343,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	}
 	
 	@Override
-	public double getMaxEnergy()
-	{
-		return MekanismUtils.getMaxEnergy(this, MAX_ELECTRICITY);
-	}
-
-	public int getScaledInjectGasLevel(int i)
-	{
-		return injectTank.getGas() != null ? injectTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	public int getScaledOutputGasLevel(int i)
-	{
-		return outputTank.getGas() != null ? outputTank.getStored()*i / MAX_GAS : 0;
-	}
-
-	@Override
 	public void setActive(boolean active)
 	{
 		isActive = active;
@@ -397,30 +394,24 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	}
 
 	@Override
-	public String getSoundPath()
+	public boolean canPulse()
 	{
-		return "ChemicalDissolutionChamber.ogg";
+		return false;
 	}
 
 	@Override
-	public float getVolumeMultiplier()
-	{
-		return 1;
-	}
-
-	@Override
-	public int receiveGas(ForgeDirection side, GasStack stack)
+	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(canReceiveGas(side, stack.getGas()))
 		{
-			return injectTank.receive(stack, true);
+			return injectTank.receive(stack, doTransfer);
 		}
 
 		return 0;
 	}
 
 	@Override
-	public GasStack drawGas(ForgeDirection side, int amount)
+	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return null;
 	}
@@ -435,38 +426,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	public boolean canDrawGas(ForgeDirection side, Gas type)
 	{
 		return false;
-	}
-	
-	@Override
-	public int getEnergyMultiplier(Object... data)
-	{
-		return upgradeComponent.energyMultiplier;
-	}
-
-	@Override
-	public void setEnergyMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.energyMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public int getSpeedMultiplier(Object... data)
-	{
-		return upgradeComponent.speedMultiplier;
-	}
-
-	@Override
-	public void setSpeedMultiplier(int multiplier, Object... data)
-	{
-		upgradeComponent.speedMultiplier = multiplier;
-		MekanismUtils.saveChunk(this);
-	}
-
-	@Override
-	public boolean supportsUpgrades(Object... data) 
-	{
-		return true;
 	}
 
 	@Override
@@ -494,5 +453,29 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityElectricBloc
 	{
 		injectTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("injectTank")));
 		outputTank.setGas(GasStack.readFromNBT(itemStack.stackTagCompound.getCompoundTag("outputTank")));
+	}
+
+	@Override
+	public void recalculateUpgradables(Upgrade upgrade)
+	{
+		super.recalculateUpgradables(upgrade);
+
+		switch(upgrade)
+		{
+			case SPEED:
+				injectUsage = StatUtils.inversePoisson(MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE));
+				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+			case ENERGY:
+				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
+				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+			default:
+				break;
+		}
+	}
+	
+	@Override
+	public Object[] getTanks() 
+	{
+		return new Object[] {injectTank, outputTank};
 	}
 }

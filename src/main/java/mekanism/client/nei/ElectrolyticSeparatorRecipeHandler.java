@@ -1,31 +1,36 @@
 package mekanism.client.nei;
 
-import java.awt.*;
+import static codechicken.lib.gui.GuiDraw.changeTexture;
+import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import mekanism.api.ChemicalPair;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.GuiElectrolyticSeparator;
-import mekanism.client.gui.GuiElement;
-import mekanism.client.gui.GuiFluidGauge;
-import mekanism.client.gui.GuiGasGauge;
-import mekanism.client.gui.GuiGauge;
-import mekanism.client.gui.GuiPowerBar;
-import mekanism.client.gui.GuiPowerBar.IPowerInfoHandler;
-import mekanism.client.gui.GuiProgress;
-import mekanism.client.gui.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.GuiProgress.ProgressBar;
-import mekanism.client.gui.GuiSlot;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiGasGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiPowerBar.IPowerInfoHandler;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.FluidInput;
+import mekanism.common.recipe.machines.SeparatorRecipe;
+import mekanism.common.recipe.outputs.ChemicalPairOutput;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -36,9 +41,6 @@ import codechicken.nei.NEIClientConfig;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.GuiRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
-
-import static codechicken.lib.gui.GuiDraw.changeTexture;
-import static codechicken.lib.gui.GuiDraw.drawTexturedModalRect;
 
 public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 {
@@ -109,9 +111,9 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 		return "mekanism.electrolyticseparator";
 	}
 
-	public Set<Entry<FluidStack, ChemicalPair>> getRecipes()
+	public Collection<SeparatorRecipe> getRecipes()
 	{
-		return Recipe.ELECTROLYTIC_SEPARATOR.get().entrySet();
+		return Recipe.ELECTROLYTIC_SEPARATOR.get().values();
 	}
 
 	@Override
@@ -134,7 +136,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		if(recipe.fluidInput != null)
 		{
-			fluidInput.setDummyType(recipe.fluidInput.getFluid());
+			fluidInput.setDummyType(recipe.fluidInput.ingredient.getFluid());
 			fluidInput.renderScale(0, 0, -xOffset, -yOffset);
 		}
 
@@ -172,16 +174,16 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	{
 		if(outputId.equals(getRecipeId()))
 		{
-			for(Map.Entry irecipe : getRecipes())
+			for(SeparatorRecipe irecipe : getRecipes())
 			{
 				arecipes.add(new CachedIORecipe(irecipe));
 			}
 		}
 		else if(outputId.equals("gas") && results.length == 1 && results[0] instanceof GasStack)
 		{
-			for(Map.Entry<FluidStack, ChemicalPair> irecipe : getRecipes())
+			for(SeparatorRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getValue().containsType((GasStack)results[0]))
+				if(irecipe.recipeOutput.containsType((GasStack)results[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -197,9 +199,9 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 	{
 		if(inputId.equals("fluid") && ingredients.length == 1 && ingredients[0] instanceof FluidStack)
 		{
-			for(Map.Entry<FluidStack, ChemicalPair> irecipe : getRecipes())
+			for(SeparatorRecipe irecipe : getRecipes())
 			{
-				if(irecipe.getKey().isFluidEqual((FluidStack)ingredients[0]))
+				if(irecipe.recipeInput.ingredient.isFluidEqual((FluidStack)ingredients[0]))
 				{
 					arecipes.add(new CachedIORecipe(irecipe));
 				}
@@ -220,7 +222,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
-			currenttip.add(((CachedIORecipe)arecipes.get(recipe)).fluidInput.getFluid().getLocalizedName());
+			currenttip.add(LangUtils.localizeFluidStack(((CachedIORecipe)arecipes.get(recipe)).fluidInput.ingredient));
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
@@ -247,7 +249,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
+			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput.ingredient;
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
@@ -309,7 +311,7 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 11+7 && yAxis <= 69+7)
 		{
-			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput;
+			fluid = ((CachedIORecipe)arecipes.get(recipe)).fluidInput.ingredient;
 		}
 		else if(xAxis >= 59 && xAxis <= 75 && yAxis >= 19+7 && yAxis <= 47+7)
 		{
@@ -366,8 +368,8 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 
 	public class CachedIORecipe extends TemplateRecipeHandler.CachedRecipe
 	{
-		public FluidStack fluidInput;
-		public ChemicalPair outputPair;
+		public FluidInput fluidInput;
+		public ChemicalPairOutput outputPair;
 
 		@Override
 		public PositionedStack getResult()
@@ -375,15 +377,15 @@ public class ElectrolyticSeparatorRecipeHandler extends BaseRecipeHandler
 			return null;
 		}
 
-		public CachedIORecipe(FluidStack input, ChemicalPair pair)
+		public CachedIORecipe(FluidInput input, ChemicalPairOutput pair)
 		{
 			fluidInput = input;
 			outputPair = pair;
 		}
 
-		public CachedIORecipe(Map.Entry recipe)
+		public CachedIORecipe(SeparatorRecipe recipe)
 		{
-			this((FluidStack)recipe.getKey(), (ChemicalPair)recipe.getValue());
+			this(recipe.recipeInput, recipe.recipeOutput);
 		}
 	}
 }

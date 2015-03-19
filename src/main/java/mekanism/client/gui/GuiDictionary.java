@@ -1,13 +1,10 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerDictionary;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -21,12 +18,14 @@ import org.lwjgl.opengl.GL11;
 public class GuiDictionary extends GuiMekanism
 {
 	public ItemStack itemType;
-
-	public List<String> oreDictNames;
+	
+	public GuiScrollList scrollList;
 
 	public GuiDictionary(InventoryPlayer inventory)
 	{
 		super(new ContainerDictionary(inventory));
+		
+		guiElements.add(scrollList = new GuiScrollList(this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalOxidizer.png"), 8, 30, 160, 4));
 	}
 
 	@Override
@@ -40,26 +39,9 @@ public class GuiDictionary extends GuiMekanism
 
 		if(itemType != null)
 		{
-			if(!oreDictNames.isEmpty())
-			{
-				int currentY = 57;
-
-				for(String name : oreDictNames)
-				{
-					fontRendererObj.drawString(MekanismUtils.localize("gui.key") + ": " + name, 9, currentY, 0x00CD00);
-					currentY += 9;
-				}
-			}
-			else {
-				fontRendererObj.drawString(MekanismUtils.localize("gui.dictionary.noKey"), 9, 57, 0x00CD00);
-			}
-		}
-
-		if(itemType != null)
-		{
 			GL11.glPushMatrix();
 			GL11.glEnable(GL11.GL_LIGHTING);
-			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemType, 80, 23);
+			itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), itemType, 6, 6);
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glPopMatrix();
 		}
@@ -70,8 +52,6 @@ public class GuiDictionary extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiDictionary.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -81,20 +61,22 @@ public class GuiDictionary extends GuiMekanism
 		int xAxis = mouseX - guiWidth;
 		int yAxis = mouseY - guiHeight;
 
-		if(xAxis >= 80 && xAxis <= 96 && yAxis >= 23 && yAxis <= 39)
+		if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 		{
 			GL11.glPushMatrix();
 			GL11.glDisable(GL11.GL_LIGHTING);
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-			int x = guiWidth + 80;
-			int y = guiHeight + 23;
+			int x = guiWidth + 6;
+			int y = guiHeight + 6;
 			drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
 
 			GL11.glEnable(GL11.GL_LIGHTING);
 			GL11.glEnable(GL11.GL_DEPTH_TEST);
 			GL11.glPopMatrix();
 		}
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 
 	@Override
@@ -135,7 +117,7 @@ public class GuiDictionary extends GuiMekanism
 						itemType = stack.copy();
 						itemType.stackSize = 1;
 
-						oreDictNames = MekanismUtils.getOreDictName(itemType);
+						scrollList.setText(MekanismUtils.getOreDictName(itemType));
 						SoundHandler.playSound("gui.button.press");
 						
 						return;
@@ -143,7 +125,7 @@ public class GuiDictionary extends GuiMekanism
 				}
 			}
 
-			if(xAxis >= 80 && xAxis <= 96 && yAxis >= 23 && yAxis <= 39)
+			if(xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22)
 			{
 				ItemStack stack = mc.thePlayer.inventory.getItemStack();
 
@@ -152,12 +134,13 @@ public class GuiDictionary extends GuiMekanism
 					itemType = stack.copy();
 					itemType.stackSize = 1;
 
-					oreDictNames = MekanismUtils.getOreDictName(itemType);
+					scrollList.setText(MekanismUtils.getOreDictName(itemType));
 				}
 				else if(stack == null && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 				{
 					itemType = null;
-					oreDictNames = new ArrayList<String>();
+					
+					scrollList.setText(null);
 				}
 
                 SoundHandler.playSound("gui.button.press");

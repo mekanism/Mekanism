@@ -1,17 +1,22 @@
 package mekanism.client.render;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.OreGas;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
-import mekanism.common.ISpecialBounds;
+import mekanism.client.render.tileentity.RenderDynamicTank;
+import mekanism.client.render.tileentity.RenderPortableTank;
+import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.common.ObfuscatedNames;
+import mekanism.common.base.ISpecialBounds;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
@@ -32,12 +37,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class MekanismRenderer 
@@ -47,6 +53,9 @@ public class MekanismRenderer
 	public static IIcon[] colors = new IIcon[256];
 	
 	public static IIcon energyIcon;
+	public static IIcon heatIcon;
+	
+	public static Map<TransmissionType, IIcon> overlays = new HashMap<TransmissionType, IIcon>();
 	
 	private static float lightmapLastX;
     private static float lightmapLastY;
@@ -69,22 +78,33 @@ public class MekanismRenderer
 				colors[color.ordinal()] = event.map.registerIcon("mekanism:overlay/overlay_" + color.unlocalizedName);
 			}
 			
+			for(TransmissionType type : TransmissionType.values())
+			{
+				overlays.put(type, event.map.registerIcon("mekanism:overlay/" + type.getTransmission() + "Overlay"));
+			}
+			
 			energyIcon = event.map.registerIcon("mekanism:LiquidEnergy");
+			heatIcon = event.map.registerIcon("mekanism:LiquidHeat");
 			
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:LiquidOxygen"));
-			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:WaterVapor"));
-			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:Chlorine"));
+			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
+			GasRegistry.getGas("chlorine").setIcon(event.map.registerIcon("mekanism:LiquidChlorine"));
 			GasRegistry.getGas("sulfurDioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurDioxide"));
 			GasRegistry.getGas("sulfurTrioxideGas").setIcon(event.map.registerIcon("mekanism:LiquidSulfurTrioxide"));
 			GasRegistry.getGas("sulfuricAcid").setIcon(event.map.registerIcon("mekanism:LiquidSulfuricAcid"));
 			GasRegistry.getGas("hydrogenChloride").setIcon(event.map.registerIcon("mekanism:LiquidHydrogenChloride"));
 			GasRegistry.getGas("liquidOsmium").setIcon(event.map.registerIcon("mekanism:LiquidOsmium"));
 			GasRegistry.getGas("liquidStone").setIcon(event.map.registerIcon("mekanism:LiquidStone"));
-			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:Ethene"));
+			GasRegistry.getGas("ethene").setIcon(event.map.registerIcon("mekanism:LiquidEthene"));
 			GasRegistry.getGas("brine").setIcon(event.map.registerIcon("mekanism:LiquidBrine"));
 			GasRegistry.getGas("sodium").setIcon(event.map.registerIcon("mekanism:LiquidSodium"));
-			
+			GasRegistry.getGas("deuterium").setIcon(event.map.registerIcon("mekanism:LiquidDeuterium"));
+			GasRegistry.getGas("tritium").setIcon(event.map.registerIcon("mekanism:LiquidTritium"));
+			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:LiquidDT"));
+			GasRegistry.getGas("steam").setIcon(event.map.registerIcon("mekanism:LiquidSteam"));
+			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:LiquidLithium"));
+
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
 				if(gas instanceof OreGas)
@@ -100,6 +120,16 @@ public class MekanismRenderer
 			}
 
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:LiquidBrine"));
+			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:LiquidHeavyWater"));
+
+			if(RenderPartTransmitter.getInstance() != null)
+			{
+				RenderPartTransmitter.getInstance().resetDisplayInts();
+			}
+			
+			RenderDynamicTank.resetDisplayInts();
+			RenderSalinationController.resetDisplayInts();
+			RenderPortableTank.resetDisplayInts();
 		}
 	}
     
@@ -118,7 +148,7 @@ public class MekanismRenderer
 
 		public Block baseBlock = Blocks.sand;
 		
-	    public final void setBlockBounds(float xNeg, float yNeg, float zNeg, float xPos, float yPos, float zPos)
+	    public final void setBlockBounds(double xNeg, double yNeg, double zNeg, double xPos, double yPos, double zPos)
 	    {
 	    	minX = xNeg;
 	    	minY = yNeg;
@@ -337,16 +367,9 @@ public class MekanismRenderer
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
     }
     
-	/**
-	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
-	 * in a player's inventory, and in a player's hand.
-	 * @param renderer - RenderBlocks renderer to render the item with
-	 * @param metadata - block/item metadata
-	 * @param block - block to render
-	 */
-	public static void renderItem(RenderBlocks renderer, int metadata, Block block)
-	{
-		if(!(block instanceof ISpecialBounds) || ((ISpecialBounds)block).doDefaultBoundSetting(metadata))
+    public static void prepareItemRender(RenderBlocks renderer, int metadata, Block block)
+    {
+    	if(!(block instanceof ISpecialBounds) || ((ISpecialBounds)block).doDefaultBoundSetting(metadata))
 		{
 			block.setBlockBoundsForItemRender();
 		}
@@ -374,7 +397,60 @@ public class MekanismRenderer
         }
 
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
-        
+    }
+    
+    public static void renderCustomItem(RenderBlocks renderer, ItemStack stack)
+    {
+    	Block block = Block.getBlockFromItem(stack.getItem());
+    	
+    	if(block instanceof ICustomBlockIcon)
+    	{
+    		ICustomBlockIcon custom = (ICustomBlockIcon)block;
+    		prepareItemRender(renderer, stack.getItemDamage(), Block.getBlockFromItem(stack.getItem()));
+    		
+            try {
+    	        Tessellator tessellator = Tessellator.instance;
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, -1.0F, 0.0F);
+    	        renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 0));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 1.0F, 0.0F);
+    	        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 1));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
+    	        renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
+    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 3));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
+    	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
+    	        tessellator.draw();
+            } catch(Exception e) {}
+            
+            GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+    	}
+    }
+    
+	/**
+	 * Cleaned-up snip of RenderBlocks.renderBlockAsItem() -- used for rendering an item as an entity,
+	 * in a player's inventory, and in a player's hand.
+	 * @param renderer - RenderBlocks renderer to render the item with
+	 * @param metadata - block/item metadata
+	 * @param block - block to render
+	 */
+	public static void renderItem(RenderBlocks renderer, int metadata, Block block)
+	{
+		prepareItemRender(renderer, metadata, block);
+		
         try {
 	        Tessellator tessellator = Tessellator.instance;
 	        tessellator.startDrawingQuads();
@@ -474,38 +550,6 @@ public class MekanismRenderer
     	return null;
     }
     
-    public static class BooleanArray
-    {
-    	private final boolean[] boolArray;
-    	
-    	public BooleanArray(boolean[] array)
-		{
-			boolArray = array.clone();
-		}
-    	
-    	@Override
-    	public boolean equals(Object o)
-    	{
-    		if(o instanceof BooleanArray)
-    		{
-    			return Arrays.equals(boolArray, ((BooleanArray)o).boolArray);
-    		}
-    		else if(o instanceof boolean[]) 
-    		{
-    			return Arrays.equals(boolArray, (boolean[])o);
-    		}
-    		else {
-    			return false;
-    		}
-    	}
-    	
-    	@Override
-    	public int hashCode()
-    	{
-    		return Arrays.hashCode(boolArray);
-    	}
-    }
-    
     public static float getPartialTick()
     {
     	try {
@@ -538,5 +582,10 @@ public class MekanismRenderer
     public static ResourceLocation getItemsTexture()
     {
     	return TextureMap.locationItemsTexture;
+    }
+    
+    public static interface ICustomBlockIcon
+    {
+    	public IIcon getIcon(ItemStack stack, int side);
     }
 }

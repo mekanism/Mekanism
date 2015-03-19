@@ -2,6 +2,7 @@ package mekanism.client;
 
 import java.net.InetSocketAddress;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 
@@ -16,7 +17,7 @@ public class ClientConnectionHandler
 	@SubscribeEvent
 	public void onConnection(ClientConnectedToServerEvent event)
 	{
-		if(Mekanism.voiceServerEnabled)
+		if(general.voiceServerEnabled)
 		{
 			if(event.isLocal)
 			{

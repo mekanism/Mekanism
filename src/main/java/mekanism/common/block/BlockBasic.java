@@ -1,29 +1,40 @@
 package mekanism.common.block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
-import mekanism.client.ClientProxy;
-import mekanism.common.ConnectedTextureRenderer;
-import mekanism.common.IActiveState;
-import mekanism.common.IBoundingBlock;
+import mekanism.api.energy.IEnergizedItem;
+import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
+import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
+import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBlockCTM;
+import mekanism.common.base.IBoundingBlock;
+import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.InventoryBin;
+import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
-import mekanism.common.tile.TileEntitySalinationController;
-import mekanism.common.tile.TileEntitySalinationTank;
-import mekanism.common.tile.TileEntitySalinationValve;
+import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.tile.TileEntityInductionCell;
+import mekanism.common.tile.TileEntityInductionPort;
+import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.tile.TileEntitySolarEvaporationBlock;
+import mekanism.common.tile.TileEntitySolarEvaporationController;
+import mekanism.common.tile.TileEntitySolarEvaporationValve;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -65,24 +76,46 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 0:11: Dynamic Valve
  * 0:12: Copper Block
  * 0:13: Tin Block
- * 0:14: Salination Controller
- * 0:15: Salination Valve
- * 1:0: Salination Block
+ * 0:14: Solar Evaporation Controller
+ * 0:15: Solar Evaporation Valve
+ * 1:0: Solar Evaporation Block
+ * 1:1: Induction Casing
+ * 1:2: Induction Port
+ * 1:3: Induction Cell
+ * 1:4: Induction Provider
  * @author AidanBrady
  *
  */
-public class BlockBasic extends Block
+public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 {
-	public IIcon[][] icons = new IIcon[256][6];
+	public IIcon[][] icons = new IIcon[16][6];
 
-	public ConnectedTextureRenderer glassRenderer = new ConnectedTextureRenderer("glass/DynamicGlass", this, 10);
+	public CTMData[][] ctms = new CTMData[16][4];
 
-	public BlockBasic()
+	public BasicBlock blockType;
+
+	public BlockBasic(BasicBlock type)
 	{
 		super(Material.iron);
 		setHardness(5F);
 		setResistance(10F);
 		setCreativeTab(Mekanism.tabMekanism);
+		blockType = type;
+	}
+	
+	@Override
+	public IIcon getIcon(ItemStack stack, int side)
+	{
+		if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 3)
+		{
+			return icons[3][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+		}
+		else if(getBlockFromItem(stack.getItem()) == MekanismBlocks.BasicBlock2 && stack.getItemDamage() == 4)
+		{
+			return icons[4][((ItemBlockBasic)stack.getItem()).getTier(stack).ordinal()];
+		}
+		
+		return getIcon(side, stack.getItemDamage());
 	}
 
 	@Override
@@ -92,9 +125,9 @@ public class BlockBasic extends Block
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-			if(block == this && tileEntity instanceof TileEntityDynamicTank)
+			if(block == this && tileEntity instanceof TileEntityMultiblock)
 			{
-				((TileEntityDynamicTank)tileEntity).update();
+				((TileEntityMultiblock)tileEntity).update();
 			}
 
 			if(tileEntity instanceof TileEntityBasicBlock)
@@ -108,36 +141,68 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
-			icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
-			icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
-			icons[3][0] = register.registerIcon("mekanism:CoalBlock");
-			icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
-			icons[5][0] = register.registerIcon("mekanism:SteelBlock");
-			icons[6][0] = register.registerIcon("mekanism:BinSide");
-			icons[6][1] = register.registerIcon("mekanism:BinTop");
-			icons[6][2] = register.registerIcon("mekanism:BinFront");
-			icons[6][3] = register.registerIcon("mekanism:BinTopOn");
-			icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
-			icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
-			icons[8][0] = register.registerIcon("mekanism:SteelCasing");
-			icons[9][0] = register.registerIcon("mekanism:DynamicTank");
-			icons[10][0] = register.registerIcon("mekanism:DynamicGlass");
-			icons[11][0] = register.registerIcon("mekanism:DynamicValve");
-			icons[12][0] = register.registerIcon("mekanism:CopperBlock");
-			icons[13][0] = register.registerIcon("mekanism:TinBlock");
-			icons[14][0] = register.registerIcon("mekanism:SalinationController");
-			icons[14][1] = register.registerIcon("mekanism:SalinationControllerOn");
-			icons[14][2] = register.registerIcon("mekanism:SalinationBlock");
-			icons[15][0] = register.registerIcon("mekanism:SalinationValve");
+			case BASIC_BLOCK_1:
+				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
+				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
+				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
 
-			glassRenderer.registerIcons(register);
-		}
-		else if(this == Mekanism.BasicBlock2)
-		{
-			icons[0][0] = register.registerIcon("mekanism:SalinationBlock");
+				ctms[14][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationController").registerIcons(register);
+				ctms[14][1] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(14, 15)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).addFacingOverride("ctm/SolarEvaporationControllerOn").registerIcons(register);
+				ctms[15][0] = new CTMData("ctm/SolarEvaporationValve", this, Arrays.asList(15, 14)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock2, Arrays.asList(0)).registerIcons(register);
+
+				icons[0][0] = register.registerIcon("mekanism:OsmiumBlock");
+				icons[1][0] = register.registerIcon("mekanism:BronzeBlock");
+				icons[2][0] = register.registerIcon("mekanism:RefinedObsidian");
+				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
+				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
+				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
+				icons[6][0] = register.registerIcon("mekanism:BinSide");
+				icons[6][1] = register.registerIcon("mekanism:BinTop");
+				icons[6][2] = register.registerIcon("mekanism:BinFront");
+				icons[6][3] = register.registerIcon("mekanism:BinTopOn");
+				icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
+				icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
+				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[9][0] = ctms[9][0].mainTextureData.icon;
+				icons[10][0] = ctms[10][0].mainTextureData.icon;
+				icons[11][0] = ctms[11][0].mainTextureData.icon;
+				icons[12][0] = register.registerIcon("mekanism:CopperBlock");
+				icons[13][0] = register.registerIcon("mekanism:TinBlock");
+				icons[14][0] = ctms[14][0].facingOverride.icon;
+				icons[14][1] = ctms[14][1].facingOverride.icon;
+				icons[14][2] = ctms[14][0].mainTextureData.icon;
+				icons[15][0] = ctms[15][0].mainTextureData.icon;
+				break;
+			case BASIC_BLOCK_2:
+				ctms[0][0] = new CTMData("ctm/SolarEvaporationBlock", this, Arrays.asList(0)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(14, 15)).registerIcons(register);
+				ctms[1][0] = new CTMData("ctm/InductionCasing", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[2][0] = new CTMData("ctm/InductionPortInput", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[2][1] = new CTMData("ctm/InductionPortOutput", this, Arrays.asList(1, 2)).registerIcons(register);
+				ctms[3][0] = new CTMData("ctm/InductionCellBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[3][1] = new CTMData("ctm/InductionCellAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[3][2] = new CTMData("ctm/InductionCellElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[3][3] = new CTMData("ctm/InductionCellUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][0] = new CTMData("ctm/InductionProviderBasic", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
+				//TODO @unpairedbracket, mind fixing this?
+				
+				icons[0][0] = ctms[0][0].mainTextureData.icon;
+				icons[1][0] = ctms[1][0].mainTextureData.icon;
+				icons[2][0] = ctms[2][0].mainTextureData.icon;
+				icons[2][1] = ctms[2][1].mainTextureData.icon;
+				icons[3][0] = ctms[3][0].mainTextureData.icon;
+				icons[3][1] = ctms[3][1].mainTextureData.icon;
+				icons[3][2] = ctms[3][2].mainTextureData.icon;
+				icons[3][3] = ctms[3][3].mainTextureData.icon;
+				icons[4][0] = ctms[4][0].mainTextureData.icon;
+				icons[4][1] = ctms[4][1].mainTextureData.icon;
+				icons[4][2] = ctms[4][2].mainTextureData.icon;
+				icons[4][3] = ctms[4][3].mainTextureData.icon;
+				break;
 		}
 	}
 
@@ -145,49 +210,55 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
+		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			if(metadata == 6)
-			{
-				TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
+			case BASIC_BLOCK_1:
+				switch(meta)
+				{
+					case 6:
+						TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-				if(side == 0 || side == 1)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[6][3] : icons[6][1];
-				}
-				else if(side == tileEntity.facing)
-				{
-					return MekanismUtils.isActive(world, x, y, z) ? icons[6][4] : icons[6][2];
-				}
-				else {
-					return icons[6][0];
-				}
-			}
-			else if(metadata == 10)
-			{
-				return glassRenderer.getIcon(world, x, y, z, side);
-			}
-			else if(metadata == 14)
-			{
-				TileEntitySalinationController tileEntity = (TileEntitySalinationController)world.getTileEntity(x, y, z);
+						if(side == 0 || side == 1)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][3] : icons[meta][1];
+						} 
+						else if(side == tileEntity.facing)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][4] : icons[meta][2];
+						} 
+						else {
+							return icons[meta][0];
+						}
+					case 14:
+						TileEntitySolarEvaporationController tileEntity1 = (TileEntitySolarEvaporationController)world.getTileEntity(x, y, z);
 
-				if(side == tileEntity.facing)
+						if(side == tileEntity1.facing)
+						{
+							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
+						} 
+						else {
+							return icons[meta][2];
+						}
+					default:
+						return getIcon(side, meta);
+				}
+			case BASIC_BLOCK_2:
+				switch(meta)
 				{
-					return tileEntity.structured ? icons[14][1] : icons[14][0];
+					case 2:
+						TileEntityInductionPort tileEntity = (TileEntityInductionPort)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity.mode ? 1 : 0];
+					case 3:
+						TileEntityInductionCell tileEntity1 = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity1.tier.ordinal()];
+					case 4:
+						TileEntityInductionProvider tileEntity2 = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+						return icons[meta][tileEntity2.tier.ordinal()];
+					default:
+						return getIcon(side, meta);
 				}
-				else {
-					return icons[14][2];
-				}
-			}
-			else {
-				return getIcon(side, metadata);
-			}
-		}
-		else if(this == Mekanism.BasicBlock2)
-		{
-			return getIcon(side, metadata);
 		}
 
 		return null;
@@ -197,43 +268,39 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta)
 	{
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			if(meta != 6 && meta != 14)
-			{
+			case BASIC_BLOCK_1:
+				switch(meta)
+				{
+					case 6:
+						if(side == 0 || side == 1)
+						{
+							return icons[meta][1];
+						} 
+						else if(side == 3)
+						{
+							return icons[meta][2];
+						}
+						else {
+							return icons[meta][0];
+						}
+					case 14:
+						if(side == 3)
+						{
+							return icons[meta][0];
+						} 
+						else {
+							return icons[meta][2];
+						}
+					default:
+						return icons[meta][0];
+				}
+			case BASIC_BLOCK_2:
 				return icons[meta][0];
-			}
-			else if(meta == 6)
-			{
-				if(side == 0 || side == 1)
-				{
-					return icons[6][1];
-				}
-				else if(side == 3)
-				{
-					return icons[6][2];
-				}
-				else {
-					return icons[6][0];
-				}
-			}
-			else if(meta == 14)
-			{
-				if(side == 3)
-				{
-					return icons[14][0];
-				}
-				else {
-					return icons[14][2];
-				}
-			}
+			default:
+				return icons[meta][0];
 		}
-		else if(this == Mekanism.BasicBlock2)
-		{
-			return icons[meta][0];
-		}
-
-		return null;
 	}
 
 	@Override
@@ -246,28 +313,48 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs creativetabs, List list)
 	{
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			list.add(new ItemStack(item, 1, 0));
-			list.add(new ItemStack(item, 1, 1));
-			list.add(new ItemStack(item, 1, 2));
-			list.add(new ItemStack(item, 1, 3));
-			list.add(new ItemStack(item, 1, 4));
-			list.add(new ItemStack(item, 1, 5));
-			list.add(new ItemStack(item, 1, 6));
-			list.add(new ItemStack(item, 1, 7));
-			list.add(new ItemStack(item, 1, 8));
-			list.add(new ItemStack(item, 1, 9));
-			list.add(new ItemStack(item, 1, 10));
-			list.add(new ItemStack(item, 1, 11));
-			list.add(new ItemStack(item, 1, 12));
-			list.add(new ItemStack(item, 1, 13));
-			list.add(new ItemStack(item, 1, 14));
-			list.add(new ItemStack(item, 1, 15));
-		}
-		else if(this == Mekanism.BasicBlock2)
-		{
-			list.add(new ItemStack(item, 1, 0));
+			case BASIC_BLOCK_1:
+				for(int i = 0; i < 16; i++)
+				{
+					list.add(new ItemStack(item, 1, i));
+				}
+				
+				break;
+			case BASIC_BLOCK_2:
+				for(int i = 0; i < 5; i++)
+				{
+					if(i == 3)
+					{
+						for(BaseTier tier : BaseTier.values())
+						{
+							if(tier.isObtainable())
+							{
+								ItemStack stack = new ItemStack(item, 1, i);
+								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
+								list.add(stack);
+							}
+						}
+					}
+					else if(i == 4)
+					{
+						for(BaseTier tier : BaseTier.values())
+						{
+							if(tier.isObtainable())
+							{
+								ItemStack stack = new ItemStack(item, 1, i);
+								((ItemBlockBasic)stack.getItem()).setTier(stack, tier);
+								list.add(stack);
+							}
+						}
+					}
+					else {
+						list.add(new ItemStack(item, 1, i));
+					}
+				}
+				
+				break;
 		}
 	}
 
@@ -276,36 +363,64 @@ public class BlockBasic extends Block
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			if(meta == 9 || meta == 10 || meta == 11)
-			{
-				TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
-
-				if(tileEntity != null)
+			case BASIC_BLOCK_1:
+				switch(meta)
 				{
-					if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-					{
-						if(tileEntity.structure != null)
+					case 9:
+					case 10:
+					case 11:
+						TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)world.getTileEntity(x, y, z);
+
+						if(tileEntity != null)
 						{
-							return false;
+							if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+							{
+								if(tileEntity.structure != null)
+								{
+									return false;
+								}
+							} 
+							else {
+								if(tileEntity.clientHasStructure)
+								{
+									return false;
+								}
+							}
 						}
-					}
-					else {
-						if(tileEntity.clientHasStructure)
-						{
-							return false;
-						}
-					}
+					default:
+						return super.canCreatureSpawn(type, world, x, y, z);
 				}
-			}
-		}
-		else if(this == Mekanism.BasicBlock2)
-		{
+			case BASIC_BLOCK_2:
+				switch(meta)
+				{
+					case 1:
+					case 2:
+						TileEntityInductionCasing tileEntity = (TileEntityInductionCasing)world.getTileEntity(x, y, z);
 
+						if(tileEntity != null)
+						{
+							if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+							{
+								if(tileEntity.structure != null)
+								{
+									return false;
+								}
+							} 
+							else {
+								if(tileEntity.clientHasStructure)
+								{
+									return false;
+								}
+							}
+						}
+					default:
+						return super.canCreatureSpawn(type, world, x, y, z);
+				}
+			default:
+				return super.canCreatureSpawn(type, world, x, y, z);
 		}
-
-		return super.canCreatureSpawn(type, world, x, y, z);
 	}
 
 	@Override
@@ -313,7 +428,7 @@ public class BlockBasic extends Block
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(!world.isRemote && meta == 6)
 			{
@@ -342,7 +457,7 @@ public class BlockBasic extends Block
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 
-		if(this == Mekanism.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(metadata != 6)
 			{
@@ -435,6 +550,26 @@ public class BlockBasic extends Block
 				}
 			}
 		}
+		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		{
+			if(world.isRemote)
+			{
+				return true;
+			}
+			
+			if(metadata == 1 || metadata == 2)
+			{
+				if(!entityplayer.isSneaking() && ((TileEntityInductionCasing)world.getTileEntity(x, y, z)).structure != null)
+				{
+					TileEntityInductionCasing tileEntity = (TileEntityInductionCasing)world.getTileEntity(x, y, z);
+					
+					Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tileEntity), tileEntity.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tileEntity)));
+					entityplayer.openGui(Mekanism.instance, 49, world, x, y, z);
+					
+					return true;
+				}
+			}
+		}
 
 		return false;
 	}
@@ -442,7 +577,7 @@ public class BlockBasic extends Block
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		return !(this == Mekanism.BasicBlock && world.getBlockMetadata(x, y, z) == 10);
+		return !(blockType == BasicBlock.BASIC_BLOCK_1 && world.getBlockMetadata(x, y, z) == 10);
 	}
 
 	private boolean manageInventory(EntityPlayer player, TileEntityDynamicTank tileEntity)
@@ -579,10 +714,9 @@ public class BlockBasic extends Block
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
 	public int getRenderType()
 	{
-		return ClientProxy.BASIC_RENDER_ID;
+		return Mekanism.proxy.CTM_RENDER_ID;
 	}
 
 	@Override
@@ -599,7 +733,7 @@ public class BlockBasic extends Block
 			}
 		}
 
-		if(this == Mekanism.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			switch(metadata)
 			{
@@ -618,49 +752,95 @@ public class BlockBasic extends Block
 	@Override
 	public boolean hasTileEntity(int metadata)
 	{
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			return metadata == 6 || metadata == 9 || metadata == 10 || metadata == 11 || metadata == 12 || metadata == 14 || metadata == 15;
+			case BASIC_BLOCK_1:
+				switch(metadata)
+				{
+					case 6:
+					case 9:
+					case 10:
+					case 11:
+					case 12:
+					case 14:
+					case 15:
+						return true;
+					default:
+						return false;
+				}
+			case BASIC_BLOCK_2:
+				switch(metadata)
+				{
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+						return true;
+					default:
+						return false;
+				}
+			default:
+				return false;
 		}
-		else if(this == Mekanism.BasicBlock2)
-		{
-			return metadata == 0;
-		}
+	}
+	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-		return false;
+		if(!world.isRemote)
+		{
+			if(tileEntity instanceof TileEntityBasicBlock)
+			{
+				((TileEntityBasicBlock)tileEntity).onAdded();
+			}
+		}
 	}
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
-		if(this == Mekanism.BasicBlock)
+		switch(blockType)
 		{
-			switch(metadata)
-			{
-				case 6:
-					return new TileEntityBin();
-				case 9:
-					return new TileEntityDynamicTank();
-				case 10:
-					return new TileEntityDynamicTank();
-				case 11:
-					return new TileEntityDynamicValve();
-				case 14:
-					return new TileEntitySalinationController();
-				case 15:
-					return new TileEntitySalinationValve();
-			}
+			case BASIC_BLOCK_1:
+				switch(metadata)
+				{
+					case 6:
+						return new TileEntityBin();
+					case 9:
+						return new TileEntityDynamicTank();
+					case 10:
+						return new TileEntityDynamicTank();
+					case 11:
+						return new TileEntityDynamicValve();
+					case 14:
+						return new TileEntitySolarEvaporationController();
+					case 15:
+						return new TileEntitySolarEvaporationValve();
+					default:
+						return null;
+				}
+			case BASIC_BLOCK_2:
+				switch(metadata)
+				{
+					case 0:
+						return new TileEntitySolarEvaporationBlock();
+					case 1:
+						return new TileEntityInductionCasing();
+					case 2:
+						return new TileEntityInductionPort();
+					case 3:
+						return new TileEntityInductionCell();
+					case 4:
+						return new TileEntityInductionProvider();
+					default:
+						return null;
+				}
+			default:
+				return null;
 		}
-		else if(this == Mekanism.BasicBlock2)
-		{
-			switch(metadata)
-			{
-				case 0:
-					return new TileEntitySalinationTank();
-			}
-		}
-
-		return null;
 	}
 
 	@Override
@@ -713,19 +893,19 @@ public class BlockBasic extends Block
 		{
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-			if(tileEntity instanceof TileEntityDynamicTank)
+			if(tileEntity instanceof TileEntityMultiblock)
 			{
-				((TileEntityDynamicTank)tileEntity).update();
+				((TileEntityMultiblock)tileEntity).update();
 			}
 		}
 	}
 
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
 		ItemStack ret = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
-		if(this == Mekanism.BasicBlock)
+		if(blockType == BasicBlock.BASIC_BLOCK_1)
 		{
 			if(ret.getItemDamage() == 6)
 			{
@@ -739,6 +919,27 @@ public class BlockBasic extends Block
 					inv.setItemType(tileEntity.itemType);
 				}
 			}
+		}
+		else if(blockType == BasicBlock.BASIC_BLOCK_2)
+		{
+			if(ret.getItemDamage() == 3)
+			{
+				TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			}
+			else if(ret.getItemDamage() == 4)
+			{
+				TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+				((ItemBlockBasic)ret.getItem()).setTier(ret, tileEntity.tier.getBaseTier());
+			}
+		}
+		
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		
+		if(tileEntity instanceof IStrictEnergyStorage)
+		{
+			IEnergizedItem energizedItem = (IEnergizedItem)ret.getItem();
+			energizedItem.setEnergy(ret, ((IStrictEnergyStorage)tileEntity).getEnergy());
 		}
 
 		return ret;
@@ -761,7 +962,7 @@ public class BlockBasic extends Block
 			double motionY = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 			double motionZ = (world.rand.nextFloat() * motion) + (1.0F - motion) * 0.5D;
 
-			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z));
+			EntityItem entityItem = new EntityItem(world, x + motionX, y + motionY, z + motionZ, getPickBlock(null, world, x, y, z, player));
 
 			world.spawnEntityInWorld(entityItem);
 		}
@@ -771,7 +972,7 @@ public class BlockBasic extends Block
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = getPickBlock(null, world, x, y, z, null);
 
 		world.setBlockToAir(x, y, z);
 
@@ -794,9 +995,11 @@ public class BlockBasic extends Block
 	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
-		if(this == Mekanism.BasicBlock && world.getBlockMetadata(x, y, z) == 10)
+		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		
+		if(blockType == BasicBlock.BASIC_BLOCK_1 && obj.getMetadata(world) == 10)
 		{
-			return glassRenderer.shouldRenderSide(world, x, y, z, side);
+			return ctms[10][0].shouldRenderSide(world, x, y, z, side);
 		}
 		else {
 			return super.shouldSideBeRendered(world, x, y, z, side);
@@ -808,9 +1011,11 @@ public class BlockBasic extends Block
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
 		ForgeDirection[] valid = new ForgeDirection[6];
+		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 			{
 				if(basicTile.canSetFacing(dir.ordinal()))
@@ -819,6 +1024,7 @@ public class BlockBasic extends Block
 				}
 			}
 		}
+		
 		return valid;
 	}
 
@@ -826,15 +1032,46 @@ public class BlockBasic extends Block
 	public boolean rotateBlock(World world, int x, int y, int z, ForgeDirection axis)
 	{
 		TileEntity tile = world.getTileEntity(x, y, z);
+		
 		if(tile instanceof TileEntityBasicBlock)
 		{
 			TileEntityBasicBlock basicTile = (TileEntityBasicBlock)tile;
+			
 			if(basicTile.canSetFacing(axis.ordinal()))
 			{
 				basicTile.setFacing((short)axis.ordinal());
 				return true;
 			}
 		}
+		
 		return false;
+	}
+
+	@Override
+	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
+		{
+			return ctms[meta][1];
+		}
+
+		if(meta == 3)
+		{
+			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+			return ctms[meta][tileEntity.tier.ordinal()];
+		}
+		if(meta == 4)
+		{
+			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+			return ctms[meta][tileEntity.tier.ordinal()];
+		}
+
+		return ctms[meta][0];
+	}
+
+	public static enum BasicBlock
+	{
+		BASIC_BLOCK_1,
+		BASIC_BLOCK_2;
 	}
 }

@@ -1,13 +1,18 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiUpgradeTab;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerElectricPump;
 import mekanism.common.tile.TileEntityElectricPump;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidTank;
@@ -25,7 +30,7 @@ public class GuiElectricPump extends GuiMekanism
 
 	public GuiElectricPump(InventoryPlayer inventory, TileEntityElectricPump tentity)
 	{
-		super(new ContainerElectricPump(inventory, tentity));
+		super(tentity, new ContainerElectricPump(inventory, tentity));
 		tileEntity = tentity;
 
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 27, 19));
@@ -40,7 +45,7 @@ public class GuiElectricPump extends GuiMekanism
 			}
 		}, GuiGauge.Type.STANDARD, this, guiLocation, 6, 13));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, guiLocation));
-
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, guiLocation));
 	}
 
 	@Override
@@ -49,7 +54,7 @@ public class GuiElectricPump extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRendererObj.drawString(tileEntity.fluidTank.getFluid() != null ? tileEntity.fluidTank.getFluid().getFluid().getName() + ": " + tileEntity.fluidTank.getFluid().amount : MekanismUtils.localize("gui.noFluid"), 51, 35, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.fluidTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.fluidTank.getFluid()) + ": " + tileEntity.fluidTank.getFluid().amount : MekanismUtils.localize("gui.noFluid"), 51, 35, 0x00CD00);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

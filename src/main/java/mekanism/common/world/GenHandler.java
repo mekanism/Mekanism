@@ -2,7 +2,8 @@ package mekanism.common.world;
 
 import java.util.Random;
 
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismConfig.general;
+import mekanism.common.MekanismBlocks;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
@@ -19,31 +20,31 @@ public class GenHandler implements IWorldGenerator
 	{
 		if(!(chunkGenerator instanceof ChunkProviderHell) && !(chunkGenerator instanceof ChunkProviderEnd))
 		{
-			for(int i = 0; i < Mekanism.osmiumPerChunk; i++)
+			for(int i = 0; i < general.osmiumPerChunk; i++)
 			{
 				int randPosX = (chunkX*16) + random.nextInt(16);
 				int randPosY = random.nextInt(60);
 				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				new WorldGenMinable(Mekanism.OreBlock, 0, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
+				new WorldGenMinable(MekanismBlocks.OreBlock, 0, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 
-			for(int i = 0; i < Mekanism.copperPerChunk; i++)
+			for(int i = 0; i < general.copperPerChunk; i++)
 			{
 				int randPosX = (chunkX*16) + random.nextInt(16);
 				int randPosY = random.nextInt(60);
 				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				new WorldGenMinable(Mekanism.OreBlock, 1, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
+				new WorldGenMinable(MekanismBlocks.OreBlock, 1, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 
-			for(int i = 0; i < Mekanism.tinPerChunk; i++)
+			for(int i = 0; i < general.tinPerChunk; i++)
 			{
 				int randPosX = (chunkX*16) + random.nextInt(16);
 				int randPosY = random.nextInt(60);
 				int randPosZ = (chunkZ*16) + random.nextInt(16);
-				new WorldGenMinable(Mekanism.OreBlock, 2, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
+				new WorldGenMinable(MekanismBlocks.OreBlock, 2, 8, Blocks.stone).generate(world, random, randPosX, randPosY, randPosZ);
 			}
 			
-			for(int i = 0; i < Mekanism.saltPerChunk; i++)
+			for(int i = 0; i < general.saltPerChunk; i++)
 			{
 				int randPosX = (chunkX*16) + random.nextInt(16);
 				int randPosZ = (chunkZ*16) + random.nextInt(16);

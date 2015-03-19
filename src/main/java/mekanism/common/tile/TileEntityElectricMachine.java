@@ -1,24 +1,36 @@
 package mekanism.common.tile;
 
+import java.util.ArrayList;
+
+import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.Range4D;
+import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.Upgrade;
+import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.inputs.ItemStackInput;
+import mekanism.common.recipe.machines.BasicMachineRecipe;
+import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
+public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecipe<RECIPE>> extends TileEntityBasicMachine<ItemStackInput, ItemStackOutput, RECIPE>
 {
 	/**
 	 * A simple electrical machine. This has 3 slots - the input slot (0), the energy slot (1),
@@ -34,18 +46,75 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	{
 		super(soundPath, name, MekanismUtils.getResource(ResourceType.GUI, "GuiBasicMachine.png"), perTick, ticksRequired, maxEnergy);
 
-		sideOutputs.add(new SideData(EnumColor.GREY, InventoryUtils.EMPTY));
-		sideOutputs.add(new SideData(EnumColor.DARK_RED, new int[] {0}));
-		sideOutputs.add(new SideData(EnumColor.DARK_GREEN, new int[] {1}));
-		sideOutputs.add(new SideData(EnumColor.DARK_BLUE, new int[] {2}));
-		sideOutputs.add(new SideData(EnumColor.ORANGE, new int[] {3}));
+		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
+		
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Input", EnumColor.DARK_RED, new int[] {0}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Energy", EnumColor.DARK_GREEN, new int[] {1}));
+		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {2}));
 
-		sideConfig = new byte[] {2, 1, 0, 0, 4, 3};
+		configComponent.setConfig(TransmissionType.ITEM, new byte[] {2, 1, 0, 0, 0, 3});
+		configComponent.setInputEnergyConfig();
 
 		inventory = new ItemStack[4];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, sideOutputs.get(3));
+		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+	}
+	
+	public void upgrade(RecipeType type)
+	{
+		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
+		
+		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		
+		//Basic
+		factory.facing = facing;
+		factory.clientFacing = clientFacing;
+		factory.ticker = ticker;
+		factory.redstone = redstone;
+		factory.redstoneLastTick = redstoneLastTick;
+		factory.doAutoSync = doAutoSync;
+		
+		//Electric
+		factory.electricityStored = electricityStored;
+		factory.ic2Registered = ic2Registered;
+		
+		//Noisy
+		factory.soundURL = soundURL;
+
+		
+		//Machine
+		factory.progress[0] = operatingTicks;
+		factory.updateDelay = updateDelay;
+		factory.isActive = isActive;
+		factory.clientActive = clientActive;
+		factory.controlType = controlType;
+		factory.prevEnergy = prevEnergy;
+		factory.upgradeComponent = upgradeComponent;
+		factory.upgradeComponent.setUpgradeSlot(0);
+		factory.upgradeComponent.tileEntity = factory;
+		factory.ejectorComponent = ejectorComponent;
+		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
+		factory.ejectorComponent.tileEntity = factory;
+		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
+		factory.recipeType = type;
+		
+		factory.inventory[5] = inventory[0];
+		factory.inventory[1] = inventory[1];
+		factory.inventory[5+3] = inventory[2];
+		factory.inventory[0] = inventory[3];
+		
+		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		{
+			factory.recalculateUpgradables(upgrade);
+		}
+		
+		factory.upgraded = true;
+		
+		factory.markDirty();
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
 	}
 
 	@Override
@@ -57,21 +126,22 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		{
 			ChargeUtils.discharge(1, this);
 
-			if(canOperate() && MekanismUtils.canFunction(this) && getEnergy() >= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK))
+			RECIPE recipe = getRecipe();
+
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
 				setActive(true);
+				electricityStored -= energyPerTick;
 
-				if((operatingTicks+1) < MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				if((operatingTicks+1) < ticksRequired)
 				{
 					operatingTicks++;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
-				else if((operatingTicks+1) >= MekanismUtils.getTicks(this, TICKS_REQUIRED))
+				else if((operatingTicks+1) >= ticksRequired)
 				{
-					operate();
+					operate(recipe);
 
 					operatingTicks = 0;
-					electricityStored -= MekanismUtils.getEnergyPerTick(this, ENERGY_PER_TICK);
 				}
 			}
 			else {
@@ -81,7 +151,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 				}
 			}
 
-			if(!canOperate())
+			if(!canOperate(recipe))
 			{
 				operatingTicks = 0;
 			}
@@ -99,7 +169,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 		}
 		else if(slotID == 3)
 		{
-			return itemstack.getItem() == Mekanism.SpeedUpgrade || itemstack.getItem() == Mekanism.EnergyUpgrade;
+			return itemstack.getItem() == MekanismItems.SpeedUpgrade || itemstack.getItem() == MekanismItems.EnergyUpgrade;
 		}
 		else if(slotID == 0)
 		{
@@ -114,54 +184,37 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 	}
 
 	@Override
-	public void operate()
+	public ItemStackInput getInput()
 	{
-		ItemStack itemstack = RecipeHandler.getOutput(inventory[0], true, getRecipes());
+		return new ItemStackInput(inventory[0]);
+	}
 
-		if(inventory[0].stackSize <= 0)
+	@Override
+	public RECIPE getRecipe()
+	{
+		ItemStackInput input = getInput();
+		
+		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
-			inventory[0] = null;
+			cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
 		}
+		
+		return cachedRecipe;
+	}
 
-		if(inventory[2] == null)
-		{
-			inventory[2] = itemstack;
-		}
-		else {
-			inventory[2].stackSize += itemstack.stackSize;
-		}
+	@Override
+	public void operate(RECIPE recipe)
+	{
+		recipe.operate(inventory, 0, 2);
 
 		markDirty();
 		ejectorComponent.onOutput();
 	}
 
 	@Override
-	public boolean canOperate()
+	public boolean canOperate(RECIPE recipe)
 	{
-		if(inventory[0] == null)
-		{
-			return false;
-		}
-
-		ItemStack itemstack = RecipeHandler.getOutput(inventory[0], false, getRecipes());
-
-		if(itemstack == null)
-		{
-			return false;
-		}
-
-		if(inventory[2] == null)
-		{
-			return true;
-		}
-
-		if(!inventory[2].isItemEqual(itemstack))
-		{
-			return false;
-		}
-		else {
-			return inventory[2].stackSize + itemstack.stackSize <= inventory[2].getMaxStackSize();
-		}
+		return recipe != null && recipe.canOperate(inventory, 0, 2);
 	}
 
 	@Override
@@ -201,7 +254,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine
 			case 3:
 				return new Object[] {facing};
 			case 4:
-				return new Object[] {canOperate()};
+				return new Object[] {canOperate(getRecipe())};
 			case 5:
 				return new Object[] {getMaxEnergy()};
 			case 6:

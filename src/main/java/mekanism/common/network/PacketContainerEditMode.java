@@ -1,8 +1,8 @@
 package mekanism.common.network;
 
 import mekanism.api.Coord4D;
-import mekanism.common.IFluidContainerManager;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode.ContainerEditModeMessage;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 

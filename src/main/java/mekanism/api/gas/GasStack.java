@@ -45,6 +45,13 @@ public class GasStack
 	{
 		return type;
 	}
+	
+	public GasStack withAmount(int newAmount)
+	{
+		amount = newAmount;
+		
+		return this;
+	}
 
 	/**
 	 * Writes this GasStack to a defined tag compound.
@@ -115,5 +122,11 @@ public class GasStack
 	public String toString()
 	{
 		return "[" + type + ", " + amount + "]";
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return type == null ? 0 : type.getID();
 	}
 }

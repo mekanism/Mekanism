@@ -1,87 +1,124 @@
 package mekanism.client.sound;
 
-import mekanism.api.Pos3D;
-import mekanism.client.HolidayManager;
-import mekanism.common.IActiveState;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/**
- * Sound -- an object that is created in SoundHandler. A 'Sound' object runs off of
- * PaulsCode's SoundSystem. It has several methods; play(), for looping the clip,
- * stop(), for stopping the loop, remove(), for removing the sound from PaulsCode,
- * and updateVolume() for updating the volume based on where the player is.
- * @author AidanBrady
- *
- */
 @SideOnly(Side.CLIENT)
-public class TileSound extends Sound
-{
-	/** The TileEntity this sound is associated with. */
-	public TileEntity tileEntity;
+public class TileSound extends Sound implements IResettableSound {
 
-	/**
-	 * A sound that runs off of the PaulsCode sound system.
-	 * @param id - unique identifier
-	 * @param sound - bundled path to the sound
-	 * @param tileentity - the tile this sound is playing from.
-	 */
-	public TileSound(String id, String sound, TileEntity tileentity)
+	IHasSound source;
+	
+	boolean beginFadeOut;
+	
+	boolean donePlaying = true;
+	
+	int ticks = 0;
+	
+	int fadeIn = 30;
+	
+	int fadeOut = 10;
+	
+	float baseVolume = 1.0F;
+
+	public TileSound(IHasSound source, ISoundSource values)
 	{
-		super(id, sound, tileentity, new Pos3D(tileentity));
-
-		tileEntity = tileentity;
+		this(source, values.getSoundLocation(), values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
 	}
 
-	@Override
-	public float getMultiplier()
+	public TileSound(IHasSound source, ISoundSource values, ResourceLocation location)
 	{
-		return super.getMultiplier()*((IHasSound)tileEntity).getVolumeMultiplier();
+		this(source, location, values.getVolume(), values.getPitch(), values.shouldRepeat(), values.getRepeatDelay(), values.getSoundPosition().xPos, values.getSoundPosition().yPos, values.getSoundPosition().zPos);
 	}
 
-	@Override
-	public Pos3D getLocation()
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z)
 	{
-		return new Pos3D(tileEntity);
+		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
 	}
 
-	@Override
-	public boolean update(World world)
+	public TileSound(IHasSound source, String sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation) 
 	{
-		if(!(tileEntity instanceof IHasSound))
+		this(source, new ResourceLocation(sound), volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
+	}
+
+	public TileSound(IHasSound source, ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z) 
+	{
+		this(source, sound, volume, pitch, repeat, repeatDelay, x, y, z, AttenuationType.LINEAR);
+	}
+
+	public TileSound(IHasSound soundSource, ResourceLocation resource, float volume, float pitch, boolean repeat, int repeatDelay, double x, double y, double z, AttenuationType attenuation)
+	{
+		super(resource, volume, pitch, repeat, repeatDelay, x, y, z, attenuation);
+
+		source = soundSource;
+		sound = resource;
+		baseVolume = volume;
+	}
+
+	public TileSound setFadeIn(int fade) 
+	{
+		fadeIn = Math.min(0, fade);
+		return this;
+	}
+
+	public TileSound setFadeOut(int fade) 
+	{
+		fadeOut = Math.min(0, fade);
+		return this;
+	}
+
+	public float getFadeInMultiplier() 
+	{
+		return ticks >= fadeIn ? 1 : (float)(ticks / (float)fadeIn);
+	}
+
+	public float getFadeOutMultiplier() 
+	{
+		return ticks >= fadeOut ? 0 : (float)((fadeOut - ticks) / (float)fadeOut);
+	}
+
+	/* ITickableSound */
+	@Override
+	public void update() 
+	{
+		if(!beginFadeOut) 
 		{
-			return false;
-		}
-		else if(world.getTileEntity(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord) != tileEntity)
-		{
-			return false;
-		}
-		else if(!HolidayManager.filterSound(((IHasSound)tileEntity).getSoundPath()).equals(soundPath))
-		{
-			return false;
-		}
-		else if(tileEntity instanceof IActiveState)
-		{
-			if(((IActiveState)tileEntity).getActive() != isPlaying)
+			if(ticks < fadeIn)
 			{
-				if(((IActiveState)tileEntity).getActive())
-				{
-					play();
-				}
-				else {
-					stopLoop();
-				}
+				ticks++;
 			}
+			
+			if(!(source.shouldPlaySound() && source.getSound() == this))
+			{
+				beginFadeOut = true;
+				ticks = 0;
+			}
+		} 
+		else {
+			ticks++;
 		}
+		
+		float multiplier = beginFadeOut ? getFadeOutMultiplier() : getFadeInMultiplier();
+		volume = baseVolume * multiplier;
 
-		if(isPlaying)
+		if(multiplier <= 0) 
 		{
-			ticksSincePlay++;
+			donePlaying = true;
 		}
+	}
 
-		return true;
+	@Override
+	public boolean isDonePlaying()
+	{
+		return donePlaying;
+	}
+
+	@Override
+	public void reset()
+	{
+		donePlaying = false;
+		beginFadeOut = false;
+		volume = baseVolume;
+		ticks = 0;
 	}
 }

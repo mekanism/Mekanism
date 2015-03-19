@@ -3,16 +3,18 @@ package mekanism.generators.common.tile;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.MekanismGenerators;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenDesert;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Method;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import io.netty.buffer.ByteBuf;
 
@@ -31,14 +33,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 
 	public TileEntitySolarGenerator()
 	{
-		super("SolarGenerator", 96000, MekanismGenerators.solarGeneration*2);
-		GENERATION_RATE = MekanismGenerators.solarGeneration;
-		inventory = new ItemStack[1];
+		this("SolarGenerator", 96000, generators.solarGeneration*2);
+		GENERATION_RATE = generators.solarGeneration;
 	}
 
 	public TileEntitySolarGenerator(String name, double maxEnergy, double output)
 	{
-		super(name, maxEnergy, output);
+		super("solar", name, maxEnergy, output);
 		inventory = new ItemStack[1];
 	}
 
@@ -49,7 +50,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 	}
 
 	@Override
-	public float getVolumeMultiplier()
+	@SideOnly(Side.CLIENT)
+	public float getVolume()
 	{
 		return 0.05F;
 	}
@@ -163,9 +165,9 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 			case 1:
 				return new Object[] {output};
 			case 2:
-				return new Object[] {MAX_ELECTRICITY};
+				return new Object[] {BASE_MAX_ENERGY};
 			case 3:
-				return new Object[] {(MAX_ELECTRICITY-electricityStored)};
+				return new Object[] {(BASE_MAX_ENERGY -electricityStored)};
 			case 4:
 				return new Object[] {seesSun};
 			default:

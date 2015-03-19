@@ -1,13 +1,15 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.GuiFluidGauge.IFluidInfoHandler;
-import mekanism.client.gui.GuiSlot.SlotOverlay;
-import mekanism.client.gui.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiContainerEditMode;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.inventory.container.ContainerPortableTank;
 import mekanism.common.tile.TileEntityPortableTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
@@ -22,7 +24,7 @@ public class GuiPortableTank extends GuiMekanism
 
 	public GuiPortableTank(InventoryPlayer inventory, TileEntityPortableTank tentity)
 	{
-		super(new ContainerPortableTank(inventory, tentity));
+		super(tentity, new ContainerPortableTank(inventory, tentity));
 		tileEntity = tentity;
 		guiElements.add(new GuiContainerEditMode(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()
@@ -40,7 +42,7 @@ public class GuiPortableTank extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(tileEntity.getInventoryName(), 47, 6, 0x404040);
+		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

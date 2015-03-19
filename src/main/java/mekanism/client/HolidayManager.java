@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.client;
 import mekanism.common.Mekanism;
 
 import net.minecraft.client.Minecraft;
@@ -21,7 +22,7 @@ public final class HolidayManager
 
 	public static void init()
 	{
-		if(MekanismClient.holidays)
+		if(client.holidays)
 		{
 			holidays.add(new Christmas());
 			holidays.add(new NewYear());
@@ -51,7 +52,7 @@ public final class HolidayManager
 
 	public static String filterSound(String sound)
 	{
-		if(!MekanismClient.holidays)
+		if(!client.holidays)
 		{
 			return sound;
 		}

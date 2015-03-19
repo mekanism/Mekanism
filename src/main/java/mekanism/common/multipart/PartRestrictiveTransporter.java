@@ -25,7 +25,13 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	@Override
 	public IIcon getSideIcon()
 	{
-		return transporterIcons.getSideIcon(1);
+		return transporterIcons.getSideIcon(2);
+	}
+
+	@Override
+	public IIcon getSideIconRotated()
+	{
+		return transporterIcons.getSideIcon(3);
 	}
 
 	@Override
