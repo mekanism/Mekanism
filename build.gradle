@@ -44,7 +44,7 @@ dependencies {
     compile "codechicken:CodeChickenLib:${config.minecraft_version}-${config.CCLIB_version}:dev"
     compile "codechicken:ForgeMultipart:${config.minecraft_version}-${config.FMP_version}:dev"
     compile "codechicken:NotEnoughItems:${config.minecraft_version}-${config.NEI_version}:dev"
-	compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.CCC_version}:dev"
+    compile "codechicken:CodeChickenCore:${config.minecraft_version}-${config.CCC_version}:dev"
 }
 
 version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
@@ -134,4 +134,5 @@ task releaseJars(type: Copy) {
 task fullBuild(type: Delete) {
     delete jar
 }
+
 fullBuild.dependsOn('releaseJars')
