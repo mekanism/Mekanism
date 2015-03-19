@@ -145,11 +145,13 @@ public class TileComponentConfig implements ITileComponent
 		{
 			for(TransmissionType type : transmissions)
 			{
-				if(nbtTags.getByteArray("config" + type.ordinal()).length > 0)
-				{
-					sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
-					ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
-				}
+				try {//TODO remove soon
+					if(nbtTags.getByteArray("config" + type.ordinal()).length > 0)
+					{
+						sideConfigs.put(type.ordinal(), nbtTags.getByteArray("config" + type.ordinal()));
+						ejecting.put(type.ordinal(), nbtTags.getBoolean("ejecting" + type.ordinal()));
+					}
+				} catch(Exception e) {}
 			}
 		}
 	}
