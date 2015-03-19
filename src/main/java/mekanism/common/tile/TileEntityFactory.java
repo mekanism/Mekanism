@@ -110,7 +110,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public boolean upgraded;
 
 	@SideOnly(Side.CLIENT)
-	public IResettableSound[] sounds = new IResettableSound[RecipeType.values().length];
+	public IResettableSound[] sounds;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -177,7 +177,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		//Noisy
 		factory.soundURL = soundURL;
-		factory.sound = sound;
 		
 		//Factory
 		
@@ -194,7 +193,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.prevEnergy = prevEnergy;
 		factory.gasTank.setGas(gasTank.getGas());
 		factory.sorting = sorting;
-		factory.sounds = sounds;
 		factory.controlType = controlType;
 		factory.upgradeComponent = upgradeComponent;
 		factory.upgradeComponent.tileEntity = factory;
@@ -937,6 +935,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@SideOnly(Side.CLIENT)
 	public void initSounds()
 	{
+		sounds = new IResettableSound[RecipeType.values().length];
 		for(RecipeType type : RecipeType.values())
 		{
 			sounds[type.ordinal()] = new TileSound(this, this, type.getSound());
