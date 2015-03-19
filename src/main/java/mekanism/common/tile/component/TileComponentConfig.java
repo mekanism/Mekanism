@@ -158,6 +158,11 @@ public class TileComponentConfig implements ITileComponent
 						for(int i = 0; i < 6; i++)
 						{
 							bytes[i] = nbtTags.getByte("config"+i);
+							
+							if(bytes[i] > 0)
+							{
+								bytes[i]--;
+							}
 						}
 						
 						sideConfigs.put(TransmissionType.ITEM.ordinal(), bytes);
