@@ -123,16 +123,24 @@ public enum Upgrade
 	{
 		Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
 		
-		if(nbtTags != null && nbtTags.hasKey("upgrades"))
+		if(nbtTags != null)
 		{
-			NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
-			
-			for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
+			if(nbtTags.hasKey("upgrades"))
 			{
-				NBTTagCompound compound = list.getCompoundTagAt(tagCount);
+				NBTTagList list = nbtTags.getTagList("upgrades", NBT.TAG_COMPOUND);
 				
-				Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
-				upgrades.put(upgrade, compound.getInteger("amount"));
+				for(int tagCount = 0; tagCount < list.tagCount(); tagCount++)
+				{
+					NBTTagCompound compound = list.getCompoundTagAt(tagCount);
+					
+					Upgrade upgrade = Upgrade.values()[compound.getInteger("type")];
+					upgrades.put(upgrade, compound.getInteger("amount"));
+				}
+			}
+			else if(nbtTags.hasKey("energyMultiplier") && nbtTags.hasKey("speedMultiplier")) //TODO remove soon
+			{
+				upgrades.put(Upgrade.ENERGY, nbtTags.getInteger("energyMultiplier"));
+				upgrades.put(Upgrade.SPEED, nbtTags.getInteger("speedMultiplier"));
 			}
 		}
 		
