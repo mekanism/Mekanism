@@ -9,7 +9,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
@@ -721,6 +720,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
 		TileEntity tileEntity = world.getTileEntity(x, y, z);

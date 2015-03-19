@@ -17,7 +17,6 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.client.GeneratorsClientProxy;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -135,6 +134,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
 		if(client.enableAmbientLighting)

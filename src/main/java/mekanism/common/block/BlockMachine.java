@@ -14,7 +14,6 @@ import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.client.ClientProxy;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -352,6 +351,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getLightValue(IBlockAccess world, int x, int y, int z)
 	{
 		if(client.enableAmbientLighting)
