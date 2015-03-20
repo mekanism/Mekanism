@@ -95,7 +95,7 @@ public class PacketJetpackData implements IMessageHandler<JetpackDataMessage, IM
 
 				synchronized(Mekanism.jetpackOn)
 				{
-					for (String username : Mekanism.jetpackOn)
+					for(String username : Mekanism.jetpackOn)
 					{
 						PacketHandler.writeString(dataStream, username);
 					}

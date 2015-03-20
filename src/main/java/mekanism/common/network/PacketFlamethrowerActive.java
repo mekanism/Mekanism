@@ -1,15 +1,13 @@
 package mekanism.common.network;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.network.PacketFlamethrowerActive.FlamethrowerActiveMessage;
-
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-
-import io.netty.buffer.ByteBuf;
 
 public class PacketFlamethrowerActive implements IMessageHandler<FlamethrowerActiveMessage, IMessage>
 {
@@ -24,6 +22,11 @@ public class PacketFlamethrowerActive implements IMessageHandler<FlamethrowerAct
 		}
 		else {
 			Mekanism.flamethrowerActive.remove(player.getCommandSenderName());
+		}
+		
+		if(!player.worldObj.isRemote)
+		{
+			Mekanism.packetHandler.sendToDimension(new FlamethrowerActiveMessage(message.value), player.worldObj.provider.dimensionId);
 		}
 		
 		return null;

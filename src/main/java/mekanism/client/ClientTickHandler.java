@@ -436,6 +436,11 @@ public class ClientTickHandler
 	
 	public static boolean isFlamethrowerOn(EntityPlayer player)
 	{
+		if(player != mc.thePlayer)
+		{
+			return Mekanism.flamethrowerActive.contains(player.getCommandSenderName());
+		}
+		
 		if(hasFlamethrower(player))
 		{
 			if(mc.gameSettings.keyBindUseItem.getIsKeyPressed())

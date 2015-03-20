@@ -1,9 +1,7 @@
 package mekanism.client.render;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -15,7 +13,6 @@ import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemScubaTank;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -195,7 +192,15 @@ public class RenderTickHandler
 								}
 								else {
 									flameVec.xPos -= 0.45F;
-									flameVec.yPos -= 0.5F;
+									
+									if(player == p)
+									{
+										flameVec.yPos -= 0.5F;
+									}
+									else {
+										flameVec.yPos += 1F;
+									}
+									
 									flameVec.zPos += 1.05F;
 									
 									flameVec.rotateYaw(p.renderYawOffset);
