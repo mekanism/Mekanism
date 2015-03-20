@@ -240,6 +240,7 @@ item.dirtyTinDust.name=Dreckiger Zinnstaub
 item.dirtySilverDust.name=Dreckiger Silberstaub
 item.dirtyLeadDust.name=Dreckiger Bleistaub
 
+//Ingots
 item.obsidianIngot.name=Obsidianbarren
 item.osmiumIngot.name=Osmiumbarren
 item.bronzeIngot.name=Bronzebarren
@@ -248,6 +249,7 @@ item.steelIngot.name=Stahlbarren
 item.copperIngot.name=Kupferbarren
 item.tinIngot.name=Zinnbarren
 
+//Gasses
 gas.hydrogen=Wasserstoff
 gas.oxygen=Sauerstoff
 gas.water=Wasserdampf
@@ -284,9 +286,11 @@ gas.cleanSilver=Sauberer Silberschlamm
 gas.cleanObsidian=Sauberer Obsidianschlamm
 gas.cleanLead=Sauberer Bleischlamm
 
+//BC Fuel Gases
 gas.fuel=Verdampftes Benzin
 gas.oil=Verdampftes Öl
 
+//Fluids
 fluid.hydrogen=Flüssiger Wasserstoff
 fluid.oxygen=Flüssiger Sauerstoff
 fluid.chlorine=Flüssiges Chlor
@@ -303,6 +307,7 @@ fluid.deuterium=Flüssiges Deuterium
 fluid.tritium=Flüssiges Tritium
 fluid.fusionFuelDT=Flüssiger D-T-Treibstoff
 
+//OreGas names
 oregas.iron=Eisenerz
 oregas.gold=Golderz
 oregas.osmium=Osmiumerz
@@ -312,12 +317,14 @@ oregas.silver=Silbererz
 oregas.obsidian=Obsidianerz
 oregas.lead=Bleierz
 
+//Transmission types
 transmission.Energy=Energie
 transmission.Fluids=Flüssigkeiten
 transmission.Gases=Gase
 transmission.Items=Items
 transmission.Heat=Wärme
 
+//Update handler text
 update.consider=Vielleicht möchtest du deine Version updaten
 update.newFeatures=Neue Features
 update.visit=Besuche
@@ -325,6 +332,7 @@ update.toDownload=zum Download
 update.devBuild=Verwendung einer Entwicklungsversion
 update.outdated=Verwendung von veralteten Versionen eines oder mehrerer Module
 
+//Upgrades
 upgrade.energy=Energie
 upgrade.energy.desc=Erhöht Energieeffizienz !nund Maschineriekapazität
 upgrade.speed=Geschwindigkeit
@@ -332,22 +340,27 @@ upgrade.speed.desc=Erhöht Maschineriegeschwindigkeit
 upgrade.filter=Filter
 upgrade.filter.desc=Ein Filter, welcher Schweres !nWasser von regulärem Wasser trennt
 
+//Key description text
 key.mode=Moduswechsel
 key.voice=Stimme
 
+//Entities
 entity.Robit.name=Robit
 entity.BabySkeleton.name=Baby-Skelett
 
+//Config Gui
 mekanism.configgui.ctgy.general=Mekanism: Generelle Einstellungen
 mekanism.configgui.ctgy.machines=Maschineneinstellungen
 mekanism.configgui.ctgy.usage=Nutzungseinstellungen
 mekanism.configgui.ctgy.client=Client-Einstellungen
 
+//Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich Mekanism und all seinen Modulen
 mekanism.configgui.ctgy.machines.tooltip=Einstellungen bezüglich dem (De-)Aktivieren bestimmter Maschinerie
 mekanism.configgui.ctgy.usage.tooltip=Einstellungen bezüglich Maschinerie und ihren Energieverbauch
 mekanism.configgui.ctgy.client.tooltip=Client-spezifische Einstellungen bezüglich Mekanism und seinen Modulen
 
+//Gui text
 gui.removeSpeedUpgrade=Entferne Geschwindigkeitsupgrade
 gui.removeEnergyUpgrade=Entferne Energieupgrade
 gui.condensentrating=Kondensentrieren
@@ -540,8 +553,10 @@ gui.digitalMiner.requireReplace=Erfordert erneute Platzierung
 gui.digitalMiner.fuzzyMode=Ungenauer Modus
 gui.digitalMiner.missingBlock=Fehlender Block
 
+//Recipe names
 recipe.mekanismShaped=Geformt
 
+//Item and block tooltip text
 tooltip.configurator.configurate=Konfigurieren
 tooltip.configurator.empty=Leeren
 tooltip.configurator.rotate=Rotieren
@@ -679,6 +694,7 @@ tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt g
 tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
 tooltip.TinOre=Ein leiches, jedoch robustes und leitfähiges !nMaterial, dass etwas schwieriger !nzu finden ist als Kupfer.
 
+//Side data
 sideData.None=Nichts
 sideData.Input=Input
 sideData.Output=Output
@@ -688,6 +704,7 @@ sideData.Extra=Extra
 sideData.Infuse=Infusion
 sideData.Fluid=Flüssigkeit
 
+//Redstone control
 control.disabled=Deaktiviert
 control.high=High
 control.low=Low
@@ -697,10 +714,12 @@ control.high.desc=Aktiv mit Signal
 control.low.desc=Aktiv ohne Signal
 control.pulse.desc=Erst bei erstem empfangenen Signal aktivieren
 
+//Container edit modes
 fluidedit.both=Beides
 fluidedit.fill=Füllen
 fluidedit.empty=Leeren
 
+//Colors
 color.black=Schwarz
 color.darkBlue=Dunkelblau
 color.darkGreen=Dunkelgrün
@@ -720,6 +739,7 @@ color.white=Weiß
 color.brown=Braun
 color.brightPink=Hellrosa
 
+//Dyes
 dye.black=Schwarz
 dye.darkBlue=Blau
 dye.brown=Braun
@@ -739,15 +759,22 @@ dye.pink=Magentafarben
 dye.yellow=Gelb
 dye.white=Weiß
 
+//Creative tab
 itemGroup.tabMekanism=Mekanism
 
+//NEI stuff
 nei.chemicalInjectionChamber=C. Injektionskammer
 nei.rotaryCondensentrator=R.-Kondensentrator
 
+//**********//
+//GENERATORS//
+//**********//
 
+//Items
 item.SolarPanel.name=Solarmodul
 item.Hohlraum.name=Hohlraum
 
+//Generators
 tile.Generator.HeatGenerator.name=Hitzegenerator
 tile.Generator.SolarGenerator.name=Solargenerator
 tile.Generator.GasGenerator.name=Gasverbrennender Generator
@@ -763,6 +790,7 @@ tile.Reactor.ReactorInOutPort.name=Reaktorport
 tile.ReactorGlass.ReactorGlass.name=Reaktorglas
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser-Fokusmatrix
 
+//Gui text
 gui.heatGenerator.fuel=Brennstoff
 gui.solarGenerator.sun=Sonne
 gui.bioGenerator.bioFuel=Biomasse
@@ -778,13 +806,18 @@ gui.maxCasing=Max. Hüllentemp
 gui.passiveGeneration=Passive Generierung
 gui.steamProduction=Dampfproduktion
 
+//*****//
+//TOOLS//
+//*****//
 
+//Vanilla Paxels
 item.WoodPaxel.name=Holz-Paxel
 item.StonePaxel.name=Stein-Paxel
 item.IronPaxel.name=Eisen-Paxel
 item.DiamondPaxel.name=Diamant-Paxel
 item.GoldPaxel.name=Gold-Paxel
 
+//Obsidian
 item.ObsidianHelmet.name=Obsidianhelm
 item.ObsidianChestplate.name=Obsidianbrustpanzer
 item.ObsidianLeggings.name=Obsidianbeinschutz
@@ -796,6 +829,7 @@ item.ObsidianShovel.name=Obsidianschaufel
 item.ObsidianHoe.name=Obsidianhacke
 item.ObsidianSword.name=Obsidianschwert
 
+//Lapis Lazuli
 item.LazuliHelmet.name=Lapislazulihelm
 item.LazuliChestplate.name=Lapislazulibrustpanzer
 item.LazuliLeggings.name=Lapislazulibeinschutz
@@ -807,6 +841,7 @@ item.LazuliShovel.name=Lapislazulischaufel
 item.LazuliHoe.name=Lapislazulihacke
 item.LazuliSword.name=Lapislazulischwert
 
+//Osmium
 item.OsmiumHelmet.name=Osmiumhelm
 item.OsmiumChestplate.name=Osmiumbrustpanzer
 item.OsmiumLeggings.name=Osmiumbeinschutz
@@ -818,6 +853,7 @@ item.OsmiumShovel.name=Osmiumschaufel
 item.OsmiumHoe.name=Osmiumhacke
 item.OsmiumSword.name=Osmiumschwert
 
+//Bronze
 item.BronzeHelmet.name=Bronzehelm
 item.BronzeChestplate.name=Bronzebrustpanzer
 item.BronzeLeggings.name=Bronzebeinschutz
@@ -829,6 +865,7 @@ item.BronzeShovel.name=Bronzeschaufel
 item.BronzeHoe.name=Bronzehacke
 item.BronzeSword.name=Bronzeschwert
 
+//Glow
 item.GlowstoneHelmet.name=Glowstone-Helm
 item.GlowstoneChestplate.name=Glowstone-Brustpanzer
 item.GlowstoneLeggings.name=Glowstone-Beinschutz
@@ -840,6 +877,7 @@ item.GlowstoneShovel.name=Glowstone-Schaufel
 item.GlowstoneHoe.name=Glowstone-Hacke
 item.GlowstoneSword.name=Glowstone-Schwert
 
+//Steel
 item.SteelHelmet.name=Stahlhelm
 item.SteelChestplate.name=Stahlbrustpanzer
 item.SteelLeggings.name=Stahlbeinschutz
@@ -851,10 +889,12 @@ item.SteelShovel.name=Stahlschaufel
 item.SteelHoe.name=Stahlhacke
 item.SteelSword.name=Stahlschwert
 
+//Config Gui
 mekanism.configgui.ctgy.tools.general=Generelles
 mekanism.configgui.ctgy.tools.armor=Rüstungs-Balance
 mekanism.configgui.ctgy.tools.tools=Werkzeug-Balance
 
+//Config Tooltips
 mekanism.configgui.ctgy.tools.general.tooltip=Einstellungen bezüglich MekanismTools' genereller Konfiguration
 mekanism.configgui.ctgy.tools.armor.tooltip=Einstellungen bezüglich der Schutzwerte und Balance der MekanismTools Rüstungssets
 mekanism.configgui.ctgy.tools.tools.tooltip=Einstellungen bezüglich der Effizientwerte und Balance der MekanismTools Werkzeugsets
