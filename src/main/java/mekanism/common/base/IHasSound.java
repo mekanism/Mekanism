@@ -1,6 +1,5 @@
-package mekanism.client.sound;
+package mekanism.common.base;
 
-import net.minecraft.client.audio.ISound;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -12,7 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public interface IHasSound
 {
 	@SideOnly(Side.CLIENT)
-	public ISound getSound();
+	public SoundWrapper getSound();
 
 	@SideOnly(Side.CLIENT)
 	public boolean shouldPlaySound();

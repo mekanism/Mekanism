@@ -6,17 +6,16 @@ import java.util.EnumSet;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
-import mekanism.client.sound.IHasSound;
 import mekanism.client.sound.ISoundSource;
 import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IHasSound;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -24,9 +23,7 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 

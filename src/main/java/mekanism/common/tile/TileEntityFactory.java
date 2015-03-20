@@ -20,8 +20,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.StackUtils;
-import mekanism.client.sound.IResettableSound;
-import mekanism.client.sound.TileSound;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
@@ -33,6 +31,7 @@ import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.base.SoundWrapper;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -52,7 +51,6 @@ import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -110,7 +108,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public boolean upgraded;
 
 	@SideOnly(Side.CLIENT)
-	public IResettableSound[] sounds;
+	public SoundWrapper[] sounds;
 
 	/** This machine's current RedstoneControl type. */
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
@@ -926,7 +924,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IResettableSound getSound()
+	public SoundWrapper getSound()
 	{
 		return sounds[recipeType.ordinal()];
 	}
@@ -935,10 +933,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@SideOnly(Side.CLIENT)
 	public void initSounds()
 	{
-		sounds = new IResettableSound[RecipeType.values().length];
+		sounds = new SoundWrapper[RecipeType.values().length];
+		
 		for(RecipeType type : RecipeType.values())
 		{
-			sounds[type.ordinal()] = new TileSound(this, this, type.getSound());
+			sounds[type.ordinal()] = new SoundWrapper(this, this, type.getSound());
 		}
 	}
 

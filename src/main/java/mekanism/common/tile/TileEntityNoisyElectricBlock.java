@@ -2,13 +2,12 @@ package mekanism.common.tile;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.Pos3D;
-import mekanism.client.sound.IHasSound;
-import mekanism.client.sound.IResettableSound;
 import mekanism.client.sound.ISoundSource;
 import mekanism.client.sound.SoundHandler;
 import mekanism.client.sound.TileSound;
 import mekanism.common.base.IActiveState;
-
+import mekanism.common.base.IHasSound;
+import mekanism.common.base.SoundWrapper;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +20,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 
 	/** The bundled URL of this machine's sound effect */
 	@SideOnly(Side.CLIENT)
-	public IResettableSound sound;
+	public SoundWrapper sound;
 
 	/**
 	 * The base of all blocks that deal with electricity and make noise.
@@ -38,7 +37,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IResettableSound getSound()
+	public SoundWrapper getSound()
 	{
 		return sound;
 	}
@@ -113,7 +112,7 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	@SideOnly(Side.CLIENT)
 	public void initSounds()
 	{
-		sound = new TileSound(this, this);
+		sound = new SoundWrapper(this, this);
 	}
 
 	@Override
@@ -130,10 +129,10 @@ public abstract class TileEntityNoisyElectricBlock extends TileEntityElectricBlo
 	@SideOnly(Side.CLIENT)
 	public void updateSound()
 	{
-		if(shouldPlaySound() && SoundHandler.canRestartSound(getSound()) && client.enableMachineSounds)
+		if(shouldPlaySound() && getSound().canRestart() && client.enableMachineSounds)
 		{
 			getSound().reset();
-			SoundHandler.playSound(getSound());
+			getSound().play();
 		}
 	}
 }
