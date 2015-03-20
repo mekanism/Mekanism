@@ -204,7 +204,7 @@ public class MekanismRecipe implements IRecipe
 			}
 		}
 
-		if(MachineType.get(toReturn).supportsUpgrades)
+		if(MachineType.get(toReturn) != null && MachineType.get(toReturn).supportsUpgrades)
 		{
 			Map<Upgrade, Integer> upgrades = new HashMap<Upgrade, Integer>();
 
@@ -212,7 +212,7 @@ public class MekanismRecipe implements IRecipe
 			{
 				ItemStack itemstack = inv.getStackInSlot(i);
 
-				if(itemstack != null && MachineType.get(itemstack).supportsUpgrades)
+				if(itemstack != null && MachineType.get(itemstack) != null && MachineType.get(itemstack).supportsUpgrades)
 				{
 					Map<Upgrade, Integer> stackMap = Upgrade.buildMap(itemstack.stackTagCompound);
 					
