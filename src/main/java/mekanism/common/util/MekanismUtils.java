@@ -267,8 +267,7 @@ public final class MekanismUtils
 		try {
 			new URL("http://www.apple.com").openConnection().connect();
 			return true;
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			return false;
 		}
 	}
@@ -581,7 +580,7 @@ public final class MekanismUtils
 	 * Gets the operating ticks required for a machine via it's upgrades.
 	 * @param mgmt - tile containing upgrades
 	 * @param def - the original, default ticks required
-	 * @return max operating ticks
+	 * @return required operating ticks
 	 */
 	public static int getTicks(IUpgradeTile mgmt, int def)
 	{
@@ -592,13 +591,19 @@ public final class MekanismUtils
 	 * Gets the energy required per tick for a machine via it's upgrades.
 	 * @param mgmt - tile containing upgrades
 	 * @param def - the original, default energy required
-	 * @return max energy per tick
+	 * @return required energy per tick
 	 */
 	public static double getEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
 		return def * Math.pow(general.maxUpgradeMultiplier, (2*mgmt.getComponent().getUpgrades(Upgrade.SPEED)-(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY))/(float)Upgrade.ENERGY.getMax());
 	}
 	
+	/**
+	 * Gets the energy required per tick for a machine via it's upgrades, not taking into account speed upgrades.
+	 * @param mgmt - tile containing upgrades
+	 * @param def - the original, default energy required
+	 * @return required energy per tick
+	 */
 	public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def)
 	{
 		return def * Math.pow(general.maxUpgradeMultiplier, -(float)mgmt.getComponent().getUpgrades(Upgrade.ENERGY)/(float)Upgrade.ENERGY.getMax());
@@ -735,6 +740,13 @@ public final class MekanismUtils
 		}
 	}
 	
+	/**
+	 * Updates all light types at the given coordinates.
+	 * @param world - the world to perform the lighting update in
+	 * @param x - x coordinate of the block to update
+	 * @param y - y coordinate of the block to update
+	 * @param z - z coordinate of the block to update
+	 */
 	public static void updateAllLightTypes(World world, int x, int y, int z)
 	{
 		world.updateLightByType(EnumSkyBlock.Block, x, y, z);
@@ -1293,11 +1305,21 @@ public final class MekanismUtils
 		return false;
 	}
 	
+	/**
+	 * Whether or not a given EntityPlayer is considered an Op.
+	 * @param player - player to check
+	 * @return if the player has operator privileges
+	 */
 	public static boolean isOp(EntityPlayerMP player)
 	{
 		return player.mcServer.getConfigurationManager().func_152596_g(player.getGameProfile());
 	}
 	
+	/**
+	 * Gets the mod ID of the mod owning the given ItemStack.
+	 * @param stack - ItemStack to check
+	 * @return mod ID of the ItemStack's owner
+	 */
 	public static String getMod(ItemStack stack)
 	{
 		try {
@@ -1308,6 +1330,11 @@ public final class MekanismUtils
 		}
 	}
 	
+	/**
+	 * Gets the item ID from a given ItemStack
+	 * @param itemStack - ItemStack to check
+	 * @return item ID of the ItemStack
+	 */
 	public static int getID(ItemStack itemStack)
 	{
 		if(itemStack == null)
@@ -1318,6 +1345,14 @@ public final class MekanismUtils
 		return Item.getIdFromItem(itemStack.getItem());
 	}
 
+	/**
+	 * Whether or not the player has a usable wrench for a block at the coordinates given.
+	 * @param player - the player using the wrench
+	 * @param x - the x coordinate of the block being wrenched
+	 * @param y - the y coordinate of the block being wrenched
+	 * @param z - the z coordinate of the block being wrenched
+	 * @return if the player can use the wrench
+	 */
 	public static boolean hasUsableWrench(EntityPlayer player, int x, int y, int z)
 	{
 		ItemStack tool = player.getCurrentEquippedItem();

@@ -8,10 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
+ * SET TO BE REMOVED NEXT MINOR MEKANISM VERSION, PLEASE USE IMC INSTEAD.
  * Use this handy class to add recipes to Mekanism machinery.
  * @author AidanBrady
  *
  */
+@Deprecated
 public final class RecipeHelper
 {
 	/**
