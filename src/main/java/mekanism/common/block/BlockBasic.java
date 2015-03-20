@@ -1055,15 +1055,18 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 			return ctms[meta][1];
 		}
 
-		if(meta == 3)
+		if(blockType == BasicBlock.BASIC_BLOCK_2)
 		{
-			TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
-			return ctms[meta][tileEntity.tier.ordinal()];
-		}
-		if(meta == 4)
-		{
-			TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
-			return ctms[meta][tileEntity.tier.ordinal()];
+			if(meta == 3)
+			{
+				TileEntityInductionCell tileEntity = (TileEntityInductionCell)world.getTileEntity(x, y, z);
+				return ctms[meta][tileEntity.tier.ordinal()];
+			}
+			else if(meta == 4)
+			{
+				TileEntityInductionProvider tileEntity = (TileEntityInductionProvider)world.getTileEntity(x, y, z);
+				return ctms[meta][tileEntity.tier.ordinal()];
+			}
 		}
 
 		return ctms[meta][0];
