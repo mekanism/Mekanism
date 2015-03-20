@@ -166,6 +166,7 @@ public class TileComponentConfig implements ITileComponent
 						}
 						
 						sideConfigs.put(TransmissionType.ITEM.ordinal(), bytes);
+						ejecting.put(TransmissionType.ITEM.ordinal(), nbtTags.getBoolean("ejecting"));
 					} catch(Exception e1) {}
 				}
 			}
