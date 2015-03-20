@@ -83,7 +83,7 @@ public class ContainerMetallurgicInfuser extends Container
 				}
 				else if(ChargeUtils.canBeDischarged(slotStack))
 				{
-					if(!mergeItemStack(slotStack, 4, 5, false))
+					if(!mergeItemStack(slotStack, 0, 1, false))
 					{
 						return null;
 					}

@@ -217,7 +217,7 @@ public class ClientTickHandler
 					Mekanism.flamethrowerActive.add(mc.thePlayer.getCommandSenderName());
 				}
 				else {
-					Mekanism.flamethrowerActive.remove(mc.thePlayer);
+					Mekanism.flamethrowerActive.remove(mc.thePlayer.getCommandSenderName());
 				}
 				
 				Mekanism.packetHandler.sendToServer(new FlamethrowerActiveMessage(isFlamethrowerOn(mc.thePlayer)));
@@ -281,7 +281,7 @@ public class ClientTickHandler
 					}
 				}
 
-				for(EntityPlayer player : (List<EntityPlayer>) mc.theWorld.playerEntities)
+				for(EntityPlayer player : (List<EntityPlayer>)mc.theWorld.playerEntities)
 				{
 					if(hasFlamethrower(player))
 					{

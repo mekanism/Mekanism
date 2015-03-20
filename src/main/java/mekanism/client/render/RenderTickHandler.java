@@ -176,7 +176,6 @@ public class RenderTickHandler
 							if(((ItemFlamethrower)p.getCurrentEquippedItem().getItem()).getGas(p.getCurrentEquippedItem()) != null)
 							{
 								Pos3D playerPos = new Pos3D(p);
-								
 								Pos3D flameVec = new Pos3D();
 								
 								if(p.isSneaking())
