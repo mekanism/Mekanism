@@ -1,5 +1,7 @@
 package mekanism.client.gui.element;
 
+import java.util.Arrays;
+
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.GuiMekanism;
@@ -16,7 +18,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
-import scala.actors.threadpool.Arrays;
 
 public class GuiFluidGauge extends GuiGauge<Fluid>
 {
