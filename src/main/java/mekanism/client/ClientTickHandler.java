@@ -300,6 +300,16 @@ public class ClientTickHandler
 				MekanismClient.updateKey(mc.gameSettings.keyBindJump, KeySync.ASCEND);
 				MekanismClient.updateKey(mc.gameSettings.keyBindSneak, KeySync.DESCEND);
 			}
+			
+			if(isFlamethrowerOn(mc.thePlayer))
+			{
+				ItemFlamethrower flamethrower = (ItemFlamethrower)mc.thePlayer.getCurrentEquippedItem().getItem();
+				
+				if(!mc.thePlayer.capabilities.isCreativeMode)
+				{
+					flamethrower.useGas(mc.thePlayer.getCurrentEquippedItem());
+				}
+			}
 
 			if(isJetpackOn(mc.thePlayer))
 			{

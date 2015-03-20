@@ -45,6 +45,11 @@ public class CommonPlayerTickHandler
 		if(isFlamethrowerOn(player))
 		{
 			player.worldObj.spawnEntityInWorld(new EntityFlame(player));
+			
+			if(!player.capabilities.isCreativeMode)
+			{
+				((ItemFlamethrower)player.getCurrentEquippedItem().getItem()).useGas(player.getCurrentEquippedItem());
+			}
 		}
 
 		if(isJetpackOn(player))
