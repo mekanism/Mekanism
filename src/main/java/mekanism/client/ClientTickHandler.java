@@ -220,7 +220,7 @@ public class ClientTickHandler
 					Mekanism.flamethrowerActive.remove(mc.thePlayer.getCommandSenderName());
 				}
 				
-				Mekanism.packetHandler.sendToServer(new FlamethrowerActiveMessage(isFlamethrowerOn(mc.thePlayer)));
+				Mekanism.packetHandler.sendToServer(new FlamethrowerActiveMessage(mc.thePlayer.getCommandSenderName(), isFlamethrowerOn(mc.thePlayer)));
 			}
 
 			if(Mekanism.jetpackOn.contains(mc.thePlayer.getCommandSenderName()) != isJetpackOn(mc.thePlayer))

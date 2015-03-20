@@ -18,15 +18,15 @@ public class PacketFlamethrowerActive implements IMessageHandler<FlamethrowerAct
 		
 		if(message.value)
 		{
-			Mekanism.flamethrowerActive.add(player.getCommandSenderName());
+			Mekanism.flamethrowerActive.add(message.username);
 		}
 		else {
-			Mekanism.flamethrowerActive.remove(player.getCommandSenderName());
+			Mekanism.flamethrowerActive.remove(message.username);
 		}
 		
 		if(!player.worldObj.isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new FlamethrowerActiveMessage(message.value), player.worldObj.provider.dimensionId);
+			Mekanism.packetHandler.sendToDimension(new FlamethrowerActiveMessage(message.username, message.value), player.worldObj.provider.dimensionId);
 		}
 		
 		return null;
@@ -34,24 +34,28 @@ public class PacketFlamethrowerActive implements IMessageHandler<FlamethrowerAct
 	
 	public static class FlamethrowerActiveMessage implements IMessage
 	{
+		public String username;
 		public boolean value;
 		
 		public FlamethrowerActiveMessage() {}
 	
-		public FlamethrowerActiveMessage(boolean state)
+		public FlamethrowerActiveMessage(String name, boolean state)
 		{
+			username = name;
 			value = state;
 		}
 	
 		@Override
 		public void toBytes(ByteBuf dataStream)
 		{
+			PacketHandler.writeString(dataStream, username);
 			dataStream.writeBoolean(value);
 		}
 	
 		@Override
 		public void fromBytes(ByteBuf dataStream)
 		{
+			username = PacketHandler.readString(dataStream);
 			value = dataStream.readBoolean();
 		}
 	}
