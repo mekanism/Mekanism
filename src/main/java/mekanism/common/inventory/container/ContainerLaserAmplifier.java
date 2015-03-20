@@ -1,11 +1,11 @@
 package mekanism.common.inventory.container;
 
 import mekanism.common.tile.TileEntityLaserAmplifier;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class ContainerLaserAmplifier extends Container
 {
@@ -47,5 +47,56 @@ public class ContainerLaserAmplifier extends Container
 	public boolean canInteractWith(EntityPlayer entityplayer)
 	{
 		return tileEntity.isUseableByPlayer(entityplayer);
+	}
+	
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer player, int slotID)
+	{
+		ItemStack stack = null;
+		Slot currentSlot = (Slot)inventorySlots.get(slotID);
+
+		if(currentSlot != null && currentSlot.getHasStack())
+		{
+			ItemStack slotStack = currentSlot.getStack();
+			stack = slotStack.copy();
+
+			if(slotID >= 0 && slotID <= 26)
+			{
+				if(!mergeItemStack(slotStack, 27, inventorySlots.size(), false))
+				{
+					return null;
+				}
+			}
+			else if(slotID > 26)
+			{
+				if(!mergeItemStack(slotStack, 0, 26, false))
+				{
+					return null;
+				}
+			}
+			else {
+				if(!mergeItemStack(slotStack, 0, inventorySlots.size(), true))
+				{
+					return null;
+				}
+			}
+
+			if(slotStack.stackSize == 0)
+			{
+				currentSlot.putStack((ItemStack)null);
+			}
+			else {
+				currentSlot.onSlotChanged();
+			}
+
+			if(slotStack.stackSize == stack.stackSize)
+			{
+				return null;
+			}
+
+			currentSlot.onPickupFromSlot(player, slotStack);
+		}
+
+		return stack;
 	}
 }

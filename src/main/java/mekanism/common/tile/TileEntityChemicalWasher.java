@@ -83,7 +83,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 	public TileEntityChemicalWasher()
 	{
-		super("washer", "ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
+		super("machine.washer", "ChemicalWasher", MachineType.CHEMICAL_WASHER.baseEnergy);
 		inventory = new ItemStack[5];
 	}
 

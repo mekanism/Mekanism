@@ -210,7 +210,7 @@ public class ClientTickHandler
 				}
 			}
 			
-			if(isFlamethrowerOn(mc.thePlayer) != Mekanism.flamethrowerActive.contains(mc.thePlayer.getCommandSenderName()))
+			if(Mekanism.flamethrowerActive.contains(mc.thePlayer.getCommandSenderName()) != isFlamethrowerOn(mc.thePlayer))
 			{
 				if(isFlamethrowerOn(mc.thePlayer))
 				{

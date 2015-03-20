@@ -84,7 +84,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 
 	public TileEntityChemicalCrystallizer()
 	{
-		super("crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
+		super("machine.crystallizer", "ChemicalCrystallizer", MachineType.CHEMICAL_CRYSTALLIZER.baseEnergy);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.GAS);
 		

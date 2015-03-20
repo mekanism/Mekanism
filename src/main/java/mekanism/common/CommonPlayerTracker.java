@@ -47,6 +47,8 @@ public class CommonPlayerTracker
 	public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event)
 	{
 		Mekanism.jetpackOn.remove(event.player);
+		Mekanism.gasmaskOn.remove(event.player);
+		Mekanism.flamethrowerActive.remove(event.player);
 
 		if(!event.player.worldObj.isRemote)
 		{

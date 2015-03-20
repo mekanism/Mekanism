@@ -42,7 +42,7 @@ public class TileEntityChargepad extends TileEntityNoisyElectricBlock
 
 	public TileEntityChargepad()
 	{
-		super("chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
+		super("machine.chargepad", "Chargepad", MachineType.CHARGEPAD.baseEnergy);
 		inventory = new ItemStack[0];
 	}
 
