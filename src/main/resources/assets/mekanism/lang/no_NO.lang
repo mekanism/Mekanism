@@ -1,0 +1,898 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsidian TNT
+item.EnrichedAlloy.name=Beriket Legering
+item.ReinforcedAlloy.name=Forsterket Legering
+item.AtomicAlloy.name=Kjernefysisk Legering
+item.EnergyTablet.name=Energi Brett
+item.SpeedUpgrade.name=Hastighetoppgradering
+item.EnergyUpgrade.name=Energioppgradering
+item.FilterUpgrade.name=Filteroppgradering
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Kjernefysysk oppløser
+item.ElectricBow.name=Elektrisk Bue
+item.EnrichedIron.name=Beriket Jern
+item.CompressedCarbon.name=Komprimert Karbon
+item.CompressedRedstone.name=Komprimert Rødstein
+item.CompressedDiamond.name=Komprimert Diamant
+item.CompressedObsidian.name=Komprimert Obsidian
+item.PortableTeleporter.name=Portabel Teleportør
+item.TeleportationCore.name=Teleporterings Kjerne
+item.Configurator.name=Konfigurator
+item.NetworkReader.name=Nettverk Leser
+item.WalkieTalkie.name=Walkie-Talkie
+item.Jetpack.name=Jetpack
+item.ScubaTank.name=Dykkertank
+item.GasMask.name=Gassmaske
+item.Dictionary.name=Ordbok
+item.ElectrolyticCore.name=Elektrolytisk Kjerne
+item.Sawdust.name=Sagflis
+item.Salt.name=Salt
+item.BrineBucket.name=Saltlake Bøtte
+item.LithiumBucket.name=Lithium Bøtte
+item.FreeRunners.name=Frie løpere
+item.ArmoredJetpack.name=Armert Jetpack
+item.FilterCard.name=Filter Kort
+item.SeismicReader.name=Seismisk Avleser
+item.HDPEPellet.name=HDPE Pellets
+item.HDPERod.name=HDPE Stang
+item.HDPESheet.name=HDPE Skjema
+item.PlaStick.name=PlaStick
+item.Substrate.name=Substrat
+item.Flamethrower.name=Flammekaster
+item.GaugeDropper.name=Gauge Dropper
+item.BioFuel.name=Biobrensel
+
+//Control Circuits
+item.BasicControlCircuit.name=Enkel Kontroll Krets
+item.AdvancedControlCircuit.name=Avansert Kontroll Krets
+item.EliteControlCircuit.name=Elite Kontroll Krets
+item.UltimateControlCircuit.name=Ultimat Kontroll Krets
+
+//Gas Tank
+tile.GasTank.GasTank.name=Gasstank
+
+//Cardboard Box
+tile.CardboardBox.name=Pappeske
+
+//Bounding Block
+tile.BoundingBlock.name=Markerings Blokk
+
+//Salt
+tile.SaltBlock.name=Salt Blokk
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Osmium Blokk
+tile.BasicBlock.BronzeBlock.name=Bronse Blokk
+tile.BasicBlock.RefinedObsidian.name=Raffinert Obsidian
+tile.BasicBlock.CharcoalBlock.name=Trekull Blokk
+tile.BasicBlock.RefinedGlowstone.name=Raffinert glødestein
+tile.BasicBlock.SteelBlock.name=Stål Blokk
+tile.BasicBlock.Bin.name=Papirkurv
+tile.BasicBlock.TeleporterFrame.name=Teleportør Ramme
+tile.BasicBlock.SteelCasing.name=Stål Casing
+tile.BasicBlock.DynamicTank.name=Dynamisk Tank
+tile.BasicBlock.DynamicGlass.name=Dynamisk Glass
+tile.BasicBlock.DynamicValve.name=Dynamisk Ventil
+tile.BasicBlock.CopperBlock.name=Kobber Blokk
+tile.BasicBlock.TinBlock.name=Tin Blokk
+tile.BasicBlock.SolarEvaporationController.name=Sol Fordampnings Controller
+tile.BasicBlock.SolarEvaporationValve.name=Sol Fordampnings Ventil
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.SolarEvaporationBlock.name=Sol Fordampnings Blokk
+tile.BasicBlock2.InductionCasing.name=Induksjons Kasse
+tile.BasicBlock2.InductionPort.name=Induksjons Port
+tile.BasicBlock2.InductionCellBasic.name=Grunnleggende Induksjons Celle
+tile.BasicBlock2.InductionCellAdvanced.name=Advansert Induksjons Celle
+tile.BasicBlock2.InductionCellElite.name=Elite Induksjons Celle
+tile.BasicBlock2.InductionCellUltimate.name=Ultimat Induksjons Celle
+tile.BasicBlock2.InductionProviderBasic.name=Grunnleggende Induksjons Provider
+tile.BasicBlock2.InductionProviderAdvanced.name=Advansert Induksjons Provider
+tile.BasicBlock2.InductionProviderElite.name=Elite Induksjons Provider
+tile.BasicBlock2.InductionProviderUltimate.name=Ultimat Induksjons Provider
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Berikings Kammer
+tile.MachineBlock.OsmiumCompressor.name=Osmium Kompressor
+tile.MachineBlock.Combiner.name=Kombinerer
+tile.MachineBlock.Crusher.name=Knuser
+tile.MachineBlock.BasicFactory.name=Enkel Fabrikk
+tile.MachineBlock.AdvancedFactory.name=Advansert Fabrikk
+tile.MachineBlock.EliteFactory.name=Elite Fabrikk
+tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
+tile.MachineBlock.PurificationChamber.name=Purification Chamber
+tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
+tile.MachineBlock.Teleporter.name=Teleporter
+tile.MachineBlock.ElectricPump.name=Elektrisk Pumpe
+tile.MachineBlock.ElectricChest.name=Elektrisk Kiste
+tile.MachineBlock.Chargepad.name=Ladepad
+tile.MachineBlock.LogisticalSorter.name=Logistical Sorterer
+tile.MachineBlock.DigitalMiner.name=Digital Graver
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Rotary Condensentrator
+tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidizer
+tile.MachineBlock2.ChemicalInfuser.name=Chemical Infuser
+tile.MachineBlock2.ChemicalCombiner.name=Chemical Combiner
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chemical Injection Chamber
+tile.MachineBlock2.ElectrolyticSeparator.name=Electrolytic Separator
+tile.MachineBlock2.PrecisionSawmill.name=Precision Sawmill
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemical Dissolution Chamber
+tile.MachineBlock2.ChemicalWasher.name=Chemical Washer
+tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystallizer
+tile.MachineBlock2.SeismicVibrator.name=Seismic Vibrator
+tile.MachineBlock2.PressurizedReactionChamber.name=Pressurized Reaction Chamber
+tile.MachineBlock2.PressurizedReactionChamber.short.name=PRC
+tile.MachineBlock2.PortableTank.name=Portable Tank
+tile.MachineBlock2.FluidicPlenisher.name=Fluidic Plenisher
+tile.MachineBlock2.Laser.name=Laser
+tile.MachineBlock2.LaserAmplifier.name=Laser Amplifier
+tile.MachineBlock2.LaserTractorBeam.name=Laser Tractor Beam
+
+//Machine Block 3 (third ID iteration)
+tile.MachineBlock3.SolarNeutronActivator.name=Solar Neutron Activator
+tile.MachineBlock3.Oredictionificator.name=Oredictionificator
+
+//Plastic
+tile.PlasticBlock.name=Plast Blokk
+tile.SlickPlasticBlock.name=Slick Plastic Block
+tile.GlowPlasticBlock.name=Plast Gløde Blokk
+tile.ReinforcedPlasticBlock.name=Forsterket Plast Blokk
+tile.RoadPlasticBlock.name=Plast Vei
+
+tile.PlasticFence.name=Plast Barriere
+
+//Infuse types
+infuse.carbon=Karbon
+infuse.tin=Tin
+infuse.diamond=Diamant
+infuse.redstone=Rødstein
+infuse.fungi=Sopp
+infuse.obsidian=Obsidian
+infuse.bio=Biomasse
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Osmium Malm
+tile.OreBlock.CopperOre.name=Kobber Malm
+tile.OreBlock.TinOre.name=Tin Malm
+
+//Transmitters
+item.MultipartTransmitter.PressurizedTube.name=Trykk rør
+item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Kabel
+item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Kabel
+item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Kabel
+item.MultipartTransmitter.UltimateUniversalCable.name=Ultimat Universal Kabel
+item.MultipartTransmitter.BasicMechanicalPipe.name=Enkel Mekanisk Rør
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=Advansert Mekanisk Rør
+item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimat Mekanisk Rør
+item.MultipartTransmitter.LogisticalTransporter.name=Logistikk Transporter
+item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiv Transporter
+item.MultipartTransmitter.DiversionTransporter.name=Avlednings Transporter
+
+//Glow Panel
+item.GlowPanel.name=Gløde Panel
+
+//Energy Cubes
+tile.EnergyCube.Basic.name=Enkel Energi Kube
+tile.EnergyCube.Advanced.name=Advansert Energi Kube
+tile.EnergyCube.Elite.name=Elite Energi Kube
+tile.EnergyCube.Ultimate.name=Ultimat Energi Kube
+tile.EnergyCube.Creative.name=Kreativ Energi Kube
+
+//Factory Installers
+item.basicFactoryInstaller.name=Enkel Fabrikk Installerer
+item.advancedFactoryInstaller.name=Advansert Fabrikk Installerer
+item.eliteFactoryInstaller.name=Elite Fabrikk Installerer
+
+//Dust
+item.ironDust.name=Jern Støv
+item.goldDust.name=Gull Støv
+item.osmiumDust.name=Osmium Støv
+item.obsidianDust.name=Obsidian Støv
+item.refinedobsidianDust.name=Raffinert Obsidian Støv
+item.diamondDust.name=Diamant Støv
+item.steelDust.name=Stål Støv
+item.copperDust.name=Kobber Støv
+item.tinDust.name=Tin Støv
+item.silverDust.name=Sølv Støv
+item.leadDust.name=Lead Støv
+item.sulfurDust.name=Svovel Støv
+item.lithiumDust.name=Lithium Støv
+
+//Clumps
+item.ironClump.name=Jern Klump
+item.goldClump.name=Gull Klump
+item.osmiumClump.name=Osmium Klump
+item.copperClump.name=Kobber Klump
+item.tinClump.name=Tin Klump
+item.silverClump.name=Sølv Klump
+item.leadClump.name=Lead Klump
+
+//Shards
+item.ironShard.name=Jern Shard
+item.goldShard.name=Gull Shard
+item.osmiumShard.name=Osmium Shard
+item.copperShard.name=Kobber Shard
+item.tinShard.name=Tin Shard
+item.silverShard.name=Sølv Shard
+item.leadShard.name=Lead Shard
+
+//Crystals
+item.ironCrystal.name=Jern Crystal
+item.goldCrystal.name=Gull Crystal
+item.osmiumCrystal.name=Osmium Crystal
+item.copperCrystal.name=Kobber Crystal
+item.tinCrystal.name=Tin Crystal
+item.silverCrystal.name=Sølv Crystal
+item.leadCrystal.name=Lead Crystal
+
+//Dirty Dust
+item.dirtyIronDust.name=Skittent Jern Støv
+item.dirtyGoldDust.name=Skittent Gull Støv
+item.dirtyOsmiumDust.name=Skittent Osmium Støv
+item.dirtyCopperDust.name=Skittent Kobber Støv
+item.dirtyTinDust.name=Skittent Tin Støv
+item.dirtySilverDust.name=Skittent Sølv Støv
+item.dirtyLeadDust.name=Skittent Lead Støv
+
+//Ingots
+item.obsidianIngot.name=Obsidian Barre
+item.osmiumIngot.name=Osmium Barre
+item.bronzeIngot.name=Bronse Barre
+item.glowstoneIngot.name=Glødestain Barre
+item.steelIngot.name=Stål Barre
+item.copperIngot.name=Kobber Barre
+item.tinIngot.name=Tin Barre
+
+//Gasses
+gas.hydrogen=Hydrogen
+gas.oxygen=Oksygen
+gas.water=Vann Vapor
+gas.chlorine=Klor
+gas.sulfurDioxideGas=Svoveldioksid
+gas.sulfurTrioxideGas=Svoveltrioksyd
+gas.sulfuricAcid=Svovelsyre
+gas.hydrogenChloride=Hydrogenklorid
+gas.liquidOsmium=Flytende Osmium
+gas.liquidStone=Flytende Stein
+gas.ethene=Etylen
+gas.sodium=Natrium
+gas.brine=Brine i gassform
+gas.deuterium=Deuterium
+gas.tritium=Tritium
+gas.lithium=Lithium
+gas.fusionFuelDT=D-T Brensel
+
+gas.iron=Jern Slurry
+gas.gold=Gull Slurry
+gas.osmium=Osmium Slurry
+gas.copper=Kobber Slurry
+gas.tin=Tin Slurry
+gas.silver=Sølv Slurry
+gas.obsidian=Obsidian Slurry
+gas.lead=Lead Slurry
+
+gas.cleanIron=Ren Jern Slurry
+gas.cleanGold=Ren Gull Slurry
+gas.cleanOsmium=Ren Osmium Slurry
+gas.cleanCopper=Ren Kobber Slurry
+gas.cleanTin=Ren Tin Slurry
+gas.cleanSilver=Ren Sølv Slurry
+gas.cleanObsidian=Ren Obsidian Slurry
+gas.cleanLead=Ren Lead Slurry
+
+//BC Fuel Gases
+gas.fuel=Fordampet Brensel
+gas.oil=Fordampet Olje
+
+//Fluids
+fluid.hydrogen=Flytende Hydrogen
+fluid.oxygen=Flytende Oksygen
+fluid.chlorine=Flytende Klor
+fluid.sulfurDioxideGas=Flytende Svoveldioksid
+fluid.sulfurTrioxideGas=Flytende Svoveltrioksyd
+fluid.sulfuricAcid=Flytende Svovelsyre
+fluid.hydrogenChloride=Flytende Hydrogenklorid
+fluid.brine=Saltlake
+fluid.ethene=Flytende Ethylen
+fluid.sodium=Flytende Natrium
+fluid.heavyWater=Tungtvann
+fluid.lithium=Flytende Lithium
+fluid.deuterium=Flytende Deuterium
+fluid.tritium=Flytende Tritium
+fluid.fusionFuelDT=Flytende D-T Brensel
+
+//OreGas names
+oregas.iron=Jern Malm
+oregas.gold=Gull Malm
+oregas.osmium=Osmium Malm
+oregas.copper=Kobber Malm
+oregas.tin=Tin Malm
+oregas.silver=Sølv Malm
+oregas.obsidian=Obsidian Malm
+oregas.lead=Lead Malm
+
+//Transmission types
+transmission.Energy=Energi
+transmission.Fluids=Vesker
+transmission.Gases=Gasser
+transmission.Items=Ting
+transmission.Heat=Varme
+
+//Update handler text
+update.consider=Tenk på å oppdatere til version
+update.newFeatures=Nye funksjoner
+update.visit=Besøk
+update.toDownload=til nedlasting
+update.devBuild=Du bruker en utvikler versjon
+update.outdated=Du bruker en utdatert versjon på en eller flere moduler
+
+//Upgrades
+upgrade.energy=Energi
+upgrade.energy.desc=Øker energi effektivitet !nog kapasitet på maskinen.
+upgrade.speed=Hastighet
+upgrade.speed.desc=Øker hastighet på maskinen.
+upgrade.filter=Filter
+upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
+
+//Key description text
+key.mode=Endre modus
+key.voice=Stemme
+
+//Entities
+entity.Robit.name=Robit
+entity.BabySkeleton.name=Baby Skeleton
+
+//Config Gui
+mekanism.configgui.ctgy.general=Mekanism Generelle Innstillinger
+mekanism.configgui.ctgy.machines=Maskin Innstillinger
+mekanism.configgui.ctgy.usage=Bruk Innstillinger
+mekanism.configgui.ctgy.client=Klient Innstillinger
+
+//Config Tooltips
+mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
+mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
+mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
+mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
+
+//Gui text
+gui.removeSpeedUpgrade=Fjern hastighet oppgradering
+gui.removeEnergyUpgrade=Fjern energi oppgradering
+gui.condensentrating=Condensentrating
+gui.decondensentrating=Decondensentrating
+gui.power=Kraft
+gui.confirm=Bekreft
+gui.open=Åpne
+gui.allOK=Alt OK
+gui.none=Ingen
+gui.new=Ny
+gui.edit=Endre
+gui.save=Lagre
+gui.output=Utgang
+gui.delete=Slett
+gui.status=Status
+gui.autoEject=Auto-utløs
+gui.itemstack=ItemStack
+gui.oredict=OreDict
+gui.material=Material
+gui.out=Ut
+gui.noFluid=Ingen veske
+gui.empty=Tom
+gui.volume=Volum
+gui.start=Start
+gui.stop=Stopp
+gui.config=Konfig
+gui.teleport=Teleport
+gui.eject=Utløs
+gui.input=Input
+gui.strictInput=Streng Input
+gui.slots=Spor
+gui.state=Tilstand
+gui.on=På
+gui.off=Av
+gui.filters=Filtere
+gui.filter=Filter
+gui.idle=Idle
+gui.data=Data
+gui.newFilter=Nytt Filter
+gui.energy=Energi
+gui.gas=Gass
+gui.dumping=Kaster
+gui.dumping_excess=Kaster overflødig
+gui.modID=Mod ID
+gui.key=Nøkkel
+gui.id=ID
+gui.finished=Ferdig
+gui.well=Alt er bra!
+gui.upgrade=Oppgrader
+gui.infinite=Uendelig
+gui.min=Min
+gui.max=Maks
+gui.delay=Forsinkelse
+gui.noDelay=Ingen forsinkelse
+gui.fuel=Brensel
+gui.heat=Varme
+gui.formed=Formet
+gui.incomplete=Ufullstendig
+gui.inductionMatrix=Induction Matrix
+gui.matrixStats=Matrix Statistikk
+gui.main=Hoved
+gui.outputting=Outputting
+gui.dimensions=dimensjoner
+gui.constituents=Bestanddeler
+gui.cells=celler
+gui.providers=tilbydere
+gui.structure=Struktur
+gui.dynamicTank=Dynamisk Tank
+gui.visuals=Visuelle
+gui.noEject=Kan ikke utløse
+gui.undefined=Udefinert
+gui.owner=Eier
+gui.public=Offentlig
+gui.private=Privat
+gui.add=Legg til
+gui.set=Sett
+gui.freq=Freq
+gui.security=Sikkerhet
+gui.index=Indeks
+
+gui.reactor.injectionRate=Injeksjons Sats
+
+gui.upgrades=Oppgraderinger
+gui.upgrades.supported=Støttet
+gui.upgrades.noSelection=Ingen valgt
+gui.upgrades.amount=Mengde
+gui.upgrades.max=Maks
+gui.upgrades.effect=Effekt
+
+gui.chemicalInfuser.short=C. Infuser
+gui.chemicalDissolutionChamber.short=C. Oppløsnings Kammer
+gui.solarEvaporationController.short=Sol E. Kontroller
+
+gui.dictionary.noKey=Ingen nøkkel.
+
+gui.configuration=Konfigurasjon
+gui.config=Konfig
+gui.configuration.side=Side Konfig
+gui.configuration.transporter=Transportør Konfig
+gui.configuration.strictInput=Streng Input
+
+gui.rotaryCondensentrator.toggleOperation=Bytt operasjon
+
+gui.factory.secondaryEnergy=Sekundær energi
+gui.factory.smelting=Smelting
+gui.factory.enriching=Beriking
+gui.factory.crushing=Knusing
+gui.factory.compressing=Komprimering
+gui.factory.combining=Combinering
+gui.factory.purifying=Purifisering
+gui.factory.injecting=Injisering
+gui.factory.autoSort=Auto-sorter
+
+gui.seismicReader.short=S. Avleser
+gui.seismicReader.solids=Masser
+gui.seismicReader.fluids=Vesker
+gui.seismicReader.reading=Leser
+
+gui.filterSelect.title=Lag Nytt Filer
+
+gui.oredictFilter=OreDict Filter
+gui.oredictFilter.noKey=Ingen nøkkel
+gui.oredictFilter.sameKey=Samme nøkkel
+
+gui.modIDFilter=Mod ID Filter
+gui.modIDFilter.noID=Ingen ID
+gui.modIDFilter.sameID=Samme ID
+
+gui.oredictionificatorFilter=Oredictionificator Filter
+
+gui.itemFilter=Gjenstands Filter
+gui.itemFilter.noItem=Ingen gjenstand
+gui.itemFilter.details=ItemStack Detaljer
+gui.itemFilter.min=Min
+gui.itemFilter.max=Maks
+
+gui.materialFilter=Material Filter
+gui.materialFilter.details=Using material of
+
+gui.portableTeleporter=Portabel Teleportør
+
+gui.robit=Robit
+gui.robit.smelting=Robit Smelting
+gui.robit.inventory=Robit Inventar
+gui.robit.crafting=Robit Crafting
+gui.robit.greeting=Hei, jeg er
+gui.robit.toggleFollow=Bytt 'følge' modus
+gui.robit.rename=Gi nytt navn til denne Robit'en
+gui.robit.teleport=Teleporter hjem
+gui.robit.togglePickup=Bytt 'plukk opp ting' modus
+gui.robit.following=Følger
+gui.robit.dropPickup=Plukk opp ting
+gui.robit.owner=Eier
+
+gui.password.setPassword=Sett passord
+gui.password.enterPassword=Skriv inn passord
+gui.password.fieldsEmpty=Felt(er) tomme
+gui.password.notMatching=Samsvarer ikke
+gui.password.identical=Idenstisk
+gui.password.invalid=Ugyldig
+gui.password=Passord
+
+gui.logisticalSorter.default=Standard
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Round-robin
+
+gui.electricChest.editPassword=Endre Passord
+
+gui.teleporter.notReady=Ikke klar
+gui.teleporter.ready=Klar
+gui.teleporter.noFrame=Ingen ramme
+gui.teleporter.noLink=Ingen tilkobling
+gui.teleporter.exceeds=Tilkoblinger > 2
+gui.teleporter.needsEnergy=Trenger energi
+gui.teleporter.noAccess=Du har ikke tilgang til denne teleportøren.
+gui.teleporter.noFreq=Ingen frekvens
+
+gui.digitalMinerConfig=Digital Graver Konfig
+
+gui.digitalMiner.autoPull=Auto-trekk
+gui.digitalMiner.replaceBlock=Erstatt blokk
+gui.digitalMiner.reset=Resett
+gui.digitalMiner.silkTouch=Silk touch
+gui.digitalMiner.pull=Trekk
+gui.digitalMiner.silk=Silk
+gui.digitalMiner.toMine=Å grave
+gui.digitalMiner.running=Kjører
+gui.digitalMiner.inverse=Inverse modus
+gui.digitalMiner.requireReplace=Krev erstattning
+gui.digitalMiner.fuzzyMode=Fuzzy modus
+gui.digitalMiner.missingBlock=Manglende blokk
+
+//Recipe names
+recipe.mekanismShaped=Formet
+
+//Item and block tooltip text
+tooltip.configurator.configurate=Konfigurate
+tooltip.configurator.empty=Tom
+tooltip.configurator.rotate=Roter
+tooltip.configurator.wrench=Skiftnøkkel
+tooltip.configurator.pumpReset=Resett Elektrisk Pumpe kalkulering
+tooltip.configurator.toggleDiverter=Avleder modus endret til
+tooltip.configurator.toggleMode=%s oppførsel endret til
+tooltip.configurator.viewMode=Nåværende %s oppførsel
+tooltip.configurator.unauth=Denne kisten er låst
+tooltip.configurator.noLink=Ingen forbindelse
+tooltip.configurator.linkMsg=Bundet til
+tooltip.configurator.dim=dimensjon
+tooltip.configurator.setLink=Sett tilkobling til blokk
+tooltip.configurator.plenisherReset=Resett Fluidisk Plenisher kalkulering
+tooltip.configurator.inductionPortMode=Byttet Induksjons Port overføringsmodus til
+
+tooltip.upgrade.speed=Hastighet
+tooltip.upgrade.energy=Energi
+
+tooltip.inventory=Inventar
+tooltip.storedEnergy=Oppbevart energi
+tooltip.auth=Autentisert
+tooltip.locked=Låst
+tooltip.recipeType=Oppskrift type
+tooltip.hold=Hold
+tooltip.forDesc=for en beskrivelse
+tooltip.forDetails=for detaljer
+tooltip.fireMode=Avfyringsmodus
+tooltip.capacity=Kapasitet
+tooltip.pumpRate=Pumpe Sats
+tooltip.items=Gjenstander
+tooltip.blocks=Blokker
+tooltip.universal=universal
+tooltip.fluids=Vesker
+tooltip.gasses=Gasser
+tooltip.capableTrans=I stand til å overføre
+tooltip.restrictiveDesc=Bare brukt hvis ingen andre veier er tilgjengelig
+tooltip.diversionDesc=Kontrollerbar av rødstein
+tooltip.noGas=Ingen gass oppbevart
+tooltip.stored=Oppbevart
+tooltip.channel=Kanal
+tooltip.mode=Modus
+tooltip.efficiency=Effektivitet
+tooltip.modeToggle=Modus byttet til
+tooltip.flowing=Strømmer
+tooltip.yes=ja
+tooltip.no=nei
+tooltip.name=Navn
+tooltip.blockData=Blokk data
+tooltip.block=Blokk
+tooltip.meta=Metadata
+tooltip.tile=Tile
+tooltip.keysFound=Tast(er) funnet
+tooltip.noKey=Ingen tast
+tooltip.hp=HP
+tooltip.configureState=Konfigurer tilstand
+tooltip.outputRate=Utgans Sats
+tooltip.insufficientFuel=Utilstrekkelig Brensel
+tooltip.readyForReaction=Klar for Reaksjon
+
+tooltip.portableTank.bucketMode=Bøttemodus
+
+tooltip.disassembler.normal=normal
+tooltip.disassembler.slow=treg
+tooltip.disassembler.fast=rask
+tooltip.disassembler.vein=åre
+tooltip.disassembler.off=av
+
+tooltip.filterCard.got=Hentet filter data fra %s
+tooltip.filterCard.set=Injiserte filter data av typen %s
+tooltip.filterCard.unequal=Ulik filter data formater
+tooltip.filterCard.logisticalSorter=Logistical Sorterer
+tooltip.filterCard.digitalMiner=Digital Graver
+tooltip.filterCard.oredictionificator=Oredictionificator
+
+tooltip.balloon=Ballong
+
+tooltip.jetpack.regular=Vanlig
+tooltip.jetpack.hover=Hover
+tooltip.jetpack.disabled=Deaktivert
+
+tooltip.seismicReader.needsEnergy=Ikke nok energi til å Not enough energy tolke vibrasjon
+tooltip.seismicReader.noVibrations=Ikke i stand til å oppdage Unable to discover noen vibrasjoner
+
+tooltip.EnrichmentChamber=En enkel maskin bruk til å berike malm !ntil støv, og kan !nutføre mange andre operasjoner.
+tooltip.OsmiumCompressor=En rimelig avansert maskin brukt til å komprimere !nosmium til støv for å kunne lage !nderes tilsvarende barrer.
+tooltip.Combiner=En maskin bruk til å combinere støv og cobblestone !for å lage tilsvarnde malm.
+tooltip.Crusher=En maskin bruk til å knuse barrer til støv, !nog utføre mange andre operasjoner.
+tooltip.DigitalMiner=En meget avansert, filer-basert, auto-graver !nsom kan grave hvilken som helst blokk du ber den om !ninnenfor en 32 blokkers (maks) radius.
+tooltip.BasicFactory=Den første i linjen av Fabrikker, !nsom kan bli brukt til å prossessere mange !nmachine operasjoner samtidig.
+tooltip.AdvancedFactory=Den mellomste i linjen av Fabrikker, !nsom kan bli brukt til å prossessere mange !nmachine operasjoner samtidig.
+tooltip.EliteFactory=Den siste i linjen av Fabrikker, !nsom kan bli brukt til å prossessere mange !nmachine operasjoner samtidig.
+tooltip.MetallurgicInfuser=En maskin brukt til å sette materialer !nmot (generellt) metaller for å lage metall legeringer !nog andre forbindelser.
+tooltip.PurificationChamber=En avansert maskin i stand til å prosessere en !nmalm til tree klumper, fungerer som den første !nsteget i 300% malm prosessering.
+tooltip.EnergizedSmelter=En enkel maskin som fungerer som en Mekanism-basert !novn som kjører på energi.
+tooltip.Teleporter=En maskin som er i stand til å teleportere spillere til forskjellige !nsteder definert av en annen teleportør.
+tooltip.ElectricPump=En avansert pumpe som er i stand til å pumpe !nopp en hel lava sjø.
+tooltip.ElectricChest=En mobil, 54-slots kiste som bruker energi til å låse !seg selv fra andre spillere ved hjelp av passordbeskyttelse.
+tooltip.Chargepad=En universal ladepad som kan lade !nalle energi baserte ting fra alle modder.
+tooltip.LogisticalSorter=En filter-basert, avansert sorterings maskin som !kan auto-utløse spesifiserte ting ut av seg og inn i !ntilstøtende inventarer and Logistical Transporters.
+tooltip.RotaryCondensentrator=En maskin i stand til å convertere gasser til !nderes flytende form og omvendt.
+tooltip.ChemicalInjectionChamber=En elite maskin i stand til å prossessere !malm til fire shards, fungerer som det første !nsteget i 400% malm prosessering.
+tooltip.ElectrolyticSeparator=En maskin som bruker prosessen !nelektrolyse til å splitte !ngasser til andre gasser.
+tooltip.PrecisionSawmill=En maskin brukt til å prossessere ved og andre !ntre-baserte ting mer effektivt, og for !nå lage sagflis.
+tooltip.ChemicalDissolutionChamber=En ultimat maskin vrukt til å kjemisk !noppløse alle urenheter i malm, !nså bare en uprosessert slurry gjenstår.
+tooltip.ChemicalWasher=En ultimat maskin som renser uprosessert !nslurry og forbereder den for and prepares it for krystallisering.
+tooltip.ChemicalCrystallizer=En ultimat maskin bruk til å krystallisere ! An ultimate machine used to crystallize !nrenset malm slurry til malm krystaller.
+tooltip.ChemicalOxidizer=En maskin i stand til å oxidere !solide materialer til gass form.
+tooltip.ChemicalInfuser=En maskin som produserer en ny !ngass ved å infusere to andre gasser.
+tooltip.SeismicVibrator=En maskin som bruker seismiske vibrasjoner til å !ngi informasjon om ulike lag !nav verden.
+tooltip.PressurizedReactionChamber=En avansert maskin som prosseserer en !nsolid, flytende og gass blanding og !nlager både en gass og et solid produkt.
+tooltip.PortableTank=En hendig, mobil tank som lar deg !nbære 14 bøtter veske hvor du !vil. Også dobbler som en bøtte!
+tooltip.FluidicPlenisher=En maskin som lar deg lage hele !nsjøer ved å fylle raviner med vesker.
+tooltip.Laser=En avansert form for linær energi !noverføring som bruker en ekstremt !nkollimert lysstråle.
+tooltip.LaserAmplifier=En blokk som kan bli brukt til å slå sammen, !nomdirigere og forsterke laser stråler,!nmed kontroll over når den skal avfyre.
+tooltip.LaserTractorBeam=En blokk brukt til å slå sammen og !nomdirigere laser stråler. Samler !nting fra blokker den har ødelagt.
+tooltip.SolarNeutronActivator=En maskin som dirigerer nøytronstråling !nfra sola til dens interne reservoar, !nsom tillater sakte produksjon av forskjellige isotoper.
+tooltip.Oredictionificator=En maskin brukt til å forene og oversette mellom forskjellige gjenstander !nog blokker ved hjelp av Ore Dictionary.
+tooltip.HeatGenerator=En generator som bruker varme fra lava eller !nandre brennbare ressurser til å produsere energi.
+tooltip.SolarGenerator=En generator som utnytter energi !nfra solen til å produsere energi.
+tooltip.GasGenerator=En generator som utnytter molekylære !nvarierende gasser å produsere energi.
+tooltip.BioGenerator=En generator som produserer energi !nved å brenne organisk materiale.
+tooltip.AdvancedSolarGenerator=En avansert generator som direkte absorberer solens stråler med lite tap !nfor produsere energi.
+tooltip.WindTurbine=En generator som bruker styrken fra vinden !ntil å produsere energi, med større effektivitet !npå høyere nivåer.
+tooltip.ReactorGlass=Forsterket glass som kan anvendes !ni fusjonsreaktor multiblokken.
+tooltip.ReactorLaserFocusMatrix=Et panel av Reaktor Glass som er !ni stand til å absorbere optisk energi, og !ndermed varme opp fusjonsreaktoren.
+tooltip.ReactorController=Den kontrollerende blokken for hele !nfusjonsreaktor strukturen.
+tooltip.ReactorFrame=Forsterket utforming som kan brukes i !nfusjonsreaktor multiblokken.
+tooltip.ReactorNeutronCapturePlate=En blokk som kan brukes til !nbåde blokkere fusjonsreaktor stråling og hjelpe til !ni fremstilling av Tritium.
+tooltip.ReactorPort=En blokk av armert utforming som er i stand til !nå styre både gass og energi overføringen av fusjonsreaktoren.
+
+tooltip.OsmiumOre=En sterk mineral som kan bli funnet !nved nesten hvilken som helst høyde i verden. !nDen er kjent for å ha mange bruksområder !ni bygging av maskiner.
+tooltip.CopperOre=Et felles, ledende materiale som !nkan brukes i produksjon av !nkabler. Dens evne til å tåle !nhøy varme gjør den også viktig !nfor avanserte maskiner.
+tooltip.TinOre=En lett, men likevel solid, ledende !nmateriale som er funnet litt !nmindre enn Kobber.
+
+//Side data
+sideData.None=Ingen
+sideData.Input=Inngang
+sideData.Output=Utgang
+sideData.Energy=Energi
+sideData.Gas=Gass
+sideData.Extra=Ekstra
+sideData.Infuse=Sette mot
+sideData.Fluid=Veske
+
+//Redstone control
+control.disabled=Deaktivert
+control.high=Høy
+control.low=Lav
+control.pulse=Puls
+control.disabled.desc=Alltid aktiv
+control.high.desc=Aktiv med signal
+control.low.desc=Aktiv uten signal
+control.pulse.desc=Bare aktiv når mottatt første signal
+
+//Container edit modes
+fluidedit.both=Begge
+fluidedit.fill=Fyll
+fluidedit.empty=Tom
+
+//Colors
+color.black=Svart
+color.darkBlue=Mørkeblå
+color.darkGreen=Mørkegrønn
+color.darkAqua=Mørkeaqua
+color.darkRed=Mørkerød
+color.purple=Lilla
+color.orange=Oransje
+color.grey=Grå
+color.darkGrey=Mørkegrå
+color.indigo=Indigo
+color.brightGreen=Lysegrønn
+color.aqua=Aqua
+color.red=Rød
+color.pink=Rosa
+color.yellow=Gul
+color.white=Hvit
+color.brown=Brun
+color.brightPink=Lyserosa
+
+//Dyes
+dye.black=Svart
+dye.darkBlue=Blå
+dye.brown=Brun
+dye.darkGreen=Grønn
+dye.darkAqua=Cyan
+dye.darkRed=Mørkerød
+dye.purple=Lilla
+dye.orange=Oransje
+dye.grey=Lysebrå
+dye.darkGrey=Grå
+dye.indigo=Lyseblå
+dye.brightGreen=Lime
+dye.aqua=Aqua
+dye.red=Rød
+dye.brightPink=Rosa
+dye.pink=Magenta
+dye.yellow=Gul
+dye.white=Hvit
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=C. Injeksjons Kammer
+nei.rotaryCondensentrator=R. Condensentrator
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.SolarPanel.name=Solcellepanel
+item.Hohlraum.name=Hohlraum
+
+//Generators
+tile.Generator.HeatGenerator.name=Varme Generator
+tile.Generator.SolarGenerator.name=Solcelle Generator
+tile.Generator.GasGenerator.name=Brensel-Brennende Generator
+tile.Generator.BioGenerator.name=Bio-Generator
+tile.Generator.AdvancedSolarGenerator.name=Avansert Solcelle Generator
+tile.Generator.WindTurbine.nameVind Turbin
+
+tile.Reactor.ReactorController.name=Reaktor Kontroller
+tile.Reactor.ReactorFrame.name=Reaktor Ramme
+tile.Reactor.ReactorNeutronCapturePlate.name=Nøytron Fange Plate
+tile.Reactor.ReactorInOutPort.name=Reaktor Port
+
+tile.ReactorGlass.ReactorGlass.name=Reaktor Glass
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Fokus Matrix
+
+//Gui text
+gui.heatGenerator.fuel=Brensel
+gui.solarGenerator.sun=Sol
+gui.bioGenerator.bioFuel=Biobrensel
+gui.electrolyticSeparator.dump=Kast
+
+gui.passive=Luft-Kjølt
+gui.active=Vann-Kjølt
+
+gui.minInject=Min. Injisere Sats
+gui.ignition=Tenning Temp
+gui.maxPlasma=Maks. Plasma Temp
+gui.maxCasing=Maks. Kasse Temp
+gui.passiveGeneration=Passiv Generering
+gui.steamProduction=Dampproduksjon
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Tre Paxel
+item.StonePaxel.name=Stein Paxel
+item.IronPaxel.name=Jern Paxel
+item.DiamondPaxel.name=Diamant Paxel
+item.GoldPaxel.name=Gull Paxel
+
+//Obsidian
+item.ObsidianHelmet.name=Obsidian Hjelm
+item.ObsidianChestplate.name=Obsidian Brystplate
+item.ObsidianLeggings.name=Obsidian Benplater
+item.ObsidianBoots.name=Obsidian Støvler
+item.ObsidianPaxel.name=Obsidian Paxel
+item.ObsidianPickaxe.name=Obsidian Hakke
+item.ObsidianAxe.name=Obsidian Øks
+item.ObsidianShovel.name=Obsidian Spade
+item.ObsidianHoe.name=Obsidian Ljå
+item.ObsidianSword.name=Obsidian Sverd
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lapis Lazuli Hjelm
+item.LazuliChestplate.name=Lapis Lazuli Brystplate
+item.LazuliLeggings.name=Lapis Lazuli Benplater
+item.LazuliBoots.name=Lapis Lazuli Støvler
+item.LazuliPaxel.name=Lapis Lazuli Paxel
+item.LazuliPickaxe.name=Lapis Lazuli Hakke
+item.LazuliAxe.name=Lapis Lazuli Øks
+item.LazuliShovel.name=Lapis Lazuli Spade
+item.LazuliHoe.name=Lapis Lazuli Ljå
+item.LazuliSword.name=Lapis Lazuli Sverd
+
+//Osmium
+item.OsmiumHelmet.name=Osmium Hjelm
+item.OsmiumChestplate.name=Osmiumbrystplate
+item.OsmiumLeggings.name=Osmium Benplater
+item.OsmiumBoots.name=Osmium Støvler
+item.OsmiumPaxel.name=Osmium Paxel
+item.OsmiumPickaxe.name=Osmium Hakke
+item.OsmiumAxe.name=Osmium Øks
+item.OsmiumShovel.name=Osmium Spade
+item.OsmiumHoe.name=Osmium Ljå
+item.OsmiumSword.name=Osmium Sverd
+
+//Bronze
+item.BronzeHelmet.name=Bronse Hjelm
+item.BronzeChestplate.name=Bronse Brystplate
+item.BronzeLeggings.name=Bronse Benplater
+item.BronzeBoots.name=Bronse Støvler
+item.BronzePaxel.name=Bronse Paxel
+item.BronzePickaxe.name=Bronse Hakke
+item.BronzeAxe.name=Bronse Øks
+item.BronzeShovel.name=Bronse Spade
+item.BronzeHoe.name=Bronse Ljå
+item.BronzeSword.name=Bronse Sverd
+
+//Glow
+item.GlowstoneHelmet.name=Glødestein Hjelm
+item.GlowstoneChestplate.name=Glødestein Brystplate
+item.GlowstoneLeggings.name=Glødestein Benplater
+item.GlowstoneBoots.name=Glødestein Støvler
+item.GlowstonePaxel.name=Glødestein Paxel
+item.GlowstonePickaxe.name=Glødestein Hakke
+item.GlowstoneAxe.name=Glødestein Øks
+item.GlowstoneShovel.name=Glødestein Spade
+item.GlowstoneHoe.name=Glødestein Ljå
+item.GlowstoneSword.name=Glødestein Sverd
+
+//Steel
+item.SteelHelmet.name=Stål Hjelm
+item.SteelChestplate.name=Stål Brystplate
+item.SteelLeggings.name=Stål Benplater
+item.SteelBoots.name=Stål Støvler
+item.SteelPaxel.name=Stål Paxel
+item.SteelPickaxe.name=Stål Hakke
+item.SteelAxe.name=Stål Øks
+item.SteelShovel.name=Stål Spade
+item.SteelHoe.name=Stål Ljå
+item.SteelSword.name=Stål Sverd
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general=Generelt
+mekanism.configgui.ctgy.tools.armor=Rustnings Balanse
+mekanism.configgui.ctgy.tools.tools=Verktøy Balanse
+
+//Config Tooltips
+mekanism.configgui.ctgy.tools.general.tooltip=Innstillinger vedrørende MekanismTools' generell konfigurasjon.
+mekanism.configgui.ctgy.tools.armor.tooltip=Innstillinger vedrørende beskyttelses verdier og balanse for MekanismTools rustninger.
+mekanism.configgui.ctgy.tools.tools.tooltip=Innstillinger vedrørende effektivitet verdier og balanse for MekanismTools verktøy.
