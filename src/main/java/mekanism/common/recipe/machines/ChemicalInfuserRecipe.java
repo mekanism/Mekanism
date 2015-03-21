@@ -26,12 +26,13 @@ public class ChemicalInfuserRecipe extends MachineRecipe<ChemicalPairInput, GasO
 	{
 		return getInput().useGas(leftTank, rightTank, false) && getOutput().applyOutputs(outputTank, false, 1);
 	}
-
-	public void operate(GasTank leftInput, GasTank rightInput, GasTank outputTank)
+	
+	public void operate(GasTank leftInput, GasTank rightInput, GasTank outputTank, int scale)
 	{
-		if(getInput().useGas(leftInput, rightInput, true))
+		if(getInput().useGas(leftInput, rightInput, true, scale))
 		{
-			getOutput().applyOutputs(outputTank, true, 1);
+			getOutput().applyOutputs(outputTank, true, scale);
 		}
 	}
+	
 }
