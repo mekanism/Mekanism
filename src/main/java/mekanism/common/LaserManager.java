@@ -6,11 +6,11 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -49,7 +49,11 @@ public class LaserManager
 
 		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to)))
 		{
-			if(!e.isImmuneToFire()) e.setFire((int)(energy / 1000));
+			if(!e.isImmuneToFire()) 
+			{
+				e.setFire((int)(energy / 1000));
+				e.attackEntityFrom(DamageSource.onFire, (float)energy/1000F);
+			}
 		}
 
 		return mop;
