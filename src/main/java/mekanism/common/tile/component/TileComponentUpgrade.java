@@ -139,8 +139,7 @@ public class TileComponentUpgrade implements ITileComponent
 		{
 			supported.add(upgrade);
 		}
-		else
-		{
+		else {
 			supported.remove(upgrade);
 		}
 	}

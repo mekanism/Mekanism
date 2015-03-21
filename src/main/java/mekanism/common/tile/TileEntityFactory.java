@@ -322,6 +322,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 
 			secondaryEnergyThisTick = recipeType.fuelEnergyUpgrades() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int)Math.ceil(secondaryEnergyPerTick);
+			
 			for(int process = 0; process < tier.processes; process++)
 			{
 				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick)
@@ -638,8 +639,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
-		else
-		{
+		else {
 			BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
 
 			recipe.operate(inventory, inputSlot, outputSlot);
