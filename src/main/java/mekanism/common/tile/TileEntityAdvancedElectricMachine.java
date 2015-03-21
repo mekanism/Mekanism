@@ -24,6 +24,7 @@ import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.outputs.ItemStackOutput;
+import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -89,7 +90,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
 		secondaryEnergyPerTick = secondaryPerTick;
 
-		upgradeComponent = new TileComponentUpgrade(this, 4);
+		upgradeComponent = upgradeableSecondaryEfficiency() ? new TileComponentAdvancedUpgrade(this, 4) : new TileComponentUpgrade(this, 4);
 		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 	
@@ -412,9 +413,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	{
 		super.recalculateUpgradables(upgrade);
 
-		if(upgrade == Upgrade.SPEED)
+		if(upgrade == Upgrade.SPEED || (upgradeableSecondaryEfficiency() && upgrade == Upgrade.ENERGY))
 		{
-			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK, upgradeableSecondaryEfficiency());
+			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
 		}
 	}
 

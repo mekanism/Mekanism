@@ -620,11 +620,11 @@ public final class MekanismUtils
 	 * @param def - the original, default secondary energy required
 	 * @return max secondary energy per tick
 	 */
-	public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def, boolean energyUpgrades)
+	public static double getSecondaryEnergyPerTickMean(IUpgradeTile mgmt, int def)
 	{
-		if(energyUpgrades)
+		if(mgmt.getComponent().supports(Upgrade.GAS))
 		{
-			return def * Math.pow(general.maxUpgradeMultiplier, 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.ENERGY));
+			return def * Math.pow(general.maxUpgradeMultiplier, 2 * fractionUpgrades(mgmt, Upgrade.SPEED) - fractionUpgrades(mgmt, Upgrade.GAS));
 		}
 
 		return def * Math.pow(general.maxUpgradeMultiplier, fractionUpgrades(mgmt, Upgrade.SPEED));

@@ -297,6 +297,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						}
 						
 						upgradeComponent.write(returnStack.stackTagCompound);
+						upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
 						upgradeComponent.read(inventory[2].stackTagCompound);
 
 						inventory[2] = null;
@@ -462,7 +463,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 	public double getSecondaryEnergyPerTick(RecipeType type)
 	{
-		return MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick(), type.fuelEnergyUpgrades());
+		return MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
 	}
 
 	public void handleSecondaryFuel()

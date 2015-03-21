@@ -127,10 +127,22 @@ public class TileComponentUpgrade implements ITileComponent
 
 		tileEntity.recalculateUpgradables(upgrade);
 	}
-	
+
 	public void setSupported(Upgrade upgrade)
 	{
-		supported.add(upgrade);
+		setSupported(upgrade, true);
+	}
+
+	public void setSupported(Upgrade upgrade, boolean isSupported)
+	{
+		if(isSupported)
+		{
+			supported.add(upgrade);
+		}
+		else
+		{
+			supported.remove(upgrade);
+		}
 	}
 	
 	public boolean supports(Upgrade upgrade)

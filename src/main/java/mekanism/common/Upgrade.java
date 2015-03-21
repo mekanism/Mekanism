@@ -19,12 +19,12 @@ public enum Upgrade
 {
 	SPEED("speed", 8, EnumColor.RED),
 	ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
-	FILTER("filter", 1, EnumColor.DARK_AQUA);
+	FILTER("filter", 1, EnumColor.DARK_AQUA),
+	GAS("gas", 8, EnumColor.YELLOW);
 	
 	private String name;
 	private int maxStack;
 	private EnumColor color;
-	private boolean canMultiply;
 	
 	private Upgrade(String s, int max, EnumColor c)
 	{
@@ -68,6 +68,8 @@ public enum Upgrade
 				return new ItemStack(MekanismItems.EnergyUpgrade);
 			case FILTER:
 				return new ItemStack(MekanismItems.FilterUpgrade);
+			case GAS:
+				return new ItemStack(MekanismItems.GasUpgrade);
 		}
 		
 		return null;

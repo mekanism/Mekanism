@@ -26,6 +26,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.ItemStackInput;
 import mekanism.common.recipe.machines.DissolutionRecipe;
+import mekanism.common.tile.component.TileComponentAdvancedUpgrade;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
@@ -71,7 +72,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public DissolutionRecipe cachedRecipe;
 	
-	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
+	public TileComponentUpgrade upgradeComponent = new TileComponentAdvancedUpgrade(this, 4);
 
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 
@@ -467,7 +468,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		switch(upgrade)
 		{
 			case SPEED:
-				injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE, true);
+				injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE);
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);
