@@ -14,6 +14,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -214,6 +215,36 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				time = dataStream.readInt();
 				break;
 		}
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		on = nbtTags.getBoolean("on");
+		
+		minThreshold = nbtTags.getDouble("minThreshold");
+		maxThreshold = nbtTags.getDouble("maxThreshold");
+		time = nbtTags.getInteger("time");
+		collectedEnergy = nbtTags.getDouble("collectedEnergy");
+		lastFired = nbtTags.getDouble("lastFired");
+		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("on", on);
+		
+		nbtTags.setDouble("minThreshold", minThreshold);
+		nbtTags.setDouble("maxThreshold", maxThreshold);
+		nbtTags.setInteger("time", time);
+		nbtTags.setDouble("collectedEnergy", collectedEnergy);
+		nbtTags.setDouble("lastFired", lastFired);
+		nbtTags.setInteger("controlType", controlType.ordinal());
 	}
 
 	@Override
