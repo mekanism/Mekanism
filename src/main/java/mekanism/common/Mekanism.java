@@ -1185,7 +1185,7 @@ public class Mekanism
 		
 		//Load configuration
 		proxy.loadConfiguration();
-		proxy.onConfigSync();
+		proxy.onConfigSync(false);
 		
 		//Add baby skeleton spawner
 		if(general.spawnBabySkeletons)
@@ -1232,6 +1232,9 @@ public class Mekanism
 		addIntegratedItems();
 		
 		OreDictManager.init();
+		
+		//Update the config-dependent recipes after the recipes have actually been added in the first place
+		Mekanism.proxy.updateConfigRecipes();
 		
 		logger.info("Hooking complete.");
 	}
@@ -1365,7 +1368,7 @@ public class Mekanism
 		if(event.modID.equals("Mekanism"))
 		{
 			proxy.loadConfiguration();
-			proxy.onConfigSync();
+			proxy.onConfigSync(false);
 		}
 	}
 }

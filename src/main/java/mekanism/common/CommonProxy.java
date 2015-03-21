@@ -541,19 +541,9 @@ public class CommonProxy
 	{
 		return (File)FMLInjectionData.data()[6];
 	}
-
-	public void onConfigSync()
+	
+	public void updateConfigRecipes()
 	{
-		if(general.cardboardSpawners)
-		{
-			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);
-		}
-		else {
-			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
-		}
-		
-		MachineType.updateAllUsages();
-		
 		for(MachineType type : MachineType.getValidMachines())
 		{
 			if(machines.isEnabled(type))
@@ -565,8 +555,26 @@ public class CommonProxy
 				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
 			}
 		}
+	}
 
-		Mekanism.logger.info("Received config from server.");
+	public void onConfigSync(boolean fromPacket)
+	{
+		if(general.cardboardSpawners)
+		{
+			MekanismAPI.removeBoxBlacklist(Blocks.mob_spawner, 0);
+		}
+		else {
+			MekanismAPI.addBoxBlacklist(Blocks.mob_spawner, 0);
+		}
+		
+		MachineType.updateAllUsages();
+		
+		updateConfigRecipes();
+
+		if(fromPacket)
+		{
+			Mekanism.logger.info("Received config from server.");
+		}
 	}
 
 	public EntityPlayer getPlayer(MessageContext context)
