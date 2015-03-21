@@ -93,10 +93,11 @@ public class FusionReactor implements IFusionReactor
 		if(controller != null)
 		{
 			ItemStack hohlraum = controller.inventory[0];
+			
 			if(hohlraum != null && hohlraum.getItem() instanceof ItemHohlraum)
 			{
 				GasStack gasStack = ((ItemHohlraum)hohlraum.getItem()).getGas(hohlraum);
-				return gasStack.getGas() == GasRegistry.getGas("fusionFuelDT") && gasStack.amount > 0;
+				return gasStack != null && gasStack.getGas() == GasRegistry.getGas("fusionFuelDT") && gasStack.amount > 0;
 			}
 		}
 
