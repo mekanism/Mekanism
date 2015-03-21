@@ -36,23 +36,30 @@ public class ChemicalPairInput extends MachineInput<ChemicalPairInput>
 	}
 	
 	public ChemicalPairInput() {}
-
-	public boolean useGas(GasTank leftTank, GasTank rightTank, boolean deplete)
-	{
+	
+	public boolean useGas(GasTank leftTank, GasTank rightTank, boolean deplete) {
+		return useGas(leftTank, rightTank, deplete, 1);
+	}
+	
+	public boolean useGas(GasTank leftTank, GasTank rightTank, boolean deplete, int scale)
+	{	
+		int leftAmount = leftGas.amount * scale;
+		int rightAmount = rightGas.amount * scale;
+		
 		if(leftTank.canDraw(leftGas.getGas()) && rightTank.canDraw(rightGas.getGas()))
 		{
-			if(leftTank.getStored() >= leftGas.amount && rightTank.getStored() >= rightGas.amount)
+			if(leftTank.getStored() >= leftAmount && rightTank.getStored() >= rightAmount)
 			{
-				leftTank.draw(leftGas.amount, deplete);
-				rightTank.draw(rightGas.amount, deplete);
+				leftTank.draw(leftAmount, deplete);
+				rightTank.draw(rightAmount, deplete);
 				return true;
 			}
 		} else if(leftTank.canDraw(rightGas.getGas()) && rightTank.canDraw(leftGas.getGas()))
 		{
-			if(leftTank.getStored() >= rightGas.amount && rightTank.getStored() >= leftGas.amount)
+			if(leftTank.getStored() >= rightAmount && rightTank.getStored() >= leftAmount)
 			{
-				leftTank.draw(rightGas.amount, deplete);
-				rightTank.draw(leftGas.amount, deplete);
+				leftTank.draw(rightAmount, deplete);
+				rightTank.draw(leftAmount, deplete);
 				return true;
 			}
 		}
