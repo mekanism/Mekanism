@@ -162,26 +162,24 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 			MetallurgicInfuserRecipe recipe = RecipeHandler.getMetallurgicInfuserRecipe(getInput());
 
-			if(MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick)
 			{
-				if(canOperate(recipe))
-				{
-					setActive(true);
-					setEnergy(getEnergy() - energyPerTick);
+				setActive(true);
+				setEnergy(getEnergy() - energyPerTick);
 
-					if((operatingTicks + 1) < ticksRequired)
-					{
-						operatingTicks++;
-					} else
-					{
-						operate(recipe);
-						operatingTicks = 0;
-					}
+				if((operatingTicks + 1) < ticksRequired)
+				{
+					operatingTicks++;
+				} 
+				else {
+					operate(recipe);
+					operatingTicks = 0;
 				}
 			}
 			else {
 				if(prevEnergy >= getEnergy())
 				{
+					System.out.println("NO");
 					setActive(false);
 				}
 			}
