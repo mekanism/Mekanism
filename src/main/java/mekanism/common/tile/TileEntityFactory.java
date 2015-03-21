@@ -297,6 +297,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						}
 						
 						upgradeComponent.write(returnStack.stackTagCompound);
+						upgradeComponent.read(inventory[2].stackTagCompound);
 
 						inventory[2] = null;
 						inventory[3] = returnStack;
