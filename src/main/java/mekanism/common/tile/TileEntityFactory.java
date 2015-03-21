@@ -1034,12 +1034,18 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 
 		switch(upgrade)
 		{
+			case GAS:
+				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+				break;
 			case SPEED:
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+				break;
 			case ENERGY:
 				energyPerTick = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_PER_TICK);
 				maxEnergy = MekanismUtils.getMaxEnergy(this, BASE_MAX_ENERGY);
+				break;
 			default:
 				break;
 		}
