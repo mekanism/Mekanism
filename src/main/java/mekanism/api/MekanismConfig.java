@@ -48,6 +48,7 @@ public class MekanismConfig
 		public static boolean destroyDisabledBlocks;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
+		public static boolean prefilledPortableTanks;
 	}
 
 	public static class client

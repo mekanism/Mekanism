@@ -563,14 +563,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					case PORTABLE_TANK:
 						list.add(new ItemStack(item, 1, type.meta));
 
-						ItemBlockMachine itemMachine = (ItemBlockMachine)item;
-
-						for(Fluid f : FluidRegistry.getRegisteredFluids().values())
+						if(general.prefilledPortableTanks)
 						{
-							ItemStack filled = new ItemStack(item, 1, type.meta);
-							itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
-							itemMachine.setPrevScale(filled, 1);
-							list.add(filled);
+							ItemBlockMachine itemMachine = (ItemBlockMachine)item;
+	
+							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
+							{
+								ItemStack filled = new ItemStack(item, 1, type.meta);
+								itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
+								itemMachine.setPrevScale(filled, 1);
+								list.add(filled);
+							}
 						}
 						
 						break;
