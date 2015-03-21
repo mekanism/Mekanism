@@ -113,6 +113,7 @@ public class MekanismItems
 		GameRegistry.registerItem(SpeedUpgrade, "SpeedUpgrade");
 		GameRegistry.registerItem(EnergyUpgrade, "EnergyUpgrade");
 		GameRegistry.registerItem(FilterUpgrade, "FilterUpgrade");
+		GameRegistry.registerItem(GasUpgrade, "GasUpgrade");
 		GameRegistry.registerItem(Robit, "Robit");
 		GameRegistry.registerItem(AtomicDisassembler, "AtomicDisassembler");
 		GameRegistry.registerItem(EnrichedAlloy, "EnrichedAlloy");

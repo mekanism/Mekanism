@@ -669,6 +669,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		clientActive = dataStream.readBoolean();
 		RecipeType oldRecipe = recipeType;
 		recipeType = RecipeType.values()[dataStream.readInt()];
+		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 
 		if(recipeType != oldRecipe)
 		{
@@ -716,6 +717,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		clientActive = isActive = nbtTags.getBoolean("isActive");
 		RecipeType oldRecipe = recipeType;
 		recipeType = RecipeType.values()[nbtTags.getInteger("recipeType")];
+		upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 
 		if(recipeType != oldRecipe)
 		{

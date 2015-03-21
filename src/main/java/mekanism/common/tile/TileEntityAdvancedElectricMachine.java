@@ -131,6 +131,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.ejectorComponent.tileEntity = factory;
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		factory.recipeType = type;
+		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
 		
 		//Advanced Machine
 		factory.gasTank.setGas(gasTank.getGas());

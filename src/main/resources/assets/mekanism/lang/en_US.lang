@@ -11,6 +11,7 @@ item.EnergyTablet.name=Energy Tablet
 item.SpeedUpgrade.name=Speed Upgrade
 item.EnergyUpgrade.name=Energy Upgrade
 item.FilterUpgrade.name=Filter Upgrade
+item.GasUpgrade.name=Gas Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomic Disassembler
 item.ElectricBow.name=Electric Bow
@@ -339,6 +340,8 @@ upgrade.speed=Speed
 upgrade.speed.desc=Increases speed of machinery.
 upgrade.filter=Filter
 upgrade.filter.desc=A filter that separates !nheavy water from regular water.
+upgrade.gas=Gas
+upgrade.gas.desc=Increases the efficiency !nof gas-using    machinery.
 
 //Key description text
 key.mode=Mode Switch

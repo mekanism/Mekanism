@@ -100,7 +100,8 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.ejectorComponent.tileEntity = factory;
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		factory.recipeType = type;
-		
+		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
+
 		factory.inventory[5] = inventory[0];
 		factory.inventory[1] = inventory[1];
 		factory.inventory[5+3] = inventory[2];
