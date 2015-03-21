@@ -23,6 +23,5 @@ public abstract class ChanceMachineRecipe<RECIPE extends ChanceMachineRecipe<REC
 		{
 			getOutput().applyOutputs(inventory, 2, 4, true);
 		}
-
 	}
 }

@@ -47,8 +47,10 @@ public class ItemStackInput extends MachineInput<ItemStackInput>
 			{
 				inventory[index] = StackUtils.subtract(inventory[index], ingredient);
 			}
+			
 			return true;
 		}
+		
 		return false;
 	}
 

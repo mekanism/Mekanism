@@ -63,7 +63,6 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 				{
 					inventory[primaryIndex] = primaryOutput.copy();
 				}
-				return true;
 			} 
 			else if(inventory[primaryIndex].isItemEqual(primaryOutput) && inventory[primaryIndex].stackSize + primaryOutput.stackSize <= inventory[primaryIndex].getMaxStackSize())
 			{
@@ -71,13 +70,12 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 				{
 					inventory[primaryIndex].stackSize += primaryOutput.stackSize;
 				}
-				
-				return true;
 			}
-			
-			return false;
+			else {
+				return false;
+			}
 		}
-
+		
 		if(hasSecondary() && (!doEmit || checkSecondary()))
 		{
 			if(inventory[secondaryIndex] == null)
@@ -98,8 +96,9 @@ public class ChanceOutput extends MachineOutput<ChanceOutput>
 				
 				return true;
 			}
-			
-			return false;
+			else {
+				return false;
+			}
 		}
 
 		return true;

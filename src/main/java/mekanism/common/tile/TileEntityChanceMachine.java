@@ -66,8 +66,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 				{
 					operatingTicks++;
 				}
-				else
-				{
+				else {
 					operate(recipe);
 
 					operatingTicks = 0;
