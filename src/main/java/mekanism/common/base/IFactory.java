@@ -201,7 +201,7 @@ public interface IFactory
 			return usesFuel;
 		}
 		
-		public boolean fuelSpeedUpgrade()
+		public boolean fuelEnergyUpgrades()
 		{
 			return fuelSpeed;
 		}

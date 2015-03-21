@@ -48,9 +48,12 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	/** How much secondary energy this machine uses per tick, including upgrades. */
 	public double secondaryEnergyPerTick;
 
-	public static int MAX_GAS = 200;
+	public int secondaryEnergyThisTick;
+
+	public static int MAX_GAS = 210;
 
 	public GasTank gasTank;
+	public Gas prevGas;
 
 	/**
 	 * Advanced Electric Machine -- a machine like this has a total of 4 slots. Input slot (0), fuel slot (1), output slot (2),
@@ -168,11 +171,13 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 			handleSecondaryFuel();
 
-			boolean changed = false;
+			boolean inactive = false;
 
 			RECIPE recipe = getRecipe();
 
-			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyPerTick)
+			secondaryEnergyThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int)Math.ceil(secondaryEnergyPerTick);
+
+			if(canOperate(recipe) && MekanismUtils.canFunction(this) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick)
 			{
 				setActive(true);
 
@@ -185,23 +190,24 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 					operatingTicks = 0;
 				}
 
-				gasTank.draw((int)secondaryEnergyPerTick, true);
+				gasTank.draw(secondaryEnergyThisTick, true);
 				electricityStored -= energyPerTick;
 			}
 			else {
-				if(prevEnergy >= getEnergy())
-				{
-					changed = true;
-					setActive(false);
-				}
+				inactive = true;
+				setActive(false);
 			}
 
-			if(changed && !canOperate(recipe) && getRecipe() == null)
+			if(inactive && getRecipe() == null)
 			{
 				operatingTicks = 0;
 			}
 
 			prevEnergy = getEnergy();
+			if(!(gasTank.getGasType() == null || gasTank.getStored() == 0))
+			{
+				prevGas = gasTank.getGasType();
+			}
 		}
 	}
 
@@ -266,26 +272,26 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	@Override
 	public AdvancedMachineInput getInput()
 	{
-		return new AdvancedMachineInput(inventory[0], gasTank.getGasType());
+		return new AdvancedMachineInput(inventory[0], prevGas);
 	}
 
 	@Override
 	public RECIPE getRecipe()
 	{
 		AdvancedMachineInput input = getInput();
-		
+
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getRecipe(input, getRecipes());
 		}
-		
+
 		return cachedRecipe;
 	}
 
 	@Override
 	public void operate(RECIPE recipe)
 	{
-		recipe.operate(inventory, 0, 2, gasTank, (int)secondaryEnergyPerTick);
+		recipe.operate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
 
 		markDirty();
 		ejectorComponent.onOutput();
@@ -294,7 +300,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 	@Override
 	public boolean canOperate(RECIPE recipe)
 	{
-		return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, (int)secondaryEnergyPerTick);
+		return recipe != null && recipe.canOperate(inventory, 0, 2, gasTank, secondaryEnergyThisTick);
 	}
 
 	@Override
@@ -335,6 +341,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		super.readFromNBT(nbtTags);
 
 		gasTank.read(nbtTags.getCompoundTag("gasTank"));
+		gasTank.setMaxGas(MAX_GAS);
 	}
 
 	@Override
@@ -407,19 +414,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 
 		if(upgrade == Upgrade.SPEED)
 		{
-			double secondaryToUse = BASE_SECONDARY_ENERGY_PER_TICK;
-
-			if(upgradeableSecondaryEfficiency())
-			{
-				secondaryToUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
-			}
-
-			secondaryEnergyPerTick = (int)Math.ceil(secondaryToUse);
-
-			if(useStatisticalMechanics())
-			{
-				secondaryEnergyPerTick = StatUtils.inversePoisson(secondaryToUse);
-			}
+			secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK, upgradeableSecondaryEfficiency());
 		}
 	}
 

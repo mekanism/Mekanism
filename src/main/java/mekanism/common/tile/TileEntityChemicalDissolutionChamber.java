@@ -45,7 +45,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public static final int BASE_INJECT_USAGE = 1;
 
-	public int injectUsage = 1;
+	public double injectUsage = 1;
+
+	public int injectUsageThisTick;
 
 	public int updateDelay;
 
@@ -121,7 +123,9 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			
 			DissolutionRecipe recipe = getRecipe();
 
-			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsage && MekanismUtils.canFunction(this))
+			injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
+
+			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this))
 			{
 				setActive(true);
 				setEnergy(getEnergy() - energyUsage);
@@ -249,7 +253,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 
 	public void minorOperate()
 	{
-		injectTank.draw(injectUsage, true);
+		injectTank.draw(injectUsageThisTick, true);
 	}
 
 	@Override
@@ -463,7 +467,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 		switch(upgrade)
 		{
 			case SPEED:
-				injectUsage = StatUtils.inversePoisson(MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE));
+				injectUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_INJECT_USAGE, true);
 				ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
 			case ENERGY:
 				energyUsage = MekanismUtils.getEnergyPerTick(this, BASE_ENERGY_USAGE);

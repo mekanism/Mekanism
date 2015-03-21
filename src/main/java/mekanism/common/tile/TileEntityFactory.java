@@ -80,6 +80,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	/** How much secondary energy each operation consumes per tick */
 	public double secondaryEnergyPerTick = 0;
 
+	public int secondaryEnergyThisTick;
+
 	/** How long it takes this factory to switch recipe types. */
 	public int RECIPE_TICKS_REQUIRED = 40;
 
@@ -317,14 +319,15 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				recipeTicks = 0;
 			}
 
+			secondaryEnergyThisTick = recipeType.fuelEnergyUpgrades() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int)Math.ceil(secondaryEnergyPerTick);
 			for(int process = 0; process < tier.processes; process++)
 			{
-				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyPerTick)
+				if(MekanismUtils.canFunction(this) && canOperate(getInputSlot(process), getOutputSlot(process)) && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick)
 				{
 					if((progress[process]+1) < ticksRequired)
 					{
 						progress[process]++;
-						gasTank.draw((int)secondaryEnergyPerTick, true);
+						gasTank.draw(secondaryEnergyThisTick, true);
 						electricityStored -= energyPerTick;
 					}
 					else if((progress[process]+1) >= ticksRequired)
@@ -332,14 +335,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 						operate(getInputSlot(process), getOutputSlot(process));
 
 						progress[process] = 0;
-						gasTank.draw((int)secondaryEnergyPerTick, true);
+						gasTank.draw(secondaryEnergyThisTick, true);
 						electricityStored -= energyPerTick;
 					}
 				}
 
 				if(!canOperate(getInputSlot(process), getOutputSlot(process)))
 				{
-					if(!recipeType.usesFuel() || !recipeType.hasRecipe(inventory[getInputSlot(process)]))
+					if(!(recipeType.usesFuel() && recipeType.hasRecipe(inventory[getInputSlot(process)])))
 					{
 						progress[process] = 0;
 					}
@@ -357,7 +360,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				}
 			}
 
-			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyPerTick)
+			if(MekanismUtils.canFunction(this) && hasOperation && getEnergy() >= energyPerTick && gasTank.getStored() >= secondaryEnergyThisTick)
 			{
 				setActive(true);
 			}
@@ -456,18 +459,9 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 	}
 
-	public int getSecondaryEnergyPerTick(RecipeType type)
+	public double getSecondaryEnergyPerTick(RecipeType type)
 	{
-		double secondaryToUse = type.getSecondaryEnergyPerTick();
-
-		if(type.fuelSpeedUpgrade())
-		{
-			secondaryToUse = MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick());
-			return StatUtils.inversePoisson(secondaryToUse);
-		}
-		else {
-			return (int)Math.ceil(secondaryToUse);
-		}
+		return MekanismUtils.getSecondaryEnergyPerTickMean(this, type.getSecondaryEnergyPerTick(), type.fuelEnergyUpgrades());
 	}
 
 	public void handleSecondaryFuel()
@@ -616,7 +610,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 				return false;
 			}
 
-			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, (int)secondaryEnergyPerTick);
+			return recipe.canOperate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
 
 		BasicMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot]);
@@ -640,7 +634,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		{
 			AdvancedMachineRecipe<?> recipe = recipeType.getRecipe(inventory[inputSlot], gasTank.getGasType());
 
-			recipe.operate(inventory, inputSlot, outputSlot, gasTank, (int)secondaryEnergyPerTick);
+			recipe.operate(inventory, inputSlot, outputSlot, gasTank, secondaryEnergyThisTick);
 		}
 		else
 		{
