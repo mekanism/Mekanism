@@ -31,8 +31,8 @@ public class UnitDisplayUtils
 	{
 		KELVIN("Kelvin", "K", 0, 1),
 		CELSIUS("Celsius", "°C", 273.15, 1),
-		RANKINE("Rankine", "R", 0, 5/9),
-		FAHRENHEIT("Fahrenheit", "°F", 459.67, 5/9),
+		RANKINE("Rankine", "R", 0, 9D/5D),
+		FAHRENHEIT("Fahrenheit", "°F", 459.67, 9D/5D),
 		AMBIENT("Ambient", "+STP", 300, 1);
 
 		public String name;
