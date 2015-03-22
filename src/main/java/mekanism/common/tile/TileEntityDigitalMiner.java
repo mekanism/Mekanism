@@ -441,7 +441,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 			if(stack != null)
 			{
-				if(!isReplaceStack(stack))
+				if(isReplaceStack(stack))
 				{
 					continue;
 				}
