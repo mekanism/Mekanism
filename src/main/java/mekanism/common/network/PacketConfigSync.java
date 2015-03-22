@@ -56,7 +56,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
-				dataStream.writeBoolean(machines.isEnabled(type));
+				dataStream.writeBoolean(machines.isEnabled(type.name));
 			}
 	
 			dataStream.writeDouble(usage.enrichmentChamberUsage);
@@ -123,7 +123,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
-				machines.setEntry(type, dataStream.readBoolean());
+				machines.setEntry(type.name, dataStream.readBoolean());
 			}
 	
 			usage.enrichmentChamberUsage = dataStream.readDouble();
