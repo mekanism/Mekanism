@@ -179,7 +179,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 			else {
 				if(prevEnergy >= getEnergy())
 				{
-					System.out.println("NO");
 					setActive(false);
 				}
 			}
