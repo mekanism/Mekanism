@@ -218,7 +218,10 @@ public class MekanismRecipe implements IRecipe
 					
 					for(Map.Entry<Upgrade, Integer> entry : stackMap.entrySet())
 					{
-						upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), upgrades.get(entry.getKey()) + entry.getValue()));
+						if(entry != null && entry.getKey() != null && entry.getValue() != null)
+						{
+							upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), upgrades.get(entry.getKey()) + entry.getValue()));
+						}
 					}
 				}
 			}
