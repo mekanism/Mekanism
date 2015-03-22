@@ -21,6 +21,11 @@ public class TileEntityInductionProvider extends TileEntityBasicBlock
 		return false;
 	}
 	
+	public String getInventoryName()
+	{
+		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + ".InductionProvider" + tier.getBaseTier().getName() + ".name");
+	}
+	
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{

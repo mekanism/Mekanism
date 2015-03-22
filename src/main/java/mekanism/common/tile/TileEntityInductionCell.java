@@ -24,6 +24,11 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 		return false;
 	}
 	
+	public String getInventoryName()
+	{
+		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + ".InductionCell" + tier.getBaseTier().getName() + ".name");
+	}
+	
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{

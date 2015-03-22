@@ -1203,9 +1203,14 @@ public class Mekanism
 		addRecipes();
 		addEntities();
 		
+		//Integrate certain OreDictionary recipes
 		registerOreDict();
 
+		//Set up multiparts
 		new MultipartMekanism();
+		
+		//Integrate with Waila
+		FMLInterModComms.sendMessage("Waila", "register", "mekanism.common.integration.WailaDataProvider.register");
 
 		//Packet registrations
 		packetHandler.initialize();
