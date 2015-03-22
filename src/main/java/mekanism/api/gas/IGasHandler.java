@@ -16,12 +16,18 @@ public interface IGasHandler
 	 */
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer);
 
+	@Deprecated
+	public int receiveGas(ForgeDirection side, GasStack stack);
+
 	/**
 	 * Draws a certain amount of gas from this block.
 	 * @param amount - amount to draw
 	 * @return gas drawn
 	 */
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer);
+
+	@Deprecated
+	public GasStack drawGas(ForgeDirection side, int amount);
 
 	/**
 	 * Whether or not this block can accept gas from a certain side.

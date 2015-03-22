@@ -162,9 +162,21 @@ public class TileEntityEntangledBlock extends TileEntityElectricBlock implements
 	}
 
 	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		return receiveGas(side, stack, true);
+	}
+
+	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		return sharedInventory == null ? null : sharedInventory.drawGas(side, amount, doTransfer);
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return drawGas(side, amount, true);
 	}
 
 	@Override

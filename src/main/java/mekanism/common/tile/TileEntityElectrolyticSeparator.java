@@ -692,6 +692,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	}
 
 	@Override
+	public int receiveGas(ForgeDirection side, GasStack stack)
+	{
+		return receiveGas(side, stack, true);
+	}
+
+	@Override
 	public GasStack drawGas(ForgeDirection side, int amount, boolean doTransfer)
 	{
 		if(side == MekanismUtils.getLeft(facing))
@@ -704,6 +710,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 
 		return null;
+	}
+
+	@Override
+	public GasStack drawGas(ForgeDirection side, int amount)
+	{
+		return drawGas(side, amount, true);
 	}
 
 	@Override

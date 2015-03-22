@@ -20,7 +20,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe> implements IGasHandler, ITubeConnection
+public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine<PurificationRecipe>
 {
 	public TileEntityPurificationChamber()
 	{
