@@ -48,6 +48,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public double invHeatCapacity = 1;
 
 	public double heatToAbsorb = 0;
+	
+	public double producingEnergy;
 
 	public TileEntityHeatGenerator()
 	{
@@ -122,6 +124,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 					}
 				}
 			}
+			
+			double prev = getEnergy();
 
 			transferHeatTo(getBoost());
 
@@ -135,8 +139,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			else {
 				setActive(false);
 			}
+			
 			simulateHeat();
 			applyTemperatureChange();
+			
+			producingEnergy = getEnergy()-prev;
 		}
 	}
 
@@ -203,21 +210,20 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		int lavaBoost = 0;
 		double netherBoost = 0D;
 
-		if(isLava(xCoord+1, yCoord, zCoord))
-			lavaBoost+=1;
-		if(isLava(xCoord-1, yCoord, zCoord))
-			lavaBoost+=1;
-		if(isLava(xCoord, yCoord+1, zCoord))
- 			lavaBoost+=1;
-		if(isLava(xCoord, yCoord-1, zCoord))
-  			lavaBoost+=1;
-		if(isLava(xCoord, yCoord, zCoord+1))
- 			lavaBoost+=1;
-		if(isLava(xCoord, yCoord, zCoord-1))
- 			lavaBoost+=1;
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			Coord4D coord = Coord4D.get(this).getFromSide(side);
+			
+			if(isLava(coord.xCoord, coord.yCoord, coord.zCoord))
+			{
+				lavaBoost++;
+			}
+		}
 
 		if(worldObj.provider.dimensionId == -1)
+		{
 			netherBoost = generators.heatGenerationNether;
+		}
 
 		return (generators.heatGenerationLava * lavaBoost) + netherBoost;
 	}
@@ -257,6 +263,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
+		producingEnergy = dataStream.readDouble();
 
 		int amount = dataStream.readInt();
 
@@ -273,6 +281,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
+		data.add(producingEnergy);
 
 		if(lavaTank.getFluid() != null)
 		{
@@ -412,6 +422,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 			transferHeatTo(-heatLost);
 			setEnergy(getEnergy() + workDone);
 		}
+		
 		return HeatUtils.simulate(this);
 	}
 
@@ -435,11 +446,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 		if(canConnectHeat(side))
 		{
 			TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+			
 			if(adj instanceof IHeatTransfer)
 			{
 				return (IHeatTransfer)adj;
 			}
 		}
+		
 		return null;
 	}
 }
