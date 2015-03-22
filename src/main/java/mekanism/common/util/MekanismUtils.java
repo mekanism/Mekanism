@@ -694,9 +694,14 @@ public final class MekanismUtils
 		return false;
 	}
 
+	/**
+	 * Notifies neighboring blocks of a TileEntity change without loading chunks.
+	 * @param world - world to perform the operation in
+	 * @param coord - Coord4D to perform the operation on
+	 */
 	public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord)
 	{
-		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
 		{
 			Coord4D offset = coord.getFromSide(dir);
 
@@ -704,9 +709,11 @@ public final class MekanismUtils
 			{
 				Block block1 = offset.getBlock(world);
 				block1.onNeighborChange(world, offset.xCoord, offset.yCoord, offset.zCoord, coord.xCoord, coord.yCoord, coord.zCoord);
+				
 				if(block1.isNormalCube(world, offset.xCoord, offset.yCoord, offset.zCoord))
 				{
 					offset = offset.getFromSide(dir);
+					
 					if(offset.exists(world))
 					{
 						block1 = offset.getBlock(world);
@@ -719,7 +726,6 @@ public final class MekanismUtils
 				}
 			}
 		}
-
 	}
 
 	/**
