@@ -46,6 +46,11 @@ public class ItemCrystal extends ItemMekanism
 	@Override
 	public String getUnlocalizedName(ItemStack item)
 	{
-		return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase() + "Crystal";
+		if(item.getItemDamage() <= Resource.values().length-1)
+		{
+			return "item." + Resource.values()[item.getItemDamage()].getName().toLowerCase() + "Crystal";
+		}
+		
+		return "Invalid";
 	}
 }
