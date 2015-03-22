@@ -38,6 +38,8 @@ public class MOreDictFilter extends MinerFilter
 	@Override
 	protected void read(NBTTagCompound nbtTags)
 	{
+		super.read(nbtTags);
+		
 		oreDictName = nbtTags.getString("oreDictName");
 	}
 
@@ -45,12 +47,17 @@ public class MOreDictFilter extends MinerFilter
 	public void write(ArrayList data)
 	{
 		data.add(1);
+		
+		super.write(data);
+		
 		data.add(oreDictName);
 	}
 
 	@Override
 	protected void read(ByteBuf dataStream)
 	{
+		super.read(dataStream);
+		
 		oreDictName = PacketHandler.readString(dataStream);
 	}
 
