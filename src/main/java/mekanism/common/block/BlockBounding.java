@@ -34,7 +34,10 @@ public class BlockBounding extends Block implements IPeripheralProvider
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) 
+	{
+		blockIcon = register.registerIcon(BlockBasic.ICON_BASE);
+	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int facing, float playerX, float playerY, float playerZ)

@@ -91,6 +91,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 	public IIcon[][] icons = new IIcon[16][6];
 
 	public CTMData[][] ctms = new CTMData[16][4];
+	
+	public static String ICON_BASE = "mekanism:SteelCasing";
 
 	public BasicBlock blockType;
 

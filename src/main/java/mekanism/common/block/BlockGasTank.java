@@ -44,7 +44,10 @@ public class BlockGasTank extends BlockContainer
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) 
+	{
+		blockIcon = register.registerIcon("mekanism:SteelCasing");
+	}
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack itemstack)

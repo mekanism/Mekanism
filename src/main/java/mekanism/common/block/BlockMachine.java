@@ -156,6 +156,8 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
 {
 	public IIcon[][] icons = new IIcon[16][16];
+	
+	public IIcon BASE_ICON;
 
 	public MachineBlock blockType;
 
@@ -172,21 +174,23 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register)
 	{
+		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
+		
 		switch(blockType)
 		{
 			case MACHINE_BLOCK_1:
 				icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
 				icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
-				icons[0][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[0][2] = BASE_ICON;
 				icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
 				icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
-				icons[1][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[1][2] = BASE_ICON;
 				icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
 				icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
-				icons[2][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[2][2] = BASE_ICON;
 				icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
 				icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
-				icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[3][2] = BASE_ICON;
 				icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
 				icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
 				icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
@@ -198,7 +202,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
 				icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
 				icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
-				icons[9][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[9][2] = BASE_ICON;
 				icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
 				icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
 				icons[10][2] = register.registerIcon("mekanism:SteelCasing");
@@ -207,14 +211,14 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 			case MACHINE_BLOCK_2:
 				icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
 				icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-				icons[3][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[3][2] = BASE_ICON;
 				icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
 				icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
-				icons[5][2] = register.registerIcon("mekanism:SteelCasing");
+				icons[5][2] = BASE_ICON;
 				break;
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
-				icons[2][0] = register.registerIcon("mekanism:SteelCasing");
+				icons[2][0] = BASE_ICON;
 				icons[3][0] = register.registerIcon("mekanism:OredictionificatorBack");
 				icons[3][1] = register.registerIcon("mekanism:OredictionificatorFront");
 				icons[3][2] = register.registerIcon("mekanism:OredictionificatorPort");
@@ -406,7 +410,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 							return icons[meta][1];
 						}
 					default:
-						return icons[11][0];
+						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
 			case MACHINE_BLOCK_2:
 				switch(meta)
@@ -421,13 +425,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 							return icons[meta][2];
 						}
 					default:
-						return icons[meta][0];
+						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
 			case MACHINE_BLOCK_3:
 				switch(meta)
 				{
-					default:
-						return icons[meta][0];
 					case 3:
 						if(side == 3)
 						{
@@ -444,9 +446,11 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						else {
 							return icons[3][3];
 						}
+					default:
+						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
 			default:
-				return null;
+				return BASE_ICON;
 		}
 	}
 
@@ -530,6 +534,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 						return icons[meta][0];
 				}
 		}
+		
 		return null;
 	}
 

@@ -56,8 +56,6 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
 public class BlockEnergyCube extends BlockContainer implements IPeripheralProvider
 {
-	public IIcon[][] icons = new IIcon[256][256];
-
 	public BlockEnergyCube()
 	{
 		super(Material.iron);
@@ -68,7 +66,10 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register) {}
+	public void registerBlockIcons(IIconRegister register) 
+	{
+		blockIcon = register.registerIcon(BlockBasic.ICON_BASE);
+	}
 
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, Block block)
