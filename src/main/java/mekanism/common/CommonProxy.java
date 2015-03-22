@@ -309,7 +309,7 @@ public class CommonProxy
 		
 		for(MachineType type : MachineType.getValidMachines())
 		{
-			machines.setEntry(type, Mekanism.configuration.get("machines", type.name + "Enabled", true).getBoolean(true));
+			machines.setEntry(type.name, Mekanism.configuration.get("machines", type.name + "Enabled", true).getBoolean(true));
 		}
 		
 		usage.enrichmentChamberUsage = Mekanism.configuration.get("usage", "EnrichmentChamberUsage", 50D).getDouble(50D);
@@ -546,7 +546,7 @@ public class CommonProxy
 	{
 		for(MachineType type : MachineType.getValidMachines())
 		{
-			if(machines.isEnabled(type))
+			if(machines.isEnabled(type.name))
 			{
 				CraftingManager.getInstance().getRecipeList().removeAll(type.getRecipes());
 				CraftingManager.getInstance().getRecipeList().addAll(type.getRecipes());

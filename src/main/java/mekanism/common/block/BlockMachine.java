@@ -1194,7 +1194,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		
 		public boolean isEnabled()
 		{
-			return machines.isEnabled(this);
+			return machines.isEnabled(this.name);
 		}
 		
 		public void addRecipes(Collection<MekanismRecipe> recipes)

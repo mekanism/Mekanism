@@ -62,7 +62,7 @@ public class FusionReactor implements IFusionReactor
 	public static double plasmaHeatCapacity = 100;
 	public static double caseHeatCapacity = 1;
 	public static double enthalpyOfVaporization = 10;
-	public static double thermocoupleEfficiency = 0.1;
+	public static double thermocoupleEfficiency = 0.05;
 	public static double steamTransferEfficiency = 0.1;
 
 	//Heat transfer metrics
@@ -85,7 +85,7 @@ public class FusionReactor implements IFusionReactor
 	@Override
 	public void addTemperatureFromEnergyInput(double energyAdded)
 	{
-		plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 100);
+		plasmaTemperature += energyAdded / plasmaHeatCapacity * (isBurning() ? 1 : 10);
 	}
 
 	public boolean hasHohlraum()

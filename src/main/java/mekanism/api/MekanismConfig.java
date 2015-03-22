@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.api.util.UnitDisplayUtils.TempType;
-import mekanism.common.block.BlockMachine.MachineType;
 
 public class MekanismConfig
 {
@@ -66,14 +65,14 @@ public class MekanismConfig
 	
 	public static class machines
 	{
-		private static Map<MachineType, Boolean> config = new HashMap<MachineType, Boolean>();
+		private static Map<String, Boolean> config = new HashMap<String, Boolean>();
 		
-		public static boolean isEnabled(MachineType type)
+		public static boolean isEnabled(String type)
 		{
 			return config.get(type) != null && config.get(type);
 		}
 		
-		public static void setEntry(MachineType type, boolean enabled)
+		public static void setEntry(String type, boolean enabled)
 		{
 			config.put(type, enabled);
 		}
