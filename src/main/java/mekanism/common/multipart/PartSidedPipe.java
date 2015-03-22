@@ -535,8 +535,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 					else {
 						onRedstoneJoin();
 					}
-	
-					tile().notifyTileChange();
+
+					notifyTileChange();
 				}
 			}
 		}
@@ -576,7 +576,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		
 		redstonePowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		refreshConnections();
-		tile().notifyTileChange();
+		notifyTileChange();
 	}
 	
 	@Override
@@ -706,8 +706,8 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			redstoneReactive ^= true;
 			refreshConnections();
-			tile().notifyTileChange();
-	
+			notifyTileChange();
+
 			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Redstone sensitivity turned " + EnumColor.INDIGO + (redstoneReactive ? "on." : "off.")));
 		}
 		
@@ -752,5 +752,10 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public boolean weakTileChanges() 
 	{
 		return false;
+	}
+
+	public void notifyTileChange()
+	{
+		MekanismUtils.notifyLoadedNeighborsOfTileChange(world(), Coord4D.get(tile()));
 	}
 }

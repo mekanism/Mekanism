@@ -694,6 +694,34 @@ public final class MekanismUtils
 		return false;
 	}
 
+	public static void notifyLoadedNeighborsOfTileChange(World world, Coord4D coord)
+	{
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+		{
+			Coord4D offset = coord.getFromSide(dir);
+
+			if(offset.exists(world))
+			{
+				Block block1 = offset.getBlock(world);
+				block1.onNeighborChange(world, offset.xCoord, offset.yCoord, offset.zCoord, coord.xCoord, coord.yCoord, coord.zCoord);
+				if(block1.isNormalCube(world, offset.xCoord, offset.yCoord, offset.zCoord))
+				{
+					offset = offset.getFromSide(dir);
+					if(offset.exists(world))
+					{
+						block1 = offset.getBlock(world);
+
+						if(block1.getWeakChanges(world, offset.xCoord, offset.yCoord, offset.zCoord))
+						{
+							block1.onNeighborChange(world, offset.xCoord, offset.yCoord, offset.zCoord, coord.xCoord, coord.yCoord, coord.zCoord);
+						}
+					}
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * Places a fake bounding block at the defined location.
 	 * @param world - world to place block in
