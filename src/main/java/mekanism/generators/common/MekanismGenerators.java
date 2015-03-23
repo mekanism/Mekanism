@@ -87,7 +87,7 @@ public class MekanismGenerators implements IModule
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && BuildcraftFuelRegistry.fuel != null)
+		if(FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null)
 		{
 			for(IFuel s : BuildcraftFuelRegistry.fuel.getFuels())
 			{

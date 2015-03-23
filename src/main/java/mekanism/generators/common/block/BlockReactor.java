@@ -175,7 +175,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 		if(entityplayer.getCurrentEquippedItem() != null)
 		{
-			if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && entityplayer.getCurrentEquippedItem().getItem() instanceof IToolWrench && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
+			if(MekanismUtils.isBCWrench(entityplayer.getCurrentEquippedItem().getItem()) && !entityplayer.getCurrentEquippedItem().getUnlocalizedName().contains("omniwrench"))
 			{
 				if(entityplayer.isSneaking())
 				{

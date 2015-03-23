@@ -617,7 +617,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return true;
 				}
 
-				if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool instanceof IToolWrench)
+				if(MekanismUtils.isBCWrench(tool))
 				{
 					((IToolWrench)tool).wrenchUsed(entityplayer, x, y, z);
 				}

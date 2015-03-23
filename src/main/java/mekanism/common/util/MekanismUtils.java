@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,8 @@ import cpw.mods.fml.common.registry.GameData;
 public final class MekanismUtils
 {
 	public static final ForgeDirection[] SIDE_DIRS = new ForgeDirection[] {ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.WEST, ForgeDirection.EAST};
+
+	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
 
 	/**
 	 * Checks for a new version of Mekanism.
@@ -1389,6 +1392,63 @@ public final class MekanismUtils
 		return Item.getIdFromItem(itemStack.getItem());
 	}
 
+	public static boolean classExists(String className)
+	{
+		if(classesFound.containsKey(className))
+		{
+			return classesFound.get(className) != null;
+		}
+
+		Class<?> found;
+
+		try
+		{
+			found = Class.forName(className);
+		}
+		catch(ClassNotFoundException e)
+		{
+			found = null;
+		}
+
+		classesFound.put(className, found);
+
+		return found != null;
+	}
+
+	public static boolean existsAndInstance(Object obj, String className)
+	{
+		Class<?> theClass;
+
+		if(classesFound.containsKey(className))
+		{
+			theClass = classesFound.get(className);
+		}
+		else
+		{
+			try
+			{
+				theClass = Class.forName(className);
+				classesFound.put(className, theClass);
+			} catch(ClassNotFoundException e)
+			{
+				classesFound.put(className, null);
+				return false;
+			}
+		}
+
+		return theClass != null && theClass.isInstance(obj);
+	}
+
+	public static boolean isBCWrench(Item tool)
+	{
+		return existsAndInstance(tool, "buildcraft.api.tools.IToolWrench");
+	}
+
+	public static boolean isCoFHHammer(Item tool)
+	{
+		return existsAndInstance(tool, "cofh.api.item.IToolHammer");
+	}
+
 	/**
 	 * Whether or not the player has a usable wrench for a block at the coordinates given.
 	 * @param player - the player using the wrench
@@ -1406,12 +1466,12 @@ public final class MekanismUtils
 			return true;
 		}
 		
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|tools") && tool.getItem() instanceof IToolWrench && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
+		if(isBCWrench(tool.getItem()) && ((IToolWrench)tool.getItem()).canWrench(player, x, y, z))
 		{
 			return true;
 		}
 		
-		if(ModAPIManager.INSTANCE.hasAPI("CoFHAPI") && tool.getItem() instanceof IToolHammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, x, y, z))
+		if(isCoFHHammer(tool.getItem()) && ((IToolHammer)tool.getItem()).isUsable(tool, player, x, y, z))
 		{
 			return true;
 		}

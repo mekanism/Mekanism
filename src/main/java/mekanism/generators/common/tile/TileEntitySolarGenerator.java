@@ -131,7 +131,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator
 		{
 			ret = GENERATION_RATE;
 
-			if(ModAPIManager.INSTANCE.hasAPI("Galacticraft API") && worldObj.provider instanceof ISolarLevel)
+			if(MekanismUtils.existsAndInstance(worldObj.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel"))
 			{
 				ret *= ((ISolarLevel)worldObj.provider).getSolarEnergyMultiplier();
 			}

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
+import mekanism.common.util.MekanismUtils;
 
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import cpw.mods.fml.common.ModAPIManager;
@@ -27,7 +28,7 @@ public class FuelHandler
 			return fuels.get(gas.getName());
 		}
 
-		if(ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && gas.hasFluid())
+		if(BCPresent() && gas.hasFluid())
 		{
 			IFuel bcFuel = BuildcraftFuelRegistry.fuel.getFuel(gas.getFluid());
 			
@@ -59,5 +60,10 @@ public class FuelHandler
 			burnTicks = bcFuel.getTotalBurningTime() / FluidContainerRegistry.BUCKET_VOLUME;
 			energyPerTick = bcFuel.getPowerPerCycle() * general.FROM_TE;
 		}
+	}
+
+	public static boolean BCPresent()
+	{
+		return ModAPIManager.INSTANCE.hasAPI("BuildCraftAPI|fuels") && MekanismUtils.classExists("buildcraft.api.fuels.BuildcraftFuelRegistry") && MekanismUtils.classExists("buildcraft.api.fuels.IFuel");
 	}
 }
