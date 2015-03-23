@@ -357,7 +357,7 @@ public class ClientTickHandler
 				final int max = 300;
 
 				tank.useGas(mc.thePlayer.getEquipmentInSlot(3));
-				GasStack received = tank.removeGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
+				GasStack received = tank.useGas(mc.thePlayer.getEquipmentInSlot(3), max-mc.thePlayer.getAir());
 
 				if(received != null)
 				{

@@ -102,7 +102,7 @@ public class CommonPlayerTickHandler
 			final int max = 300;
 			
 			tank.useGas(player.getEquipmentInSlot(3));
-			GasStack received = tank.removeGas(player.getEquipmentInSlot(3), max-player.getAir());
+			GasStack received = tank.useGas(player.getEquipmentInSlot(3), max-player.getAir());
 			
 			if(received != null)
 			{
