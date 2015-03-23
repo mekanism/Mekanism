@@ -34,6 +34,8 @@ public class Range4D
 		xMax = xMin+16;
 		yMax = 255;
 		zMax = zMin+16;
+		
+		dimensionId = chunk.dimensionId;
 	}
 	
 	public Range4D(Coord4D coord)
@@ -45,6 +47,8 @@ public class Range4D
 		xMax = coord.xCoord+1;
 		yMax = coord.yCoord+1;
 		zMax = coord.zCoord+1;
+		
+		dimensionId = coord.dimensionId;
 	}
 	
 	public static Range4D getChunkRange(EntityPlayer player)

@@ -575,6 +575,8 @@ tooltip.configurator.dim=dimension
 tooltip.configurator.setLink=Set link to block
 tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
 tooltip.configurator.inductionPortMode=Toggled Induction Port transfer mode to
+tooltip.configurator.toggleColor=Color bumped to
+tooltip.configurator.viewColor=Current color
 
 tooltip.upgrade.speed=Speed
 tooltip.upgrade.energy=Energy
