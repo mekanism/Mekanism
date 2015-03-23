@@ -387,7 +387,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		MinerFilter filter = replaceMap.get(index);
 		
-		if(filter.replaceStack == null)
+		if(filter == null || filter.replaceStack == null)
 		{
 			return null;
 		}

@@ -327,7 +327,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			for(ForgeDirection side : sides)
 			{
-				if(acceptor.canFill(side.getOpposite(), fluidToSend.getFluid()))
+				if(acceptor != null && acceptor.canFill(side.getOpposite(), fluidToSend.getFluid()))
 				{
 					toReturn.add(acceptor);
 					break;
