@@ -312,7 +312,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 			for(ForgeDirection side : sides)
 			{
-				if(acceptor.canReceiveGas(side.getOpposite(), type))
+				if(acceptor != null && acceptor.canReceiveGas(side.getOpposite(), type))
 				{
 					toReturn.add(acceptor);
 					break;
