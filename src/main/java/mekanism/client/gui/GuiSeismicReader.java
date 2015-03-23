@@ -225,8 +225,8 @@ public class GuiSeismicReader extends GuiScreen
 	{
 		for(int y = 0; y < pos.yCoord; y++)
 		{
-			Block block = worldObj.getBlock(pos.xCoord - 1, y, pos.zCoord - 1);
-			int metadata = worldObj.getBlockMetadata(pos.xCoord - 1, y, pos.zCoord - 1);
+			Block block = worldObj.getBlock(pos.xCoord, y, pos.zCoord);
+			int metadata = worldObj.getBlockMetadata(pos.xCoord, y, pos.zCoord);
 			
 			blockList.add(Pair.of(metadata, block));
 		}

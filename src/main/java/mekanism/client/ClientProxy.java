@@ -477,7 +477,7 @@ public class ClientProxy extends CommonProxy
 
 				if(itemStack1 != null && itemStack1.getItem() instanceof ItemSeismicReader)
 				{
-					return new GuiSeismicReader(world, new Coord4D(x, y, z, world.provider.dimensionId), itemStack1);
+					return new GuiSeismicReader(world, new Coord4D(player), itemStack1);
 				}
 			case 39:
 				return new GuiSeismicVibrator(player.inventory, (TileEntitySeismicVibrator)tileEntity);
