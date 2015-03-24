@@ -206,10 +206,10 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		switch(dataStream.readInt())
 		{
 			case 0:
-				minThreshold = dataStream.readDouble();
+				minThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
 				break;
 			case 1:
-				maxThreshold = dataStream.readDouble();
+				maxThreshold = Math.min(MAX_ENERGY, MekanismUtils.convertToJoules(dataStream.readDouble()));
 				break;
 			case 2:
 				time = dataStream.readInt();
