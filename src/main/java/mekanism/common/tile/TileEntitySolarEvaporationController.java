@@ -177,11 +177,11 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 				
 				if(structured)
 				{
-					inputTank.setCapacity(getMaxWater());
+					inputTank.setCapacity(getMaxFluid());
 					
 					if(inputTank.getFluid() != null)
 					{
-						inputTank.getFluid().amount = Math.min(inputTank.getFluid().amount, getMaxWater());
+						inputTank.getFluid().amount = Math.min(inputTank.getFluid().amount, getMaxFluid());
 					}
 					
 					temperature = Math.min(getMaxTemperature(), getTemperature());
@@ -259,9 +259,9 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			{
 				FluidStack itemFluid = FluidContainerRegistry.getFluidForFilledItem(inventory[0]);
 				
-				if((inputTank.getFluid() == null && itemFluid.amount <= getMaxWater()) || inputTank.getFluid().amount+itemFluid.amount <= getMaxWater())
+				if((inputTank.getFluid() == null && itemFluid.amount <= getMaxFluid()) || inputTank.getFluid().amount+itemFluid.amount <= getMaxFluid())
 				{
-					if(itemFluid.getFluid() != FluidRegistry.WATER || (inputTank.getFluid() != null && !inputTank.getFluid().isFluidEqual(itemFluid)))
+					if(!hasRecipe(itemFluid.getFluid()) || (inputTank.getFluid() != null && !inputTank.getFluid().isFluidEqual(itemFluid)))
 					{
 						return;
 					}
@@ -460,7 +460,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		return true;
 	}
 	
-	public int getMaxWater()
+	public int getMaxFluid()
 	{
 		return height*4*TankUpdateProtocol.FLUID_PER_TANK;
 	}
@@ -622,7 +622,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 	
 	public int getScaledInputLevel(int i)
 	{
-		return getMaxWater() > 0 ? (inputTank.getFluid() != null ? inputTank.getFluid().amount*i / getMaxWater() : 0) : 0;
+		return getMaxFluid() > 0 ? (inputTank.getFluid() != null ? inputTank.getFluid().amount*i / getMaxFluid() : 0) : 0;
 	}
 	
 	public int getScaledOutputLevel(int i)
@@ -685,7 +685,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		if(structured != prev)
 		{
-			inputTank.setCapacity(getMaxWater());
+			inputTank.setCapacity(getMaxFluid());
 			worldObj.func_147479_m(xCoord, yCoord, zCoord);
 			
 			if(structured)
