@@ -291,19 +291,23 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.GasTank)
 		{
+			GL11.glPushMatrix();
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasTank.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			gasTank.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(Block.getBlockFromItem(item.getItem()) == MekanismBlocks.ObsidianTNT)
 		{
+			GL11.glPushMatrix();
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ObsidianTNT.png"));
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(180F, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			obsidianTNT.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemWalkieTalkie)
 		{
@@ -321,6 +325,7 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(MachineType.get(item) == MachineType.ELECTRIC_CHEST)
 		{
+			GL11.glPushMatrix();
 			ItemBlockMachine chest = (ItemBlockMachine)item.getItem();
 
 			GL11.glRotatef(90F, 0.0F, 1.0F, 0.0F);
@@ -331,59 +336,74 @@ public class ItemRenderingHandler implements IItemRenderer
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ElectricChest.png"));
 
 			electricChest.renderAll();
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemRobit)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.0F, -1.5F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Robit.png"));
 			robit.render(0.08F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() == MekanismItems.Jetpack)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
 			jetpack.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() == MekanismItems.ArmoredJetpack)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.2F, -0.35F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "Jetpack.png"));
 			armoredJetpack.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemGasMask)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glTranslatef(0.1F, 0.2F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			gasMask.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemScubaTank)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glScalef(1.6F, 1.6F, 1.6F);
 			GL11.glTranslatef(0.2F, -0.5F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "ScubaSet.png"));
 			scubaTank.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemFreeRunners)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(180, 0.0F, 0.0F, 1.0F);
 			GL11.glRotatef(90, 0.0F, -1.0F, 0.0F);
 			GL11.glScalef(2.0F, 2.0F, 2.0F);
 			GL11.glTranslatef(0.2F, -1.43F, 0.12F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "FreeRunners.png"));
 			freeRunners.render(0.0625F);
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemBalloon)
 		{
+			GL11.glPushMatrix();
+			
 			if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON)
 			{
 				GL11.glScalef(2.5F, 2.5F, 2.5F);
@@ -394,6 +414,8 @@ public class ItemRenderingHandler implements IItemRenderer
 			else {
 				balloonRenderer.render(((ItemBalloon)item.getItem()).getColor(item), 0, 1, 0);
 			}
+			
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemAtomicDisassembler)
 		{
@@ -426,15 +448,18 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(item.getItem() instanceof ItemPartTransmitter)
 		{
+			GL11.glPushMatrix();
 			GL11.glTranslated(-0.5, -0.5, -0.5);
 			MekanismRenderer.blendOn();
 			GL11.glDisable(GL11.GL_CULL_FACE);
 			RenderPartTransmitter.getInstance().renderItem(TransmitterType.values()[item.getItemDamage()]);
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			MekanismRenderer.blendOff();
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemGlowPanel)
 		{
+			GL11.glPushMatrix();
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			GL11.glTranslated(-0.5, -0.5, -0.5);
 			double d = 0.15;
@@ -446,6 +471,7 @@ public class ItemRenderingHandler implements IItemRenderer
 			RenderGlowPanel.getInstance().renderItem(item.getItemDamage());
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glPopAttrib();
+			GL11.glPopMatrix();
 		}
 		else if(item.getItem() instanceof ItemFlamethrower)
 		{
@@ -481,12 +507,14 @@ public class ItemRenderingHandler implements IItemRenderer
 		}
 		else if(MachineType.get(item) == MachineType.PORTABLE_TANK)
 		{
+			GL11.glPushMatrix();
 			GL11.glRotatef(270F, 0.0F, -1.0F, 0.0F);
 			Minecraft.getMinecraft().renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "PortableTank.png"));
 			
 			ItemBlockMachine itemMachine = (ItemBlockMachine)item.getItem();
 			Fluid fluid = itemMachine.getFluidStack(item) != null ? itemMachine.getFluidStack(item).getFluid() : null;
 			portableTankRenderer.render(fluid, itemMachine.getPrevScale(item), false, null, -0.5, -0.5, -0.5);
+			GL11.glPopMatrix();
 		}
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)
