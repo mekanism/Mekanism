@@ -43,7 +43,10 @@ public class TileComponentConfig implements ITileComponent
 	
 	public void addSupported(TransmissionType type)
 	{
-		transmissions.add(type);
+		if(!transmissions.contains(type))
+		{
+			transmissions.add(type);
+		}
 		
 		sideOutputs.put(type.ordinal(), new ArrayList<SideData>());
 		ejecting.put(type.ordinal(), false);
