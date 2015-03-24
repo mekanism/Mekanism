@@ -21,7 +21,8 @@ public class RecipeInputItemStack implements IRecipeInput {
 
 	@Override
 	public boolean matches(ItemStack subject) {
-		return subject.getItem() == input.getItem() && (subject.getItemDamage() == input.getItemDamage() || input.getItemDamage() == OreDictionary.WILDCARD_VALUE);
+		return subject.getItem() == input.getItem() &&
+				(subject.getItemDamage() == input.getItemDamage() || input.getItemDamage() == OreDictionary.WILDCARD_VALUE);
 	}
 
 	@Override

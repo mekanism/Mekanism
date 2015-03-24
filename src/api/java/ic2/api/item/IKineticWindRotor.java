@@ -1,15 +1,16 @@
 package ic2.api.item;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public interface IKineticWindRotor {
-	public int getDiameter();
+	int getDiameter(ItemStack stack);
 
-	public ResourceLocation getRotorRenderTexture();
+	ResourceLocation getRotorRenderTexture(ItemStack stack);
 
-	public float getefficiency();
+	float getEfficiency(ItemStack stack);
 
-	int getminWindStrength();
+	int getMinWindStrength(ItemStack stack);
 
-	int getmaxWindStrength();
+	int getMaxWindStrength(ItemStack stack);
 }

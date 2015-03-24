@@ -82,58 +82,59 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 				cacheEnergy = 0;
 			}
 
-				List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
-				
-				if(!sides.isEmpty())
+			List<ForgeDirection> sides = getConnections(ConnectionType.PULL);
+			
+			if(!sides.isEmpty())
+			{
+				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
+
+				for(ForgeDirection side : sides)
 				{
-					TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
-
-					for(ForgeDirection side : sides)
+					if(connectedOutputters[side.ordinal()] != null)
 					{
-						if(connectedOutputters[side.ordinal()] != null)
+						TileEntity outputter = connectedOutputters[side.ordinal()];
+
+						if(outputter instanceof ICableOutputter && outputter instanceof IStrictEnergyStorage)
 						{
-							TileEntity outputter = connectedOutputters[side.ordinal()];
-
-							if(outputter instanceof ICableOutputter && outputter instanceof IStrictEnergyStorage)
+							if(((ICableOutputter)outputter).canOutputTo(side.getOpposite()))
 							{
-								if(((ICableOutputter)outputter).canOutputTo(side.getOpposite()))
-								{
-									double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), drawAmount);
-									double toDraw = received;
-
-									if(received > 0)
-									{
-										toDraw -= getTransmitterNetwork().emit(received, true);
-									}
-									((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
-								}
-							}
-							else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
-							{
-								double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)drawAmount, true) * general.FROM_TE;
+								double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), drawAmount);
 								double toDraw = received;
 
 								if(received > 0)
 								{
 									toDraw -= getTransmitterNetwork().emit(received, true);
 								}
-
-								((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)toDraw, false);
+								((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
 							}
-							else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
+						}
+						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
+						{
+							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)drawAmount, true) * general.FROM_TE;
+							double toDraw = received;
+
+							if(received > 0)
 							{
-								double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, drawAmount);
-								double toDraw = received;
-
-								if(received > 0)
-								{
-									toDraw -= getTransmitterNetwork().emit(received, true);
-								}
-								((IEnergySource)outputter).drawEnergy(toDraw * general.TO_IC2);
+								toDraw -= getTransmitterNetwork().emit(received, true);
 							}
+
+							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)toDraw, false);
+						}
+						else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
+						{
+							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, drawAmount);
+							double toDraw = received;
+
+							if(received > 0)
+							{
+								toDraw -= getTransmitterNetwork().emit(received, true);
+							}
+							
+							((IEnergySource)outputter).drawEnergy(toDraw * general.TO_IC2);
 						}
 					}
 				}
+			}
 		}
 
 		super.update();

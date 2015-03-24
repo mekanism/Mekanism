@@ -8,7 +8,7 @@ import ic2.api.energy.tile.IEnergyTile;
 
 /**
  * Base class for energy net events, don't use it directly.
- * 
+ *
  * See ic2/api/energy/usage.txt for an overall description of the energy net api.
  */
 public class EnergyTileEvent extends WorldEvent {
@@ -16,6 +16,8 @@ public class EnergyTileEvent extends WorldEvent {
 
 	public EnergyTileEvent(IEnergyTile energyTile1) {
 		super(((TileEntity) energyTile1).getWorldObj());
+
+		if (world == null) throw new NullPointerException("world is null");
 
 		this.energyTile = energyTile1;
 	}

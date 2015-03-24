@@ -5,8 +5,54 @@ package ic2.api.crops;
  */
 public class BaseSeed {
 	/**
-	 * Plant ID.
+	 * Create a BaseSeed object.
+	 *
+	 * @param crop plant
+	 * @param size plant size
+	 * @param statGrowth1 plant growth stat
+	 * @param statGain1 plant gain stat
+	 * @param statResistance1 plant resistance stat
+	 * @param stackSize1 for internal usage only
 	 */
+	@SuppressWarnings("deprecation")
+	public BaseSeed(CropCard crop, int size, int statGrowth, int statGain, int statResistance, int stackSize) {
+		super();
+		this.crop = crop;
+		this.id = Crops.instance.getIdFor(crop);
+		this.size = size;
+		this.statGrowth = statGrowth;
+		this.statGain = statGain;
+		this.statResistance = statResistance;
+		this.stackSize = stackSize;
+	}
+
+	/**
+	 * @deprecated Use the CropCard version.
+	 */
+	@Deprecated
+	public BaseSeed(int id, int size, int statGrowth, int statGain, int statResistance, int stackSize) {
+		this(getCropFromId(id), size, statGrowth, statGain, statResistance, stackSize);
+	}
+
+	@SuppressWarnings("deprecation")
+	private static CropCard getCropFromId(int id) {
+		CropCard[] crops = Crops.instance.getCropList();
+
+		if (id < 0 || id >= crops.length) return null;
+
+		return crops[id];
+	}
+
+
+	/**
+	 * Plant.
+	 */
+	public final CropCard crop;
+
+	/**
+	 * @deprecated IDs aren't used anymore.
+	 */
+	@Deprecated
 	public int id;
 
 	/**
@@ -33,24 +79,4 @@ public class BaseSeed {
 	 * For internal usage only.
 	 */
 	public int stackSize;
-
-	/**
-	 * Create a BaseSeed object.
-	 * 
-	 * @param id1 plant ID
-	 * @param size1 plant size
-	 * @param statGrowth1 plant growth stat
-	 * @param statGain1 plant gain stat
-	 * @param statResistance1 plant resistance stat
-	 * @param stackSize1 for internal usage only
-	 */
-	public BaseSeed(int id1, int size1, int statGrowth1, int statGain1, int statResistance1, int stackSize1) {
-		super();
-		this.id = id1;
-		this.size = size1;
-		this.statGrowth = statGrowth1;
-		this.statGain = statGain1;
-		this.statResistance = statResistance1;
-		this.stackSize = stackSize1;
-	}
 }
