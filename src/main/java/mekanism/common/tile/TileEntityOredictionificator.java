@@ -39,7 +39,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public HashList<OredictionificatorFilter> filters = new HashList<OredictionificatorFilter>();
 	
-	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust");
+	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -86,7 +86,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						inventory[1] = result;
 						didProcess = true;
 					}
-					else if(inventory[0].isItemEqual(result) && inventory[0].stackSize < inventory[0].getMaxStackSize())
+					else if(inventory[1].isItemEqual(result) && inventory[1].stackSize < inventory[1].getMaxStackSize())
 					{
 						inventory[0].stackSize--;
 						
