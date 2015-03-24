@@ -111,7 +111,7 @@ public class ModelWindTurbine extends ModelBase
 		setRotation(BladeBaseA, 0F, 0F, getRotation(240));
 	}
 
-	public void render(float size, int angle)
+	public void render(float size, double angle)
 	{
 		Base.render(size);
 		TowerFront.render(size);
@@ -132,12 +132,12 @@ public class ModelWindTurbine extends ModelBase
 		BladeBaseA.render(size);
 	}
 
-	public float getRotation(int angle)
+	public float getRotation(double angle)
 	{
 		return ((float)angle/(float)180)*(float)Math.PI;
 	}
 
-	public int getAbsoluteAngle(int angle)
+	public double getAbsoluteAngle(double angle)
 	{
 		return angle % 360;
 	}

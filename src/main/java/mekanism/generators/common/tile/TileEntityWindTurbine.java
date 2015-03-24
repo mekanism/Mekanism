@@ -19,7 +19,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 public class TileEntityWindTurbine extends TileEntityGenerator implements IBoundingBlock
 {
 	/** The angle the blades of this Wind Turbine are currently at. */
-	public int angle;
+	public double angle;
 
 	public TileEntityWindTurbine()
 	{
