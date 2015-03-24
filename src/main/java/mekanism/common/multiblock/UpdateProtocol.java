@@ -194,12 +194,15 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 				structure.minLocation = Coord4D.get(tile).translate(xmin, ymin, zmin);
 				structure.maxLocation = Coord4D.get(tile).translate(xmax, ymax, zmax);
 				
-				onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
-
-				if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
+				if(structure.volLength >= 3 && structure.volHeight >= 3 && structure.volWidth >= 3)
 				{
-					structureFound = structure;
-					return;
+					onStructureCreated(structure, origX, origY, origZ, xmin, xmax, ymin, ymax, zmin, zmax);
+	
+					if(structure.locations.contains(Coord4D.get(pointer)) && isCorrectCorner(Coord4D.get(tile), origX+xmin, origY+ymin, origZ+zmin))
+					{
+						structureFound = structure;
+						return;
+					}
 				}
 			}
 		}
