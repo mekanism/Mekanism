@@ -71,7 +71,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 			public List<String> getInfo()
 			{
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyUsage);
-				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
@@ -116,7 +116,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 				
 				if(recipe == null)
 				{
-					fontRendererObj.drawString("(No recipe)", 29, 24, 0x00CD00);
+					fontRendererObj.drawString("(" + MekanismUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
 				}
 				else {
 					fontRendererObj.drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);

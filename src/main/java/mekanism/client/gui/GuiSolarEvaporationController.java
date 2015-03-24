@@ -8,13 +8,13 @@ import mekanism.common.tile.TileEntitySolarEvaporationController;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiSolarEvaporationController extends GuiMekanism
@@ -37,9 +37,9 @@ public class GuiSolarEvaporationController extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
 
 		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
-		fontRendererObj.drawString("Height: " + tileEntity.height, 50, 30, 0x00CD00);
-		fontRendererObj.drawString("Mult: " + getTempMult(), 50, 39, 0x00CD00);
-		fontRendererObj.drawString("Max: " + getMaxTemp(), 50, 48, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.height") + ": " + tileEntity.height, 50, 30, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.mult") + ": " + getTempMult(), 50, 39, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.max") + ": " + getMaxTemp(), 50, 48, 0x00CD00);
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
@@ -63,15 +63,15 @@ public class GuiSolarEvaporationController extends GuiMekanism
 	{
 		if(tileEntity.structured)
 		{
-			return "Structured";
+			return MekanismUtils.localize("gui.formed");
 		}
 		else {
 			if(tileEntity.controllerConflict)
 			{
-				return "Conflict";
+				return MekanismUtils.localize("gui.conflict");
 			}
 			else {
-				return "Incomplete";
+				return MekanismUtils.localize("gui.incomplete");
 			}
 		}
 	}

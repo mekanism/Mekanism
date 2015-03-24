@@ -443,6 +443,19 @@ gui.set=Set
 gui.freq=Freq
 gui.security=Security
 gui.index=Index
+gui.producing=Producing
+gui.maxOutput=Max Output
+gui.storing=Storing
+gui.skyBlocked=Sky blocked
+gui.using=Using
+gui.needed=Needed
+gui.noRecipe=No recipe
+gui.conflict=Conflict
+gui.height=Height
+gui.mult=Mult
+gui.chunk=Chunk
+gui.vibrating
+gui.abundancy=Abundancy
 
 gui.reactor.injectionRate=Injection Rate
 

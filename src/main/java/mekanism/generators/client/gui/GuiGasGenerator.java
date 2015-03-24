@@ -40,9 +40,9 @@ public class GuiGasGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate) + "/t",
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						MekanismUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.generationRate) + "/t",
+						MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						MekanismUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiGasGenerator.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {

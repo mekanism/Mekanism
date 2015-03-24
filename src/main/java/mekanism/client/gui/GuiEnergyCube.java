@@ -45,8 +45,8 @@ public class GuiEnergyCube extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						MekanismUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png")));
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiEnergyCube.png"), 16, 34).with(SlotOverlay.MINUS));

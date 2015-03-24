@@ -16,6 +16,7 @@ import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationUpdateMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -118,7 +119,7 @@ public class GuiTransporterConfig extends GuiMekanism
 
 		String text = MekanismUtils.localize("gui.configuration.transporter");
 		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 5, 0x404040);
-		text = MekanismUtils.localize("gui.strictInput") + " (" + (configurable.getEjector().hasStrictInput() ? "On" : "Off") + ")";
+		text = MekanismUtils.localize("gui.strictInput") + " (" + LangUtils.transOnOff(configurable.getEjector().hasStrictInput()) + ")";
 		renderScaledText(text, 53, 17, 0x00CD00, 70);
 		
 		fontRendererObj.drawString(MekanismUtils.localize("gui.input"), 48, 81, 0x787878);

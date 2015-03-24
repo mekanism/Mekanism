@@ -42,9 +42,9 @@ public class GuiHeatGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.producingEnergy) + "/t",
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						MekanismUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.producingEnergy) + "/t",
+						MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						MekanismUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiHeatGenerator.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {

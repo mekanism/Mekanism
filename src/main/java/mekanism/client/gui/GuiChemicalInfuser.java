@@ -55,7 +55,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 				}
 				
 				String multiplier = MekanismUtils.getEnergyDisplay(usage);
-				return ListUtils.asList("Using: " + multiplier + "/t", "Needed: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this,  MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {

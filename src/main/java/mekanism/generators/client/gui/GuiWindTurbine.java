@@ -42,9 +42,9 @@ public class GuiWindTurbine extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.getMultiplier() : 0) + "/t",
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Max Output: " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
+						MekanismUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.windGenerationMin*tileEntity.getMultiplier() : 0) + "/t",
+						MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						MekanismUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png")));
 		guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiWindTurbine.png"), 164, 15));
@@ -67,7 +67,7 @@ public class GuiWindTurbine extends GuiMekanism
 		if(!tileEntity.getWorldObj().canBlockSeeTheSky(tileEntity.xCoord, tileEntity.yCoord+4, tileEntity.zCoord))
 		{
 			size += 9;
-			fontRendererObj.drawString(EnumColor.DARK_RED + "Sky blocked", 51, size, 0x00CD00);
+			fontRendererObj.drawString(EnumColor.DARK_RED + MekanismUtils.localize("gui.skyBlocked"), 51, size, 0x00CD00);
 		}
 	}
 

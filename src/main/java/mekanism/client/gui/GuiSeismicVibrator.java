@@ -39,8 +39,8 @@ public class GuiSeismicVibrator extends GuiMekanism
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 		
-		fontRendererObj.drawString(tileEntity.isActive ? "Vibrating" : "Idle", 19, 26, 0x00CD00);
-		fontRendererObj.drawString("Chunk: " + (tileEntity.xCoord >> 4) + ", " + (tileEntity.zCoord >> 4), 19, 35, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.isActive ? MekanismUtils.localize("gui.vibrating") : MekanismUtils.localize("gui.idle"), 19, 26, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.chunk") + ": " + (tileEntity.xCoord >> 4) + ", " + (tileEntity.zCoord >> 4), 19, 35, 0x00CD00);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

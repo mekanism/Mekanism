@@ -193,7 +193,7 @@ public class GuiSeismicReader extends GuiScreen
 		GL11.glPushMatrix();
 		GL11.glTranslatef(guiWidth + 72, guiHeight + 26, 0);
 		GL11.glScalef(0.70f, 0.70f, 0.70f);
-		fontRendererObj.drawString(String.format("Abundancy: %s", frequency), 0, 0, 0x919191);
+		fontRendererObj.drawString(MekanismUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
 		GL11.glPopMatrix();
 		super.drawScreen(mouseX, mouseY, partialTick);
 	}

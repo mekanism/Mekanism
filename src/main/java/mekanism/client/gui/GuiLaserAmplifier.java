@@ -59,7 +59,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			@Override
 			public String getText(double level)
 			{
-				return "Stored: " + MekanismUtils.getEnergyDisplay(level);
+				return MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(level);
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));

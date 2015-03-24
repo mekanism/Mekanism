@@ -51,8 +51,8 @@ public class GuiReactorHeat extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return tileEntity.isFormed() ? ListUtils.asList(
-						"Storing: " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						"Producing: " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
+						MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						MekanismUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()
