@@ -1213,6 +1213,21 @@ public final class MekanismUtils
 				return energy;
 		}
 	}
+	
+	public static double convertToDisplay(double energy)
+	{
+		switch(general.activeType)
+		{
+			case RF:
+				return energy * general.TO_TE;
+			case EU:
+				return energy * general.TO_IC2;
+			case MJ:
+				return energy * general.TO_TE / 10;
+			default:
+				return energy;
+		}
+	}
 
 	/**
 	 * Gets a rounded energy display of a defined amount of energy.
