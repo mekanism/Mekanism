@@ -36,7 +36,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityContainerBlock im
 	public GasTank outputTank = new GasTank(MAX_GAS);
 	
 	public static final int MAX_GAS = 10000;
-	public static final int TICKS_REQUIRED = 20;
+	public static final int TICKS_REQUIRED = 5;
 	
 	public int updateDelay;
 	

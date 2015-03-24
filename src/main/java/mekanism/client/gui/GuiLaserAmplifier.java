@@ -155,12 +155,9 @@ public class GuiLaserAmplifier extends GuiMekanism
 		{
 			double toUse;
 
-			try
-			{
+			try {
 				toUse = Math.max(0, Double.parseDouble(minField.getText()));
-			}
-			catch(Exception e)
-			{
+			} catch(Exception e) {
 				minField.setText("");
 				return;
 			}
@@ -181,12 +178,9 @@ public class GuiLaserAmplifier extends GuiMekanism
 		{
 			double toUse;
 
-			try
-			{
+			try {
 				toUse = Math.max(0, Double.parseDouble(maxField.getText()));
-			}
-			catch(Exception e)
-			{
+			} catch(Exception e) {
 				maxField.setText("");
 				return;
 			}
