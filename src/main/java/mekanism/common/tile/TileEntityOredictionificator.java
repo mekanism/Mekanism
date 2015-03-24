@@ -9,14 +9,21 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.IFilterAccess;
 import mekanism.api.Range4D;
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.InfusionInput;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -142,6 +149,39 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		if(side == MekanismUtils.getLeft(facing).ordinal())
+		{
+			return new int[] {0};
+		}
+		else if(side == MekanismUtils.getRight(facing).ordinal())
+		{
+			return new int[] {1};
+		}
+		else {
+			return InventoryUtils.EMPTY;
+		}
+	}
+
+	@Override
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	{
+		return slotID == 1;
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return getResult(itemstack) != null;
+		}
+
+		return false;
 	}
 	
 	@Override
