@@ -1199,6 +1199,11 @@ public final class MekanismUtils
 		return "error";
 	}
 	
+	/**
+	 * Convert from the unit defined in the configuration to joules.
+	 * @param energy - energy to convert
+	 * @return energy converted to joules
+	 */
 	public static double convertToJoules(double energy)
 	{
 		switch(general.activeType)
@@ -1214,6 +1219,11 @@ public final class MekanismUtils
 		}
 	}
 	
+	/**
+	 * Convert from joules to the unit defined in the configuration.
+	 * @param energy - energy to convert
+	 * @return energy converted to configured unit
+	 */
 	public static double convertToDisplay(double energy)
 	{
 		switch(general.activeType)
