@@ -204,7 +204,7 @@ public final class TransporterPathfinder
 	}
 
 	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, int min)
-	{		
+	{
 		InventoryNetwork network = start.getTransmitterNetwork();
 		List<AcceptorData> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
 		List<Destination> paths = new ArrayList<Destination>();

@@ -407,7 +407,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 		stack.originalLocation = original;
 		stack.homeLocation = original;
 		stack.color = color;
-
+		
 		if((force && !canReceiveFrom(original.getTileEntity(world()), from)) || !stack.canInsertToTransporter(tile(), from))
 		{
 			return itemStack;

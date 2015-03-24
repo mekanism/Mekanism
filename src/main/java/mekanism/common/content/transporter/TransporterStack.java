@@ -286,10 +286,9 @@ public class TransporterStack
 			return false;
 		}
 
-		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.getWorldObj());
 		ILogisticalTransporter transporter = (ILogisticalTransporter)tileEntity;
 
-		if(!transporter.canConnectMutual(side.getOpposite()))
+		if(!transporter.canConnectMutual(side))
 		{
 			return false;
 		}

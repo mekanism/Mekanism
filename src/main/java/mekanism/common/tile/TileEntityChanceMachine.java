@@ -147,10 +147,12 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 	public RECIPE getRecipe()
 	{
 		ItemStackInput input = getInput();
+		
 		if(cachedRecipe == null || !input.testEquality(cachedRecipe.getInput()))
 		{
 			cachedRecipe = RecipeHandler.getChanceRecipe(input, getRecipes());
 		}
+		
 		return cachedRecipe;
 	}
 
