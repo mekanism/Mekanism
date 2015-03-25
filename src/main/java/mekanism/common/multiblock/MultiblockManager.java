@@ -8,7 +8,6 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;

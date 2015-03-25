@@ -79,6 +79,15 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		{
 			EnumSet set = EnumSet.allOf(ForgeDirection.class);
 			set.remove(ForgeDirection.UNKNOWN);
+			
+			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				if(structure.locations.contains(Coord4D.get(this).getFromSide(side)))
+				{
+					set.remove(side);
+				}
+			}
+			
 			return set;
 		}
 		
@@ -213,16 +222,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 		super.writeToNBT(nbtTags);
 
 		nbtTags.setBoolean("mode", mode);
-	}
-
-	/**
-	 * Gets the scaled energy level for the GUI.
-	 * @param i - multiplier
-	 * @return scaled energy
-	 */
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(getEnergy()*i / getMaxEnergy());
 	}
 
 	@Override
