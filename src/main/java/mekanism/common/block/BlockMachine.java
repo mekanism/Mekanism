@@ -225,7 +225,6 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				icons[3][3] = register.registerIcon("mekanism:OredictionificatorSide");
 				break;
 		}
-
 	}
 
 	@Override
