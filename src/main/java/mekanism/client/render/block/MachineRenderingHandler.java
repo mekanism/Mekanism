@@ -20,11 +20,13 @@ import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.AdvancedModelLoader;
@@ -240,6 +242,17 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 		{
 			if(!MachineType.get(block, metadata).hasModel)
 			{
+				TileEntity tile = world.getTileEntity(x, y, z);
+				
+				if(tile instanceof TileEntityBasicBlock)
+				{
+					if(((TileEntityBasicBlock)tile).getFacing() >= 2)
+					{
+						renderer.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).getFacing()-2];
+						renderer.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).getFacing()-2];
+					}
+				}
+				
 				renderer.renderStandardBlock(block, x, y, z);
 				renderer.setRenderBoundsFromBlock(block);
 				return true;

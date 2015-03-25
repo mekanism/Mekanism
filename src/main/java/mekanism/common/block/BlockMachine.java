@@ -14,6 +14,7 @@ import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -102,7 +103,6 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import buildcraft.api.tools.IToolWrench;
-import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
@@ -179,18 +179,10 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		switch(blockType)
 		{
 			case MACHINE_BLOCK_1:
-				icons[0][0] = register.registerIcon("mekanism:EnrichmentChamberFrontOff");
-				icons[0][1] = register.registerIcon("mekanism:EnrichmentChamberFrontOn");
-				icons[0][2] = BASE_ICON;
-				icons[1][0] = register.registerIcon("mekanism:OsmiumCompressorFrontOff");
-				icons[1][1] = register.registerIcon("mekanism:OsmiumCompressorFrontOn");
-				icons[1][2] = BASE_ICON;
-				icons[2][0] = register.registerIcon("mekanism:CombinerFrontOff");
-				icons[2][1] = register.registerIcon("mekanism:CombinerFrontOn");
-				icons[2][2] = BASE_ICON;
-				icons[3][0] = register.registerIcon("mekanism:CrusherFrontOff");
-				icons[3][1] = register.registerIcon("mekanism:CrusherFrontOn");
-				icons[3][2] = BASE_ICON;
+				MekanismRenderer.loadDynamicTextures(register, MachineType.ENRICHMENT_CHAMBER, BASE_ICON, icons[0]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.OSMIUM_COMPRESSOR, BASE_ICON, icons[1]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.COMBINER, BASE_ICON, icons[2]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.CRUSHER, BASE_ICON, icons[3]);
 				icons[5][0] = register.registerIcon("mekanism:BasicFactoryFront");
 				icons[5][1] = register.registerIcon("mekanism:BasicFactorySide");
 				icons[5][2] = register.registerIcon("mekanism:BasicFactoryTop");
@@ -200,21 +192,13 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				icons[7][0] = register.registerIcon("mekanism:EliteFactoryFront");
 				icons[7][1] = register.registerIcon("mekanism:EliteFactorySide");
 				icons[7][2] = register.registerIcon("mekanism:EliteFactoryTop");
-				icons[9][0] = register.registerIcon("mekanism:PurificationChamberFrontOff");
-				icons[9][1] = register.registerIcon("mekanism:PurificationChamberFrontOn");
-				icons[9][2] = BASE_ICON;
-				icons[10][0] = register.registerIcon("mekanism:EnergizedSmelterFrontOff");
-				icons[10][1] = register.registerIcon("mekanism:EnergizedSmelterFrontOn");
-				icons[10][2] = register.registerIcon("mekanism:SteelCasing");
+				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER, BASE_ICON, icons[9]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.ENERGIZED_SMELTER, BASE_ICON, icons[10]);
 				icons[11][0] = register.registerIcon("mekanism:Teleporter");
 				break;
 			case MACHINE_BLOCK_2:
-				icons[3][0] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOff");
-				icons[3][1] = register.registerIcon("mekanism:ChemicalInjectionChamberFrontOn");
-				icons[3][2] = BASE_ICON;
-				icons[5][0] = register.registerIcon("mekanism:PrecisionSawmillFrontOff");
-				icons[5][1] = register.registerIcon("mekanism:PrecisionSawmillFrontOn");
-				icons[5][2] = BASE_ICON;
+				MekanismRenderer.loadDynamicTextures(register, MachineType.CHEMICAL_INJECTION_CHAMBER, BASE_ICON, icons[3]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.PRECISION_SAWMILL, BASE_ICON, icons[5]);
 				break;
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
@@ -387,13 +371,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					case 3:
 					case 9:
 					case 10:
-						if(side == 3)
-						{
-							return icons[meta][0];
-						}
-						else {
-							return icons[meta][2];
-						}
+						return icons[meta][side == 3 ? 2 : (side == 2 ? 3 : side)];
 					case 5:
 					case 6:
 					case 7:
@@ -416,13 +394,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				{
 					case 3:
 					case 5:
-						if(side == 3)
-						{
-							return icons[meta][0];
-						} 
-						else {
-							return icons[meta][2];
-						}
+						return icons[meta][side == 3 ? 2 : (side == 2 ? 3 : side)];
 					default:
 						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
@@ -471,13 +443,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					case 3:
 					case 9:
 					case 10:
-						if(side == tileEntity.facing)
-						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
-						} 
-						else {
-							return icons[meta][2];
-						}
+						boolean active = MekanismUtils.isActive(world, x, y, z);
+						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					case 5:
 					case 6:
 					case 7:
@@ -500,13 +467,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				{
 					case 3:
 					case 5:
-						if(side == tileEntity.facing)
-						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][1] : icons[meta][0];
-						} 
-						else {
-							return icons[meta][2];
-						}
+						boolean active = MekanismUtils.isActive(world, x, y, z);
+						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
 						return icons[meta][0];
 				}

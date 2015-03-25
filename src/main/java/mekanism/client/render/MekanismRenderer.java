@@ -16,6 +16,7 @@ import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -25,6 +26,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -61,7 +63,11 @@ public class MekanismRenderer
     private static float lightmapLastY;
 	private static boolean optifineBreak = false;
 	
+	public static int[] directionMap = new int[] {3, 0, 1, 2};
+	
 	public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
+	
+	private static String[] simpleSides = new String[] {"Down", "Up", "Front", "Back", "Left", "Right"};
 	
 	public static void init()
 	{
@@ -130,6 +136,45 @@ public class MekanismRenderer
 			RenderDynamicTank.resetDisplayInts();
 			RenderSalinationController.resetDisplayInts();
 			RenderPortableTank.resetDisplayInts();
+		}
+	}
+	
+	public static boolean blockIconExists(String texture) //Credit to CoFHCore
+	{
+		String[] split = texture.split(":");
+		texture = split[0] + ":textures/blocks/" + split[1] + ".png";
+		
+		try {
+			Minecraft.getMinecraft().getResourceManager().getAllResources(new ResourceLocation(texture));
+			return true;
+		} catch(Throwable t) {
+			return false;
+		}
+	}
+	
+	public static void loadDynamicTextures(IIconRegister register, MachineType type, IIcon def, IIcon[] textures)
+	{
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			String tex = "mekanism:" + type.name + simpleSides[side.ordinal()];
+			String texOn = tex + "On";
+			
+			if(blockIconExists(tex))
+			{
+				textures[side.ordinal()] = register.registerIcon(tex);
+				
+				if(blockIconExists(texOn))
+				{
+					textures[side.ordinal()+6] = register.registerIcon(texOn);
+				}
+				else {
+					textures[side.ordinal()+6] = register.registerIcon(tex);
+				}
+			}
+			else {
+				textures[side.ordinal()] = def;
+				textures[side.ordinal()+6] = def;
+			}
 		}
 	}
     
