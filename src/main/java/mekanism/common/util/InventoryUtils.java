@@ -93,6 +93,8 @@ public final class InventoryUtils
 				if(inSlot == null)
 				{
 					inventory.setInventorySlotContents(i, toInsert);
+					inventory.markDirty();
+					
 					return null;
 				}
 				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
@@ -103,6 +105,8 @@ public final class InventoryUtils
 						toSet.stackSize += inSlot.stackSize;
 
 						inventory.setInventorySlotContents(i, toSet);
+						inventory.markDirty();
+						
 						return null;
 					}
 					else {
@@ -115,6 +119,7 @@ public final class InventoryUtils
 						remains.stackSize = rejects;
 
 						inventory.setInventorySlotContents(i, toSet);
+						inventory.markDirty();
 
 						toInsert = remains;
 					}
@@ -149,6 +154,8 @@ public final class InventoryUtils
 					if(inSlot == null)
 					{
 						inventory.setInventorySlotContents(slotID, toInsert);
+						inventory.markDirty();
+						
 						return null;
 					}
 					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
@@ -159,6 +166,8 @@ public final class InventoryUtils
 							toSet.stackSize += inSlot.stackSize;
 
 							inventory.setInventorySlotContents(slotID, toSet);
+							inventory.markDirty();
+							
 							return null;
 						}
 						else {
@@ -171,6 +180,7 @@ public final class InventoryUtils
 							remains.stackSize = rejects;
 
 							inventory.setInventorySlotContents(slotID, toSet);
+							inventory.markDirty();
 
 							toInsert = remains;
 						}
