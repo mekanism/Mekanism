@@ -246,10 +246,10 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 				
 				if(tile instanceof TileEntityBasicBlock)
 				{
-					if(((TileEntityBasicBlock)tile).getFacing() >= 2)
+					if(((TileEntityBasicBlock)tile).facing >= 2)
 					{
-						renderer.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).getFacing()-2];
-						renderer.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).getFacing()-2];
+						renderer.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
+						renderer.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
 					}
 				}
 				
