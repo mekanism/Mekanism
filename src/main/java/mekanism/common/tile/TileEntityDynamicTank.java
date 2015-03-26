@@ -12,6 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -263,6 +264,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 	protected SynchronizedTankData getNewStructure()
 	{
 		return new SynchronizedTankData();
+	}
+	
+	@Override
+	public TankCache getNewCache()
+	{
+		return new TankCache();
 	}
 	
 	@Override

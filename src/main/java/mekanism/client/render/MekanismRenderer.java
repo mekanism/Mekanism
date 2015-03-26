@@ -67,7 +67,7 @@ public class MekanismRenderer
 	
 	public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
 	
-	private static String[] simpleSides = new String[] {"Down", "Up", "Front", "Back", "Left", "Right"};
+	private static String[] simpleSides = new String[] {"Bottom", "Top", "Front", "Back", "Left", "Right"};
 	
 	public static void init()
 	{

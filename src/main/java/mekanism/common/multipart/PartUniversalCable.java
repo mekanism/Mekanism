@@ -105,6 +105,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 								{
 									toDraw -= getTransmitterNetwork().emit(received, true);
 								}
+								
 								((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
 							}
 						}

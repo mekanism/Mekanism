@@ -69,11 +69,6 @@ public class CommonWorldTickHandler
 	{
 		if(!world.isRemote)
 		{
-			if(!MultiblockManager.loaded)
-			{
-				MultiblockManager.load(world);
-			}
-			
 			if(!FrequencyManager.loaded)
 			{
 				FrequencyManager.load(world);

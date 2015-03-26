@@ -8,12 +8,14 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.IMultiblock;
+import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
@@ -35,6 +37,12 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	
 	/** Whether or not this multiblock segment is rendering the structure. */
 	public boolean isRendering;
+	
+	/** This multiblock segment's cached data */
+	public MultiblockCache cachedData = getNewCache();
+	
+	/** This multiblock segment's cached inventory ID */
+	public int cachedID = -1;
 	
 	public TileEntityMultiblock(String name)
 	{
@@ -75,6 +83,11 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 			if(structure == null)
 			{
 				isRendering = false;
+				
+				if(cachedID != -1)
+				{
+					getManager().updateCache(this);
+				}
 			}
 
 			if(structure == null && ticker == 5)
@@ -112,6 +125,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 				if(getSynchronizedData().inventoryID != -1)
 				{
+					cachedData.sync(getSynchronizedData());
+					cachedID = getSynchronizedData().inventoryID;
 					getManager().updateCache(this);
 				}
 			}
@@ -148,6 +163,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 	}
 	
 	protected abstract T getNewStructure();
+	
+	public abstract MultiblockCache<T> getNewCache();
 	
 	protected abstract UpdateProtocol<T> getProtocol();
 	
@@ -206,6 +223,35 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
 				getSynchronizedData().renderLocation = Coord4D.read(dataStream);
 			}
+		}
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		if(structure == null)
+		{
+			cachedID = nbtTags.getInteger("cachedID");
+
+			if(cachedID != -1)
+			{
+				cachedData.load(nbtTags);
+			}
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setInteger("cachedID", cachedID);
+
+		if(cachedID != -1)
+		{
+			cachedData.save(nbtTags);
 		}
 	}
 	

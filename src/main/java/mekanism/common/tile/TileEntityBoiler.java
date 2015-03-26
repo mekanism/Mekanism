@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +11,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
+import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.boiler.SynchronizedBoilerData.ValveData;
@@ -17,15 +20,12 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.HeatUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerData> implements IFluidContainerManager, IHeatTransfer
 {
@@ -277,6 +277,12 @@ public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerDat
 	protected SynchronizedBoilerData getNewStructure()
 	{
 		return new SynchronizedBoilerData();
+	}
+	
+	@Override
+	public BoilerCache getNewCache()
+	{
+		return new BoilerCache();
 	}
 
 	@Override

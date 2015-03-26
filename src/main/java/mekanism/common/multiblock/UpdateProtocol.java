@@ -402,11 +402,10 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			for(Coord4D obj : structureFound.locations)
 			{
 				TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>)obj.getTileEntity(pointer.getWorldObj());
-				int id = getManager().getInventoryId(tileEntity);
 
-				if(id != -1)
+				if(tileEntity.cachedID != -1)
 				{
-					idsFound.add(id);
+					idsFound.add(tileEntity.cachedID);
 				}
 			}
 
