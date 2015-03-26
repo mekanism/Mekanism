@@ -18,7 +18,7 @@ import cpw.mods.fml.common.Optional.InterfaceList;
 @InterfaceList({
 	@Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2"),
 	@Interface(iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2"),
-	@Interface(iface = "ic2.api.tile.IEnergyStorage", modid = "IC2"),
+	@Interface(iface = "ic2.api.energy.tile.IEnergyStorage", modid = "IC2"),
 	@Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore"),
 })
 public interface IEnergyWrapper extends IStrictEnergyStorage, IEnergyHandler, IEnergySink, IEnergySource, IEnergyStorage, IStrictEnergyAcceptor, ICableOutputter, IInventory
