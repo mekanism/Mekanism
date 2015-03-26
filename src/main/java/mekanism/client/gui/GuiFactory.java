@@ -4,23 +4,24 @@ import java.util.List;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.ListUtils;
-import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiRecipeType;
+import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSortingTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;
 import mekanism.client.gui.element.GuiUpgradeTab;
-import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.inventory.container.ContainerFactory;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.InventoryPlayer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiFactory extends GuiMekanism
@@ -58,7 +59,6 @@ public class GuiFactory extends GuiMekanism
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
 		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 93) + 2, 0x404040);
-		fontRendererObj.drawString(tileEntity.recipeType.getName(), 104, (ySize - 93) + 2, 0x404040);
 
 		if(xAxis >= 165 && xAxis <= 169 && yAxis >= 17 && yAxis <= 69)
 		{

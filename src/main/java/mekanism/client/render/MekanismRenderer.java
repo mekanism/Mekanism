@@ -152,11 +152,11 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static void loadDynamicTextures(IIconRegister register, MachineType type, IIcon def, IIcon[] textures)
+	public static void loadDynamicTextures(IIconRegister register, String name, IIcon def, IIcon[] textures)
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			String tex = "mekanism:" + type.name + simpleSides[side.ordinal()];
+			String tex = "mekanism:" + name + simpleSides[side.ordinal()];
 			String texOn = tex + "On";
 			
 			if(blockIconExists(tex))

@@ -101,9 +101,7 @@ tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
 tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor
 tile.MachineBlock.Combiner.name=Combiner
 tile.MachineBlock.Crusher.name=Crusher
-tile.MachineBlock.BasicFactory.name=Basic Factory
-tile.MachineBlock.AdvancedFactory.name=Advanced Factory
-tile.MachineBlock.EliteFactory.name=Elite Factory
+tile.MachineBlock.Factory.name=Factory
 tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
 tile.MachineBlock.PurificationChamber.name=Purification Chamber
 tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
@@ -179,11 +177,7 @@ item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
 item.GlowPanel.name=Glow Panel
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Basic Energy Cube
-tile.EnergyCube.Advanced.name=Advanced Energy Cube
-tile.EnergyCube.Elite.name=Elite Energy Cube
-tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
-tile.EnergyCube.Creative.name=Creative Energy Cube
+tile.EnergyCube.name=Energy Cube
 
 //Factory Installers
 item.basicFactoryInstaller.name=Basic Factory Installer
@@ -317,6 +311,13 @@ oregas.tin=Tin Ore
 oregas.silver=Silver Ore
 oregas.obsidian=Obsidian Ore
 oregas.lead=Lead Ore
+
+//Tier names
+tier.Basic=Basic
+tier.Advanced=Advanced
+tier.Elite=Elite
+tier.Ultimate=Ultimate
+tier.Creative=Creative
 
 //Transmission types
 transmission.Energy=Energy

@@ -18,6 +18,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IElectricChest;
@@ -179,25 +180,25 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		switch(blockType)
 		{
 			case MACHINE_BLOCK_1:
-				MekanismRenderer.loadDynamicTextures(register, MachineType.ENRICHMENT_CHAMBER, BASE_ICON, icons[0]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.OSMIUM_COMPRESSOR, BASE_ICON, icons[1]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.COMBINER, BASE_ICON, icons[2]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.CRUSHER, BASE_ICON, icons[3]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.BASIC_FACTORY, register.registerIcon("mekanism:BasicFactorySide"), icons[5]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.ADVANCED_FACTORY, register.registerIcon("mekanism:AdvancedFactorySide"), icons[6]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.ELITE_FACTORY, register.registerIcon("mekanism:EliteFactorySide"), icons[7]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER, BASE_ICON, icons[9]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.ENERGIZED_SMELTER, BASE_ICON, icons[10]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.ENRICHMENT_CHAMBER.name, BASE_ICON, icons[0]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.OSMIUM_COMPRESSOR.name, BASE_ICON, icons[1]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.COMBINER.name, BASE_ICON, icons[2]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.CRUSHER.name, BASE_ICON, icons[3]);
+				MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + MachineType.BASIC_FACTORY.name, register.registerIcon("mekanism:BasicFactorySide"), icons[5]);
+				MekanismRenderer.loadDynamicTextures(register, BaseTier.ADVANCED.getName() + MachineType.ADVANCED_FACTORY.name, register.registerIcon("mekanism:AdvancedFactorySide"), icons[6]);
+				MekanismRenderer.loadDynamicTextures(register, BaseTier.ELITE.getName() + MachineType.ELITE_FACTORY.name, register.registerIcon("mekanism:EliteFactorySide"), icons[7]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER.name, BASE_ICON, icons[9]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.ENERGIZED_SMELTER.name, BASE_ICON, icons[10]);
 				icons[11][0] = register.registerIcon("mekanism:Teleporter");
 				break;
 			case MACHINE_BLOCK_2:
-				MekanismRenderer.loadDynamicTextures(register, MachineType.CHEMICAL_INJECTION_CHAMBER, BASE_ICON, icons[3]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.PRECISION_SAWMILL, BASE_ICON, icons[5]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.CHEMICAL_INJECTION_CHAMBER.name, BASE_ICON, icons[3]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.PRECISION_SAWMILL.name, BASE_ICON, icons[5]);
 				break;
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
 				icons[2][0] = BASE_ICON;
-				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR, register.registerIcon("mekanism:OredictionificatorSide"), icons[3]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR.name, register.registerIcon("mekanism:OredictionificatorSide"), icons[3]);
 				break;
 		}
 	}
@@ -1040,9 +1041,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		COMBINER(MachineBlock.MACHINE_BLOCK_1, 2, "Combiner", 5, TileEntityCombiner.class, true, false, true),
 		CRUSHER(MachineBlock.MACHINE_BLOCK_1, 3, "Crusher", 6, TileEntityCrusher.class, true, false, true),
 		DIGITAL_MINER(MachineBlock.MACHINE_BLOCK_1, 4, "DigitalMiner", 2, TileEntityDigitalMiner.class, true, true, true),
-		BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "BasicFactory", 11, TileEntityFactory.class, true, false, true),
-		ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "AdvancedFactory", 11, TileEntityAdvancedFactory.class, true, false, true),
-		ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "EliteFactory", 11, TileEntityEliteFactory.class, true, false, true),
+		BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "Factory", 11, TileEntityFactory.class, true, false, true),
+		ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "Factory", 11, TileEntityAdvancedFactory.class, true, false, true),
+		ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "Factory", 11, TileEntityEliteFactory.class, true, false, true),
 		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12, TileEntityMetallurgicInfuser.class, true, true, true),
 		PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15, TileEntityPurificationChamber.class, true, false, true),
 		ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, TileEntityEnergizedSmelter.class, true, false, true),

@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.api.EnumColor;
 import mekanism.common.multipart.TransmitterType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -25,6 +26,11 @@ public final class Tier
 		public String getName()
 		{
 			return name;
+		}
+		
+		public String getLocalizedName()
+		{
+			return MekanismUtils.localize("tier." + getName());
 		}
 		
 		public EnumColor getColor()
