@@ -101,9 +101,7 @@ tile.MachineBlock.EnrichmentChamber.name=Camera di arricchimento
 tile.MachineBlock.OsmiumCompressor.name=Compressore a osmio
 tile.MachineBlock.Combiner.name=Combinatore
 tile.MachineBlock.Crusher.name=Frantumatore
-tile.MachineBlock.BasicFactory.name=Fabbrica base
-tile.MachineBlock.AdvancedFactory.name=Fabbrica avanzata
-tile.MachineBlock.EliteFactory.name=Fabbrica elite
+tile.MachineBlock.Factory.name=Fabbrica
 tile.MachineBlock.MetallurgicInfuser.name=Infusore metallurgico
 tile.MachineBlock.PurificationChamber.name=Camera di purificazione
 tile.MachineBlock.EnergizedSmelter.name=Fonderia energizata
@@ -179,11 +177,7 @@ item.MultipartTransmitter.DiversionTransporter.name=Trasportatore diversivo
 item.GlowPanel.name=Pannello risplendente
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Cubo di energia base
-tile.EnergyCube.Advanced.name=Cubo di energia avanzato
-tile.EnergyCube.Elite.name=Cubo di energia elite
-tile.EnergyCube.Ultimate.name=Cubo di energia definitivo
-tile.EnergyCube.Creative.name=Cubo di energia creativa
+tile.EnergyCube.name=Cubo di energia base
 
 //Factory Installers
 item.basicFactoryInstaller.name=Installatore di fabbrica base
@@ -318,6 +312,13 @@ oregas.silver=Argento grezzo
 oregas.obsidian=Ossidiana grezza
 oregas.lead=Piombo grezzo
 
+ //Tier names
+ tier.Basic=base
+ tier.Advanced=avanzato
+ tier.Elite=elite
+ tier.Ultimate=definitivo
+ tier.Creative=creativa
+
 //Transmission types
 transmission.Energy=Energia
 transmission.Fluids=Fluidi
@@ -443,6 +444,19 @@ gui.set=Imposta
 gui.freq=Freq
 gui.security=Sicurezza
 gui.index=Indice
+gui.producing=Producendo
+gui.maxOutput=Max uscita
+gui.storing=Contenedo
+gui.skyBlocked=Cielo bloccato
+gui.using=Usando
+gui.needed=Necessita
+gui.noRecipe=Nessuna ricetta
+gui.conflict=Conflitto
+gui.height=Atltessa
+gui.mult=Mult
+gui.chunk=Chunk
+gui.vibrating=Vibrando
+gui.abundancy=Abbondanza
 
 gui.reactor.injectionRate=Ritmo di iniezione
 
@@ -468,14 +482,16 @@ gui.configuration.strictInput=Entrata ristretta
 gui.rotaryCondensentrator.toggleOperation=Scambia operazione
 
 gui.factory.secondaryEnergy=Energia secondaria
-gui.factory.smelting=Fusione
-gui.factory.enriching=Arricchimento
-gui.factory.crushing=Frantumazione
-gui.factory.compressing=Compressione
-gui.factory.combining=Combinamento
-gui.factory.purifying=Purificazione
-gui.factory.injecting=Iniezione
 gui.factory.autoSort=Auto-smistamento
+
+//Recipe types
+gui.factory.Smelting=Fusione
+gui.factory.Enriching=Arricchimento
+gui.factory.Crushing=Frantumazione
+gui.factory.Compressing=Compressione
+gui.factory.Combining=Combinamento
+gui.factory.Purifying=Purificazione
+gui.factory.Injecting=Iniezione
 
 gui.seismicReader.short=Lettore s.
 gui.seismicReader.solids=Solidi
@@ -562,89 +578,89 @@ recipe.mekanismShaped=con forma
 //Item and block tooltip text
 tooltip.configurator.configurate=Configura
 tooltip.configurator.empty=Vuoto
-tooltip.configurator.rotate=Rotate
-tooltip.configurator.wrench=Wrench
-tooltip.configurator.pumpReset=Reset Electric Pump calculation
-tooltip.configurator.toggleDiverter=Diverter mode changed to
-tooltip.configurator.toggleMode=%s behavior bumped to
-tooltip.configurator.viewMode=Current %s behavior
-tooltip.configurator.unauth=This chest is locked
-tooltip.configurator.noLink=No link
-tooltip.configurator.linkMsg=Bound to
-tooltip.configurator.dim=dimension
-tooltip.configurator.setLink=Set link to block
-tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
-tooltip.configurator.inductionPortMode=Toggled Induction Port transfer mode to
-tooltip.configurator.toggleColor=Color bumped to
-tooltip.configurator.viewColor=Current color
+tooltip.configurator.rotate=Ruota
+tooltip.configurator.wrench=Chiave inglese
+tooltip.configurator.pumpReset=Azzera calcolazione della Pompa elettrica
+tooltip.configurator.toggleDiverter=Modalità dirottatore cambiato a 
+tooltip.configurator.toggleMode=Comportamento di %s cambiato a
+tooltip.configurator.viewMode=Comportamento di %s corrente
+tooltip.configurator.unauth=Il baule è bloccato
+tooltip.configurator.noLink=Nessun collegamento
+tooltip.configurator.linkMsg=Legato a
+tooltip.configurator.dim=dimensione
+tooltip.configurator.setLink=Assegna collegamento a blocco
+tooltip.configurator.plenisherReset=Azzera calcolazione del Riempitore fluido
+tooltip.configurator.inductionPortMode=Cambiato modalità di trasferimento della porta di induzione a
+tooltip.configurator.toggleColor=Colore cambiato a
+tooltip.configurator.viewColor=Colore corrente
 
 tooltip.upgrade.speed=Velocità
 tooltip.upgrade.energy=Energia
 
-tooltip.inventory=Inventory
-tooltip.storedEnergy=Stored energy
-tooltip.auth=Authenticated
-tooltip.locked=Locked
-tooltip.recipeType=Recipe type
-tooltip.hold=Hold
-tooltip.forDesc=for a description
-tooltip.forDetails=for details
+tooltip.inventory=Inventario
+tooltip.storedEnergy=Energia imagazzinata
+tooltip.auth=Autenticato
+tooltip.locked=Bloccato
+tooltip.recipeType=Tipo di ricetta
+tooltip.hold=Tieni premuto
+tooltip.forDesc=per una descrizione
+tooltip.forDetails=per dettagli
 tooltip.fireMode=Fire Mode
-tooltip.capacity=Capacity
-tooltip.pumpRate=Pump Rate
-tooltip.items=Items
-tooltip.blocks=Blocks
-tooltip.universal=universal
-tooltip.fluids=Fluids
-tooltip.gasses=Gasses
-tooltip.capableTrans=Capable of transferring
-tooltip.restrictiveDesc=Only used if no other paths available
-tooltip.diversionDesc=Controllable by redstone
-tooltip.noGas=No gas stored
-tooltip.stored=Stored
-tooltip.channel=Channel
-tooltip.mode=Mode
-tooltip.efficiency=Efficiency
-tooltip.modeToggle=Mode toggled to
-tooltip.flowing=Flowing
-tooltip.yes=yes
+tooltip.capacity=Capacità
+tooltip.pumpRate=Ritmo della pompa
+tooltip.items=Oggetti
+tooltip.blocks=Blocchi
+tooltip.universal=universale
+tooltip.fluids=Fluidi
+tooltip.gasses=Gas
+tooltip.capableTrans=Capace di trasferire
+tooltip.restrictiveDesc=Usato soltanto se nessun'altra strada è avviabile
+tooltip.diversionDesc=Controllabile da pietrarossa
+tooltip.noGas=Nessuna gas immagazzinato
+tooltip.stored=Immagazzinato
+tooltip.channel=Canale
+tooltip.mode=Modalità
+tooltip.efficiency=Efficienza
+tooltip.modeToggle=Scambiato modalità a
+tooltip.flowing=Scorrendo
+tooltip.yes=si
 tooltip.no=no
-tooltip.name=Name
-tooltip.blockData=Block data
-tooltip.block=Block
+tooltip.name=Nome
+tooltip.blockData=Data del blocco
+tooltip.block=Blocco
 tooltip.meta=Metadata
 tooltip.tile=Tile
-tooltip.keysFound=Key(s) found
-tooltip.noKey=No key
+tooltip.keysFound=Key trovato/i
+tooltip.noKey=Nessun key
 tooltip.hp=HP
-tooltip.configureState=Configure State
-tooltip.outputRate=Output Rate
-tooltip.insufficientFuel=Insufficient Fuel
-tooltip.readyForReaction=Ready for Reaction
+tooltip.configureState=Configura stato
+tooltip.outputRate=Ritmo di uscita
+tooltip.insufficientFuel=Carburante insufficiente
+tooltip.readyForReaction=Pronto per Reazione
 
-tooltip.portableTank.bucketMode=Bucket Mode
+tooltip.portableTank.bucketMode=Modalità secchio
 
-tooltip.disassembler.normal=normal
-tooltip.disassembler.slow=slow
-tooltip.disassembler.fast=fast
-tooltip.disassembler.vein=vein
-tooltip.disassembler.off=off
+tooltip.disassembler.normal=normale
+tooltip.disassembler.slow=lento
+tooltip.disassembler.fast=veloce
+tooltip.disassembler.vein=filone
+tooltip.disassembler.off=spento
 
-tooltip.filterCard.got=Retrieved filter data from %s
-tooltip.filterCard.set=Injected filter data of type %s
-tooltip.filterCard.unequal=Unequal filter data formats
-tooltip.filterCard.logisticalSorter=Logistical Sorter
-tooltip.filterCard.digitalMiner=Digital Miner
-tooltip.filterCard.oredictionificator=Oredictionificator
+tooltip.filterCard.got=Presi dati di filtro da %s
+tooltip.filterCard.set=Iniettato dati di filtro del tipo %s
+tooltip.filterCard.unequal=Formati dei dati di filtro diversi
+tooltip.filterCard.logisticalSorter=Smistatore logistico
+tooltip.filterCard.digitalMiner=Scavatrice digitale
+tooltip.filterCard.oredictionificator=Oredictionificatore
 
 tooltip.balloon=Balloon
 
-tooltip.jetpack.regular=Regular
-tooltip.jetpack.hover=Hover
-tooltip.jetpack.disabled=Disabled
+tooltip.jetpack.regular=Regolare
+tooltip.jetpack.hover=Librarsi
+tooltip.jetpack.disabled=Disattivato
 
-tooltip.seismicReader.needsEnergy=Not enough energy to interpret vibration
-tooltip.seismicReader.noVibrations=Unable to discover any vibrations
+tooltip.seismicReader.needsEnergy=Non c'è abbastanza corrente per interpretare le vibrazioni
+tooltip.seismicReader.noVibrations=Incapace di scoprire alcuna vibrazione
 
 tooltip.EnrichmentChamber=A simple machine used to enrich ores into !ntwo of their dust counterparts, as well as !nperform many other operations.
 tooltip.OsmiumCompressor=A fairly advanced machine used to compress !nosmium into various dusts in order to create !ntheir ingot counterparts.
@@ -695,74 +711,74 @@ tooltip.ReactorFrame=Reinforced framing that can be used in !nthe Fusion Reactor
 tooltip.ReactorNeutronCapturePlate=A block that can be used to !nboth block Fusion Reactor radiation and assist !nin the production of Tritium.
 tooltip.ReactorPort=A block of reinforced framing that is capable !nof managing both the gas and energy transfer !nof the Fusion Reactor.
 
-tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
-tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
-tooltip.TinOre=A lightweight, yet sturdy, conductive !nmaterial that is found slightly less !ncommonly than Copper.
+tooltip.OsmiumOre=Un forte minerale che può essere trovato !na quasi tutte le altezze nel monfo. !nè conosciuto per avere molti usi !nnella costruzione di macchinari.
+tooltip.CopperOre=Un materiale comune e conduttivo che !npuò essere usato nella produzione di !ncavi. La sua abilità nel resistere !na molto calore lo rende essenziale !nin macchinari avanzati.
+tooltip.TinOre=Un materiale leggero e conduttivo, ma anche !nrobusto che è leggermente più raro !ndel rame.
 
 //Side data
-sideData.None=None
-sideData.Input=Input
-sideData.Output=Output
-sideData.Energy=Energy
+sideData.None=Niente
+sideData.Input=Entrata
+sideData.Output=Uscita
+sideData.Energy=Energia
 sideData.Gas=Gas
 sideData.Extra=Extra
-sideData.Infuse=Infuse
-sideData.Fluid=Fluid
+sideData.Infuse=Infondi
+sideData.Fluid=Fluido
 
 //Redstone control
-control.disabled=Disabled
-control.high=High
-control.low=Low
-control.pulse=Pulse
-control.disabled.desc=Always active
-control.high.desc=Active with signal
-control.low.desc=Active without signal
-control.pulse.desc=Only active upon first receiving signal
+control.disabled=Disabilitato
+control.high=Alto
+control.low=Basso
+control.pulse=Impulso
+control.disabled.desc=Sempre attivo
+control.high.desc=Attivo con segnale
+control.low.desc=Attivo senza segnale
+control.pulse.desc=Soltanto attivo quando riceve il primo segnale
 
 //Container edit modes
-fluidedit.both=Both
-fluidedit.fill=Fill
-fluidedit.empty=Empty
+fluidedit.both=Entrambe
+fluidedit.fill=Pieno
+fluidedit.empty=Vuoto
 
 //Colors
-color.black=Black
-color.darkBlue=Dark Blue
-color.darkGreen=Dark Green
-color.darkAqua=Dark Aqua
-color.darkRed=Dark Red
-color.purple=Purple
-color.orange=Orange
-color.grey=Grey
-color.darkGrey=Dark Grey
-color.indigo=Indigo
-color.brightGreen=Bright Green
-color.aqua=Aqua
-color.red=Red
-color.pink=Pink
-color.yellow=Yellow
-color.white=White
-color.brown=Brown
-color.brightPink=Bright Pink
+color.black=Nero
+color.darkBlue=Blu scuro
+color.darkGreen=Verde scuro
+color.darkAqua=Acqua scura
+color.darkRed=Rosso scuro
+color.purple=Viola
+color.orange=Arancione
+color.grey=Grigio
+color.darkGrey=Grigio scuro
+color.indigo=Indaco
+color.brightGreen=Verde acceso
+color.aqua=Acqua
+color.red=Rosso
+color.pink=Rosa
+color.yellow=Giallo
+color.white=Bianco
+color.brown=Marrone
+color.brightPink=Rosa acceso
 
 //Dyes
-dye.black=Black
-dye.darkBlue=Blue
-dye.brown=Brown
-dye.darkGreen=Green
-dye.darkAqua=Cyan
-dye.darkRed=Dark Red
-dye.purple=Purple
-dye.orange=Orange
-dye.grey=Light Grey
-dye.darkGrey=Grey
-dye.indigo=Light Blue
+dye.black=Nero
+dye.darkBlue=Blu
+dye.brown=Marrone
+dye.darkGreen=Verde
+dye.darkAqua=Ciano
+dye.darkRed=Rosso scuro
+dye.purple=Viola
+dye.orange=Arancione
+dye.grey=Grigio chiaro
+dye.darkGrey=Grigio
+dye.indigo=Azzurro
 dye.brightGreen=Lime
-dye.aqua=Aqua
-dye.red=Red
-dye.brightPink=Pink
+dye.aqua=Acqua
+dye.red=Rosso
+dye.brightPink=Rosa
 dye.pink=Magenta
-dye.yellow=Yellow
-dye.white=White
+dye.yellow=Giallo
+dye.white=Bianco
 
 //Creative tab
 itemGroup.tabMekanism=Mekanism
@@ -776,130 +792,130 @@ nei.rotaryCondensentrator=R. Condensentrator
 //**********//
 
 //Items
-item.SolarPanel.name=Solar Panel
+item.SolarPanel.name=Pannello solare
 item.Hohlraum.name=Hohlraum
 
 //Generators
-tile.Generator.HeatGenerator.name=Heat Generator
-tile.Generator.SolarGenerator.name=Solar Generator
-tile.Generator.GasGenerator.name=Gas-Burning Generator
-tile.Generator.BioGenerator.name=Bio-Generator
-tile.Generator.AdvancedSolarGenerator.name=Advanced Solar Generator
-tile.Generator.WindTurbine.name=Wind Turbine
+tile.Generator.HeatGenerator.name=Generatore a calore
+tile.Generator.SolarGenerator.name=Generatore solare
+tile.Generator.GasGenerator.name=Generatore a gas
+tile.Generator.BioGenerator.name=Bio-generatore
+tile.Generator.AdvancedSolarGenerator.name=Generatore solare avanzato
+tile.Generator.WindTurbine.name=Turbina eolica
 
-tile.Reactor.ReactorController.name=Reactor Controller
-tile.Reactor.ReactorFrame.name=Reactor Frame
-tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
-tile.Reactor.ReactorInOutPort.name=Reactor Port
+tile.Reactor.ReactorController.name=Regolatore del reattore
+tile.Reactor.ReactorFrame.name=Struttura del reattore
+tile.Reactor.ReactorNeutronCapturePlate.name=Piastra di cattura dei neutroni
+tile.Reactor.ReactorInOutPort.name=Porta del reattore
 
-tile.ReactorGlass.ReactorGlass.name=Reactor Glass
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix
+tile.ReactorGlass.ReactorGlass.name=Vetro del reattore
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matrice concentrante per laser
 
 //Gui text
-gui.heatGenerator.fuel=Fuel
-gui.solarGenerator.sun=Sun
-gui.bioGenerator.bioFuel=BioFuel
-gui.electrolyticSeparator.dump=Dump
+gui.heatGenerator.fuel=Carburante
+gui.solarGenerator.sun=Sole
+gui.bioGenerator.bioFuel=Biocarburante
+gui.electrolyticSeparator.dump=Scarico
 
-gui.passive=Air-Cooled
-gui.active=Water-Cooled
+gui.passive=Raffreddato ad aria
+gui.active=Raffreddato ad acqua
 
-gui.minInject=Min. Inject Rate
-gui.ignition=Ignition Temp
-gui.maxPlasma=Max. Plasma Temp
-gui.maxCasing=Max. Casing Temp
-gui.passiveGeneration=Passive Generation
-gui.steamProduction=Steam Production
+gui.minInject=Min. ritmo di iniezione
+gui.ignition=Temp di accensione
+gui.maxPlasma=Max. temp del plasma
+gui.maxCasing=Max. temp del telaio
+gui.passiveGeneration=Generazione passiva
+gui.steamProduction=Produzione di vapore
 
 //*****//
 //TOOLS//
 //*****//
 
 //Vanilla Paxels
-item.WoodPaxel.name=Wood Paxel
-item.StonePaxel.name=Stone Paxel
-item.IronPaxel.name=Iron Paxel
-item.DiamondPaxel.name=Diamond Paxel
-item.GoldPaxel.name=Gold Paxel
+item.WoodPaxel.name=Paxel di legno
+item.StonePaxel.name=Paxel di pietra
+item.IronPaxel.name=Paxel di ferro
+item.DiamondPaxel.name=Paxel di diamante
+item.GoldPaxel.name=Paxel d'oro
 
 //Obsidian
-item.ObsidianHelmet.name=Obsidian Helmet
-item.ObsidianChestplate.name=Obsidian Chestplate
-item.ObsidianLeggings.name=Obsidian Leggings
-item.ObsidianBoots.name=Obsidian Boots
-item.ObsidianPaxel.name=Obsidian Paxel
-item.ObsidianPickaxe.name=Obsidian Pickaxe
-item.ObsidianAxe.name=Obsidian Axe
-item.ObsidianShovel.name=Obsidian Shovel
-item.ObsidianHoe.name=Obsidian Hoe
-item.ObsidianSword.name=Obsidian Sword
+item.ObsidianHelmet.name=Elmo di ossidiana
+item.ObsidianChestplate.name=Corazza di ossidiana
+item.ObsidianLeggings.name=Gambiera di ossidiana
+item.ObsidianBoots.name=Stivali di ossidiana
+item.ObsidianPaxel.name=Paxel di ossidiana
+item.ObsidianPickaxe.name=Piccone di ossidiana
+item.ObsidianAxe.name=Ascia di ossidiana
+item.ObsidianShovel.name=Pala di ossidiana
+item.ObsidianHoe.name=Zappa di ossidiana
+item.ObsidianSword.name=Spada di ossidiana
 
 //Lapis Lazuli
-item.LazuliHelmet.name=Lapis Lazuli Helmet
-item.LazuliChestplate.name=Lapis Lazuli Chestplate
-item.LazuliLeggings.name=Lapis Lazuli Leggings
-item.LazuliBoots.name=Lapis Lazuli Boots
-item.LazuliPaxel.name=Lapis Lazuli Paxel
-item.LazuliPickaxe.name=Lapis Lazuli Pickaxe
-item.LazuliAxe.name=Lapis Lazuli Axe
-item.LazuliShovel.name=Lapis Lazuli Shovel
-item.LazuliHoe.name=Lapis Lazuli Hoe
-item.LazuliSword.name=Lapis Lazuli Sword
+item.LazuliHelmet.name=Elmo di lapislazuli
+item.LazuliChestplate.name=Corazza di lapislazuli
+item.LazuliLeggings.name=Gambiera di lapislazuli
+item.LazuliBoots.name=Stivali di lapislazuli
+item.LazuliPaxel.name=Paxel di lapislazuli
+item.LazuliPickaxe.name=Piccone di lapislazuli
+item.LazuliAxe.name=Ascia di lapislazuli
+item.LazuliShovel.name=Pala di lapislazuli
+item.LazuliHoe.name=Zappa di lapislazuli
+item.LazuliSword.name=Spada di lapislazuli
 
 //Osmium
-item.OsmiumHelmet.name=Osmium Helmet
-item.OsmiumChestplate.name=Osmium Chestplate
-item.OsmiumLeggings.name=Osmium Leggings
-item.OsmiumBoots.name=Osmium Boots
-item.OsmiumPaxel.name=Osmium Paxel
-item.OsmiumPickaxe.name=Osmium Pickaxe
-item.OsmiumAxe.name=Osmium Axe
-item.OsmiumShovel.name=Osmium Shovel
-item.OsmiumHoe.name=Osmium Hoe
-item.OsmiumSword.name=Osmium Sword
+item.OsmiumHelmet.name=Elmo di osmio
+item.OsmiumChestplate.name=Corazza di osmio
+item.OsmiumLeggings.name=Gambiera di osmio
+item.OsmiumBoots.name=Stivali di osmio
+item.OsmiumPaxel.name=Paxel di osmio
+item.OsmiumPickaxe.name=Piccone di osmio
+item.OsmiumAxe.name=Ascia di osmio
+item.OsmiumShovel.name=Pala di osmio
+item.OsmiumHoe.name=Zappa di osmio
+item.OsmiumSword.name=Spada di osmio
 
 //Bronze
-item.BronzeHelmet.name=Bronze Helmet
-item.BronzeChestplate.name=Bronze Chestplate
-item.BronzeLeggings.name=Bronze Leggings
-item.BronzeBoots.name=Bronze Boots
-item.BronzePaxel.name=Bronze Paxel
-item.BronzePickaxe.name=Bronze Pickaxe
-item.BronzeAxe.name=Bronze Axe
-item.BronzeShovel.name=Bronze Shovel
-item.BronzeHoe.name=Bronze Hoe
-item.BronzeSword.name=Bronze Sword
+item.BronzeHelmet.name=Elmo di bronzo
+item.BronzeChestplate.name=Corazza di bronzo
+item.BronzeLeggings.name=Gambiera di bronzo
+item.BronzeBoots.name=Stivali di bronzo
+item.BronzePaxel.name=Paxel di bronzo
+item.BronzePickaxe.name=Piccone di bronzo
+item.BronzeAxe.name=Ascia di bronzo
+item.BronzeShovel.name=Pala di bronzo
+item.BronzeHoe.name=Zappa di bronzo
+item.BronzeSword.name=Spada di bronzo
 
 //Glow
-item.GlowstoneHelmet.name=Glowstone Helmet
-item.GlowstoneChestplate.name=Glowstone Chestplate
-item.GlowstoneLeggings.name=Glowstone Leggings
-item.GlowstoneBoots.name=Glowstone Boots
-item.GlowstonePaxel.name=Glowstone Paxel
-item.GlowstonePickaxe.name=Glowstone Pickaxe
-item.GlowstoneAxe.name=Glowstone Axe
-item.GlowstoneShovel.name=Glowstone Shovel
-item.GlowstoneHoe.name=Glowstone Hoe
-item.GlowstoneSword.name=Glowstone Sword
+item.GlowstoneHelmet.name=Elmo di luminite
+item.GlowstoneChestplate.name=Corazza di luminite
+item.GlowstoneLeggings.name=Gambiera di luminite
+item.GlowstoneBoots.name=Stivali di luminite
+item.GlowstonePaxel.name=Paxel di luminite
+item.GlowstonePickaxe.name=Piccone di luminite
+item.GlowstoneAxe.name=Ascia di luminite
+item.GlowstoneShovel.name=Pala di luminite
+item.GlowstoneHoe.name=Zappa di luminite
+item.GlowstoneSword.name=Spada di luminite
 
 //Steel
-item.SteelHelmet.name=Steel Helmet
-item.SteelChestplate.name=Steel Chestplate
-item.SteelLeggings.name=Steel Leggings
-item.SteelBoots.name=Steel Boots
-item.SteelPaxel.name=Steel Paxel
-item.SteelPickaxe.name=Steel Pickaxe
-item.SteelAxe.name=Steel Axe
-item.SteelShovel.name=Steel Shovel
-item.SteelHoe.name=Steel Hoe
-item.SteelSword.name=Steel Sword
+item.SteelHelmet.name=Elmo d'acciaio
+item.SteelChestplate.name=Corazza d'acciaio
+item.SteelLeggings.name=Gambiera d'acciaio
+item.SteelBoots.name=Stivali d'acciaio
+item.SteelPaxel.name=Paxel d'acciaio
+item.SteelPickaxe.name=Piccone d'acciaio
+item.SteelAxe.name=Ascia d'acciaio
+item.SteelShovel.name=Pala d'acciaio
+item.SteelHoe.name=Zappa d'acciaio
+item.SteelSword.name=Spada d'acciaio
 
 //Config Gui
-mekanism.configgui.ctgy.tools.general=General
-mekanism.configgui.ctgy.tools.armor=Armor Balance
-mekanism.configgui.ctgy.tools.tools=Tools Balance
+mekanism.configgui.ctgy.tools.general=Generale
+mekanism.configgui.ctgy.tools.armor=Equilibrio delle armature
+mekanism.configgui.ctgy.tools.tools=Equilibrio degli attrezzi
 
 //Config Tooltips
-mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
-mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
-mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
+mekanism.configgui.ctgy.tools.general.tooltip=Impostazioni riguardo alle configurazioni generali di MekanismTools
+mekanism.configgui.ctgy.tools.armor.tooltip=Impostazioni riguardo ai valori di protezione ed equilibrio delle armature di MekanismTools
+mekanism.configgui.ctgy.tools.tools.tooltip=Impostazioni riguardo ai valori di efficienza ed equilibrio degli attrezzi di MekanismTools
