@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,6 @@ import mekanism.client.render.tileentity.RenderPortableTank;
 import mekanism.client.render.tileentity.RenderSalinationController;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.base.ISpecialBounds;
-import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -152,7 +152,7 @@ public class MekanismRenderer
 		}
 	}
 	
-	public static void loadDynamicTextures(IIconRegister register, String name, IIcon def, IIcon[] textures)
+	public static void loadDynamicTextures(IIconRegister register, String name, IIcon[] textures, DefIcon... defaults)
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -168,13 +168,59 @@ public class MekanismRenderer
 					textures[side.ordinal()+6] = register.registerIcon(texOn);
 				}
 				else {
-					textures[side.ordinal()+6] = register.registerIcon(tex);
+					boolean found = false;
+					
+					for(DefIcon def : defaults)
+					{
+						if(def.icons.contains(side.ordinal()+6))
+						{
+							textures[side.ordinal()+6] = def.defIcon;
+							found = true;
+						}
+					}
+					
+					if(!found)
+					{
+						textures[side.ordinal()+6] = register.registerIcon(tex);
+					}
 				}
 			}
 			else {
-				textures[side.ordinal()] = def;
-				textures[side.ordinal()+6] = def;
+				for(DefIcon def : defaults)
+				{
+					if(def.icons.contains(side.ordinal()))
+					{
+						textures[side.ordinal()] = def.defIcon;
+					}
+					
+					if(def.icons.contains(side.ordinal()+6))
+					{
+						textures[side.ordinal()+6] = def.defIcon;
+					}
+				}
 			}
+		}
+	}
+	
+	public static class DefIcon
+	{
+		public IIcon defIcon;
+		
+		public List<Integer> icons = new ArrayList<Integer>();
+		
+		public DefIcon(IIcon icon, int... is)
+		{
+			defIcon = icon;
+			
+			for(int i : is)
+			{
+				icons.add(i);
+			}
+		}
+		
+		public static DefIcon getAll(IIcon icon)
+		{
+			return new DefIcon(icon, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		}
 	}
     

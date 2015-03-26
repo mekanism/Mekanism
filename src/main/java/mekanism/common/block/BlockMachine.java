@@ -15,6 +15,8 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DefIcon;
+import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -154,9 +156,10 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  *
  */
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider
+public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][16];
+	public IIcon[][][] factoryIcons = new IIcon[4][16][16];
 	
 	public IIcon BASE_ICON;
 
@@ -176,31 +179,62 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	public void registerBlockIcons(IIconRegister register)
 	{
 		BASE_ICON = register.registerIcon("mekanism:SteelCasing");
+		DefIcon def = DefIcon.getAll(BASE_ICON);
 		
 		switch(blockType)
 		{
 			case MACHINE_BLOCK_1:
-				MekanismRenderer.loadDynamicTextures(register, MachineType.ENRICHMENT_CHAMBER.name, BASE_ICON, icons[0]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.OSMIUM_COMPRESSOR.name, BASE_ICON, icons[1]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.COMBINER.name, BASE_ICON, icons[2]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.CRUSHER.name, BASE_ICON, icons[3]);
-				MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + MachineType.BASIC_FACTORY.name, register.registerIcon("mekanism:BasicFactorySide"), icons[5]);
-				MekanismRenderer.loadDynamicTextures(register, BaseTier.ADVANCED.getName() + MachineType.ADVANCED_FACTORY.name, register.registerIcon("mekanism:AdvancedFactorySide"), icons[6]);
-				MekanismRenderer.loadDynamicTextures(register, BaseTier.ELITE.getName() + MachineType.ELITE_FACTORY.name, register.registerIcon("mekanism:EliteFactorySide"), icons[7]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER.name, BASE_ICON, icons[9]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.ENERGIZED_SMELTER.name, BASE_ICON, icons[10]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.ENRICHMENT_CHAMBER.name, icons[0], def);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.OSMIUM_COMPRESSOR.name, icons[1], def);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.COMBINER.name, icons[2], def);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.CRUSHER.name, icons[3], def);
+				
+				for(RecipeType type : RecipeType.values())
+				{
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + type.getUnlocalizedName() + MachineType.BASIC_FACTORY.name, factoryIcons[0][type.ordinal()], new DefIcon(register.registerIcon("mekanism:BasicFactoryFront"), 2), 
+							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), new DefIcon(register.registerIcon("mekanism:BasicFactoryBottom"), 0), new DefIcon(register.registerIcon("mekanism:BasicFactorySide"), 3, 4, 5));
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.ADVANCED.getName() + type.getUnlocalizedName() + MachineType.ADVANCED_FACTORY.name, factoryIcons[1][type.ordinal()], new DefIcon(register.registerIcon("mekanism:AdvancedFactoryFront"), 2), 
+							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), new DefIcon(register.registerIcon("mekanism:AdvancedFactoryBottom"), 0), new DefIcon(register.registerIcon("mekanism:AdvancedFactorySide"), 3, 4, 5));
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.ELITE.getName() + type.getUnlocalizedName() + MachineType.ELITE_FACTORY.name, factoryIcons[2][type.ordinal()], new DefIcon(register.registerIcon("mekanism:EliteFactoryFront"), 2), 
+							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), new DefIcon(register.registerIcon("mekanism:EliteFactoryBottom"), 0), new DefIcon(register.registerIcon("mekanism:EliteFactorySide"), 3, 4, 5));
+				}
+				
+				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER.name, icons[9], def);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.ENERGIZED_SMELTER.name, icons[10], def);
 				icons[11][0] = register.registerIcon("mekanism:Teleporter");
 				break;
 			case MACHINE_BLOCK_2:
-				MekanismRenderer.loadDynamicTextures(register, MachineType.CHEMICAL_INJECTION_CHAMBER.name, BASE_ICON, icons[3]);
-				MekanismRenderer.loadDynamicTextures(register, MachineType.PRECISION_SAWMILL.name, BASE_ICON, icons[5]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.CHEMICAL_INJECTION_CHAMBER.name, icons[3], def);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.PRECISION_SAWMILL.name, icons[5], def);
 				break;
 			case MACHINE_BLOCK_3:
 				icons[0][0] = register.registerIcon("mekanism:AmbientAccumulator");
 				icons[2][0] = BASE_ICON;
-				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR.name, register.registerIcon("mekanism:OredictionificatorSide"), icons[3]);
+				MekanismRenderer.loadDynamicTextures(register, MachineType.OREDICTIONIFICATOR.name, icons[3], DefIcon.getAll(register.registerIcon("mekanism:OredictionificatorSide")));
 				break;
 		}
+	}
+	
+	@Override
+	public IIcon getIcon(ItemStack stack, int side)
+	{
+		MachineType type = MachineType.get(stack);
+		ItemBlockMachine item = (ItemBlockMachine)stack.getItem();
+		
+		if(type == MachineType.BASIC_FACTORY)
+		{
+			return factoryIcons[0][item.getRecipeType(stack)][side];
+		}
+		else if(type == MachineType.ADVANCED_FACTORY)
+		{
+			return factoryIcons[1][item.getRecipeType(stack)][side];
+		}
+		else if(type == MachineType.ELITE_FACTORY)
+		{
+			return factoryIcons[2][item.getRecipeType(stack)][side];
+		}
+		
+		return getIcon(side, stack.getItemDamage());
 	}
 
 	@Override
@@ -361,12 +395,9 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					case 1:
 					case 2:
 					case 3:
-					case 5:
-					case 6:
-					case 7:
 					case 9:
 					case 10:
-						return icons[meta][side == 3 ? 2 : (side == 2 ? 3 : side)];
+						return icons[meta][side];
 					default:
 						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
@@ -375,7 +406,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				{
 					case 3:
 					case 5:
-						return icons[meta][side == 3 ? 2 : (side == 2 ? 3 : side)];
+						return icons[meta][side];
 					default:
 						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
@@ -383,7 +414,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				switch(meta)
 				{
 					case 3:
-						return icons[meta][side == 3 ? 2 : (side == 2 ? 3 : side)];
+						return icons[meta][side];
 					default:
 						return icons[meta][0] != null ? icons[meta][0] : BASE_ICON;
 				}
@@ -408,13 +439,17 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					case 1:
 					case 2:
 					case 3:
-					case 5:
-					case 6:
-					case 7:
 					case 9:
 					case 10:
 						boolean active = MekanismUtils.isActive(world, x, y, z);
 						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
+					case 5:
+					case 6:
+					case 7:
+						TileEntityFactory factory = (TileEntityFactory)tileEntity;
+						active = MekanismUtils.isActive(world, x, y, z);
+						
+						return factoryIcons[factory.tier.ordinal()][factory.recipeType.ordinal()][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					default:
 						return icons[meta][0];
 				}
@@ -624,6 +659,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 					return false;
 			}
 		}
+		
 		return false;
 	}
 

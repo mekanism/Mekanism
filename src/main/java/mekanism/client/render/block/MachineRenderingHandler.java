@@ -227,6 +227,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			solarNeutronActivator.renderAll();
 		}
 		else {
+			GL11.glRotatef(-90F, 0.0F, 1.0F, 0.0F);
 			MekanismRenderer.renderItem(renderer, metadata, block);
 		}
 

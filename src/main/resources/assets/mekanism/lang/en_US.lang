@@ -482,14 +482,16 @@ gui.configuration.strictInput=Strict Input
 gui.rotaryCondensentrator.toggleOperation=Toggle operation
 
 gui.factory.secondaryEnergy=Secondary energy
-gui.factory.smelting=Smelting
-gui.factory.enriching=Enriching
-gui.factory.crushing=Crushing
-gui.factory.compressing=Compressing
-gui.factory.combining=Combining
-gui.factory.purifying=Purifying
-gui.factory.injecting=Injecting
 gui.factory.autoSort=Auto-sort
+
+//Recipe types
+gui.factory.Smelting=Smelting
+gui.factory.Enriching=Enriching
+gui.factory.Crushing=Crushing
+gui.factory.Compressing=Compressing
+gui.factory.Combining=Combining
+gui.factory.Purifying=Purifying
+gui.factory.Injecting=Injecting
 
 gui.seismicReader.short=S. Reader
 gui.seismicReader.solids=Solids

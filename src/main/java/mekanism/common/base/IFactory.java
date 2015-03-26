@@ -44,13 +44,13 @@ public interface IFactory
 
 	public static enum RecipeType
 	{
-		SMELTING("smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, false, Recipe.ENERGIZED_SMELTER),
-		ENRICHING("enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, false, Recipe.ENRICHMENT_CHAMBER),
-		CRUSHING("crushing", "crusher", MachineType.CRUSHER.getStack(), false, false, Recipe.CRUSHER),
-		COMPRESSING("compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
-		COMBINING("combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
-		PURIFYING("purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
-		INJECTING("injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER);
+		SMELTING("Smelting", "smelter", MachineType.ENERGIZED_SMELTER.getStack(), false, false, Recipe.ENERGIZED_SMELTER),
+		ENRICHING("Enriching", "enrichment", MachineType.ENRICHMENT_CHAMBER.getStack(), false, false, Recipe.ENRICHMENT_CHAMBER),
+		CRUSHING("Crushing", "crusher", MachineType.CRUSHER.getStack(), false, false, Recipe.CRUSHER),
+		COMPRESSING("Compressing", "compressor", MachineType.OSMIUM_COMPRESSOR.getStack(), true, false, Recipe.OSMIUM_COMPRESSOR),
+		COMBINING("Combining", "combiner", MachineType.COMBINER.getStack(), true, false, Recipe.COMBINER),
+		PURIFYING("Purifying", "purifier", MachineType.PURIFICATION_CHAMBER.getStack(), true, true, Recipe.PURIFICATION_CHAMBER),
+		INJECTING("Injecting", "injection", MachineType.CHEMICAL_INJECTION_CHAMBER.getStack(), true, true, Recipe.CHEMICAL_INJECTION_CHAMBER);
 
 		private String name;
 		private ResourceLocation sound;
@@ -185,8 +185,13 @@ public interface IFactory
 		{
 			return stack;
 		}
+		
+		public String getUnlocalizedName()
+		{
+			return name;
+		}
 
-		public String getName()
+		public String getLocalizedName()
 		{
 			return MekanismUtils.localize("gui.factory." + name);
 		}

@@ -152,7 +152,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			String tier = type == MachineType.BASIC_FACTORY ? BaseTier.BASIC.getLocalizedName() : (type == MachineType.ADVANCED_FACTORY ? 
 					BaseTier.ADVANCED.getLocalizedName() : BaseTier.ELITE.getLocalizedName());
 			
-			return tier + " " + RecipeType.values()[getRecipeType(itemstack)].getName() + " " + super.getItemStackDisplayName(itemstack);
+			return tier + " " + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName() + " " + super.getItemStackDisplayName(itemstack);
 		}
 		
 		return super.getItemStackDisplayName(itemstack);
@@ -169,6 +169,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(type == MachineType.PORTABLE_TANK)
 			{
 				FluidStack fluidStack = getFluidStack(itemstack);
+				
 				if(fluidStack != null)
 				{
 					list.add(EnumColor.PINK + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
@@ -182,7 +183,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 		{
 			if(type == MachineType.BASIC_FACTORY || type == MachineType.ADVANCED_FACTORY || type == MachineType.ELITE_FACTORY)
 			{
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getName());
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.recipeType") + ": " + EnumColor.GREY + RecipeType.values()[getRecipeType(itemstack)].getLocalizedName());
 			}
 
 			if(type == MachineType.ELECTRIC_CHEST)
