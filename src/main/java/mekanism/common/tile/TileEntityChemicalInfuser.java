@@ -49,7 +49,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public int updateDelay;
 
-	public int gasOutput = 16;
+	public int gasOutput = 256;
 
 	public boolean isActive;
 
