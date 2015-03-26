@@ -523,6 +523,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				
 				if(machine == MachineType.BASIC_FACTORY || machine == MachineType.ADVANCED_FACTORY || machine == MachineType.ELITE_FACTORY)
 				{
+					GL11.glRotatef(-90F, 0.0F, 1.0F, 0.0F);
 					MekanismRenderer.renderCustomItem(((RenderBlocks)data[0]), item);
 				}
 				else {

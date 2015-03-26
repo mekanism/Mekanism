@@ -222,6 +222,18 @@ public class MekanismRenderer
 		{
 			return new DefIcon(icon, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		}
+		
+		public static DefIcon getActivePair(IIcon icon, int... is)
+		{
+			DefIcon ret = new DefIcon(icon, is);
+			
+			for(int i : is)
+			{
+				ret.icons.add(i+6);
+			}
+			
+			return ret;
+		}
 	}
     
 	public static class Model3D

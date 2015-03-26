@@ -191,12 +191,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				
 				for(RecipeType type : RecipeType.values())
 				{
-					MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + type.getUnlocalizedName() + MachineType.BASIC_FACTORY.name, factoryIcons[0][type.ordinal()], new DefIcon(register.registerIcon("mekanism:BasicFactoryFront"), 2), 
-							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), new DefIcon(register.registerIcon("mekanism:BasicFactoryBottom"), 0), new DefIcon(register.registerIcon("mekanism:BasicFactorySide"), 3, 4, 5));
-					MekanismRenderer.loadDynamicTextures(register, BaseTier.ADVANCED.getName() + type.getUnlocalizedName() + MachineType.ADVANCED_FACTORY.name, factoryIcons[1][type.ordinal()], new DefIcon(register.registerIcon("mekanism:AdvancedFactoryFront"), 2), 
-							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), new DefIcon(register.registerIcon("mekanism:AdvancedFactoryBottom"), 0), new DefIcon(register.registerIcon("mekanism:AdvancedFactorySide"), 3, 4, 5));
-					MekanismRenderer.loadDynamicTextures(register, BaseTier.ELITE.getName() + type.getUnlocalizedName() + MachineType.ELITE_FACTORY.name, factoryIcons[2][type.ordinal()], new DefIcon(register.registerIcon("mekanism:EliteFactoryFront"), 2), 
-							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), new DefIcon(register.registerIcon("mekanism:EliteFactoryBottom"), 0), new DefIcon(register.registerIcon("mekanism:EliteFactorySide"), 3, 4, 5));
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.BASIC.getName() + type.getUnlocalizedName() + MachineType.BASIC_FACTORY.name, factoryIcons[0][type.ordinal()], DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactoryFront"), 2), 
+							new DefIcon(register.registerIcon("mekanism:BasicFactoryTop"), 1), DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactoryBottom"), 0), DefIcon.getActivePair(register.registerIcon("mekanism:BasicFactorySide"), 3, 4, 5));
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.ADVANCED.getName() + type.getUnlocalizedName() + MachineType.ADVANCED_FACTORY.name, factoryIcons[1][type.ordinal()], DefIcon.getActivePair(register.registerIcon("mekanism:AdvancedFactoryFront"), 2), 
+							new DefIcon(register.registerIcon("mekanism:AdvancedFactoryTop"), 1), DefIcon.getActivePair(register.registerIcon("mekanism:AdvancedFactoryBottom"), 0), DefIcon.getActivePair(register.registerIcon("mekanism:AdvancedFactorySide"), 3, 4, 5));
+					MekanismRenderer.loadDynamicTextures(register, BaseTier.ELITE.getName() + type.getUnlocalizedName() + MachineType.ELITE_FACTORY.name, factoryIcons[2][type.ordinal()], DefIcon.getActivePair(register.registerIcon("mekanism:EliteFactoryFront"), 2), 
+							new DefIcon(register.registerIcon("mekanism:EliteFactoryTop"), 1), DefIcon.getActivePair(register.registerIcon("mekanism:EliteFactoryBottom"), 0), DefIcon.getActivePair(register.registerIcon("mekanism:EliteFactorySide"), 3, 4, 5));
 				}
 				
 				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER.name, icons[9], def);
