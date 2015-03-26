@@ -42,7 +42,6 @@ public class MultiblockManager<T extends SynchronizedData<T>>
 
 			if(tileEntity != null)
 			{
-				System.out.println("RESET " + Coord4D.get(tileEntity));
 				tileEntity.cachedData = tileEntity.getNewCache();
 				tileEntity.cachedID = -1;
 			}

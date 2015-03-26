@@ -188,17 +188,17 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.clientActive = clientActive;
 		factory.isActive = isActive;
 		factory.updateDelay = updateDelay;
-		factory.recipeType = recipeType;
 		factory.prevEnergy = prevEnergy;
 		factory.gasTank.setGas(gasTank.getGas());
 		factory.sorting = sorting;
 		factory.controlType = controlType;
-		factory.upgradeComponent = upgradeComponent;
-		factory.upgradeComponent.tileEntity = factory;
-		factory.ejectorComponent = ejectorComponent;
-		factory.ejectorComponent.tileEntity = factory;
+		factory.upgradeComponent.readFrom(upgradeComponent);
+		factory.ejectorComponent.readFrom(ejectorComponent);
+		factory.configComponent.readFrom(configComponent);
 		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
+		factory.recipeType = recipeType;
+		factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{
@@ -217,7 +217,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 		}
 		
-		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
 		{
 			factory.recalculateUpgradables(upgrade);
 		}

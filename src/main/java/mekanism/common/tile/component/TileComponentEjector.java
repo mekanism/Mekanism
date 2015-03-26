@@ -48,6 +48,16 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 		tile.components.add(this);
 	}
+	
+	public void readFrom(TileComponentEjector ejector)
+	{
+		strictInput = ejector.strictInput;
+		outputColor = ejector.outputColor;
+		inputColors = ejector.inputColors;
+		tickDelay = ejector.tickDelay;
+		sideData = ejector.sideData;
+		trackers = ejector.trackers;
+	}
 
 	private List<ForgeDirection> getTrackedOutputs(int index, List<ForgeDirection> dirs)
 	{

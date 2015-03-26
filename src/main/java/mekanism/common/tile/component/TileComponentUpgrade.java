@@ -43,6 +43,14 @@ public class TileComponentUpgrade implements ITileComponent
 
 		tile.components.add(this);
 	}
+	
+	public void readFrom(TileComponentUpgrade upgrade)
+	{
+		upgrades = upgrade.upgrades;
+		supported = upgrade.supported;
+		upgradeSlot = upgrade.upgradeSlot;
+		upgradeTicks = upgrade.upgradeTicks;
+	}
 
 	@Override
 	public void tick()

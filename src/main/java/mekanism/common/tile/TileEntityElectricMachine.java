@@ -83,21 +83,18 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		
 		//Noisy
 		factory.soundURL = soundURL;
-
 		
 		//Machine
 		factory.progress[0] = operatingTicks;
-		factory.updateDelay = updateDelay;
-		factory.isActive = isActive;
 		factory.clientActive = clientActive;
+		factory.isActive = isActive;
+		factory.updateDelay = updateDelay;
 		factory.controlType = controlType;
 		factory.prevEnergy = prevEnergy;
-		factory.upgradeComponent = upgradeComponent;
+		factory.upgradeComponent.readFrom(upgradeComponent);
 		factory.upgradeComponent.setUpgradeSlot(0);
-		factory.upgradeComponent.tileEntity = factory;
-		factory.ejectorComponent = ejectorComponent;
+		factory.ejectorComponent.readFrom(ejectorComponent);
 		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
-		factory.ejectorComponent.tileEntity = factory;
 		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
@@ -107,7 +104,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		factory.inventory[5+3] = inventory[2];
 		factory.inventory[0] = inventory[3];
 		
-		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
 		{
 			factory.recalculateUpgradables(upgrade);
 		}

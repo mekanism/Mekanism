@@ -41,6 +41,14 @@ public class TileComponentConfig implements ITileComponent
 		tile.components.add(this);
 	}
 	
+	public void readFrom(TileComponentConfig config)
+	{
+		sideConfigs = config.sideConfigs;
+		ejecting = config.ejecting;
+		canEject = config.canEject;
+		transmissions = config.transmissions;
+	}
+	
 	public void addSupported(TransmissionType type)
 	{
 		if(!transmissions.contains(type))
@@ -179,6 +187,15 @@ public class TileComponentConfig implements ITileComponent
 	@Override
 	public void read(ByteBuf dataStream) 
 	{
+		transmissions.clear();
+		
+		int amount = dataStream.readInt();
+		
+		for(int i = 0; i < amount; i++)
+		{
+			transmissions.add(TransmissionType.values()[dataStream.readInt()]);
+		}
+		
 		for(TransmissionType type : transmissions)
 		{
 			byte[] array = new byte[6];
@@ -204,6 +221,13 @@ public class TileComponentConfig implements ITileComponent
 	@Override
 	public void write(ArrayList data) 
 	{
+		data.add(transmissions.size());
+		
+		for(TransmissionType type : transmissions)
+		{
+			data.add(type.ordinal());
+		}
+		
 		for(TransmissionType type : transmissions)
 		{
 			data.add(sideConfigs.get(type.ordinal()));
