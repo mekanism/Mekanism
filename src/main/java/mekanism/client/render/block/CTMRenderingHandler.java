@@ -75,6 +75,8 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 				
 				return true;
 			}
+			
+			return false;
 		}
 		
 		return rendererOld.renderStandardBlock(block, x, y, z);
