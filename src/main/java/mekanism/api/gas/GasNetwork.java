@@ -7,7 +7,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -16,7 +15,6 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitterNetwork;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.ListUtils;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -328,27 +326,21 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	{
 		Set<IGridTransmitter<GasNetwork>> iterTubes = (Set<IGridTransmitter<GasNetwork>>)transmitters.clone();
 		Iterator<IGridTransmitter<GasNetwork>> it = iterTubes.iterator();
-		boolean networkChanged = false;
 
 		while(it.hasNext())
 		{
-			IGridTransmitter<GasNetwork> conductor = (IGridTransmitter<GasNetwork>)it.next();
+			IGridTransmitter<GasNetwork> conductor = it.next();
 
 			if(conductor == null || conductor.getTile().isInvalid())
 			{
-				it.remove();
-				networkChanged = true;
-				transmitters.remove(conductor);
+				removeTransmitter(conductor);
 			}
 			else {
 				conductor.setTransmitterNetwork(this);
 			}
 		}
-
-		if(networkChanged) 
-		{
-			updateCapacity();
-		}
+		
+		needsUpdate = true;
 	}
 	
 	@Override

@@ -137,7 +137,6 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	{
 		Set<IGridTransmitter<InventoryNetwork>> iterPipes = (Set<IGridTransmitter<InventoryNetwork>>)transmitters.clone();
 		Iterator it = iterPipes.iterator();
-		boolean networkChanged = false;
 
 		while(it.hasNext())
 		{
@@ -145,19 +144,14 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 
 			if(conductor == null || conductor.getTile().isInvalid())
 			{
-				it.remove();
-				networkChanged = true;
-				transmitters.remove(conductor);
+				removeTransmitter(conductor);
 			}
 			else {
 				conductor.setTransmitterNetwork(this);
 			}
 		}
-
-		if(networkChanged) 
-		{
-			updateCapacity();
-		}
+		
+		needsUpdate = true;
 	}
 	
 	@Override

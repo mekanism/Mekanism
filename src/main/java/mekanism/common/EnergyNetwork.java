@@ -1,5 +1,8 @@
 package mekanism.common;
 
+import ic2.api.energy.EnergyNet;
+import ic2.api.energy.tile.IEnergySink;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,7 +10,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -19,16 +21,12 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.api.util.ListUtils;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
-
-import cofh.api.energy.IEnergyReceiver;
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
 
 public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 {
@@ -304,7 +302,6 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 	{
 		Set<IGridTransmitter<EnergyNetwork>> iterCables = (Set<IGridTransmitter<EnergyNetwork>>)transmitters.clone();
 		Iterator<IGridTransmitter<EnergyNetwork>> it = iterCables.iterator();
-		boolean networkChanged = false;
 
 		while(it.hasNext())
 		{
@@ -312,18 +309,11 @@ public class EnergyNetwork extends DynamicNetwork<TileEntity, EnergyNetwork>
 
 			if(conductor == null || conductor.getTile().isInvalid())
 			{
-				it.remove();
-				transmitters.remove(conductor);
-				networkChanged = true;
+				removeTransmitter(conductor);
 			}
 			else {
 				conductor.setTransmitterNetwork(this);
 			}
-		}
-
-		if(networkChanged) 
-		{
-			updateCapacity();
 		}
 
 		needsUpdate = true;
