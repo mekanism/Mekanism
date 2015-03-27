@@ -237,29 +237,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
-
-		if(MachineType.get(block, metadata) != null)
-		{
-			if(!MachineType.get(block, metadata).hasModel)
-			{
-				TileEntity tile = world.getTileEntity(x, y, z);
-				
-				if(tile instanceof TileEntityBasicBlock)
-				{
-					if(((TileEntityBasicBlock)tile).facing >= 2)
-					{
-						renderer.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
-						renderer.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
-					}
-				}
-				
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.setRenderBoundsFromBlock(block);
-				return true;
-			}
-		}
-
+		//Handled by CTMRenderingHandler
 		return false;
 	}
 

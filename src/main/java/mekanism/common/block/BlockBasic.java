@@ -148,6 +148,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		switch(blockType)
 		{
 			case BASIC_BLOCK_1:
+				ctms[7][0] = new CTMData("ctm/TeleporterFrame", this, Arrays.asList(7)).addOtherBlockConnectivities(MekanismBlocks.MachineBlock, Arrays.asList(11)).registerIcons(register);
 				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
 				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
 				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
@@ -166,7 +167,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				MekanismRenderer.loadDynamicTextures(register, "Bin", icons[6], DefIcon.getActivePair(register.registerIcon("mekanism:BinSide"), 3, 4, 5),
 						new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
 				
-				icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
+				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
 				icons[9][0] = ctms[9][0].mainTextureData.icon;
 				icons[10][0] = ctms[10][0].mainTextureData.icon;

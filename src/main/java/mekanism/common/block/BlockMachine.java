@@ -1,6 +1,7 @@
 package mekanism.common.block;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -17,11 +18,13 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DefIcon;
 import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
+import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.IBlockCTM;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IElectricChest;
 import mekanism.common.base.IFactory;
@@ -156,10 +159,12 @@ import dan200.computercraft.api.peripheral.IPeripheralProvider;
  *
  */
 @Interface(iface = "dan200.computercraft.api.peripheral.IPeripheralProvider", modid = "ComputerCraft")
-public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider, ICustomBlockIcon
+public class BlockMachine extends BlockContainer implements ISpecialBounds, IPeripheralProvider, IBlockCTM, ICustomBlockIcon
 {
 	public IIcon[][] icons = new IIcon[16][16];
 	public IIcon[][][] factoryIcons = new IIcon[4][16][16];
+	
+	public CTMData[][] ctms = new CTMData[16][4];
 	
 	public IIcon BASE_ICON;
 
@@ -184,6 +189,8 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		switch(blockType)
 		{
 			case MACHINE_BLOCK_1:
+				ctms[11][0] = new CTMData("ctm/Teleporter", this, Arrays.asList(11)).addOtherBlockConnectivities(MekanismBlocks.BasicBlock, Arrays.asList(7)).registerIcons(register);
+				
 				MekanismRenderer.loadDynamicTextures(register, MachineType.ENRICHMENT_CHAMBER.name, icons[0], def);
 				MekanismRenderer.loadDynamicTextures(register, MachineType.OSMIUM_COMPRESSOR.name, icons[1], def);
 				MekanismRenderer.loadDynamicTextures(register, MachineType.COMBINER.name, icons[2], def);
@@ -210,7 +217,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 				
 				MekanismRenderer.loadDynamicTextures(register, MachineType.PURIFICATION_CHAMBER.name, icons[9], def);
 				MekanismRenderer.loadDynamicTextures(register, MachineType.ENERGIZED_SMELTER.name, icons[10], def);
-				icons[11][0] = register.registerIcon("mekanism:Teleporter");
+				icons[11][0] = ctms[11][0].mainTextureData.icon;
 				break;
 			case MACHINE_BLOCK_2:
 				MekanismRenderer.loadDynamicTextures(register, MachineType.CHEMICAL_INJECTION_CHAMBER.name, icons[3], def);
@@ -710,7 +717,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	@Override
 	public int getRenderType()
 	{
-		return Mekanism.proxy.MACHINE_RENDER_ID;
+		return Mekanism.proxy.CTM_RENDER_ID;
 	}
 
 	@Override
@@ -1381,5 +1388,16 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
+	{
+		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))
+		{
+			return ctms[meta][1];
+		}
+		
+		return ctms[meta][0];
 	}
 }

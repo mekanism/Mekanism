@@ -5,9 +5,11 @@ import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.CTMData;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.tile.TileEntityBasicBlock;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 
@@ -51,6 +53,28 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 			rendererCTM.rendererOld = rendererOld;
 
 			return rendererCTM.renderStandardBlock(block, x, y, z);
+		}
+		
+		if(MachineType.get(block, meta) != null)
+		{
+			if(!MachineType.get(block, meta).hasModel)
+			{
+				TileEntity tile = world.getTileEntity(x, y, z);
+				
+				if(tile instanceof TileEntityBasicBlock)
+				{
+					if(((TileEntityBasicBlock)tile).facing >= 2)
+					{
+						rendererOld.uvRotateTop = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
+						rendererOld.uvRotateBottom = MekanismRenderer.directionMap[((TileEntityBasicBlock)tile).facing-2];
+					}
+				}
+				
+				rendererOld.renderStandardBlock(block, x, y, z);
+				rendererOld.setRenderBoundsFromBlock(block);
+				
+				return true;
+			}
 		}
 		
 		return rendererOld.renderStandardBlock(block, x, y, z);
