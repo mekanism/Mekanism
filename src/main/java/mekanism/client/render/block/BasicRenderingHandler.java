@@ -3,15 +3,15 @@ package mekanism.client.render.block;
 import mekanism.client.ClientProxy;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismBlocks;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
+
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
@@ -29,6 +29,7 @@ public class BasicRenderingHandler implements ISimpleBlockRenderingHandler
 				MekanismRenderer.blendOn();
 			}
 			
+			GL11.glRotatef(180, 0.0F, 1.0F, 0.0F);
 			MekanismRenderer.renderItem(renderer, metadata, block);
 			
 			if(block == MekanismBlocks.BasicBlock && metadata == 10)

@@ -50,7 +50,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -190,7 +189,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				amount = Integer.toString(inv.getItemCount());
 			}
 
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+			MekanismRenderer.glowOn();
 
 			if(itemStack != null)
 			{
@@ -229,6 +228,8 @@ public class ItemRenderingHandler implements IItemRenderer
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			}
+			
+			MekanismRenderer.glowOff();
 
 			if(amount != "")
 			{

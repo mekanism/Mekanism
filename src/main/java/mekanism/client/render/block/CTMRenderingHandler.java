@@ -6,7 +6,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.CTMData;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.tile.TileEntityBasicBlock;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.world.IBlockAccess;
