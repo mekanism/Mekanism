@@ -93,6 +93,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 				if(structure.fluidStored != null && structure.fluidStored.amount <= 0)
 				{
 					structure.fluidStored = null;
+					markDirty();
 				}
 				
 				manageInventory();
