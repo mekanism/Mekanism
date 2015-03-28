@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -15,7 +17,6 @@ import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,10 +31,15 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
-import io.netty.buffer.ByteBuf;
-
-public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IConfigurable, IFluidHandler, ISustainedTank
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implements IPeripheral, IConfigurable, IFluidHandler, ISustainedTank
 {
 	public Set<Coord4D> activeNodes = new HashSet<Coord4D>();
 	public Set<Coord4D> usedNodes = new HashSet<Coord4D>();
@@ -507,5 +513,51 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		return false;
+	}
+	
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String getType()
+	{
+		return getInventoryName();
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String[] getMethodNames()
+	{
+		return new String[] {"reset"};
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		switch(method)
+		{
+			case 0:
+				activeNodes.clear();
+				usedNodes.clear();
+				finishedCalc = false;
+				
+				return new Object[] {"Plenisher calculation reset."};
+			default:
+				return new Object[] {"Unknown command."};
+		}
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void attach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void detach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
 	}
 }

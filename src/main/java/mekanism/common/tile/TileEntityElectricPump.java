@@ -15,9 +15,9 @@ import mekanism.api.EnumColor;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.common.Upgrade;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedTank;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
@@ -39,8 +39,15 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
-public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+public class TileEntityElectricPump extends TileEntityElectricBlock implements IFluidHandler, ISustainedTank, IConfigurable, IRedstoneControl, IUpgradeTile, ITankManager, IPeripheral
 {
 	/** This pump's tank */
 	public FluidTank fluidTank = new FluidTank(10000);
@@ -260,6 +267,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		else {
 			fluidTank.setFluid(null);
 		}
+		
 		controlType = RedstoneControl.values()[dataStream.readInt()];
 
 		MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
@@ -279,6 +287,7 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 		else {
 			data.add(0);
 		}
+		
 		data.add(controlType.ordinal());
 
 		return data;
@@ -518,5 +527,48 @@ public class TileEntityElectricPump extends TileEntityElectricBlock implements I
 	public Object[] getTanks() 
 	{
 		return new Object[] {fluidTank};
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String getType()
+	{
+		return getInventoryName();
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String[] getMethodNames()
+	{
+		return new String[] {"reset"};
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		switch(method)
+		{
+			case 0:
+				recurringNodes.clear();
+				return new Object[] {"Pump calculation reset."};
+			default:
+				return new Object[] {"Unknown command."};
+		}
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void attach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void detach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
 	}
 }
