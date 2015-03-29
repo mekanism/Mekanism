@@ -262,17 +262,19 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 					{
 						Block b = world.getBlock(xPos, yPos, zPos);
 
-						if(yPos > 255)
+						if(yPos > 255 || !b.isReplaceable(world, xPos, yPos, zPos))
 						{
 							place = false;
 						}
-
-						if(!b.isAir(world, xPos, yPos, zPos) && !b.isReplaceable(world, xPos, yPos, zPos))
-						{
-							return false;
-						}
 					}
 				}
+			}
+		}
+		else if(type == MachineType.SOLAR_NEUTRON_ACTIVATOR)
+		{
+			if(y+1 > 255 || !world.getBlock(x, y+1, z).isReplaceable(world, x, y+1, z))
+			{
+				place = false;
 			}
 		}
 
