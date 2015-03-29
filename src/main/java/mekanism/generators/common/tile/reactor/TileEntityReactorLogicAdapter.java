@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -15,7 +17,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IPeripheral
 {
-	public ReactorLogic logicType;
+	public ReactorLogic logicType = ReactorLogic.DISABLED;
 	
 	public boolean activeCooled;
 	
@@ -164,16 +166,23 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	
 	public static enum ReactorLogic
 	{
-		DISABLED("disabled"),
-		READY("ready"),
-		CAPACITY("capacity"),
-		DEPLETED("depleted");
+		DISABLED("disabled", new ItemStack(Items.gunpowder)),
+		READY("ready", new ItemStack(Items.redstone)),
+		CAPACITY("capacity", new ItemStack(Items.redstone)),
+		DEPLETED("depleted", new ItemStack(Items.redstone));
 		
 		private String name;
+		private ItemStack renderStack;
 		
-		private ReactorLogic(String s)
+		private ReactorLogic(String s, ItemStack stack)
 		{
 			name = s;
+			renderStack = stack;
+		}
+		
+		public ItemStack getRenderStack()
+		{
+			return renderStack;
 		}
 		
 		public String getLocalizedName()

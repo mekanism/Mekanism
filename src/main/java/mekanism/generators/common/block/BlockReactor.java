@@ -213,9 +213,17 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			if(!entityplayer.isSneaking())
 			{
 				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, x, y, z);
+				return true;
 			}
-			
-			return true;
+		}
+		
+		if(tileEntity instanceof TileEntityReactorLogicAdapter)
+		{
+			if(!entityplayer.isSneaking())
+			{
+				entityplayer.openGui(MekanismGenerators.instance, ReactorBlockType.get(this, metadata).guiId, world, x, y, z);
+				return true;
+			}
 		}
 
 		return false;

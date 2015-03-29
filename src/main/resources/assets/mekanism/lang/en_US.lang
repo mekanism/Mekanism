@@ -465,6 +465,9 @@ gui.abundancy=Abundancy
 gui.nextItem=Next Item
 gui.lastItem=Last Item
 gui.oreDictCompat=Compatible OreDict Key
+gui.toggleCooling=Toggle Cooling Measurements
+gui.coolingMeasurements=Active cooling measurements
+gui.redstoneOutputMode=Redstone output mode
 
 gui.reactor.injectionRate=Injection Rate
 
