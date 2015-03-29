@@ -19,6 +19,12 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	
 	public boolean activeCooled;
 	
+	public TileEntityReactorLogicAdapter()
+	{
+		super();
+		fullName = "ReactorLogicAdapter";
+	}
+	
 	@Override
 	public boolean isFrame()
 	{
@@ -79,7 +85,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 			}
 			else if(type == 1)
 			{
-				int index = dataStream.readInt();
+				logicType = ReactorLogic.values()[dataStream.readInt()];
 			}
 			
 			return;
