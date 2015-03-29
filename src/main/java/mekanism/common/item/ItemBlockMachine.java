@@ -199,7 +199,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 
 			if(type.isElectric)
 			{
-				list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyStored(itemstack)));
+				list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 			}
 
 			if(hasTank(itemstack) && type != MachineType.PORTABLE_TANK)
@@ -934,13 +934,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public int getEnergyStored(ItemStack theItem)
 	{
-		return (int)(getEnergy(theItem)* general.TO_TE);
+		return (int)(getEnergy(theItem) * general.TO_TE);
 	}
 
 	@Override
 	public int getMaxEnergyStored(ItemStack theItem)
 	{
-		return (int)(getMaxEnergy(theItem)* general.TO_TE);
+		return (int)(getMaxEnergy(theItem) * general.TO_TE);
 	}
 
 	@Override
