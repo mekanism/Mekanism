@@ -788,6 +788,16 @@ dye.pink=Magenta
 dye.yellow=Yellow
 dye.white=White
 
+//Reactor Logic modes
+reactor.disabled=Disabled
+reactor.disabled.desc=Will not emit a redstone signal
+reactor.ready=Ready for Ignition
+reactor.ready.desc=Reactor has reached the required heat level to ignite
+reactor.capacity=Heat Capacity Met
+reactor.capacity.desc=The reactor's core heat capacity has been met
+reactor.depleted=Insufficient Fuel
+reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
+
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
