@@ -136,6 +136,7 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public void handlePacketData(ByteBuf dataStream)
 	{
 		super.handlePacketData(dataStream);
+		
 		setEnergy(dataStream.readDouble());
 	}
 
@@ -143,7 +144,9 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(getEnergy());
+		
 		return data;
 	}
 	

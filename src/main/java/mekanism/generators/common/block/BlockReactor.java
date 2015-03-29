@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
-import mekanism.client.ClientProxy;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -19,9 +18,9 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -36,11 +35,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
 
 public class BlockReactor extends BlockContainer implements IBlockCTM
 {
@@ -62,11 +59,12 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	{
 		if(this == GeneratorsBlocks.Reactor)
 		{
-			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOff").registerIcons(register);
-			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOn").registerIcons(register);
-			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
-			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
-			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3)).registerIcons(register);
+			ctms[0][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOff").registerIcons(register);
+			ctms[0][1] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).addSideOverride(ForgeDirection.UP, "ctm/ReactorControllerOn").registerIcons(register);
+			ctms[1][0] = new CTMData("ctm/ReactorFrame", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
+			ctms[2][0] = new CTMData("ctm/ReactorNeutronCapture", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
+			ctms[3][0] = new CTMData("ctm/ReactorPort", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
+			ctms[4][0] = new CTMData("ctm/ReactorLogicAdapter", this, Arrays.asList(0, 1, 2, 3, 4)).registerIcons(register);
 
 			icons[0][0] = ctms[0][0].sideOverrides[1].icon;
 			icons[0][1] = ctms[0][1].sideOverrides[1].icon;
@@ -74,6 +72,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			icons[1][0] = ctms[1][0].mainTextureData.icon;
 			icons[2][0] = ctms[2][0].mainTextureData.icon;
 			icons[3][0] = ctms[3][0].mainTextureData.icon;
+			icons[4][0] = ctms[4][0].mainTextureData.icon;
 		}
 		else if(this == GeneratorsBlocks.ReactorGlass)
 		{
@@ -321,9 +320,11 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side)
 	{
 		Coord4D obj = new Coord4D(x, y, z).getFromSide(ForgeDirection.getOrientation(side).getOpposite());
+		
 		if(this == GeneratorsBlocks.ReactorGlass)
 		{
 			int metadata = obj.getMetadata(world);
+			
 			switch(metadata)
 			{
 				case 0:
@@ -343,7 +344,8 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		CONTROLLER(GeneratorsBlocks.Reactor, 0, "ReactorController", 10, TileEntityReactorController.class),
 		FRAME(GeneratorsBlocks.Reactor, 1, "ReactorFrame", -1, TileEntityReactorFrame.class),
 		NEUTRON_CAPTURE(GeneratorsBlocks.Reactor, 2, "ReactorNeutronCapturePlate", 14, TileEntityReactorNeutronCapture.class),
-		PORT(GeneratorsBlocks.Reactor, 3, "ReactorInOutPort", -1, TileEntityReactorPort.class),
+		PORT(GeneratorsBlocks.Reactor, 3, "ReactorPort", -1, TileEntityReactorPort.class),
+		ADAPTER(GeneratorsBlocks.Reactor, 4, "ReactorLogicAdapter", 15, TileEntityReactorLogicAdapter.class),
 		GLASS(GeneratorsBlocks.ReactorGlass, 0, "ReactorGlass", -1, TileEntityReactorGlass.class),
 		LASER_FOCUS_MATRIX(GeneratorsBlocks.ReactorGlass, 1, "ReactorLaserFocusMatrix", -1, TileEntityReactorLaserFocusMatrix.class);
 

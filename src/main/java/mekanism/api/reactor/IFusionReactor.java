@@ -2,7 +2,7 @@ package mekanism.api.reactor;
 
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasTank;
-
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidTank;
 
 public interface IFusionReactor extends IHeatTransfer
@@ -60,4 +60,6 @@ public interface IFusionReactor extends IHeatTransfer
 	public int getSteamPerTick(boolean current);
 
 	public void updateTemperatures();
+	
+	public ItemStack[] getInventory();
 }

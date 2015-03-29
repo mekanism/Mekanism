@@ -814,7 +814,8 @@ tile.Generator.WindTurbine.name=Wind Turbine
 tile.Reactor.ReactorController.name=Reactor Controller
 tile.Reactor.ReactorFrame.name=Reactor Frame
 tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
-tile.Reactor.ReactorInOutPort.name=Reactor Port
+tile.Reactor.ReactorPort.name=Reactor Port
+tile.Reactor.ReactorLogicAdapter.name=Reactor Logic Adapter
 
 tile.ReactorGlass.ReactorGlass.name=Reactor Glass
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix
