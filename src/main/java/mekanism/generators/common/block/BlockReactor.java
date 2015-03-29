@@ -406,7 +406,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
 		world.setBlockToAir(x, y, z);
 
