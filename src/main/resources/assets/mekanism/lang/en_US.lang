@@ -457,6 +457,9 @@ gui.mult=Mult
 gui.chunk=Chunk
 gui.vibrating
 gui.abundancy=Abundancy
+gui.nextItem=Next Item
+gui.lastItem=Last Item
+gui.oreDictCompat=Compatible OreDict Key
 
 gui.reactor.injectionRate=Injection Rate
 

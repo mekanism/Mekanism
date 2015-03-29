@@ -134,6 +134,7 @@ public class GuiOredictionificator extends GuiMekanism
 				}
 
 				fontRendererObj.drawString(MekanismUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
+				renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
 			}
 		}
 		
