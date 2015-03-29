@@ -199,7 +199,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(dumpRight == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
 				{
-					leftTank.draw(output, true);
+					leftTank.draw(output-leftTank.getNeeded(), true);
 					
 					if(worldObj.rand.nextInt(3) == 2)
 					{
@@ -236,15 +236,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				
 				if(dumpRight == GasMode.DUMPING_EXCESS && rightTank.getNeeded() < output)
 				{
-					rightTank.draw(output, true);
+					rightTank.draw(output-rightTank.getNeeded(), true);
 					
 					if(worldObj.rand.nextInt(3) == 2)
 					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
+						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), new Range4D(Coord4D.get(this)));
 					}
 				}
 			}
-
 		}
 	}
 	
@@ -315,7 +314,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			double z = zCoord + (side.offsetZ == 0 ? 0.5 : Math.max(side.offsetZ, 0));
 
 			worldObj.spawnParticle("smoke", x, yCoord + 0.5, z, 0.0D, 0.0D, 0.0D);
-
 		}
 		else if(type == 1)
 		{
@@ -393,16 +391,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 
 		return InventoryUtils.EMPTY;
-	}
-
-	/**
-	 * Gets the scaled energy level for the GUI.
-	 * @param i - multiplier
-	 * @return
-	 */
-	public int getScaledEnergyLevel(int i)
-	{
-		return (int)(electricityStored*i / BASE_MAX_ENERGY);
 	}
 
 	@Override
@@ -511,9 +499,17 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	public ArrayList getParticlePacket(int type, ArrayList data)
 	{
 		super.getNetworkedData(data);
+		
 		data.add(1);
 		data.add(type);
+		
 		return data;
+	}
+	
+	@Override
+	public boolean canSetFacing(int side)
+	{
+		return side != 0 && side != 1;
 	}
 
 	@Override
