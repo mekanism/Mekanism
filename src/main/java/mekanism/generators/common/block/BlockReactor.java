@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import mekanism.api.Coord4D;
-import mekanism.client.ClientProxy;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
@@ -21,7 +20,6 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -36,11 +34,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.ModAPIManager;
+import buildcraft.api.tools.IToolWrench;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
 
 public class BlockReactor extends BlockContainer implements IBlockCTM
 {
@@ -404,7 +400,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 	public ItemStack dismantleBlock(World world, int x, int y, int z, boolean returnBlock)
 	{
-		ItemStack itemStack = getPickBlock(null, world, x, y, z);
+		ItemStack itemStack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
 
 		world.setBlockToAir(x, y, z);
 
