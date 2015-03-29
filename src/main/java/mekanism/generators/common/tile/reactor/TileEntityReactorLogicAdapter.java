@@ -3,23 +3,27 @@ package mekanism.generators.common.tile.reactor;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IPeripheral
 {
 	public ReactorLogic logicType = ReactorLogic.DISABLED;
 	
 	public boolean activeCooled;
+	
+	public boolean prevOutputting;
 	
 	public TileEntityReactorLogicAdapter()
 	{
@@ -28,19 +32,42 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	}
 	
 	@Override
+	public void onUpdate()
+	{
+		super.onUpdate();
+		
+		if(!worldObj.isRemote)
+		{
+			boolean outputting = checkMode();
+			
+			if(outputting != prevOutputting)
+			{
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+			}
+			
+			prevOutputting = outputting;
+		}
+	}
+	
+	@Override
 	public boolean isFrame()
 	{
 		return false;
 	}
 	
-	public boolean checkMode(ReactorLogic type)
+	public boolean checkMode()
 	{
+		if(worldObj.isRemote)
+		{
+			return prevOutputting;
+		}
+		
 		if(getReactor() == null || !getReactor().isFormed())
 		{
 			return false;
 		}
 		
-		switch(type)
+		switch(logicType)
 		{
 			case DISABLED:
 				return false;
@@ -97,6 +124,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		logicType = ReactorLogic.values()[dataStream.readInt()];
 		activeCooled = dataStream.readBoolean();
+		prevOutputting = dataStream.readBoolean();
 	}
 
 	@Override
@@ -106,6 +134,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		data.add(logicType.ordinal());
 		data.add(activeCooled);
+		data.add(prevOutputting);
 		
 		return data;
 	}
@@ -136,31 +165,49 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 	@Method(modid = "ComputerCraft")
 	public String[] getMethodNames()
 	{
-		List<String> ret = new ArrayList<String>();
-		
-		for(ReactorLogic type : ReactorLogic.values())
-		{
-			if(type != ReactorLogic.DISABLED)
-			{
-				ret.add(type.name);
-			}
-		}
-		
-		return (String[])ret.toArray();
+		return new String[] {"isIgnited", "canIgnite", "getPlasmaHeat", "getMaxPlasmaHeat", "getCaseHeat", "getMaxCaseHeat", "getInjectionRate", "setInjectionRate", "hasFuel"};
 	}
 
 	@Override
 	@Method(modid = "ComputerCraft")
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
 	{
-		if(method >= 0 && method < ReactorLogic.values().length-1)
+		if(getReactor() == null || !getReactor().isFormed())
 		{
-			ReactorLogic type = ReactorLogic.values()[method+1];
-			
-			return new Object[] {checkMode(type)};
+			return new Object[] {"Unformed."};
 		}
-		else {
-			return new Object[] {"Unknown command."};
+		
+		switch(method)
+		{
+			case 0:
+				return new Object[] {getReactor().isBurning()};
+			case 1:
+				return new Object[] {getReactor().getPlasmaTemp() >= getReactor().getIgnitionTemperature(activeCooled)};
+			case 2:
+				return new Object[] {getReactor().getPlasmaTemp()};
+			case 3:
+				return new Object[] {getReactor().getMaxPlasmaTemperature(activeCooled)};
+			case 4:
+				return new Object[] {getReactor().getCaseTemp()};
+			case 5:
+				return new Object[] {getReactor().getMaxCasingTemperature(activeCooled)};
+			case 6:
+				return new Object[] {getReactor().getInjectionRate()};
+			case 7:
+				if(arguments[0] instanceof Integer)
+				{
+					getReactor().setInjectionRate((Integer)arguments[0]);
+					return new Object[] {"Injection rate set."};
+				}
+				else {
+					return new Object[] {"Invalid parameters."};
+				}
+			case 8:
+				return new Object[] {(getReactor().getDeuteriumTank().getStored() >= getReactor().getInjectionRate()/2) &&
+						(getReactor().getTritiumTank().getStored() >= getReactor().getInjectionRate()/2)};
+			default:
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
+				return new Object[] {"Unknown command."};
 		}
 	}
 	

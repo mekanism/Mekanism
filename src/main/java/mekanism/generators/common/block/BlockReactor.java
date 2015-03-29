@@ -346,6 +346,19 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			return super.shouldSideBeRendered(world, x, y, z, side);
 		}
 	}
+	
+	@Override
+	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof TileEntityReactorLogicAdapter)
+		{
+			return ((TileEntityReactorLogicAdapter)tile).checkMode() ? 15 : 0;
+		}
+		
+        return 0;
+    }
 
 	public static enum ReactorBlockType
 	{

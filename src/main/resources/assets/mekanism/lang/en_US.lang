@@ -466,8 +466,8 @@ gui.nextItem=Next Item
 gui.lastItem=Last Item
 gui.oreDictCompat=Compatible OreDict Key
 gui.toggleCooling=Toggle Cooling Measurements
-gui.coolingMeasurements=Active cooling measurements
-gui.redstoneOutputMode=Redstone output mode
+gui.coolingMeasurements=Active cooling
+gui.redstoneOutputMode=Redstone mode
 
 gui.reactor.injectionRate=Injection Rate
 
