@@ -51,6 +51,7 @@ import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.inventory.container.ContainerSolarNeutronActivator;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.inventory.container.ContainerUpgradeManagement;
+import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessage;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.TileEntityAdvancedFactory;
@@ -107,6 +108,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
@@ -431,6 +433,13 @@ public class CommonProxy
 				return new ContainerMetallurgicInfuser(player.inventory, (TileEntityMetallurgicInfuser)tileEntity);
 			case 13:
 				return new ContainerTeleporter(player.inventory, (TileEntityTeleporter)tileEntity);
+			case 14:
+				ItemStack itemStack = player.getCurrentEquippedItem();
+
+				if(itemStack != null && itemStack.getItem() instanceof ItemPortableTeleporter)
+				{
+					return new ContainerNull();
+				}
 			case 15:
 				return new ContainerAdvancedElectricMachine(player.inventory, (TileEntityAdvancedElectricMachine)tileEntity);
 			case 16:

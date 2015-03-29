@@ -90,6 +90,11 @@ public class GuiTeleporter extends GuiMekanism
 		guiElements.add(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
 		guiElements.add(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 4));
 		
+		if(tileEntity.frequency != null)
+		{
+			privateMode = !tileEntity.frequency.publicFreq;
+		}
+		
 		ySize+=64;
 	}
 	
