@@ -63,6 +63,8 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 	public ChemicalInfuserRecipe cachedRecipe;
 	
+	public double clientEnergyUsed;
+	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
 	/** This machine's current RedstoneControl type. */
@@ -126,7 +128,10 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 				setActive(true);
 				
 				int operations = operate(recipe);
+				double prev = getEnergy();
+				
 				setEnergy(getEnergy() - energyPerTick*operations);
+				clientEnergyUsed = prev-getEnergy();
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -235,6 +240,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
+		clientEnergyUsed = dataStream.readDouble();
 
 		if(dataStream.readBoolean())
 		{
@@ -271,6 +277,7 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 
 		data.add(isActive);
 		data.add(controlType.ordinal());
+		data.add(clientEnergyUsed);
 
 		if(leftTank.getGas() != null)
 		{

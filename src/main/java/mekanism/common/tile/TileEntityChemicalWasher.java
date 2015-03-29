@@ -19,9 +19,9 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.base.ITankManager;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -75,6 +75,8 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 	public double energyPerTick = BASE_ENERGY_USAGE;
 
 	public WasherRecipe cachedRecipe;
+	
+	public double clientEnergyUsed;
 	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
@@ -130,8 +132,10 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 				setActive(true);
 
 				int operations = operate(recipe);
+				double prev = getEnergy();
 
 				setEnergy(getEnergy() - energyPerTick*operations);
+				clientEnergyUsed = prev-getEnergy();
 			}
 			else {
 				if(prevEnergy >= getEnergy())
@@ -295,6 +299,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
+		clientEnergyUsed = dataStream.readDouble();
 
 		if(dataStream.readBoolean())
 		{
@@ -330,6 +335,7 @@ public class TileEntityChemicalWasher extends TileEntityNoisyElectricBlock imple
 
 		data.add(isActive);
 		data.add(controlType.ordinal());
+		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)
 		{

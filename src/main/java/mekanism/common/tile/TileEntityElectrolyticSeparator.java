@@ -85,6 +85,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 	public SeparatorRecipe cachedRecipe;
 	
+	public double clientEnergyUsed;
+	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 4);
 
 	public TileEntityElectrolyticSeparator()
@@ -162,8 +164,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				setActive(true);
 				
 				int operations = operate(recipe);
+				double prev = getEnergy();
 				
 				setEnergy(getEnergy() - energyPerTick*operations);
+				clientEnergyUsed = prev-getEnergy();
 			}
 			else {
 				setActive(false);
@@ -445,6 +449,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			dumpLeft = GasMode.values()[dataStream.readInt()];
 			dumpRight = GasMode.values()[dataStream.readInt()];
 			isActive = dataStream.readBoolean();
+			clientEnergyUsed = dataStream.readDouble();
 		}
 		else if(type == 1)
 		{
@@ -492,6 +497,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());
 		data.add(isActive);
+		data.add(clientEnergyUsed);
 
 		return data;
 	}

@@ -69,6 +69,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	
 	public double energyPerTick = BASE_ENERGY_USAGE;
 	
+	public double clientEnergyUsed;
+	
 	public TileComponentUpgrade upgradeComponent = new TileComponentUpgrade(this, 5);
 
 	/** This machine's current RedstoneControl type. */
@@ -175,12 +177,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 
 				if(getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidGas(gasTank.getGas()) && (fluidTank.getFluid() == null || (fluidTank.getFluid().amount < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
-					int usage = getUpgradedUsage();
+					int operations = getUpgradedUsage();
+					double prev = getEnergy();
 					
 					setActive(true);
-					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), usage), true);
-					gasTank.draw(usage, true);
-					setEnergy(getEnergy() - energyPerTick*usage);
+					fluidTank.fill(new FluidStack(gasTank.getGas().getGas().getFluid(), operations), true);
+					gasTank.draw(operations, true);
+					setEnergy(getEnergy() - energyPerTick*operations);
+					clientEnergyUsed = prev-getEnergy();
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -283,11 +287,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 				if(getEnergy() >= energyPerTick && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) && (gasTank.getGas() == null || (gasTank.getStored() < MAX_FLUID && gasEquals(gasTank.getGas(), fluidTank.getFluid()))))
 				{
 					int operations = getUpgradedUsage();
+					double prev = getEnergy();
 					
 					setActive(true);
 					gasTank.receive(new GasStack(GasRegistry.getGas(fluidTank.getFluid().getFluid()), operations), true);
 					fluidTank.drain(operations, true);
 					setEnergy(getEnergy() - energyPerTick*operations);
+					clientEnergyUsed = prev-getEnergy();
 				}
 				else {
 					if(prevEnergy >= getEnergy())
@@ -373,6 +379,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		mode = dataStream.readInt();
 		isActive = dataStream.readBoolean();
 		controlType = RedstoneControl.values()[dataStream.readInt()];
+		clientEnergyUsed = dataStream.readDouble();
 
 		if(dataStream.readBoolean())
 		{
@@ -402,6 +409,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		data.add(mode);
 		data.add(isActive);
 		data.add(controlType.ordinal());
+		data.add(clientEnergyUsed);
 
 		if(fluidTank.getFluid() != null)
 		{

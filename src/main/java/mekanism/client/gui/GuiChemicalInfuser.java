@@ -47,15 +47,8 @@ public class GuiChemicalInfuser extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				double usage = 0;
-				
-				if(tileEntity.getRecipe() != null)
-				{
-					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*tileEntity.energyPerTick;
-				}
-				
-				String multiplier = MekanismUtils.getEnergyDisplay(usage);
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
+				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + usage + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this,  MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
