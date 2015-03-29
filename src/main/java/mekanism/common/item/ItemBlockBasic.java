@@ -11,7 +11,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.inventory.InventoryBin;
@@ -19,6 +18,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -243,7 +243,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			
-			if(tileEntity instanceof IStrictEnergyStorage)
+			if(tileEntity instanceof IStrictEnergyStorage && !(tileEntity instanceof TileEntityMultiblock<?>))
 			{
 				((IStrictEnergyStorage)tileEntity).setEnergy(getEnergy(stack));
 			}
