@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
@@ -20,7 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -149,11 +150,13 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		}
 	}
 
+	@Override
 	public void setEnergy(double energy)
 	{
 		collectedEnergy = Math.max(0, Math.min(energy, MAX_ENERGY));
 	}
 
+	@Override
 	public double getEnergy()
 	{
 		return collectedEnergy;
@@ -270,5 +273,11 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public boolean canOutputTo(ForgeDirection side)
 	{
 		return true;
+	}
+
+	@Override
+	public double getMaxEnergy()
+	{
+		return MAX_ENERGY;
 	}
 }
