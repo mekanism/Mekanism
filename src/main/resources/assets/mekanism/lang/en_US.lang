@@ -177,7 +177,11 @@ item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
 item.GlowPanel.name=Glow Panel
 
 //Energy Cubes
-tile.EnergyCube.name=Energy Cube
+tile.EnergyCubeBasic.name=Basic Energy Cube
+tile.EnergyCubeAdvanced.name=Advanced Energy Cube
+tile.EnergyCubeElite.name=Elite Energy Cube
+tile.EnergyCubeUltimate.name=Ultimate Energy Cube
+tile.EnergyCubeCreative.name=Creative Energy Cube
 
 //Factory Installers
 item.basicFactoryInstaller.name=Basic Factory Installer

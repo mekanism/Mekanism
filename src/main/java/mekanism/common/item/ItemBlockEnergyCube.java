@@ -82,7 +82,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public String getItemStackDisplayName(ItemStack itemstack)
 	{
-		return getEnergyCubeTier(itemstack).getBaseTier().getLocalizedName() + " " + metaBlock.getLocalizedName();
+		return MekanismUtils.localize("tile.EnergyCube" + getEnergyCubeTier(itemstack).getBaseTier().getName() + ".name");
 	}
 
 	@Override

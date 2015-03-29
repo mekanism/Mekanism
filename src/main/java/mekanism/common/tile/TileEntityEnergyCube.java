@@ -82,7 +82,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public String getInventoryName()
 	{
-		return tier.getBaseTier().getLocalizedName() + " " + getBlockType().getLocalizedName();
+		return MekanismUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
 	}
 
 	@Override
