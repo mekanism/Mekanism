@@ -656,7 +656,9 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		super.onRightClick(player, side);
+		
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + (color != null ? color.getName() : "None")));
+		
 		return true;
 	}
 

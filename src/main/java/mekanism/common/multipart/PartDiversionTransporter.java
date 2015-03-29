@@ -128,6 +128,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 
 		refreshConnections();
 		tile().notifyPartChange(this);
+		notifyTileChange();
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
 
