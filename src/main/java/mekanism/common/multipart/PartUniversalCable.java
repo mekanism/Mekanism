@@ -46,8 +46,6 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 	public double cacheEnergy = 0;
 	public double lastWrite = 0;
 
-	public double drawAmount = 100;
-
 	public PartUniversalCable(Tier.CableTier cableTier)
 	{
 		tier = cableTier;
@@ -87,6 +85,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 			if(!sides.isEmpty())
 			{
 				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
+				double canDraw = tier.cableCapacity/10F;
 
 				for(ForgeDirection side : sides)
 				{
@@ -98,7 +97,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 						{
 							if(((ICableOutputter)outputter).canOutputTo(side.getOpposite()))
 							{
-								double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), drawAmount);
+								double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), canDraw);
 								double toDraw = received;
 
 								if(received > 0)
@@ -111,7 +110,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 						}
 						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
-							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)drawAmount, true) * general.FROM_TE;
+							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_TE), true) * general.FROM_TE;
 							double toDraw = received;
 
 							if(received > 0)
@@ -119,11 +118,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyNetwork> implement
 								toDraw -= getTransmitterNetwork().emit(received, true);
 							}
 
-							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)toDraw, false);
+							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_TE), false);
 						}
 						else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
 						{
-							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, drawAmount);
+							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, canDraw);
 							double toDraw = received;
 
 							if(received > 0)
