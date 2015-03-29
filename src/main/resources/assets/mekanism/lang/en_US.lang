@@ -345,12 +345,13 @@ upgrade.gas=Gas
 upgrade.gas.desc=Increases the efficiency !nof gas-using machinery.
 
 //Key description text
-key.mode=Mode Switch
+key.mode=Item Mode Switch
+key.armorMode=Armor Mode Switch
 key.voice=Voice
 
 //Entities
-entity.Robit.name=Robit
-entity.BabySkeleton.name=Baby Skeleton
+entity.Mekanism.Robit.name=Robit
+entity.Mekanism.BabySkeleton.name=Baby Skeleton
 
 //Config Gui
 mekanism.configgui.ctgy.general=Mekanism General Settings

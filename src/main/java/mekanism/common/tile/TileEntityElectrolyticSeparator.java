@@ -201,7 +201,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 					}
 				}
 				
-				if(dumpRight == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
+				if(dumpLeft == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
 				{
 					leftTank.draw(output-leftTank.getNeeded(), true);
 					
