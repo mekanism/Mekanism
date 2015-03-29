@@ -22,7 +22,6 @@ import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -39,8 +38,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -56,6 +53,8 @@ import codechicken.lib.render.TextureUtils.IIconSelfRegister;
 import codechicken.lib.render.uv.IconTransformation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderPartTransmitter implements IIconSelfRegister

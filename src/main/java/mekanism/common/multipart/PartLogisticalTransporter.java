@@ -78,7 +78,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public static void registerIcons(IIconRegister register)
 	{
 		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVertical", "LogisticalTransporterHorizontal", "RestrictiveTransporterVertical", "RestrictiveTransporterVertical"});
+		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVertical", "LogisticalTransporterHorizontal", "RestrictiveTransporterVertical", "RestrictiveTransporterHorizontal"});
 	}
 
 	@Override

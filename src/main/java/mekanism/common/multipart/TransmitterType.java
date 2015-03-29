@@ -16,7 +16,7 @@ public enum TransmitterType
 	MECHANICAL_PIPE_ULTIMATE("UltimateMechanicalPipe", Size.LARGE, TransmissionType.FLUID, PartMechanicalPipe.pipeIcons, 0, 0),
 	PRESSURIZED_TUBE("PressurizedTube", Size.SMALL, TransmissionType.GAS, PartPressurizedTube.tubeIcons, 0, 0),
 	LOGISTICAL_TRANSPORTER("LogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 0, 0),
-	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 1, 1),
+	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 1, 2),
 	DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, 2, 0),
 	HEAT_TRANSMITTER("HeatTransmitter", Size.SMALL, TransmissionType.HEAT, PartHeatTransmitter.heatIcons, 0, 0);
 
