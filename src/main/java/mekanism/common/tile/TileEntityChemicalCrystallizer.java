@@ -203,7 +203,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		recipe.operate(inputTank, inventory);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override

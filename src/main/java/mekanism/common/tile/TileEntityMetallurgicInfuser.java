@@ -274,7 +274,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		recipe.output(inventory, infuseStored);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	public boolean canOperate(MetallurgicInfuserRecipe recipe)

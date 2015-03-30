@@ -9,22 +9,29 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
+import mekanism.api.gas.GasTransmission;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.SideData;
 import mekanism.common.base.IEjector;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 public class TileComponentEjector implements ITileComponent, IEjector
 {
@@ -41,6 +48,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	public Map<TransmissionType, SideData> sideData = new HashMap<TransmissionType, SideData>();
 
 	public Map<TransmissionType, int[]> trackers = new HashMap<TransmissionType, int[]>();
+	
+	public static final int GAS_OUTPUT = 256;
+	public static final int FLUID_OUTPUT = 256;
 
 	public TileComponentEjector(TileEntityContainerBlock tile)
 	{
@@ -89,32 +99,76 @@ public class TileComponentEjector implements ITileComponent, IEjector
 	{
 		if(tickDelay == 0)
 		{
-			onOutput();
+			if(sideData.get(TransmissionType.ITEM) != null)
+			{
+				outputItems();
+			}
 		}
 		else {
 			tickDelay--;
 		}
+		
+		if(!tileEntity.getWorldObj().isRemote)
+		{
+			if(sideData.get(TransmissionType.GAS) != null && getEjecting(TransmissionType.GAS))
+			{
+				SideData data = sideData.get(TransmissionType.GAS);
+				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.GAS, data);
+				
+				GasTank tank = (GasTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+				
+				if(tank.getStored() > 0)
+				{
+					GasStack toEmit = tank.getGas().copy().withAmount(Math.min(GAS_OUTPUT, tank.getStored()));
+					int emit = GasTransmission.emit(outputSides, toEmit, tileEntity);
+					tank.draw(emit, true);
+				}
+			}
+			
+			if(sideData.get(TransmissionType.FLUID) != null && getEjecting(TransmissionType.FLUID))
+			{
+				SideData data = sideData.get(TransmissionType.FLUID);
+				List<ForgeDirection> outputSides = getOutputSides(TransmissionType.FLUID, data);
+				
+				FluidTank tank = (FluidTank)((ITankManager)tileEntity).getTanks()[data.availableSlots[0]];
+				
+				if(tank.getFluidAmount() > 0)
+				{
+					FluidStack toEmit = new FluidStack(tank.getFluid().getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
+					int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+					tank.drain(emit, true);
+				}
+			}
+		}
+	}
+	
+	public List<ForgeDirection> getOutputSides(TransmissionType type, SideData data)
+	{
+		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
+
+		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
+
+		for(int i = 0; i < configurable.getConfig().getConfig(type).length; i++)
+		{
+			if(configurable.getConfig().getConfig(type)[i] == configurable.getConfig().getOutputs(type).indexOf(data))
+			{
+				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
+			}
+		}
+		
+		return outputSides;
 	}
 
 	@Override
-	public void onOutput()
+	public void outputItems()
 	{
 		if(!getEjecting(TransmissionType.ITEM) || tileEntity.getWorldObj().isRemote)
 		{
 			return;
 		}
 
-		List<ForgeDirection> outputSides = new ArrayList<ForgeDirection>();
-
-		ISideConfiguration configurable = (ISideConfiguration)tileEntity;
-
-		for(int i = 0; i < configurable.getConfig().getConfig(TransmissionType.ITEM).length; i++)
-		{
-			if(configurable.getConfig().getConfig(TransmissionType.ITEM)[i] == configurable.getConfig().getOutputs(TransmissionType.ITEM).indexOf(sideData))
-			{
-				outputSides.add(ForgeDirection.getOrientation(MekanismUtils.getBaseOrientation(i, tileEntity.facing)));
-			}
-		}
+		SideData data = sideData.get(TransmissionType.ITEM);
+		List<ForgeDirection> outputSides = getOutputSides(TransmissionType.ITEM, data);
 
 		for(int index = 0; index < sideData.get(TransmissionType.ITEM).availableSlots.length; index++)
 		{

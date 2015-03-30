@@ -206,7 +206,7 @@ public abstract class TileEntityElectricMachine<RECIPE extends BasicMachineRecip
 		recipe.operate(inventory, 0, 2);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override

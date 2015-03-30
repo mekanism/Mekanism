@@ -120,7 +120,7 @@ public abstract class TileEntityChanceMachine<RECIPE extends ChanceMachineRecipe
 		recipe.operate(inventory);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override

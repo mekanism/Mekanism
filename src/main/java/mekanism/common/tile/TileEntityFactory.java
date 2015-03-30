@@ -645,7 +645,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override

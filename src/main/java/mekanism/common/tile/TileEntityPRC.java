@@ -83,6 +83,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		upgradeComponent = new TileComponentUpgrade(this, 3);
 		ejectorComponent = new TileComponentEjector(this);
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
 	}
 
 	@Override
@@ -137,21 +138,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 			}
 
 			prevEnergy = getEnergy();
-
-			if(outputGasTank.getGas() != null && configComponent.isEjecting(TransmissionType.GAS))
-			{
-				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
-
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing), outputGasTank.getGas().getGas()))
-					{
-						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing), toSend, true), true);
-					}
-				}
-			}
 		}
 	}
 
@@ -199,7 +185,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		recipe.operate(inventory, inputFluidTank, inputGasTank, outputGasTank);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override
