@@ -82,7 +82,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 							gasStored = net.gasStored;
 						}
 						else {
-							gasStored.amount += net.gasStored.amount;
+							if(gasStored.isGasEqual(net.gasStored))
+							{
+								gasStored.amount += net.gasStored.amount;
+							}
 						}
 
 						net.gasStored = null;
@@ -427,12 +430,16 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 				network.gasStored = gasStored;
 			}
 			else {
-				network.gasStored.amount += gasStored.amount;
+				if(network.gasStored.isGasEqual(gasStored))
+				{
+					network.gasStored.amount += gasStored.amount;
+				}
 			}
 		}
 
 		network.gasScale = network.getScale();
 		network.updateCapacity();
+		
 		return network;
 	}
 

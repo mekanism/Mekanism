@@ -81,7 +81,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 							fluidStored = net.fluidStored;
 						}
 						else {
-							fluidStored.amount += net.fluidStored.amount;
+							if(fluidStored.isFluidEqual(net.fluidStored))
+							{
+								fluidStored.amount += net.fluidStored.amount;
+							}
 						}
 
 						net.fluidStored = null;
@@ -418,7 +421,10 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				network.fluidStored = fluidStored;
 			}
 			else {
-				network.fluidStored.amount += fluidStored.amount;
+				if(network.fluidStored.isFluidEqual(fluidStored))
+				{
+					network.fluidStored.amount += fluidStored.amount;
+				}
 			}
 		}
 

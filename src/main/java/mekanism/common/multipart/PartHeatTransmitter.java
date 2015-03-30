@@ -118,11 +118,13 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	{
 		temperature += inverseHeatCapacity * heatToAbsorb;
 		heatToAbsorb = 0;
+		
 		if(Math.abs(temperature - clientTemperature) > (temperature / 100))
 		{
 			clientTemperature = temperature;
 			sendTemp();
 		}
+		
 		return temperature;
 	}
 
@@ -138,11 +140,13 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 		if(connectionMapContainsSide(getAllCurrentConnections(), side))
 		{
 			TileEntity adj = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+			
 			if(adj instanceof IHeatTransfer)
 			{
 				return (IHeatTransfer)adj;
 			}
 		}
+		
 		return null;
 	}
 
@@ -238,6 +242,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	public void writeDesc(MCDataOutput packet)
 	{
 		packet.writeBoolean(false);
+		
 		super.writeDesc(packet);
 	}
 
@@ -248,8 +253,7 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 		{
 			temperature = packet.readDouble();
 		}
-		else
-		{
+		else {
 			super.readDesc(packet);
 		}
 	}
@@ -258,5 +262,4 @@ public class PartHeatTransmitter extends PartTransmitter<HeatNetwork> implements
 	{
 		return baseColour;
 	}
-
 }
