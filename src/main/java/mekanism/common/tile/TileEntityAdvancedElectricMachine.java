@@ -91,7 +91,8 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		secondaryEnergyPerTick = secondaryPerTick;
 
 		upgradeComponent = upgradeableSecondaryEfficiency() ? new TileComponentAdvancedUpgrade(this, 4) : new TileComponentUpgrade(this, 4);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 	
 	public void upgrade(RecipeType type)
@@ -126,8 +127,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		factory.upgradeComponent.readFrom(upgradeComponent);
 		factory.upgradeComponent.setUpgradeSlot(0);
 		factory.ejectorComponent.readFrom(ejectorComponent);
-		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
-		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
 		factory.recipeType = type;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
 		

@@ -56,7 +56,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.name, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		
@@ -81,7 +81,8 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		inventory = new ItemStack[4];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 
 	@Override

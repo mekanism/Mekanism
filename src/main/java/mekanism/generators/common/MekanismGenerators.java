@@ -8,6 +8,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -30,7 +31,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -102,7 +102,7 @@ public class MekanismGenerators implements IModule
 		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
+			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
 		}
 	}
 	

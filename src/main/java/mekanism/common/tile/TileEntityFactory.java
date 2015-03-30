@@ -140,7 +140,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		configComponent.setInputEnergyConfig();
 
 		upgradeComponent = new TileComponentUpgrade(this, 0);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(4));
 	}
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
@@ -195,8 +196,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.upgradeComponent.readFrom(upgradeComponent);
 		factory.ejectorComponent.readFrom(ejectorComponent);
 		factory.configComponent.readFrom(configComponent);
-		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
-		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
 		factory.recipeType = recipeType;
 		factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 		

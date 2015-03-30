@@ -33,6 +33,7 @@ public class TileEntityEliteFactory extends TileEntityFactory
 		configComponent.setInputEnergyConfig();
 
 		upgradeComponent = new TileComponentUpgrade(this, 0);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(4));
 	}
 }

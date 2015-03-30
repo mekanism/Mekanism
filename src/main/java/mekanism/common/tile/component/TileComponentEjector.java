@@ -3,7 +3,9 @@ package mekanism.common.tile.component;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -36,17 +38,23 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 	public int tickDelay = 0;
 
-	public SideData sideData;
+	public Map<TransmissionType, SideData> sideData = new HashMap<TransmissionType, SideData>();
 
-	public int[] trackers;
+	public Map<TransmissionType, int[]> trackers = new HashMap<TransmissionType, int[]>();
 
-	public TileComponentEjector(TileEntityContainerBlock tile, SideData data)
+	public TileComponentEjector(TileEntityContainerBlock tile)
 	{
 		tileEntity = tile;
-		sideData = data;
-		trackers = new int[sideData.availableSlots.length];
 
 		tile.components.add(this);
+	}
+	
+	public TileComponentEjector setOutputData(TransmissionType type, SideData data)
+	{
+		sideData.put(type, data);
+		trackers.put(type, new int[data.availableSlots.length]);
+		
+		return this;
 	}
 	
 	public void readFrom(TileComponentEjector ejector)
@@ -56,14 +64,13 @@ public class TileComponentEjector implements ITileComponent, IEjector
 		inputColors = ejector.inputColors;
 		tickDelay = ejector.tickDelay;
 		sideData = ejector.sideData;
-		trackers = ejector.trackers;
 	}
 
-	private List<ForgeDirection> getTrackedOutputs(int index, List<ForgeDirection> dirs)
+	private List<ForgeDirection> getTrackedOutputs(TransmissionType type, int index, List<ForgeDirection> dirs)
 	{
 		List<ForgeDirection> sides = new ArrayList<ForgeDirection>();
 
-		for(int i = trackers[index]+1; i <= trackers[index]+6; i++)
+		for(int i = trackers.get(type)[index]+1; i <= trackers.get(type)[index]+6; i++)
 		{
 			for(ForgeDirection side : dirs)
 			{
@@ -109,9 +116,9 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 		}
 
-		for(int index = 0; index < sideData.availableSlots.length; index++)
+		for(int index = 0; index < sideData.get(TransmissionType.ITEM).availableSlots.length; index++)
 		{
-			int slotID = sideData.availableSlots[index];
+			int slotID = sideData.get(TransmissionType.ITEM).availableSlots[index];
 
 			if(tileEntity.inventory[slotID] == null)
 			{
@@ -119,7 +126,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			}
 
 			ItemStack stack = tileEntity.inventory[slotID];
-			List<ForgeDirection> outputs = getTrackedOutputs(index, outputSides);
+			List<ForgeDirection> outputs = getTrackedOutputs(TransmissionType.ITEM, index, outputSides);
 
 			for(ForgeDirection side : outputs)
 			{
@@ -142,7 +149,7 @@ public class TileComponentEjector implements ITileComponent, IEjector
 
 				if(stack == null || prev.stackSize != stack.stackSize)
 				{
-					trackers[index] = side.ordinal();
+					trackers.get(TransmissionType.ITEM)[index] = side.ordinal();
 				}
 
 				if(stack == null)
@@ -207,9 +214,12 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			outputColor = TransporterUtils.colors.get(nbtTags.getInteger("ejectColor"));
 		}
 
-		for(int i = 0; i < sideData.availableSlots.length; i++)
+		for(TransmissionType type : sideData.keySet())
 		{
-			trackers[i] = nbtTags.getInteger("tracker" + i);
+			for(int i = 0; i < sideData.get(type).availableSlots.length; i++)
+			{
+				trackers.get(type)[i] = nbtTags.getInteger("tracker" + type.getTransmission() + i);
+			}
 		}
 
 		for(int i = 0; i < 6; i++)
@@ -268,9 +278,12 @@ public class TileComponentEjector implements ITileComponent, IEjector
 			nbtTags.setInteger("ejectColor", TransporterUtils.colors.indexOf(outputColor));
 		}
 
-		for(int i = 0; i < sideData.availableSlots.length; i++)
+		for(TransmissionType type : sideData.keySet())
 		{
-			nbtTags.setInteger("tracker" + i, trackers[i]);
+			for(int i = 0; i < sideData.get(type).availableSlots.length; i++)
+			{
+				nbtTags.setInteger("tracker" + type.getTransmission() + i, trackers.get(type)[i]);
+			}
 		}
 
 		for(int i = 0; i < 6; i++)
