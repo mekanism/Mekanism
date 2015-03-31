@@ -33,7 +33,7 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 
-	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 2);
+	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 8);
 
 	public float currentScale;
 
@@ -201,9 +201,9 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 
 	public static void registerIcons(IIconRegister register)
 	{
-		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced",
-				"MechanicalPipeElite", "MechanicalPipeUltimate"});
-		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVertical", "MechanicalPipeHorizontal"});
+		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced", "MechanicalPipeElite", "MechanicalPipeUltimate"});
+		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVerticalBasic", "MechanicalPipeVerticalAdvanced", "MechanicalPipeVerticalElite", "MechanicalPipeVerticalUltimate",
+				"MechanicalPipeHorizontalBasic", "MechanicalPipeHorizontalAdvanced", "MechanicalPipeHorizontalElite", "MechanicalPipeHorizontalUltimate"});
 	}
 
 	@Override
@@ -215,13 +215,13 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	@Override
 	public IIcon getSideIcon(boolean opaque)
 	{
-		return pipeIcons.getSideIcon(0);
+		return pipeIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
 	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return pipeIcons.getSideIcon(1);
+		return pipeIcons.getSideIcon(4+tier.ordinal());
 	}
 
 	@Override
