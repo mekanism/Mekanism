@@ -29,6 +29,7 @@ import codechicken.lib.vec.Vector3;
 public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements IFluidHandler
 {
 	public Tier.PipeTier tier;
+	
 	/** The fake tank used for fluid transfer calculations. */
 	public FluidTank dummyTank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 

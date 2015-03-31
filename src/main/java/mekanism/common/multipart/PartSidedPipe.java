@@ -111,8 +111,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				return new PartMechanicalPipe(Tier.PipeTier.ULTIMATE);
 			case PRESSURIZED_TUBE:
 				return new PartPressurizedTube();
-			case LOGISTICAL_TRANSPORTER:
-				return new PartLogisticalTransporter();
+			case LOGISTICAL_TRANSPORTER_BASIC:
+				return new PartLogisticalTransporter(Tier.TransporterTier.BASIC);
+			case LOGISTICAL_TRANSPORTER_ADVANCED:
+				return new PartLogisticalTransporter(Tier.TransporterTier.ADVANCED);
+			case LOGISTICAL_TRANSPORTER_ELITE:
+				return new PartLogisticalTransporter(Tier.TransporterTier.ELITE);
+			case LOGISTICAL_TRANSPORTER_ULTIMATE:
+				return new PartLogisticalTransporter(Tier.TransporterTier.ULTIMATE);
 			case RESTRICTIVE_TRANSPORTER:
 				return new PartRestrictiveTransporter();
 			case DIVERSION_TRANSPORTER:

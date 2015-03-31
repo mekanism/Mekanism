@@ -169,7 +169,10 @@ item.MultipartTransmitter.BasicMechanicalPipe.name=Basic Mechanical Pipe
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Advanced Mechanical Pipe
 item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mechanical Pipe
 item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimate Mechanical Pipe
-item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Basic Logistical Transporter
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Advanced Logistical Transporter
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Elite Logistical Transporter
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimate Logistical Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
 

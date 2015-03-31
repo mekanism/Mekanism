@@ -37,7 +37,19 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	@Override
 	public IIcon getCenterIcon(boolean opaque)
 	{
-		return transporterIcons.getCenterIcon(2);
+		return transporterIcons.getCenterIcon(5);
+	}
+	
+	@Override
+	public IIcon getSideIcon(boolean opaque)
+	{
+		return transporterIcons.getSideIcon(opaque ? 14 : (color != null ? 11 : 10));
+	}
+	
+	@Override
+	public IIcon getSideIconRotated(boolean opaque)
+	{
+		return transporterIcons.getSideIcon(opaque ? 15 : (color != null ? 13 : 12));
 	}
 	
 	@Override

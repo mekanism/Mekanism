@@ -15,9 +15,12 @@ public enum TransmitterType
 	MECHANICAL_PIPE_ELITE("EliteMechanicalPipe", Size.LARGE, TransmissionType.FLUID, PartMechanicalPipe.pipeIcons, false, 0, 0),
 	MECHANICAL_PIPE_ULTIMATE("UltimateMechanicalPipe", Size.LARGE, TransmissionType.FLUID, PartMechanicalPipe.pipeIcons, false, 0, 0),
 	PRESSURIZED_TUBE("PressurizedTube", Size.SMALL, TransmissionType.GAS, PartPressurizedTube.tubeIcons, false, 0, 0),
-	LOGISTICAL_TRANSPORTER("LogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 0, 0, 3, 4),
-	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, false, 1, 2),
-	DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 2, 0, 3, 4),
+	LOGISTICAL_TRANSPORTER_BASIC("BasicLogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 0, 0, 6, 10),
+	LOGISTICAL_TRANSPORTER_ADVANCED("AdvancedLogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 1, 1, 6, 10),
+	LOGISTICAL_TRANSPORTER_ELITE("EliteLogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 2, 2, 6, 10),
+	LOGISTICAL_TRANSPORTER_ULTIMATE("UltimateLogisticalTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 3, 3, 6, 10),
+	RESTRICTIVE_TRANSPORTER("RestrictiveTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, false, 4, 8),
+	DIVERSION_TRANSPORTER("DiversionTransporter", Size.LARGE, TransmissionType.ITEM, PartLogisticalTransporter.transporterIcons, true, 5, 14, 6, 10),
 	HEAT_TRANSMITTER("HeatTransmitter", Size.SMALL, TransmissionType.HEAT, PartHeatTransmitter.heatIcons, false, 0, 0);
 
 	private String unlocalizedName;

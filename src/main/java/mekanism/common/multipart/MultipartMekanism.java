@@ -31,9 +31,10 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
 				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
 				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
-				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
-				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
-				"mekanism:heat_transmitter",
+				"mekanism:pressurized_tube", "mekanism:logistical_transporter_basic",
+				"mekanism:logistical_transporter_advanced", "mekanism:logistical_transporter_elite",
+				"mekanism:logistical_transporter_ultimate", "mekanism:restrictive_transporter", 
+				"mekanism:diversion_transporter", "mekanism:heat_transmitter",
 				"mekanism:glow_panel"});
 
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.IConfigurable");
@@ -97,9 +98,21 @@ public class MultipartMekanism implements IPartFactory
 		{
 			return new PartPressurizedTube();
 		}
-		else if(name.equals("mekanism:logistical_transporter"))
+		else if(name.equals("mekanism:logistical_transporter_basic") || name.equals("mekanism:logistical_transporter"))
 		{
-			return new PartLogisticalTransporter();
+			return new PartLogisticalTransporter(Tier.TransporterTier.BASIC);
+		}
+		else if(name.equals("mekanism:logistical_transporter_advanced"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.ADVANCED);
+		}
+		else if(name.equals("mekanism:logistical_transporter_elite"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.ELITE);
+		}
+		else if(name.equals("mekanism:logistical_transporter_ultimate"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.ULTIMATE);
 		}
 		else if(name.equals("mekanism:restrictive_transporter"))
 		{

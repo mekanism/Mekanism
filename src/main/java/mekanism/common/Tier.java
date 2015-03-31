@@ -247,4 +247,33 @@ public final class Tier
 			}
 		}
 	}
+	
+	/**
+	 * The tiers used by Logistical Transporters and their corresponding values.
+	 * @author AidanBrady
+	 *
+	 */
+	public static enum TransporterTier
+	{
+		BASIC(1, 5, TransmitterType.LOGISTICAL_TRANSPORTER_BASIC),
+		ADVANCED(16, 10, TransmitterType.LOGISTICAL_TRANSPORTER_ADVANCED),
+		ELITE(32, 20, TransmitterType.LOGISTICAL_TRANSPORTER_ELITE),
+		ULTIMATE(64, 50, TransmitterType.LOGISTICAL_TRANSPORTER_ULTIMATE);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		public int pullAmount;
+		public int speed;
+		public TransmitterType type;
+
+		private TransporterTier(int pull, int s, TransmitterType transmitterType)
+		{
+			pullAmount = pull;
+			speed = s;
+			type = transmitterType;
+		}
+	}
 }

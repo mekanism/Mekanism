@@ -15,6 +15,8 @@ import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HashList;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
+import mekanism.common.Tier.TransporterTier;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.PathfinderCache;
@@ -39,15 +41,16 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import codechicken.lib.vec.Vector3;
-import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter
 {
-	public static TransmitterIcons transporterIcons = new TransmitterIcons(5, 8);
+	public Tier.TransporterTier tier = TransporterTier.BASIC;
+	
+	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
 
-	public static final int SPEED = 5;
+	public int speed = 5;
 
 	public EnumColor color;
 
@@ -56,17 +59,24 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public HashList<TransporterStack> transit = new HashList<TransporterStack>();
 
 	public Set<TransporterStack> needsSync = new HashSet<TransporterStack>();
+	
+	public PartLogisticalTransporter(Tier.TransporterTier transporterTier)
+	{
+		tier = transporterTier;
+	}
+	
+	protected PartLogisticalTransporter() {}
 
 	@Override
 	public String getType()
 	{
-		return "mekanism:logistical_transporter";
+		return "mekanism:logistical_transporter_" + tier.name().toLowerCase();
 	}
 
 	@Override
 	public TransmitterType getTransmitter()
 	{
-		return TransmitterType.LOGISTICAL_TRANSPORTER;
+		return tier.type;
 	}
 
 	@Override
@@ -77,9 +87,12 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 	public static void registerIcons(IIconRegister register)
 	{
-		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVertical", "LogisticalTransporterHorizontal", "RestrictiveTransporterVertical", "RestrictiveTransporterHorizontal", 
-				"LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored"});
+		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporterBasic", "LogisticalTransporterAdvanced", "LogisticalTransporterElite", "LogisticalTransporterUltimate", "RestrictiveTransporter", 
+				"DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
+		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVerticalBasic", "LogisticalTransporterVerticalAdvanced", "LogisticalTransporterVerticalElite", "LogisticalTransporterVerticalUltimate", 
+				"LogisticalTransporterHorizontalBasic", "LogisticalTransporterHorizontalAdvanced", "LogisticalTransporterHorizontalElite", "LogisticalTransporterHorizontalUltimate", "RestrictiveTransporterVertical", 
+				"RestrictiveTransporterHorizontal", "LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored",
+				"DiversionTransporterVertical", "DiversionTransporterHorizontal"});
 	}
 
 	@Override
@@ -119,19 +132,19 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	@Override
 	public IIcon getCenterIcon(boolean opaque)
 	{
-		return transporterIcons.getCenterIcon(opaque ? 0 : (color != null ? 4 : 3));
+		return transporterIcons.getCenterIcon(opaque ? tier.ordinal() : (color != null ? 7 : 6));
 	}
 
 	@Override
 	public IIcon getSideIcon(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(opaque ? 0 : (color != null ? 5 : 4));
+		return transporterIcons.getSideIcon(opaque ? tier.ordinal() : (color != null ? 11 : 10));
 	}
 
 	@Override
 	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(opaque ? 1 : (color != null ? 7 : 6));
+		return transporterIcons.getSideIcon(opaque ? 4+tier.ordinal() : (color != null ? 13 : 12));
 	}
 
 	@Override
@@ -157,7 +170,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 			{
 				if(stack != null)
 				{
-					stack.progress = Math.min(100, stack.progress+SPEED);
+					stack.progress = Math.min(100, stack.progress+tier.speed);
 				}
 			}
 		}
@@ -177,7 +190,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 					}
 				}
 
-				stack.progress += SPEED;
+				stack.progress += tier.speed;
 
 				if(stack.progress > 100)
 				{
@@ -337,7 +350,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 				if(tile instanceof IInventory)
 				{
 					IInventory inv = (IInventory)tile;
-					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal());
+					InvStack stack = InventoryUtils.takeTopItem(inv, side.ordinal(), tier.pullAmount);
 
 					if(stack != null && stack.getStack() != null)
 					{
@@ -595,6 +608,8 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public void load(NBTTagCompound nbtTags)
 	{
 		super.load(nbtTags);
+		
+		tier = TransporterTier.values()[nbtTags.getInteger("tier")];
 
 		if(nbtTags.hasKey("color"))
 		{
@@ -619,6 +634,8 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	public void save(NBTTagCompound nbtTags)
 	{
 		super.save(nbtTags);
+		
+		nbtTags.setInteger("tier", tier.ordinal());
 
 		if(color != null)
 		{
