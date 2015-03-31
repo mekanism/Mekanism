@@ -130,11 +130,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return (connections & tester) > 0;
 	}
 
-	public abstract IIcon getCenterIcon();
+	public abstract IIcon getCenterIcon(boolean opaque);
 
-	public abstract IIcon getSideIcon();
+	public abstract IIcon getSideIcon(boolean opaque);
 
-	public abstract IIcon getSideIconRotated();
+	public abstract IIcon getSideIconRotated(boolean opaque);
 
 	@Override
 	public void update()
@@ -168,8 +168,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		return false;
 	}
+	
+	public boolean transparencyRender()
+	{
+		return false;
+	}
 
-	public IIcon getIconForSide(ForgeDirection side)
+	public IIcon getIconForSide(ForgeDirection side, boolean opaque)
 	{
 		ConnectionType type = getConnectionType(side);
 
@@ -177,29 +182,29 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(client.oldTransmitterRender || renderCenter())
 			{
-				return getCenterIcon();
+				return getCenterIcon(opaque);
 			}
 			else if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
 			{
-				return getSideIcon();
+				return getSideIcon(opaque);
 			}
 			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
 			{
-				return getSideIcon();
+				return getSideIcon(opaque);
 			}
 			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
 			{
-				return getSideIconRotated();
+				return getSideIconRotated(opaque);
 			}
 			else if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
 			{
-				return getSideIconRotated();
+				return getSideIconRotated(opaque);
 			}
 
-			return getCenterIcon();
+			return getCenterIcon(opaque);
 		}
 		else {
-			return getSideIcon();
+			return getSideIcon(opaque);
 		}
 	}
 
@@ -319,13 +324,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public IIcon getBreakingIcon(Object subPart, int side)
 	{
-		return getCenterIcon();
+		return getCenterIcon(true);
 	}
 
 	@Override
 	public IIcon getBrokenIcon(int side)
 	{
-		return getCenterIcon();
+		return getCenterIcon(true);
 	}
 
 	@Override
@@ -353,7 +358,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		if(pass == 0)
 		{
-			RenderPartTransmitter.getInstance().renderStatic(this);
+			RenderPartTransmitter.getInstance().renderStatic(this, pass);
+			return true;
+		}
+		else if(pass == 1 && transparencyRender())
+		{
+			RenderPartTransmitter.getInstance().renderStatic(this, pass);
 			return true;
 		}
 		
@@ -685,7 +695,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return false;
 	}
 
-	public EnumColor getRenderColor()
+	public EnumColor getRenderColor(boolean opaque)
 	{
 		return null;
 	}

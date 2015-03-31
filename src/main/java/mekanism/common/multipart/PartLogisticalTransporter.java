@@ -45,7 +45,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter
 {
-	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 4);
+	public static TransmitterIcons transporterIcons = new TransmitterIcons(5, 8);
 
 	public static final int SPEED = 5;
 
@@ -77,8 +77,9 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 
 	public static void registerIcons(IIconRegister register)
 	{
-		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter"});
-		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVertical", "LogisticalTransporterHorizontal", "RestrictiveTransporterVertical", "RestrictiveTransporterHorizontal"});
+		transporterIcons.registerCenterIcons(register, new String[] {"LogisticalTransporter", "RestrictiveTransporter", "DiversionTransporter", "LogisticalTransporterGlass", "LogisticalTransporterGlassColored"});
+		transporterIcons.registerSideIcons(register, new String[] {"LogisticalTransporterVertical", "LogisticalTransporterHorizontal", "RestrictiveTransporterVertical", "RestrictiveTransporterHorizontal", 
+				"LogisticalTransporterVerticalGlass", "LogisticalTransporterVerticalGlassColored", "LogisticalTransporterHorizontalGlass", "LogisticalTransporterHorizontalGlassColored"});
 	}
 
 	@Override
@@ -116,21 +117,21 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
-		return transporterIcons.getCenterIcon(0);
+		return transporterIcons.getCenterIcon(opaque ? 0 : (color != null ? 4 : 3));
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(0);
+		return transporterIcons.getSideIcon(opaque ? 0 : (color != null ? 5 : 4));
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(1);
+		return transporterIcons.getSideIcon(opaque ? 1 : (color != null ? 7 : 6));
 	}
 
 	@Override
@@ -675,9 +676,15 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public EnumColor getRenderColor()
+	public EnumColor getRenderColor(boolean post)
 	{
-		return color;
+		return post ? null : color;
+	}
+	
+	@Override
+	public boolean transparencyRender()
+	{
+		return true;
 	}
 
 	@Override

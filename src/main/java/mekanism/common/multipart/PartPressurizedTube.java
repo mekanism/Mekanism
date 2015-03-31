@@ -204,19 +204,19 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
 		return tubeIcons.getCenterIcon(0);
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
 		return tubeIcons.getSideIcon(0);
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
 		return tubeIcons.getSideIcon(1);
 	}

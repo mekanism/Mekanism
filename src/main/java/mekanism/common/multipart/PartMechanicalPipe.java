@@ -206,19 +206,19 @@ public class PartMechanicalPipe extends PartTransmitter<FluidNetwork> implements
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
 		return pipeIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
 		return pipeIcons.getSideIcon(0);
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
 		return pipeIcons.getSideIcon(1);
 	}
