@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,19 +10,16 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.util.StackUtils;
 import mekanism.common.LaserManager;
+import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
-
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityLaserTractorBeam extends TileEntityContainerBlock implements ILaserReceptor
 {
@@ -100,8 +99,8 @@ public class TileEntityLaserTractorBeam extends TileEntityContainerBlock impleme
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				MovingObjectPosition mop = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{

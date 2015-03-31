@@ -11,12 +11,12 @@ import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
+import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -79,8 +79,8 @@ public class TileEntityLaser extends TileEntityNoisyElectricBlock implements IAc
 			{
 				setActive(true);
 				
-				MovingObjectPosition mop = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), usage.laserUsage, worldObj);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{

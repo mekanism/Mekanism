@@ -7,6 +7,7 @@ import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiRecipeType;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
 import mekanism.client.gui.element.GuiSortingTab;
 import mekanism.client.gui.element.GuiTransporterConfigTab;

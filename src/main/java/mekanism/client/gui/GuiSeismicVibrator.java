@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;

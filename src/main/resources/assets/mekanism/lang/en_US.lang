@@ -468,6 +468,7 @@ gui.oreDictCompat=Compatible OreDict Key
 gui.toggleCooling=Toggle Cooling Measurements
 gui.coolingMeasurements=Active cooling
 gui.redstoneOutputMode=Redstone mode
+gui.entityDetection=Entity Detection
 
 gui.reactor.injectionRate=Injection Rate
 

@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerGasTank;

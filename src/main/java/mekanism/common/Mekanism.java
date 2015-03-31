@@ -488,7 +488,7 @@ public class Mekanism
 			"RE ", "RCD", "RE ", Character.valueOf('R'), "alloyElite", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('D'), "gemDiamond"
 		}));
 		MachineType.LASER_AMPLIFIER.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 14), new Object[] {
-			"SSS", "SED", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismUtils.getInductionCell(InductionCellTier.ADVANCED), Character.valueOf('D'), "gemDiamond"
+			"SSS", "SED", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), Character.valueOf('D'), "gemDiamond"
 		}));
 		MachineType.LASER_TRACTOR_BEAM.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 15), new Object[] {
 			"C", "F", Character.valueOf('C'), new ItemStack(MekanismBlocks.MachineBlock, 1, 13), Character.valueOf('F'), new ItemStack(MekanismBlocks.MachineBlock2, 1, 14)

@@ -2,6 +2,8 @@ package mekanism.common;
 
 import java.util.List;
 
+import com.mojang.realmsclient.util.Pair;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
@@ -18,12 +20,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class LaserManager
 {
-	public static MovingObjectPosition fireLaser(TileEntity from, ForgeDirection direction, double energy, World world)
+	public static LaserInfo fireLaser(TileEntity from, ForgeDirection direction, double energy, World world)
 	{
 		return fireLaser(new Pos3D(from).centre().translate(direction, 0.501), direction, energy, world);
 	}
 
-	public static MovingObjectPosition fireLaser(Pos3D from, ForgeDirection direction, double energy, World world)
+	public static LaserInfo fireLaser(Pos3D from, ForgeDirection direction, double energy, World world)
 	{
 		Pos3D to = from.clone().translate(direction, general.laserRange - 0.002);
 
@@ -46,17 +48,25 @@ public class LaserManager
 
 		from.translateExcludingSide(direction, -0.1);
 		to.translateExcludingSide(direction, 0.1);
+		
+		boolean foundEntity = false;
 
 		for(Entity e : (List<Entity>)world.getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to)))
 		{
+			foundEntity = true;
+			
 			if(!e.isImmuneToFire()) 
 			{
 				e.setFire((int)(energy / 1000));
-				e.attackEntityFrom(DamageSource.onFire, (float)energy/1000F);
+				
+				if(energy > 256)
+				{
+					e.attackEntityFrom(DamageSource.onFire, (float)energy/1000F);
+				}
 			}
 		}
-
-		return mop;
+		
+		return new LaserInfo(mop, foundEntity);
 	}
 
 	public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world)
@@ -96,6 +106,20 @@ public class LaserManager
 		
 		from.translate(direction, -0.501);
 		Mekanism.proxy.renderLaser(world, from, to, direction, energy);
+		
 		return mop;
+	}
+	
+	public static class LaserInfo
+	{
+		public MovingObjectPosition movingPos;
+		
+		public boolean foundEntity;
+		
+		public LaserInfo(MovingObjectPosition mop, boolean b)
+		{
+			movingPos = mop;
+			foundEntity = b;
+		}
 	}
 }

@@ -3,9 +3,11 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiNumberGauge;
+import mekanism.client.gui.element.GuiDetectionTab;
 import mekanism.client.gui.element.GuiGauge.Type;
+import mekanism.client.gui.element.GuiNumberGauge;
 import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerLaserAmplifier;
@@ -16,11 +18,12 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.IIcon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiLaserAmplifier extends GuiMekanism
@@ -63,6 +66,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			}
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		guiElements.add(new GuiDetectionTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 	}
 
 	@Override

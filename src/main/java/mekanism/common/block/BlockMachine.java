@@ -1391,6 +1391,19 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	}
 	
 	@Override
+	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side)
+    {
+		TileEntity tile = world.getTileEntity(x, y, z);
+		
+		if(tile instanceof TileEntityLaserAmplifier)
+		{
+			return ((TileEntityLaserAmplifier)tile).emittingRedstone ? 15 : 0;
+		}
+		
+        return 0;
+    }
+	
+	@Override
 	public CTMData getCTMData(IBlockAccess world, int x, int y, int z, int meta)
 	{
 		if(ctms[meta][1] != null && MekanismUtils.isActive(world, x, y, z))

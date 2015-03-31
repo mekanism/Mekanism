@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSideConfigurationTab;
