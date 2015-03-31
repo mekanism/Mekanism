@@ -46,7 +46,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork> implements ILogisticalTransporter
 {
-	public Tier.TransporterTier tier = TransporterTier.BASIC;
+	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 	
 	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
 

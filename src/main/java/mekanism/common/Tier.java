@@ -200,6 +200,19 @@ public final class Tier
 			cableCapacity = capacity;
 			type = transmitterType;
 		}
+		
+		public static CableTier get(BaseTier tier)
+		{
+			for(CableTier transmitter : values())
+			{
+				if(transmitter.getBaseTier() == tier)
+				{
+					return transmitter;
+				}
+			}
+			
+			return BASIC;
+		}
 	}
 
 	/**
@@ -229,22 +242,60 @@ public final class Tier
 			pipePullAmount = pullAmount;
 			type = transmitterType;
 		}
-
-		public static PipeTier getTierFromMeta(int meta)
+		
+		public static PipeTier get(BaseTier tier)
 		{
-			switch(meta)
+			for(PipeTier transmitter : values())
 			{
-				case 4:
-					return BASIC;
-				case 5:
-					return ADVANCED;
-				case 6:
-					return ELITE;
-				case 7:
-					return ULTIMATE;
-				default:
-					return BASIC;
+				if(transmitter.getBaseTier() == tier)
+				{
+					return transmitter;
+				}
 			}
+			
+			return BASIC;
+		}
+	}
+	
+	/**
+	 * The tiers used by Pressurized Tubes and their corresponding values.
+	 * @author AidanBrady
+	 *
+	 */
+	public static enum TubeTier
+	{
+		BASIC(256, 64, TransmitterType.PRESSURIZED_TUBE_BASIC),
+		ADVANCED(1024, 256, TransmitterType.PRESSURIZED_TUBE_ADVANCED),
+		ELITE(4096, 1024, TransmitterType.PRESSURIZED_TUBE_ELITE),
+		ULTIMATE(16384, 4096, TransmitterType.PRESSURIZED_TUBE_ULTIMATE);
+		
+		public BaseTier getBaseTier()
+		{
+			return BaseTier.values()[ordinal()];
+		}
+
+		public int tubeCapacity;
+		public int tubePullAmount;
+		public TransmitterType type;
+
+		private TubeTier(int capacity, int pullAmount, TransmitterType transmitterType)
+		{
+			tubeCapacity = capacity;
+			tubePullAmount = pullAmount;
+			type = transmitterType;
+		}
+		
+		public static TubeTier get(BaseTier tier)
+		{
+			for(TubeTier transmitter : values())
+			{
+				if(transmitter.getBaseTier() == tier)
+				{
+					return transmitter;
+				}
+			}
+			
+			return BASIC;
 		}
 	}
 	
@@ -274,6 +325,19 @@ public final class Tier
 			pullAmount = pull;
 			speed = s;
 			type = transmitterType;
+		}
+		
+		public static TransporterTier get(BaseTier tier)
+		{
+			for(TransporterTier transmitter : values())
+			{
+				if(transmitter.getBaseTier() == tier)
+				{
+					return transmitter;
+				}
+			}
+			
+			return BASIC;
 		}
 	}
 }

@@ -160,7 +160,10 @@ tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
+item.MultipartTransmitter.BasicPressurizedTube.name=Basic Pressurized Tube
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Advanced Pressurized Tube
+item.MultipartTransmitter.ElitePressurizedTube.name=Elite Pressurized Tube
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimate Pressurized Tube
 item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Cable
 item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Cable
 item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Cable
@@ -652,6 +655,7 @@ tooltip.configureState=Configure State
 tooltip.outputRate=Output Rate
 tooltip.insufficientFuel=Insufficient Fuel
 tooltip.readyForReaction=Ready for Reaction
+tooltip.speed=Speed
 
 tooltip.portableTank.bucketMode=Bucket Mode
 

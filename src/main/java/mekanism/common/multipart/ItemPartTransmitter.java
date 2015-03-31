@@ -12,6 +12,7 @@ import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.settings.GameSettings;
@@ -87,15 +88,27 @@ public class ItemPartTransmitter extends JItemMultiPart
 	{
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
-			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.ENERGY)
+			TransmissionType transmission = TransmitterType.values()[itemstack.getItemDamage()].getTransmission();
+			BaseTier tier = TransmitterType.values()[itemstack.getItemDamage()].getTier();
+			
+			if(transmission == TransmissionType.ENERGY)
 			{
 				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
 			}
-
-			if(TransmitterType.values()[itemstack.getItemDamage()].getTransmission() == TransmissionType.FLUID)
+			else if(transmission == TransmissionType.FLUID)
 			{
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipeCapacity + "mB/t");
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.getTierFromMeta(itemstack.getItemDamage()).pipePullAmount + "mB/t");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipeCapacity + "mB/t");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipePullAmount + "mB/t");
+			}
+			else if(transmission == TransmissionType.GAS)
+			{
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubeCapacity + "mB/t");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubePullAmount + "mB/t");
+			}
+			else if(transmission == TransmissionType.ITEM)
+			{
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (Tier.TransporterTier.get(tier).speed/(100/20)) + " m/s");
+				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TransporterTier.get(tier).pullAmount*2 + "/s");
 			}
 
 			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
@@ -117,20 +130,20 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
 					break;
 				}
-				case 8:
+				case 8: case 9: case 10: case 11:
 				{
 					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.gasses") + " (Mekanism)");
 					break;
 				}
-				case 9:
+				case 12: case 13: case 14: case 15:
 				{
 					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
 					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
 					break;
 				}
-				case 10:
+				case 16:
 				{
 					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
@@ -138,7 +151,7 @@ public class ItemPartTransmitter extends JItemMultiPart
 					list.add("- " + EnumColor.DARK_RED + MekanismUtils.localize("tooltip.restrictiveDesc"));
 					break;
 				}
-				case 11:
+				case 17:
 				{
 					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
