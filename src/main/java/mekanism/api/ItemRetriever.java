@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
