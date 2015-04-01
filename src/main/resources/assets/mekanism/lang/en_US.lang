@@ -468,7 +468,7 @@ gui.conflict=Conflict
 gui.height=Height
 gui.mult=Mult
 gui.chunk=Chunk
-gui.vibrating
+gui.vibrating=Vibrating
 gui.abundancy=Abundancy
 gui.nextItem=Next Item
 gui.lastItem=Last Item
