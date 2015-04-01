@@ -11,6 +11,7 @@ item.EnergyTablet.name=Energietablett
 item.SpeedUpgrade.name=Geschwindigkeitsupgrade
 item.EnergyUpgrade.name=Energieupgrade
 item.FilterUpgrade.name=Filter-Upgrade
+item.GasUpgrade.name=Gas-Upgrade
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Atomar-Disassembler
 item.ElectricBow.name=Elektrischer Bogen
@@ -58,7 +59,7 @@ tile.GasTank.GasTank.name=Gastank
 //Cardboard Box
 tile.CardboardBox.name=Pappkarton
 
-//Bounding Block
+//Bounding Blockc
 tile.BoundingBlock.name=Begrenzungsblock
 
 //Salt
@@ -100,9 +101,7 @@ tile.MachineBlock.EnrichmentChamber.name=Anreicherungskammer
 tile.MachineBlock.OsmiumCompressor.name=Osmiumkompressor
 tile.MachineBlock.Combiner.name=Kombinierer
 tile.MachineBlock.Crusher.name=Zerstoßer
-tile.MachineBlock.BasicFactory.name=Basisfabrik
-tile.MachineBlock.AdvancedFactory.name=Fortgeschrittene Fabrik
-tile.MachineBlock.EliteFactory.name=Elitefabrik
+tile.MachineBlock.Factory.name=Fabrik
 tile.MachineBlock.MetallurgicInfuser.name=Metallurgische Infusionsmaschine
 tile.MachineBlock.PurificationChamber.name=Purifikationskammer
 tile.MachineBlock.EnergizedSmelter.name=Energetisierter Schmelzer
@@ -161,7 +160,10 @@ tile.OreBlock.CopperOre.name=Kupfererz
 tile.OreBlock.TinOre.name=Zinnerz
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Druckröhre
+item.MultipartTransmitter.BasicPressurizedTube.name=Basis-Druckröhre
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Fortgeschrittene Druckröhre
+item.MultipartTransmitter.ElitePressurizedTube.name=Elite-Druckröhre
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimative Druckröhre
 item.MultipartTransmitter.BasicUniversalCable.name=Universelles Basiskabel
 item.MultipartTransmitter.AdvancedUniversalCable.name=Fortgeschrittenes Universelles Kabel
 item.MultipartTransmitter.EliteUniversalCable.name=Universelles Elitekabel
@@ -170,7 +172,10 @@ item.MultipartTransmitter.BasicMechanicalPipe.name=Mechanisches Basisrohr
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Fortgeschrittenes Mechanisches Rohr
 item.MultipartTransmitter.EliteMechanicalPipe.name=Mechanisches Eliterohr
 item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimatives Mechanisches Rohr
-item.MultipartTransmitter.LogisticalTransporter.name=Logistischer Transporter
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Logistischer Basistransporter
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Fortgeschrittener Logistischer Transporter
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Logistischer Elitetransporter
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimativer Logistischer Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restriktiver Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Diversionstransporter
 
@@ -178,11 +183,11 @@ item.MultipartTransmitter.DiversionTransporter.name=Diversionstransporter
 item.GlowPanel.name=Leuchtplatte
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Basisenergiewürfel
-tile.EnergyCube.Advanced.name=Fortgeschrittener Energiewürfel
-tile.EnergyCube.Elite.name=Eliteenergiewürfel
-tile.EnergyCube.Ultimate.name=Ultimativer Energiewürfel
-tile.EnergyCube.Creative.name=Kreativer Energiewürfel
+tile.EnergyCubeBasic.name=Basis-Energiewürfel
+tile.EnergyCubeAdvanced.name=Fortgeschrittener Energiewürfel
+tile.EnergyCubeElite.name=Elite-Energiewürfel
+tile.EnergyCubeUltimate.name=Ultimativer Energiewürfel
+tile.EnergyCubeCreative.name=Kreativer Energiewürfel
 
 //Factory Installers
 item.basicFactoryInstaller.name=Basis-Fabriken-Installer
@@ -317,6 +322,13 @@ oregas.silver=Silbererz
 oregas.obsidian=Obsidianerz
 oregas.lead=Bleierz
 
+//Tier names
+tier.Basic=Gewöhnlich
+tier.Advanced=Fortgeschritten
+tier.Elite=Elite
+tier.Ultimate=Ultimativ
+tier.Creative=Kreativ
+
 //Transmission types
 transmission.Energy=Energie
 transmission.Fluids=Flüssigkeiten
@@ -339,24 +351,29 @@ upgrade.speed=Geschwindigkeit
 upgrade.speed.desc=Erhöht Maschineriegeschwindigkeit
 upgrade.filter=Filter
 upgrade.filter.desc=Ein Filter, welcher Schweres !nWasser von regulärem Wasser trennt
+upgrade.gas=Gas
+upgrade.gas.desc=Erhöht die Effizienz von !ngasverwendenden Maschinen
 
 //Key description text
 key.mode=Moduswechsel
+key.armorMode=Küstungsmoduswechsel
 key.voice=Stimme
 
 //Entities
-entity.Robit.name=Robit
-entity.BabySkeleton.name=Baby-Skelett
+entity.Mekanism.Robit.name=Robit
+entity.Mekanism.BabySkeleton.name=Baby-Skelett
 
 //Config Gui
 mekanism.configgui.ctgy.general=Mekanism: Generelle Einstellungen
 mekanism.configgui.ctgy.machines=Maschineneinstellungen
+mekanism.configgui.ctgy.tier=Stufeneintellungen
 mekanism.configgui.ctgy.usage=Nutzungseinstellungen
 mekanism.configgui.ctgy.client=Client-Einstellungen
 
 //Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Generelle Einstellungen bezüglich Mekanism und all seinen Modulen
 mekanism.configgui.ctgy.machines.tooltip=Einstellungen bezüglich dem (De-)Aktivieren bestimmter Maschinerie
+mekanism.configgui.ctgy.tier.tooltip=Einstellugen bezüglich der Upgrade-Stufen in Mekanism und ihren Werten
 mekanism.configgui.ctgy.usage.tooltip=Einstellungen bezüglich Maschinerie und ihren Energieverbauch
 mekanism.configgui.ctgy.client.tooltip=Client-spezifische Einstellungen bezüglich Mekanism und seinen Modulen
 
@@ -440,6 +457,26 @@ gui.set=Setzen
 gui.freq=Freq
 gui.security=Sicherheit
 gui.index=Index
+gui.producing=Produziert
+gui.maxOutput=Max-Output
+gui.storing=Speichert
+gui.skyBlocked=Himmel nicht sichtbar
+gui.using=Verbraucht
+gui.needed=Benötigt
+gui.noRecipe=Kein Rezept
+gui.conflict=Konflikt
+gui.height=Höhe
+gui.mult=Mult
+gui.chunk=Chunk
+gui.vibrating=Vibrierend
+gui.abundancy=Fülle
+gui.nextItem=Nächstes Item
+gui.lastItem=Vorheriges Item
+gui.oreDictCompat=Kompatibler OreDict-Key
+gui.toggleCooling=Kühlmessungen umschalten
+gui.coolingMeasurements=Aktive Kühlung
+gui.redstoneOutputMode=Redstone-Modus
+gui.entityDetection=Entity-Erkennung
 
 gui.reactor.injectionRate=Injektionsrate
 
@@ -465,14 +502,16 @@ gui.configuration.strictInput=Strikter Input
 gui.rotaryCondensentrator.toggleOperation=Schalte Betrieb
 
 gui.factory.secondaryEnergy=Sekundärenergie
-gui.factory.smelting=Schmelzen
-gui.factory.enriching=Anreichern
-gui.factory.crushing=Zerstoßen
-gui.factory.compressing=Komprimieren
-gui.factory.combining=Kombinieren
-gui.factory.purifying=Purifizieren
-gui.factory.injecting=Injezieren
 gui.factory.autoSort=Auto-Sortieren
+
+//Recipe types
+gui.factory.Smelting=Schmelzen
+gui.factory.Enriching=Anreichern
+gui.factory.Crushing=Zerstoßen
+gui.factory.Compressing=Komprimieren
+gui.factory.Combining=Kombinieren
+gui.factory.Purifying=Purifizieren
+gui.factory.Injecting=Injezieren
 
 gui.seismicReader.short=S. Lesegerät
 gui.seismicReader.solids=Feststoffe
@@ -572,6 +611,8 @@ tooltip.configurator.dim=Dimension
 tooltip.configurator.setLink=Setze Link auf Block
 tooltip.configurator.plenisherReset=Flüssigkeitsfüllerkalkulation zurücksetzen
 tooltip.configurator.inductionPortMode=Induktionsport-Transfermodus geändert zu
+tooltip.configurator.toggleColor=Farbe geändert zu
+tooltip.configurator.viewColor=Aktuelle Farbe
 
 tooltip.upgrade.speed=Geschwindigkeit
 tooltip.upgrade.energy=Energie
@@ -616,6 +657,7 @@ tooltip.configureState=Status Konfigurieren
 tooltip.outputRate=Output-Rate
 tooltip.insufficientFuel=Nicht genügend Treibstoff
 tooltip.readyForReaction=Bereit für Reaktion
+tooltip.speed=Geschwindigkeit
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
@@ -759,6 +801,16 @@ dye.pink=Magentafarben
 dye.yellow=Gelb
 dye.white=Weiß
 
+//Reactor Logic modes
+reactor.disabled=Deaktiviert
+reactor.disabled.desc=Wird kein Redstone-Signal aussenden
+reactor.ready=Bereit für Zündung
+reactor.ready.desc=Reaktor hat die für Zündung erforderliche Temperatur erreicht
+reactor.capacity=Wärmekapazität erreicht
+reactor.capacity.desc=Die Wärmekapazität des Reaktorkrns ist erreicht worden
+reactor.depleted=Nicht genug Treibstoff
+reactor.depleted.desc=Der Reaktor hat nicht genügend Treibstoff, um eine Reaktion instandzuhalten
+
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -785,7 +837,8 @@ tile.Generator.WindTurbine.name=Windturbine
 tile.Reactor.ReactorController.name=Reaktor-Controller
 tile.Reactor.ReactorFrame.name=Reaktorrahmen
 tile.Reactor.ReactorNeutronCapturePlate.name=Neutronenauffangplatte
-tile.Reactor.ReactorInOutPort.name=Reaktorport
+tile.Reactor.ReactorPort.name=Reaktorport
+tile.Reactor.ReactorLogicAdapter.name=Reaktor-Logikadapter
 
 tile.ReactorGlass.ReactorGlass.name=Reaktorglas
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser-Fokusmatrix
