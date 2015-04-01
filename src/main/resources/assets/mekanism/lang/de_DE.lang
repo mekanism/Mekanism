@@ -59,7 +59,7 @@ tile.GasTank.GasTank.name=Gastank
 //Cardboard Box
 tile.CardboardBox.name=Pappkarton
 
-//Bounding Blockc
+//Bounding Block
 tile.BoundingBlock.name=Begrenzungsblock
 
 //Salt
