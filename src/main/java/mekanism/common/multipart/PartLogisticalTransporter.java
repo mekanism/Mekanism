@@ -206,7 +206,7 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))))
 							{
 								ILogisticalTransporter nextTile = (ILogisticalTransporter)next.getTileEntity(world());
-								nextTile.entityEntering(stack);
+								nextTile.entityEntering(stack, stack.progress%100);
 								remove.add(stack);
 
 								continue;
@@ -484,9 +484,9 @@ public class PartLogisticalTransporter extends PartTransmitter<InventoryNetwork>
 	}
 
 	@Override
-	public void entityEntering(TransporterStack stack)
+	public void entityEntering(TransporterStack stack, int progress)
 	{
-		stack.progress = 0;
+		stack.progress = progress;
 		transit.add(stack);
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getSyncPacket(stack, false)), new Range4D(Coord4D.get(tile())));
 		MekanismUtils.saveChunk(tile());

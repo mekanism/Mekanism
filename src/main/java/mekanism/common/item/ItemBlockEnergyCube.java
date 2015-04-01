@@ -231,7 +231,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return getEnergyCubeTier(itemStack).MAX_ELECTRICITY;
+		return getEnergyCubeTier(itemStack).maxEnergy;
 	}
 
 	@Override

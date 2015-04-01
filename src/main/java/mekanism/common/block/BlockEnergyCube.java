@@ -139,7 +139,7 @@ public class BlockEnergyCube extends BlockContainer implements IPeripheralProvid
 			list.add(discharged);
 			ItemStack charged = new ItemStack(this);
 			((ItemBlockEnergyCube)charged.getItem()).setEnergyCubeTier(charged, tier);
-			((ItemBlockEnergyCube)charged.getItem()).setEnergy(charged, tier.MAX_ELECTRICITY);
+			((ItemBlockEnergyCube)charged.getItem()).setEnergy(charged, tier.maxEnergy);
 			list.add(charged);
 		};
 	}

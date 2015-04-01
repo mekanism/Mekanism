@@ -137,13 +137,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			{
 				InductionCellTier tier = InductionCellTier.values()[getTier(itemstack).ordinal()];
 				
-				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.MAX_ELECTRICITY));
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.maxEnergy));
 			}
 			else if(itemstack.getItemDamage() == 4)
 			{
 				InductionProviderTier tier = InductionProviderTier.values()[getTier(itemstack).ordinal()];
 				
-				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.OUTPUT));
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.output));
 			}
 		}
 		
@@ -374,7 +374,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
 		{
-			return InductionCellTier.values()[getTier(itemStack).ordinal()].MAX_ELECTRICITY;
+			return InductionCellTier.values()[getTier(itemStack).ordinal()].maxEnergy;
 		}
 		
 		return 0;

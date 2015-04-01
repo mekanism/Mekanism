@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import io.netty.buffer.ByteBuf;
 import mekanism.api.EnumColor;
 import mekanism.common.multipart.TransmitterType;
 import mekanism.common.util.MekanismUtils;
@@ -66,8 +67,11 @@ public final class Tier
 		ULTIMATE(128000000, 51200),
 		CREATIVE(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
-		public double MAX_ELECTRICITY;
-		public double OUTPUT;
+		public double maxEnergy;
+		private double baseMaxEnergy;
+		
+		public double output;
+		private double baseOutput;
 
 		public static EnergyCubeTier getFromName(String tierName)
 		{
@@ -83,15 +87,33 @@ public final class Tier
 			return BASIC;
 		}
 		
+		protected void loadConfig()
+		{
+			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeMaxEnergy", baseMaxEnergy).getDouble();
+			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "EnergyCubeOutput", baseOutput).getDouble();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			maxEnergy = dataStream.readDouble();
+			output = dataStream.readDouble();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeDouble(maxEnergy);
+			dataStream.writeDouble(output);
+		}
+		
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
 		}
 
-		private EnergyCubeTier(double maxEnergy, double out)
+		private EnergyCubeTier(double max, double out)
 		{
-			MAX_ELECTRICITY = maxEnergy;
-			OUTPUT = out;
+			baseMaxEnergy = maxEnergy = max;
+			baseOutput = output = out;
 		}
 	}
 	
@@ -102,16 +124,32 @@ public final class Tier
 		ELITE(64E9D),
 		ULTIMATE(512E9D);
 
-		public double MAX_ELECTRICITY;
+		public double maxEnergy;
+		private double baseMaxEnergy;
 		
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
 		}
-
-		private InductionCellTier(double maxEnergy)
+		
+		protected void loadConfig()
 		{
-			MAX_ELECTRICITY = maxEnergy;
+			maxEnergy = Mekanism.configuration.get("tier", getBaseTier().getName() + "InductionCellMaxEnergy", baseMaxEnergy).getDouble();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			maxEnergy = dataStream.readDouble();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeDouble(maxEnergy);
+		}
+
+		private InductionCellTier(double max)
+		{
+			baseMaxEnergy = maxEnergy = max;
 		}
 	}
 	
@@ -122,16 +160,32 @@ public final class Tier
 		ELITE(4096000),
 		ULTIMATE(32768000);
 
-		public double OUTPUT;
+		public double output;
+		private double baseOutput;
 		
 		public BaseTier getBaseTier()
 		{
 			return BaseTier.values()[ordinal()];
 		}
+		
+		protected void loadConfig()
+		{
+			output = Mekanism.configuration.get("tier", getBaseTier().getName() + "InductionProviderOutput", baseOutput).getDouble();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			output = dataStream.readDouble();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeDouble(output);
+		}
 
 		private InductionProviderTier(double out)
 		{
-			OUTPUT = out;
+			baseOutput = output = out;
 		}
 	}
 
@@ -193,12 +247,30 @@ public final class Tier
 		}
 
 		public int cableCapacity;
+		private int baseCapacity;
+		
 		public TransmitterType type;
 
 		private CableTier(int capacity, TransmitterType transmitterType)
 		{
-			cableCapacity = capacity;
+			baseCapacity = cableCapacity = capacity;
+			
 			type = transmitterType;
+		}
+		
+		protected void loadConfig()
+		{
+			cableCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "CableCapacity", baseCapacity).getInt();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			cableCapacity = dataStream.readInt();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(cableCapacity);
 		}
 		
 		public static CableTier get(BaseTier tier)
@@ -233,14 +305,37 @@ public final class Tier
 		}
 
 		public int pipeCapacity;
+		private int baseCapacity;
+		
 		public int pipePullAmount;
+		private int basePull;
+		
 		public TransmitterType type;
 
 		private PipeTier(int capacity, int pullAmount, TransmitterType transmitterType)
 		{
-			pipeCapacity = capacity;
-			pipePullAmount = pullAmount;
+			baseCapacity = pipeCapacity = capacity;
+			basePull = pipePullAmount = pullAmount;
+			
 			type = transmitterType;
+		}
+		
+		protected void loadConfig()
+		{
+			pipeCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "PipeCapacity", baseCapacity).getInt();
+			pipePullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "PipePullAmount", basePull).getInt();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			pipeCapacity = dataStream.readInt();
+			pipePullAmount = dataStream.readInt();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(pipeCapacity);
+			dataStream.writeInt(pipePullAmount);
 		}
 		
 		public static PipeTier get(BaseTier tier)
@@ -275,14 +370,37 @@ public final class Tier
 		}
 
 		public int tubeCapacity;
+		private int baseCapacity;
+		
 		public int tubePullAmount;
+		private int basePull;
+		
 		public TransmitterType type;
 
 		private TubeTier(int capacity, int pullAmount, TransmitterType transmitterType)
 		{
-			tubeCapacity = capacity;
-			tubePullAmount = pullAmount;
+			baseCapacity = tubeCapacity = capacity;
+			basePull = tubePullAmount = pullAmount;
+			
 			type = transmitterType;
+		}
+		
+		protected void loadConfig()
+		{
+			tubeCapacity = Mekanism.configuration.get("tier", getBaseTier().getName() + "TubeCapacity", baseCapacity).getInt();
+			tubePullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "TubePullAmount", basePull).getInt();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			tubeCapacity = dataStream.readInt();
+			tubePullAmount = dataStream.readInt();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(tubeCapacity);
+			dataStream.writeInt(tubePullAmount);
 		}
 		
 		public static TubeTier get(BaseTier tier)
@@ -317,14 +435,37 @@ public final class Tier
 		}
 
 		public int pullAmount;
+		private int basePull;
+		
 		public int speed;
+		private int baseSpeed;
+		
 		public TransmitterType type;
 
 		private TransporterTier(int pull, int s, TransmitterType transmitterType)
 		{
-			pullAmount = pull;
-			speed = s;
+			basePull = pullAmount = pull;
+			baseSpeed = speed = s;
+			
 			type = transmitterType;
+		}
+		
+		protected void loadConfig()
+		{
+			pullAmount = Mekanism.configuration.get("tier", getBaseTier().getName() + "TransporterPullAmount", basePull).getInt();
+			speed = Mekanism.configuration.get("tier", getBaseTier().getName() + "TransporterSpeed", baseSpeed).getInt();
+		}
+		
+		protected void readConfig(ByteBuf dataStream)
+		{
+			pullAmount = dataStream.readInt();
+			speed = dataStream.readInt();
+		}
+		
+		protected void writeConfig(ByteBuf dataStream)
+		{
+			dataStream.writeInt(pullAmount);
+			dataStream.writeInt(speed);
 		}
 		
 		public static TransporterTier get(BaseTier tier)
@@ -338,6 +479,120 @@ public final class Tier
 			}
 			
 			return BASIC;
+		}
+	}
+	
+	public static void loadConfig()
+	{
+		for(CableTier tier : CableTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(InductionCellTier tier : InductionCellTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(InductionProviderTier tier : InductionProviderTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(EnergyCubeTier tier : EnergyCubeTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(PipeTier tier : PipeTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(TubeTier tier : TubeTier.values())
+		{
+			tier.loadConfig();
+		}
+		
+		for(TransporterTier tier : TransporterTier.values())
+		{
+			tier.loadConfig();
+		}
+	}
+	
+	public static void readConfig(ByteBuf dataStream)
+	{
+		for(CableTier tier : CableTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(InductionCellTier tier : InductionCellTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(InductionProviderTier tier : InductionProviderTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(EnergyCubeTier tier : EnergyCubeTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(PipeTier tier : PipeTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(TubeTier tier : TubeTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+		
+		for(TransporterTier tier : TransporterTier.values())
+		{
+			tier.readConfig(dataStream);
+		}
+	}
+	
+	public static void writeConfig(ByteBuf dataStream)
+	{
+		for(CableTier tier : CableTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(InductionCellTier tier : InductionCellTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(InductionProviderTier tier : InductionProviderTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(EnergyCubeTier tier : EnergyCubeTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(PipeTier tier : PipeTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(TubeTier tier : TubeTier.values())
+		{
+			tier.writeConfig(dataStream);
+		}
+		
+		for(TransporterTier tier : TransporterTier.values())
+		{
+			tier.writeConfig(dataStream);
 		}
 	}
 }
