@@ -11,7 +11,7 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public TransmitterType getTransmitter()
+	public TransmitterType getTransmitterType()
 	{
 		return TransmitterType.RESTRICTIVE_TRANSPORTER;
 	}

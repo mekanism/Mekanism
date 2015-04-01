@@ -1,11 +1,14 @@
 package mekanism.common.network;
 
 import mekanism.api.Coord4D;
+import mekanism.api.energy.EnergyAcceptorWrapper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
 import mekanism.common.FluidNetwork;
@@ -17,6 +20,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -34,9 +38,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof ITransmitterTile)
 			{
-				((IGridTransmitter)tileEntity).refreshTransmitterNetwork();
+				//TODO ((ITransmitterTile)tileEntity).getTransmitter();
 			}
 		}
 		else if(message.packetType == PacketType.ENERGY)
@@ -45,7 +49,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
 			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.ENERGY)
 			{
-				((IGridTransmitter<EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = message.power;
+				((IGridTransmitter< EnergyAcceptorWrapper, EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = message.power;
 			}
 		}
 		else if(message.packetType == PacketType.GAS)
@@ -54,14 +58,14 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
 			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.GAS)
 			{
-				GasNetwork net = ((IGridTransmitter<GasNetwork>)tileEntity).getTransmitterNetwork();
+				GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>)tileEntity).getTransmitterNetwork();
 
 				if(message.gasType != null)
 				{
 					net.refGas = message.gasType;
 				}
 
-				net.gasStored = message.gasStack;
+				net.buffer = message.gasStack;
 				net.didTransfer = message.didGasTransfer;
 			}
 		}
@@ -71,19 +75,18 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
 			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.FLUID)
 			{
-				FluidNetwork net = ((IGridTransmitter<FluidNetwork>)tileEntity).getTransmitterNetwork();
+				FluidNetwork net = ((IGridTransmitter< IFluidHandler, FluidNetwork>)tileEntity).getTransmitterNetwork();
 
 				if(message.fluidType != null)
 				{
 					net.refFluid = message.fluidType;
 				}
 
-				net.fluidStored = message.fluidStack;
+				net.buffer = message.fluidStack;
 				net.didTransfer = message.didFluidTransfer;
 				net.fluidScale = net.getScale();
 			}
 		}
-		
 		return null;
 	}
 	

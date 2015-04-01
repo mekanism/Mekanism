@@ -193,6 +193,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				if(bottomStack != null && isActive)
 				{
 					TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
+/*TODO
 
 					if(tile instanceof ILogisticalTransporter)
 					{
@@ -210,6 +211,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 						setInventorySlotContents(0, InventoryUtils.putStackInInventory((IInventory)tile, bottomStack, 0, false));
 					}
 
+*/
 					delayTicks = 10;
 				}
 			}

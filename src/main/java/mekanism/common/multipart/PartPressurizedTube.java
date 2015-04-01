@@ -1,10 +1,12 @@
 package mekanism.common.multipart;
 
+import java.util.Collection;
 import java.util.Set;
 
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTransmission;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -17,18 +19,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import codechicken.lib.vec.Vector3;
 
-public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements IGasHandler
+public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
 	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 2);
 
 	public float currentScale;
 
-	public GasStack cacheGas;
+	public GasTank buffer = new GasTank(getCapacity());
+
 	public GasStack lastWrite;
 
 	@Override
@@ -36,20 +40,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	{
 		if(!world().isRemote)
 		{
-			if(cacheGas != null)
-			{
-				if(getTransmitterNetwork().gasStored == null)
-				{
-					getTransmitterNetwork().gasStored = cacheGas;
-				}
-				else {
-					getTransmitterNetwork().gasStored.amount += cacheGas.amount;
-				}
-
-				cacheGas = null;
-			}
-
-			if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0)
+			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
 			{
 				int last = lastWrite != null ? lastWrite.amount : 0;
 
@@ -73,7 +64,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 
 						if(received != null && received.amount != 0)
 						{
-							container.drawGas(side.getOpposite(), getTransmitterNetwork().emit(received, true), true);
+							container.drawGas(side.getOpposite(), takeGas(received, true), true);
 						}
 					}
 				}
@@ -81,7 +72,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 
 		}
 		else {
-			float targetScale = getTransmitterNetwork().gasScale;
+			float targetScale = getTransmitter().getTransmitterNetwork().gasScale;
 
 			if(Math.abs(currentScale - targetScale) > 0.01)
 			{
@@ -94,12 +85,12 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 
 	private int getSaveShare()
 	{
-		if(getTransmitterNetwork().gasStored != null)
+		if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null)
 		{
-			int remain = getTransmitterNetwork().gasStored.amount%getTransmitterNetwork().transmitters.size();
-			int toSave = getTransmitterNetwork().gasStored.amount/getTransmitterNetwork().transmitters.size();
+			int remain = getTransmitter().getTransmitterNetwork().buffer.amount%getTransmitter().getTransmitterNetwork().transmitters.size();
+			int toSave = getTransmitter().getTransmitterNetwork().buffer.amount/getTransmitter().getTransmitterNetwork().transmitters.size();
 
-			if(getTransmitterNetwork().isFirst((IGridTransmitter<GasNetwork>)tile()))
+			if(getTransmitter().getTransmitterNetwork().transmitters.iterator().next().equals(getTransmitter()))
 			{
 				toSave += remain;
 			}
@@ -111,43 +102,17 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
-	public TransmitterType getTransmitter()
-	{
-		return TransmitterType.PRESSURIZED_TUBE;
-	}
-
-	@Override
-	public void preSingleMerge(GasNetwork network)
-	{
-		if(cacheGas != null)
-		{
-			if(network.gasStored == null)
-			{
-				network.gasStored = cacheGas;
-			}
-			else {
-				network.gasStored.amount += cacheGas.amount;
-			}
-
-			cacheGas = null;
-		}
-	}
-
-	@Override
 	public void onChunkUnload()
 	{
-		if(!world().isRemote)
+		if(!world().isRemote && getTransmitter().hasTransmitterNetwork())
 		{
-			if(lastWrite != null)
+			if(lastWrite != null && getTransmitter().getTransmitterNetwork().buffer != null)
 			{
-				if(getTransmitterNetwork().gasStored != null)
-				{
-					getTransmitterNetwork().gasStored.amount -= lastWrite.amount;
+				getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
 
-					if(getTransmitterNetwork().gasStored.amount <= 0)
-					{
-						getTransmitterNetwork().gasStored = null;
-					}
+				if(getTransmitter().getTransmitterNetwork().buffer.amount <= 0)
+				{
+					getTransmitter().getTransmitterNetwork().buffer = null;
 				}
 			}
 		}
@@ -162,7 +127,7 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 
 		if(nbtTags.hasKey("cacheGas"))
 		{
-			cacheGas = GasStack.readFromNBT(nbtTags.getCompoundTag("cacheGas"));
+			buffer.setGas(GasStack.readFromNBT(nbtTags.getCompoundTag("cacheGas")));
 		}
 	}
 
@@ -171,23 +136,13 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	{
 		super.save(nbtTags);
 
-		if(getTransmitterNetwork(false) != null && getTransmitterNetwork(false).getSize() > 0 && getTransmitterNetwork(false).gasStored != null)
+		int toSave = getSaveShare();
+
+		if(toSave > 0)
 		{
-			int remain = getTransmitterNetwork().gasStored.amount%getTransmitterNetwork().transmitters.size();
-			int toSave = getTransmitterNetwork().gasStored.amount/getTransmitterNetwork().transmitters.size();
-
-			if(getTransmitterNetwork().isFirst((IGridTransmitter<GasNetwork>)tile()))
-			{
-				toSave += remain;
-			}
-
-			if(toSave > 0)
-			{
-				GasStack stack = new GasStack(getTransmitterNetwork().gasStored.getGas(), toSave);
-
-				lastWrite = stack;
-				nbtTags.setTag("cacheGas", stack.write(new NBTTagCompound()));
-			}
+			GasStack stack = new GasStack(getTransmitter().getTransmitterNetwork().buffer.getGas(), toSave);
+			lastWrite = stack;
+			nbtTags.setTag("cacheGas", stack.write(new NBTTagCompound()));
 		}
 	}
 
@@ -228,45 +183,27 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
+	public TransmitterType getTransmitterType()
+	{
+		return TransmitterType.PRESSURIZED_TUBE;
+	}
+
+	@Override
 	public boolean isValidAcceptor(TileEntity tile, ForgeDirection side)
 	{
 		return GasTransmission.canConnect(tile, side);
 	}
 
 	@Override
-	public GasNetwork createNetworkFromSingleTransmitter(IGridTransmitter<GasNetwork> transmitter)
+	public GasNetwork createNewNetwork()
 	{
-		return new GasNetwork(transmitter);
+		return new GasNetwork();
 	}
 
 	@Override
-	public GasNetwork createNetworkByMergingSet(Set<GasNetwork> networks)
+	public GasNetwork createNetworkByMerging(Collection<GasNetwork> networks)
 	{
 		return new GasNetwork(networks);
-	}
-
-	@Override
-	public int getTransmitterNetworkSize()
-	{
-		return getTransmitterNetwork().getSize();
-	}
-
-	@Override
-	public int getTransmitterNetworkAcceptorSize()
-	{
-		return getTransmitterNetwork().getAcceptorSize();
-	}
-
-	@Override
-	public String getTransmitterNetworkNeeded()
-	{
-		return getTransmitterNetwork().getNeededInfo();
-	}
-
-	@Override
-	public String getTransmitterNetworkFlow()
-	{
-		return getTransmitterNetwork().getFlowInfo();
 	}
 
 	@Override
@@ -286,11 +223,17 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	}
 
 	@Override
+	public GasStack getBuffer()
+	{
+		return buffer == null ? null : buffer.getGas();
+	}
+
+	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL)
 		{
-			return getTransmitterNetwork().emit(stack, doTransfer);
+			return takeGas(stack, doTransfer);
 		}
 		
 		return 0;
@@ -325,4 +268,16 @@ public class PartPressurizedTube extends PartTransmitter<GasNetwork> implements 
 	{
 		return false;
 	}
+
+	public int takeGas(GasStack gasStack, boolean doEmit)
+	{
+		if(getTransmitter().hasTransmitterNetwork())
+		{
+			return getTransmitter().getTransmitterNetwork().emit(gasStack, doEmit);
+		}
+		else {
+			return buffer.receive(gasStack, doEmit);
+		}
+	}
+
 }

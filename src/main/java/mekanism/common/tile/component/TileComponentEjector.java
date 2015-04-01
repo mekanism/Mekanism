@@ -122,12 +122,12 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				}
 				else if(tile instanceof ILogisticalTransporter)
 				{
-					ItemStack rejects = TransporterUtils.insert(tileEntity, (ILogisticalTransporter)tile, stack, outputColor, true, 0);
+					/*TODO ItemStack rejects = TransporterUtils.insert(tileEntity, (ILogisticalTransporter)tile, stack, outputColor, true, 0);
 
 					if(TransporterManager.didEmit(stack, rejects))
 					{
 						stack = rejects;
-					}
+					}*/
 				}
 
 				if(stack == null || prev.stackSize != stack.stackSize)

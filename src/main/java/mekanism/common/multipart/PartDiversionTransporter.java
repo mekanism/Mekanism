@@ -29,7 +29,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public TransmitterType getTransmitter()
+	public TransmitterType getTransmitterType()
 	{
 		return TransmitterType.DIVERSION_TRANSPORTER;
 	}

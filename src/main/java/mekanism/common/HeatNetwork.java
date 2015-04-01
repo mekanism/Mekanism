@@ -19,37 +19,20 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 	public double heatLost = 0;
 	public double heatTransferred = 0;
 
-	public HeatNetwork(IGridTransmitter<HeatNetwork>... varPipes)
-	{
-		transmitters.addAll(Arrays.asList(varPipes));
-		register();
-	}
+	public HeatNetwork() {}
 
-	public HeatNetwork(Collection<IGridTransmitter<HeatNetwork>> collection)
-	{
-		transmitters.addAll(collection);
-		register();
-	}
-
-	public HeatNetwork(Set<HeatNetwork> networks)
+	public HeatNetwork(Collection<HeatNetwork> networks)
 	{
 		for(HeatNetwork net : networks)
 		{
 			if(net != null)
 			{
-				addAllTransmitters(net.transmitters);
+				adoptTransmittersAndAcceptorsFrom(net);
 				net.deregister();
 			}
 		}
 
 		register();
-	}
-
-
-	@Override
-	protected HeatNetwork create(Collection<IGridTransmitter<HeatNetwork>> collection)
-	{
-		return new HeatNetwork(collection);
 	}
 
 	@Override
@@ -71,48 +54,15 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 	}
 
 	@Override
-	public Set<IHeatTransfer> getAcceptors(Object... data)
+	public void absorbBuffer(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter) {}
+
+	@Override
+	public void clampBuffer() {}
+
+	@Override
+	public Set<IHeatTransfer> getAcceptors(Object data)
 	{
 		return null;
-	}
-
-	@Override
-	public void refresh()
-	{
-		Set<IGridTransmitter<HeatNetwork>> iterPipes = (Set<IGridTransmitter<HeatNetwork>>)transmitters.clone();
-		Iterator<IGridTransmitter<HeatNetwork>> it = iterPipes.iterator();
-		boolean networkChanged = false;
-
-		while(it.hasNext())
-		{
-			IGridTransmitter<HeatNetwork> conductor = it.next();
-
-			if(conductor == null || conductor.getTile().isInvalid())
-			{
-				it.remove();
-				networkChanged = true;
-				transmitters.remove(conductor);
-			}
-			else {
-				conductor.setTransmitterNetwork(this);
-			}
-		}
-
-		if(networkChanged)
-		{
-			updateCapacity();
-		}
-	}
-
-	@Override
-	public void refresh(IGridTransmitter<HeatNetwork> transmitter)
-	{
-	}
-
-	@Override
-	public TransmissionType getTransmissionType()
-	{
-		return TransmissionType.HEAT;
 	}
 
 	@Override
@@ -126,7 +76,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
-			for(IGridTransmitter<HeatNetwork> transmitter : transmitters)
+			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
 				if(transmitter instanceof IHeatTransfer)
 				{
@@ -137,7 +87,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork>
 				}
 			}
 			
-			for(IGridTransmitter<HeatNetwork> transmitter : transmitters)
+			for(IGridTransmitter<IHeatTransfer, HeatNetwork> transmitter : transmitters)
 			{
 				if(transmitter instanceof IHeatTransfer)
 				{

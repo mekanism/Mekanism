@@ -15,6 +15,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.MekanismItems;
@@ -69,6 +70,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public boolean redstoneReactive = true;
 
 	public ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL};
+	public TileEntity[] cachedAcceptors = new TileEntity[6];
 
 	static
 	{
@@ -128,6 +130,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte tester = (byte)(1 << side.ordinal());
 		return (connections & tester) > 0;
+	}
+
+	public static byte setConnectionBit(byte connections, boolean toSet, ForgeDirection side)
+	{
+		return (byte)((connections & ~(byte)(1 << side.ordinal())) | (byte)((toSet?1:0) << side.ordinal()));
 	}
 
 	public abstract IIcon getCenterIcon();
@@ -218,7 +225,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			{
 				TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
 
-				if(TransmissionType.checkTransmissionType(tileEntity, getTransmitter().getTransmission()) && isValidTransmitter(tileEntity))
+				if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
 				{
 					connections |= 1 << side.ordinal();
 				}
@@ -226,6 +233,46 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 
 		return connections;
+	}
+
+	public boolean getPossibleAcceptorConnection(ForgeDirection side)
+	{
+		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
+		{
+			return false;
+		}
+
+		if(canConnectMutual(side))
+		{
+			TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+
+			if(isValidAcceptor(tileEntity, side))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public boolean getPossibleTransmitterConnection(ForgeDirection side)
+	{
+		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
+		{
+			return false;
+		}
+
+		if(canConnectMutual(side))
+		{
+			TileEntity tileEntity = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
+
+			if(tileEntity instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public byte getPossibleAcceptorConnections()
@@ -283,17 +330,17 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 				if(connectionMapContainsSide(connections, side) || side == testingSide)
 				{
-					subParts.add(getTransmitter().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord]);
+					subParts.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[ord] : largeSides[ord]);
 				}
 			}
 		}
 
-		subParts.add(getTransmitter().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
+		subParts.add(getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6]);
 
 		return subParts;
 	}
 
-	public abstract TransmitterType getTransmitter();
+	public abstract TransmitterType getTransmitterType();
 
 	@Override
 	public Iterable<Cuboid6> getCollisionBoxes()
@@ -331,7 +378,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public Cuboid6 getBounds()
 	{
-		return getTransmitter().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
+		return getTransmitterType().getSize() == Size.SMALL ? smallSides[6] : largeSides[6];
 	}
 
 	@Override
@@ -341,7 +388,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(connectionMapContainsSide(getAllCurrentConnections(), direction) || direction == testingSide)
 		{
-			return getTransmitter().getSize().centerSize+1;
+			return getTransmitterType().getSize().centerSize+1;
 		}
 		
 		return 0;
@@ -487,7 +534,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public ItemStack pickItem(MovingObjectPosition hit)
 	{
-		return new ItemStack(MekanismItems.PartTransmitter, 1, getTransmitter().ordinal());
+		return new ItemStack(MekanismItems.PartTransmitter, 1, getTransmitterType().ordinal());
 	}
 
 	@Override
@@ -495,12 +542,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		return true;
 	}
-
-	protected void onRedstoneSplit() {}
-
-	protected void onRedstoneJoin() {}
-
-	protected void onRefresh() {}
 
 	public void redstoneRefresh()
 	{
@@ -520,6 +561,28 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 		if(possibleTransmitters != currentTransmitterConnections)
 		{
+			markDirtyTransmitters();
+		}
+
+		if(!world().isRemote)
+		{
+			if((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections())
+			{
+				sendDesc = true;
+			}
+
+			currentTransmitterConnections = possibleTransmitters;
+			currentAcceptorConnections = possibleAcceptors;
+		}
+	}
+
+	public void refreshConnections(ForgeDirection side)
+	{
+		boolean possibleTransmitter = getPossibleTransmitterConnection(side);
+		boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+
+		if(possibleTransmitter != connectionMapContainsSide(currentTransmitterConnections, side))
+		{
 			if(handlesRedstone())
 			{
 				boolean nowPowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
@@ -527,15 +590,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				if(nowPowered != redstonePowered)
 				{
 					redstonePowered = nowPowered;
-	
-					if(nowPowered)
-					{
-						onRedstoneSplit();
-					}
-					else {
-						onRedstoneJoin();
-					}
-
 					notifyTileChange();
 				}
 			}
@@ -543,22 +597,27 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		
 		if(!world().isRemote)
 		{
-			if(getAllCurrentConnections() != (possibleTransmitters | possibleAcceptors))
+			if((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side))
 			{
 				sendDesc = true;
 			}
 			
-			currentTransmitterConnections = possibleTransmitters;
-			currentAcceptorConnections = possibleAcceptors;
+			currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
+			currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
 		}
-		
-		onRefresh();
 	}
 
 	protected void onModeChange(ForgeDirection side)
 	{
 		refreshConnections();
 	}
+
+	protected void markDirtyTransmitters()
+	{
+		notifyTileChange();
+	}
+
+	protected void markDirtyAcceptors() {}
 
 	@Override
 	public void onAdded()
@@ -582,7 +641,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public void onNeighborTileChanged(int side, boolean weak) 
 	{
-		refreshConnections();
+		refreshConnections(ForgeDirection.getOrientation(side));
 	}
 
 	@Override
@@ -650,7 +709,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			return RenderPartTransmitter.contents_models.get(name);
 		}
 		else {
-			if(getTransmitter().getSize() == Size.LARGE)
+			if(getTransmitterType().getSize() == Size.LARGE)
 			{
 				return RenderPartTransmitter.large_models.get(name);
 			}

@@ -15,6 +15,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.tile.TileEntityElectricBlock;
@@ -81,7 +82,11 @@ public final class CableUtils
 
 	public static boolean isCable(TileEntity tileEntity)
 	{
-		return TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY);
+		if(tileEntity instanceof ITransmitterTile)
+		{
+			return TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.ENERGY);
+		}
+		return false;
 	}
 
 	/**

@@ -164,7 +164,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		ItemStack used = null;
 
-		if(front instanceof ILogisticalTransporter)
+		/*TODO if(front instanceof ILogisticalTransporter)
 		{
 			ILogisticalTransporter transporter = (ILogisticalTransporter)front;
 
@@ -186,14 +186,14 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				}
 			}
 		}
-		else if(front instanceof IInventory)
+		else */if(front instanceof IInventory)
 		{
 			ItemStack rejects = InventoryUtils.putStackInInventory((IInventory)front, inInventory.getStack(), facing, false);
 
-			if(TransporterManager.didEmit(inInventory.getStack(), rejects))
+			/*TODO if(TransporterManager.didEmit(inInventory.getStack(), rejects))
 			{
 				used = TransporterManager.getToUse(inInventory.getStack(), rejects);
-			}
+			}*/
 		}
 		
 		return used;
