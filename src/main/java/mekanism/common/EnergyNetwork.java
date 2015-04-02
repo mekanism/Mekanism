@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -151,7 +152,8 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	{
 		double sent = 0;
 
-		List availableAcceptors = Arrays.asList(getAcceptors(null).toArray());
+		List<EnergyAcceptorWrapper> availableAcceptors = new ArrayList<>();
+		availableAcceptors.addAll(getAcceptors(null));
 
 		Collections.shuffle(availableAcceptors);
 
@@ -161,44 +163,25 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			double remaining = energyToSend % divider;
 			double sending = (energyToSend-remaining)/divider;
 
-			for(Object obj : availableAcceptors)
+			for(EnergyAcceptorWrapper acceptor : availableAcceptors)
 			{
-				if(obj instanceof TileEntity)
+				double currentSending = sending+remaining;
+				EnumSet<ForgeDirection> sides = acceptorDirections.get(acceptor.coord);
+
+				if(sides == null || sides.isEmpty())
 				{
-					TileEntity acceptor = (TileEntity)obj;
-					double currentSending = sending+remaining;
-					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get(acceptor));
+					continue;
+				}
 
-					if(sides == null || sides.isEmpty())
-					{
-						continue;
-					}
+				for(ForgeDirection side : sides)
+				{
+					double prev = sent;
 
-					for(ForgeDirection side : sides)
+					sent += acceptor.transferEnergyToAcceptor(side, currentSending);
+
+					if(sent > prev)
 					{
-						double prev = sent;
-						
-						if(acceptor instanceof IStrictEnergyAcceptor)
-						{
-							sent += ((IStrictEnergyAcceptor)acceptor).transferEnergyToAcceptor(side.getOpposite(), currentSending);
-						}
-						else if(MekanismUtils.useRF() && acceptor instanceof IEnergyReceiver)
-						{
-							IEnergyReceiver handler = (IEnergyReceiver)acceptor;
-							int used = handler.receiveEnergy(side.getOpposite(), (int)Math.round(currentSending*general.TO_TE), false);
-							sent += used*general.FROM_TE;
-						}
-						else if(MekanismUtils.useIC2() && acceptor instanceof IEnergySink)
-						{
-							double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)acceptor).getSinkTier())*general.FROM_IC2);
-							toSend = Math.min(toSend, ((IEnergySink)acceptor).getDemandedEnergy()*general.FROM_IC2);
-							sent += (toSend - (((IEnergySink)acceptor).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
-						}
-						
-						if(sent > prev)
-						{
-							break;
-						}
+						break;
 					}
 				}
 			}
@@ -233,7 +216,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			{
 				for(ForgeDirection side : sides)
 				{
-					if(acceptor.canReceiveEnergy(side.getOpposite()) && acceptor.getNeeded() > 0)
+					if(acceptor.canReceiveEnergy(side) && acceptor.getNeeded() > 0)
 					{
 						toReturn.add(acceptor);
 						break;

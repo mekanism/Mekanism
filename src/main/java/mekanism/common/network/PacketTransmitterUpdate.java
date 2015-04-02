@@ -1,5 +1,8 @@
 package mekanism.common.network;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import mekanism.api.Coord4D;
 import mekanism.api.energy.EnergyAcceptorWrapper;
 import mekanism.api.gas.Gas;
@@ -7,7 +10,9 @@ import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;
@@ -40,51 +45,73 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
 			if(tileEntity instanceof ITransmitterTile)
 			{
-				//TODO ((ITransmitterTile)tileEntity).getTransmitter();
+				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				DynamicNetwork network = transmitter.hasTransmitterNetwork() ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
+				transmitter.setTransmitterNetwork(network);
+				for(Coord4D coord : message.transmitterCoords)
+				{
+					TileEntity tile = coord.getTileEntity(player.worldObj);
+
+					if(tile instanceof ITransmitterTile)
+					{
+						((ITransmitterTile)tile).getTransmitter().setTransmitterNetwork(network);
+					}
+				}
 			}
 		}
 		else if(message.packetType == PacketType.ENERGY)
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.ENERGY)
+			if(tileEntity instanceof ITransmitterTile)
 			{
-				((IGridTransmitter< EnergyAcceptorWrapper, EnergyNetwork>)tileEntity).getTransmitterNetwork().clientEnergyScale = message.power;
+				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.ENERGY)
+				{
+					((IGridTransmitter<EnergyAcceptorWrapper, EnergyNetwork>)transmitter).getTransmitterNetwork().clientEnergyScale = message.power;
+				}
 			}
 		}
 		else if(message.packetType == PacketType.GAS)
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.GAS)
+			if(tileEntity instanceof ITransmitterTile)
 			{
-				GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>)tileEntity).getTransmitterNetwork();
-
-				if(message.gasType != null)
+				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				if(transmitter.hasTransmitterNetwork() && transmitter.getTransmissionType() == TransmissionType.GAS)
 				{
-					net.refGas = message.gasType;
-				}
+					GasNetwork net = ((IGridTransmitter<IGasHandler, GasNetwork>)transmitter).getTransmitterNetwork();
 
-				net.buffer = message.gasStack;
-				net.didTransfer = message.didGasTransfer;
+					if(message.gasType != null)
+					{
+						net.refGas = message.gasType;
+					}
+
+					net.buffer = message.gasStack;
+					net.didTransfer = message.didGasTransfer;
+				}
 			}
 		}
 		else if(message.packetType == PacketType.FLUID)
 		{
 			TileEntity tileEntity = message.coord4D.getTileEntity(player.worldObj);
 
-			if(tileEntity instanceof IGridTransmitter && ((IGridTransmitter)tileEntity).getTransmissionType() == TransmissionType.FLUID)
+			if(tileEntity instanceof ITransmitterTile)
 			{
-				FluidNetwork net = ((IGridTransmitter< IFluidHandler, FluidNetwork>)tileEntity).getTransmitterNetwork();
-
-				if(message.fluidType != null)
+				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
+				if(transmitter.hasTransmitterNetwork() && ((ITransmitterTile)tileEntity).getTransmitter().getTransmissionType() == TransmissionType.FLUID)
 				{
-					net.refFluid = message.fluidType;
-				}
+					FluidNetwork net = ((IGridTransmitter<IFluidHandler, FluidNetwork>)transmitter).getTransmitterNetwork();
 
-				net.buffer = message.fluidStack;
-				net.didTransfer = message.didFluidTransfer;
-				net.fluidScale = net.getScale();
+					if(message.fluidType != null)
+					{
+						net.refFluid = message.fluidType;
+					}
+
+					net.didTransfer = message.didFluidTransfer;
+					net.fluidScale = message.fluidScale;
+				}
 			}
 		}
 		return null;
@@ -104,9 +131,13 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 	
 		public FluidStack fluidStack;
 		public Fluid fluidType;
+		public float fluidScale;
 		public boolean didFluidTransfer;
-		
+
 		public int amount;
+
+		public Collection<IGridTransmitter> transmittersAdded;
+		public Collection<Coord4D> transmitterCoords;
 		
 		public TransmitterUpdateMessage() {}
 	
@@ -117,6 +148,9 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 	
 			switch(packetType)
 			{
+				case UPDATE:
+					transmittersAdded = (Collection<IGridTransmitter>)data[0];
+					break;
 				case ENERGY:
 					power = (Double)data[0];
 					break;
@@ -126,7 +160,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					break;
 				case FLUID:
 					fluidStack = (FluidStack)data[0];
-					didFluidTransfer = (Boolean)data[1];
+					fluidScale = (Float)data[1];
+					didFluidTransfer = (Boolean)data[2];
 					break;
 				default:
 					break;
@@ -145,6 +180,13 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 	
 			switch(packetType)
 			{
+				case UPDATE:
+					dataStream.writeInt(transmittersAdded.size());
+					for(IGridTransmitter transmitter : transmittersAdded)
+					{
+						transmitter.coord().write(dataStream);
+					}
+					break;
 				case ENERGY:
 					dataStream.writeDouble(power);
 					break;
@@ -155,7 +197,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					break;
 				case FLUID:
 					dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
-					dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
+					dataStream.writeFloat(fluidStack != null ? fluidScale : 0);
 					dataStream.writeBoolean(didFluidTransfer);
 					break;
 				default:
@@ -170,7 +212,17 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			
 			coord4D = new Coord4D(dataStream.readInt(), dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
 
-			if(packetType == PacketType.ENERGY)
+			if(packetType == PacketType.UPDATE)
+			{
+				transmitterCoords = new HashSet<>();
+				int numTransmitters = dataStream.readInt();
+
+				for(int i = 0; i < numTransmitters; i++)
+				{
+					transmitterCoords.add(Coord4D.read(dataStream));
+				}
+			}
+			else if(packetType == PacketType.ENERGY)
 			{
 				power = dataStream.readDouble();
 			}
@@ -189,13 +241,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			{
 				int type = dataStream.readInt();
 				fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
-				amount = dataStream.readInt();
+				fluidScale = dataStream.readFloat();
 				didFluidTransfer = dataStream.readBoolean();
-	
-				if(fluidType != null)
-				{
-					fluidStack = new FluidStack(fluidType, amount);
-				}
 			}
 		}
 	}

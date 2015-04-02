@@ -2,13 +2,9 @@ package mekanism.common.multipart;
 
 import java.util.Collection;
 
-import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTransmitterUpdate.PacketType;
-import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>
@@ -65,37 +61,42 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	protected void onModeChange(ForgeDirection side)
 	{
 		super.onModeChange(side);
-		
-		if(!world().isRemote)
-		{
-			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
-		}
 	}
 
 	@Override
 	public void onNeighborTileChanged(int side, boolean weak)
 	{
 		super.onNeighborTileChanged(side, weak);
-
-		if(!world().isRemote)
-		{
-			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
-		}
 	}
 
 	@Override
 	public void markDirtyTransmitters()
 	{
 		super.markDirtyTransmitters();
-		TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
+		if(getTransmitter().hasTransmitterNetwork())
+		{
+				TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
+		}
+	}
+
+	@Override
+	public void markDirtyAcceptor(ForgeDirection side)
+	{
+		super.markDirtyAcceptor(side);
+		if(getTransmitter().hasTransmitterNetwork())
+		{
+			getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
+		}
 	}
 
 	public A getCachedAcceptor(ForgeDirection side)
 	{
-		return (A)cachedAcceptors[side.ordinal()];
+		return connectionMapContainsSide(currentAcceptorConnections, side) ? (A)cachedAcceptors[side.ordinal()] : null;
 	}
 
 	public abstract int getCapacity();
 
 	public abstract Object getBuffer();
+
+	public abstract void takeShare();
 }

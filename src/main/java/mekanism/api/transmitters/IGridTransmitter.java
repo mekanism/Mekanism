@@ -9,6 +9,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter
 {
+	public boolean hasTransmitterNetwork();
+
 	/**
 	 * Gets the network currently in use by this transmitter segment.
 	 * @return network this transmitter is using

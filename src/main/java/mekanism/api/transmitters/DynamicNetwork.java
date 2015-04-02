@@ -13,7 +13,6 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
 import mekanism.api.Range4D;
-import mekanism.api.energy.EnergyAcceptorWrapper;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -23,13 +22,17 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 
+import scala.collection.parallel.ParIterableLike.Collect;
+
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements IClientTicker, INetworkDataHandler
 {
 	public LinkedHashSet<IGridTransmitter<A, N>> transmitters = new LinkedHashSet<>();
 	public LinkedHashSet<IGridTransmitter<A, N>> transmittersToAdd = new LinkedHashSet<>();
+	public LinkedHashSet<IGridTransmitter<A, N>> transmittersAdded = new LinkedHashSet<>();
 
 	public HashMap<Coord4D, A> possibleAcceptors = new HashMap<Coord4D, A>();
 	public HashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new HashMap<Coord4D, EnumSet<ForgeDirection>>();
+	public HashMap<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> changedAcceptors = new HashMap<>();
 
 	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
 
@@ -41,6 +44,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	protected double meanCapacity = 0;
 
 	protected boolean needsUpdate = false;
+	protected int updateDelay = 0;
 
 	protected World worldObj = null;
 
@@ -51,37 +55,81 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	public void commit()
 	{
-		for(IGridTransmitter<A, N> transmitter : transmittersToAdd)
+		if(!transmittersToAdd.isEmpty())
 		{
-			if(transmitter.isValid())
+			for(IGridTransmitter<A, N> transmitter : transmittersToAdd)
 			{
-				if(worldObj == null) worldObj = transmitter.world();
-				Coord4D coord = transmitter.coord();
-				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				if(transmitter.isValid())
+				{
+					if(worldObj == null) worldObj = transmitter.world();
+					Coord4D coord = transmitter.coord();
+					for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+					{
+						A acceptor = transmitter.getAcceptor(side);
+						if(acceptor != null)
+						{
+							Coord4D acceptorCoord = coord.getFromSide(side);
+							possibleAcceptors.put(acceptorCoord, acceptor);
+							EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
+							if(directions != null)
+							{
+								directions.add(side.getOpposite());
+							} else
+							{
+								acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
+							}
+						}
+					}
+					transmitter.setTransmitterNetwork((N)this);
+					absorbBuffer(transmitter);
+					transmitters.add(transmitter);
+				}
+			}
+			updateCapacity();
+			clampBuffer();
+			queueClientUpdate((Collection<IGridTransmitter<A, N>>)transmittersToAdd.clone());
+			transmittersToAdd.clear();
+		}
+
+		if(!changedAcceptors.isEmpty())
+		{
+			for(Entry<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> entry : changedAcceptors.entrySet())
+			{
+				IGridTransmitter<A, N> transmitter = entry.getKey();
+				EnumSet<ForgeDirection> directionsChanged = entry.getValue();
+
+				for(ForgeDirection side : directionsChanged)
 				{
 					A acceptor = transmitter.getAcceptor(side);
+					Coord4D acceptorCoord = transmitter.coord().getFromSide(side);
+					EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
 					if(acceptor != null)
 					{
-						possibleAcceptors.put(coord, acceptor);
-						EnumSet<ForgeDirection> directions = acceptorDirections.get(coord.getFromSide(side));
+						possibleAcceptors.put(acceptorCoord, acceptor);
 						if(directions != null)
 						{
 							directions.add(side.getOpposite());
 						} else
 						{
-							acceptorDirections.put(coord, EnumSet.of(side.getOpposite()));
+							acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
+						}
+					}
+					else
+					{
+						if(directions != null)
+						{
+							directions.remove(side.getOpposite());
+							if(directions.isEmpty())
+							{
+								possibleAcceptors.remove(acceptorCoord);
+								acceptorDirections.remove(acceptorCoord);
+							}
 						}
 					}
 				}
-				transmitter.setOrphan(false);
-				transmitter.setTransmitterNetwork((N)this);
-				absorbBuffer(transmitter);
-				transmitters.add(transmitter);
 			}
+			changedAcceptors.clear();
 		}
-		updateCapacity();
-		clampBuffer();
-		transmittersToAdd.clear();
 	}
 
 	public abstract void absorbBuffer(IGridTransmitter<A, N> transmitter);
@@ -104,9 +152,21 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			transmitter.takeShare();
 			transmitter.setTransmitterNetwork(null);
-			transmitter.setOrphan(true);
 			TransmitterNetworkRegistry.registerOrphanTransmitter(transmitter);
 		}
+	}
+
+	public void acceptorChanged(IGridTransmitter<A, N> transmitter, ForgeDirection side)
+	{
+		EnumSet<ForgeDirection> directions = changedAcceptors.get(transmitter);
+		if(directions != null)
+		{
+			directions.add(side);
+		} else
+		{
+			changedAcceptors.put(transmitter, EnumSet.of(side));
+		}
+		TransmitterNetworkRegistry.registerChangedNetwork(this);
 	}
 
 	public void adoptTransmittersAndAcceptorsFrom(N net)
@@ -253,7 +313,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			Iterator<DelayQueue> i = updateQueue.iterator();
 
-			try {
+			try
+			{
 				while(i.hasNext())
 				{
 					DelayQueue q = i.next();
@@ -261,13 +322,27 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					if(q.delay > 0)
 					{
 						q.delay--;
-					}
-					else {
+					} else
+					{
 						needsUpdate = true;
 						i.remove();
 					}
 				}
-			} catch(Exception e) {}
+			} catch(Exception e)
+			{
+			}
+
+			if(updateDelay > 0)
+			{
+				updateDelay--;
+
+				if(updateDelay == 0)
+				{
+					MinecraftForge.EVENT_BUS.post(new TransmittersAddedEvent(this, (Collection)transmittersAdded));
+					transmittersAdded.clear();
+					needsUpdate = true;
+				}
+			}
 		}
 	}
 
@@ -286,6 +361,24 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			TileEntity tile = (TileEntity)transmitters.iterator().next();
 			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile));
+		}
+	}
+
+	public void queueClientUpdate(Collection<IGridTransmitter<A, N>> newTransmitters)
+	{
+		transmittersAdded.addAll(newTransmitters);
+		updateDelay = 2;
+	}
+
+	public static class TransmittersAddedEvent extends Event
+	{
+		public DynamicNetwork<?, ?> network;
+		public Collection<IGridTransmitter> newTransmitters;
+
+		public TransmittersAddedEvent(DynamicNetwork net, Collection<IGridTransmitter> added)
+		{
+			network = net;
+			newTransmitters = added;
 		}
 	}
 

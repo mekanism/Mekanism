@@ -229,6 +229,9 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	}
 
 	@Override
+	public void takeShare() {}
+
+	@Override
 	public int receiveGas(ForgeDirection side, GasStack stack, boolean doTransfer)
 	{
 		if(getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL)

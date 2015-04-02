@@ -413,6 +413,9 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	}
 
 	@Override
+	public void takeShare() {}
+
+	@Override
 	public MultipartTransporter getTransmitter()
 	{
 		return (MultipartTransporter)transmitterDelegate;

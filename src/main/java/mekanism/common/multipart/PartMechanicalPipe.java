@@ -52,10 +52,11 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		{
 			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
 			{
-				int last = lastWrite != null ? lastWrite.amount : 0;
+				FluidStack last = getSaveShare();
 
-				if(last != getSaveShare())
+				if((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null))
 				{
+					lastWrite = last;
 					MekanismUtils.saveChunk(tile());
 				}
 			}
@@ -84,7 +85,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 		super.update();
 	}
 
-	private int getSaveShare()
+	private FluidStack getSaveShare()
 	{
 		if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null)
 		{
@@ -96,10 +97,10 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 				toSave += remain;
 			}
 
-			return toSave;
+			return new FluidStack(getTransmitter().getTransmitterNetwork().buffer.getFluid(), toSave);
 		}
 
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -139,13 +140,9 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	{
 		super.save(nbtTags);
 
-		int toSave = getSaveShare();
-
-		if(toSave > 0)
+		if(lastWrite != null && lastWrite.amount > 0)
 		{
-			FluidStack stack = new FluidStack(getTransmitter().getTransmitterNetwork().buffer.getFluid(), toSave);
-			lastWrite = stack;
-			nbtTags.setTag("cacheFluid", stack.writeToNBT(new NBTTagCompound()));
+			nbtTags.setTag("cacheFluid", lastWrite.writeToNBT(new NBTTagCompound()));
 		}
 
 		nbtTags.setInteger("tier", tier.ordinal());
@@ -232,6 +229,12 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	public FluidStack getBuffer()
 	{
 		return buffer == null ? null : buffer.getFluid();
+	}
+
+	@Override
+	public void takeShare()
+	{
+
 	}
 
 	@Override

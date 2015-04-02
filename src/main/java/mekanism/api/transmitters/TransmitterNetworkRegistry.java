@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
+import mekanism.common.Mekanism;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -33,6 +34,14 @@ public class TransmitterNetworkRegistry
 		}
 	}
 
+	public static void reset()
+	{
+		getInstance().networks.clear();
+		getInstance().networksToChange.clear();
+		getInstance().invalidTransmitters.clear();
+		getInstance().orphanTransmitters.clear();
+	}
+
 	public static void invalidateTransmitter(IGridTransmitter transmitter)
 	{
 		getInstance().invalidTransmitters.add(transmitter);
@@ -41,6 +50,11 @@ public class TransmitterNetworkRegistry
 	public static void registerOrphanTransmitter(IGridTransmitter transmitter)
 	{
 		getInstance().orphanTransmitters.put(transmitter.coord(), transmitter);
+	}
+
+	public static void registerChangedNetwork(DynamicNetwork network)
+	{
+		getInstance().networksToChange.add(network);
 	}
 
 	public static TransmitterNetworkRegistry getInstance()
@@ -86,6 +100,10 @@ public class TransmitterNetworkRegistry
 
 	public void removeInvalidTransmitters()
 	{
+		if(!invalidTransmitters.isEmpty())
+		{
+			Mekanism.logger.debug("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
+		}
 		for(IGridTransmitter invalid : invalidTransmitters)
 		{
 			if(!invalid.isOrphan())
@@ -102,13 +120,17 @@ public class TransmitterNetworkRegistry
 
 	public void assignOrphans()
 	{
+		if(!orphanTransmitters.isEmpty())
+		{
+			Mekanism.logger.debug("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
+		}
 		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
 			if(network != null)
 			{
 				networksToChange.add(network);
-				networks.add(network);
+				network.register();
 			}
 		}
 		orphanTransmitters.clear();
@@ -124,12 +146,15 @@ public class TransmitterNetworkRegistry
 			switch(finder.networksFound.size())
 			{
 				case 0:
+					Mekanism.logger.debug("No networks found. Creating new network");
 					network = startOrphan.createEmptyNetwork();
 					break;
 				case 1:
+					Mekanism.logger.debug("Using single found network");
 					network = finder.networksFound.iterator().next();
 					break;
 				default:
+					Mekanism.logger.debug("Merging " + finder.networksFound.size() + " networks");
 					network = startOrphan.mergeNetworks(finder.networksFound);
 			}
 			network.addNewTransmitters(finder.connectedTransmitters);

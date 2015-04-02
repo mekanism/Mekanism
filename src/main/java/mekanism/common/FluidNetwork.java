@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,7 +70,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 						else {
 							if(buffer.getFluid() != net.buffer.getFluid())
 							{
-								//throw new RuntimeException("Fluid types did not match when merging networks: " + buffer.getFluid().getName() + " vs. " + net.buffer.getFluid().getName());
+								throw new RuntimeException("Fluid types did not match when merging networks: " + buffer.getFluid().getName() + " vs. " + net.buffer.getFluid().getName());
 							}
 
 							buffer.amount += net.buffer.amount;
@@ -142,7 +143,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 	public int tickEmit(FluidStack fluidToSend, boolean doTransfer)
 	{
-		List availableAcceptors = Arrays.asList(getAcceptors(fluidToSend).toArray());
+		List<IFluidHandler> availableAcceptors = new ArrayList<>();
+		availableAcceptors.addAll(getAcceptors(fluidToSend));
 
 		Collections.shuffle(availableAcceptors);
 
@@ -154,33 +156,29 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			int remaining = fluidToSend.amount % divider;
 			int sending = (fluidToSend.amount-remaining)/divider;
 
-			for(Object obj : availableAcceptors)
+			for(IFluidHandler acceptor : availableAcceptors)
 			{
-				if(obj instanceof IFluidHandler)
-				{
-					IFluidHandler acceptor = (IFluidHandler)obj;
-					int currentSending = sending;
-					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+				int currentSending = sending;
+				EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
-					if(remaining > 0)
+				if(remaining > 0)
+				{
+					currentSending++;
+					remaining--;
+				}
+
+				for(ForgeDirection side : sides)
+				{
+					int prev = fluidSent;
+
+					if(acceptor != null && fluidToSend != null)
 					{
-						currentSending++;
-						remaining--;
+						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
 					}
 
-					for(ForgeDirection side : sides)
+					if(fluidSent > prev)
 					{
-						int prev = fluidSent;
-						
-						if(acceptor != null && fluidToSend != null)
-						{
-							fluidSent += acceptor.fill(side.getOpposite(), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
-						}
-						
-						if(fluidSent > prev)
-						{
-							break;
-						}
+						break;
 					}
 				}
 			}
@@ -247,7 +245,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, didTransfer));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, getScale(), didTransfer));
 				needsUpdate = false;
 			}
 
@@ -315,7 +313,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			for(ForgeDirection side : sides)
 			{
-				if(acceptor != null && acceptor.canFill(side.getOpposite(), fluidToSend.getFluid()))
+				if(acceptor != null && acceptor.canFill(side, fluidToSend.getFluid()))
 				{
 					toReturn.add(acceptor);
 					break;
@@ -331,12 +329,14 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		public final FluidNetwork fluidNetwork;
 
 		public final FluidStack fluidType;
+		public final float fluidScale;
 		public final boolean didTransfer;
 
-		public FluidTransferEvent(FluidNetwork network, FluidStack type, boolean did)
+		public FluidTransferEvent(FluidNetwork network, FluidStack type, float scale, boolean did)
 		{
 			fluidNetwork = network;
 			fluidType = type;
+			fluidScale = scale;
 			didTransfer = did;
 		}
 	}

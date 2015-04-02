@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.util.MekanismUtils;
 
@@ -12,21 +13,28 @@ import ic2.api.energy.tile.IEnergySink;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 {
+	public Coord4D coord;
+
 	public static EnergyAcceptorWrapper get(TileEntity tileEntity)
 	{
+		EnergyAcceptorWrapper wrapper = null;
 		if(tileEntity instanceof IStrictEnergyAcceptor)
 		{
-			return new MekanismAcceptor((IStrictEnergyAcceptor)tileEntity);
+			wrapper = new MekanismAcceptor((IStrictEnergyAcceptor)tileEntity);
 		}
 		else if(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver)
 		{
-			return new RFAcceptor((IEnergyReceiver)tileEntity);
+			wrapper = new RFAcceptor((IEnergyReceiver)tileEntity);
 		}
 		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
 		{
-			return new IC2Acceptor((IEnergySink)tileEntity);
+			wrapper = new IC2Acceptor((IEnergySink)tileEntity);
 		}
-		return null;
+		if(wrapper != null)
+		{
+			wrapper.coord = Coord4D.get(tileEntity);
+		}
+		return wrapper;
 	}
 
 	public abstract double getNeeded();

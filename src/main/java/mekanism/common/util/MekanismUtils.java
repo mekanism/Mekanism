@@ -656,44 +656,54 @@ public final class MekanismUtils
 		float numUpgrades =  upgrades.get(Upgrade.ENERGY) == null ? 0 : (float)upgrades.get(Upgrade.ENERGY);
 		return def * Math.pow(general.maxUpgradeMultiplier, numUpgrades/(float)Upgrade.ENERGY.getMax());
 	}
-	
+
 	/**
-	 * A better "isBlockIndirectlyGettingPowered()" that doesn't load chunks.
+	 * Checks if a block is directly getting powered by any of its neighbors without loading any chunks.
 	 * @param world - the world to perform the check in
-	 * @param coord - the coordinate of the block performing the check
-	 * @return if the block is indirectly getting powered by LOADED chunks
+	 * @param coord - the Coord4D of the block to check
+	 * @return if the block is directly getting powered
 	 */
-	public static boolean isGettingPowered(World world, Coord4D coord)
+	public static boolean isDirectlyGettingPowered(World world, Coord4D coord)
 	{
-		return isGettingPowered(world, coord, true);
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			Coord4D sideCoord = coord.getFromSide(side);
+			if(sideCoord.exists(world))
+			{
+				if(world.isBlockProvidingPowerTo(coord.xCoord, coord.yCoord, coord.zCoord, side.ordinal()) > 0)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
 	 * Extension of preceding isGettingPowered() method, used to define expansions of the check.
 	 * @param world - the world to perform the check in
 	 * @param coord - the coordinate of the block performing the check
-	 * @param expand - whether or not the check should be recursively called on the surrounding coordinates
 	 * @return if the block is indirectly getting powered by LOADED chunks
 	 */
-	public static boolean isGettingPowered(World world, Coord4D coord, boolean expand)
+	public static boolean isGettingPowered(World world, Coord4D coord)
 	{
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
 			Coord4D sideCoord = coord.getFromSide(side);
-			
 			if(sideCoord.exists(world) && sideCoord.getFromSide(side).exists(world))
 			{
-				if(world.isBlockProvidingPowerTo(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.getOpposite().ordinal()) > 0)
+				Block block = sideCoord.getBlock(world);
+				boolean weakPower = block.shouldCheckWeakPower(world, coord.xCoord, coord.yCoord, coord.zCoord, side.ordinal());
+				if(weakPower && isDirectlyGettingPowered(world, sideCoord))
 				{
 					return true;
 				}
-				else if(expand && isGettingPowered(world, sideCoord, false))
+				else if(!weakPower && block.isProvidingWeakPower(world, sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, side.ordinal()) > 0)
 				{
 					return true;
 				}
 			}
 		}
-		
 		return false;
 	}
 

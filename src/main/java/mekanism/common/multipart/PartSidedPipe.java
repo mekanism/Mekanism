@@ -248,8 +248,18 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 			if(isValidAcceptor(tileEntity, side))
 			{
+				if(cachedAcceptors[side.ordinal()] != tileEntity)
+				{
+					cachedAcceptors[side.ordinal()] = tileEntity;
+					markDirtyAcceptor(side);
+				}
 				return true;
 			}
+		}
+		if(cachedAcceptors[side.ordinal()] != null)
+		{
+			cachedAcceptors[side.ordinal()] = null;
+			markDirtyAcceptor(side);
 		}
 
 		return false;
@@ -292,8 +302,19 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 				if(isValidAcceptor(tileEntity, side))
 				{
+					if(cachedAcceptors[side.ordinal()] != tileEntity)
+					{
+						cachedAcceptors[side.ordinal()] = tileEntity;
+						markDirtyAcceptor(side);
+					}
 					connections |= 1 << side.ordinal();
+					continue;
 				}
+			}
+			if(cachedAcceptors[side.ordinal()] != null)
+			{
+				cachedAcceptors[side.ordinal()] = null;
+				markDirtyAcceptor(side);
 			}
 		}
 
@@ -551,6 +572,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			refreshConnections();
 			redstonePowered = nowPowered;
+			markDirtyTransmitters();
 		}
 	}
 
@@ -558,11 +580,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte possibleTransmitters = getPossibleTransmitterConnections();
 		byte possibleAcceptors = getPossibleAcceptorConnections();
-
-		if(possibleTransmitters != currentTransmitterConnections)
-		{
-			markDirtyTransmitters();
-		}
 
 		if(!world().isRemote)
 		{
@@ -581,20 +598,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		boolean possibleTransmitter = getPossibleTransmitterConnection(side);
 		boolean possibleAcceptor = getPossibleAcceptorConnection(side);
 
-		if(possibleTransmitter != connectionMapContainsSide(currentTransmitterConnections, side))
-		{
-			if(handlesRedstone())
-			{
-				boolean nowPowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
-	
-				if(nowPowered != redstonePowered)
-				{
-					redstonePowered = nowPowered;
-					notifyTileChange();
-				}
-			}
-		}
-		
 		if(!world().isRemote)
 		{
 			if((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side))
@@ -604,6 +607,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 			
 			currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
 			currentAcceptorConnections = setConnectionBit(currentAcceptorConnections, possibleAcceptor, side);
+
 		}
 	}
 
@@ -617,7 +621,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		notifyTileChange();
 	}
 
-	protected void markDirtyAcceptors() {}
+	protected void markDirtyAcceptor(ForgeDirection side) {}
 
 	@Override
 	public void onAdded()
@@ -657,7 +661,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	public void onPartChanged(TMultiPart part)
 	{
 		super.onPartChanged(part);
+		byte transmittersBefore = currentTransmitterConnections;
 		refreshConnections();
+		if(transmittersBefore != currentTransmitterConnections)
+		{
+			markDirtyTransmitters();
+		}
 	}
 
 	@Override
@@ -771,22 +780,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		}
 		
 		return true;
-	}
-
-	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive)
-	{
-		if(!isValidAcceptor(Coord4D.get(tile()).getFromSide(side).getTileEntity(world()), side) || !connectionMapContainsSide(currentAcceptorConnections, side))
-		{
-			return false;
-		}
-
-		if(!ignoreActive)
-		{
-			return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PUSH;
-		}
-		else {
-			return connectionTypes[side.ordinal()] == ConnectionType.NORMAL || connectionTypes[side.ordinal()] == ConnectionType.PUSH;
-		}
 	}
 
 	public static enum ConnectionType

@@ -70,10 +70,11 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		{
 			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
 			{
-				double last = lastWrite;
+				double last = getSaveShare();
 
-				if(last != getSaveShare())
+				if(last != lastWrite)
 				{
+					lastWrite = last;
 					MekanismUtils.saveChunk(tile());
 				}
 			}
@@ -164,11 +165,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	public void save(NBTTagCompound nbtTags)
 	{
 		super.save(nbtTags);
-
-		double toSave = getSaveShare();
-
-		lastWrite = toSave;
-		nbtTags.setDouble("cacheEnergy", toSave);
+		nbtTags.setDouble("cacheEnergy", lastWrite);
 		nbtTags.setInteger("tier", tier.ordinal());
 	}
 
@@ -240,11 +237,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public void onChunkUnload()
 	{
-		if(getTransmitter().hasTransmitterNetwork())
-		{
-			getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite;
-		}
-
+		takeShare();
 		super.onChunkUnload();
 	}
 
@@ -252,6 +245,16 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	public Object getBuffer()
 	{
 		return buffer;
+	}
+
+	@Override
+	public void takeShare()
+	{
+		if(getTransmitter().hasTransmitterNetwork())
+		{
+			getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite;
+			buffer.amount = lastWrite;
+		}
 	}
 
 	@Override

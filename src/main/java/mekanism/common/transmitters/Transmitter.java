@@ -15,6 +15,7 @@ public abstract class Transmitter<A, N extends DynamicNetwork<A, N>> implements 
 		return theNetwork;
 	}
 
+	@Override
 	public boolean hasTransmitterNetwork()
 	{
 		return !isOrphan() && getTransmitterNetwork() != null;
@@ -24,6 +25,7 @@ public abstract class Transmitter<A, N extends DynamicNetwork<A, N>> implements 
 	public void setTransmitterNetwork(N network)
 	{
 		theNetwork = network;
+		orphaned = network == null;
 	}
 
 	@Override

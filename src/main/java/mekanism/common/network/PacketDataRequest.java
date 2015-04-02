@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
@@ -40,14 +41,11 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 				((TileEntityDynamicTank)tileEntity).sendStructure = true;
 			}
 
-			if(tileEntity instanceof IGridTransmitter)
+			if(tileEntity instanceof ITransmitterTile)
 			{
-				IGridTransmitter transmitter = (IGridTransmitter)tileEntity;
+				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
 
-				if(transmitter.getTransmitterNetwork() instanceof DynamicNetwork)
-				{
-					((DynamicNetwork)transmitter.getTransmitterNetwork()).addUpdate(player);
-				}
+				transmitter.getTransmitterNetwork().addUpdate(player);
 			}
 
 			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), ((ITileNetwork)tileEntity).getNetworkedData(new ArrayList())), (EntityPlayerMP)player);

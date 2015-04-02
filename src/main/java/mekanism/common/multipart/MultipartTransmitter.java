@@ -56,7 +56,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 		{
 			IGridTransmitter transmitter = ((ITransmitterTile)potentialTransmitterTile).getTransmitter();
 
-			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()));
+			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()))
 			{
 				return sideCoord;
 			}
@@ -73,7 +73,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public boolean isValid()
 	{
-		return !(getPart().tile() == null || getPart().tile().isInvalid());
+		return !(getPart().tile() == null || getPart().tile().isInvalid()) && coord().exists(world());
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	@Override
 	public void takeShare()
 	{
-
+		containingPart.takeShare();
 	}
 
 	@Override

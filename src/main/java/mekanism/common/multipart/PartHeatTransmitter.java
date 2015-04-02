@@ -57,6 +57,8 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 		return null;
 	}
 
+	@Override
+	public void takeShare() {}
 
 	public static void registerIcons(IIconRegister register)
 	{

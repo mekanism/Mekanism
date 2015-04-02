@@ -1,10 +1,7 @@
 package mekanism.common.util;
 
-import java.util.Arrays;
-
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.ITransmitterTile;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,31 +13,9 @@ public final class PipeUtils
 {
 	public static final FluidTankInfo[] EMPTY = new FluidTankInfo[] {};
 
-	/**
-	 * Gets all the pipes around a tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return array of TileEntities
-	 */
-	public static TileEntity[] getConnectedPipes(TileEntity tileEntity)
-	{
-		TileEntity[] pipes = new TileEntity[] {null, null, null, null, null, null};
-
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity pipe = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
-
-			if(TransmissionType.checkTransmissionType(pipe, TransmissionType.FLUID))
-			{
-				pipes[orientation.ordinal()] = pipe;
-			}
-		}
-
-		return pipes;
-	}
-
 	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
 	{
-		if(tile instanceof IGridTransmitter || !(tile instanceof IFluidHandler))
+		if(tile instanceof ITransmitterTile || !(tile instanceof IFluidHandler))
 			return false;
 
 		IFluidHandler container = (IFluidHandler)tile;
@@ -65,65 +40,6 @@ public final class PipeUtils
 	}
 
 	/**
-	 * Gets all the adjacent connections to a TileEntity.
-	 * @param tileEntity - center TileEntity
-	 * @return boolean[] of adjacent connections
-	 */
-	public static boolean[] getConnections(TileEntity tileEntity)
-	{
-		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
-
-		TileEntity[] connectedPipes = PipeUtils.getConnectedPipes(tileEntity);
-		IFluidHandler[] connectedAcceptors = PipeUtils.getConnectedAcceptors(tileEntity);
-
-		for(IFluidHandler container : connectedAcceptors)
-		{
-			if(container != null)
-			{
-				int side = Arrays.asList(connectedAcceptors).indexOf(container);
-
-				FluidTankInfo[] infoArray = container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite());
-
-				if(infoArray != null && infoArray.length > 0)
-				{
-					boolean notNull = false;
-
-					for(FluidTankInfo info : container.getTankInfo(ForgeDirection.getOrientation(side).getOpposite()))
-					{
-						if(info != null)
-						{
-							notNull = true;
-							break;
-						}
-					}
-
-					if(notNull)
-					{
-						connectable[side] = true;
-					}
-				}
-				else if(container.canDrain(ForgeDirection.getOrientation(side).getOpposite(), FluidRegistry.WATER)
-						|| container.canFill(ForgeDirection.getOrientation(side).getOpposite(), FluidRegistry.WATER)) //I hesitate to pass null to these.
-				{
-					connectable[side] = true;
-				}
-			}
-		}
-
-		for(TileEntity tile : connectedPipes)
-		{
-			if(tile != null)
-			{
-				int side = Arrays.asList(connectedPipes).indexOf(tile);
-
-				connectable[side] = true;
-			}
-		}
-
-		return connectable;
-	}
-
-	/**
 	 * Gets all the acceptors around a tile entity.
 	 * @param tileEntity - center tile entity
 	 * @return array of IFluidHandlers
@@ -136,7 +52,7 @@ public final class PipeUtils
 		{
 			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
 
-			if(acceptor instanceof IFluidHandler && !(acceptor instanceof IGridTransmitter))
+			if(acceptor instanceof IFluidHandler && !(acceptor instanceof ITransmitterTile))
 			{
 				acceptors[orientation.ordinal()] = (IFluidHandler)acceptor;
 			}
