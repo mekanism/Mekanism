@@ -46,6 +46,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	protected boolean needsUpdate = false;
 	protected int updateDelay = 0;
 
+	protected boolean firstUpdate = true;
 	protected World worldObj = null;
 
 	public void addNewTransmitters(Collection<IGridTransmitter<A, N>> newTransmitters)
@@ -175,6 +176,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			transmitter.setTransmitterNetwork((N)this);
 			transmitters.add(transmitter);
+			transmittersAdded.add(transmitter);
 		}
 		possibleAcceptors.putAll(net.possibleAcceptors);
 		for(Entry<Coord4D, EnumSet<ForgeDirection>> entry : net.acceptorDirections.entrySet())
@@ -338,7 +340,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				if(updateDelay == 0)
 				{
-					MinecraftForge.EVENT_BUS.post(new TransmittersAddedEvent(this, (Collection)transmittersAdded));
+					MinecraftForge.EVENT_BUS.post(new TransmittersAddedEvent(this, firstUpdate, (Collection)transmittersAdded));
+					firstUpdate = false;
 					transmittersAdded.clear();
 					needsUpdate = true;
 				}
@@ -367,17 +370,19 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void queueClientUpdate(Collection<IGridTransmitter<A, N>> newTransmitters)
 	{
 		transmittersAdded.addAll(newTransmitters);
-		updateDelay = 2;
+		updateDelay = 3;
 	}
 
 	public static class TransmittersAddedEvent extends Event
 	{
 		public DynamicNetwork<?, ?> network;
+		public boolean newNetwork;
 		public Collection<IGridTransmitter> newTransmitters;
 
-		public TransmittersAddedEvent(DynamicNetwork net, Collection<IGridTransmitter> added)
+		public TransmittersAddedEvent(DynamicNetwork net, boolean newNet, Collection<IGridTransmitter> added)
 		{
 			network = net;
+			newNetwork = newNet;
 			newTransmitters = added;
 		}
 	}

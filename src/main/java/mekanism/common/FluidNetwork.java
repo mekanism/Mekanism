@@ -47,37 +47,25 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		{
 			if(net != null)
 			{
-				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+				if(net.buffer != null)
 				{
-					if(net.refFluid != null && net.fluidScale > fluidScale)
+					if(buffer == null)
 					{
-						refFluid = net.refFluid;
-						fluidScale = net.fluidScale;
-						buffer = net.buffer;
-
-						net.fluidScale = 0;
-						net.refFluid = null;
-						net.buffer = null;
+						buffer = net.buffer.copy();
 					}
-				}
-				else {
-					if(net.buffer != null)
-					{
-						if(buffer == null)
+					else {
+						if(buffer.getFluid() == net.buffer.getFluid())
 						{
-							buffer = net.buffer;
-						}
-						else {
-							if(buffer.getFluid() != net.buffer.getFluid())
-							{
-								throw new RuntimeException("Fluid types did not match when merging networks: " + buffer.getFluid().getName() + " vs. " + net.buffer.getFluid().getName());
-							}
-
 							buffer.amount += net.buffer.amount;
 						}
+						else if(net.buffer.amount > buffer.amount)
+						{
+							buffer = net.buffer.copy();
+						}
 
-						net.buffer = null;
 					}
+
+					net.buffer = null;
 				}
 
 				adoptTransmittersAndAcceptorsFrom(net);
@@ -103,11 +91,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		if(buffer == null || buffer.getFluid() == null || buffer.amount == 0)
 		{
-			buffer = fluid;
+			buffer = fluid.copy();
 			return;
 		}
-
-		if(fluid.getFluid() != buffer.getFluid()) throw new RuntimeException("Fluid Type " + fluid.getFluid().getName() + " of buffer does not match fluid type " + buffer.getFluid().getName() + " of Network");
 
 		buffer.amount += fluid.amount;
 		fluid.amount = 0;

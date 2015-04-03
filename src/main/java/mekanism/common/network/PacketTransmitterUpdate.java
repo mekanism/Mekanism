@@ -46,7 +46,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			if(tileEntity instanceof ITransmitterTile)
 			{
 				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
-				DynamicNetwork network = transmitter.hasTransmitterNetwork() ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
+				DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
 				transmitter.setTransmitterNetwork(network);
 				for(Coord4D coord : message.transmitterCoords)
 				{
@@ -136,6 +136,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
 		public int amount;
 
+		public boolean newNetwork;
 		public Collection<IGridTransmitter> transmittersAdded;
 		public Collection<Coord4D> transmitterCoords;
 		
@@ -149,7 +150,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			switch(packetType)
 			{
 				case UPDATE:
-					transmittersAdded = (Collection<IGridTransmitter>)data[0];
+					newNetwork = (Boolean)data[0];
+					transmittersAdded = (Collection<IGridTransmitter>)data[1];
 					break;
 				case ENERGY:
 					power = (Double)data[0];
@@ -181,6 +183,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			switch(packetType)
 			{
 				case UPDATE:
+					dataStream.writeBoolean(newNetwork);
 					dataStream.writeInt(transmittersAdded.size());
 					for(IGridTransmitter transmitter : transmittersAdded)
 					{
@@ -214,6 +217,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 
 			if(packetType == PacketType.UPDATE)
 			{
+				newNetwork = dataStream.readBoolean();
 				transmitterCoords = new HashSet<>();
 				int numTransmitters = dataStream.readInt();
 

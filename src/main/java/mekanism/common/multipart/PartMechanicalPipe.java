@@ -234,7 +234,11 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@Override
 	public void takeShare()
 	{
-
+		if(getTransmitter().hasTransmitterNetwork())
+		{
+			getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
+			buffer.setFluid(lastWrite);
+		}
 	}
 
 	@Override

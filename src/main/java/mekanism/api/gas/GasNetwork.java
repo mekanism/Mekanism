@@ -68,15 +68,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 					{
 						if(buffer == null)
 						{
-							buffer = net.buffer;
+							buffer = net.buffer.copy();
 						} else
 						{
-							if(buffer.getGas() != net.buffer.getGas())
+							if(buffer.getGas() == net.buffer.getGas())
 							{
-								throw new RuntimeException("Gas types did not match when merging networks: " + buffer.getGas() + " vs. " + net.buffer.getGas());
+								buffer.amount += net.buffer.amount;
+							}
+							else if(net.buffer.amount > buffer.amount)
+							{
+								buffer = net.buffer.copy();
 							}
 
-							buffer.amount += net.buffer.amount;
 						}
 
 						net.buffer = null;
@@ -106,11 +109,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 		if(buffer == null || buffer.getGas() == null || buffer.amount == 0)
 		{
-			buffer = gas;
+			buffer = gas.copy();
 			return;
 		}
-
-		if(gas.getGas() != buffer.getGas())throw new RuntimeException("Gas Type " + gas.getGas().getName() + " of buffer does not match gas type " + buffer.getGas().getName() + " of Network");
 
 		buffer.amount += gas.amount;
 		gas.amount = 0;

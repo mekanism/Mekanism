@@ -1280,7 +1280,7 @@ public class Mekanism
 	public void onTransmittersAddedEvent(TransmittersAddedEvent event)
 	{
 		try {
-			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, event.network.transmitters.iterator().next().coord(), event.newTransmitters), event.network.getPacketRange());
+			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, event.network.transmitters.iterator().next().coord(), event.newNetwork, event.newTransmitters), event.network.getPacketRange());
 		} catch(Exception e) {}
 	}
 	
