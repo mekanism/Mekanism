@@ -1,7 +1,7 @@
-package mekanism.client.gui;
+package mekanism.client.gui.element;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;

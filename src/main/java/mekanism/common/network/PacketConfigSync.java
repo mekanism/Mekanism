@@ -6,6 +6,7 @@ import mekanism.api.MekanismConfig.machines;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier;
 import mekanism.common.base.IModule;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketConfigSync.ConfigSyncMessage;
@@ -81,6 +82,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(usage.fluidicPlenisherUsage);
 			dataStream.writeDouble(usage.gasCentrifugeUsage);
 			dataStream.writeDouble(usage.heavyWaterElectrolysisUsage);
+			
+			Tier.writeConfig(dataStream);
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)
@@ -148,6 +151,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			usage.fluidicPlenisherUsage = dataStream.readDouble();
 			usage.gasCentrifugeUsage = dataStream.readDouble();
 			usage.heavyWaterElectrolysisUsage = dataStream.readDouble();
+			
+			Tier.readConfig(dataStream);
 	
 			try {
 				for(IModule module : Mekanism.modulesLoaded)

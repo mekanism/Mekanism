@@ -56,7 +56,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 
 	public TileEntityPRC()
 	{
-		super("prc", "PressurizedReactionChamber", new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
+		super("prc", MachineType.PRESSURIZED_REACTION_CHAMBER.name, new ResourceLocation("mekanism", "gui/GuiPRC.png"), usage.pressurizedReactionBaseUsage, 100, MachineType.PRESSURIZED_REACTION_CHAMBER.baseEnergy);
 
 		configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 		
@@ -81,7 +81,9 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		inventory = new ItemStack[4];
 
 		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		ejectorComponent.setOutputData(TransmissionType.GAS, configComponent.getOutputs(TransmissionType.GAS).get(2));
 	}
 
 	@Override
@@ -136,21 +138,6 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 			}
 
 			prevEnergy = getEnergy();
-
-			if(outputGasTank.getGas() != null && configComponent.isEjecting(TransmissionType.GAS))
-			{
-				GasStack toSend = new GasStack(outputGasTank.getGas().getGas(), Math.min(outputGasTank.getStored(), 16));
-
-				TileEntity tileEntity = Coord4D.get(this).getFromSide(MekanismUtils.getRight(facing)).getTileEntity(worldObj);
-
-				if(tileEntity instanceof IGasHandler)
-				{
-					if(((IGasHandler)tileEntity).canReceiveGas(MekanismUtils.getLeft(facing), outputGasTank.getGas().getGas()))
-					{
-						outputGasTank.draw(((IGasHandler)tileEntity).receiveGas(MekanismUtils.getLeft(facing), toSend, true), true);
-					}
-				}
-			}
 		}
 	}
 
@@ -198,7 +185,7 @@ public class TileEntityPRC extends TileEntityBasicMachine<PressurizedInput, Pres
 		recipe.operate(inventory, inputFluidTank, inputGasTank, outputGasTank);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override

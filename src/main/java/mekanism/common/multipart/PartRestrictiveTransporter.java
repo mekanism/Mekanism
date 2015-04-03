@@ -1,5 +1,6 @@
 package mekanism.common.multipart;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 
 public class PartRestrictiveTransporter extends PartLogisticalTransporter
@@ -17,26 +18,38 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
-		return transporterIcons.getCenterIcon(1);
+		return transporterIcons.getCenterIcon(4);
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(2);
+		return transporterIcons.getSideIcon(8);
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(3);
+		return transporterIcons.getSideIcon(9);
 	}
 
 	@Override
 	public int getCost()
 	{
 		return 1000;
+	}
+	
+	@Override
+	public boolean transparencyRender()
+	{
+		return false;
+	}
+	
+	@Override
+	protected boolean onConfigure(EntityPlayer player, int part, int side)
+	{
+		return false;
 	}
 }

@@ -31,10 +31,12 @@ public class MultipartMekanism implements IPartFactory
 				"mekanism:universal_cable_ultimate", "mekanism:mechanical_pipe",
 				"mekanism:mechanical_pipe_basic", "mekanism:mechanical_pipe_advanced",
 				"mekanism:mechanical_pipe_elite", "mekanism:mechanical_pipe_ultimate",
-				"mekanism:pressurized_tube", "mekanism:logistical_transporter",
-				"mekanism:restrictive_transporter", "mekanism:diversion_transporter",
-				"mekanism:heat_transmitter",
-				"mekanism:glow_panel"});
+				"mekanism:pressurized_tube_basic", "mekanism:pressurized_tube_advanced",
+				"mekanism:pressurized_tube_elite", "mekanism:pressurized_tube_ultimate",
+				"mekanism:logistical_transporter_basic", "mekanism:logistical_transporter_advanced", 
+				"mekanism:logistical_transporter_elite", "mekanism:logistical_transporter_ultimate", 
+				"mekanism:restrictive_transporter", "mekanism:diversion_transporter", 
+				"mekanism:heat_transmitter", "mekanism:glow_panel"});
 
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.IConfigurable");
 		MultipartGenerator.registerPassThroughInterface("mekanism.api.energy.IStrictEnergyAcceptor");
@@ -93,13 +95,37 @@ public class MultipartMekanism implements IPartFactory
 		{
 			return new PartMechanicalPipe(Tier.PipeTier.ULTIMATE);
 		}
-		else if(name.equals("mekanism:pressurized_tube"))
+		else if(name.equals("mekanism:pressurized_tube_basic") || name.equals("mekanism:pressurized_tube"))
 		{
-			return new PartPressurizedTube();
+			return new PartPressurizedTube(Tier.TubeTier.BASIC);
 		}
-		else if(name.equals("mekanism:logistical_transporter"))
+		else if(name.equals("mekanism:pressurized_tube_advanced"))
 		{
-			return new PartLogisticalTransporter();
+			return new PartPressurizedTube(Tier.TubeTier.ADVANCED);
+		}
+		else if(name.equals("mekanism:pressurized_tube_elite"))
+		{
+			return new PartPressurizedTube(Tier.TubeTier.ELITE);
+		}
+		else if(name.equals("mekanism:pressurized_tube_ultimate"))
+		{
+			return new PartPressurizedTube(Tier.TubeTier.ULTIMATE);
+		}
+		else if(name.equals("mekanism:logistical_transporter_basic") || name.equals("mekanism:logistical_transporter"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.BASIC);
+		}
+		else if(name.equals("mekanism:logistical_transporter_advanced"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.ADVANCED);
+		}
+		else if(name.equals("mekanism:logistical_transporter_elite"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.ELITE);
+		}
+		else if(name.equals("mekanism:logistical_transporter_ultimate"))
+		{
+			return new PartLogisticalTransporter(Tier.TransporterTier.ULTIMATE);
 		}
 		else if(name.equals("mekanism:restrictive_transporter"))
 		{

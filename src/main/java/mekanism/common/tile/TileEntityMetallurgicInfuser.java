@@ -103,8 +103,9 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 
 		inventory = new ItemStack[5];
 		
-		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(3));
+		upgradeComponent = new TileComponentUpgrade(this, 0);
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(3));
 	}
 
 	@Override
@@ -273,7 +274,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityNoisyElectricBlock i
 		recipe.output(inventory, infuseStored);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	public boolean canOperate(MetallurgicInfuserRecipe recipe)

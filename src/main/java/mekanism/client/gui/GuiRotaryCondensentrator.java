@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGasGauge;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
@@ -59,8 +60,8 @@ public class GuiRotaryCondensentrator extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick*tileEntity.getUpgradedUsage());
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
+				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + usage + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiRotaryCondensentrator.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {

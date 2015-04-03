@@ -86,6 +86,6 @@ public class TileEntityInductionCell extends TileEntityBasicBlock implements ISt
 	@Override
 	public double getMaxEnergy() 
 	{
-		return tier.MAX_ELECTRICITY;
+		return tier.maxEnergy;
 	}
 }

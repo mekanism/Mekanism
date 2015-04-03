@@ -79,13 +79,13 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public int getSizeInventory()
 	{
-		return inventory.length;
+		return inventory != null ? inventory.length : 0;
 	}
 
 	@Override
 	public ItemStack getStackInSlot(int slotID)
 	{
-		return inventory[slotID];
+		return inventory != null ? inventory[slotID] : null;
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public interface ILogisticalTransporter extends IGridTransmitter<IInventory, Inv
 
 	public ItemStack insertRR(TileEntityLogisticalSorter outputter, ItemStack itemStack, EnumColor color, boolean doEmit, int min);
 
-	public void entityEntering(TransporterStack stack);
+	public void entityEntering(TransporterStack stack, int progress);
 
 	public EnumColor getColor();
 

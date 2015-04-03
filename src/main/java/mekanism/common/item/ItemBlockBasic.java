@@ -11,7 +11,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.Tier.BaseTier;
-import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.InductionCellTier;
 import mekanism.common.Tier.InductionProviderTier;
 import mekanism.common.inventory.InventoryBin;
@@ -19,6 +18,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -137,13 +137,13 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			{
 				InductionCellTier tier = InductionCellTier.values()[getTier(itemstack).ordinal()];
 				
-				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.MAX_ELECTRICITY));
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.maxEnergy));
 			}
 			else if(itemstack.getItemDamage() == 4)
 			{
 				InductionProviderTier tier = InductionProviderTier.values()[getTier(itemstack).ordinal()];
 				
-				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.OUTPUT));
+				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.output));
 			}
 		}
 		
@@ -243,7 +243,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			
 			TileEntity tileEntity = world.getTileEntity(x, y, z);
 			
-			if(tileEntity instanceof IStrictEnergyStorage)
+			if(tileEntity instanceof IStrictEnergyStorage && !(tileEntity instanceof TileEntityMultiblock<?>))
 			{
 				((IStrictEnergyStorage)tileEntity).setEnergy(getEnergy(stack));
 			}
@@ -374,7 +374,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 	{
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock2 && itemStack.getItemDamage() == 3)
 		{
-			return InductionCellTier.values()[getTier(itemStack).ordinal()].MAX_ELECTRICITY;
+			return InductionCellTier.values()[getTier(itemStack).ordinal()].maxEnergy;
 		}
 		
 		return 0;

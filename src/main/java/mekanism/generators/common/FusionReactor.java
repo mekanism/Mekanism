@@ -607,4 +607,10 @@ public class FusionReactor implements IFusionReactor
 	{
 		return null;
 	}
+	
+	@Override
+	public ItemStack[] getInventory()
+	{
+		return isFormed() ? controller.inventory : null;
+	}
 }

@@ -93,7 +93,7 @@ public class TileEntityGasTank extends TileEntityContainerBlock implements IGasH
 
 		if(!worldObj.isRemote && dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < output)
 		{
-			gasTank.draw(output, true);
+			gasTank.draw(output-gasTank.getNeeded(), true);
 		}
 		
 		if(!worldObj.isRemote)

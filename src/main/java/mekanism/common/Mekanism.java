@@ -41,14 +41,11 @@ import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.content.boiler.BoilerManager;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
-import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.turbine.SynchronizedTurbineData;
-import mekanism.common.content.turbine.TurbineCache;
 import mekanism.common.entity.EntityBabySkeleton;
 import mekanism.common.entity.EntityBalloon;
 import mekanism.common.entity.EntityFlame;
@@ -140,7 +137,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "8.0.2", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "Mekanism", name = "Mekanism", version = "8.1.0", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
@@ -169,12 +166,12 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(8, 0, 2);
+	public static Version versionNumber = new Version(8, 1, 0);
 	
 	/** MultiblockManagers for various structrures */
-	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank", TankCache.class);
-	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("inductionMatrix", MatrixCache.class);
-	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine", TurbineCache.class);
+	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
+	public static MultiblockManager<SynchronizedMatrixData> matrixManager = new MultiblockManager<SynchronizedMatrixData>("inductionMatrix");
+	public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<SynchronizedTurbineData>("industrialTurbine");
 	public static MultiblockManager<SynchronizedBoilerData> boilerManager = new BoilerManager("thermoelectricBoiler");
 	
 	/** FrequencyManagers for various networks */
@@ -495,7 +492,7 @@ public class Mekanism
 			"RE ", "RCD", "RE ", Character.valueOf('R'), "alloyElite", Character.valueOf('E'), MekanismItems.EnergyTablet.getUnchargedItem(), Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('D'), "gemDiamond"
 		}));
 		MachineType.LASER_AMPLIFIER.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 14), new Object[] {
-			"SSS", "SED", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismUtils.getInductionCell(InductionCellTier.ADVANCED), Character.valueOf('D'), "gemDiamond"
+			"SSS", "SED", "SSS", Character.valueOf('S'), "ingotSteel", Character.valueOf('E'), MekanismUtils.getEnergyCube(EnergyCubeTier.BASIC), Character.valueOf('D'), "gemDiamond"
 		}));
 		MachineType.LASER_TRACTOR_BEAM.addRecipe(new MekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock2, 1, 15), new Object[] {
 			"C", "F", Character.valueOf('C'), new ItemStack(MekanismBlocks.MachineBlock, 1, 13), Character.valueOf('F'), new ItemStack(MekanismBlocks.MachineBlock2, 1, 14)
@@ -600,12 +597,30 @@ public class Mekanism
             "SGS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "blockGlass"
         }));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 9), new Object[] {
+			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 8)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 10), new Object[] {
+			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 9)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 11), new Object[] {
+			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 10)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 12), new Object[] {
 			"SCS", Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), "circuitBasic"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 2, 10), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 13), new Object[] {
+			"TTT", "TET", "TTT", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 12)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 14), new Object[] {
+			"TTT", "TRT", "TTT", Character.valueOf('R'), "alloyElite", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 13)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 8, 15), new Object[] {
+			"TTT", "TAT", "TTT", Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), new ItemStack(MekanismItems.PartTransmitter, 1, 14)
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 2, 16), new Object[] {
 			"SBS", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.iron_bars
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 2, 11), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(MekanismItems.PartTransmitter, 2, 17), new Object[] {
 			"RRR", "SBS", "RRR", Character.valueOf('R'), "dustRedstone", Character.valueOf('S'), "ingotSteel", Character.valueOf('B'), Blocks.iron_bars
 		}));
 		

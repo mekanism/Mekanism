@@ -8,6 +8,7 @@ import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
@@ -30,7 +31,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.ModAPIManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -38,7 +38,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.0.2", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
+@Mod(modid = "MekanismGenerators", name = "MekanismGenerators", version = "8.1.0", dependencies = "required-after:Mekanism", guiFactory = "mekanism.generators.client.gui.GeneratorsGuiFactory")
 public class MekanismGenerators implements IModule
 {
 	/** Mekanism Generators Packet Pipeline */
@@ -51,7 +51,7 @@ public class MekanismGenerators implements IModule
 	public static MekanismGenerators instance;
 	
 	/** MekanismGenerators version number */
-	public static Version versionNumber = new Version(8, 0, 2);
+	public static Version versionNumber = new Version(8, 1, 0);
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -102,7 +102,7 @@ public class MekanismGenerators implements IModule
 		
 		for(ItemStack ore : OreDictionary.getOres("dustGold"))
 		{
-			RecipeHandler.addEnrichmentChamberRecipe(MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
+			RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, MekanismUtils.size(ore, 4), GeneratorsItems.Hohlraum.getEmptyItem());
 		}
 	}
 	
@@ -145,6 +145,9 @@ public class MekanismGenerators implements IModule
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.ReactorGlass, 2, 1), new Object[] {
 			" I ", "ILI", " I ", Character.valueOf('I'), new ItemStack(GeneratorsBlocks.ReactorGlass, 1, 0), Character.valueOf('L'), "blockRedstone"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new MekanismRecipe(new ItemStack(GeneratorsBlocks.Reactor, 1, 4), new Object[] {
+			" R ", "RFR", " R ", Character.valueOf('R'), "dustRedstone", Character.valueOf('F'), new ItemStack(GeneratorsBlocks.Reactor, 1, 1)
 		}));
 
 		FuelHandler.addGas(GasRegistry.getGas("ethene"), general.ETHENE_BURN_TIME, general.FROM_H2 + generators.bioGeneration * 2 * general.ETHENE_BURN_TIME); //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus

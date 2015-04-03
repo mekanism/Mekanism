@@ -82,12 +82,12 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
 			if(tile instanceof TileEntityInductionCell)
 			{
 				structureFound.cells.add(coord);
-				structureFound.storageCap += ((TileEntityInductionCell)tile).tier.MAX_ELECTRICITY;
+				structureFound.storageCap += ((TileEntityInductionCell)tile).tier.maxEnergy;
 			}
 			else if(tile instanceof TileEntityInductionProvider)
 			{
 				structureFound.providers.add(coord);
-				structureFound.outputCap += ((TileEntityInductionProvider)tile).tier.OUTPUT;
+				structureFound.outputCap += ((TileEntityInductionProvider)tile).tier.output;
 			}
 		}
 	}

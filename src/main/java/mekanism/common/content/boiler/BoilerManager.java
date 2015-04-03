@@ -1,5 +1,10 @@
 package mekanism.common.content.boiler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
@@ -8,11 +13,6 @@ import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
 /**
  * Created by ben on 09/01/15.
  */
@@ -20,7 +20,7 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
 {
     public BoilerManager(String s)
     {
-        super(s, BoilerCache.class);
+        super(s);
     }
 
     public void tickSelf(World world)
@@ -83,14 +83,12 @@ public class BoilerManager extends MultiblockManager<SynchronizedBoilerData>
             for(Coord4D obj : entry.getValue())
             {
                 inventories.get(entry.getKey()).locations.remove(obj);
-                dataHandler.markDirty();
             }
         }
 
         for(int inventoryID : idsToKill)
         {
             inventories.remove(inventoryID);
-            dataHandler.markDirty();
         }
     }
 }

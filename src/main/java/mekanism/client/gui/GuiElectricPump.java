@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.GuiFluidGauge;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;

@@ -1,5 +1,8 @@
 package mekanism.common.item;
 
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,15 +32,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import cofh.api.energy.IEnergyContainerItem;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import cofh.api.energy.IEnergyContainerItem;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 
 @InterfaceList({
 		@Interface(iface = "cofh.api.energy.IEnergyContainerItem", modid = "CoFHCore"),
@@ -79,11 +78,11 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 		stack.setItemDamage(100);
 		return stack;
 	}
-
+	
 	@Override
-	public String getUnlocalizedName(ItemStack itemstack)
+	public String getItemStackDisplayName(ItemStack itemstack)
 	{
-		return getUnlocalizedName() + "." + getEnergyCubeTier(itemstack).getBaseTier().getName();
+		return MekanismUtils.localize("tile.EnergyCube" + getEnergyCubeTier(itemstack).getBaseTier().getName() + ".name");
 	}
 
 	@Override
@@ -232,7 +231,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public double getMaxEnergy(ItemStack itemStack)
 	{
-		return getEnergyCubeTier(itemStack).MAX_ELECTRICITY;
+		return getEnergyCubeTier(itemStack).maxEnergy;
 	}
 
 	@Override

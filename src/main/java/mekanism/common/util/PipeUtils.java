@@ -6,6 +6,7 @@ import mekanism.api.transmitters.ITransmitterTile;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -59,5 +60,61 @@ public final class PipeUtils
 		}
 
 		return acceptors;
+	}
+	
+	/**
+	 * Emits fluid from a central block by splitting the received stack among the sides given.
+	 * @param sides - the list of sides to output from
+	 * @param stack - the stack to output
+	 * @param from - the TileEntity to output from
+	 * @return the amount of gas emitted
+	 */
+	public static int emit(List<ForgeDirection> sides, FluidStack stack, TileEntity from)
+	{
+		if(stack == null)
+		{
+			return 0;
+		}
+		
+		List<IFluidHandler> availableAcceptors = new ArrayList<IFluidHandler>();
+		IFluidHandler[] possibleAcceptors = getConnectedAcceptors(from);
+		
+		for(int i = 0; i < possibleAcceptors.length; i++)
+		{
+			IFluidHandler handler = possibleAcceptors[i];
+			
+			if(handler != null && handler.canFill(ForgeDirection.getOrientation(i).getOpposite(), stack.getFluid()))
+			{
+				availableAcceptors.add(handler);
+			}
+		}
+
+		Collections.shuffle(availableAcceptors);
+
+		int toSend = stack.amount;
+		int prevSending = toSend;
+
+		if(!availableAcceptors.isEmpty())
+		{
+			int divider = availableAcceptors.size();
+			int remaining = toSend % divider;
+			int sending = (toSend-remaining)/divider;
+
+			for(IFluidHandler acceptor : availableAcceptors)
+			{
+				int currentSending = sending;
+
+				if(remaining > 0)
+				{
+					currentSending++;
+					remaining--;
+				}
+				
+				ForgeDirection dir = ForgeDirection.getOrientation(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
+				toSend -= acceptor.fill(dir, new FluidStack(stack.getFluid(), currentSending), true);
+			}
+		}
+
+		return prevSending-toSend;
 	}
 }

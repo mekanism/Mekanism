@@ -132,7 +132,6 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		configComponent.addOutput(TransmissionType.ITEM, new SideData("Output", EnumColor.DARK_BLUE, new int[] {8, 9, 10}));
 		configComponent.setConfig(TransmissionType.ITEM, new byte[] {4, 3, 0, 2, 1, 0});
 		
-		configComponent.addSupported(TransmissionType.GAS);
 		configComponent.addOutput(TransmissionType.GAS, new SideData("None", EnumColor.GREY, InventoryUtils.EMPTY));
 		configComponent.addOutput(TransmissionType.GAS, new SideData("Gas", EnumColor.DARK_RED, new int[] {0}));
 		configComponent.fillConfig(TransmissionType.GAS, 1);
@@ -141,12 +140,13 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		configComponent.setInputEnergyConfig();
 
 		upgradeComponent = new TileComponentUpgrade(this, 0);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(4));
 	}
 
 	public TileEntityFactory(FactoryTier type, MachineType machine)
 	{
-		super("null", type.getBaseTier().getName() + "Factory", machine.baseEnergy);
+		super("null", machine.name, machine.baseEnergy);
 
 		tier = type;
 		inventory = new ItemStack[5+type.processes*2];
@@ -189,17 +189,16 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		factory.clientActive = clientActive;
 		factory.isActive = isActive;
 		factory.updateDelay = updateDelay;
-		factory.recipeType = recipeType;
 		factory.prevEnergy = prevEnergy;
 		factory.gasTank.setGas(gasTank.getGas());
 		factory.sorting = sorting;
 		factory.controlType = controlType;
-		factory.upgradeComponent = upgradeComponent;
-		factory.upgradeComponent.tileEntity = factory;
-		factory.ejectorComponent = ejectorComponent;
-		factory.ejectorComponent.tileEntity = factory;
-		factory.ejectorComponent.sideData = factory.configComponent.getOutputs(TransmissionType.ITEM).get(4);
-		factory.ejectorComponent.trackers = new int[factory.ejectorComponent.sideData.availableSlots.length];
+		factory.upgradeComponent.readFrom(upgradeComponent);
+		factory.ejectorComponent.readFrom(ejectorComponent);
+		factory.configComponent.readFrom(configComponent);
+		factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(4));
+		factory.recipeType = recipeType;
+		factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
 		
 		for(int i = 0; i < tier.processes+5; i++)
 		{
@@ -218,7 +217,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 			}
 		}
 		
-		for(Upgrade upgrade : upgradeComponent.getSupportedTypes())
+		for(Upgrade upgrade : factory.upgradeComponent.getSupportedTypes())
 		{
 			factory.recalculateUpgradables(upgrade);
 		}
@@ -646,7 +645,7 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		}
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override
@@ -791,6 +790,12 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	public int getOutputSlot(int operation)
 	{
 		return 5+tier.processes+operation;
+	}
+	
+	@Override
+	public String getInventoryName()
+	{
+		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getInventoryName();
 	}
 
 	@Override

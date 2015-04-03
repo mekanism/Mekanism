@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Blocks;
@@ -61,7 +63,11 @@ public class MekanismRenderer
     private static float lightmapLastY;
 	private static boolean optifineBreak = false;
 	
+	public static int[] directionMap = new int[] {3, 0, 1, 2};
+	
 	public static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
+	
+	private static String[] simpleSides = new String[] {"Bottom", "Top", "Front", "Back", "Left", "Right"};
 	
 	public static void init()
 	{
@@ -130,6 +136,103 @@ public class MekanismRenderer
 			RenderDynamicTank.resetDisplayInts();
 			RenderSalinationController.resetDisplayInts();
 			RenderPortableTank.resetDisplayInts();
+		}
+	}
+	
+	public static boolean blockIconExists(String texture) //Credit to CoFHCore
+	{
+		String[] split = texture.split(":");
+		texture = split[0] + ":textures/blocks/" + split[1] + ".png";
+		
+		try {
+			Minecraft.getMinecraft().getResourceManager().getAllResources(new ResourceLocation(texture));
+			return true;
+		} catch(Throwable t) {
+			return false;
+		}
+	}
+	
+	public static void loadDynamicTextures(IIconRegister register, String name, IIcon[] textures, DefIcon... defaults)
+	{
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			String tex = "mekanism:" + name + simpleSides[side.ordinal()];
+			String texOn = tex + "On";
+			
+			if(blockIconExists(tex))
+			{
+				textures[side.ordinal()] = register.registerIcon(tex);
+				
+				if(blockIconExists(texOn))
+				{
+					textures[side.ordinal()+6] = register.registerIcon(texOn);
+				}
+				else {
+					boolean found = false;
+					
+					for(DefIcon def : defaults)
+					{
+						if(def.icons.contains(side.ordinal()+6))
+						{
+							textures[side.ordinal()+6] = def.defIcon;
+							found = true;
+						}
+					}
+					
+					if(!found)
+					{
+						textures[side.ordinal()+6] = register.registerIcon(tex);
+					}
+				}
+			}
+			else {
+				for(DefIcon def : defaults)
+				{
+					if(def.icons.contains(side.ordinal()))
+					{
+						textures[side.ordinal()] = def.defIcon;
+					}
+					
+					if(def.icons.contains(side.ordinal()+6))
+					{
+						textures[side.ordinal()+6] = def.defIcon;
+					}
+				}
+			}
+		}
+	}
+	
+	public static class DefIcon
+	{
+		public IIcon defIcon;
+		
+		public List<Integer> icons = new ArrayList<Integer>();
+		
+		public DefIcon(IIcon icon, int... is)
+		{
+			defIcon = icon;
+			
+			for(int i : is)
+			{
+				icons.add(i);
+			}
+		}
+		
+		public static DefIcon getAll(IIcon icon)
+		{
+			return new DefIcon(icon, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+		}
+		
+		public static DefIcon getActivePair(IIcon icon, int... is)
+		{
+			DefIcon ret = new DefIcon(icon, is);
+			
+			for(int i : is)
+			{
+				ret.icons.add(i+6);
+			}
+			
+			return ret;
 		}
 	}
     

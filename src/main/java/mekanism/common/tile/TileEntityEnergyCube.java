@@ -82,13 +82,13 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public String getInventoryName()
 	{
-		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + tier.getBaseTier().getName() + ".name");
+		return MekanismUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
 	}
 
 	@Override
 	public double getMaxOutput()
 	{
-		return tier.OUTPUT;
+		return tier.output;
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public double getMaxEnergy()
 	{
-		return tier.MAX_ELECTRICITY;
+		return tier.maxEnergy;
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 			case 0:
 				return new Object[] {getEnergy()};
 			case 1:
-				return new Object[] {tier.OUTPUT};
+				return new Object[] {tier.output};
 			case 2:
 				return new Object[] {getMaxEnergy()};
 			case 3:

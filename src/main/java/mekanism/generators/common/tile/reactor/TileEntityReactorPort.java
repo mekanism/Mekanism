@@ -12,7 +12,8 @@ import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
-
+import mekanism.common.util.InventoryUtils;
+import mekanism.generators.common.item.ItemHohlraum;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -280,6 +281,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		{
 			return getReactor().applyTemperatureChange();
 		}
+		
 		return 0;
 	}
 
@@ -293,10 +295,64 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	public IHeatTransfer getAdjacent(ForgeDirection side)
 	{
 		TileEntity adj = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+		
 		if(adj instanceof IHeatTransfer && !(adj instanceof IReactorBlock))
 		{
 			return (IHeatTransfer)adj;
 		}
+		
 		return null;
+	}
+	
+	@Override
+	public ItemStack getStackInSlot(int slotID)
+	{
+		return getReactor() != null && getReactor().isFormed() ? getReactor().getInventory()[slotID] : null;
+	}
+
+	@Override
+	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	{
+		if(getReactor() != null && getReactor().isFormed())
+		{
+			getReactor().getInventory()[slotID] = itemstack;
+
+			if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+			{
+				itemstack.stackSize = getInventoryStackLimit();
+			}
+		}
+	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		return getReactor() != null && getReactor().isFormed() ? new int[] {0} : InventoryUtils.EMPTY;
+	}
+	
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum)
+		{
+			ItemHohlraum hohlraum = (ItemHohlraum)itemstack.getItem();
+			
+			return hohlraum.getGas(itemstack) != null && hohlraum.getGas(itemstack).amount == hohlraum.getMaxGas(itemstack);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	{
+		if(getReactor() != null && getReactor().isFormed() && itemstack.getItem() instanceof ItemHohlraum)
+		{
+			ItemHohlraum hohlraum = (ItemHohlraum)itemstack.getItem();
+			
+			return hohlraum.getGas(itemstack) == null;
+		}
+		
+		return false;
 	}
 }

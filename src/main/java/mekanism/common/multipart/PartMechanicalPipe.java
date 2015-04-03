@@ -6,9 +6,9 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.FluidNetwork;
 import mekanism.common.Tier;
+import mekanism.common.Tier.PipeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -156,27 +156,27 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 
 	public static void registerIcons(IIconRegister register)
 	{
-		pipeIcons.registerCenterIcons(register, new String[]{"MechanicalPipeBasic", "MechanicalPipeAdvanced",
-				"MechanicalPipeElite", "MechanicalPipeUltimate"});
-		pipeIcons.registerSideIcons(register, new String[]{"MechanicalPipeVertical", "MechanicalPipeHorizontal"});
+		pipeIcons.registerCenterIcons(register, new String[] {"MechanicalPipeBasic", "MechanicalPipeAdvanced", "MechanicalPipeElite", "MechanicalPipeUltimate"});
+		pipeIcons.registerSideIcons(register, new String[] {"MechanicalPipeVerticalBasic", "MechanicalPipeVerticalAdvanced", "MechanicalPipeVerticalElite", "MechanicalPipeVerticalUltimate",
+				"MechanicalPipeHorizontalBasic", "MechanicalPipeHorizontalAdvanced", "MechanicalPipeHorizontalElite", "MechanicalPipeHorizontalUltimate"});
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
 		return pipeIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
-		return pipeIcons.getSideIcon(0);
+		return pipeIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return pipeIcons.getSideIcon(1);
+		return pipeIcons.getSideIcon(4+tier.ordinal());
 	}
 
 	@Override

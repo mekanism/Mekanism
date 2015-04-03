@@ -20,11 +20,13 @@ import mekanism.client.model.ModelRotaryCondensentrator;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.block.BlockMachine.MachineType;
+import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.AdvancedModelLoader;
@@ -225,6 +227,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 			solarNeutronActivator.renderAll();
 		}
 		else {
+			GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
 			MekanismRenderer.renderItem(renderer, metadata, block);
 		}
 
@@ -234,18 +237,7 @@ public class MachineRenderingHandler implements ISimpleBlockRenderingHandler
 	@Override
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
 	{
-		int metadata = world.getBlockMetadata(x, y, z);
-
-		if(MachineType.get(block, metadata) != null)
-		{
-			if(!MachineType.get(block, metadata).hasModel)
-			{
-				renderer.renderStandardBlock(block, x, y, z);
-				renderer.setRenderBoundsFromBlock(block);
-				return true;
-			}
-		}
-
+		//Handled by CTMRenderingHandler
 		return false;
 	}
 

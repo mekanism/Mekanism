@@ -67,19 +67,19 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
 		return heatIcons.getCenterIcon(0);
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
 		return heatIcons.getSideIcon(0);
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
 		return heatIcons.getSideIcon(1);
 	}
@@ -152,6 +152,7 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 	public void writeDesc(MCDataOutput packet)
 	{
 		packet.writeBoolean(false);
+		
 		super.writeDesc(packet);
 	}
 
@@ -162,8 +163,7 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 		{
 			getTransmitter().temperature = packet.readDouble();
 		}
-		else
-		{
+		else {
 			super.readDesc(packet);
 		}
 	}

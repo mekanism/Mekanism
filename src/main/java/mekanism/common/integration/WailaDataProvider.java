@@ -7,6 +7,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mekanism.api.EnumColor;
+import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +28,7 @@ public class WailaDataProvider implements IWailaDataProvider
 		
 		registrar.registerHeadProvider(provider, TileEntityInductionCell.class);
 		registrar.registerHeadProvider(provider, TileEntityInductionProvider.class);
+		registrar.registerHeadProvider(provider, TileEntityFactory.class);
 	}
 	
 	@Override
@@ -49,6 +51,10 @@ public class WailaDataProvider implements IWailaDataProvider
 		else if(tile instanceof TileEntityInductionProvider)
 		{
 			currenttip.set(0, EnumColor.WHITE + ((TileEntityInductionProvider)tile).getInventoryName());
+		}
+		else if(tile instanceof TileEntityFactory)
+		{
+			currenttip.set(0, EnumColor.WHITE + ((TileEntityFactory)tile).getInventoryName());
 		}
 		
 		return currenttip;

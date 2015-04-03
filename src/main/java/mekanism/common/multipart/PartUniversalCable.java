@@ -16,7 +16,6 @@ import mekanism.common.EnergyNetwork;
 import mekanism.common.Tier;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -27,7 +26,6 @@ import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import codechicken.lib.vec.Vector3;
 import cofh.api.energy.IEnergyHandler;
 import cofh.api.energy.IEnergyProvider;
@@ -40,12 +38,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 {
 	public Tier.CableTier tier;
 
-	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 2);
+	public static TransmitterIcons cableIcons = new TransmitterIcons(4, 8);
 
 	public double currentPower = 0;
 	public double lastWrite = 0;
-
-	public double drawAmount = 100;
 
 	public EnergyStack buffer = new EnergyStack(0);
 
@@ -84,6 +80,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			if(!sides.isEmpty())
 			{
 				TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(tile());
+				double canDraw = tier.cableCapacity/10F;
 
 				for(ForgeDirection side : sides)
 				{
@@ -95,18 +92,19 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 						{
 							if(((ICableOutputter)outputter).canOutputTo(side.getOpposite()))
 							{
-								double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), drawAmount);
+								double received = Math.min(((IStrictEnergyStorage)outputter).getEnergy(), canDraw);
 								double toDraw = received;
 
 								if(received > 0)
 								{
 									toDraw -= takeEnergy(received, true);
 								}
+								
 								((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
 							}
 						} else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
-							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(drawAmount*general.TO_TE), true) * general.FROM_TE;
+							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_TE), true) * general.FROM_TE;
 							double toDraw = received;
 
 							if(received > 0)
@@ -115,9 +113,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 							}
 
 							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_TE), false);
-						} else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
+						}
+						else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
 						{
-							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, drawAmount);
+							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, canDraw);
 							double toDraw = received;
 
 							if(received > 0)
@@ -179,25 +178,26 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	{
 		cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
 				"UniversalCableElite", "UniversalCableUltimate"});
-		cableIcons.registerSideIcons(register, new String[]{"SmallTransmitterVertical", "SmallTransmitterHorizontal"});
+		cableIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
+				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
 		return cableIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
-		return cableIcons.getSideIcon(0);
+		return cableIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return cableIcons.getSideIcon(1);
+		return cableIcons.getSideIcon(4+tier.ordinal());
 	}
 
 	@Override

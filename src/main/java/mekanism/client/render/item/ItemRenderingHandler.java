@@ -50,7 +50,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -190,7 +189,7 @@ public class ItemRenderingHandler implements IItemRenderer
 				amount = Integer.toString(inv.getItemCount());
 			}
 
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 240);
+			MekanismRenderer.glowOn();
 
 			if(itemStack != null)
 			{
@@ -229,6 +228,8 @@ public class ItemRenderingHandler implements IItemRenderer
 				GL11.glEnable(GL11.GL_LIGHTING);
 				GL11.glPopMatrix();
 			}
+			
+			MekanismRenderer.glowOff();
 
 			if(amount != "")
 			{
@@ -519,7 +520,16 @@ public class ItemRenderingHandler implements IItemRenderer
 		else {
 			if(item.getItem() instanceof ItemBlockMachine)
 			{
-				RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.getBlockFromItem(item.getItem()), item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
+				MachineType machine = MachineType.get(item);
+				
+				if(machine == MachineType.BASIC_FACTORY || machine == MachineType.ADVANCED_FACTORY || machine == MachineType.ELITE_FACTORY)
+				{
+					GL11.glRotatef(-90F, 0.0F, 1.0F, 0.0F);
+					MekanismRenderer.renderCustomItem(((RenderBlocks)data[0]), item);
+				}
+				else {
+					RenderingRegistry.instance().renderInventoryBlock((RenderBlocks)data[0], Block.getBlockFromItem(item.getItem()), item.getItemDamage(), ClientProxy.MACHINE_RENDER_ID);
+				}
 			}
 			else if(item.getItem() instanceof ItemBlockBasic)
 			{

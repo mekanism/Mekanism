@@ -155,6 +155,32 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 				GL11.glPopMatrix();
 			} catch(Exception e) {}
 		}
+		
+		if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.lastItem"), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.nextItem"), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60)
+		{
+			drawCreativeTabHoveringText(MekanismUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
+		}
+		
+		if(xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35)
+		{
+			if(renderStack != null)
+			{
+				String name = MekanismUtils.getMod(renderStack);
+				String extra = name.equals("null") ? "" : " (" + name + ")";
+				
+				drawCreativeTabHoveringText(renderStack.getDisplayName() + extra, xAxis, yAxis);
+			}
+		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

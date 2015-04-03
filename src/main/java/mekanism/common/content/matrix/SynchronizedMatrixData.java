@@ -52,16 +52,13 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 	{
 		for(Coord4D coord : cells)
 		{
-			if(energy <= 0)
-			{
-				return;
-			}
-			
 			TileEntity tile = coord.getTileEntity(world);
 			
 			if(tile instanceof TileEntityInductionCell)
 			{
 				TileEntityInductionCell cell = (TileEntityInductionCell)tile;
+				
+				cell.setEnergy(0);
 				
 				double toAdd = Math.min(cell.getMaxEnergy(), energy);
 				cell.setEnergy(toAdd);

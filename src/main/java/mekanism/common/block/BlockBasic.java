@@ -9,6 +9,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DefIcon;
 import mekanism.client.render.MekanismRenderer.ICustomBlockIcon;
 import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
@@ -88,7 +90,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 {
-	public IIcon[][] icons = new IIcon[16][6];
+	public IIcon[][] icons = new IIcon[16][16];
 
 	public CTMData[][] ctms = new CTMData[16][4];
 	
@@ -146,6 +148,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 		switch(blockType)
 		{
 			case BASIC_BLOCK_1:
+				ctms[7][0] = new CTMData("ctm/TeleporterFrame", this, Arrays.asList(7)).addOtherBlockConnectivities(MekanismBlocks.MachineBlock, Arrays.asList(11)).registerIcons(register);
 				ctms[9][0] = new CTMData("ctm/DynamicTank", this, Arrays.asList(9, 11)).registerIcons(register);
 				ctms[10][0] = new CTMData("ctm/DynamicGlass", this, Arrays.asList(10)).registerIcons(register);
 				ctms[11][0] = new CTMData("ctm/DynamicValve", this, Arrays.asList(11, 9)).registerIcons(register);
@@ -160,12 +163,11 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[3][0] = register.registerIcon("mekanism:CoalBlock");
 				icons[4][0] = register.registerIcon("mekanism:RefinedGlowstone");
 				icons[5][0] = register.registerIcon("mekanism:SteelBlock");
-				icons[6][0] = register.registerIcon("mekanism:BinSide");
-				icons[6][1] = register.registerIcon("mekanism:BinTop");
-				icons[6][2] = register.registerIcon("mekanism:BinFront");
-				icons[6][3] = register.registerIcon("mekanism:BinTopOn");
-				icons[6][4] = register.registerIcon("mekanism:BinFrontOn");
-				icons[7][0] = register.registerIcon("mekanism:TeleporterFrame");
+				
+				MekanismRenderer.loadDynamicTextures(register, "Bin", icons[6], DefIcon.getActivePair(register.registerIcon("mekanism:BinSide"), 3, 4, 5),
+						new DefIcon(register.registerIcon("mekanism:BinTop"), 0), new DefIcon(register.registerIcon("mekanism:BinTopOn"), 6));
+				
+				icons[7][0] = ctms[7][0].mainTextureData.icon;
 				icons[8][0] = register.registerIcon("mekanism:SteelCasing");
 				icons[9][0] = ctms[9][0].mainTextureData.icon;
 				icons[10][0] = ctms[10][0].mainTextureData.icon;
@@ -190,7 +192,6 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				ctms[4][1] = new CTMData("ctm/InductionProviderAdvanced", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][2] = new CTMData("ctm/InductionProviderElite", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
 				ctms[4][3] = new CTMData("ctm/InductionProviderUltimate", this, Arrays.asList(3, 4)).registerIcons(register).setRenderConvexConnections();
-				//TODO @unpairedbracket, mind fixing this?
 				
 				icons[0][0] = ctms[0][0].mainTextureData.icon;
 				icons[1][0] = ctms[1][0].mainTextureData.icon;
@@ -204,6 +205,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				icons[4][1] = ctms[4][1].mainTextureData.icon;
 				icons[4][2] = ctms[4][2].mainTextureData.icon;
 				icons[4][3] = ctms[4][3].mainTextureData.icon;
+				
 				break;
 		}
 	}
@@ -222,17 +224,8 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 6:
 						TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 
-						if(side == 0 || side == 1)
-						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][3] : icons[meta][1];
-						} 
-						else if(side == tileEntity.facing)
-						{
-							return MekanismUtils.isActive(world, x, y, z) ? icons[meta][4] : icons[meta][2];
-						} 
-						else {
-							return icons[meta][0];
-						}
+						boolean active = MekanismUtils.isActive(world, x, y, z);
+						return icons[meta][MekanismUtils.getBaseOrientation(side, tileEntity.facing)+(active ? 6 : 0)];
 					case 14:
 						TileEntitySolarEvaporationController tileEntity1 = (TileEntitySolarEvaporationController)world.getTileEntity(x, y, z);
 
@@ -276,17 +269,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 				switch(meta)
 				{
 					case 6:
-						if(side == 0 || side == 1)
-						{
-							return icons[meta][1];
-						} 
-						else if(side == 3)
-						{
-							return icons[meta][2];
-						}
-						else {
-							return icons[meta][0];
-						}
+						return icons[meta][side];
 					case 14:
 						if(side == 3)
 						{

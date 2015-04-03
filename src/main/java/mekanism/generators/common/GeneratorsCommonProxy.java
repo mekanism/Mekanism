@@ -3,6 +3,7 @@ package mekanism.generators.common;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.generators.common.inventory.container.ContainerBioGenerator;
 import mekanism.generators.common.inventory.container.ContainerGasGenerator;
 import mekanism.generators.common.inventory.container.ContainerHeatGenerator;
@@ -20,9 +21,9 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.reactor.TileEntityReactorFrame;
 import mekanism.generators.common.tile.reactor.TileEntityReactorGlass;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
@@ -49,6 +50,7 @@ public class GeneratorsCommonProxy
 		GameRegistry.registerTileEntity(TileEntityReactorLaserFocusMatrix.class, "ReactorLaserFocus");
 		GameRegistry.registerTileEntity(TileEntityReactorNeutronCapture.class, "ReactorNeutronCapture");
 		GameRegistry.registerTileEntity(TileEntityReactorPort.class, "ReactorPort");
+		GameRegistry.registerTileEntity(TileEntityReactorLogicAdapter.class, "ReactorLogicAdapter");
 	}
 
 	/**
@@ -161,9 +163,11 @@ public class GeneratorsCommonProxy
 			case 11:
 			case 12:
 			case 13:
-				return new ContainerNull(player, (TileEntityReactorController)tileEntity);
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 14:
 				return new ContainerNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
+			case 15:
+				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 		}
 		
 		return null;

@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
@@ -38,6 +40,8 @@ public class GuiSideConfiguration extends GuiMekanism
 	public ISideConfiguration configurable;
 	
 	public TransmissionType currentType;
+	
+	public List<GuiConfigTypeTab> configTabs = new ArrayList<GuiConfigTypeTab>();
 
 	public GuiSideConfiguration(EntityPlayer player, ISideConfiguration tile)
 	{
@@ -49,7 +53,10 @@ public class GuiSideConfiguration extends GuiMekanism
 		
 		for(TransmissionType type : configurable.getConfig().transmissions)
 		{
-			guiElements.add(new GuiConfigTypeTab(this, (TileEntity)configurable, type, MekanismUtils.getResource(ResourceType.GUI, "GuiConfiguration.png")));
+			GuiConfigTypeTab tab = new GuiConfigTypeTab(this, (TileEntity)configurable, type, MekanismUtils.getResource(ResourceType.GUI, "GuiConfiguration.png"));
+			
+			guiElements.add(tab);
+			configTabs.add(tab);
 		}
 		
 		currentType = getTopTransmission();
@@ -73,22 +80,17 @@ public class GuiSideConfiguration extends GuiMekanism
 	{
 		int rendered = 0;
 		
-		for(GuiElement element : guiElements)
+		for(GuiConfigTypeTab tab : configTabs)
 		{
-			if(element instanceof GuiConfigTypeTab)
+			tab.visible = currentType != tab.transmission;
+			
+			if(tab.visible)
 			{
-				GuiConfigTypeTab tab = (GuiConfigTypeTab)element;
-				
-				tab.visible = currentType != tab.transmission;
-				
-				if(tab.visible)
-				{
-					tab.left = rendered >= 0 && rendered <= 2;
-					tab.setY(2+((rendered%3)*(26+2)));
-				}
-				
-				rendered++;
+				tab.left = rendered >= 0 && rendered <= 2;
+				tab.setY(2+((rendered%3)*(26+2)));
 			}
+			
+			rendered++;
 		}
 	}
 

@@ -16,7 +16,6 @@ import mekanism.api.transmitters.IGridTransmitter;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 
@@ -71,7 +70,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 							buffer = net.buffer.copy();
 						} else
 						{
-							if(buffer.getGas() == net.buffer.getGas())
+							if(buffer.isGasEqual(net.buffer))
 							{
 								buffer.amount += net.buffer.amount;
 							}

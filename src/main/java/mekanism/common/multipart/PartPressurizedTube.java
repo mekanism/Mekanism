@@ -12,8 +12,9 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
+import mekanism.common.Tier;
+import mekanism.common.Tier.TubeTier;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -27,13 +28,20 @@ import codechicken.lib.vec.Vector3;
 
 public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork> implements IGasHandler
 {
-	public static TransmitterIcons tubeIcons = new TransmitterIcons(1, 2);
+	public Tier.TubeTier tier = Tier.TubeTier.BASIC;
+	
+	public static TransmitterIcons tubeIcons = new TransmitterIcons(4, 8);
 
 	public float currentScale;
 
 	public GasTank buffer = new GasTank(getCapacity());
 
 	public GasStack lastWrite;
+	
+	public PartPressurizedTube(Tier.TubeTier tubeTier)
+	{
+		tier = tubeTier;
+	}
 
 	@Override
 	public void update()
@@ -60,7 +68,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 
 					if(container != null)
 					{
-						GasStack received = container.drawGas(side.getOpposite(), 100, false);
+						GasStack received = container.drawGas(side.getOpposite(), tier.tubePullAmount, false);
 
 						if(received != null && received.amount != 0)
 						{
@@ -124,6 +132,8 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public void load(NBTTagCompound nbtTags)
 	{
 		super.load(nbtTags);
+		
+		tier = TubeTier.values()[nbtTags.getInteger("tier")];
 
 		if(nbtTags.hasKey("cacheGas"))
 		{
@@ -135,6 +145,8 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	public void save(NBTTagCompound nbtTags)
 	{
 		super.save(nbtTags);
+		
+		nbtTags.setInteger("tier", tier.ordinal());
 
 		int toSave = getSaveShare();
 
@@ -149,31 +161,32 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@Override
 	public String getType()
 	{
-		return "mekanism:pressurized_tube";
+		return "mekanism:pressurized_tube_" + tier.name().toLowerCase();
 	}
 
 	public static void registerIcons(IIconRegister register)
 	{
-		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTube"});
-		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVertical", "SmallTransmitterHorizontal"});
+		tubeIcons.registerCenterIcons(register, new String[] {"PressurizedTubeBasic", "PressurizedTubeAdvanced", "PressurizedTubeElite", "PressurizedTubeUltimate"});
+		tubeIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterVerticalAdvanced", "SmallTransmitterVerticalElite", "SmallTransmitterVerticalUltimate",
+				"SmallTransmitterHorizontalBasic", "SmallTransmitterHorizontalAdvanced", "SmallTransmitterHorizontalElite", "SmallTransmitterHorizontalUltimate"});
 	}
 
 	@Override
-	public IIcon getCenterIcon()
+	public IIcon getCenterIcon(boolean opaque)
 	{
-		return tubeIcons.getCenterIcon(0);
+		return tubeIcons.getCenterIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIcon()
+	public IIcon getSideIcon(boolean opaque)
 	{
-		return tubeIcons.getSideIcon(0);
+		return tubeIcons.getSideIcon(tier.ordinal());
 	}
 
 	@Override
-	public IIcon getSideIconRotated()
+	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return tubeIcons.getSideIcon(1);
+		return tubeIcons.getSideIcon(4+tier.ordinal());
 	}
 
 	@Override
@@ -219,7 +232,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@Override
 	public int getCapacity()
 	{
-		return 256;
+		return tier.tubeCapacity;
 	}
 
 	@Override

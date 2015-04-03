@@ -44,6 +44,11 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 		
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
+			if(coord == null)
+			{
+				continue;
+			}
+			
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
 			IInventory acceptor = (IInventory)coord.getTileEntity(getWorld());
 			

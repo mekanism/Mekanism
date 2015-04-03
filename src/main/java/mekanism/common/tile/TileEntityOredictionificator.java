@@ -9,14 +9,21 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.api.IFilterAccess;
 import mekanism.api.Range4D;
+import mekanism.api.infuse.InfuseRegistry;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.recipe.RecipeHandler;
+import mekanism.common.recipe.RecipeHandler.Recipe;
+import mekanism.common.recipe.inputs.InfusionInput;
+import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -32,7 +39,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 	
 	public HashList<OredictionificatorFilter> filters = new HashList<OredictionificatorFilter>();
 	
-	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust");
+	public static List<String> possibleFilters = Arrays.asList("ingot", "ore", "dust", "nugget");
 	
 	public RedstoneControl controlType = RedstoneControl.DISABLED;
 	
@@ -79,7 +86,7 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 						inventory[1] = result;
 						didProcess = true;
 					}
-					else if(inventory[0].isItemEqual(result) && inventory[0].stackSize < inventory[0].getMaxStackSize())
+					else if(inventory[1].isItemEqual(result) && inventory[1].stackSize < inventory[1].getMaxStackSize())
 					{
 						inventory[0].stackSize--;
 						
@@ -142,6 +149,39 @@ public class TileEntityOredictionificator extends TileEntityContainerBlock imple
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public int[] getAccessibleSlotsFromSide(int side)
+	{
+		if(side == MekanismUtils.getLeft(facing).ordinal())
+		{
+			return new int[] {0};
+		}
+		else if(side == MekanismUtils.getRight(facing).ordinal())
+		{
+			return new int[] {1};
+		}
+		else {
+			return InventoryUtils.EMPTY;
+		}
+	}
+
+	@Override
+	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
+	{
+		return slotID == 1;
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int slotID, ItemStack itemstack)
+	{
+		if(slotID == 0)
+		{
+			return getResult(itemstack) != null;
+		}
+
+		return false;
 	}
 	
 	@Override

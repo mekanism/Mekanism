@@ -93,6 +93,8 @@ public final class InventoryUtils
 				if(inSlot == null)
 				{
 					inventory.setInventorySlotContents(i, toInsert);
+					inventory.markDirty();
+					
 					return null;
 				}
 				else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
@@ -103,6 +105,8 @@ public final class InventoryUtils
 						toSet.stackSize += inSlot.stackSize;
 
 						inventory.setInventorySlotContents(i, toSet);
+						inventory.markDirty();
+						
 						return null;
 					}
 					else {
@@ -115,6 +119,7 @@ public final class InventoryUtils
 						remains.stackSize = rejects;
 
 						inventory.setInventorySlotContents(i, toSet);
+						inventory.markDirty();
 
 						toInsert = remains;
 					}
@@ -149,6 +154,8 @@ public final class InventoryUtils
 					if(inSlot == null)
 					{
 						inventory.setInventorySlotContents(slotID, toInsert);
+						inventory.markDirty();
+						
 						return null;
 					}
 					else if(areItemsStackable(toInsert, inSlot) && inSlot.stackSize < inSlot.getMaxStackSize() && inSlot.stackSize < inventory.getInventoryStackLimit())
@@ -159,6 +166,8 @@ public final class InventoryUtils
 							toSet.stackSize += inSlot.stackSize;
 
 							inventory.setInventorySlotContents(slotID, toSet);
+							inventory.markDirty();
+							
 							return null;
 						}
 						else {
@@ -171,6 +180,7 @@ public final class InventoryUtils
 							remains.stackSize = rejects;
 
 							inventory.setInventorySlotContents(slotID, toSet);
+							inventory.markDirty();
 
 							toInsert = remains;
 						}
@@ -187,7 +197,7 @@ public final class InventoryUtils
     	return inSlot.isItemEqual(toInsert) && ItemStack.areItemStackTagsEqual(inSlot, toInsert);
   	}
 
-  	public static InvStack takeTopItem(IInventory inventory, int side)
+  	public static InvStack takeTopItem(IInventory inventory, int side, int amount)
 	{
 		inventory = checkChestInv(inventory);
 
@@ -198,7 +208,7 @@ public final class InventoryUtils
 				if(inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).stackSize > 0)
 				{
 					ItemStack toSend = inventory.getStackInSlot(i).copy();
-					toSend.stackSize = 1;
+					toSend.stackSize = Math.min(amount, toSend.stackSize);
 
 					return new InvStack(inventory, i, toSend);
 				}
@@ -217,7 +227,7 @@ public final class InventoryUtils
 					if(sidedInventory.getStackInSlot(slotID) != null && sidedInventory.getStackInSlot(slotID).stackSize > 0)
 					{
 						ItemStack toSend = sidedInventory.getStackInSlot(slotID).copy();
-						toSend.stackSize = 1;
+						toSend.stackSize = Math.min(amount, toSend.stackSize);
 
 						if(sidedInventory.canExtractItem(slotID, toSend, ForgeDirection.OPPOSITES[side]))
 						{

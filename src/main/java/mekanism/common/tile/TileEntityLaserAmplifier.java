@@ -6,8 +6,11 @@ import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.energy.ICableOutputter;
+import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
+import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -19,7 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl
+public class TileEntityLaserAmplifier extends TileEntityContainerBlock implements ILaserReceptor, IRedstoneControl, ICableOutputter, IStrictEnergyStorage
 {
 	public static final double MAX_ENERGY = 5E9;
 	public double collectedEnergy = 0;
@@ -36,6 +39,9 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 
 	public Coord4D digging;
 	public double diggingProgress;
+	
+	public boolean emittingRedstone;
+	public boolean entityDetection;
 
 	public TileEntityLaserAmplifier()
 	{
@@ -91,6 +97,10 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			}
 		}
 		else {
+			boolean prevRedstone = emittingRedstone;
+			
+			emittingRedstone = false;
+			
 			if(ticks < time)
 			{
 				ticks++;
@@ -110,8 +120,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 					Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 				}
 
-				MovingObjectPosition mop = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
-				Coord4D hitCoord = mop == null ? null : new Coord4D(mop.blockX, mop.blockY, mop.blockZ);
+				LaserInfo info = LaserManager.fireLaser(this, ForgeDirection.getOrientation(facing), firing, worldObj);
+				Coord4D hitCoord = info.movingPos == null ? null : new Coord4D(info.movingPos.blockX, info.movingPos.blockY, info.movingPos.blockZ);
 
 				if(hitCoord == null || !hitCoord.equals(digging))
 				{
@@ -136,6 +146,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 						}
 					}
 				}
+				
+				emittingRedstone = info.foundEntity;
 
 				setEnergy(getEnergy() - firing);
 			}
@@ -145,14 +157,26 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				diggingProgress = 0;
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50D));
 			}
+			
+			if(!entityDetection)
+			{
+				emittingRedstone = false;
+			}
+			
+			if(emittingRedstone != prevRedstone)
+			{
+				worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, getBlockType());
+			}
 		}
 	}
 
+	@Override
 	public void setEnergy(double energy)
 	{
 		collectedEnergy = Math.max(0, Math.min(energy, MAX_ENERGY));
 	}
 
+	@Override
 	public double getEnergy()
 	{
 		return collectedEnergy;
@@ -180,6 +204,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		data.add(collectedEnergy);
 		data.add(lastFired);
 		data.add(controlType.ordinal());
+		data.add(emittingRedstone);
+		data.add(entityDetection);
 
 		return data;
 	}
@@ -199,6 +225,8 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 			collectedEnergy = dataStream.readDouble();
 			lastFired = dataStream.readDouble();
 			controlType = RedstoneControl.values()[dataStream.readInt()];
+			emittingRedstone = dataStream.readBoolean();
+			entityDetection = dataStream.readBoolean();
 
 			return;
 		}
@@ -213,6 +241,9 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 				break;
 			case 2:
 				time = dataStream.readInt();
+				break;
+			case 3:
+				entityDetection = !entityDetection;
 				break;
 		}
 	}
@@ -230,6 +261,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		collectedEnergy = nbtTags.getDouble("collectedEnergy");
 		lastFired = nbtTags.getDouble("lastFired");
 		controlType = RedstoneControl.values()[nbtTags.getInteger("controlType")];
+		entityDetection = nbtTags.getBoolean("entityDetection");
 	}
 
 	@Override
@@ -245,6 +277,7 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 		nbtTags.setDouble("collectedEnergy", collectedEnergy);
 		nbtTags.setDouble("lastFired", lastFired);
 		nbtTags.setInteger("controlType", controlType.ordinal());
+		nbtTags.setBoolean("entityDetection", entityDetection);
 	}
 
 	@Override
@@ -263,5 +296,17 @@ public class TileEntityLaserAmplifier extends TileEntityContainerBlock implement
 	public boolean canPulse()
 	{
 		return true;
+	}
+
+	@Override
+	public boolean canOutputTo(ForgeDirection side)
+	{
+		return true;
+	}
+
+	@Override
+	public double getMaxEnergy()
+	{
+		return MAX_ENERGY;
 	}
 }

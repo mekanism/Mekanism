@@ -220,7 +220,9 @@ public class MekanismRecipe implements IRecipe
 					{
 						if(entry != null && entry.getKey() != null && entry.getValue() != null)
 						{
-							upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), upgrades.get(entry.getKey()) + entry.getValue()));
+							Integer val = upgrades.get(entry.getKey());
+							
+							upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), (val != null ? val : 0) + entry.getValue()));
 						}
 					}
 				}

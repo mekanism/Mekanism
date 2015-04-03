@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -25,7 +26,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

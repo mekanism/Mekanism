@@ -10,6 +10,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiGasGauge;
 import mekanism.client.gui.element.GuiGauge;
 import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
@@ -47,15 +48,8 @@ public class GuiChemicalInfuser extends GuiMekanism
 			@Override
 			public List<String> getInfo()
 			{
-				double usage = 0;
-				
-				if(tileEntity.getRecipe() != null)
-				{
-					usage = tileEntity.getUpgradedUsage(tileEntity.getRecipe())*tileEntity.energyPerTick;
-				}
-				
-				String multiplier = MekanismUtils.getEnergyDisplay(usage);
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
+				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + usage + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this,  MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {

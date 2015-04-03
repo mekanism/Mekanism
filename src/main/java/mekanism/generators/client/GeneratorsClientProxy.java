@@ -1,7 +1,5 @@
 package mekanism.generators.client;
 
-import mekanism.api.MekanismConfig.client;
-import mekanism.common.Mekanism;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -9,6 +7,7 @@ import mekanism.generators.client.gui.GuiNeutronCapture;
 import mekanism.generators.client.gui.GuiReactorController;
 import mekanism.generators.client.gui.GuiReactorFuel;
 import mekanism.generators.client.gui.GuiReactorHeat;
+import mekanism.generators.client.gui.GuiReactorLogicAdapter;
 import mekanism.generators.client.gui.GuiReactorStats;
 import mekanism.generators.client.gui.GuiSolarGenerator;
 import mekanism.generators.client.gui.GuiWindTurbine;
@@ -27,6 +26,7 @@ import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindTurbine;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorNeutronCapture;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -88,6 +88,8 @@ public class GeneratorsClientProxy extends GeneratorsCommonProxy
 				return new GuiReactorStats(player.inventory, (TileEntityReactorController)tileEntity);
 			case 14:
 				return new GuiNeutronCapture(player.inventory, (TileEntityReactorNeutronCapture)tileEntity);
+			case 15:
+				return new GuiReactorLogicAdapter(player.inventory, (TileEntityReactorLogicAdapter)tileEntity);
 		}
 		
 		return null;

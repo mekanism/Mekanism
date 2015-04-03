@@ -101,9 +101,7 @@ tile.MachineBlock.EnrichmentChamber.name=Enrichment Chamber
 tile.MachineBlock.OsmiumCompressor.name=Osmium Compressor
 tile.MachineBlock.Combiner.name=Combiner
 tile.MachineBlock.Crusher.name=Crusher
-tile.MachineBlock.BasicFactory.name=Basic Factory
-tile.MachineBlock.AdvancedFactory.name=Advanced Factory
-tile.MachineBlock.EliteFactory.name=Elite Factory
+tile.MachineBlock.Factory.name=Factory
 tile.MachineBlock.MetallurgicInfuser.name=Metallurgic Infuser
 tile.MachineBlock.PurificationChamber.name=Purification Chamber
 tile.MachineBlock.EnergizedSmelter.name=Energized Smelter
@@ -162,7 +160,10 @@ tile.OreBlock.CopperOre.name=Copper Ore
 tile.OreBlock.TinOre.name=Tin Ore
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Pressurized Tube
+item.MultipartTransmitter.BasicPressurizedTube.name=Basic Pressurized Tube
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Advanced Pressurized Tube
+item.MultipartTransmitter.ElitePressurizedTube.name=Elite Pressurized Tube
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimate Pressurized Tube
 item.MultipartTransmitter.BasicUniversalCable.name=Basic Universal Cable
 item.MultipartTransmitter.AdvancedUniversalCable.name=Advanced Universal Cable
 item.MultipartTransmitter.EliteUniversalCable.name=Elite Universal Cable
@@ -171,7 +172,10 @@ item.MultipartTransmitter.BasicMechanicalPipe.name=Basic Mechanical Pipe
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Advanced Mechanical Pipe
 item.MultipartTransmitter.EliteMechanicalPipe.name=Elite Mechanical Pipe
 item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimate Mechanical Pipe
-item.MultipartTransmitter.LogisticalTransporter.name=Logistical Transporter
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Basic Logistical Transporter
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Advanced Logistical Transporter
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Elite Logistical Transporter
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimate Logistical Transporter
 item.MultipartTransmitter.RestrictiveTransporter.name=Restrictive Transporter
 item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
 
@@ -179,11 +183,11 @@ item.MultipartTransmitter.DiversionTransporter.name=Diversion Transporter
 item.GlowPanel.name=Glow Panel
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Basic Energy Cube
-tile.EnergyCube.Advanced.name=Advanced Energy Cube
-tile.EnergyCube.Elite.name=Elite Energy Cube
-tile.EnergyCube.Ultimate.name=Ultimate Energy Cube
-tile.EnergyCube.Creative.name=Creative Energy Cube
+tile.EnergyCubeBasic.name=Basic Energy Cube
+tile.EnergyCubeAdvanced.name=Advanced Energy Cube
+tile.EnergyCubeElite.name=Elite Energy Cube
+tile.EnergyCubeUltimate.name=Ultimate Energy Cube
+tile.EnergyCubeCreative.name=Creative Energy Cube
 
 //Factory Installers
 item.basicFactoryInstaller.name=Basic Factory Installer
@@ -318,6 +322,13 @@ oregas.silver=Silver Ore
 oregas.obsidian=Obsidian Ore
 oregas.lead=Lead Ore
 
+//Tier names
+tier.Basic=Basic
+tier.Advanced=Advanced
+tier.Elite=Elite
+tier.Ultimate=Ultimate
+tier.Creative=Creative
+
 //Transmission types
 transmission.Energy=Energy
 transmission.Fluids=Fluids
@@ -344,22 +355,25 @@ upgrade.gas=Gas
 upgrade.gas.desc=Increases the efficiency !nof gas-using machinery.
 
 //Key description text
-key.mode=Mode Switch
+key.mode=Item Mode Switch
+key.armorMode=Armor Mode Switch
 key.voice=Voice
 
 //Entities
-entity.Robit.name=Robit
-entity.BabySkeleton.name=Baby Skeleton
+entity.Mekanism.Robit.name=Robit
+entity.Mekanism.BabySkeleton.name=Baby Skeleton
 
 //Config Gui
 mekanism.configgui.ctgy.general=Mekanism General Settings
 mekanism.configgui.ctgy.machines=Machine Settings
+mekanism.configgui.ctgy.tier=Tier Settings
 mekanism.configgui.ctgy.usage=Usage Settings
 mekanism.configgui.ctgy.client=Client Settings
 
 //Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=General settings regarding Mekanism and all its modules
 mekanism.configgui.ctgy.machines.tooltip=Settings regarding enabling and disabling of specific machinery
+mekanism.configgui.ctgy.tier.tooltip=Settings regarding Mekanism tiers and their corresponding values
 mekanism.configgui.ctgy.usage.tooltip=Settings regarding machinery and their energy usage
 mekanism.configgui.ctgy.client.tooltip=Client-specific settings regarding Mekanism and all its modules
 
@@ -454,8 +468,15 @@ gui.conflict=Conflict
 gui.height=Height
 gui.mult=Mult
 gui.chunk=Chunk
-gui.vibrating
+gui.vibrating=Vibrating
 gui.abundancy=Abundancy
+gui.nextItem=Next Item
+gui.lastItem=Last Item
+gui.oreDictCompat=Compatible OreDict Key
+gui.toggleCooling=Toggle Cooling Measurements
+gui.coolingMeasurements=Active cooling
+gui.redstoneOutputMode=Redstone mode
+gui.entityDetection=Entity Detection
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -481,14 +502,16 @@ gui.configuration.strictInput=Strict Input
 gui.rotaryCondensentrator.toggleOperation=Toggle operation
 
 gui.factory.secondaryEnergy=Secondary energy
-gui.factory.smelting=Smelting
-gui.factory.enriching=Enriching
-gui.factory.crushing=Crushing
-gui.factory.compressing=Compressing
-gui.factory.combining=Combining
-gui.factory.purifying=Purifying
-gui.factory.injecting=Injecting
 gui.factory.autoSort=Auto-sort
+
+//Recipe types
+gui.factory.Smelting=Smelting
+gui.factory.Enriching=Enriching
+gui.factory.Crushing=Crushing
+gui.factory.Compressing=Compressing
+gui.factory.Combining=Combining
+gui.factory.Purifying=Purifying
+gui.factory.Injecting=Injecting
 
 gui.seismicReader.short=S. Reader
 gui.seismicReader.solids=Solids
@@ -634,6 +657,7 @@ tooltip.configureState=Configure State
 tooltip.outputRate=Output Rate
 tooltip.insufficientFuel=Insufficient Fuel
 tooltip.readyForReaction=Ready for Reaction
+tooltip.speed=Speed
 
 tooltip.portableTank.bucketMode=Bucket Mode
 
@@ -777,6 +801,16 @@ dye.pink=Magenta
 dye.yellow=Yellow
 dye.white=White
 
+//Reactor Logic modes
+reactor.disabled=Disabled
+reactor.disabled.desc=Will not emit a redstone signal
+reactor.ready=Ready for Ignition
+reactor.ready.desc=Reactor has reached the required heat level to ignite
+reactor.capacity=Heat Capacity Met
+reactor.capacity.desc=The reactor's core heat capacity has been met
+reactor.depleted=Insufficient Fuel
+reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
+
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -803,7 +837,8 @@ tile.Generator.WindTurbine.name=Wind Turbine
 tile.Reactor.ReactorController.name=Reactor Controller
 tile.Reactor.ReactorFrame.name=Reactor Frame
 tile.Reactor.ReactorNeutronCapturePlate.name=Neutron Capture Plate
-tile.Reactor.ReactorInOutPort.name=Reactor Port
+tile.Reactor.ReactorPort.name=Reactor Port
+tile.Reactor.ReactorLogicAdapter.name=Reactor Logic Adapter
 
 tile.ReactorGlass.ReactorGlass.name=Reactor Glass
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix

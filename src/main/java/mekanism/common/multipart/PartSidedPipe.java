@@ -111,10 +111,22 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				return new PartMechanicalPipe(Tier.PipeTier.ELITE);
 			case MECHANICAL_PIPE_ULTIMATE:
 				return new PartMechanicalPipe(Tier.PipeTier.ULTIMATE);
-			case PRESSURIZED_TUBE:
-				return new PartPressurizedTube();
-			case LOGISTICAL_TRANSPORTER:
-				return new PartLogisticalTransporter();
+			case PRESSURIZED_TUBE_BASIC:
+				return new PartPressurizedTube(Tier.TubeTier.BASIC);
+			case PRESSURIZED_TUBE_ADVANCED:
+				return new PartPressurizedTube(Tier.TubeTier.ADVANCED);
+			case PRESSURIZED_TUBE_ELITE:
+				return new PartPressurizedTube(Tier.TubeTier.ELITE);
+			case PRESSURIZED_TUBE_ULTIMATE:
+				return new PartPressurizedTube(Tier.TubeTier.ULTIMATE);
+			case LOGISTICAL_TRANSPORTER_BASIC:
+				return new PartLogisticalTransporter(Tier.TransporterTier.BASIC);
+			case LOGISTICAL_TRANSPORTER_ADVANCED:
+				return new PartLogisticalTransporter(Tier.TransporterTier.ADVANCED);
+			case LOGISTICAL_TRANSPORTER_ELITE:
+				return new PartLogisticalTransporter(Tier.TransporterTier.ELITE);
+			case LOGISTICAL_TRANSPORTER_ULTIMATE:
+				return new PartLogisticalTransporter(Tier.TransporterTier.ULTIMATE);
 			case RESTRICTIVE_TRANSPORTER:
 				return new PartRestrictiveTransporter();
 			case DIVERSION_TRANSPORTER:
@@ -137,11 +149,11 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return (byte)((connections & ~(byte)(1 << side.ordinal())) | (byte)((toSet?1:0) << side.ordinal()));
 	}
 
-	public abstract IIcon getCenterIcon();
+	public abstract IIcon getCenterIcon(boolean opaque);
 
-	public abstract IIcon getSideIcon();
+	public abstract IIcon getSideIcon(boolean opaque);
 
-	public abstract IIcon getSideIconRotated();
+	public abstract IIcon getSideIconRotated(boolean opaque);
 
 	@Override
 	public void update()
@@ -175,8 +187,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		return false;
 	}
+	
+	public boolean transparencyRender()
+	{
+		return false;
+	}
 
-	public IIcon getIconForSide(ForgeDirection side)
+	public IIcon getIconForSide(ForgeDirection side, boolean opaque)
 	{
 		ConnectionType type = getConnectionType(side);
 
@@ -184,29 +201,29 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		{
 			if(client.oldTransmitterRender || renderCenter())
 			{
-				return getCenterIcon();
+				return getCenterIcon(opaque);
 			}
 			else if(getAllCurrentConnections() == 3 && side != ForgeDirection.DOWN && side != ForgeDirection.UP)
 			{
-				return getSideIcon();
+				return getSideIcon(opaque);
 			}
 			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.DOWN || side == ForgeDirection.UP))
 			{
-				return getSideIcon();
+				return getSideIcon(opaque);
 			}
 			else if(getAllCurrentConnections() == 12 && (side == ForgeDirection.EAST || side == ForgeDirection.WEST))
 			{
-				return getSideIconRotated();
+				return getSideIconRotated(opaque);
 			}
 			else if(getAllCurrentConnections() == 48 && side != ForgeDirection.EAST && side != ForgeDirection.WEST)
 			{
-				return getSideIconRotated();
+				return getSideIconRotated(opaque);
 			}
 
-			return getCenterIcon();
+			return getCenterIcon(opaque);
 		}
 		else {
-			return getSideIcon();
+			return getSideIcon(opaque);
 		}
 	}
 
@@ -214,7 +231,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
+		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
 			return connections;
 		}
@@ -289,7 +306,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		byte connections = 0x00;
 
-		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
+		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
 			return connections;
 		}
@@ -387,13 +404,13 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public IIcon getBreakingIcon(Object subPart, int side)
 	{
-		return getCenterIcon();
+		return getCenterIcon(true);
 	}
 
 	@Override
 	public IIcon getBrokenIcon(int side)
 	{
-		return getCenterIcon();
+		return getCenterIcon(true);
 	}
 
 	@Override
@@ -421,7 +438,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		if(pass == 0)
 		{
-			RenderPartTransmitter.getInstance().renderStatic(this);
+			RenderPartTransmitter.getInstance().renderStatic(this, pass);
+			return true;
+		}
+		else if(pass == 1 && transparencyRender())
+		{
+			RenderPartTransmitter.getInstance().renderStatic(this, pass);
 			return true;
 		}
 		
@@ -454,9 +476,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	@Override
 	public boolean canConnect(ForgeDirection side)
 	{
-		boolean powered = MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
-		
-		if(handlesRedstone() && redstoneReactive && powered)
+		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
 			return false;
 		}
@@ -564,20 +584,18 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return true;
 	}
 
-	public void redstoneRefresh()
-	{
-		boolean nowPowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
-
-		if(nowPowered != redstonePowered)
-		{
-			refreshConnections();
-			redstonePowered = nowPowered;
-			markDirtyTransmitters();
-		}
-	}
+	protected void onRefresh() {}
 
 	public void refreshConnections()
 	{
+		if(redstoneReactive)
+		{
+			redstonePowered = MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
+		}
+		else {
+			redstonePowered = false;
+		}
+
 		byte possibleTransmitters = getPossibleTransmitterConnections();
 		byte possibleAcceptors = getPossibleAcceptorConnections();
 
@@ -595,6 +613,14 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public void refreshConnections(ForgeDirection side)
 	{
+		if(redstoneReactive)
+		{
+			redstonePowered = MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
+		}
+		else {
+			redstonePowered = false;
+		}
+
 		boolean possibleTransmitter = getPossibleTransmitterConnection(side);
 		boolean possibleAcceptor = getPossibleAcceptorConnection(side);
 
@@ -628,7 +654,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		super.onAdded();
 		
-		redstonePowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		refreshConnections();
 	}
 
@@ -637,7 +662,6 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		super.onChunkLoad();
 		
-		redstonePowered = redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile()));
 		refreshConnections();
 		notifyTileChange();
 	}
@@ -653,7 +677,12 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 	{
 		if(handlesRedstone())
 		{
-			redstoneRefresh();
+			boolean prevPowered = redstonePowered;
+			refreshConnections();
+			if(prevPowered != redstonePowered)
+			{
+				markDirtyTransmitters();
+			}
 		}
 	}
 
@@ -762,7 +791,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 		return false;
 	}
 
-	public EnumColor getRenderColor()
+	public EnumColor getRenderColor(boolean opaque)
 	{
 		return null;
 	}

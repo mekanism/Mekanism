@@ -104,7 +104,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		inventory = new ItemStack[4];
 		
 		upgradeComponent = new TileComponentUpgrade(this, 3);
-		ejectorComponent = new TileComponentEjector(this, configComponent.getOutputs(TransmissionType.ITEM).get(2));
+		ejectorComponent = new TileComponentEjector(this);
+		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 
 	@Override
@@ -202,7 +203,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 		recipe.operate(inputTank, inventory);
 
 		markDirty();
-		ejectorComponent.onOutput();
+		ejectorComponent.outputItems();
 	}
 
 	@Override

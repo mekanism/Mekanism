@@ -188,7 +188,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 {
                 	if(!smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
                 	{
-                		worldObj.setBlock(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, Blocks.fire);
+                		if(!worldObj.isRemote)
+                		{
+                			worldObj.setBlock(sideCoord.xCoord, sideCoord.yCoord, sideCoord.zCoord, Blocks.fire);
+                		}
                 	}
                 }
                 

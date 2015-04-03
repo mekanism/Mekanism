@@ -6,6 +6,7 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyGauge;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiEnergyGauge.IEnergyInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;

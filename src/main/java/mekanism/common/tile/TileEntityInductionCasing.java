@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
+import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.multiblock.MultiblockManager;
@@ -95,6 +96,12 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	protected SynchronizedMatrixData getNewStructure() 
 	{
 		return new SynchronizedMatrixData();
+	}
+	
+	@Override
+	public MatrixCache getNewCache()
+	{
+		return new MatrixCache();
 	}
 
 	@Override

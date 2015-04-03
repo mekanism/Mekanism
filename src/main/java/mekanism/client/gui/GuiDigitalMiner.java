@@ -8,6 +8,7 @@ import mekanism.api.EnumColor;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiUpgradeTab;
 import mekanism.client.gui.element.GuiVisualsTab;

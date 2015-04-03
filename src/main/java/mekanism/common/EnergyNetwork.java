@@ -18,10 +18,10 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 

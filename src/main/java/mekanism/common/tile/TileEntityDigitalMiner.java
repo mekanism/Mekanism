@@ -370,7 +370,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		else {
 			MinerFilter filter = replaceMap.get(index);
 			
-			if(filter.replaceStack == null || !filter.requireStack)
+			if(filter == null || (filter.replaceStack == null || !filter.requireStack))
 			{
 				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
 				

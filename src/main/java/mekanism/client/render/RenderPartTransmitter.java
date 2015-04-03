@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -23,7 +24,6 @@ import mekanism.common.multipart.TransmitterType.Size;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -40,8 +40,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
@@ -57,6 +55,8 @@ import codechicken.lib.render.TextureUtils.IIconSelfRegister;
 import codechicken.lib.render.uv.IconTransformation;
 import codechicken.lib.vec.Translation;
 import codechicken.lib.vec.Vector3;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderPartTransmitter implements IIconSelfRegister
@@ -146,7 +146,17 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderSide(side, type);
+			renderSide(side, type, false);
+		}
+		
+		CCRenderState.draw();
+		
+		CCRenderState.reset();
+		CCRenderState.startDrawing();
+		
+		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+		{
+			renderSide(side, type, true);
 		}
 		
 		CCRenderState.draw();
@@ -169,7 +179,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 				GL11.glPushMatrix();
 				entityItem.setEntityItemStack(stack.itemStack);
 
-				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick* MultipartTransporter.SPEED);
+				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.getTransmitter().tier.speed);
 
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);
@@ -532,7 +542,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		pop();
 	}
 
-	public void renderStatic(PartSidedPipe transmitter)
+	public void renderStatic(PartSidedPipe transmitter, int pass)
 	{
 		CCRenderState.reset();
 		CCRenderState.hasColour = true;
@@ -540,29 +550,49 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			renderSide(side, transmitter);
+			renderSide(side, transmitter, pass);
 		}
 	}
 
-	public void renderSide(ForgeDirection side, PartSidedPipe transmitter)
+	public void renderSide(ForgeDirection side, PartSidedPipe transmitter, int pass)
 	{
-		IIcon renderIcon = transmitter.getIconForSide(side);
-
-		Colour c = null;
-
-		if(transmitter.getRenderColor() != null)
+		if(pass == 1)
 		{
-			c = new ColourRGBA(transmitter.getRenderColor().getColor(0), transmitter.getRenderColor().getColor(1), transmitter.getRenderColor().getColor(2), 1);
+			if(transmitter.transparencyRender())
+			{
+				IIcon renderIcon = transmitter.getIconForSide(side, false);
+				EnumColor color = transmitter.getRenderColor(false);
+		
+				Colour c = null;
+		
+				if(color != null)
+				{
+					c = new ColourRGBA(color.getColor(0), color.getColor(1), color.getColor(2), 1);
+				}
+		
+				renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
+			}
 		}
-
-		renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
+		else {
+			IIcon renderIcon = transmitter.getIconForSide(side, true);
+			EnumColor color = transmitter.getRenderColor(true);
+	
+			Colour c = null;
+	
+			if(color != null)
+			{
+				c = new ColourRGBA(color.getColor(0), color.getColor(1), color.getColor(2), 1);
+			}
+	
+			renderPart(renderIcon, transmitter.getModelForSide(side, false), transmitter.x(), transmitter.y(), transmitter.z(), c);
+		}
 	}
 
-	public void renderSide(ForgeDirection side, TransmitterType type)
+	public void renderSide(ForgeDirection side, TransmitterType type, boolean opaque)
 	{
 		boolean out = side == ForgeDirection.UP || side == ForgeDirection.DOWN;
 
-		IIcon renderIcon = out ? type.getSideIcon() : type.getCenterIcon();
+		IIcon renderIcon = out ? type.getSideIcon(opaque) : type.getCenterIcon(opaque);
 
 		renderPart(renderIcon, getItemModel(side, type), 0, 0, 0, null);
 	}

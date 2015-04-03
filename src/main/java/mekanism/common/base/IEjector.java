@@ -5,7 +5,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public interface IEjector
 {
-	public void onOutput();
+	public void outputItems();
 
 	public EnumColor getOutputColor();
 
