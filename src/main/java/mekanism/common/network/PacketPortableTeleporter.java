@@ -111,6 +111,8 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 								MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
 							}
 							
+							player.closeScreen();
+							
 							Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)), coords.getTargetPoint(40D));
 							TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP)player, coords, teleporter);
 							

@@ -399,6 +399,7 @@ public class TileEntityTeleporter extends TileEntityElectricBlock implements IPe
 			player.theItemInWorldManager.setWorld(newWorld);
 			player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
 			player.mcServer.getConfigurationManager().syncPlayerInventory(player);
+			
 			Iterator iterator = player.getActivePotionEffects().iterator();
 
 			while(iterator.hasNext())
