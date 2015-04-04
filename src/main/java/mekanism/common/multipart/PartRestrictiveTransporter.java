@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import mekanism.common.Tier.TransporterTier;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 

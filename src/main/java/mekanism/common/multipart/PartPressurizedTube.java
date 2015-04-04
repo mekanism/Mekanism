@@ -198,7 +198,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 	@Override
 	public TransmitterType getTransmitterType()
 	{
-		return TransmitterType.PRESSURIZED_TUBE;
+		return tier.type;
 	}
 
 	@Override

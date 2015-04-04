@@ -45,7 +45,10 @@ public class PacketDataRequest implements IMessageHandler<DataRequestMessage, IM
 			{
 				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
 
-				transmitter.getTransmitterNetwork().addUpdate(player);
+				if(transmitter.hasTransmitterNetwork())
+				{
+					transmitter.getTransmitterNetwork().addUpdate(player);
+				}
 			}
 
 			Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(tileEntity), ((ITileNetwork)tileEntity).getNetworkedData(new ArrayList())), (EntityPlayerMP)player);

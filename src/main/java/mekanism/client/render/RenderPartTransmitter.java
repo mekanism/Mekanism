@@ -179,7 +179,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 				GL11.glPushMatrix();
 				entityItem.setEntityItemStack(stack.itemStack);
 
-				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.getTransmitter().tier.speed);
+				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.tier.speed);
 
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);

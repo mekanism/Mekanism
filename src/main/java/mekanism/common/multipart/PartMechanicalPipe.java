@@ -28,7 +28,7 @@ import codechicken.lib.vec.Vector3;
 
 public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetwork> implements IFluidHandler
 {
-	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 2);
+	public static TransmitterIcons pipeIcons = new TransmitterIcons(4, 8);
 
 	public float currentScale;
 
@@ -234,7 +234,7 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	@Override
 	public void takeShare()
 	{
-		if(getTransmitter().hasTransmitterNetwork())
+		if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetwork().buffer != null && lastWrite != null)
 		{
 			getTransmitter().getTransmitterNetwork().buffer.amount -= lastWrite.amount;
 			buffer.setFluid(lastWrite);

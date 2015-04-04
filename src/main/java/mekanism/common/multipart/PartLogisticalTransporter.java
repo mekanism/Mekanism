@@ -42,7 +42,6 @@ import io.netty.buffer.ByteBuf;
 
 import codechicken.lib.vec.Vector3;
 
-
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork> implements ITransporterTile
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
@@ -53,7 +52,12 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 
 	public PartLogisticalTransporter(TransporterTier transporterTier)
 	{
+		super();
 		tier = transporterTier;
+	}
+
+	public PartLogisticalTransporter()
+	{
 		transmitterDelegate = new MultipartTransporter(this);
 	}
 

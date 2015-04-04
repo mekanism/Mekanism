@@ -30,8 +30,6 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 {
 	public HashList<TransporterStack> transit = new HashList<>();
 
-	public static final int SPEED = 5;
-
 	public EnumColor color;
 
 	public Set<TransporterStack> needsSync = new HashSet<>();
@@ -49,7 +47,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			{
 				if(stack != null)
 				{
-					stack.progress = Math.min(100, stack.progress+SPEED);
+					stack.progress = Math.min(100, stack.progress+getPart().tier.speed);
 				}
 			}
 		}
@@ -69,7 +67,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 					}
 				}
 
-				stack.progress += SPEED;
+				stack.progress += getPart().tier.speed;
 
 				if(stack.progress > 100)
 				{
@@ -85,7 +83,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 							if(next != null && stack.canInsertToTransporter(stack.getNext(this).getTileEntity(world()), ForgeDirection.getOrientation(stack.getSide(this))))
 							{
 								ITransporterTile nextTile = (ITransporterTile)next.getTileEntity(world());
-								nextTile.getTransmitter().entityEntering(stack);
+								nextTile.getTransmitter().entityEntering(stack, stack.progress%100);
 								remove.add(stack);
 
 								continue;
@@ -325,9 +323,9 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public void entityEntering(TransporterStack stack)
+	public void entityEntering(TransporterStack stack, int progress)
 	{
-		stack.progress = 0;
+		stack.progress = progress;
 		transit.add(stack);
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(coord(), getPart().getSyncPacket(stack, false)), new Range4D(coord()));
 		MekanismUtils.saveChunk(getPart().tile());

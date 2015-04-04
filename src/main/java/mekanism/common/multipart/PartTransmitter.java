@@ -3,8 +3,11 @@ package mekanism.common.multipart;
 import java.util.Collection;
 
 import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>
@@ -29,6 +32,10 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		if(!world().isRemote)
 		{
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
+		}
+		else
+		{
+			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile()));
 		}
 	}
 

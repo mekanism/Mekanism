@@ -34,7 +34,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public HashMap<Coord4D, EnumSet<ForgeDirection>> acceptorDirections = new HashMap<Coord4D, EnumSet<ForgeDirection>>();
 	public HashMap<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> changedAcceptors = new HashMap<>();
 
-	private List<DelayQueue> updateQueue = new ArrayList<DelayQueue>();
+	private Set<DelayQueue> updateQueue = new LinkedHashSet<DelayQueue>();
 
 	protected Range4D packetRange = null;
 
@@ -326,7 +326,8 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 						q.delay--;
 					} else
 					{
-						needsUpdate = true;
+						transmittersAdded.addAll(transmitters);
+						updateDelay = 1;
 						i.remove();
 					}
 				}
@@ -423,6 +424,18 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			player = p;
 			delay = 5;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return player.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			return o instanceof DelayQueue && ((DelayQueue)o).player.equals(this.player);
 		}
 	}
 }
