@@ -76,6 +76,13 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 					if(stack.hasPath())
 					{
 						int currentIndex = stack.pathToTarget.indexOf(coord());
+
+						if(currentIndex == 0) //Necessary for transition reasons, not sure why
+						{
+							remove.add(stack);
+							continue;
+						}
+
 						Coord4D next = stack.pathToTarget.get(currentIndex-1);
 
 						if(!stack.isFinal(this))
