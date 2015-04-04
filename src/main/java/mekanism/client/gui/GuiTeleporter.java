@@ -373,8 +373,8 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			if(clientFreq != null && clientStatus == 1)
 			{
-				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, clientFreq));
 				mc.setIngameFocus();
+				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, clientFreq));
 			}
 		}
 		

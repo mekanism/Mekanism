@@ -21,7 +21,11 @@ public class ItemPortableTeleporter extends ItemEnergized
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer entityplayer)
 	{
-		entityplayer.openGui(Mekanism.instance, 14, world, 0, 0, 0);
+		if(!world.isRemote)
+		{
+			entityplayer.openGui(Mekanism.instance, 14, world, 0, 0, 0);
+		}
+		
 		return itemstack;
 	}
 
