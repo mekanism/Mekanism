@@ -731,6 +731,7 @@ tooltip.ReactorController=The controlling block for the entire !nFusion Reactor 
 tooltip.ReactorFrame=Reinforced framing that can be used in !nthe Fusion Reactor multiblock.
 tooltip.ReactorNeutronCapturePlate=A block that can be used to !nboth block Fusion Reactor radiation and assist !nin the production of Tritium.
 tooltip.ReactorPort=A block of reinforced framing that is capable !nof managing both the gas and energy transfer !nof the Fusion Reactor.
+tooltip.ReactorLogicAdapter=A block that can be used to !nallow basic monitoring of a reactor using redstone.
 
 tooltip.OsmiumOre=A strong mineral that can be found !nat nearly any height in the world. !nIt is known to have many uses in !nthe construction of machinery.
 tooltip.CopperOre=A common, conductive material that !ncan be used in the production of !nwires. Its ability to withstand !nhigh heats also makes it essential !nto advanced machinery.
