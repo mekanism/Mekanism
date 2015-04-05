@@ -83,11 +83,16 @@ public class ThreadSparkle extends Thread
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(pointer.getWorldObj());
-
-			if(tile != null && isNode(tile) && !iteratedNodes.contains(tile))
+			Coord4D coord = Coord4D.get(tileEntity).getFromSide(side);
+			
+			if(coord.exists(pointer.getWorldObj()))
 			{
-				loop(tile);
+				TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
+	
+				if(tile != null && isNode(tile) && !iteratedNodes.contains(tile))
+				{
+					loop(tile);
+				}
 			}
 		}
 	}
