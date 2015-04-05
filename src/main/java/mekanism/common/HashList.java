@@ -3,6 +3,8 @@ package mekanism.common;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import mekanism.common.content.transporter.TransporterFilter;
+
 public class HashList<T> implements Iterable<T>
 {
 	private ArrayList<T> list = new ArrayList<T>(256);
@@ -89,6 +91,19 @@ public class HashList<T> implements Iterable<T>
 	public int size()
 	{
 		return list.size();
+	}
+	
+	public void swap( int source, int target )
+	{
+		// Make sure both source and target ar legal values
+		if( source == target ) return;
+		if( source < 0 || target < 0 ) return;
+		if( source >= list.size() || target >= list.size() ) return;
+		
+		// Perform swap
+		T temp = list.get( source );
+		list.set( source, list.get(  target ) );
+		list.set( target, temp );
 	}
 
 	@Override

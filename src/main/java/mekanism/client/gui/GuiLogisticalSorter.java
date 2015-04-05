@@ -210,12 +210,28 @@ public class GuiLogisticalSorter extends GuiMekanism
 						final int arrowX = filterX + filterW - 12;
 						if( getFilterIndex() + i > 0 )
 							if( xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20 )
+							{
 								// Process up button click
+								final ArrayList data = new ArrayList();
+								data.add( 3 );
+								data.add( getFilterIndex() + i );
+
+								Mekanism.packetHandler.sendToServer( new TileEntityMessage( Coord4D.get( tileEntity ), data ) );
+								SoundHandler.playSound( "gui.button.press" );
 								return;
+							}
 						if( getFilterIndex() + i < tileEntity.filters.size() - 1 )
 							if( xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27 )
+							{
 								// Process down button click
+								final ArrayList data = new ArrayList();
+								data.add( 4 );
+								data.add( getFilterIndex() + i );
+
+								Mekanism.packetHandler.sendToServer( new TileEntityMessage( Coord4D.get( tileEntity ), data ) );
+								SoundHandler.playSound( "gui.button.press" );
 								return;
+							}
 
 						final TransporterFilter filter = tileEntity.filters.get( getFilterIndex() + i );
 
