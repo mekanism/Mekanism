@@ -3,6 +3,8 @@ package mekanism.common.tile;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IFilterAccess;
@@ -23,7 +25,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -33,7 +34,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import io.netty.buffer.ByteBuf;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess, ISustainedData
@@ -292,7 +292,20 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				roundRobin = !roundRobin;
 				rrIndex = 0;
 			}
-
+			else if(type == 3)
+			{
+				// Move filter up
+				int filterIndex = dataStream.readInt();
+				filters.swap( filterIndex, filterIndex - 1 );
+				openInventory();
+			}
+			else if(type == 4)
+			{
+				// Move filter down
+				int filterIndex = dataStream.readInt();
+				filters.swap( filterIndex, filterIndex + 1 );
+				openInventory();
+			}
 			return;
 		}
 
@@ -461,7 +474,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 
 		return stack;
 	}
-
+	
 	@Override
 	public boolean canExtractItem(int slotID, ItemStack itemstack, int side)
 	{

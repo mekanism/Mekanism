@@ -25,7 +25,6 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,6 +33,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
@@ -42,6 +42,18 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	public TileEntityDigitalMiner tileEntity;
 
 	public boolean isDragging = false;
+
+	// Scrollbar dimensions
+	private final int						scrollX			= 154;
+	private final int						scrollY			= 18;
+	private final int						scrollW			= 12;
+	private final int						scrollH			= 138;
+
+	// Filter dimensions
+	private final int						filterX			= 56;
+	private final int						filterY			= 18;
+	private final int						filterW			= 96;
+	private final int						filterH			= 29;
 
 	public int dragOffset = 0;
 
@@ -69,12 +81,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 	public int getFilterIndex()
 	{
-		if(tileEntity.filters.size() <= 4)
+		if( needsScrollBars() )
 		{
-			return 0;
+			final int scrollSize = tileEntity.filters.size() - 4;
+			return (int)( ( scrollSize + 0.5 ) * scroll );
 		}
-
-		return (int)((tileEntity.filters.size()*scroll) - ((4F/(float)tileEntity.filters.size()))*scroll);
+		return 0;
 	}
 
 	@Override
@@ -197,7 +209,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
-				if(tileEntity.filters.size()>4)
+				if( needsScrollBars() )
 				{
 					dragOffset = yAxis - (getScroll()+18);
 					isDragging = true;
@@ -212,6 +224,33 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				if(tileEntity.filters.get(getFilterIndex()+i) != null)
 				{
 					int yStart = i*29 + 18;
+
+					// Check for sorting button
+					final int arrowX = filterX + filterW - 12;
+					if( getFilterIndex() + i > 0 )
+						if( xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20 )
+						{
+							// Process up button click
+							final ArrayList data = new ArrayList();
+							data.add( 11 );
+							data.add( getFilterIndex() + i );
+
+							Mekanism.packetHandler.sendToServer( new TileEntityMessage( Coord4D.get( tileEntity ), data ) );
+							SoundHandler.playSound( "gui.button.press" );
+							return;
+						}
+					if( getFilterIndex() + i < tileEntity.filters.size() - 1 )
+						if( xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27 )
+						{
+							// Process down button click
+							final ArrayList data = new ArrayList();
+							data.add( 12 );
+							data.add( getFilterIndex() + i );
+
+							Mekanism.packetHandler.sendToServer( new TileEntityMessage( Coord4D.get( tileEntity ), data ) );
+							SoundHandler.playSound( "gui.button.press" );
+							return;
+						}
 
 					if(xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29)
 					{
@@ -299,6 +338,35 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		{
 			dragOffset = 0;
 			isDragging = false;
+		}
+	}
+
+	/**
+	 * Handles mouse input.
+	 */
+	@Override
+	public void handleMouseInput()
+	{
+		super.handleMouseInput();
+		int i = Mouse.getEventDWheel();
+
+		if( i != 0 && needsScrollBars() )
+		{
+			final int j = tileEntity.filters.size() - 4;
+
+			if( i > 0 )
+				i = 1;
+
+			if( i < 0 )
+				i = -1;
+
+			scroll = (float)( scroll - (double)i / (double)j );
+
+			if( scroll < 0.0F )
+				scroll = 0.0F;
+
+			if( scroll > 1.0F )
+				scroll = 1.0F;
 		}
 	}
 
@@ -463,7 +531,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		drawTexturedModalRect(guiWidth + 154, guiHeight + 18 + getScroll(), 232, 0, 12, 15);
+		drawTexturedModalRect( guiLeft + scrollX, guiTop + scrollY + getScroll(), 232 + ( needsScrollBars() ? 0 : 12 ), 0, 12, 15 );
 
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
@@ -496,6 +564,19 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 				
 				drawTexturedModalRect(guiWidth + 56, guiHeight + yStart, mouseOver ? 0 : 96, 166, 96, 29);
 				MekanismRenderer.resetColor();
+
+				// Draw sort buttons
+				final int arrowX = filterX + filterW - 12;
+				if( getFilterIndex() + i > 0 )
+				{
+					mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20;
+					drawTexturedModalRect( guiLeft + arrowX, guiTop + yStart + 14, 190, mouseOver ? 143 : 115, 11, 7 );
+				}
+				if( getFilterIndex() + i < tileEntity.filters.size() - 1 )
+				{
+					mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27;
+					drawTexturedModalRect( guiLeft + arrowX, guiTop + yStart + 21, 190, mouseOver ? 157 : 129, 11, 7 );
+				}
 			}
 		}
 
@@ -657,5 +738,13 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		public List<ItemStack> iterStacks;
 		public int stackIndex;
 		public ItemStack renderStack;
+	}
+
+	/**
+	 * returns true if there are more filters than can fit in the gui
+	 */
+	private boolean needsScrollBars()
+	{
+		return tileEntity.filters.size() > 4;
 	}
 }

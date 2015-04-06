@@ -477,6 +477,8 @@ gui.toggleCooling=Toggle Cooling Measurements
 gui.coolingMeasurements=Active cooling
 gui.redstoneOutputMode=Redstone mode
 gui.entityDetection=Entity Detection
+gui.moveUp=Move Up
+gui.moveDown=Move Down
 
 gui.reactor.injectionRate=Injection Rate
 
