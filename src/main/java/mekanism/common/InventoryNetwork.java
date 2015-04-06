@@ -1,23 +1,18 @@
 package mekanism.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.util.TransporterUtils;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -27,25 +22,15 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwork>
 {
-	public InventoryNetwork(IGridTransmitter<InventoryNetwork>... varPipes)
-	{
-		transmitters.addAll(Arrays.asList(varPipes));
-		register();
-	}
+	public InventoryNetwork() {}
 
-	public InventoryNetwork(Collection<IGridTransmitter<InventoryNetwork>> collection)
-	{
-		transmitters.addAll(collection);
-		register();
-	}
-
-	public InventoryNetwork(Set<InventoryNetwork> networks)
+	public InventoryNetwork(Collection<InventoryNetwork> networks)
 	{
 		for(InventoryNetwork net : networks)
 		{
 			if(net != null)
 			{
-				addAllTransmitters(net.transmitters);
+				adoptTransmittersAndAcceptorsFrom(net);
 				net.deregister();
 			}
 		}
@@ -76,16 +61,16 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			
 			for(ForgeDirection side : sides)
 			{
-				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.ordinal());
+				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.getOpposite().ordinal());
 				
 				if(TransporterManager.didEmit(stack, returned))
 				{
 					if(data == null)
 					{
-						data = new AcceptorData(coord, returned, side);
+						data = new AcceptorData(coord, returned, side.getOpposite());
 					}
 					else {
-						data.sides.add(side);
+						data.sides.add(side.getOpposite());
 					}
 				}
 			}
@@ -125,7 +110,13 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 
 	@Override
-	public synchronized Set<IInventory> getAcceptors(Object... data)
+	public void absorbBuffer(IGridTransmitter<IInventory, InventoryNetwork> transmitter) {}
+
+	@Override
+	public void clampBuffer() {}
+
+	@Override
+	public Set<IInventory> getAcceptors(Object data)
 	{
 		Set<IInventory> toReturn = new HashSet<IInventory>();
 		
@@ -138,62 +129,9 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	}
 
 	@Override
-	public synchronized void refresh()
-	{
-		Set<IGridTransmitter<InventoryNetwork>> iterPipes = (Set<IGridTransmitter<InventoryNetwork>>)transmitters.clone();
-		Iterator it = iterPipes.iterator();
-
-		while(it.hasNext())
-		{
-			IGridTransmitter<InventoryNetwork> conductor = (IGridTransmitter<InventoryNetwork>)it.next();
-
-			if(conductor == null || conductor.getTile().isInvalid())
-			{
-				removeTransmitter(conductor);
-			}
-			else {
-				conductor.setTransmitterNetwork(this);
-			}
-		}
-		
-		needsUpdate = true;
-	}
-	
-	@Override
-	public synchronized void refresh(IGridTransmitter<InventoryNetwork> transmitter)
-	{
-		IInventory[] acceptors = TransporterUtils.getConnectedInventories((ILogisticalTransporter)transmitter.getTile());
-		
-		clearAround(transmitter);
-
-		for(IInventory acceptor : acceptors)
-		{
-			ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
-
-			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
-			{
-				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
-				addSide(Coord4D.get((TileEntity)acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
-			}
-		}
-	}
-
-	@Override
 	public String toString()
 	{
-		return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
-	}
-
-	@Override
-	protected InventoryNetwork create(Collection<IGridTransmitter<InventoryNetwork>> collection)
-	{
-		return new InventoryNetwork(collection);
-	}
-
-	@Override
-	public TransmissionType getTransmissionType()
-	{
-		return TransmissionType.ITEM;
+		return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	@Override

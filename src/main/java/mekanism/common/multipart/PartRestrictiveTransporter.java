@@ -1,5 +1,7 @@
 package mekanism.common.multipart;
 
+import mekanism.common.Tier.TransporterTier;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IIcon;
 
@@ -12,7 +14,7 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public TransmitterType getTransmitter()
+	public TransmitterType getTransmitterType()
 	{
 		return TransmitterType.RESTRICTIVE_TRANSPORTER;
 	}

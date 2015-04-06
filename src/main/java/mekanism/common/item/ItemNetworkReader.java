@@ -6,8 +6,10 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterNetwork;
+import mekanism.api.transmitters.ITransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 
@@ -37,19 +39,19 @@ public class ItemNetworkReader extends ItemEnergized
 
 			if(getEnergy(stack) >= ENERGY_PER_USE)
 			{
-				if(tileEntity instanceof IGridTransmitter)
+				if(tileEntity instanceof ITransmitterTile)
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 	
-					IGridTransmitter<?> transmitter = (IGridTransmitter<?>)tileEntity;
+					IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
 	
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getSize()));
-					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getAcceptorSize()));
-					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getNeededInfo()));
-					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getStoredInfo()));
-					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getFlowInfo()));
-					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetwork().getCapacity()));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Transmitters: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkSize()));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Acceptors: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkAcceptorSize()));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Needed: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkNeeded()));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Buffer: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkBuffer()));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Throughput: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkFlow()));
+					player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Capacity: " + EnumColor.DARK_GREY + transmitter.getTransmitterNetworkCapacity()));
 					if(transmitter instanceof IHeatTransfer)
 						player.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Temperature: " + EnumColor.DARK_GREY + ((IHeatTransfer)transmitter).getTemp() + "K above ambient"));
 					player.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
@@ -70,15 +72,15 @@ public class ItemNetworkReader extends ItemEnergized
 				{
 					if(drain) setEnergy(stack, getEnergy(stack)-ENERGY_PER_USE);
 					
-					Set<ITransmitterNetwork> iteratedNetworks = new HashSet<ITransmitterNetwork>();
+					Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
 					
 					for(ForgeDirection iterSide : ForgeDirection.VALID_DIRECTIONS)
 					{
 						Coord4D coord = Coord4D.get(tileEntity).getFromSide(iterSide);
 						
-						if(coord.getTileEntity(world) instanceof IGridTransmitter)
+						if(coord.getTileEntity(world) instanceof ITransmitterTile)
 						{
-							IGridTransmitter<?> transmitter = (IGridTransmitter<?>)coord.getTileEntity(world);
+							IGridTransmitter transmitter = ((ITransmitterTile)coord.getTileEntity(world)).getTransmitter();
 							
 							if(transmitter.getTransmitterNetwork().possibleAcceptors.containsKey(coord.getFromSide(iterSide.getOpposite())) && !iteratedNetworks.contains(transmitter.getTransmitterNetwork()))
 							{

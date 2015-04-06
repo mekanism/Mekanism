@@ -16,6 +16,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
@@ -392,7 +393,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 	@Method(modid = "IC2")
 	public double injectEnergy(ForgeDirection direction, double amount, double voltage)
 	{
-		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof IGridTransmitter)
+		if(Coord4D.get(this).getFromSide(direction).getTileEntity(worldObj) instanceof ITransmitterTile)
 		{
 			return amount;
 		}

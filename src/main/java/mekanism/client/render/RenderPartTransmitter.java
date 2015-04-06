@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.multipart.MultipartTransporter;
 import mekanism.common.multipart.PartDiversionTransporter;
 import mekanism.common.multipart.PartHeatTransmitter;
 import mekanism.common.multipart.PartLogisticalTransporter;
@@ -171,14 +172,14 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		entityItem.setPosition(transporter.x() + 0.5, transporter.y() + 0.5, transporter.z() + 0.5);
 		entityItem.worldObj = transporter.world();
 
-		for(TransporterStack stack : transporter.transit)
+		for(TransporterStack stack : transporter.getTransmitter().transit)
 		{
 			if(stack != null)
 			{
 				GL11.glPushMatrix();
 				entityItem.setEntityItemStack(stack.itemStack);
 
-				float[] pos = TransporterUtils.getStackPosition(transporter, stack, partialTick*transporter.tier.speed);
+				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.tier.speed);
 
 				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);
@@ -296,7 +297,15 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderContents(PartMechanicalPipe pipe, Vector3 pos)
 	{
-		float targetScale = pipe.getTransmitterNetwork().fluidScale;
+		float targetScale;
+		if(pipe.getTransmitter().hasTransmitterNetwork())
+		{
+			targetScale = pipe.getTransmitter().getTransmitterNetwork().fluidScale;
+		}
+		else
+		{
+			targetScale = (float)pipe.buffer.getFluidAmount() / (float)pipe.buffer.getCapacity();
+		}
 
 		if(Math.abs(pipe.currentScale - targetScale) > 0.01)
 		{
@@ -306,7 +315,17 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			pipe.currentScale = targetScale;
 		}
 
-		Fluid fluid = pipe.getTransmitterNetwork().refFluid;
+		Fluid fluid;
+
+		if(pipe.getTransmitter().hasTransmitterNetwork())
+		{
+			fluid = pipe.getTransmitter().getTransmitterNetwork().refFluid;
+		}
+		else
+		{
+			fluid = pipe.getBuffer() == null ? null : pipe.getBuffer().getFluid();
+		}
+
 		float scale = pipe.currentScale;
 
 		if(scale > 0.01 && fluid != null)
@@ -495,7 +514,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderContents(PartPressurizedTube tube, Vector3 pos)
 	{
-		if(tube.getTransmitterNetwork().refGas == null || tube.getTransmitterNetwork().gasScale == 0)
+		if(!tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{
 			return;
 		}
@@ -587,19 +606,19 @@ public class RenderPartTransmitter implements IIconSelfRegister
 	public void renderHeatSide(ForgeDirection side, PartHeatTransmitter cable)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.temperature, cable.getBaseColour()));
+		renderTransparency(MekanismRenderer.heatIcon, cable.getModelForSide(side, true), ColourTemperature.fromTemperature(cable.getTransmitter().temperature, cable.getBaseColour()));
 	}
 
 	public void renderFluidInOut(ForgeDirection side, PartMechanicalPipe pipe)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(pipe.getTransmitterNetwork().refFluid.getIcon(), pipe.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
+		renderTransparency(pipe.getTransmitter().getTransmitterNetwork().refFluid.getIcon(), pipe.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale));
 	}
 
 	public void renderGasSide(ForgeDirection side, PartPressurizedTube tube)
 	{
 		CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-		renderTransparency(tube.getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
+		renderTransparency(tube.getTransmitter().getTransmitterNetwork().refGas.getIcon(), tube.getModelForSide(side, true), new ColourRGBA(1.0, 1.0, 1.0, tube.currentScale));
 	}
 
 	public void renderPart(IIcon icon, CCModel cc, double x, double y, double z, Colour color)

@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.TransporterTier;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.MekanismUtils;
@@ -29,7 +30,7 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public TransmitterType getTransmitter()
+	public TransmitterType getTransmitterType()
 	{
 		return TransmitterType.DIVERSION_TRANSPORTER;
 	}
@@ -43,13 +44,13 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 	@Override
 	public IIcon getSideIcon(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(opaque ? 14 : (color != null ? 11 : 10));
+		return transporterIcons.getSideIcon(opaque ? 14 : (getTransmitter().color != null ? 11 : 10));
 	}
 	
 	@Override
 	public IIcon getSideIconRotated(boolean opaque)
 	{
-		return transporterIcons.getSideIcon(opaque ? 15 : (color != null ? 13 : 12));
+		return transporterIcons.getSideIcon(opaque ? 15 : (getTransmitter().color != null ? 13 : 12));
 	}
 	
 	@Override

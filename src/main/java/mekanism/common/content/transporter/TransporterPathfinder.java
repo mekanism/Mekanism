@@ -13,6 +13,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.InventoryNetwork.AcceptorData;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -235,20 +236,20 @@ public final class TransporterPathfinder
 	
 	public static Destination getPath(DestChecker checker, EnumSet<ForgeDirection> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack, ItemStack rejects, int min)
 	{
-		ArrayList<Coord4D> test = PathfinderCache.getCache(Coord4D.get(start.getTile()), dest, sides);
+		ArrayList<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
 		
 		if(test != null)
 		{
 			return new Destination(test, false, rejects);
 		}
 		
-		Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), dest, Coord4D.get(start.getTile()), stack);
+		Pathfinder p = new Pathfinder(checker, start.world(), dest, start.coord(), stack);
 		
 		if(p.getPath().size() >= 2)
 		{
 			if(TransporterManager.getToUse(stack.itemStack, rejects).stackSize >= min)
 			{
-				PathfinderCache.cachedPaths.put(new PathData(Coord4D.get(start.getTile()), dest, p.side), p.getPath());
+				PathfinderCache.cachedPaths.put(new PathData(start.coord(), dest, p.side), p.getPath());
 				
 				return new Destination(p.getPath(), false, rejects);
 			}
@@ -377,7 +378,7 @@ public final class TransporterPathfinder
 			for(int i = 0; i < 6; i++)
 			{
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
-				Coord4D neighbor = start.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
+				Coord4D neighbor = start.getFromSide(direction);
 
 				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
 				{
@@ -424,7 +425,7 @@ public final class TransporterPathfinder
 						TileEntity tile = neighbor.getTileEntity(worldObj);
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 
-						tentativeG += ((ILogisticalTransporter)tile).getCost();
+						tentativeG += ((ITransporterTile)tile).getTransmitter().getCost();
 
 						if(closedSet.contains(neighbor))
 						{
@@ -508,7 +509,7 @@ public final class TransporterPathfinder
 				}
 			};
 
-			Pathfinder p = new Pathfinder(checker, start.getTile().getWorldObj(), stack.homeLocation, Coord4D.get(start.getTile()), stack);
+			Pathfinder p = new Pathfinder(checker, start.world(), stack.homeLocation, start.coord(), stack);
 			List<Coord4D> path = p.getPath();
 
 			if(path.size() >= 2)
@@ -521,7 +522,7 @@ public final class TransporterPathfinder
 			}
 		}
 
-		IdlePath d = new IdlePath(start.getTile().getWorldObj(), Coord4D.get(start.getTile()), stack);
+		IdlePath d = new IdlePath(start.world(), start.coord(), stack);
 		Destination dest = d.find();
 
 		if(dest == null)

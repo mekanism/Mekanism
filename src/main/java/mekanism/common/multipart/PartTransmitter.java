@@ -1,301 +1,116 @@
 package mekanism.common.multipart;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.TransmissionType;
+import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.client.ClientTickHandler;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTransmitterUpdate.PacketType;
-import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
-import net.minecraft.tileentity.TileEntity;
+
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
 
-public abstract class PartTransmitter<N extends DynamicNetwork<?, N>> extends PartSidedPipe implements IGridTransmitter<N>
+public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends PartSidedPipe implements ITransmitterTile<A, N>
 {
-	public N theNetwork;
+	public MultipartTransmitter<A, N> transmitterDelegate;
 
-	public byte newSidesMerged;
+	public PartTransmitter()
+	{
+		transmitterDelegate = new MultipartTransmitter<>(this);
+	}
 
 	@Override
-	public void bind(TileMultipart t)
+	public MultipartTransmitter<A, N> getTransmitter()
 	{
-		if(tile() != null && theNetwork != null)
+		return transmitterDelegate;
+	}
+
+	@Override
+	public void onWorldJoin()
+	{
+		super.onWorldJoin();
+		if(!world().isRemote)
 		{
-			getTransmitterNetwork().transmitters.remove(tile());
-			super.bind(t);
-			getTransmitterNetwork().transmitters.add((IGridTransmitter<N>)tile());
+			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
-		else {
-			super.bind(t);
-		}
-	}
-
-	@Override
-	public void refreshTransmitterNetwork()
-	{
-		getTransmitterNetwork().refresh((IGridTransmitter<N>)tile());
-		getTransmitterNetwork().refresh();
-	}
-
-	@Override
-	public void onRefresh()
-	{
-		refreshTransmitterNetwork();
-	}
-
-	@Override
-	public void onRedstoneSplit()
-	{
-		getTransmitterNetwork().split((IGridTransmitter<N>)tile());
-		setTransmitterNetwork(null);
-	}
-
-	@Override
-	public void onRedstoneJoin()
-	{
-		setTransmitterNetwork(null);
-		getTransmitterNetwork();
-	}
-
-	@Override
-	public void onPartChanged(TMultiPart part)
-	{
-		byte transmitterConnections = currentTransmitterConnections;
-		super.onPartChanged(part);
-		byte addedSides = (byte)(0b00111111 & (currentTransmitterConnections & ~transmitterConnections));
-		mergeNewSideNets(addedSides);
-	}
-
-	public void mergeNewSideNets(byte sides)
-	{
-		if(theNetwork != null)
+		else
 		{
-			HashSet<N> connectedNets = new HashSet<N>();
-
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				if(connectionMapContainsSide(sides, side))
-				{
-					TileEntity cable = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-
-					if(TransmissionType.checkTransmissionType(cable, getTransmissionType()) && ((IGridTransmitter<N>)cable).getTransmitterNetwork(false) != null)
-					{
-						connectedNets.add(((IGridTransmitter<N>)cable).getTransmitterNetwork());
-					}
-				}
-			}
-
-			if(connectedNets.size() == 0)
-			{
-				newSidesMerged = 0x00;
-				return;
-			}
-			else {
-				connectedNets.add(theNetwork);
-				theNetwork = createNetworkByMergingSet(connectedNets);
-				theNetwork.fullRefresh();
-				theNetwork.updateCapacity();
-				newSidesMerged = sides;
-				sendDesc = true;
-			}
+			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile()));
 		}
 	}
 
-	@Override
-	public void setTransmitterNetwork(N network)
-	{
-		if(network != theNetwork)
-		{
-			removeFromTransmitterNetwork();
-			theNetwork = network;
-		}
-	}
+	public abstract N createNewNetwork();
 
-	@Override
-	public boolean areTransmitterNetworksEqual(TileEntity tileEntity)
-	{
-		return tileEntity instanceof IGridTransmitter && getTransmissionType() == ((IGridTransmitter)tileEntity).getTransmissionType();
-	}
-
-	@Override
-	public N getTransmitterNetwork()
-	{
-		return getTransmitterNetwork(true);
-	}
-
-	@Override
-	public N getTransmitterNetwork(boolean createIfNull)
-	{
-		if(theNetwork == null && createIfNull)
-		{
-			byte possibleTransmitters = getPossibleTransmitterConnections();
-			HashSet<N> connectedNets = new HashSet<N>();
-
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				if(connectionMapContainsSide(possibleTransmitters, side))
-				{
-					TileEntity cable = Coord4D.get(tile()).getFromSide(side).getTileEntity(world());
-
-					if(TransmissionType.checkTransmissionType(cable, getTransmissionType()) && ((IGridTransmitter<N>)cable).getTransmitterNetwork(false) != null)
-					{
-						connectedNets.add(((IGridTransmitter<N>)cable).getTransmitterNetwork());
-					}
-				}
-			}
-
-			if(connectedNets.size() == 0)
-			{
-				theNetwork = createNetworkFromSingleTransmitter((IGridTransmitter<N>)tile());
-				theNetwork.fullRefresh();
-				theNetwork.updateCapacity();
-			}
-			else if(connectedNets.size() == 1)
-			{
-				N network = connectedNets.iterator().next();
-				preSingleMerge(network);
-				theNetwork = network;
-				theNetwork.transmitters.add((IGridTransmitter<N>)tile());
-				theNetwork.fullRefresh();
-				theNetwork.updateCapacity();
-			}
-			else {
-				theNetwork = createNetworkByMergingSet(connectedNets);
-				theNetwork.transmitters.add((IGridTransmitter<N>)tile());
-				theNetwork.fullRefresh();
-				theNetwork.updateCapacity();
-			}
-		}
-
-		return theNetwork;
-	}
-
-	public void preSingleMerge(N network) {}
-
-	@Override
-	public void removeFromTransmitterNetwork()
-	{
-		if(theNetwork != null)
-		{
-			theNetwork.removeTransmitter((IGridTransmitter<N>)tile());
-		}
-	}
-
-	@Override
-	public void fixTransmitterNetwork()
-	{
-		getTransmitterNetwork().fixMessedUpNetwork((IGridTransmitter<N>)tile());
-	}
-
-	public abstract N createNetworkFromSingleTransmitter(IGridTransmitter<N> transmitter);
-
-	public abstract N createNetworkByMergingSet(Set<N> networks);
+	public abstract N createNetworkByMerging(Collection<N> networks);
 
 	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-
-		getTransmitterNetwork().split((IGridTransmitter<N>)tile());
-
 		if(!world().isRemote)
 		{
-			TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
+			getTransmitter().takeShare();
+			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
-		else {
-			try {
-				ClientTickHandler.killDeadNetworks();
-			} catch(Exception e) {}
+		else
+		{
+			getTransmitter().setTransmitterNetwork(null);
 		}
 	}
 
 	@Override
 	public void preRemove()
 	{
-		if(tile() instanceof IGridTransmitter)
-		{
-			getTransmitterNetwork().split((IGridTransmitter<N>)tile());
-
-			if(!world().isRemote)
-			{
-				TransmitterNetworkRegistry.getInstance().pruneEmptyNetworks();
-			}
-			else {
-				try {
-					ClientTickHandler.killDeadNetworks();
-				} catch(Exception e) {}
-			}
-		}
-
-		super.preRemove();
-	}
-
-	@Override
-	protected void onModeChange(ForgeDirection side)
-	{
-		super.onModeChange(side);
-		
-		getTransmitterNetwork().refresh((IGridTransmitter<N>)tile());
-
 		if(!world().isRemote)
 		{
-			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
+			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
+		else
+		{
+			getTransmitter().setTransmitterNetwork(null);
+		}
+		super.preRemove();
 	}
 
 	@Override
 	public void onNeighborTileChanged(int side, boolean weak)
 	{
 		super.onNeighborTileChanged(side, weak);
-
-		if(!world().isRemote)
-		{
-			Mekanism.packetHandler.sendToDimension(new TransmitterUpdateMessage(PacketType.UPDATE, Coord4D.get(tile())), world().provider.dimensionId);
-		}
 	}
-	
+
 	@Override
-	public TileEntity getTile()
+	public void markDirtyTransmitters()
 	{
-		return tile();
-	}
-
-	@Override
-	public void chunkLoad() {}
-
-	@Override
-	public void readDesc(MCDataInput packet)
-	{
-		super.readDesc(packet);
-		
-		if(packet.readBoolean())
+		super.markDirtyTransmitters();
+		if(getTransmitter().hasTransmitterNetwork())
 		{
-			mergeNewSideNets(packet.readByte());
+				TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
 	}
 
 	@Override
-	public void writeDesc(MCDataOutput packet)
+	public void markDirtyAcceptor(ForgeDirection side)
 	{
-		super.writeDesc(packet);
-		
-		if(newSidesMerged != 0x00)
+		super.markDirtyAcceptor(side);
+		if(getTransmitter().hasTransmitterNetwork())
 		{
-			packet.writeBoolean(true);
-			packet.writeByte(newSidesMerged);
-			newSidesMerged = 0x00;
-		}
-		else {
-			packet.writeBoolean(false);
+			getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
 		}
 	}
+
+	public A getCachedAcceptor(ForgeDirection side)
+	{
+		ConnectionType type = connectionTypes[side.ordinal()];
+		if(type == ConnectionType.PULL || type == ConnectionType.NONE)
+		{
+			return null;
+		}
+		return connectionMapContainsSide(currentAcceptorConnections, side) ? (A)cachedAcceptors[side.ordinal()] : null;
+	}
+
+	public abstract int getCapacity();
+
+	public abstract Object getBuffer();
+
+	public abstract void takeShare();
 }

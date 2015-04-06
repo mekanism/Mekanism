@@ -15,6 +15,7 @@ import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.content.transporter.InvStack;
@@ -86,7 +87,7 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 				TileEntity back = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing).getOpposite()).getTileEntity(worldObj);
 				TileEntity front = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(facing)).getTileEntity(worldObj);
 
-				if(back instanceof IInventory && (front instanceof ILogisticalTransporter || front instanceof IInventory))
+				if(back instanceof IInventory && (front instanceof ITransporterTile || front instanceof IInventory))
 				{
 					IInventory inventory = (IInventory)back;
 
@@ -164,9 +165,9 @@ public class TileEntityLogisticalSorter extends TileEntityElectricBlock implemen
 	{
 		ItemStack used = null;
 
-		if(front instanceof ILogisticalTransporter)
+		if(front instanceof ITransporterTile)
 		{
-			ILogisticalTransporter transporter = (ILogisticalTransporter)front;
+			ILogisticalTransporter transporter = ((ITransporterTile)front).getTransmitter();
 
 			if(!roundRobin)
 			{

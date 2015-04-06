@@ -1,22 +1,19 @@
 package mekanism.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterNetwork;
-import mekanism.api.transmitters.TransmissionType;
-import mekanism.api.util.ListUtils;
 import mekanism.common.util.LangUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -37,61 +34,41 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 	public Fluid refFluid;
 
-	public FluidStack fluidStored;
+	public FluidStack buffer;
 	public int prevStored;
 
 	public int prevTransferAmount = 0;
 
-	public FluidNetwork(IGridTransmitter<FluidNetwork>... varPipes)
-	{
-		transmitters.addAll(Arrays.asList(varPipes));
-		register();
-	}
+	public FluidNetwork() {}
 
-	public FluidNetwork(Collection<IGridTransmitter<FluidNetwork>> collection)
-	{
-		transmitters.addAll(collection);
-		register();
-	}
-
-	public FluidNetwork(Set<FluidNetwork> networks)
+	public FluidNetwork(Collection<FluidNetwork> networks)
 	{
 		for(FluidNetwork net : networks)
 		{
 			if(net != null)
 			{
-				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+				if(net.buffer != null)
 				{
-					if(net.refFluid != null && net.fluidScale > fluidScale)
+					if(buffer == null)
 					{
-						refFluid = net.refFluid;
-						fluidScale = net.fluidScale;
-						fluidStored = net.fluidStored;
-
-						net.fluidScale = 0;
-						net.refFluid = null;
-						net.fluidStored = null;
+						buffer = net.buffer.copy();
 					}
-				}
-				else {
-					if(net.fluidStored != null)
-					{
-						if(fluidStored == null)
+					else {
+						if(buffer.getFluid() == net.buffer.getFluid())
 						{
-							fluidStored = net.fluidStored;
+							buffer.amount += net.buffer.amount;
 						}
-						else {
-							if(fluidStored.isFluidEqual(net.fluidStored))
-							{
-								fluidStored.amount += net.fluidStored.amount;
-							}
+						else if(net.buffer.amount > buffer.amount)
+						{
+							buffer = net.buffer.copy();
 						}
 
-						net.fluidStored = null;
 					}
+
+					net.buffer = null;
 				}
 
-				addAllTransmitters(net.transmitters);
+				adoptTransmittersAndAcceptorsFrom(net);
 				net.deregister();
 			}
 		}
@@ -102,12 +79,44 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	}
 
 	@Override
-	protected synchronized void updateMeanCapacity()
+	public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork> transmitter)
+	{
+		Object b = transmitter.getBuffer();
+		if(!(b instanceof FluidStack) || ((FluidStack)b).getFluid() == null || ((FluidStack)b).amount == 0)
+		{
+			return;
+		}
+
+		FluidStack fluid = (FluidStack)b;
+
+		if(buffer == null || buffer.getFluid() == null || buffer.amount == 0)
+		{
+			buffer = fluid.copy();
+			return;
+		}
+
+		if(!fluid.isFluidEqual(buffer)) Mekanism.logger.warn("Fluid type " + fluid.getFluid().getName() + " of buffer doesn't match type " + buffer.getFluid().getName() + " of absorbing network");
+
+		buffer.amount += fluid.amount;
+		fluid.amount = 0;
+	}
+
+	@Override
+	public void clampBuffer()
+	{
+		if(buffer != null && buffer.amount > getCapacity())
+		{
+			buffer.amount = capacity;
+		}
+	}
+
+	@Override
+	protected void updateMeanCapacity()
 	{
 		int numCables = transmitters.size();
 		double sum = 0;
 
-		for(IGridTransmitter<FluidNetwork> pipe : transmitters)
+		for(IGridTransmitter<IFluidHandler, FluidNetwork> pipe : transmitters)
 		{
 			sum += pipe.getCapacity();
 		}
@@ -115,50 +124,15 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		meanCapacity = sum / (double)numCables;
 	}
 
-	@Override
-	public void onNetworksCreated(List<FluidNetwork> networks)
+	public int getFluidNeeded()
 	{
-		if(fluidStored != null && FMLCommonHandler.instance().getEffectiveSide().isServer())
-		{
-			int[] caps = new int[networks.size()];
-			int cap = 0;
-
-			for(FluidNetwork network : networks)
-			{
-				caps[networks.indexOf(network)] = network.getCapacity();
-				cap += network.getCapacity();
-			}
-
-			fluidStored.amount = Math.min(cap, fluidStored.amount);
-
-			int[] values = ListUtils.calcPercentInt(ListUtils.percent(caps), fluidStored.amount);
-
-			for(FluidNetwork network : networks)
-			{
-				int index = networks.indexOf(network);
-
-				if(values[index] > 0)
-				{
-					network.fluidStored = new FluidStack(fluidStored.getFluid(), values[index]);
-					network.fluidScale = network.getScale();
-					network.refFluid = fluidStored.getFluid();
-				}
-			}
-		}
-
-		fluidScale = 0;
-		fluidStored = null;
-		refFluid = null;
+		return getCapacity()-(buffer != null ? buffer.amount : 0);
 	}
 
-	public synchronized int getFluidNeeded()
+	public int tickEmit(FluidStack fluidToSend, boolean doTransfer)
 	{
-		return getCapacity()-(fluidStored != null ? fluidStored.amount : 0);
-	}
-
-	public synchronized int tickEmit(FluidStack fluidToSend, boolean doTransfer)
-	{
-		List availableAcceptors = Arrays.asList(getAcceptors(fluidToSend).toArray());
+		List<IFluidHandler> availableAcceptors = new ArrayList<>();
+		availableAcceptors.addAll(getAcceptors(fluidToSend));
 
 		Collections.shuffle(availableAcceptors);
 
@@ -170,33 +144,29 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			int remaining = fluidToSend.amount % divider;
 			int sending = (fluidToSend.amount-remaining)/divider;
 
-			for(Object obj : availableAcceptors)
+			for(IFluidHandler acceptor : availableAcceptors)
 			{
-				if(obj instanceof IFluidHandler)
-				{
-					IFluidHandler acceptor = (IFluidHandler)obj;
-					int currentSending = sending;
-					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+				int currentSending = sending;
+				EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
 
-					if(remaining > 0)
+				if(remaining > 0)
+				{
+					currentSending++;
+					remaining--;
+				}
+
+				for(ForgeDirection side : sides)
+				{
+					int prev = fluidSent;
+
+					if(acceptor != null && fluidToSend != null)
 					{
-						currentSending++;
-						remaining--;
+						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
 					}
 
-					for(ForgeDirection side : sides)
+					if(fluidSent > prev)
 					{
-						int prev = fluidSent;
-						
-						if(acceptor != null && fluidToSend != null)
-						{
-							fluidSent += acceptor.fill(side.getOpposite(), new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
-						}
-						
-						if(fluidSent > prev)
-						{
-							break;
-						}
+						break;
 					}
 				}
 			}
@@ -211,9 +181,9 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		return fluidSent;
 	}
 
-	public synchronized int emit(FluidStack fluidToSend, boolean doTransfer)
+	public int emit(FluidStack fluidToSend, boolean doTransfer)
 	{
-		if(fluidToSend == null || (fluidStored != null && fluidStored.getFluid() != fluidToSend.getFluid()))
+		if(fluidToSend == null || (buffer != null && buffer.getFluid() != fluidToSend.getFluid()))
 		{
 			return 0;
 		}
@@ -222,13 +192,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 		if(doTransfer)
 		{
-			if(fluidStored == null)
+			if(buffer == null)
 			{
-				fluidStored = fluidToSend.copy();
-				fluidStored.amount = toUse;
+				buffer = fluidToSend.copy();
+				buffer.amount = toUse;
 			}
 			else {
-				fluidStored.amount += toUse;
+				buffer.amount += toUse;
 			}
 		}
 
@@ -252,7 +222,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 				transferDelay--;
 			}
 
-			int stored = fluidStored != null ? fluidStored.amount : 0;
+			int stored = buffer != null ? buffer.amount : 0;
 
 			if(stored != prevStored)
 			{
@@ -263,22 +233,22 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, fluidStored, didTransfer));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer,  didTransfer));
 				needsUpdate = false;
 			}
 
 			prevTransfer = didTransfer;
 
-			if(fluidStored != null)
+			if(buffer != null)
 			{
-				prevTransferAmount = tickEmit(fluidStored, true);
-				if(fluidStored != null)
+				prevTransferAmount = tickEmit(buffer, true);
+				if(buffer != null)
 				{
-					fluidStored.amount -= prevTransferAmount;
+					buffer.amount -= prevTransferAmount;
 
-					if(fluidStored.amount <= 0)
+					if(buffer.amount <= 0)
 					{
-						fluidStored = null;
+						buffer = null;
 					}
 				}
 			}
@@ -302,16 +272,16 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			if(fluidScale == 0)
 			{
-				fluidStored = null;
+				buffer = null;
 			}
 		}
 	}
 
 	@Override
-	public synchronized Set<IFluidHandler> getAcceptors(Object... data)
+	public Set<IFluidHandler> getAcceptors(Object data)
 	{
-		FluidStack fluidToSend = (FluidStack)data[0];
-		Set<IFluidHandler> toReturn = new HashSet<IFluidHandler>();
+		FluidStack fluidToSend = (FluidStack)data;
+		Set<IFluidHandler> toReturn = new HashSet<>();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -321,16 +291,17 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
-			IFluidHandler acceptor = (IFluidHandler)coord.getTileEntity(getWorld());
-			
+
 			if(sides == null || sides.isEmpty())
 			{
 				continue;
 			}
 
+			IFluidHandler acceptor = (IFluidHandler)coord.getTileEntity(getWorld());
+
 			for(ForgeDirection side : sides)
 			{
-				if(acceptor != null && acceptor.canFill(side.getOpposite(), fluidToSend.getFluid()))
+				if(acceptor != null && acceptor.canFill(side, fluidToSend.getFluid()))
 				{
 					toReturn.add(acceptor);
 					break;
@@ -339,47 +310,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		}
 
 		return toReturn;
-	}
-
-	@Override
-	public synchronized void refresh()
-	{
-		Set<IGridTransmitter<FluidNetwork>> iterPipes = (Set<IGridTransmitter<FluidNetwork>>)transmitters.clone();
-		Iterator<IGridTransmitter<FluidNetwork>> it = iterPipes.iterator();
-
-		while(it.hasNext())
-		{
-			IGridTransmitter<FluidNetwork> conductor = (IGridTransmitter<FluidNetwork>)it.next();
-
-			if(conductor == null || conductor.getTile().isInvalid())
-			{
-				removeTransmitter(conductor);
-			}
-			else {
-				conductor.setTransmitterNetwork(this);
-			}
-		}
-		
-		needsUpdate = true;
-	}
-	
-	@Override
-	public synchronized void refresh(IGridTransmitter<FluidNetwork> transmitter)
-	{
-		IFluidHandler[] acceptors = PipeUtils.getConnectedAcceptors(transmitter.getTile());
-		
-		clearAround(transmitter);
-		
-		for(IFluidHandler acceptor : acceptors)
-		{
-			ForgeDirection side = ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor));
-
-			if(side != null && acceptor != null && !(acceptor instanceof IGridTransmitter) && transmitter.canConnectToAcceptor(side, true))
-			{
-				possibleAcceptors.put(Coord4D.get((TileEntity)acceptor), acceptor);
-				addSide(Coord4D.get((TileEntity)acceptor), ForgeDirection.getOrientation(Arrays.asList(acceptors).indexOf(acceptor)));
-			}
-		}
 	}
 
 	public static class FluidTransferEvent extends Event
@@ -399,71 +329,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 	public float getScale()
 	{
-		return Math.min(1, (fluidStored == null || getCapacity() == 0 ? 0 : (float)fluidStored.amount/getCapacity()));
+		return Math.min(1, (buffer == null || getCapacity() == 0 ? 0 : (float)buffer.amount/getCapacity()));
 	}
 
 	@Override
 	public String toString()
 	{
 		return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
-	}
-
-	@Override
-	protected FluidNetwork create(Collection<IGridTransmitter<FluidNetwork>> collection)
-	{
-		FluidNetwork network = new FluidNetwork(collection);
-		network.refFluid = refFluid;
-
-		if(fluidStored != null)
-		{
-			if(network.fluidStored == null)
-			{
-				network.fluidStored = fluidStored;
-			}
-			else {
-				if(network.fluidStored.isFluidEqual(fluidStored))
-				{
-					network.fluidStored.amount += fluidStored.amount;
-				}
-			}
-		}
-
-		network.updateCapacity();
-		network.fluidScale = network.getScale();
-
-		return network;
-	}
-
-	@Override
-	public boolean canMerge(List<ITransmitterNetwork<?, ?>> networks)
-	{
-		Fluid found = null;
-
-		for(ITransmitterNetwork<?, ?> network : networks)
-		{
-			if(network instanceof FluidNetwork)
-			{
-				FluidNetwork net = (FluidNetwork)network;
-
-				if(net.fluidStored != null)
-				{
-					if(found != null && found != net.fluidStored.getFluid())
-					{
-						return false;
-					}
-
-					found = net.fluidStored.getFluid();
-				}
-			}
-		}
-
-		return true;
-	}
-
-	@Override
-	public TransmissionType getTransmissionType()
-	{
-		return TransmissionType.FLUID;
 	}
 
 	@Override
@@ -475,7 +347,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	@Override
 	public String getStoredInfo()
 	{
-		return fluidStored != null ? LangUtils.localizeFluidStack(fluidStored) + " (" + fluidStored.amount + " mB)" : "None";
+		return buffer != null ? LangUtils.localizeFluidStack(buffer) + " (" + buffer.amount + " mB)" : "None";
 	}
 
 	@Override

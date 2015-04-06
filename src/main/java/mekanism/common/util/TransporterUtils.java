@@ -5,9 +5,10 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.util.ListUtils;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -19,7 +20,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.IFluidHandler;
 
 public final class TransporterUtils
 {
@@ -31,21 +31,21 @@ public final class TransporterUtils
 	 * @param tileEntity - center tile entity
 	 * @return array of TileEntities
 	 */
-	public static TileEntity[] getConnectedTransporters(ILogisticalTransporter tileEntity)
+	public static ILogisticalTransporter[] getConnectedTransporters(ILogisticalTransporter tileEntity)
 	{
-		TileEntity[] transporters = new TileEntity[] {null, null, null, null, null, null};
+		ILogisticalTransporter[] transporters = new ILogisticalTransporter[] {null, null, null, null, null, null};
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity tile = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
+			TileEntity tile = tileEntity.coord().getFromSide(orientation).getTileEntity(tileEntity.world());
 
-			if(tile instanceof ILogisticalTransporter)
+			if(tile instanceof ITransporterTile)
 			{
-				ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
+				ILogisticalTransporter otherTransporter = ((ITransporterTile)tile).getTransmitter();
 
-				if(transporter.getColor() == null || tileEntity.getColor() == null || transporter.getColor() == tileEntity.getColor())
+				if(otherTransporter.getColor() == null || tileEntity.getColor() == null || otherTransporter.getColor() == tileEntity.getColor())
 				{
-					transporters[orientation.ordinal()] = transporter.getTile();
+					transporters[orientation.ordinal()] = otherTransporter;
 				}
 			}
 		}
@@ -55,7 +55,7 @@ public final class TransporterUtils
 
 	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
 	{
-		if(tile instanceof IGridTransmitter || !(tile instanceof IInventory))
+		if(tile instanceof ITransmitterTile || !(tile instanceof IInventory))
 			return false;
 
 		IInventory inventory = (IInventory)tile;
@@ -74,15 +74,15 @@ public final class TransporterUtils
 
 	/**
 	 * Gets all the adjacent connections to a TileEntity.
-	 * @param tileEntity - center TileEntity
+	 * @param transporter - center TileEntity
 	 * @return boolean[] of adjacent connections
 	 */
-	public static boolean[] getConnections(ILogisticalTransporter tileEntity)
+	public static boolean[] getConnections(ILogisticalTransporter transporter)
 	{
 		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
 
-		TileEntity[] connectedTransporters = getConnectedTransporters(tileEntity);
-		IInventory[] connectedInventories = getConnectedInventories(tileEntity);
+		ILogisticalTransporter[] connectedTransporters = getConnectedTransporters(transporter);
+		IInventory[] connectedInventories = getConnectedInventories(transporter);
 
 		for(IInventory inventory : connectedInventories)
 		{
@@ -90,7 +90,7 @@ public final class TransporterUtils
 			{
 				int side = Arrays.asList(connectedInventories).indexOf(inventory);
 
-				if(!tileEntity.canConnect(ForgeDirection.getOrientation(side)))
+				if(!transporter.canConnect(ForgeDirection.getOrientation(side)))
 				{
 					continue;
 				}
@@ -118,13 +118,13 @@ public final class TransporterUtils
 			}
 		}
 
-		for(TileEntity tile : connectedTransporters)
+		for(ILogisticalTransporter trans : connectedTransporters)
 		{
-			if(tile != null)
+			if(trans != null)
 			{
-				int side = Arrays.asList(connectedTransporters).indexOf(tile);
+				int side = Arrays.asList(connectedTransporters).indexOf(trans);
 
-				if(tileEntity.canConnectMutual(ForgeDirection.getOrientation(side)))
+				if(transporter.canConnectMutual(ForgeDirection.getOrientation(side)))
 				{
 					connectable[side] = true;
 				}
@@ -136,18 +136,18 @@ public final class TransporterUtils
 
 	/**
 	 * Gets all the inventories around a tile entity.
-	 * @param tileEntity - center tile entity
+	 * @param transporter - center tile entity
 	 * @return array of IInventories
 	 */
-	public static IInventory[] getConnectedInventories(ILogisticalTransporter tileEntity)
+	public static IInventory[] getConnectedInventories(ILogisticalTransporter transporter)
 	{
 		IInventory[] inventories = new IInventory[] {null, null, null, null, null, null};
 
 		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
 		{
-			TileEntity inventory = Coord4D.get(tileEntity.getTile()).getFromSide(orientation).getTileEntity(tileEntity.getTile().getWorldObj());
+			TileEntity inventory = transporter.coord().getFromSide(orientation).getTileEntity(transporter.world());
 
-			if(inventory instanceof IInventory && !(inventory instanceof IGridTransmitter))
+			if(inventory instanceof IInventory && !(inventory instanceof ITransmitterTile))
 			{
 				inventories[orientation.ordinal()] = (IInventory)inventory;
 			}
@@ -156,14 +156,14 @@ public final class TransporterUtils
 		return inventories;
 	}
 
-	public static ItemStack insert(TileEntity outputter, ILogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public static ItemStack insert(TileEntity outputter, ILogisticalTransporter transporter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
-		return tileEntity.insert(Coord4D.get(outputter), itemStack.copy(), color, doEmit, min);
+		return transporter.insert(Coord4D.get(outputter), itemStack.copy(), color, doEmit, min);
 	}
 
-	public static ItemStack insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter tileEntity, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
+	public static ItemStack insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, ItemStack itemStack, EnumColor color, boolean doEmit, int min)
 	{
-		return tileEntity.insertRR(outputter, itemStack.copy(), color, doEmit, min);
+		return transporter.insertRR(outputter, itemStack.copy(), color, doEmit, min);
 	}
 
 	public static EnumColor increment(EnumColor color)
@@ -196,7 +196,7 @@ public final class TransporterUtils
 
 	public static void drop(ILogisticalTransporter tileEntity, TransporterStack stack)
 	{
-		float[] pos = null;
+		float[] pos;
 
 		if(stack.pathToTarget != null)
 		{
@@ -208,18 +208,18 @@ public final class TransporterUtils
 
 		TransporterManager.remove(stack);
 
-		EntityItem entityItem = new EntityItem(tileEntity.getTile().getWorldObj(), tileEntity.getTile().xCoord + pos[0], tileEntity.getTile().yCoord + pos[1], tileEntity.getTile().zCoord + pos[2], stack.itemStack);
+		EntityItem entityItem = new EntityItem(tileEntity.world(), tileEntity.coord().xCoord + pos[0], tileEntity.coord().yCoord + pos[1], tileEntity.coord().zCoord + pos[2], stack.itemStack);
 
 		entityItem.motionX = 0;
 		entityItem.motionY = 0;
 		entityItem.motionZ = 0;
 
-		tileEntity.getTile().getWorldObj().spawnEntityInWorld(entityItem);
+		tileEntity.world().spawnEntityInWorld(entityItem);
 	}
 
 	public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial)
 	{
-		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.getTile().getWorldObj().provider.dimensionId).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
+		Coord4D offset = new Coord4D(0, 0, 0, tileEntity.world().provider.dimensionId).step(ForgeDirection.getOrientation(stack.getSide(tileEntity)));
 		float progress = (((float)stack.progress + partial) / 100F) - 0.5F;
 
 		float itemFix = 0;

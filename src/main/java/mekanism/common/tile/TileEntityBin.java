@@ -10,6 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
@@ -194,9 +195,9 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 				{
 					TileEntity tile = Coord4D.get(this).getFromSide(ForgeDirection.getOrientation(0)).getTileEntity(worldObj);
 
-					if(tile instanceof ILogisticalTransporter)
+					if(tile instanceof ITransporterTile)
 					{
-						ILogisticalTransporter transporter = (ILogisticalTransporter)tile;
+						ILogisticalTransporter transporter = ((ITransporterTile)tile).getTransmitter();
 
 						ItemStack rejects = TransporterUtils.insert(this, transporter, bottomStack, null, true, 0);
 

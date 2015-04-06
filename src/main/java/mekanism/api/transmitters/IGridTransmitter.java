@@ -1,10 +1,16 @@
 package mekanism.api.transmitters;
 
-import net.minecraft.tileentity.TileEntity;
+import java.util.Collection;
+
+import mekanism.api.Coord4D;
+
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITransmitter
+public interface IGridTransmitter<A, N extends DynamicNetwork<A, N>> extends ITransmitter
 {
+	public boolean hasTransmitterNetwork();
+
 	/**
 	 * Gets the network currently in use by this transmitter segment.
 	 * @return network this transmitter is using
@@ -12,44 +18,10 @@ public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITrans
 	public N getTransmitterNetwork();
 
 	/**
-	 * Gets the network currently in use by this transmitter segment.
-	 * @param createIfNull - If true, the transmitter will try and connect to an
-	 * adjacent network, merging several if necessary, or creating a new one
-	 * if none is available
-	 * @return network this transmitter is using
-	 */
-	public N getTransmitterNetwork(boolean createIfNull);
-
-	/**
 	 * Sets this transmitter segment's network to a new value.
 	 * @param network - network to set to
 	 */
 	public void setTransmitterNetwork(N network);
-
-	/**
-	 * Refreshes the transmitter's network.
-	 */
-	public void refreshTransmitterNetwork();
-
-	/**
-	 * Called when the chunk this transmitter is in is loaded.
-	 */
-	public void chunkLoad();
-
-	/**
-	 * Remove this transmitter from its network.
-	 */
-	public void removeFromTransmitterNetwork();
-
-	public boolean canConnectToAcceptor(ForgeDirection side, boolean ignoreActive);
-
-	/**
-	 * Call this if you're worried a transmitter's network is messed up and you want
-	 * it to try and fix itself.
-	 */
-	public void fixTransmitterNetwork();
-
-	public boolean areTransmitterNetworksEqual(TileEntity tileEntity);
 
 	public int getTransmitterNetworkSize();
 
@@ -59,7 +31,33 @@ public interface IGridTransmitter<N extends DynamicNetwork<?, N>> extends ITrans
 
 	public String getTransmitterNetworkFlow();
 
+	public String getTransmitterNetworkBuffer();
+
+	public double getTransmitterNetworkCapacity();
+
 	public int getCapacity();
+
+	public World world();
 	
-	public TileEntity getTile();
+	public Coord4D coord();
+
+	public Coord4D getAdjacentConnectableTransmitterCoord(ForgeDirection side);
+
+	public A getAcceptor(ForgeDirection side);
+
+	public boolean isValid();
+
+	public boolean isOrphan();
+
+	public void setOrphan(boolean orphaned);
+
+	public N createEmptyNetwork();
+
+	public N mergeNetworks(Collection<N> toMerge);
+
+	public N getExternalNetwork(Coord4D from);
+
+	public void takeShare();
+
+	public Object getBuffer();
 }

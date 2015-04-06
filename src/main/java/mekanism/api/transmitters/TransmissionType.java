@@ -36,14 +36,14 @@ public enum TransmissionType
 		return StatCollector.translateToLocal("transmission." + getTransmission());
 	}
 
-	public static boolean checkTransmissionType(TileEntity sideTile, TransmissionType type)
+	public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type)
 	{
-		return checkTransmissionType(sideTile, type, null);
+		return type.checkTransmissionType(sideTile);
 	}
 
-	public static boolean checkTransmissionType(TileEntity sideTile, TransmissionType type, TileEntity currentPipe)
+	public boolean checkTransmissionType(ITransmitter transmitter)
 	{
-		return type.checkTransmissionType(sideTile, currentPipe);
+		return transmitter.getTransmissionType() == this;
 	}
 
 	public boolean checkTransmissionType(TileEntity sideTile, TileEntity currentTile)

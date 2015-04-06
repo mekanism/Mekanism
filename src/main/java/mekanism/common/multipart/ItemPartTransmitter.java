@@ -5,8 +5,8 @@ import java.util.List;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
-import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitterNetwork;
+import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -52,24 +52,24 @@ public class ItemPartTransmitter extends JItemMultiPart
 		{
 			Coord4D obj = new Coord4D(coord.x, coord.y, coord.z, world.provider.dimensionId);
 
-			List<ITransmitterNetwork<?, ?>> networks = new ArrayList<ITransmitterNetwork<?, ?>>();
+			List<DynamicNetwork> networks = new ArrayList<>();
 
 			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 			{
 				TileEntity tile = obj.getFromSide(side).getTileEntity(world);
 
-				if(tile instanceof IGridTransmitter && TransmissionType.checkTransmissionType(tile, type.getTransmission()))
+				if(tile instanceof ITransmitterTile && TransmissionType.checkTransmissionType(((ITransmitterTile)tile).getTransmitter(), type.getTransmission()))
 				{
-					networks.add(((IGridTransmitter)tile).getTransmitterNetwork());
+					networks.add(((ITransmitterTile)tile).getTransmitter().getTransmitterNetwork());
 				}
 			}
 
 			if(networks.size() > 0)
 			{
-				if(!networks.iterator().next().canMerge(networks))
+				/*if(!networks.iterator().next().canMerge(networks))
 				{
 					return null;
-				}
+				}*/
 			}
 		}
 

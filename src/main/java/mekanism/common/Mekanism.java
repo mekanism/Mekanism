@@ -25,6 +25,7 @@ import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
+import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.EnergyNetwork.EnergyTransferEvent;
@@ -57,6 +58,7 @@ import mekanism.common.integration.OreDictManager;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multipart.MultipartMekanism;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
+import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.network.PacketTransmitterUpdate.TransmitterUpdateMessage;
 import mekanism.common.recipe.BinRecipe;
@@ -109,6 +111,8 @@ import org.apache.logging.log4j.Logger;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
+import sun.reflect.annotation.ExceptionProxy;
+
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
@@ -1096,6 +1100,7 @@ public class Mekanism
 		FrequencyManager.reset();
 		TransporterManager.reset();
 		PathfinderCache.reset();
+		TransmitterNetworkRegistry.reset();
 	}
 	
 	@EventHandler
@@ -1266,7 +1271,7 @@ public class Mekanism
 	public void onEnergyTransferred(EnergyTransferEvent event)
 	{
 		try {
-			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.ENERGY, Coord4D.get((TileEntity)event.energyNetwork.transmitters.iterator().next()), event.power), event.energyNetwork.getPacketRange());
+			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.ENERGY, event.energyNetwork.transmitters.iterator().next().coord(), event.power), event.energyNetwork.getPacketRange());
 		} catch(Exception e) {}
 	}
 	
@@ -1274,7 +1279,7 @@ public class Mekanism
 	public void onGasTransferred(GasTransferEvent event)
 	{
 		try {
-			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.GAS, Coord4D.get((TileEntity)event.gasNetwork.transmitters.iterator().next()), event.transferType, event.didTransfer), event.gasNetwork.getPacketRange());
+			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.GAS, event.gasNetwork.transmitters.iterator().next().coord(), event.transferType, event.didTransfer), event.gasNetwork.getPacketRange());
 		} catch(Exception e) {}
 	}
 	
@@ -1282,7 +1287,15 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID, Coord4D.get((TileEntity)event.fluidNetwork.transmitters.iterator().next()), event.fluidType, event.didTransfer), event.fluidNetwork.getPacketRange());
+			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next().coord(), event.fluidType, event.didTransfer), event.fluidNetwork.getPacketRange());
+		} catch(Exception e) {}
+	}
+
+	@SubscribeEvent
+	public void onTransmittersAddedEvent(TransmittersAddedEvent event)
+	{
+		try {
+			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.UPDATE, event.network.transmitters.iterator().next().coord(), event.newNetwork, event.newTransmitters), event.network.getPacketRange());
 		} catch(Exception e) {}
 	}
 	

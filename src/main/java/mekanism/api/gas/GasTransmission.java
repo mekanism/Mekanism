@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -18,28 +19,6 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public final class GasTransmission
 {
-	/**
-	 * Gets all the tubes around a tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return array of TileEntities
-	 */
-	public static TileEntity[] getConnectedTubes(TileEntity tileEntity)
-	{
-		TileEntity[] tubes = new TileEntity[] {null, null, null, null, null, null};
-
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity tube = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
-
-			if(TransmissionType.checkTransmissionType(tube, TransmissionType.GAS, tileEntity))
-			{
-				tubes[orientation.ordinal()] = tube;
-			}
-		}
-
-		return tubes;
-	}
-
 	/**
 	 * Gets all the acceptors around a tile entity.
 	 * @param tileEntity - center tile entity
@@ -92,7 +71,7 @@ public final class GasTransmission
 	 */
 	public static boolean canConnect(TileEntity tileEntity, ForgeDirection side)
 	{
-		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof IGasTransmitter) || TransmissionType.checkTransmissionType(tileEntity, TransmissionType.GAS, tileEntity)))
+		if(tileEntity instanceof ITubeConnection && (!(tileEntity instanceof ITransmitterTile) || TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.GAS)))
 		{
 			if(((ITubeConnection)tileEntity).canTubeConnect(side.getOpposite()))
 			{

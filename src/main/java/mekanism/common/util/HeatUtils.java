@@ -3,6 +3,7 @@ package mekanism.common.util;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -24,7 +25,7 @@ public class HeatUtils
 				source.transferHeatTo(-heatToTransfer);
 				sink.transferHeatTo(heatToTransfer);
 				
-				if(!(sink instanceof IGridTransmitter))
+				if(!(sink instanceof ITransmitterTile))
 				{
 					heatTransferred[0] += heatToTransfer;
 				}

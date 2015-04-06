@@ -14,10 +14,9 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;
-import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.tile.TileEntityElectricBlock;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyConnection;
@@ -81,7 +80,11 @@ public final class CableUtils
 
 	public static boolean isCable(TileEntity tileEntity)
 	{
-		return TransmissionType.checkTransmissionType(tileEntity, TransmissionType.ENERGY);
+		if(tileEntity instanceof ITransmitterTile)
+		{
+			return TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.ENERGY);
+		}
+		return false;
 	}
 
 	/**
@@ -181,7 +184,7 @@ public final class CableUtils
 
 	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, ForgeDirection side)
 	{
-		if(tileEntity instanceof IGridTransmitter)
+		if(tileEntity instanceof ITransmitterTile)
 		{
 			return false;
 		}
