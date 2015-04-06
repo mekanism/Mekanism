@@ -65,12 +65,6 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	}
 
 	@Override
-	protected void onModeChange(ForgeDirection side)
-	{
-		super.onModeChange(side);
-	}
-
-	@Override
 	public void onNeighborTileChanged(int side, boolean weak)
 	{
 		super.onNeighborTileChanged(side, weak);
@@ -98,6 +92,11 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 
 	public A getCachedAcceptor(ForgeDirection side)
 	{
+		ConnectionType type = connectionTypes[side.ordinal()];
+		if(type == ConnectionType.PULL || type == ConnectionType.NONE)
+		{
+			return null;
+		}
 		return connectionMapContainsSide(currentAcceptorConnections, side) ? (A)cachedAcceptors[side.ordinal()] : null;
 	}
 

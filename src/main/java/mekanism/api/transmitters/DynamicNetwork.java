@@ -88,7 +88,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			}
 			updateCapacity();
 			clampBuffer();
-			queueClientUpdate((Collection<IGridTransmitter<A, N>>)transmittersToAdd.clone());
+			queueClientUpdate(new ArrayList<>(transmittersToAdd));
 			transmittersToAdd.clear();
 		}
 

@@ -639,7 +639,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	protected void onModeChange(ForgeDirection side)
 	{
-		refreshConnections();
+		markDirtyAcceptor(side);
 	}
 
 	protected void markDirtyTransmitters()
@@ -773,7 +773,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 				connectionTypes[hit.subHit] = connectionTypes[hit.subHit].next();
 				sendDesc = true;
 	
-				onModeChange(ForgeDirection.getOrientation(side));
+				onModeChange(ForgeDirection.getOrientation(hit.subHit));
 				player.addChatMessage(new ChatComponentText("Connection type changed to " + connectionTypes[hit.subHit].toString()));
 	
 				return true;
