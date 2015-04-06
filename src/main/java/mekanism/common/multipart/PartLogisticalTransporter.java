@@ -46,13 +46,13 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 {
 	public Tier.TransporterTier tier = Tier.TransporterTier.BASIC;
 
-	public static TransmitterIcons transporterIcons = new TransmitterIcons(3, 4);
+	public static TransmitterIcons transporterIcons = new TransmitterIcons(8, 16);
 
 	public int pullDelay = 0;
 
 	public PartLogisticalTransporter(TransporterTier transporterTier)
 	{
-		super();
+		this();
 		tier = transporterTier;
 	}
 

@@ -214,7 +214,7 @@ public class TransporterStack
 
 	public boolean isFinal(ILogisticalTransporter transporter)
 	{
-		return pathToTarget.indexOf(transporter) == (pathType == Path.NONE ? 0 : 1);
+		return pathToTarget.indexOf(transporter.coord()) == (pathType == Path.NONE ? 0 : 1);
 	}
 
 	public Coord4D getNext(ILogisticalTransporter transporter)
@@ -301,8 +301,6 @@ public class TransporterStack
 
 	public boolean canInsertToTransporter(ILogisticalTransporter transporter, ForgeDirection side)
 	{
-		TileEntity from = transporter.coord().getFromSide(side.getOpposite()).getTileEntity(transporter.world());
-
 		if(!transporter.canConnectMutual(side))
 		{
 			return false;

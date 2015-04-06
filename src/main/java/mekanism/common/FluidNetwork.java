@@ -95,6 +95,8 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			return;
 		}
 
+		if(!fluid.isFluidEqual(buffer)) Mekanism.logger.warn("Fluid type " + fluid.getFluid().getName() + " of buffer doesn't match type " + buffer.getFluid().getName() + " of absorbing network");
+
 		buffer.amount += fluid.amount;
 		fluid.amount = 0;
 	}
@@ -231,7 +233,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 			if(didTransfer != prevTransfer || needsUpdate)
 			{
-				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, getScale(), didTransfer));
+				MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer,  didTransfer));
 				needsUpdate = false;
 			}
 
@@ -315,14 +317,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		public final FluidNetwork fluidNetwork;
 
 		public final FluidStack fluidType;
-		public final float fluidScale;
 		public final boolean didTransfer;
 
-		public FluidTransferEvent(FluidNetwork network, FluidStack type, float scale, boolean did)
+		public FluidTransferEvent(FluidNetwork network, FluidStack type, boolean did)
 		{
 			fluidNetwork = network;
 			fluidType = type;
-			fluidScale = scale;
 			didTransfer = did;
 		}
 	}

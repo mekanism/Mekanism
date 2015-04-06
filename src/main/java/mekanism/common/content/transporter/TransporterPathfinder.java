@@ -13,6 +13,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.InventoryNetwork.AcceptorData;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.content.transporter.PathfinderCache.PathData;
 import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
@@ -377,7 +378,7 @@ public final class TransporterPathfinder
 			for(int i = 0; i < 6; i++)
 			{
 				ForgeDirection direction = ForgeDirection.getOrientation(i);
-				Coord4D neighbor = start.translate(direction.offsetX, direction.offsetY, direction.offsetZ);
+				Coord4D neighbor = start.getFromSide(direction);
 
 				if(!transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj))))
 				{
@@ -424,7 +425,7 @@ public final class TransporterPathfinder
 						TileEntity tile = neighbor.getTileEntity(worldObj);
 						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
 
-						tentativeG += ((ILogisticalTransporter)tile).getCost();
+						tentativeG += ((ITransporterTile)tile).getTransmitter().getCost();
 
 						if(closedSet.contains(neighbor))
 						{

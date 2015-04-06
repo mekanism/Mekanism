@@ -514,7 +514,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderContents(PartPressurizedTube tube, Vector3 pos)
 	{
-		if(tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
+		if(!tube.getTransmitter().hasTransmitterNetwork() || tube.getTransmitter().getTransmitterNetwork().refGas == null || tube.getTransmitter().getTransmitterNetwork().gasScale == 0)
 		{
 			return;
 		}

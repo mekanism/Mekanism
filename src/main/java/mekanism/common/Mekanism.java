@@ -1287,7 +1287,7 @@ public class Mekanism
 	public void onLiquidTransferred(FluidTransferEvent event)
 	{
 		try {
-			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next().coord(), event.fluidType, event.fluidScale, event.didTransfer), event.fluidNetwork.getPacketRange());
+			packetHandler.sendToReceivers(new TransmitterUpdateMessage(PacketType.FLUID, event.fluidNetwork.transmitters.iterator().next().coord(), event.fluidType, event.didTransfer), event.fluidNetwork.getPacketRange());
 		} catch(Exception e) {}
 	}
 

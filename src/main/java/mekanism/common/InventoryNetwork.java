@@ -61,16 +61,16 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 			
 			for(ForgeDirection side : sides)
 			{
-				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.ordinal());
+				ItemStack returned = TransporterManager.getPredictedInsert((TileEntity)acceptor, color, stack, side.getOpposite().ordinal());
 				
 				if(TransporterManager.didEmit(stack, returned))
 				{
 					if(data == null)
 					{
-						data = new AcceptorData(coord, returned, side);
+						data = new AcceptorData(coord, returned, side.getOpposite());
 					}
 					else {
-						data.sides.add(side);
+						data.sides.add(side.getOpposite());
 					}
 				}
 			}
@@ -131,7 +131,7 @@ public class InventoryNetwork extends DynamicNetwork<IInventory, InventoryNetwor
 	@Override
 	public String toString()
 	{
-		return "[FluidNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+		return "[InventoryNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
 	}
 
 	@Override

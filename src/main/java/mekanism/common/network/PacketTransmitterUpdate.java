@@ -47,6 +47,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			{
 				IGridTransmitter transmitter = ((ITransmitterTile)tileEntity).getTransmitter();
 				DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
+				network.register();
 				transmitter.setTransmitterNetwork(network);
 				for(Coord4D coord : message.transmitterCoords)
 				{
@@ -57,6 +58,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 						((ITransmitterTile)tile).getTransmitter().setTransmitterNetwork(network);
 					}
 				}
+				network.updateCapacity();
 			}
 		}
 		else if(message.packetType == PacketType.ENERGY)
@@ -109,8 +111,8 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 						net.refFluid = message.fluidType;
 					}
 
+					net.buffer = message.fluidStack;
 					net.didTransfer = message.didFluidTransfer;
-					net.fluidScale = message.fluidScale;
 				}
 			}
 		}
@@ -200,7 +202,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					break;
 				case FLUID:
 					dataStream.writeInt(fluidStack != null ? fluidStack.getFluid().getID() : -1);
-					dataStream.writeFloat(fluidStack != null ? fluidScale : 0);
+					dataStream.writeInt(fluidStack != null ? fluidStack.amount : 0);
 					dataStream.writeBoolean(didFluidTransfer);
 					break;
 				default:
@@ -245,8 +247,13 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 			{
 				int type = dataStream.readInt();
 				fluidType = type != -1 ? FluidRegistry.getFluid(type) : null;
-				fluidScale = dataStream.readFloat();
+				amount = dataStream.readInt();
 				didFluidTransfer = dataStream.readBoolean();
+
+				if(fluidType != null)
+				{
+					fluidStack = new FluidStack(fluidType, amount);
+				}
 			}
 		}
 	}

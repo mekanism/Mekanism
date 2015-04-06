@@ -1,5 +1,6 @@
 package mekanism.api.gas;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.Mekanism;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -112,6 +114,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			return;
 		}
 
+		if(!gas.isGasEqual(buffer)) Mekanism.logger.warn("Gas type " + gas.getGas().getName() + " of buffer doesn't match type " + buffer.getGas().getName() + " of absorbing network");
+
 		buffer.amount += gas.amount;
 		gas.amount = 0;
 	}
@@ -132,7 +136,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 	public int tickEmit(GasStack stack)
 	{
-		List availableAcceptors = Arrays.asList(getAcceptors(stack.getGas()).toArray());
+		List<IGasHandler> availableAcceptors = new ArrayList<>();
+
+		availableAcceptors.addAll(getAcceptors(stack.getGas()));
 
 		Collections.shuffle(availableAcceptors);
 
@@ -145,30 +151,26 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			int remaining = toSend % divider;
 			int sending = (toSend-remaining)/divider;
 
-			for(Object obj : availableAcceptors)
+			for(IGasHandler acceptor : availableAcceptors)
 			{
-				if(obj instanceof IGasHandler)
+				int currentSending = sending;
+				EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+
+				if(remaining > 0)
 				{
-					IGasHandler acceptor = (IGasHandler)obj;
-					int currentSending = sending;
-					EnumSet<ForgeDirection> sides = acceptorDirections.get(Coord4D.get((TileEntity)acceptor));
+					currentSending++;
+					remaining--;
+				}
 
-					if(remaining > 0)
-					{
-						currentSending++;
-						remaining--;
-					}
+				for(ForgeDirection side : sides)
+				{
+					int prev = toSend;
 
-					for(ForgeDirection side : sides)
+					toSend -= acceptor.receiveGas(side, new GasStack(stack.getGas(), currentSending), true);
+
+					if(toSend < prev)
 					{
-						int prev = toSend;
-						
-						toSend -= acceptor.receiveGas(side.getOpposite(), new GasStack(stack.getGas(), currentSending), true);
-						
-						if(toSend < prev)
-						{
-							break;
-						}
+						break;
 					}
 				}
 			}
@@ -301,7 +303,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 
 			for(ForgeDirection side : sides)
 			{
-				if(acceptor != null && acceptor.canReceiveGas(side.getOpposite(), type))
+				if(acceptor != null && acceptor.canReceiveGas(side, type))
 				{
 					toReturn.add(acceptor);
 					break;

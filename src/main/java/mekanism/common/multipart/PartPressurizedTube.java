@@ -80,7 +80,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 
 		}
 		else {
-			float targetScale = getTransmitter().getTransmitterNetwork().gasScale;
+			float targetScale = getTransmitter().hasTransmitterNetwork() ? getTransmitter().getTransmitterNetwork().gasScale : (float)buffer.getStored()/(float)buffer.getMaxGas();
 
 			if(Math.abs(currentScale - targetScale) > 0.01)
 			{

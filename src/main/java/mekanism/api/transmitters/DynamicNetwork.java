@@ -357,16 +357,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	}
 
 	@Override
-	public void clientTick()
-	{
-		ticksSinceCreate++;
-
-		if(ticksSinceCreate == 5 && getSize() > 0)
-		{
-			TileEntity tile = (TileEntity)transmitters.iterator().next();
-			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile));
-		}
-	}
+	public void clientTick() {}
 
 	public void queueClientUpdate(Collection<IGridTransmitter<A, N>> newTransmitters)
 	{
