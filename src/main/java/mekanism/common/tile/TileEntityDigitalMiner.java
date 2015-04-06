@@ -21,6 +21,7 @@ import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.content.miner.MItemStackFilter;
@@ -296,14 +297,14 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
 					getTopEject(true, remains);
 				}
-				else if(getEjectInv() instanceof ILogisticalTransporter)
+				else if(getEjectInv() instanceof ITransporterTile)
 				{
-					/*TODO ItemStack rejected = TransporterUtils.insert(getEjectTile(), (ILogisticalTransporter)getEjectInv(), getTopEject(false, null), null, true, 0);
+					ItemStack rejected = TransporterUtils.insert(getEjectTile(), ((ITransporterTile)getEjectInv()).getTransmitter(), getTopEject(false, null), null, true, 0);
 
 					if(TransporterManager.didEmit(getTopEject(false, null), rejected))
 					{
 						getTopEject(true, rejected);
-					}*/
+					}
 				}
 
 				delayTicks = 10;

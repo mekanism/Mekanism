@@ -19,6 +19,7 @@ import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.base.ITransporterTile;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.util.InventoryUtils;
@@ -187,18 +188,18 @@ public class TileComponentEjector implements ITileComponent, IEjector
 				TileEntity tile = Coord4D.get(tileEntity).getFromSide(side).getTileEntity(tileEntity.getWorldObj());
 				ItemStack prev = stack.copy();
 
-				if(tile instanceof IInventory && !(tile instanceof ILogisticalTransporter))
+				if(tile instanceof IInventory && !(tile instanceof ITransporterTile))
 				{
 					stack = InventoryUtils.putStackInInventory((IInventory)tile, stack, side.ordinal(), false);
 				}
-				else if(tile instanceof ILogisticalTransporter)
+				else if(tile instanceof ITransporterTile)
 				{
-					/*TODO ItemStack rejects = TransporterUtils.insert(tileEntity, (ILogisticalTransporter)tile, stack, outputColor, true, 0);
+					ItemStack rejects = TransporterUtils.insert(tileEntity, ((ITransporterTile)tile).getTransmitter(), stack, outputColor, true, 0);
 
 					if(TransporterManager.didEmit(stack, rejects))
 					{
 						stack = rejects;
-					}*/
+					}
 				}
 
 				if(stack == null || prev.stackSize != stack.stackSize)
