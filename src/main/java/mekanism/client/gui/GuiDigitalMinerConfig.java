@@ -44,16 +44,18 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	public boolean isDragging = false;
 
 	// Scrollbar dimensions
-	private final int						scrollX			= 154;
-	private final int						scrollY			= 18;
-	private final int						scrollW			= 12;
-	private final int						scrollH			= 138;
+	private final int scrollX = 154;
+	private final int scrollY = 18;
+
+	private final int scrollW = 12;
+	private final int scrollH = 138;
 
 	// Filter dimensions
-	private final int						filterX			= 56;
-	private final int						filterY			= 18;
-	private final int						filterW			= 96;
-	private final int						filterH			= 29;
+	private final int filterX = 56;
+	private final int filterY = 18;
+
+	private final int filterW = 96;
+	private final int filterH = 29;
 
 	public int dragOffset = 0;
 
@@ -81,11 +83,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 	public int getFilterIndex()
 	{
-		if( needsScrollBars() )
+		if(needsScrollBars())
 		{
 			final int scrollSize = tileEntity.filters.size() - 4;
-			return (int)( ( scrollSize + 0.5 ) * scroll );
+			return (int)((scrollSize + 0.5) * scroll);
 		}
+		
 		return 0;
 	}
 
@@ -209,7 +212,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 			if(xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll()+18 && yAxis <= getScroll()+18+15)
 			{
-				if( needsScrollBars() )
+				if(needsScrollBars())
 				{
 					dragOffset = yAxis - (getScroll()+18);
 					isDragging = true;
@@ -227,30 +230,38 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 
 					// Check for sorting button
 					final int arrowX = filterX + filterW - 12;
-					if( getFilterIndex() + i > 0 )
-						if( xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20 )
+					
+					if(getFilterIndex() + i > 0)
+					{
+						if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 						{
 							// Process up button click
 							final ArrayList data = new ArrayList();
-							data.add( 11 );
-							data.add( getFilterIndex() + i );
+							data.add(11);
+							data.add(getFilterIndex() + i);
 
-							Mekanism.packetHandler.sendToServer( new TileEntityMessage( Coord4D.get( tileEntity ), data ) );
-							SoundHandler.playSound( "gui.button.press" );
+							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+							SoundHandler.playSound("gui.button.press");
+							
 							return;
 						}
-					if( getFilterIndex() + i < tileEntity.filters.size() - 1 )
-						if( xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27 )
+					}
+					
+					if(getFilterIndex() + i < tileEntity.filters.size() - 1)
+					{
+						if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 						{
 							// Process down button click
 							final ArrayList data = new ArrayList();
-							data.add( 12 );
-							data.add( getFilterIndex() + i );
+							data.add(12);
+							data.add(getFilterIndex() + i);
 
-							Mekanism.packetHandler.sendToServer( new TileEntityMessage( Coord4D.get( tileEntity ), data ) );
-							SoundHandler.playSound( "gui.button.press" );
+							Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+							SoundHandler.playSound("gui.button.press");
+							
 							return;
 						}
+					}
 
 					if(xAxis >= 56 && xAxis <= 152 && yAxis >= yStart && yAxis <= yStart+29)
 					{
@@ -348,25 +359,34 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	public void handleMouseInput()
 	{
 		super.handleMouseInput();
+		
 		int i = Mouse.getEventDWheel();
 
-		if( i != 0 && needsScrollBars() )
+		if(i != 0 && needsScrollBars())
 		{
 			final int j = tileEntity.filters.size() - 4;
 
-			if( i > 0 )
+			if(i > 0)
+			{
 				i = 1;
+			}
 
-			if( i < 0 )
+			if(i < 0)
+			{
 				i = -1;
+			}
 
-			scroll = (float)( scroll - (double)i / (double)j );
+			scroll = (float)(scroll - (double) i / (double) j);
 
-			if( scroll < 0.0F )
+			if(scroll < 0.0F)
+			{
 				scroll = 0.0F;
+			}
 
-			if( scroll > 1.0F )
+			if(scroll > 1.0F)
+			{
 				scroll = 1.0F;
+			}
 		}
 	}
 
