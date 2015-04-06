@@ -164,8 +164,7 @@ public class PacketTransmitterUpdate implements IMessageHandler<TransmitterUpdat
 					break;
 				case FLUID:
 					fluidStack = (FluidStack)data[0];
-					fluidScale = (Float)data[1];
-					didFluidTransfer = (Boolean)data[2];
+					didFluidTransfer = (Boolean)data[1];
 					break;
 				default:
 					break;

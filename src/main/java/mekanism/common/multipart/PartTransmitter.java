@@ -52,6 +52,10 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
+		else
+		{
+			getTransmitter().setTransmitterNetwork(null);
+		}
 	}
 
 	@Override
@@ -60,6 +64,10 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		if(!world().isRemote)
 		{
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
+		}
+		else
+		{
+			getTransmitter().setTransmitterNetwork(null);
 		}
 		super.preRemove();
 	}

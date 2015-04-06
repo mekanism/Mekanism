@@ -24,9 +24,17 @@ public abstract class Transmitter<A, N extends DynamicNetwork<A, N>> implements 
 	@Override
 	public void setTransmitterNetwork(N network)
 	{
+		if(theNetwork == network)
+		{
+			return;
+		}
 		if(world().isRemote && theNetwork != null)
 		{
 			theNetwork.transmitters.remove(this);
+			if(theNetwork.transmitters.isEmpty())
+			{
+				theNetwork.deregister();
+			}
 		}
 		theNetwork = network;
 		orphaned = theNetwork == null;
