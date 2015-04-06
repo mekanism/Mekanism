@@ -1,7 +1,8 @@
-package mekanism.api.energy;
+package mekanism.common.base;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
+import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.util.MekanismUtils;
 
 import net.minecraft.tileentity.TileEntity;

@@ -1,33 +1,24 @@
 package mekanism.common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.EnergyAcceptorWrapper;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.api.energy.EnergyStack;
-import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import cofh.api.energy.IEnergyReceiver;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
-
-import cofh.api.energy.IEnergyReceiver;
-import ic2.api.energy.EnergyNet;
-import ic2.api.energy.tile.IEnergySink;
 
 public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyNetwork>
 {

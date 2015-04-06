@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
