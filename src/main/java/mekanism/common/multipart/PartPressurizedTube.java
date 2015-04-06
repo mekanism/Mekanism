@@ -295,5 +295,4 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 			return buffer.receive(gasStack, doEmit);
 		}
 	}
-
 }

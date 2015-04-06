@@ -127,12 +127,14 @@ public class TransmitterNetworkRegistry
 		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
+			
 			if(network != null)
 			{
 				networksToChange.add(network);
 				network.register();
 			}
 		}
+		
 		orphanTransmitters.clear();
 	}
 
@@ -143,6 +145,7 @@ public class TransmitterNetworkRegistry
 			OrphanPathFinder<A, N> finder = new OrphanPathFinder<>(startOrphan);
 			finder.start();
 			N network;
+			
 			switch(finder.networksFound.size())
 			{
 				case 0:
@@ -157,9 +160,12 @@ public class TransmitterNetworkRegistry
 					Mekanism.logger.debug("Merging " + finder.networksFound.size() + " networks");
 					network = startOrphan.mergeNetworks(finder.networksFound);
 			}
+			
 			network.addNewTransmitters(finder.connectedTransmitters);
+			
 			return network;
 		}
+		
 		return null;
 	}
 
@@ -169,6 +175,7 @@ public class TransmitterNetworkRegistry
 		{
 			network.commit();
 		}
+		
 		networksToChange.clear();
 	}
 
@@ -185,8 +192,7 @@ public class TransmitterNetworkRegistry
 
 		for(DynamicNetwork network : networks)
 		{
-			strings[i] = network.toString();
-			++i;
+			strings[i++] = network.toString();
 		}
 
 		return strings;
@@ -214,21 +220,27 @@ public class TransmitterNetworkRegistry
 		public void iterate(Coord4D from, ForgeDirection fromDirection)
 		{
 			if(iterated.contains(from))
+			{
 				return;
+			}
 
 			iterated.add(from);
+			
 			if(orphanTransmitters.containsKey(from))
 			{
 				IGridTransmitter<A, N> transmitter = orphanTransmitters.get(from);
+				
 				if(transmitter.isValid() && transmitter.isOrphan())
 				{
 					connectedTransmitters.add(transmitter);
 					transmitter.setOrphan(false);
+					
 					for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 					{
 						if(direction != fromDirection)
 						{
 							Coord4D directionCoord = transmitter.getAdjacentConnectableTransmitterCoord(direction);
+							
 							if(!(directionCoord == null || iterated.contains(directionCoord)))
 							{
 								iterate(directionCoord, direction.getOpposite());
@@ -236,8 +248,8 @@ public class TransmitterNetworkRegistry
 						}
 					}
 				}
-			} else
-			{
+			} 
+			else {
 				addNetworkToIterated(from);
 			}
 		}

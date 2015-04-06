@@ -29,12 +29,12 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public void onWorldJoin()
 	{
 		super.onWorldJoin();
+		
 		if(!world().isRemote)
 		{
 			TransmitterNetworkRegistry.registerOrphanTransmitter(getTransmitter());
 		}
-		else
-		{
+		else {
 			MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(tile()));
 		}
 	}
@@ -47,13 +47,13 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
+		
 		if(!world().isRemote)
 		{
 			getTransmitter().takeShare();
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
-		else
-		{
+		else {
 			getTransmitter().setTransmitterNetwork(null);
 		}
 	}
@@ -65,10 +65,10 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 		{
 			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
-		else
-		{
+		else {
 			getTransmitter().setTransmitterNetwork(null);
 		}
+		
 		super.preRemove();
 	}
 
@@ -82,9 +82,10 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public void markDirtyTransmitters()
 	{
 		super.markDirtyTransmitters();
+		
 		if(getTransmitter().hasTransmitterNetwork())
 		{
-				TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
+			TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
 		}
 	}
 
@@ -92,6 +93,7 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public void markDirtyAcceptor(ForgeDirection side)
 	{
 		super.markDirtyAcceptor(side);
+		
 		if(getTransmitter().hasTransmitterNetwork())
 		{
 			getTransmitter().getTransmitterNetwork().acceptorChanged(getTransmitter(), side);
@@ -101,10 +103,12 @@ public abstract class PartTransmitter<A, N extends DynamicNetwork<A, N>> extends
 	public A getCachedAcceptor(ForgeDirection side)
 	{
 		ConnectionType type = connectionTypes[side.ordinal()];
+		
 		if(type == ConnectionType.PULL || type == ConnectionType.NONE)
 		{
 			return null;
 		}
+		
 		return connectionMapContainsSide(currentAcceptorConnections, side) ? (A)cachedAcceptors[side.ordinal()] : null;
 	}
 

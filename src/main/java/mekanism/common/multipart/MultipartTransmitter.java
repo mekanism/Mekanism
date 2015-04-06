@@ -61,6 +61,7 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 				return sideCoord;
 			}
 		}
+		
 		return null;
 	}
 
@@ -86,14 +87,17 @@ public class MultipartTransmitter<A, N extends DynamicNetwork<A,N>> extends Tran
 	public N getExternalNetwork(Coord4D from)
 	{
 		TileEntity tile = from.getTileEntity(world());
+		
 		if(tile instanceof ITransmitterTile)
 		{
 			IGridTransmitter transmitter = ((ITransmitterTile)tile).getTransmitter();
+			
 			if(TransmissionType.checkTransmissionType(transmitter, getTransmissionType()));
 			{
 				return ((IGridTransmitter<A, N>)transmitter).getTransmitterNetwork();
 			}
 		}
+		
 		return null;
 	}
 

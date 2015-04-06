@@ -254,7 +254,7 @@ public abstract class PartSidedPipe extends TMultiPart implements TSlottedPart, 
 
 	public boolean getPossibleAcceptorConnection(ForgeDirection side)
 	{
-		if(handlesRedstone() && redstoneReactive && MekanismUtils.isGettingPowered(world(), Coord4D.get(tile())))
+		if(handlesRedstone() && redstoneReactive && redstonePowered)
 		{
 			return false;
 		}

@@ -62,30 +62,39 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			{
 				if(transmitter.isValid())
 				{
-					if(worldObj == null) worldObj = transmitter.world();
+					if(worldObj == null)
+					{
+						worldObj = transmitter.world();
+					}
+					
 					Coord4D coord = transmitter.coord();
+					
 					for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 					{
 						A acceptor = transmitter.getAcceptor(side);
+						
 						if(acceptor != null)
 						{
 							Coord4D acceptorCoord = coord.getFromSide(side);
 							possibleAcceptors.put(acceptorCoord, acceptor);
 							EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
+							
 							if(directions != null)
 							{
 								directions.add(side.getOpposite());
-							} else
-							{
+							} 
+							else {
 								acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
 							}
 						}
 					}
+					
 					transmitter.setTransmitterNetwork((N)this);
 					absorbBuffer(transmitter);
 					transmitters.add(transmitter);
 				}
 			}
+			
 			updateCapacity();
 			clampBuffer();
 			queueClientUpdate(new ArrayList<>(transmittersToAdd));
@@ -104,22 +113,24 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					A acceptor = transmitter.getAcceptor(side);
 					Coord4D acceptorCoord = transmitter.coord().getFromSide(side);
 					EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
+					
 					if(acceptor != null)
 					{
 						possibleAcceptors.put(acceptorCoord, acceptor);
+						
 						if(directions != null)
 						{
 							directions.add(side.getOpposite());
-						} else
-						{
+						} 
+						else {
 							acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
 						}
 					}
-					else
-					{
+					else {
 						if(directions != null)
 						{
 							directions.remove(side.getOpposite());
+							
 							if(directions.isEmpty())
 							{
 								possibleAcceptors.remove(acceptorCoord);
@@ -129,6 +140,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					}
 				}
 			}
+			
 			changedAcceptors.clear();
 		}
 	}
@@ -143,6 +155,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			invalidateTransmitter(transmitter);
 		}
+		
 		transmitters.clear();
 		deregister();
 	}
@@ -160,13 +173,15 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 	public void acceptorChanged(IGridTransmitter<A, N> transmitter, ForgeDirection side)
 	{
 		EnumSet<ForgeDirection> directions = changedAcceptors.get(transmitter);
+		
 		if(directions != null)
 		{
 			directions.add(side);
-		} else
-		{
+		} 
+		else {
 			changedAcceptors.put(transmitter, EnumSet.of(side));
 		}
+		
 		TransmitterNetworkRegistry.registerChangedNetwork(this);
 	}
 
@@ -178,16 +193,18 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			transmitters.add(transmitter);
 			transmittersAdded.add(transmitter);
 		}
+		
 		possibleAcceptors.putAll(net.possibleAcceptors);
+		
 		for(Entry<Coord4D, EnumSet<ForgeDirection>> entry : net.acceptorDirections.entrySet())
 		{
 			Coord4D coord = entry.getKey();
+			
 			if(acceptorDirections.containsKey(coord))
 			{
 				acceptorDirections.get(coord).addAll(entry.getValue());
 			}
-			else
-			{
+			else {
 				acceptorDirections.put(coord, entry.getValue());
 			}
 		}
@@ -315,8 +332,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 		{
 			Iterator<DelayQueue> i = updateQueue.iterator();
 
-			try
-			{
+			try {
 				while(i.hasNext())
 				{
 					DelayQueue q = i.next();
@@ -324,16 +340,14 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					if(q.delay > 0)
 					{
 						q.delay--;
-					} else
-					{
+					} 
+					else {
 						transmittersAdded.addAll(transmitters);
 						updateDelay = 1;
 						i.remove();
 					}
 				}
-			} catch(Exception e)
-			{
-			}
+			} catch(Exception e) {}
 
 			if(updateDelay > 0)
 			{
