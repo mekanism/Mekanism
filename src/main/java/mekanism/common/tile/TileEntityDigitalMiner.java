@@ -741,6 +741,20 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				inverse = !inverse;
 			}
+			else if(type == 11)
+			{
+				// Move filter up
+				int filterIndex = dataStream.readInt();
+				filters.swap( filterIndex, filterIndex - 1 );
+				openInventory();
+			}
+			else if(type == 12)
+			{
+				// Move filter down
+				int filterIndex = dataStream.readInt();
+				filters.swap( filterIndex, filterIndex + 1 );
+				openInventory();
+			}
 			
 			MekanismUtils.saveChunk(this);
 
