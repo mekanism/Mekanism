@@ -62,8 +62,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 			{
 				currentPower = (9 * currentPower + targetPower) / 10;
 			}
-		} else
-		{
+		} 
+		else {
 			if(getTransmitter().hasTransmitterNetwork() && getTransmitter().getTransmitterNetworkSize() > 0)
 			{
 				double last = getSaveShare();
@@ -102,7 +102,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 								
 								((IStrictEnergyStorage)outputter).setEnergy(((IStrictEnergyStorage)outputter).getEnergy() - toDraw);
 							}
-						} else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
+						} 
+						else if(MekanismUtils.useRF() && outputter instanceof IEnergyProvider)
 						{
 							double received = ((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(canDraw*general.TO_TE), true) * general.FROM_TE;
 							double toDraw = received;
@@ -341,8 +342,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		if(getTransmitter().hasTransmitterNetwork())
 		{
 			return getTransmitter().getTransmitterNetwork().buffer.amount;
-		} else
-		{
+		} 
+		else {
 			return buffer.amount;
 		}
 	}
@@ -353,8 +354,8 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		if(getTransmitter().hasTransmitterNetwork())
 		{
 			getTransmitter().getTransmitterNetwork().buffer.amount = energy;
-		} else
-		{
+		} 
+		else {
 			buffer.amount = energy;
 		}
 	}
@@ -367,10 +368,12 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		}
 		else {
 			double used = Math.min(getCapacity() - buffer.amount, energy);
+			
 			if(doEmit)
 			{
 				buffer.amount += used;
 			}
+			
 			return energy - used;
 		}
 	}

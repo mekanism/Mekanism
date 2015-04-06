@@ -18,6 +18,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 	public static EnergyAcceptorWrapper get(TileEntity tileEntity)
 	{
 		EnergyAcceptorWrapper wrapper = null;
+		
 		if(tileEntity instanceof IStrictEnergyAcceptor)
 		{
 			wrapper = new MekanismAcceptor((IStrictEnergyAcceptor)tileEntity);
@@ -30,10 +31,12 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		{
 			wrapper = new IC2Acceptor((IEnergySink)tileEntity);
 		}
+		
 		if(wrapper != null)
 		{
 			wrapper.coord = Coord4D.get(tileEntity);
 		}
+		
 		return wrapper;
 	}
 
