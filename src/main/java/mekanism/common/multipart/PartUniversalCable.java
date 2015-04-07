@@ -5,7 +5,7 @@ import java.util.List;
 
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
-import mekanism.api.energy.EnergyAcceptorWrapper;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.ICableOutputter;
 import mekanism.api.energy.IStrictEnergyAcceptor;

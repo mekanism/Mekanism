@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -21,8 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
-
-import scala.collection.parallel.ParIterableLike.Collect;
 
 public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implements IClientTicker, INetworkDataHandler
 {

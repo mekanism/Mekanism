@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.api.energy.EnergyAcceptorWrapper;
+import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasNetwork;
 import mekanism.api.gas.GasRegistry;
@@ -12,7 +12,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.EnergyNetwork;

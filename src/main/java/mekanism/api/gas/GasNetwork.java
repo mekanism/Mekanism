@@ -1,19 +1,16 @@
 package mekanism.api.gas;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.Mekanism;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -114,7 +111,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			return;
 		}
 
-		if(!gas.isGasEqual(buffer)) Mekanism.logger.warn("Gas type " + gas.getGas().getName() + " of buffer doesn't match type " + buffer.getGas().getName() + " of absorbing network");
+//		if(!gas.isGasEqual(buffer)) Mekanism.logger.warn("Gas type " + gas.getGas().getName() + " of buffer doesn't match type " + buffer.getGas().getName() + " of absorbing network");
 
 		buffer.amount += gas.amount;
 		gas.amount = 0;

@@ -1,6 +1,7 @@
 package mekanism.api.transmitters;
 
 import mekanism.api.gas.IGasTransmitter;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 
@@ -39,6 +40,16 @@ public enum TransmissionType
 	public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type)
 	{
 		return type.checkTransmissionType(sideTile);
+	}
+
+	public static boolean checkTransmissionType(TileEntity tile1, TransmissionType type)
+	{
+		return checkTransmissionType(tile1, type, null);
+	}
+
+	public static boolean checkTransmissionType(TileEntity tile1, TransmissionType type, TileEntity tile2)
+	{
+		return type.checkTransmissionType(tile1, tile2);
 	}
 
 	public boolean checkTransmissionType(ITransmitter transmitter)
