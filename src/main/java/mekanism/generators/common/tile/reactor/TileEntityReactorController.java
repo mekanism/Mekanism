@@ -10,7 +10,7 @@ import mekanism.api.Pos3D;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
-import mekanism.client.ThreadSparkle.INodeChecker;
+import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.sound.ISoundSource;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;

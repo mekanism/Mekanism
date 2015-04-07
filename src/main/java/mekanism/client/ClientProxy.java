@@ -6,7 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
-import mekanism.client.ThreadSparkle.INodeChecker;
+import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.EntityLaser;
 import mekanism.client.gui.GuiAmbientAccumulator;
 import mekanism.client.gui.GuiChemicalCrystallizer;
@@ -543,19 +543,19 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void doGenericSparkle(TileEntity tileEntity, INodeChecker checker)
 	{
-		new ThreadSparkle(tileEntity, checker).start();
+		new SparkleAnimation(tileEntity, checker).run();
 	}
 
 	@Override
 	public void doMultiblockSparkle(final TileEntityMultiblock<?> tileEntity)
 	{
-		new ThreadSparkle(tileEntity, new INodeChecker() {
+		new SparkleAnimation(tileEntity, new INodeChecker() {
 			@Override
 			public boolean isNode(TileEntity tile)
 			{
 				return MultiblockManager.areEqual(tile, tileEntity);
 			}
-		}).start();
+		}).run();
 	}
 
 	@Override

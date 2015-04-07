@@ -9,7 +9,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
 import mekanism.api.Range4D;
-import mekanism.client.ThreadSparkle.INodeChecker;
+import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
