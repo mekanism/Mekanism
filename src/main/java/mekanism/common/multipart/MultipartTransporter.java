@@ -373,7 +373,7 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 	}
 
 	@Override
-	public int getCost()
+	public double getCost()
 	{
 		return getPart().getCost();
 	}

@@ -415,17 +415,14 @@ public final class TransporterPathfinder
 				openSet.remove(currentNode);
 				closedSet.add(currentNode);
 
-				for(int i = 0; i < 6; i++)
+				for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 				{
-					ForgeDirection direction = ForgeDirection.getOrientation(i);
 					Coord4D neighbor = currentNode.getFromSide(direction);
 
 					if(transportStack.canInsertToTransporter(neighbor.getTileEntity(worldObj), direction))
 					{
 						TileEntity tile = neighbor.getTileEntity(worldObj);
-						double tentativeG = gScore.get(currentNode) + currentNode.distanceTo(neighbor);
-
-						tentativeG += ((ITransporterTile)tile).getTransmitter().getCost();
+						double tentativeG = gScore.get(currentNode) + ((ITransporterTile)tile).getTransmitter().getCost();
 
 						if(closedSet.contains(neighbor))
 						{
@@ -435,8 +432,6 @@ public final class TransporterPathfinder
 							}
 						}
 
-						TileEntity currTile = currentNode.getTileEntity(worldObj);
-
 						if(!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor))
 						{
 							navMap.put(neighbor, currentNode);
@@ -445,7 +440,7 @@ public final class TransporterPathfinder
 							openSet.add(neighbor);
 						}
 					}
-					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, i, neighbor.getTileEntity(worldObj)))
+					else if(neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction.ordinal(), neighbor.getTileEntity(worldObj)))
 					{
 						side = direction;
 						results = reconstructPath(navMap, currentNode);

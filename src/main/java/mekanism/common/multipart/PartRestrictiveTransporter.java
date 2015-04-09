@@ -38,7 +38,7 @@ public class PartRestrictiveTransporter extends PartLogisticalTransporter
 	}
 
 	@Override
-	public int getCost()
+	public double getCost()
 	{
 		return 1000;
 	}
