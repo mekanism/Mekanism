@@ -281,17 +281,16 @@ public class TransporterStack
 		return 0;
 	}
 
-	public boolean canInsertToTransporter(TileEntity tileEntity, ForgeDirection side)
+	public boolean canInsertToTransporter(TileEntity tileEntity, ForgeDirection from)
 	{
 		if(!(tileEntity instanceof ITransporterTile))
 		{
 			return false;
 		}
 
-		TileEntity from = Coord4D.get(tileEntity).getFromSide(side.getOpposite()).getTileEntity(tileEntity.getWorldObj());
 		ILogisticalTransporter transporter = ((ITransporterTile)tileEntity).getTransmitter();
 
-		if(!((ITransporterTile)tileEntity).canConnectMutual(side))
+		if(!((ITransporterTile)tileEntity).canConnectMutual(from.getOpposite()))
 		{
 			return false;
 		}

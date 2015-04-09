@@ -29,5 +29,5 @@ public interface ILogisticalTransporter extends IGridTransmitter<IInventory, Inv
 
 	public boolean canReceiveFrom(TileEntity tileEntity, ForgeDirection side);
 
-	public int getCost();
+	public double getCost();
 }

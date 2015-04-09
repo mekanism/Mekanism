@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ThreadSparkle extends Thread
+public class SparkleAnimation
 {
 	public TileEntity pointer;
 
@@ -23,13 +23,12 @@ public class ThreadSparkle extends Thread
 	
 	public INodeChecker nodeChecker;
 
-	public ThreadSparkle(TileEntity tileEntity, INodeChecker checker)
+	public SparkleAnimation(TileEntity tileEntity, INodeChecker checker)
 	{
 		pointer = tileEntity;
 		nodeChecker = checker;
 	}
 
-	@Override
 	public void run()
 	{
 		try {
