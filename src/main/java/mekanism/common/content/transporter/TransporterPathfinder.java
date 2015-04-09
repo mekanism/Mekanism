@@ -58,7 +58,7 @@ public final class TransporterPathfinder
 				
 				transportStack.idleDir = newSide;
 				loopSide(ret, newSide);
-				return new Destination(ret, true, null).setPathType(Path.NONE);
+				return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 			}
 			else {
 				TileEntity tile = start.getFromSide(transportStack.idleDir).getTileEntity(worldObj);
@@ -66,7 +66,7 @@ public final class TransporterPathfinder
 				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir))
 				{
 					loopSide(ret, transportStack.idleDir);
-					return new Destination(ret, true, null).setPathType(Path.NONE);
+					return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 				}
 				else {
 					Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter)start.getTileEntity(worldObj), transportStack, 0);
@@ -87,7 +87,7 @@ public final class TransporterPathfinder
 						
 						transportStack.idleDir = newSide;
 						loopSide(ret, newSide);
-						return new Destination(ret, true, null).setPathType(Path.NONE);
+						return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 					}
 				}
 			}
@@ -154,8 +154,9 @@ public final class TransporterPathfinder
 		public List<Coord4D> path = new ArrayList<Coord4D>();
 		public Path pathType;
 		public ItemStack rejected;
+		public double score;
 
-		public Destination(ArrayList<Coord4D> list, boolean inv, ItemStack rejects)
+		public Destination(ArrayList<Coord4D> list, boolean inv, ItemStack rejects, double gScore)
 		{
 			path = (List<Coord4D>)list.clone();
 
@@ -165,11 +166,26 @@ public final class TransporterPathfinder
 			}
 
 			rejected = rejects;
+			score = gScore;
 		}
 		
 		public Destination setPathType(Path type)
 		{
 			pathType = type;
+			return this;
+		}
+
+		public Destination calculateScore(World world)
+		{
+			score = 0;
+			for(Coord4D location : path)
+			{
+				TileEntity tile = location.getTileEntity(world);
+				if(tile instanceof ITransporterTile)
+				{
+					score += ((ITransporterTile)tile).getTransmitter().getCost();
+				}
+			}
 			return this;
 		}
 
@@ -190,16 +206,17 @@ public final class TransporterPathfinder
 		@Override
 		public int compareTo(Destination dest)
 		{
-			if(path.size() < dest.path.size())
+			if(score < dest.score)
 			{
 				return -1;
 			}
-			else if(path.size() > dest.path.size())
+			else if(score > dest.score)
 			{
 				return 1;
 			}
-			else {
-				return 0;
+			else
+			{
+				return path.size() - dest.path.size();
 			}
 		}
 	}
@@ -240,7 +257,7 @@ public final class TransporterPathfinder
 		
 		if(test != null)
 		{
-			return new Destination(test, false, rejects);
+			return new Destination(test, false, rejects, 0).calculateScore(start.world());
 		}
 		
 		Pathfinder p = new Pathfinder(checker, start.world(), dest, start.coord(), stack);
@@ -251,7 +268,7 @@ public final class TransporterPathfinder
 			{
 				PathfinderCache.cachedPaths.put(new PathData(start.coord(), dest, p.side), p.getPath());
 				
-				return new Destination(p.getPath(), false, rejects);
+				return new Destination(p.getPath(), false, rejects, p.finalScore);
 			}
 		}
 		
