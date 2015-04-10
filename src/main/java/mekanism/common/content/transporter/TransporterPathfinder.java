@@ -151,14 +151,14 @@ public final class TransporterPathfinder
 
 	public static class Destination implements Comparable<Destination>
 	{
-		public List<Coord4D> path = new ArrayList<Coord4D>();
+		public List<Coord4D> path;
 		public Path pathType;
 		public ItemStack rejected;
 		public double score;
 
-		public Destination(ArrayList<Coord4D> list, boolean inv, ItemStack rejects, double gScore)
+		public Destination(List<Coord4D> list, boolean inv, ItemStack rejects, double gScore)
 		{
-			path = (List<Coord4D>)list.clone();
+			path = new ArrayList<>(list);
 
 			if(inv)
 			{
@@ -253,7 +253,7 @@ public final class TransporterPathfinder
 	
 	public static Destination getPath(DestChecker checker, EnumSet<ForgeDirection> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack, ItemStack rejects, int min)
 	{
-		ArrayList<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
+		List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
 		
 		if(test != null)
 		{
@@ -489,7 +489,7 @@ public final class TransporterPathfinder
 		{
 			ArrayList<Coord4D> path = new ArrayList<Coord4D>();
 			path.add(finalNode);
-			path.addAll((ArrayList<Coord4D>)results.clone());
+			path.addAll(results);
 
 			return path;
 		}
