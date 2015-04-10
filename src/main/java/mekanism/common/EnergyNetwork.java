@@ -76,6 +76,10 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 		{
 			buffer.amount = getCapacity();
 		}
+		if(buffer.amount < 0)
+		{
+			buffer.amount = 0;
+		}
 	}
 
 	@Override

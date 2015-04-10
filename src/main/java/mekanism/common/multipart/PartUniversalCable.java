@@ -158,6 +158,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 		super.load(nbtTags);
 
 		buffer.amount = nbtTags.getDouble("cacheEnergy");
+		if(buffer.amount < 0) buffer.amount = 0;
 		tier = Tier.CableTier.values()[nbtTags.getInteger("tier")];
 	}
 
