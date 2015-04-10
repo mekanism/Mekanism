@@ -114,12 +114,12 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 		}
 
 		double sent = 0;
-		boolean tryAgain = false;
+		boolean tryAgain;
 		int i = 0;
 
 		do {
 			double prev = sent;
-			sent += doEmit(energyToSend-sent, tryAgain);
+			sent += doEmit(energyToSend-sent);
 
 			tryAgain = energyToSend-sent > 0 && sent-prev > 0 && i < 100;
 
@@ -143,7 +143,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	/**
 	 * @return sent
 	 */
-	public double doEmit(double energyToSend, boolean tryAgain)
+	public double doEmit(double energyToSend)
 	{
 		double sent = 0;
 
