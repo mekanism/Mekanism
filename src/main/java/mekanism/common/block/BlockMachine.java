@@ -529,10 +529,12 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 	
 							for(Fluid f : FluidRegistry.getRegisteredFluids().values())
 							{
-								ItemStack filled = new ItemStack(item, 1, type.meta);
-								itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
-								itemMachine.setPrevScale(filled, 1);
-								list.add(filled);
+								try { //Prevent bad IDs
+									ItemStack filled = new ItemStack(item, 1, type.meta);
+									itemMachine.setFluidStack(new FluidStack(f, itemMachine.getCapacity(filled)), filled);
+									itemMachine.setPrevScale(filled, 1);
+									list.add(filled);
+								} catch(Exception e) {}
 							}
 						}
 						

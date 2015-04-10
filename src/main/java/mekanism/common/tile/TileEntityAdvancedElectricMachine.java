@@ -204,6 +204,7 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 			}
 
 			prevEnergy = getEnergy();
+			
 			if(!(gasTank.getGasType() == null || gasTank.getStored() == 0))
 			{
 				prevGas = gasTank.getGasType();
