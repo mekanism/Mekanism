@@ -63,27 +63,10 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					{
 						worldObj = transmitter.world();
 					}
-					
-					Coord4D coord = transmitter.coord();
-					
+
 					for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 					{
-						A acceptor = transmitter.getAcceptor(side);
-						
-						if(acceptor != null)
-						{
-							Coord4D acceptorCoord = coord.getFromSide(side);
-							possibleAcceptors.put(acceptorCoord, acceptor);
-							EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
-							
-							if(directions != null)
-							{
-								directions.add(side.getOpposite());
-							} 
-							else {
-								acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
-							}
-						}
+						updateTransmitterOnSide(transmitter, side);
 					}
 					
 					transmitter.setTransmitterNetwork((N)this);
@@ -107,40 +90,52 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 				for(ForgeDirection side : directionsChanged)
 				{
-					A acceptor = transmitter.getAcceptor(side);
-					Coord4D acceptorCoord = transmitter.coord().getFromSide(side);
-					EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
-					
-					if(acceptor != null)
-					{
-						possibleAcceptors.put(acceptorCoord, acceptor);
-						
-						if(directions != null)
-						{
-							directions.add(side.getOpposite());
-						} 
-						else {
-							acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
-						}
-					}
-					else {
-						if(directions != null)
-						{
-							directions.remove(side.getOpposite());
-							
-							if(directions.isEmpty())
-							{
-								possibleAcceptors.remove(acceptorCoord);
-								acceptorDirections.remove(acceptorCoord);
-							}
-						}
-					}
+					updateTransmitterOnSide(transmitter, side);
 				}
 			}
 			
 			changedAcceptors.clear();
 		}
 	}
+
+	public void updateTransmitterOnSide(IGridTransmitter<A, N> transmitter, ForgeDirection side)
+	{
+		A acceptor = transmitter.getAcceptor(side);
+		Coord4D acceptorCoord = transmitter.coord().getFromSide(side);
+		EnumSet<ForgeDirection> directions = acceptorDirections.get(acceptorCoord);
+
+		if(acceptor != null)
+		{
+			possibleAcceptors.put(acceptorCoord, acceptor);
+
+			if(directions != null)
+			{
+				directions.add(side.getOpposite());
+			}
+			else {
+				acceptorDirections.put(acceptorCoord, EnumSet.of(side.getOpposite()));
+			}
+		}
+		else {
+			if(directions != null)
+			{
+				directions.remove(side.getOpposite());
+
+				if(directions.isEmpty())
+				{
+					possibleAcceptors.remove(acceptorCoord);
+					acceptorDirections.remove(acceptorCoord);
+				}
+			}
+			else
+			{
+				possibleAcceptors.remove(acceptorCoord);
+				acceptorDirections.remove(acceptorCoord);
+			}
+		}
+
+	}
+
 
 	public abstract void absorbBuffer(IGridTransmitter<A, N> transmitter);
 
