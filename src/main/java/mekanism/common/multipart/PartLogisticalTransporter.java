@@ -444,8 +444,8 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		return (MultipartTransporter)transmitterDelegate;
 	}
 
-	public int getCost()
+	public double getCost()
 	{
-		return 1;
+		return 5.D / tier.speed;
 	}
 }
