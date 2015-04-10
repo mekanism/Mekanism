@@ -246,7 +246,7 @@ item.dirtySilverDust.name=Dreckiger Silberstaub
 item.dirtyLeadDust.name=Dreckiger Bleistaub
 
 //Ingots
-item.obsidianIngot.name=Obsidianbarren
+item.obsidianIngot.name=Raffinierter Obsidianbarren
 item.osmiumIngot.name=Osmiumbarren
 item.bronzeIngot.name=Bronzebarren
 item.glowstoneIngot.name=Glowstonebarren
@@ -477,6 +477,8 @@ gui.toggleCooling=Kühlmessungen umschalten
 gui.coolingMeasurements=Aktive Kühlung
 gui.redstoneOutputMode=Redstone-Modus
 gui.entityDetection=Entity-Erkennung
+gui.moveUp=Nach oben
+gui.moveDown=Nach unten
 
 gui.reactor.injectionRate=Injektionsrate
 
@@ -731,6 +733,7 @@ tooltip.ReactorController=Der alles kontrollierende Block für !nden gesamten Fu
 tooltip.ReactorFrame=Verstärkte Hülle, welche im !nFusionsreaktor-Multiblock verwendet werden kann.
 tooltip.ReactorNeutronCapturePlate=Ein Block, der zum Blockieren der Strahlung !naus einem Fusionsreaktors verwendet werden kann !nund bei der Produktion von Tritium hilft.
 tooltip.ReactorPort=Ein Block aus verstärktem Material, welcher sowohl den Gas- als auch den Energietransfer des Fusionsreaktors regeln kann.
+tooltip.ReactorLogicAdapter=Ein Block, welcher verwendet werden kann, !num einen Reaktor mit Redstone zu überwachen.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder !nHöhenlage der Welt gefunden werden kann. !nEs ist für seine zahlreichen Verwendungszwecke !nin der Konstruktion von Maschinen bekannt.
 tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass !nfür die Produktion von Kabeln verwendet werden kann. !nSeine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
