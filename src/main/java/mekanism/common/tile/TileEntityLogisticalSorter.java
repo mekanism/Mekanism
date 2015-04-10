@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.EnumSet;
-
-import com.sun.media.jfxmedia.logging.Logger;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -35,7 +35,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
-import io.netty.buffer.ByteBuf;
 
 public class TileEntityLogisticalSorter extends TileEntityElectricBlock implements IRedstoneControl, IActiveState, IFilterAccess, ISustainedData
 {
