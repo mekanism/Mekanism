@@ -35,8 +35,6 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 
 	protected Range4D packetRange = null;
 
-	protected int ticksSinceCreate = 0;
-
 	protected int capacity = 0;
 	protected double meanCapacity = 0;
 
@@ -86,11 +84,14 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			for(Entry<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> entry : changedAcceptors.entrySet())
 			{
 				IGridTransmitter<A, N> transmitter = entry.getKey();
-				EnumSet<ForgeDirection> directionsChanged = entry.getValue();
-
-				for(ForgeDirection side : directionsChanged)
+				if(transmitter.isValid())
 				{
-					updateTransmitterOnSide(transmitter, side);
+					EnumSet<ForgeDirection> directionsChanged = entry.getValue();
+
+					for(ForgeDirection side : directionsChanged)
+					{
+						updateTransmitterOnSide(transmitter, side);
+					}
 				}
 			}
 			
