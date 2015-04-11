@@ -414,7 +414,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(fluidTank.getFluid().fluidID);
+			data.add(fluidTank.getFluid().getFluidID());
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
