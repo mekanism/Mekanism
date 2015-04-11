@@ -25,57 +25,11 @@ import cofh.api.energy.IEnergyReceiver;
 
 public final class CableUtils
 {
-	private static Set<ForgeDirection> allSides = EnumSet.complementOf(EnumSet.of(ForgeDirection.UNKNOWN));
-
-	/**
-	 * Gets all the connected energy acceptors, whether IC2-based or BuildCraft-based, surrounding a specific tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return TileEntity[] of connected acceptors
-	 */
-	public static TileEntity[] getConnectedEnergyAcceptors(TileEntity tileEntity)
-	{
-		TileEntity[] acceptors = new TileEntity[] {null, null, null, null, null, null};
-
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity acceptor = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
-
-			if(isEnergyAcceptor(acceptor))
-			{
-				acceptors[orientation.ordinal()] = acceptor;
-			}
-		}
-
-		return acceptors;
-	}
-
 	public static boolean isEnergyAcceptor(TileEntity tileEntity)
 	{
 		return (tileEntity instanceof IStrictEnergyAcceptor ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver));
-	}
-
-	/**
-	 * Gets all the connected cables around a specific tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return TileEntity[] of connected cables
-	 */
-	public static TileEntity[] getConnectedCables(TileEntity tileEntity)
-	{
-		TileEntity[] cables = new TileEntity[] {null, null, null, null, null, null};
-
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity cable = Coord4D.get(tileEntity).getFromSide(orientation).getTileEntity(tileEntity.getWorldObj());
-
-			if(isCable(cable))
-			{
-				cables[orientation.ordinal()] = cable;
-			}
-		}
-
-		return cables;
 	}
 
 	public static boolean isCable(TileEntity tileEntity)
@@ -85,16 +39,6 @@ public final class CableUtils
 			return TransmissionType.checkTransmissionType(((ITransmitterTile)tileEntity).getTransmitter(), TransmissionType.ENERGY);
 		}
 		return false;
-	}
-
-	/**
-	 * Gets all the adjacent connections to a TileEntity.
-	 * @param tileEntity - center TileEntity
-	 * @return boolean[] of adjacent connections
-	 */
-	public static boolean[] getConnections(TileEntity tileEntity)
-	{
-		return getConnections(tileEntity, allSides);
 	}
 
 	/**
@@ -127,6 +71,11 @@ public final class CableUtils
 	 */
 	public static boolean isValidAcceptorOnSide(TileEntity cableEntity, TileEntity tile, ForgeDirection side)
 	{
+		if(isCable(tile))
+		{
+			return false;
+		}
+
 		if(isEnergyAcceptor(tile) && isConnectable(cableEntity, tile, side))
 		{
 			return true;
@@ -162,24 +111,6 @@ public final class CableUtils
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
 				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()));
-	}
-
-	/**
-	 * Whether or not a cable can connect to a specific acceptor.
-	 * @param side - side to check
-	 * @param tile - cable TileEntity
-	 * @return whether or not the cable can connect to the specific side
-	 */
-	public static boolean canConnectToAcceptor(ForgeDirection side, TileEntity tile)
-	{
-		if(tile == null)
-		{
-			return false;
-		}
-
-		TileEntity tileEntity = Coord4D.get(tile).getFromSide(side).getTileEntity(tile.getWorldObj());
-
-		return isConnectable(tile, tileEntity, side);
 	}
 
 	public static boolean isConnectable(TileEntity orig, TileEntity tileEntity, ForgeDirection side)
