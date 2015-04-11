@@ -382,6 +382,13 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@Override
 	public EnergyAcceptorWrapper getCachedAcceptor(ForgeDirection side)
 	{
-		return EnergyAcceptorWrapper.get(cachedAcceptors[side.ordinal()]);
+		ConnectionType type = connectionTypes[side.ordinal()];
+
+		if(type == ConnectionType.PULL || type == ConnectionType.NONE)
+		{
+			return null;
+		}
+
+		return connectionMapContainsSide(currentAcceptorConnections, side) ? EnergyAcceptorWrapper.get(cachedAcceptors[side.ordinal()]) : null;
 	}
 }
