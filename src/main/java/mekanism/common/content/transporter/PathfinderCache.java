@@ -1,6 +1,5 @@
 package mekanism.common.content.transporter;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -19,20 +18,19 @@ public class PathfinderCache
 		reset();
 	}
 	
-	public static ArrayList<Coord4D> getCache(Coord4D start, Coord4D end, EnumSet<ForgeDirection> sides)
+	public static List<Coord4D> getCache(Coord4D start, Coord4D end, EnumSet<ForgeDirection> sides)
 	{
-		ArrayList<Coord4D> ret = null;
+		List<Coord4D> ret = null;
 		
-		for(Map.Entry<PathData, List<Coord4D>> entry : cachedPaths.entrySet())
+		for(ForgeDirection side : sides)
 		{
-			PathData data = entry.getKey();
+			PathData data = new PathData(start, end, side);
+
+			List<Coord4D> test = cachedPaths.get(data);
 			
-			if(data.startTransporter.equals(start) && data.end.equals(end) && sides.contains(data.endSide))
+			if(ret == null || (test != null && test.size() < ret.size()))
 			{
-				if(ret == null || entry.getValue().size() < ret.size())
-				{
-					ret = (ArrayList)entry.getValue();
-				}
+				ret = test;
 			}
 		}
 		

@@ -295,4 +295,16 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 			return buffer.receive(gasStack, doEmit);
 		}
 	}
+
+	@Override
+	public IGasHandler getCachedAcceptor(ForgeDirection side)
+	{
+		if(cachedAcceptors[side.ordinal()] instanceof IGasHandler)
+		{
+			return super.getCachedAcceptor(side);
+		}
+		return null;
+	}
+
+
 }

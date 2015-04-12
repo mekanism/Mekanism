@@ -260,7 +260,8 @@ public class TransmitterNetworkRegistry
 
 		public void addNetworkToIterated(Coord4D from)
 		{
-			networksFound.add(startPoint.getExternalNetwork(from));
+			N net = startPoint.getExternalNetwork(from);
+			if(net != null) networksFound.add(net);
 		}
 	}
 }
