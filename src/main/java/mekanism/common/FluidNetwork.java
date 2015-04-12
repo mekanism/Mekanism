@@ -161,7 +161,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 					if(acceptor != null && fluidToSend != null)
 					{
-						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.getFluidID(), currentSending), doTransfer);
+						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
 					}
 
 					if(fluidSent > prev)

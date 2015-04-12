@@ -130,7 +130,7 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 			container.setTagCompound(new NBTTagCompound());
 		}
 		
-		if(stack == null || stack.amount == 0 || stack.getFluidID() == 0)
+		if(stack == null || stack.amount == 0 || stack.fluidID == 0)
 		{
 			container.stackTagCompound.removeTag("fluidStack");
 		}
