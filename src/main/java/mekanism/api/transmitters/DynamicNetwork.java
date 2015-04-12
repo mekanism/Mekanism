@@ -84,6 +84,7 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 			for(Entry<IGridTransmitter<A, N>, EnumSet<ForgeDirection>> entry : changedAcceptors.entrySet())
 			{
 				IGridTransmitter<A, N> transmitter = entry.getKey();
+				
 				if(transmitter.isValid())
 				{
 					EnumSet<ForgeDirection> directionsChanged = entry.getValue();
@@ -128,15 +129,13 @@ public abstract class DynamicNetwork<A, N extends DynamicNetwork<A, N>> implemen
 					acceptorDirections.remove(acceptorCoord);
 				}
 			}
-			else
-			{
+			else {
 				possibleAcceptors.remove(acceptorCoord);
 				acceptorDirections.remove(acceptorCoord);
 			}
 		}
 
 	}
-
 
 	public abstract void absorbBuffer(IGridTransmitter<A, N> transmitter);
 

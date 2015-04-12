@@ -108,6 +108,7 @@ public class TransmitterNetworkRegistry
 		{
 			logger.debug("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
 		}
+		
 		for(IGridTransmitter invalid : invalidTransmitters)
 		{
 			if(!invalid.isOrphan())
@@ -119,6 +120,7 @@ public class TransmitterNetworkRegistry
 				}
 			}
 		}
+		
 		invalidTransmitters.clear();
 	}
 
