@@ -41,11 +41,11 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>>
 	public int hashCode()
 	{
 		int code = 1;
-		code = 31 * locations.hashCode();
-		code = 31 * volLength;
-		code = 31 * volWidth;
-		code = 31 * volHeight;
-		code = 31 * volume;
+		code = 31 * code + locations.hashCode();
+		code = 31 * code + volLength;
+		code = 31 * code + volWidth;
+		code = 31 * code + volHeight;
+		code = 31 * code + volume;
 		return code;
 	}
 
