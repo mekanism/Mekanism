@@ -178,14 +178,17 @@ public final class TransporterPathfinder
 		public Destination calculateScore(World world)
 		{
 			score = 0;
+			
 			for(Coord4D location : path)
 			{
 				TileEntity tile = location.getTileEntity(world);
+				
 				if(tile instanceof ITransporterTile)
 				{
 					score += ((ITransporterTile)tile).getTransmitter().getCost();
 				}
 			}
+			
 			return this;
 		}
 
@@ -223,9 +226,15 @@ public final class TransporterPathfinder
 
 	public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, int min)
 	{
-		InventoryNetwork network = start.getTransmitterNetwork();
-		List<AcceptorData> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
 		List<Destination> paths = new ArrayList<Destination>();
+		InventoryNetwork network = start.getTransmitterNetwork();
+		
+		if(network == null)
+		{
+			return paths;
+		}
+		
+		List<AcceptorData> acceptors = network.calculateAcceptors(stack.itemStack, stack.color);
 
 		for(AcceptorData entry : acceptors)
 		{
