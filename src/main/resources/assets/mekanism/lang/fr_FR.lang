@@ -10,6 +10,8 @@ item.AtomicAlloy.name=Alliage atomique
 item.EnergyTablet.name=Tablette énergétique
 item.SpeedUpgrade.name=Amélioration de vitesse
 item.EnergyUpgrade.name=Amélioration d'énergie
+item.FilterUpgrade.name=Amélioration de filtre
+item.GasUpgrade.name=Amélioration de gaz
 item.Robit.name=Robit
 item.AtomicDisassembler.name=Désassembleur atomique
 item.ElectricBow.name=Arc électrique
@@ -31,6 +33,7 @@ item.ElectrolyticCore.name=Noyau électrolytique
 item.Sawdust.name=Sciure
 item.Salt.name=Sel
 item.BrineBucket.name=Seau de saumure
+item.LithiumBucket.name=Seau de lithium
 item.FreeRunners.name=Bottes rapides
 item.ArmoredJetpack.name=Propulseur blindé
 item.FilterCard.name=Carte à filtre
@@ -40,6 +43,9 @@ item.HDPERod.name=Tige de PEHD
 item.HDPESheet.name=Feuille de PEHD
 item.PlaStick.name=Plastique
 item.Substrate.name=Substrat
+item.Flamethrower.name=Lance-flamme
+item.GaugeDropper.name=Gauge compte-goutte
+item.BioFuel.name=Bio-carburant
 
 //Control Circuits
 item.BasicControlCircuit.name=Circuit de contrôle de base
@@ -78,16 +84,24 @@ tile.BasicBlock.SalinationController.name=Contrôleur de salinisation
 tile.BasicBlock.SalinationValve.name=Valve de salinisation
 
 //Basic Block 2 (second ID iteration)
-tile.BasicBlock2.SalinationBlock.name=Bloc de salinisation
+tile.BasicBlock2.SolarEvaporationBlock.name=Solar Evaporation Block
+tile.BasicBlock2.InductionCasing.name=Induction Casing
+tile.BasicBlock2.InductionPort.name=Port d'induction
+tile.BasicBlock2.InductionCellBasic.name=Cellule d'induction de base
+tile.BasicBlock2.InductionCellAdvanced.name=Cellule d'induction avancée
+tile.BasicBlock2.InductionCellElite.name=Cellule d'induction élite
+tile.BasicBlock2.InductionCellUltimate.name=Cellule d'induction ultime
+tile.BasicBlock2.InductionProviderBasic.name=Fournisseur d'induction de base
+tile.BasicBlock2.InductionProviderAdvanced.name=Fournisseur d'induction avancé
+tile.BasicBlock2.InductionProviderElite.name=Fournisseur d'induction élite
+tile.BasicBlock2.InductionProviderUltimate.name=Fournisseur d'induction ultime
 
 //Machine Block
 tile.MachineBlock.EnrichmentChamber.name=Chambre d'enrichissement
 tile.MachineBlock.OsmiumCompressor.name=Compresseur d'osmium
 tile.MachineBlock.Combiner.name=Combinateur
 tile.MachineBlock.Crusher.name=Broyeur
-tile.MachineBlock.BasicFactory.name=Usine basique
-tile.MachineBlock.AdvancedFactory.name=Usine avancée
-tile.MachineBlock.EliteFactory.name=Usine d'élite
+tile.MachineBlock.Factory.name=Usine 
 tile.MachineBlock.MetallurgicInfuser.name=Infuseur métallurgique
 tile.MachineBlock.PurificationChamber.name=Chambre de purification
 tile.MachineBlock.EnergizedSmelter.name=Fonderie alimentée
@@ -114,6 +128,13 @@ tile.MachineBlock2.PressurizedReactionChamber.name=Chambre de réaction pressuri
 tile.MachineBlock2.PressurizedReactionChamber.short.name=CRP
 tile.MachineBlock2.PortableTank.name=Réservoir portable
 tile.MachineBlock2.FluidicPlenisher.name=Remplisseur fluidique
+tile.MachineBlock2.Laser.name=Laser
+tile.MachineBlock2.LaserAmplifier.name=Amplifieur laser
+tile.MachineBlock2.LaserTractorBeam.name=Rayon tracteur laser
+
+//Machine Block 3 (third ID iteration)
+tile.MachineBlock3.SolarNeutronActivator.name=Activateur à neutrons solaire
+tile.MachineBlock3.Oredictionificator.name=Oredictionificateur
 
 //Plastic
 tile.PlasticBlock.name=Bloc de plastique
@@ -131,6 +152,7 @@ infuse.diamond=Diamant
 infuse.redstone=Redstone
 infuse.fungi=Moisissure
 infuse.obsidian=Obsidienne
+infuse.bio=Biomasse
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Minerai d'osmium
@@ -138,7 +160,10 @@ tile.OreBlock.CopperOre.name=Minerai de cuivre
 tile.OreBlock.TinOre.name=Minerai d'étain
 
 //Transmitters
-tile.Transmitter.PressurizedTube.name=Tube pressurisé
+item.MultipartTransmitter.BasicPressurizedTube.name=Tube pressurisé de base
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Tube pressurisé avancé
+item.MultipartTransmitter.ElitePressurizedTube.name=Tube pressurisé élite
+item.MultipartTransmitter.UltimatePressurizedTube.name=Tube pressurisé ultime
 item.MultipartTransmitter.BasicUniversalCable.name=Câble universel de base
 item.MultipartTransmitter.AdvancedUniversalCable.name=Câble universel avancé
 item.MultipartTransmitter.EliteUniversalCable.name=Câble universel élite
@@ -147,7 +172,10 @@ item.MultipartTransmitter.BasicMechanicalPipe.name=Tuyau mécanique de base
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Tuyau mécanique avancé
 item.MultipartTransmitter.EliteMechanicalPipe.name=Tuyau mécanique élite
 item.MultipartTransmitter.UltimateMechanicalPipe.name=Tuyau mécanique ultime
-item.MultipartTransmitter.LogisticalTransporter.name=Transporteur logistique
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Transporteur logistique de base
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Transporteur logistique avancé
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Transporteur logistique élite
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Transporteur logistique ultime
 item.MultipartTransmitter.RestrictiveTransporter.name=Transporteur restrictif
 item.MultipartTransmitter.DiversionTransporter.name=Transporteur divergent
 
@@ -159,11 +187,18 @@ tile.EnergyCube.Basic.name=Cube d'énergie basique
 tile.EnergyCube.Advanced.name=Cube d'énergie avancé
 tile.EnergyCube.Elite.name=Cube d'énergie d'élite
 tile.EnergyCube.Ultimate.name=Cube d'énergie ultime
+tile.EnergyCubeCreative.name=Cube d'énergie en créatif
+
+//Factory Installers
+item.basicFactoryInstaller.name=Installeur d'usine de base
+item.advancedFactoryInstaller.name=Installeur d'usine avancé
+item.eliteFactoryInstaller.name=Installeur d'usine élite
 
 //Dust
 item.ironDust.name=Poudre de fer
 item.goldDust.name=Poudre d'or
 item.osmiumDust.name=Poudre d'osmium
+item.obsidianDust.name=Poudre d'obsidienne
 item.obsidianDust.name=Poudre d'obsidienne raffinée
 item.diamondDust.name=Poudre de diamant
 item.steelDust.name=Poudre d'acier
@@ -172,6 +207,7 @@ item.tinDust.name=Poudre d'étain
 item.silverDust.name=Poudre d'argent
 item.leadDust.name=Poudre de plomb
 item.sulfurDust.name=Poudre de souffre
+item.lithiumDust.name=Poudre de lithium
 
 //Clumps
 item.ironClump.name=Bouquet de fer
@@ -180,7 +216,6 @@ item.osmiumClump.name=Bouquet d'osmium
 item.copperClump.name=Bouquet de cuivre
 item.tinClump.name=Bouquet d'étain
 item.silverClump.name=Bouquet d'argent
-item.obsidianClump.name=Bouquet d'obsidienne
 item.leadClump.name=Bouquet de plomb
 
 //Shards
@@ -190,7 +225,6 @@ item.osmiumShard.name=Éclat d'osmium
 item.copperShard.name=Éclat de cuivre
 item.tinShard.name=Éclat d'étain
 item.silverShard.name=Éclat d'argent
-item.obsidianShard.name=Éclat d'obsidienne
 item.leadShard.name=Éclat de plomb
 
 //Crystals
@@ -200,7 +234,6 @@ item.osmiumCrystal.name=Cristal d'osmium
 item.copperCrystal.name=Cristal de cuivre
 item.tinCrystal.name=Cristal d'étain
 item.silverCrystal.name=Cristal d'argent
-item.obsidianCrystal.name=Cristal d'obsidienne
 item.leadCrystal.name=Cristal de plomb
 
 //Dirty Dust
@@ -210,11 +243,10 @@ item.dirtyOsmiumDust.name=Poudre d'osmium salie
 item.dirtyCopperDust.name=Poudre de cuivre salie
 item.dirtyTinDust.name=Poudre d'étain salie
 item.dirtySilverDust.name=Poudre d'argent salie
-item.dirtyObsidianDust.name=Poudre d'obsidienne salie
 item.dirtyLeadDust.name=Poudre de plomb salie
 
 //Ingots
-item.obsidianIngot.name=Lingot d'obsidienne
+item.obsidianIngot.name=Lingot d'obsidienne raffinée
 item.osmiumIngot.name=Lingot d'osmium
 item.bronzeIngot.name=Lingot de bronze
 item.glowstoneIngot.name=Lingot de pierre lumineuse
@@ -236,6 +268,10 @@ gas.liquidStone=Pierre liquide
 gas.ethene=Ethylène
 gas.sodium=Sodium gazeux
 gas.brine=Saumure gazeuse
+gas.deuterium=Deutérium
+gas.tritium=Tritium
+gas.lithium=Lithium
+gas.fusionFuelDT=Carburant D-T
 
 gas.iron=Boue de fer
 gas.gold=Boue d'or
@@ -268,9 +304,13 @@ fluid.sulfurTrioxideGas=Trioxide de souffre liquide
 fluid.sulfuricAcid=Acide sulfurique
 fluid.hydrogenChloride=Chlorure d'hydrogène
 fluid.brine=Saumure
-fluid.ethene=Éthylène
- liquide
+fluid.ethene=Éthylène liquide
 fluid.sodium=Sodium liquide
+fluid.heavyWater=Eau lourde
+fluid.lithium=Lithium liquide
+fluid.deuterium=Deutérium liquide
+fluid.tritium=Tritium liquide
+fluid.fusionFuelDT=Carburant D-T liquide
 
 //OreGas names
 oregas.iron=Minerai de fer
@@ -282,6 +322,20 @@ oregas.silver=Minerai d'argent
 oregas.obsidian=Minerai d'obsidienne
 oregas.lead=Minerai de plomb
 
+//Tier names
+tier.Basic=De base
+tier.Advanced=Advancé
+tier.Elite=Elite
+tier.Ultimate=Ultime
+tier.Creative=Créatif
+
+//Transmission types
+transmission.Energy=Energy
+transmission.Fluids=Fluides
+transmission.Gases=Gaz
+transmission.Items=Eléments
+transmission.Heat=Chaleur
+
 //Update handler text
 update.consider=Envisagez de mettre à jour à la version
 update.newFeatures=Nouvelles fonctionnalités
@@ -290,13 +344,38 @@ update.toDownload=Pour télécharger
 update.devBuild=Vous utilisez la version développeur
 update.outdated=Vous utilisez d'anciennes versions d'un ou plusieurs modules
 
+//Upgrades
+upgrade.energy=Energie
+upgrade.energy.desc=Increases energy efficiency !nand capacity of machinery.
+upgrade.speed=Vitesse
+upgrade.speed.desc=Increases speed of machinery.
+upgrade.filter=Filtre
+upgrade.filter.desc=A filter that separates !nheavy water from regular water.
+upgrade.gas=Gaz
+upgrade.gas.desc=Increases the efficiency !nof gas-using machinery.
+
 //Key description text
-key.mode=Bascule de mode
+key.mode=Bascule de mode d'éléments
+key.armorMode=Bascule de mode d'armure
 key.voice=Voix
 
+//Entities
+entity.Mekanism.Robit.name=Robit
+entity.Mekanism.BabySkeleton.name=Bébé squelette
+
 //Config Gui
-mekanism.configgui.ctgy.general.tooltip=Options générales de Mekanism et de tous ses modules
-mekanism.configgui.ctgy.usage.tooltip=Paramètre des machines et de leur utilisation énergétique
+mekanism.configgui.ctgy.general=Paramètres généraux de Mekanism
+mekanism.configgui.ctgy.machines=Paramètres des machines
+mekanism.configgui.ctgy.tier=Paramètres de niveau
+mekanism.configgui.ctgy.usage=Paramètres d'utilisation
+mekanism.configgui.ctgy.client=Paramètres client 
+
+//Config Tooltips
+mekanism.configgui.ctgy.general.tooltip=Paramètres générales de Mekanism et de tous ses modules
+mekanism.configgui.ctgy.machines.tooltip=paramètres d'activation ou de désactivation de machinerie spécifique
+mekanism.configgui.ctgy.tier.tooltip=Paramètres de niveau Mekanism et de leur valeur correspondantes
+mekanism.configgui.ctgy.usage.tooltip=Paramètres de la machinerie et de leur utilisation énergétique
+mekanism.configgui.ctgy.client.tooltip=Paramètres spécifiques au client de Mekanism et de tous ses modules
 
 //Gui text
 gui.removeSpeedUpgrade=Retirer l'amélioration de vitesse
