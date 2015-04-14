@@ -18,6 +18,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 
 	public static EnergyAcceptorWrapper get(TileEntity tileEntity)
 	{
+		if(tileEntity.getWorldObj() == null)
+		{
+			return null;
+		}
+		
 		EnergyAcceptorWrapper wrapper = null;
 		
 		if(tileEntity instanceof IStrictEnergyAcceptor)
