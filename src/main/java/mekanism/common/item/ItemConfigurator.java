@@ -16,6 +16,7 @@ import mekanism.common.SideData;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricChest;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -111,7 +112,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 			}
 			else if(getState(stack) == ConfiguratorMode.EMPTY) //Empty
 			{
-				if(tile instanceof IInventory)
+				if(tile instanceof TileEntityContainerBlock)
 				{
 					IInventory inv = (IInventory)tile;
 
