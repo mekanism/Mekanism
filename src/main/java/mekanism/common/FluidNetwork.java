@@ -82,6 +82,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 	public void absorbBuffer(IGridTransmitter<IFluidHandler, FluidNetwork> transmitter)
 	{
 		Object b = transmitter.getBuffer();
+		
 		if(!(b instanceof FluidStack) || ((FluidStack)b).getFluid() == null || ((FluidStack)b).amount == 0)
 		{
 			return;
@@ -94,10 +95,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 			buffer = fluid.copy();
 			return;
 		}
-
-		if(!fluid.isFluidEqual(buffer)) Mekanism.logger.warn("Fluid type " + fluid.getFluid().getName() + " of buffer doesn't match type " + buffer.getFluid().getName() + " of absorbing network");
-
-		buffer.amount += fluid.amount;
+		
+		//TODO better multiple buffer impl
+		if(buffer.isFluidEqual(fluid))
+		{
+			buffer.amount += fluid.amount;
+		}
+		
 		fluid.amount = 0;
 	}
 

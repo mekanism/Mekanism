@@ -98,6 +98,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 	public void absorbBuffer(IGridTransmitter<IGasHandler, GasNetwork> transmitter)
 	{
 		Object b = transmitter.getBuffer();
+		
 		if(!(b instanceof GasStack) || ((GasStack)b).getGas() == null || ((GasStack)b).amount == 0)
 		{
 			return;
@@ -111,9 +112,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 			return;
 		}
 
-//		if(!gas.isGasEqual(buffer)) Mekanism.logger.warn("Gas type " + gas.getGas().getName() + " of buffer doesn't match type " + buffer.getGas().getName() + " of absorbing network");
-
-		buffer.amount += gas.amount;
+		//TODO better multiple buffer impl
+		if(buffer.isGasEqual(gas))
+		{
+			buffer.amount += gas.amount;
+		}
+		
 		gas.amount = 0;
 	}
 
