@@ -211,7 +211,7 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 			{
 				for(ForgeDirection side : sides)
 				{
-					if(acceptor.canReceiveEnergy(side) && acceptor.getNeeded() > 0)
+					if(acceptor.canReceiveEnergy(side) && acceptor.needsEnergy(side))
 					{
 						toReturn.add(acceptor);
 						break;

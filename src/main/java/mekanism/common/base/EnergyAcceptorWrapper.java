@@ -46,7 +46,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		return wrapper;
 	}
 
-	public abstract double getNeeded();
+	public abstract boolean needsEnergy(ForgeDirection side);
 
 	public static class MekanismAcceptor extends EnergyAcceptorWrapper
 	{
@@ -88,9 +88,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double getNeeded()
+		public boolean needsEnergy(ForgeDirection side)
 		{
-			return acceptor.getMaxEnergy() - acceptor.getEnergy();
+			return acceptor.getMaxEnergy() - acceptor.getEnergy() > 0;
 		}
 	}
 
@@ -136,9 +136,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double getNeeded()
+		public boolean needsEnergy(ForgeDirection side)
 		{
-			return fromRF(acceptor.getMaxEnergyStored(ForgeDirection.UNKNOWN) - acceptor.getEnergyStored(ForgeDirection.UNKNOWN));
+			return acceptor.getMaxEnergyStored(side) - acceptor.getEnergyStored(side) > 0 || acceptor.receiveEnergy(side, 1, true) > 0;
 		}
 
 		public int toRF(double joules)
@@ -192,19 +192,14 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		}
 
 		@Override
-		public double getNeeded()
+		public boolean needsEnergy(ForgeDirection side)
 		{
-			return fromEU(acceptor.getDemandedEnergy());
+			return acceptor.getDemandedEnergy() > 0;
 		}
 
 		public double toEU(double joules)
 		{
 			return joules * general.TO_IC2;
-		}
-
-		public double fromEU(double eu)
-		{
-			return eu * general.FROM_IC2;
 		}
 	}
 }
