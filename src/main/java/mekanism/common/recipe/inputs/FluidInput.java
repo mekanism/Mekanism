@@ -47,7 +47,7 @@ public class FluidInput extends MachineInput<FluidInput>
 	@Override
 	public int hashIngredients()
 	{
-		return ingredient.hashCode();
+		return ingredient.fluid != null ? ingredient.fluid.hashCode() : 0;
 	}
 
 	@Override

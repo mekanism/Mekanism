@@ -147,7 +147,7 @@ public class PressurizedInput extends MachineInput<PressurizedInput>
 	@Override
 	public int hashIngredients()
 	{
-		return StackUtils.hashItemStack(theSolid) << 16 | theFluid.hashCode() << 8 | theGas.hashCode();
+		return StackUtils.hashItemStack(theSolid) << 16 | (theFluid.fluid != null ? theFluid.fluid.hashCode() : 0) << 8 | theGas.hashCode();
 	}
 
 	@Override
