@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.Mekanism;
 import mekanism.common.content.matrix.MatrixCache;
@@ -12,9 +13,18 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage
+import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.Optional.Interface;
+import cpw.mods.fml.common.Optional.Method;
+
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
+
+@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft")
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IPeripheral
 {
 	public int clientCells;
 	public int clientProviders;
@@ -154,4 +164,64 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	{
 		return structure != null ? structure.storageCap : 0;
 	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String getType()
+	{
+		return "Mekanism-InductionMatrix";
+	}
+
+	public static final String[] NAMES = new String[] { "getEnergyStored", "getMaxEnergyStored", "getEnergyStoredMJ", "getMaxEnergyStoredMJ", "getLastOutput", "getOutputCap" };
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public String[] getMethodNames()
+	{
+		return NAMES;
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException
+	{
+		if (structure == null)
+		{
+			return new Object[] { "Unformed." };
+		}
+
+		switch (method)
+		{
+			case 0:
+				return new Object[] { getEnergy() * general.TO_TE };
+			case 1:
+				return new Object[] { getMaxEnergy() * general.TO_TE };
+			case 2:
+				return new Object[] { getEnergy() };
+			case 3:
+				return new Object[] { getMaxEnergy() };
+			case 4:
+				return new Object[] { structure.lastOutput };
+			case 5:
+				return new Object[] { structure.outputCap };
+			default:
+				Mekanism.logger.error("Attempted to call unknown method with computer ID " + computer.getID());
+				return new Object[] { "Unknown command." };
+		}
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public boolean equals(IPeripheral other)
+	{
+		return this == other;
+	}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void attach(IComputerAccess computer) {}
+
+	@Override
+	@Method(modid = "ComputerCraft")
+	public void detach(IComputerAccess computer) {}
 }
