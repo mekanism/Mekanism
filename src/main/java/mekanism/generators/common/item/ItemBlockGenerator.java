@@ -271,7 +271,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public void setFluidStack(FluidStack fluidStack, Object... data)
 	{
-		if(fluidStack == null || fluidStack.amount == 0 || fluidStack.fluidID == 0)
+		if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluidID() == 0)
 		{
 			return;
 		}

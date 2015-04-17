@@ -312,7 +312,7 @@ public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerDat
 		if(structure != null && structure.waterStored != null)
 		{
 			data.add(1);
-			data.add(structure.waterStored.fluidID);
+			data.add(structure.waterStored.getFluidID());
 			data.add(structure.waterStored.amount);
 		}
 		else {
@@ -322,7 +322,7 @@ public class TileEntityBoiler extends TileEntityMultiblock<SynchronizedBoilerDat
 		if(structure != null && structure.steamStored != null)
 		{
 			data.add(1);
-			data.add(structure.steamStored.fluidID);
+			data.add(structure.steamStored.getFluidID());
 			data.add(structure.steamStored.amount);
 		}
 		else {
