@@ -79,8 +79,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		for(GuiElement element : guiElements)
 		{
@@ -150,23 +150,20 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
-		int xAxis = mouseX - guiWidth;
-		int yAxis = mouseY - guiHeight;
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		for(GuiElement element : guiElements)
 		{
-			element.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
+			element.renderBackground(xAxis, yAxis, guiLeft, guiTop);
 		}
 	}
 
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int button)
 	{
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		for(GuiElement element : guiElements)
 		{
@@ -230,8 +227,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		super.mouseClickMove(mouseX, mouseY, button, ticks);
 
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		for(GuiElement element : guiElements)
 		{
@@ -244,8 +241,8 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	{
 		super.mouseMovedOrUp(mouseX, mouseY, type);
 		
-		int xAxis = (mouseX - (width - xSize) / 2);
-		int yAxis = (mouseY - (height - ySize) / 2);
+		int xAxis = mouseX - guiLeft;
+		int yAxis = mouseY - guiTop;
 
 		for(GuiElement element : guiElements)
 		{
@@ -260,12 +257,12 @@ public abstract class GuiMekanism extends GuiContainer implements IGuiWrapper
 	
 	public int getXPos()
 	{
-		return (width - xSize) / 2;
+		return guiLeft;
 	}
 	
 	public int getYPos()
 	{
-		return (height - ySize) / 2;
+		return guiTop;
 	}
 
 	protected FontRenderer getFontRenderer()

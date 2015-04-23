@@ -17,6 +17,6 @@ public class GuiPrecisionSawmill extends GuiChanceMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.PURPLE;
+		return ProgressBar.SAW;
 	}
 }

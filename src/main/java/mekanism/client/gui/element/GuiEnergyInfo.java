@@ -8,7 +8,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiEnergyInfo extends GuiElement
@@ -19,13 +18,20 @@ public class GuiEnergyInfo extends GuiElement
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
 
+		lmntLeft = -26;
+		lmntTop = 138;
+
 		infoHandler = handler;
 	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+
+	public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def, int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 138, 26, 26);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiEnergyInfo.png"), gui, def);
+
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+
+		infoHandler = handler;
 	}
 
 	public static interface IInfoHandler
@@ -34,11 +40,11 @@ public class GuiEnergyInfo extends GuiElement
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 138, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -46,7 +52,7 @@ public class GuiEnergyInfo extends GuiElement
 	@Override
 	public void renderForeground(int xAxis, int yAxis)
 	{
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
+		if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 		{
 			displayTooltips(infoHandler.getInfo(), xAxis, yAxis);
 		}

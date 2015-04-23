@@ -11,7 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import codechicken.lib.vec.Rectangle4i;
 
 @SideOnly(Side.CLIENT)
 public class GuiSideConfigurationTab extends GuiElement
@@ -22,29 +21,31 @@ public class GuiSideConfigurationTab extends GuiElement
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, def);
 
+		lmntLeft = -26;
+		lmntTop = 6;
+
 		tileEntity = tile;
 	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+
+	public GuiSideConfigurationTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def, int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiConfigurationTab.png"), gui, def);
+
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+
+		tileEntity = tile;
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
+		boolean mouseOver = xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22;
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
-		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
-		}
+		guiObj.drawTexturedRect(guiLeft + lmntLeft + 5, guiTop + lmntTop + 4, 26, mouseOver?  0: 18, 18, 18);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -54,7 +55,7 @@ public class GuiSideConfigurationTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
+		if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 		{
 			displayTooltip(MekanismUtils.localize("gui.configuration.side"), xAxis, yAxis);
 		}
@@ -70,7 +71,7 @@ public class GuiSideConfigurationTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
+			if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 			{
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 9));
                 SoundHandler.playSound("gui.button.press");
