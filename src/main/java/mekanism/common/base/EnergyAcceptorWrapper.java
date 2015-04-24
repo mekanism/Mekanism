@@ -18,7 +18,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 
 	public static EnergyAcceptorWrapper get(TileEntity tileEntity)
 	{
-		if(tileEntity.getWorldObj() == null)
+		if(tileEntity != null && tileEntity.getWorldObj() == null)
 		{
 			return null;
 		}
