@@ -26,7 +26,7 @@ public class ContainerDigitalMiner extends Container
 			}
 		}
 
-		addSlotToContainer(new SlotDischarge(tentity, 27, 152, 6));
+		addSlotToContainer(new SlotDischarge(tentity, 27, 14, 60));
 
 		int slotX;
 
