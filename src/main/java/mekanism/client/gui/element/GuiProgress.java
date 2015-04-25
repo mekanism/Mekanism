@@ -71,20 +71,26 @@ public class GuiProgress extends GuiElement
 
 	public enum ProgressBar
 	{
-		BLUE(28, 11, 0, 0),
-		YELLOW(28, 11, 0, 11),
-		RED(28, 11, 0, 22),
-		GREEN(28, 11, 0, 33),
-		PURPLE(28, 11, 0, 44),
-		STONE(28, 11, 0, 55),
-		CRUSH(28, 11, 0, 66),
+		BLUE(54, 18, 0, 0),
+		YELLOW(54, 18, 0, 18),
+		RED(54, 18, 0, 36),
+		GREEN(54, 18, 0, 54),
+		PURPLE(54, 18, 0, 72),
+		STONE(54, 18, 0, 90),
+		CRUSH(54, 18, 0, 108),
 
 		LARGE_RIGHT(52, 10, 128, 0),
 		LARGE_LEFT(52, 10, 128, 10),
 		MEDIUM(36, 10, 128, 20),
 		SMALL_RIGHT(32, 10, 128, 30),
 		SMALL_LEFT(32, 10, 128, 40),
-		BI(20, 8, 128, 50);
+		BI(20, 8, 128, 50),
+
+		SAW(54, 18, 0, 126),
+		ENRICH(54, 18, 0, 144),
+		COMPRESS(54, 18, 0, 162),
+		COMBINE(54, 18, 0, 180),
+		CRUSH2(54, 18, 0, 198);
 
 		public int width;
 		public int height;

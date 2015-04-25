@@ -9,7 +9,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -17,36 +16,36 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiTransporterConfigTab extends GuiElement
 {
 	public TileEntity tileEntity;
-	public int yPos;
 
 	public GuiTransporterConfigTab(IGuiWrapper gui, int y, TileEntity tile, ResourceLocation def)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTransporterConfigTab.png"), gui, def);
 
-		yPos = y;
+		lmntLeft = -26;
+		lmntTop = y;
+
 		tileEntity = tile;
 	}
-	
-	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+
+	public GuiTransporterConfigTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def, int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth - 26, guiHeight + yPos, 26, 26);
+		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTransporterConfigTab.png"), gui, def);
+
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+
+		tileEntity = tile;
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + yPos, 0, 0, 26, 26);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
+		boolean mouseOver = xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22;
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
-		{
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos+4, 26, 0, 18, 18);
-		}
-		else {
-			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + yPos+4, 26, 18, 18, 18);
-		}
+		guiObj.drawTexturedRect(guiLeft + lmntLeft + 5, guiTop + lmntTop + 4, 26, mouseOver?  0: 18, 18, 18);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -56,7 +55,7 @@ public class GuiTransporterConfigTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
+		if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 		{
 			displayTooltip(MekanismUtils.localize("gui.configuration.transporter"), xAxis, yAxis);
 		}
@@ -72,7 +71,7 @@ public class GuiTransporterConfigTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
+			if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 			{
 				Mekanism.packetHandler.sendToServer(new SimpleGuiMessage(Coord4D.get(tileEntity), 51));
                 SoundHandler.playSound("gui.button.press");
