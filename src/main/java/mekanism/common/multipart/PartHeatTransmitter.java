@@ -63,7 +63,8 @@ public class PartHeatTransmitter extends PartTransmitter<IHeatTransfer, HeatNetw
 	public static void registerIcons(IIconRegister register)
 	{
 		heatIcons.registerCenterIcons(register, new String[] {"HeatTransmitter"});
-		heatIcons.registerSideIcons(register, new String[] {"SmallTransmitterVertical", "SmallTransmitterHorizontal"});
+		heatIcons.registerSideIcons(register, new String[] {"SmallTransmitterVerticalBasic", "SmallTransmitterHorizontalBasic"});
+		//TODO tiers
 	}
 
 	@Override
