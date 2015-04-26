@@ -152,8 +152,12 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			{
 				if(searcher.state == State.FINISHED)
 				{
+					boolean prevRunning = running;
+					
 					reset();
 					start();
+					
+					running = prevRunning;
 				}
 
 				initCalc = true;
