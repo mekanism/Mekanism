@@ -333,6 +333,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		if(nbtTags.hasKey("color"))
 		{
 			getTransmitter().setColor(TransporterUtils.colors.get(nbtTags.getInteger("color")));
+			PathfinderCache.onChanged(Coord4D.get(tile()));
 		}
 
 		if(nbtTags.hasKey("stacks"))
