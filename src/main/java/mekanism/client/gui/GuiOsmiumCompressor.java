@@ -17,6 +17,6 @@ public class GuiOsmiumCompressor extends GuiAdvancedElectricMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.COMPRESS;
+		return ProgressBar.RED;
 	}
 }

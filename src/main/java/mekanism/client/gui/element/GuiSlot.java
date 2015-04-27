@@ -4,23 +4,30 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
+import codechicken.lib.vec.Rectangle4i;
 
 public class GuiSlot extends GuiElement
 {
+	protected int xLocation;
+	protected int yLocation;
+
 	protected int textureX;
 	protected int textureY;
 
+	protected int width;
+	protected int height;
+
 	protected SlotOverlay overlay = null;
 
-	public GuiSlot(SlotType type, IGuiWrapper gui, ResourceLocation def, int guiLeft, int guiTop)
+	public GuiSlot(SlotType type, IGuiWrapper gui, ResourceLocation def, int x, int y)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiSlot.png"), gui, def);
 
-		lmntLeft = guiLeft;
-		lmntTop = guiTop;
+		xLocation = x;
+		yLocation = y;
 
-		lmntWidth = type.width;
-		lmntHeight = type.height;
+		width = type.width;
+		height = type.height;
 
 		textureX = type.textureX;
 		textureY = type.textureY;
@@ -33,18 +40,24 @@ public class GuiSlot extends GuiElement
 	}
 	
 	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	{
+		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
+	}
+
+	@Override
 	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth + lmntLeft, guiHeight + lmntTop, textureX, textureY, lmntWidth, lmntHeight);
+		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, textureX, textureY, width, height);
 
 		if(overlay != null)
 		{
 			int w = overlay.width;
 			int h = overlay.height;
-			int xLocationOverlay = lmntLeft + (lmntWidth-w)/2;
-			int yLocationOverlay = lmntTop + (lmntHeight-h)/2;
+			int xLocationOverlay = xLocation + (width-w)/2;
+			int yLocationOverlay = yLocation + (height-h)/2;
 
 			guiObj.drawTexturedRect(guiWidth + xLocationOverlay, guiHeight + yLocationOverlay, overlay.textureX, overlay.textureY, w, h);
 		}
