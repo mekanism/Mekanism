@@ -201,10 +201,12 @@ public class GuiDigitalMiner extends GuiMekanism
 			drawTexturedModalRect(13, 17, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
 		}
 
+		/*
 		if(xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77)
 		{
 			drawCreativeTabHoveringText(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), xAxis, yAxis);
 		}
+		*/
 
 		// Auto eject
 		if(xAxis >= 33 && xAxis <= 46 && yAxis >= 32 && yAxis <= 45)

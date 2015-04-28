@@ -42,7 +42,7 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.STONE;
+		return ProgressBar.COMBINE;
 	}
 
 	@Override

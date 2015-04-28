@@ -87,18 +87,18 @@ public class NEIMekanismConfig implements IConfigureNEI
 		API.registerRecipeHandler(new SolarNeutronRecipeHandler());
 		API.registerUsageHandler(new SolarNeutronRecipeHandler());
 
-		API.setGuiOffset(GuiEnrichmentChamber.class, 16, 6);
-		API.setGuiOffset(GuiOsmiumCompressor.class, 16, 6);
-		API.setGuiOffset(GuiCrusher.class, 16, 6);
-		API.setGuiOffset(GuiCombiner.class, 16, 6);
-		API.setGuiOffset(GuiPurificationChamber.class, 16, 6);
-		API.setGuiOffset(GuiChemicalInjectionChamber.class, 16, 6);
+		API.setGuiOffset(GuiEnrichmentChamber.class, 0, 16);
+		API.setGuiOffset(GuiOsmiumCompressor.class, 0, 16);
+		API.setGuiOffset(GuiCrusher.class, 0, 16);
+		API.setGuiOffset(GuiCombiner.class, 0, 16);
+		API.setGuiOffset(GuiPurificationChamber.class, 0, 16);
+		API.setGuiOffset(GuiChemicalInjectionChamber.class, 0, 16);
 		API.setGuiOffset(GuiMetallurgicInfuser.class, 5, 15);
 		API.setGuiOffset(GuiChemicalOxidizer.class, ChemicalOxidizerRecipeHandler.xOffset, ChemicalOxidizerRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalInfuser.class, ChemicalInfuserRecipeHandler.xOffset, ChemicalInfuserRecipeHandler.yOffset);
 		API.setGuiOffset(GuiRotaryCondensentrator.class, RotaryCondensentratorRecipeHandler.xOffset, RotaryCondensentratorRecipeHandler.yOffset);
 		API.setGuiOffset(GuiElectrolyticSeparator.class, ElectrolyticSeparatorRecipeHandler.xOffset, ElectrolyticSeparatorRecipeHandler.yOffset);
-		API.setGuiOffset(GuiPrecisionSawmill.class, 16, 6);
+		API.setGuiOffset(GuiPrecisionSawmill.class, 0, 16);
 		API.setGuiOffset(GuiSolarEvaporationController.class, SolarEvaporationRecipeHandler.xOffset, SolarEvaporationRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalDissolutionChamber.class, ChemicalDissolutionChamberRecipeHandler.xOffset, ChemicalDissolutionChamberRecipeHandler.yOffset);
 		API.setGuiOffset(GuiChemicalWasher.class, ChemicalWasherRecipeHandler.xOffset, ChemicalWasherRecipeHandler.yOffset);

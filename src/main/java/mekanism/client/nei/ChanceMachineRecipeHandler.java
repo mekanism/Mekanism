@@ -40,9 +40,9 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void addGuiElements()
 	{
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 55, 52).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 111, 30));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 31, 22));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 6, 44).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 103, 18));
 		
 		guiElements.add(new GuiPowerBar(this, new IPowerInfoHandler() {
 			@Override
@@ -50,7 +50,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed <= 20 ? ticksPassed / 20.0F : 1.0F;
 			}
-		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 164, 15));
+		}, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 0, 8));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
 			@Override
@@ -58,7 +58,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 			{
 				return ticksPassed >= 20 ? (ticksPassed - 20) % 20 / 20.0F : 0.0F;
 			}
-		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 77, 37));
+		}, getProgressType(), this, MekanismUtils.getResource(ResourceType.GUI, stripTexture()), 49, 23));
 	}
 
 	@Override
@@ -66,11 +66,11 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		changeTexture(getGuiTexture());
-		drawTexturedModalRect(12, 0, 28, 5, 144, 68);
+		drawTexturedModalRect(0, 0, 7, 11, 162, 54);
 		
 		for(GuiElement e : guiElements)
 		{
-			e.renderBackground(0, 0, -16, -5);
+			e.renderBackground(0, 0, 0, 0);
 		}
 	}
 
@@ -95,7 +95,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 	@Override
 	public void loadTransferRects()
 	{
-		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(63, 34, 24, 7), getRecipeId(), new Object[0]));
+		transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(49, 23, 52, 18), getRecipeId(), new Object[0]));
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 		{
 			if(output.hasPrimary())
 			{
-				return new PositionedStack(output.primaryOutput, 100, 30);
+				return new PositionedStack(output.primaryOutput, 107, 23);
 			}
 
 			return null;
@@ -174,7 +174,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 		{
 			if(output.hasSecondary())
 			{
-				return new PositionedStack(output.secondaryOutput, 116, 30);
+				return new PositionedStack(output.secondaryOutput, 125, 23);
 			}
 
 			return null;
@@ -182,7 +182,7 @@ public abstract class ChanceMachineRecipeHandler extends BaseRecipeHandler
 
 		public CachedIORecipe(ItemStack itemstack, ChanceOutput chance)
 		{
-			input = new PositionedStack(itemstack, 40, 12);
+			input = new PositionedStack(itemstack, 32, 23);
 			output = chance;
 		}
 

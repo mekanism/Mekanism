@@ -138,7 +138,7 @@ public abstract class GuiElement
 		return new Rectangle4i(guiLeft + lmntLeft, guiTop + lmntTop, lmntWidth, lmntHeight);
 	}
 
-	public abstract void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight);
+	public abstract void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop);
 
 	public abstract void renderForeground(int xAxis, int yAxis);
 

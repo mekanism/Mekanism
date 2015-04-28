@@ -30,21 +30,21 @@ public class GuiProgress extends GuiElement
 	}
 	
 	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	public Rectangle4i getBounds(int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, type.width, type.height);
+		return new Rectangle4i(guiLeft + xLocation, guiTop + yLocation, type.width, type.height);
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 		
 		if(handler.isActive())
 		{
-			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, type.textureX, type.textureY, type.width, type.height);
+			guiObj.drawTexturedRect(guiLeft + xLocation, guiTop + yLocation, type.textureX, type.textureY, type.width, type.height);
 			int displayInt = (int)(handler.getProgress() * (type.width-2*innerOffsetX));
-			guiObj.drawTexturedRect(guiWidth + xLocation + innerOffsetX, guiHeight + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
+			guiObj.drawTexturedRect(guiLeft + xLocation + innerOffsetX, guiTop + yLocation, type.textureX + type.width + innerOffsetX, type.textureY, displayInt, type.height);
 		}
 		
 		mc.renderEngine.bindTexture(defaultLocation);
