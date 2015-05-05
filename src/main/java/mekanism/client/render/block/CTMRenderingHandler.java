@@ -61,6 +61,9 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 			{
 				TileEntity tile = world.getTileEntity(x, y, z);
 				
+				int prevRotateTop = rendererOld.uvRotateTop;
+				int prevRotateBottom = rendererOld.uvRotateBottom;
+				
 				if(tile instanceof TileEntityBasicBlock)
 				{
 					if(((TileEntityBasicBlock)tile).facing >= 2)
@@ -72,6 +75,9 @@ public class CTMRenderingHandler implements ISimpleBlockRenderingHandler
 				
 				rendererOld.renderStandardBlock(block, x, y, z);
 				rendererOld.setRenderBoundsFromBlock(block);
+				
+				rendererOld.uvRotateTop = prevRotateTop;
+				rendererOld.uvRotateBottom = prevRotateBottom;
 				
 				return true;
 			}
