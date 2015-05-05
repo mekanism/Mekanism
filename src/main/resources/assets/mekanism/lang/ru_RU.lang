@@ -11,6 +11,7 @@ item.EnergyTablet.name=Энергетический планшет
 item.SpeedUpgrade.name=Улучшение «Скорость»
 item.EnergyUpgrade.name=Улучшение «Энергия»
 item.FilterUpgrade.name=Улучшение «Фильтр»
+item.GasUpgrade.name=Улучшение «Газ»
 item.Robit.name=Робит
 item.AtomicDisassembler.name=Атомный разборщик
 item.ElectricBow.name=Электрический лук
@@ -100,9 +101,7 @@ tile.MachineBlock.EnrichmentChamber.name=Камера обогащения
 tile.MachineBlock.OsmiumCompressor.name=Осмиевый компрессор
 tile.MachineBlock.Combiner.name=Объединитель
 tile.MachineBlock.Crusher.name=Дробитель
-tile.MachineBlock.BasicFactory.name=Основная фабрика
-tile.MachineBlock.AdvancedFactory.name=Продвинутая фабрика
-tile.MachineBlock.EliteFactory.name=Элитная фабрика
+#tile.MachineBlock.Factory.name=Фабрика
 tile.MachineBlock.MetallurgicInfuser.name=Металлургический наполнитель
 tile.MachineBlock.PurificationChamber.name=Камера очистки
 tile.MachineBlock.EnergizedSmelter.name=Энергетическая плавильня
@@ -138,13 +137,13 @@ tile.MachineBlock3.SolarNeutronActivator.name=Активатор солнечн�
 tile.MachineBlock3.Oredictionificator.name=Унификатор словаря руд
 
 //Plastic
-tile.PlasticBlock.name=Пластиковый блок
-tile.SlickPlasticBlock.name=Гладкий пластиковый блок
-tile.GlowPlasticBlock.name=Пластиковый светящийся блок
-tile.ReinforcedPlasticBlock.name=Укреплённый пластиковый блок
-tile.RoadPlasticBlock.name=Пластиковая дорожка
+tile.PlasticBlock.name=пластиковый блок
+tile.SlickPlasticBlock.name=гладкий пластиковый блок
+tile.GlowPlasticBlock.name=пластиковый светящийся блок
+tile.ReinforcedPlasticBlock.name=укреплённый пластиковый блок
+tile.RoadPlasticBlock.name=пластиковый путь
 
-tile.PlasticFence.name=Пластиковая преграда
+tile.PlasticFence.name=пластиковый забор
 
 //Infuse types
 infuse.carbon=Углерод
@@ -161,7 +160,10 @@ tile.OreBlock.CopperOre.name=Медная руда
 tile.OreBlock.TinOre.name=Оловянная руда
 
 //Transmitters
-item.MultipartTransmitter.PressurizedTube.name=Герметичная труба
+item.MultipartTransmitter.BasicPressurizedTube.name=Основная герметичная труба
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Продвинутая герметичная труба
+item.MultipartTransmitter.ElitePressurizedTube.name=Элитная герметичная труба
+item.MultipartTransmitter.UltimatePressurizedTube.name=Максимальная герметичная труба
 item.MultipartTransmitter.BasicUniversalCable.name=Основной универсальный провод
 item.MultipartTransmitter.AdvancedUniversalCable.name=Продвинутый универсальный провод
 item.MultipartTransmitter.EliteUniversalCable.name=Элитный универсальный провод
@@ -170,19 +172,22 @@ item.MultipartTransmitter.BasicMechanicalPipe.name=Основная механи
 item.MultipartTransmitter.AdvancedMechanicalPipe.name=Продвинутая механическая труба
 item.MultipartTransmitter.EliteMechanicalPipe.name=Элитная механическая труба
 item.MultipartTransmitter.UltimateMechanicalPipe.name=Максимальная механическая труба
-item.MultipartTransmitter.LogisticalTransporter.name=Логистический транспортер
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Основной логистический транспортер
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Продвинутый логистический транспортер
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Элитный логистический транспортер
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Максимальный логистический транспортер
 item.MultipartTransmitter.RestrictiveTransporter.name=Ограничительный транспортер
 item.MultipartTransmitter.DiversionTransporter.name=Отклоняющий транспортер
 
 //Glow Panel
-item.GlowPanel.name=Светящаяся панель
+item.GlowPanel.name=светящийся полублок
 
 //Energy Cubes
-tile.EnergyCube.Basic.name=Основной энергетический куб
-tile.EnergyCube.Advanced.name=Продвинутый энергетический куб
-tile.EnergyCube.Elite.name=Элитный энергетический куб
-tile.EnergyCube.Ultimate.name=Максимальный энергетический куб
-tile.EnergyCube.Creative.name=Творческий энергетический куб
+tile.EnergyCubeBasic.name=Основной энергетический куб
+tile.EnergyCubeAdvanced.name=Продвинутый энергетический куб
+tile.EnergyCubeElite.name=Элитный энергетический куб
+tile.EnergyCubeUltimate.name=Максимальный энергетический куб
+tile.EnergyCubeCreative.name=Творческий энергетический куб
 
 //Factory Installers
 item.basicFactoryInstaller.name=Основной установщик фабрик
@@ -317,6 +322,13 @@ oregas.silver=Серебряная руда
 oregas.obsidian=Обсидиановая руда
 oregas.lead=Свинцовая руда
 
+//Tier names
+#tier.Basic=Basic
+#tier.Advanced=Advanced
+#tier.Elite=Elite
+#tier.Ultimate=Ultimate
+#tier.Creative=Creative
+
 //Transmission types
 transmission.Energy=Энергия
 transmission.Fluids=Жидкости
@@ -339,24 +351,29 @@ upgrade.speed=Скорость
 upgrade.speed.desc=Увеличивает скорость механизмов.
 upgrade.filter=Фильтр
 upgrade.filter.desc=Фильтр, который отделяет !nтяжёлую воду от обычной воды.
+upgrade.gas=Газ
+upgrade.gas.desc=Увеличивает эффективность !nгазоиспользующих механизмов.
 
 //Key description text
-key.mode=Переключить режим
+key.mode=Переключить режим предмета
+key.armorMode=Переключить режим брони
 key.voice=Голос
 
 //Entities
-entity.Robit.name=Робит
-entity.BabySkeleton.name=Скелет-ребёнок
+entity.Mekanism.Robit.name=Робит
+entity.Mekanism.BabySkeleton.name=Скелет-ребёнок
 
 //Config Gui
 mekanism.configgui.ctgy.general=Общие настройки Mekanism
 mekanism.configgui.ctgy.machines=Настройки механизмов
+mekanism.configgui.ctgy.tier=Настройки уровней
 mekanism.configgui.ctgy.usage=Настройки потребления
 mekanism.configgui.ctgy.client=Настройки клиента
 
 //Config Tooltips
 mekanism.configgui.ctgy.general.tooltip=Общие настройки, касающиеся Mekanism и всех его модулей
 mekanism.configgui.ctgy.machines.tooltip=Настройки, касающиеся включения и отключения определённых механизмов
+mekanism.configgui.ctgy.tier.tooltip=Настройки, касающиеся уровней Mekanism и их соответствующих значений
 mekanism.configgui.ctgy.usage.tooltip=Настройки, касающиеся механизмов, и использования ими же энергии
 mekanism.configgui.ctgy.client.tooltip=Настройки клиента относительно Mekanism и всех его модулей
 
@@ -440,6 +457,28 @@ gui.set=Установить
 gui.freq=Частота
 gui.security=Безопасность
 gui.index=Index
+gui.producing=Производится
+gui.maxOutput=Макс. выход
+gui.storing=Накапливается
+gui.skyBlocked=Не видно неба
+gui.using=Используется
+gui.needed=Нужно
+gui.noRecipe=Нет рецепта
+gui.conflict=Конфликт
+gui.height=Высота
+gui.mult=Mult
+gui.chunk=Чанк
+gui.vibrating=Вибрации
+gui.abundancy=Избыток
+gui.nextItem=След. предмет
+gui.lastItem=Послед. предмет
+gui.oreDictCompat=Compatible OreDict Key
+gui.toggleCooling=Переключить измерение охлаждения
+gui.coolingMeasurements=Активное охлаждение
+gui.redstoneOutputMode=Режим красного камня
+gui.entityDetection=Обнаружение сущностей
+gui.moveUp=Двигаться вверх
+gui.moveDown=Двигаться вниз
 
 gui.reactor.injectionRate=Скорость инъекции
 
@@ -465,14 +504,16 @@ gui.configuration.strictInput=Строгий вход
 gui.rotaryCondensentrator.toggleOperation=Переключить операцию
 
 gui.factory.secondaryEnergy=Вторичная энергия
-gui.factory.smelting=Плавление
-gui.factory.enriching=Обогащение
-gui.factory.crushing=Дробление
-gui.factory.compressing=Сжатие
-gui.factory.combining=Объединение
-gui.factory.purifying=Очищение
-gui.factory.injecting=Впрыскивание
-gui.factory.autoSort=Авто-сорт.
+gui.factory.autoSort=Авто-сортировка
+
+//Recipe types
+#gui.factory.Smelting=Плавление
+#gui.factory.Enriching=Обогащение
+#gui.factory.Crushing=Дробление
+#gui.factory.Compressing=Сжатие
+#gui.factory.Combining=Объединение
+#gui.factory.Purifying=Очищение
+#gui.factory.Injecting=Впрыскивание
 
 gui.seismicReader.short=С. считыватель
 gui.seismicReader.solids=Твёрдые
@@ -572,6 +613,8 @@ tooltip.configurator.dim=измерение
 tooltip.configurator.setLink=Установить соединение на блок
 tooltip.configurator.plenisherReset=Сбросить расчёт жидкостного снабжателя
 tooltip.configurator.inductionPortMode=Режим передачи индукционного порта переключен на
+tooltip.configurator.toggleColor=Цвет изменён на
+tooltip.configurator.viewColor=Текущий цвет
 
 tooltip.upgrade.speed=Скорость
 tooltip.upgrade.energy=Энергия
@@ -616,6 +659,7 @@ tooltip.configureState=Настраивает состояние
 tooltip.outputRate=Скорость выхода
 tooltip.insufficientFuel=Недостаточно топлива
 tooltip.readyForReaction=Готово к реакции
+tooltip.speed=Скорость
 
 tooltip.portableTank.bucketMode=Режим ведра
 
@@ -689,6 +733,7 @@ tooltip.ReactorController=Блок управления для всего !nте
 tooltip.ReactorFrame=Укреплённый каркас, который используется в !nстроительстве термоядерного реактора.
 tooltip.ReactorNeutronCapturePlate=Блок, который используется как !nдля блокирования излучения термоядерного реактора, так и для !nполучения трития.
 tooltip.ReactorPort=Блок укреплённого каркаса, который способен !nуправлять и передачей газа и передачей энергии !nтермоядерного реактора.
+tooltip.ReactorLogicAdapter=Блок, который может быть использован для !nмониторинга основных функций реактора, используя красный камень.
 
 tooltip.OsmiumOre=Крепкий минерал, который можно найти !nпочти на любой высоте в мире. Он как известно !nимеет множество применений в !nпроизводстве механизмов.
 tooltip.CopperOre=Общий проводящий материал, который может быть использован !nв производстве проводов. Имеет способность выдерживать!nвысокие температуры, это делает его необходимым для !nсовременного оборудования.
@@ -759,6 +804,16 @@ dye.pink=Сиреневый
 dye.yellow=Жёлтый
 dye.white=Белый
 
+//Reactor Logic modes
+reactor.disabled=Disabled
+reactor.disabled.desc=Will not emit a redstone signal
+reactor.ready=Ready for Ignition
+reactor.ready.desc=Reactor has reached the required heat level to ignite
+reactor.capacity=Heat Capacity Met
+reactor.capacity.desc=The reactor's core heat capacity has been met
+reactor.depleted=Insufficient Fuel
+reactor.depleted.desc=The reactor has insufficient fuel to sustain a reaction
+
 //Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -785,7 +840,8 @@ tile.Generator.WindTurbine.name=Ветровая турбина
 tile.Reactor.ReactorController.name=Реакторный контроллер
 tile.Reactor.ReactorFrame.name=Реакторный каркас
 tile.Reactor.ReactorNeutronCapturePlate.name=Пластина нейтронного захвата
-tile.Reactor.ReactorInOutPort.name=Реакторный порт
+tile.Reactor.ReactorPort.name=Реакторный порт
+tile.Reactor.ReactorLogicAdapter.name=Реакторный логический адаптер
 
 tile.ReactorGlass.ReactorGlass.name=Реакторное стекло
 tile.ReactorGlass.ReactorLaserFocusMatrix.name=Матрица лазерного фокуса
