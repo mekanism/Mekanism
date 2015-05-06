@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
@@ -12,7 +13,6 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -281,7 +281,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 		}
 		else if(this == MekanismItems.ArmoredJetpack)
 		{
-			return new ArmorProperties(1, 0.8, 115);
+			return new ArmorProperties(1, general.armoredJetpackDamageRatio, general.armoredJetpackDamageMax);
 		}
 
 		return new ArmorProperties(0, 0, 0);
