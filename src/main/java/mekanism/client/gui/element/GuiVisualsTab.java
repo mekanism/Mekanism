@@ -17,31 +17,29 @@ public class GuiVisualsTab extends GuiElement
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def);
 
-		lmntLeft = -26;
-		lmntTop = 5;
-
 		tileEntity = tile;
 	}
-
-	public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def, int guiLeft, int guiTop)
+	
+	@Override
+	public Rectangle4i getBounds(int guiWidth, int guiHeight)
 	{
-		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiVisualsTab.png"), gui, def);
-
-		lmntLeft = guiLeft;
-		lmntTop = guiTop;
-
-		tileEntity = tile;
+		return new Rectangle4i(guiWidth - 26, guiHeight + 6, 26, 26);
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
+	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
-
-		boolean mouseOver = xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22;
-		guiObj.drawTexturedRect(guiLeft + lmntLeft + 5, guiTop + lmntTop + 4, 26, mouseOver?  0: 18, 18, 18);
+		guiObj.drawTexturedRect(guiWidth - 26, guiHeight + 6, 0, 0, 26, 26);
+		
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
+		{
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 0, 18, 18);
+		}
+		else {
+			guiObj.drawTexturedRect(guiWidth - 21, guiHeight + 10, 26, 18, 18, 18);
+		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
@@ -51,7 +49,7 @@ public class GuiVisualsTab extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
+		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
 			displayTooltip(MekanismUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
 		}
@@ -67,7 +65,7 @@ public class GuiVisualsTab extends GuiElement
 	{
 		if(button == 0)
 		{
-			if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
+			if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 			{
 				tileEntity.clientRendering = !tileEntity.clientRendering;
 	            SoundHandler.playSound("gui.button.press");

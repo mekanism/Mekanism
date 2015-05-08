@@ -58,11 +58,11 @@ public class LaserManager
 			if(!e.isImmuneToFire()) 
 			{
 				e.setFire((int)(energy / 1000));
-				
-				if(energy > 256)
-				{
-					e.attackEntityFrom(DamageSource.onFire, (float)energy/1000F);
-				}
+			}
+			
+			if(energy > 256)
+			{
+				e.attackEntityFrom(DamageSource.generic, (float)energy/1000F);
 			}
 		}
 		

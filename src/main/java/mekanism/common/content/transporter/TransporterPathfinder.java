@@ -58,6 +58,7 @@ public final class TransporterPathfinder
 				
 				transportStack.idleDir = newSide;
 				loopSide(ret, newSide);
+				
 				return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 			}
 			else {
@@ -66,6 +67,7 @@ public final class TransporterPathfinder
 				if(transportStack.canInsertToTransporter(tile, transportStack.idleDir))
 				{
 					loopSide(ret, transportStack.idleDir);
+					
 					return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 				}
 				else {
@@ -75,6 +77,7 @@ public final class TransporterPathfinder
 					{
 						transportStack.idleDir = ForgeDirection.UNKNOWN;
 						newPath.setPathType(Path.DEST);
+						
 						return newPath;
 					}
 					else {
@@ -87,6 +90,7 @@ public final class TransporterPathfinder
 						
 						transportStack.idleDir = newSide;
 						loopSide(ret, newSide);
+						
 						return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 					}
 				}
@@ -217,8 +221,7 @@ public final class TransporterPathfinder
 			{
 				return 1;
 			}
-			else
-			{
+			else {
 				return path.size() - dest.path.size();
 			}
 		}
