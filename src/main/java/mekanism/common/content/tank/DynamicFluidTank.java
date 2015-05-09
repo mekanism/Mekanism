@@ -101,9 +101,10 @@ public class DynamicFluidTank implements IFluidTank
 			else {
 				if(doFill)
 				{
+					int prevNeeded = getNeeded();
 					dynamicTank.structure.fluidStored.amount = getCapacity();
 					
-					if(getNeeded() > 0)
+					if(prevNeeded > 0)
 					{
 						MekanismUtils.saveChunk(dynamicTank);
 						updateValveData(true);
