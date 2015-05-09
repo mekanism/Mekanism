@@ -23,10 +23,10 @@ public class ContainerFactory extends Container
 	{
 		tileEntity = tentity;
 
-		addSlotToContainer(new SlotDischarge(tentity, 1, 7, 13));
-		addSlotToContainer(new Slot(tentity, 2, 180, 75));
-		addSlotToContainer(new Slot(tentity, 3, 180, 112));
-		addSlotToContainer(new Slot(tentity, 4, 7, 57));
+		addSlotToContainer(new SlotDischarge(tentity, 1, 14, 101));
+		addSlotToContainer(new Slot(tentity, 2, 180, 39));
+		addSlotToContainer(new Slot(tentity, 3, 180, 68));
+		addSlotToContainer(new Slot(tentity, 4, 8, 18));
 
 		if(tileEntity.tier == FactoryTier.BASIC)
 		{
@@ -34,14 +34,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 55 + (i*38);
 
-				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
+				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 36));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 55 + (i*38);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 80));
 			}
 		}
 		else if(tileEntity.tier == FactoryTier.ADVANCED)
@@ -50,14 +50,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 35 + (i*26);
 
-				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
+				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 36));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 35 + (i*26);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 80));
 			}
 		}
 		else if(tileEntity.tier == FactoryTier.ELITE)
@@ -66,14 +66,14 @@ public class ContainerFactory extends Container
 			{
 				int xAxis = 29 + (i*19);
 
-				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 13));
+				addSlotToContainer(new Slot(tentity, 5+i, xAxis, 36));
 			}
 
 			for(int i = 0; i < tileEntity.tier.processes; i++)
 			{
 				int xAxis = 29 + (i*19);
 
-				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 57));
+				addSlotToContainer(new SlotOutput(tentity, tileEntity.tier.processes+5+i, xAxis, 80));
 			}
 		}
 
@@ -83,13 +83,13 @@ public class ContainerFactory extends Container
 		{
 			for(int slotX = 0; slotX < 9; slotX++)
 			{
-				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 95 + slotY * 18));
+				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 133 + slotY * 18));
 			}
 		}
 
 		for(int slotX = 0; slotX < 9; slotX++)
 		{
-			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 153));
+			addSlotToContainer(new Slot(inventory, slotX, 8 + slotX * 18, 191));
 		}
 
 		tileEntity.open(inventory.player);
