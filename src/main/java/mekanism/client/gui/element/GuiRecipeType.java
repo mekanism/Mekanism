@@ -17,8 +17,6 @@ public class GuiRecipeType extends GuiElement
 
 		lmntLeft = 176;
 		lmntTop = 70;
-		lmntWidth = 26;
-		lmntHeight = 54;
 
 		tileEntity = tile;
 	}
@@ -29,8 +27,6 @@ public class GuiRecipeType extends GuiElement
 
 		lmntLeft = guiLeft;
 		lmntTop = guiTop;
-		lmntWidth = 26;
-		lmntHeight = 54;
 
 		tileEntity = tile;
 	}
@@ -40,12 +36,12 @@ public class GuiRecipeType extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, 26, 63);
 
 		TileEntityFactory factory = tileEntity;
-		int displayInt = factory.getScaledRecipeProgress(10);
+		int displayInt = factory.getScaledRecipeProgress(15);
 
-		guiObj.drawTexturedRect(guiLeft + lmntLeft + 8, guiTop + lmntTop + 22, 26, 0, 9, displayInt);
+		guiObj.drawTexturedRect(guiLeft + 181, guiTop + 94, 26, 0, 10, displayInt);
 
 		mc.renderEngine.bindTexture(defaultLocation);
 	}
