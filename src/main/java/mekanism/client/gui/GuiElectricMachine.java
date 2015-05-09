@@ -36,11 +36,14 @@ public class GuiElectricMachine extends GuiMekanism
 		super(tentity, new ContainerElectricMachine(inventory, tentity));
 		tileEntity = tentity;
 
-		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiTransporterConfigTab(this, 34, tileEntity, tileEntity.guiLocation));
-		guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 164, 15));
+		xSize = 176;
+	    ySize = 186;
+
+		guiElements.add(new GuiRedstoneControl(this, tileEntity, tileEntity.guiLocation, xSize, 63));
+		guiElements.add(new GuiUpgradeTab(this, tileEntity, tileEntity.guiLocation, xSize, 5));
+		guiElements.add(new GuiSideConfigurationTab(this, tileEntity, tileEntity.guiLocation,-26, 5));
+		guiElements.add(new GuiTransporterConfigTab(this, tileEntity, tileEntity.guiLocation,-26, 34));
+		guiElements.add(new GuiPowerBar(this, tileEntity, tileEntity.guiLocation, 7, 35));
 		guiElements.add(new GuiEnergyInfo(new IInfoHandler() {
 			@Override
 			public List<String> getInfo()
@@ -48,11 +51,11 @@ public class GuiElectricMachine extends GuiMekanism
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
 				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, tileEntity.guiLocation));
+		}, this, tileEntity.guiLocation,-26, 63));
 
-		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity.guiLocation, 55, 16));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity.guiLocation, 55, 52).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity.guiLocation, 111, 30));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, tileEntity.guiLocation, 39, 38));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, tileEntity.guiLocation, 13, 71).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, tileEntity.guiLocation, 111, 34));
 
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{
@@ -61,7 +64,7 @@ public class GuiElectricMachine extends GuiMekanism
 			{
 				return tileEntity.getScaledProgress();
 			}
-		}, getProgressType(), this, tileEntity.guiLocation, 77, 37));
+		}, getProgressType(), this, tileEntity.guiLocation, 57, 39));
 	}
 	
 	public ProgressBar getProgressType()
@@ -83,9 +86,7 @@ public class GuiElectricMachine extends GuiMekanism
 	{
 		mc.renderEngine.bindTexture(tileEntity.guiLocation);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
