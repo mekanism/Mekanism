@@ -2,6 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.ObfuscatedNames;
 import mekanism.common.util.MekanismUtils;
@@ -9,9 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import codechicken.lib.vec.Rectangle4i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,11 +18,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiElement
 {
-	protected int lmntLeft = 0;
-	protected int lmntTop = 0;
-	protected int lmntWidth = 26;
-	protected int lmntHeight = 26;
-	
 	public static Minecraft mc = Minecraft.getMinecraft();
 
 	public ResourceLocation RESOURCE;
@@ -133,10 +127,7 @@ public abstract class GuiElement
 
 	public void mouseMovedOrUp(int x, int y, int type) {}
 	
-	public Rectangle4i getBounds( int guiLeft, int guiTop )
-	{
-		return new Rectangle4i(guiLeft + lmntLeft, guiTop + lmntTop, lmntWidth, lmntHeight);
-	}
+	public abstract Rectangle4i getBounds(int guiWidth, int guiHeight);
 
 	public abstract void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop);
 

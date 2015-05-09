@@ -17,6 +17,6 @@ public class GuiEnrichmentChamber extends GuiElectricMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.ENRICH;
+		return ProgressBar.BLUE;
 	}
 }

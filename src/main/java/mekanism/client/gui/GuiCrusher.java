@@ -17,6 +17,6 @@ public class GuiCrusher extends GuiElectricMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.CRUSH2;
+		return ProgressBar.CRUSH;
 	}
 }

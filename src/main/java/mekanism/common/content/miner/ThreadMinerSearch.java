@@ -59,65 +59,67 @@ public class ThreadMinerSearch extends Thread
 				return;
 			}
 
-			if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
-			{
-				continue;
-			}
-
-			if(!tileEntity.getWorldObj().getChunkProvider().chunkExists(x >> 4, z >> 4))
-			{
-				continue;
-			}
-
-			TileEntity tile = tileEntity.getWorldObj().getTileEntity(x, y, z);
-			
-			if(tile instanceof TileEntityBoundingBlock)
-			{
-				continue;
-			}
-
-			info.block = tileEntity.getWorldObj().getBlock(x, y, z);
-			info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
-
-			if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
-			{
-				MinerFilter filterFound = null;
-				boolean canFilter = false;
-
-				if(acceptedItems.containsKey(info))
+			try {
+				if(tileEntity.xCoord == x && tileEntity.yCoord == y && tileEntity.zCoord == z)
 				{
-					filterFound = acceptedItems.get(info);
+					continue;
 				}
-				else {
-					ItemStack stack = new ItemStack(info.block, 1, info.meta);
-
-					if(tileEntity.isReplaceStack(stack))
-					{
-						continue;
-					}
-
-					for(MinerFilter filter : tileEntity.filters)
-					{
-						if(filter.canFilter(stack))
-						{
-							filterFound = filter;
-							break;
-						}
-					}
-
-					acceptedItems.put(info, filterFound);
+	
+				if(!tileEntity.getWorldObj().getChunkProvider().chunkExists(x >> 4, z >> 4))
+				{
+					continue;
 				}
+	
+				TileEntity tile = tileEntity.getWorldObj().getTileEntity(x, y, z);
 				
-				canFilter = tileEntity.inverse ? filterFound == null : filterFound != null;
-
-				if(canFilter)
+				if(tile instanceof TileEntityBoundingBlock)
 				{
-					set(i, new Coord4D(x, y, z, tileEntity.getWorldObj().provider.dimensionId));
-					replaceMap.put(i, filterFound);
-					
-					found++;
+					continue;
 				}
-			}
+	
+				info.block = tileEntity.getWorldObj().getBlock(x, y, z);
+				info.meta = tileEntity.getWorldObj().getBlockMetadata(x, y, z);
+	
+				if(info.block != null && !tileEntity.getWorldObj().isAirBlock(x, y, z) && info.block.getBlockHardness(tileEntity.getWorldObj(), x, y, z) >= 0)
+				{
+					MinerFilter filterFound = null;
+					boolean canFilter = false;
+	
+					if(acceptedItems.containsKey(info))
+					{
+						filterFound = acceptedItems.get(info);
+					}
+					else {
+						ItemStack stack = new ItemStack(info.block, 1, info.meta);
+	
+						if(tileEntity.isReplaceStack(stack))
+						{
+							continue;
+						}
+	
+						for(MinerFilter filter : tileEntity.filters)
+						{
+							if(filter.canFilter(stack))
+							{
+								filterFound = filter;
+								break;
+							}
+						}
+	
+						acceptedItems.put(info, filterFound);
+					}
+					
+					canFilter = tileEntity.inverse ? filterFound == null : filterFound != null;
+	
+					if(canFilter)
+					{
+						set(i, new Coord4D(x, y, z, tileEntity.getWorldObj().provider.dimensionId));
+						replaceMap.put(i, filterFound);
+						
+						found++;
+					}
+				}
+			} catch(Exception e) {}
 		}
 
 		state = State.FINISHED;

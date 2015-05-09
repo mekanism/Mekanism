@@ -54,6 +54,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeDouble(general.minerSilkMultiplier);
 			dataStream.writeBoolean(general.blacklistIC2);
 			dataStream.writeBoolean(general.blacklistRF);
+			dataStream.writeDouble(general.armoredJetpackDamageRatio);
+			dataStream.writeInt(general.armoredJetpackDamageMax);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -123,6 +125,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.minerSilkMultiplier = dataStream.readDouble();
 			general.blacklistIC2 = dataStream.readBoolean();
 			general.blacklistRF = dataStream.readBoolean();
+			general.armoredJetpackDamageRatio = dataStream.readDouble();
+			general.armoredJetpackDamageMax = dataStream.readInt();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{

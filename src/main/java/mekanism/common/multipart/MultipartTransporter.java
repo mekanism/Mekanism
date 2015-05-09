@@ -52,6 +52,11 @@ public class MultipartTransporter extends MultipartTransmitter<IInventory, Inven
 			}
 		}
 		else {
+			if(getTransmitterNetwork() == null)
+			{
+				return;
+			}
+			
 			Set<TransporterStack> remove = new HashSet<TransporterStack>();
 
 			getPart().pullItems();
