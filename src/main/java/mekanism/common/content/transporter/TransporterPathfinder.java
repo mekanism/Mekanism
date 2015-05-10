@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
+import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.InventoryNetwork.AcceptorData;
 import mekanism.common.base.ILogisticalTransporter;
@@ -19,7 +20,7 @@ import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.Dest
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
-
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -71,7 +72,7 @@ public final class TransporterPathfinder
 					return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 				}
 				else {
-					Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter)start.getTileEntity(worldObj), transportStack, 0);
+					Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter)((ITransmitterTile<IInventory, InventoryNetwork>)start.getTileEntity(worldObj)).getTransmitter(), transportStack, 0);
 					
 					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
