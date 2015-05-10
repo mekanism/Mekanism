@@ -30,7 +30,9 @@ import mekanism.api.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlocks;
+import mekanism.common.MekanismItems;
 import mekanism.common.OreDictCache;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.EnergyCubeTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Tier.InductionCellTier;
@@ -328,6 +330,16 @@ public final class MekanismUtils
 	public static ItemStack getEnergyCube(EnergyCubeTier tier)
 	{
 		return ((ItemBlockEnergyCube)new ItemStack(MekanismBlocks.EnergyCube).getItem()).getUnchargedItem(tier);
+	}
+	
+	/**
+	 * Returns a Control Circuit with a defined tier, using an OreDict value if enabled in the config.
+	 * @param tier - tier to add to the Control Circuit
+	 * @return Control Circuit with defined tier
+	 */
+	public static Object getControlCircuit(BaseTier tier)
+	{
+		return general.controlCircuitOreDict ? "circuit" + tier.getName() : new ItemStack(MekanismItems.ControlCircuit, 1, tier.ordinal());
 	}
 	
 	/**
