@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerDictionary;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -34,8 +35,8 @@ public class GuiDictionary extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("item.Dictionary.name"), 64, 5, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 2, 0x404040);
 
 		if(itemType != null)
 		{

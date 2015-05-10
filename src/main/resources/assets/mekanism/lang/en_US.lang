@@ -660,6 +660,7 @@ tooltip.outputRate=Output Rate
 tooltip.insufficientFuel=Insufficient Fuel
 tooltip.readyForReaction=Ready for Reaction
 tooltip.speed=Speed
+tooltip.and=and
 
 tooltip.portableTank.bucketMode=Bucket Mode
 

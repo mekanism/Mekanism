@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Block;
@@ -193,7 +194,7 @@ public class GuiSeismicReader extends GuiScreen
 		GL11.glPushMatrix();
 		GL11.glTranslatef(guiWidth + 72, guiHeight + 26, 0);
 		GL11.glScalef(0.70f, 0.70f, 0.70f);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
+		fontRendererObj.drawString(LangUtils.localize("gui.abundancy") + ": " + frequency, 0, 0, 0x919191);
 		GL11.glPopMatrix();
 		super.drawScreen(mouseX, mouseY, partialTick);
 	}

@@ -21,6 +21,7 @@ import mekanism.client.gui.element.GuiSlot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.MetallurgicInfuserRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
@@ -64,7 +65,7 @@ public class MetallurgicInfuserRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock.MetallurgicInfuser.name");
+		return LangUtils.localize("tile.MachineBlock.MetallurgicInfuser.name");
 	}
 
 	@Override

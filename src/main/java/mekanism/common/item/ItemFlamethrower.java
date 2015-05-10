@@ -6,7 +6,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -36,10 +36,10 @@ public class ItemFlamethrower extends ItemMekanism implements IGasItem
 
 		if(gasStack == null)
 		{
-			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
+			list.add(LangUtils.localize("tooltip.noGas") + ".");
 		}
 		else {
-			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 	}
 	

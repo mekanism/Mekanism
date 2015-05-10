@@ -9,7 +9,7 @@ import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.CombinerRecipe;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
@@ -18,7 +18,7 @@ public class CombinerRecipeHandler extends AdvancedMachineRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock.Combiner.name");
+		return LangUtils.localize("tile.MachineBlock.Combiner.name");
 	}
 
 	@Override

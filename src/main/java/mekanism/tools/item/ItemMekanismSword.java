@@ -3,8 +3,7 @@ package mekanism.tools.item;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,7 @@ public class ItemMekanismSword extends ItemSword
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(MekanismUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 
 	@Override

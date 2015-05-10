@@ -9,9 +9,9 @@ import mekanism.common.base.IElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -36,7 +36,7 @@ public class GuiPasswordEnter extends GuiScreen
 
 	public GuiTextField passwordField;
 
-	public String displayText = EnumColor.BRIGHT_GREEN + MekanismUtils.localize("gui.password.enterPassword");
+	public String displayText = EnumColor.BRIGHT_GREEN + LangUtils.localize("gui.password.enterPassword");
 
 	public int ticker = 0;
 
@@ -68,7 +68,7 @@ public class GuiPasswordEnter extends GuiScreen
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, MekanismUtils.localize("gui.open")));
+		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, LangUtils.localize("gui.open")));
 
 		passwordField = new GuiTextField(fontRendererObj, guiWidth + 45, guiHeight + 50, 80, 12);
 		passwordField.setMaxStringLength(12);
@@ -104,7 +104,7 @@ public class GuiPasswordEnter extends GuiScreen
 			ticker--;
 		}
 		else {
-			displayText = EnumColor.BRIGHT_GREEN + MekanismUtils.localize("gui.password.enterPassword");
+			displayText = EnumColor.BRIGHT_GREEN + LangUtils.localize("gui.password.enterPassword");
 		}
 	}
 
@@ -121,13 +121,13 @@ public class GuiPasswordEnter extends GuiScreen
 	{
 		if(passwordField.getText() == null || passwordField.getText() == "")
 		{
-			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.fieldsEmpty");
+			displayText = EnumColor.DARK_RED + LangUtils.localize("gui.password.fieldsEmpty");
 			SoundHandler.playSound("mekanism:etc.Error");
 			ticker = 30;
 		}
 		else if(!getPassword().equals(passwordField.getText()))
 		{
-			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.invalid");
+			displayText = EnumColor.DARK_RED + LangUtils.localize("gui.password.invalid");
 			passwordField.setText("");
 			SoundHandler.playSound("mekanism:etc.Error");
 			ticker = 30;
@@ -176,7 +176,7 @@ public class GuiPasswordEnter extends GuiScreen
 
 		super.drawScreen(mouseX, mouseY, partialTick);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
 		fontRendererObj.drawString("Enter:", guiWidth + 45, guiHeight + 40, 0x404040);
 		fontRendererObj.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
 

@@ -22,6 +22,7 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.inventory.container.ContainerNull;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
@@ -51,8 +52,8 @@ public class GuiReactorHeat extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return tileEntity.isFormed() ? ListUtils.asList(
-						MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-						MekanismUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
+						LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiTall.png")));
 		guiElements.add(new GuiNumberGauge(new INumberInfoHandler()

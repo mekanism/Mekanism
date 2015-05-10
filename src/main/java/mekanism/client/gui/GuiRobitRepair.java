@@ -7,9 +7,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerRobitRepair;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketRobit.RobitPacketType;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -24,7 +24,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
-
 import org.apache.commons.io.Charsets;
 
 @SideOnly(Side.CLIENT)
@@ -74,7 +73,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
 		GL11.glDisable(GL11.GL_LIGHTING);
-		fontRendererObj.drawString(MekanismUtils.localize("container.repair"), 60, 6, 4210752);
+		fontRendererObj.drawString(LangUtils.localize("container.repair"), 60, 6, 4210752);
 
 		if(repairContainer.maximumCost > 0)
 		{
@@ -84,7 +83,7 @@ public class GuiRobitRepair extends GuiMekanism implements ICrafting
 
 			if(repairContainer.maximumCost >= 40 && !mc.thePlayer.capabilities.isCreativeMode)
 			{
-				s = MekanismUtils.localize("container.repair.expensive");
+				s = LangUtils.localize("container.repair.expensive");
 				k = 16736352;
 			}
 			else if(!repairContainer.getSlot(2).getHasStack())

@@ -24,6 +24,7 @@ import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -57,7 +58,7 @@ public class GuiDigitalMiner extends GuiMekanism
 			public List<String> getInfo()
 			{
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.getPerTick());
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiDigitalMiner.png")));
 
@@ -76,21 +77,21 @@ public class GuiDigitalMiner extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, MekanismUtils.localize("gui.start"));
+		startButton = new GuiButton(0, guiWidth + 69, guiHeight + 17, 60, 20, LangUtils.localize("gui.start"));
 
 		if(tileEntity.searcher.state != State.IDLE && tileEntity.running)
 		{
 			startButton.enabled = false;
 		}
 
-		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, MekanismUtils.localize("gui.stop"));
+		stopButton = new GuiButton(1, guiWidth + 69, guiHeight + 37, 60, 20, LangUtils.localize("gui.stop"));
 
 		if(tileEntity.searcher.state == State.IDLE || !tileEntity.running)
 		{
 			stopButton.enabled = false;
 		}
 
-		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, MekanismUtils.localize("gui.config"));
+		configButton = new GuiButton(2, guiWidth + 69, guiHeight + 57, 60, 20, LangUtils.localize("gui.config"));
 
 		if(tileEntity.searcher.state != State.IDLE)
 		{
@@ -164,16 +165,16 @@ public class GuiDigitalMiner extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 69, 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
-		fontRendererObj.drawString(tileEntity.running ? MekanismUtils.localize("gui.digitalMiner.running") : MekanismUtils.localize("gui.idle"), 9, 10, 0x00CD00);
+		fontRendererObj.drawString(tileEntity.running ? LangUtils.localize("gui.digitalMiner.running") : LangUtils.localize("gui.idle"), 9, 10, 0x00CD00);
 		fontRendererObj.drawString(tileEntity.searcher.state.desc, 9, 19, 0x00CD00);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.eject") + ": " + MekanismUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.pull") + ": " + MekanismUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.silk") + ": " + MekanismUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.eject") + ": " + LangUtils.localize("gui." + (tileEntity.doEject ? "on" : "off")), 9, 30, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.pull") + ": " + LangUtils.localize("gui." + (tileEntity.doPull ? "on" : "off")), 9, 39, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.silk") + ": " + LangUtils.localize("gui." + (tileEntity.silkTouch ? "on" : "off")), 9, 48, 0x00CD00);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMiner.toMine") + ":", 9, 59, 0x00CD00);
 		fontRendererObj.drawString("" + tileEntity.clientToMine, 9, 68, 0x00CD00);
 
 		if(tileEntity.missingStack != null)
@@ -203,33 +204,33 @@ public class GuiDigitalMiner extends GuiMekanism
 
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 47 && yAxis <= 61)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.autoEject"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 147 && xAxis <= 161 && yAxis >= 63 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.autoPull"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43)
 		{
 			if(tileEntity.missingStack != null)
 			{
-				drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
+				drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.missingBlock"), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(MekanismUtils.localize("gui.well"), xAxis, yAxis);
+				drawCreativeTabHoveringText(LangUtils.localize("gui.well"), xAxis, yAxis);
 			}
 		}
 
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 47 && yAxis <= 61)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.reset"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 131 && xAxis <= 145 && yAxis >= 63 && yAxis <= 77)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.silkTouch"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

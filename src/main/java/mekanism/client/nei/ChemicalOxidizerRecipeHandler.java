@@ -68,7 +68,7 @@ public class ChemicalOxidizerRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalOxidizer.name");
+		return LangUtils.localize("tile.MachineBlock2.ChemicalOxidizer.name");
 	}
 
 	@Override

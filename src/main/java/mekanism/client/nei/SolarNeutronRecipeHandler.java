@@ -38,7 +38,7 @@ public class SolarNeutronRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock3.SolarNeutronActivator.name");
+		return LangUtils.localize("tile.MachineBlock3.SolarNeutronActivator.name");
 	}
 
 	@Override

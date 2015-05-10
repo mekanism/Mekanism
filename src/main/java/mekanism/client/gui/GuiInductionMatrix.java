@@ -5,6 +5,7 @@ import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerInductionMatrix;
 import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -33,10 +34,10 @@ public class GuiInductionMatrix extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", 53, 26, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.energy") + ":", 53, 26, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 53, 35, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.output") + ":", 53, 44, 0x00CD00);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput), 53, 53, 0x00CD00);
 
 		if(xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72)

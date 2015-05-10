@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiEnergyInfo.IInfoHandler;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.inventory.container.ContainerReactorController;
@@ -36,8 +37,8 @@ public class GuiReactorController extends GuiMekanism
 				public List<String> getInfo()
 				{
 					return tileEntity.isFormed() ? ListUtils.asList(
-							MekanismUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
-							MekanismUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
+							LangUtils.localize("gui.storing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()),
+							LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getReactor().getPassiveGeneration(false, true)) + "/t") : new ArrayList();
 				}
 			}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 			guiElements.add(new GuiSlot(SlotType.NORMAL, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 79, 38));
@@ -54,10 +55,10 @@ public class GuiReactorController extends GuiMekanism
 		
 		if(tileEntity.getActive())
 		{
-			fontRendererObj.drawString(MekanismUtils.localize("gui.formed"), 8, 16, 0x404040);
+			fontRendererObj.drawString(LangUtils.localize("gui.formed"), 8, 16, 0x404040);
 		}
 		else {
-			fontRendererObj.drawString(MekanismUtils.localize("gui.incomplete"), 8, 16, 0x404040);
+			fontRendererObj.drawString(LangUtils.localize("gui.incomplete"), 8, 16, 0x404040);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

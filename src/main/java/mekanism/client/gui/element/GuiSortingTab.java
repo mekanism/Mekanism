@@ -61,7 +61,7 @@ public class GuiSortingTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 66 && yAxis <= 84)
 		{
-			displayTooltip(MekanismUtils.localize("gui.factory.autoSort"), xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.factory.autoSort"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -18,6 +18,7 @@ import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -56,7 +57,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
-		list.add(EnumColor.PINK + MekanismUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
+		list.add(EnumColor.PINK + LangUtils.localize("gui.state") + ": " + getColor(getState(itemstack)) + getStateDisplay(getState(itemstack)));
 	}
 
 	@Override
@@ -165,7 +166,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 						return true;
 					}
 					else {
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.unauth")));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.unauth")));
 						return true;
 					}
 				}
@@ -197,13 +198,13 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	
 	public String getViewModeText(TransmissionType type)
 	{
-		String base = MekanismUtils.localize("tooltip.configurator.viewMode");
+		String base = LangUtils.localize("tooltip.configurator.viewMode");
 		return String.format(base, type.localize().toLowerCase());
 	}
 	
 	public String getToggleModeText(TransmissionType type)
 	{
-		String base = MekanismUtils.localize("tooltip.configurator.toggleMode");
+		String base = LangUtils.localize("tooltip.configurator.toggleMode");
 		return String.format(base, type.localize());
 	}
 
@@ -305,7 +306,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 		
 		public String getName()
 		{
-			return MekanismUtils.localize("tooltip.configurator." + name) + " " + info;
+			return LangUtils.localize("tooltip.configurator." + name) + " " + info;
 		}
 		
 		public EnumColor getColor()

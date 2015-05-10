@@ -12,7 +12,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -97,7 +97,7 @@ public class GuiGasGauge extends GuiGauge<Gas>
 			return dummyType.getLocalizedName();
 		}
 		
-		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : MekanismUtils.localize("gui.empty");
+		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : LangUtils.localize("gui.empty");
 	}
 
 	public static interface IGasInfoHandler

@@ -37,7 +37,7 @@ public class ChemicalWasherRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalWasher.name");
+		return LangUtils.localize("tile.MachineBlock2.ChemicalWasher.name");
 	}
 
 	@Override

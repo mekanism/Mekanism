@@ -62,7 +62,7 @@ public final class FluidContainerUtils
 
 		public String getDisplay()
 		{
-			return MekanismUtils.localize(display);
+			return LangUtils.localize(display);
 		}
 
 		private ContainerEditMode(String s)

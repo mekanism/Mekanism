@@ -21,9 +21,8 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketDataRequest.DataRequestMessage;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -37,9 +36,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import io.netty.buffer.ByteBuf;
-
 import codechicken.lib.vec.Vector3;
 
 public class PartLogisticalTransporter extends PartTransmitter<IInventory, InventoryNetwork> implements ITransporterTile
@@ -384,7 +381,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 		notifyTileChange();
 		PathfinderCache.onChanged(Coord4D.get(tile()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : EnumColor.BLACK + MekanismUtils.localize("gui.none"))));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));
 
 		return true;
 	}
@@ -393,7 +390,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	public boolean onRightClick(EntityPlayer player, int side)
 	{
 		super.onRightClick(player, side);
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : "None")));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.viewColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : "None")));
 		return true;
 	}
 

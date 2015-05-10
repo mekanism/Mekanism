@@ -7,7 +7,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityPortableTank;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -89,15 +89,15 @@ public class ItemGaugeDropper extends ItemMekanism implements IGasItem, IFluidCo
 
 		if(gasStack == null && fluidStack == null)
 		{
-			list.add(MekanismUtils.localize("gui.empty") + ".");
+			list.add(LangUtils.localize("gui.empty") + ".");
 		}
 		else if(gasStack != null)
 		{
-			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 		else if(fluidStack != null)
 		{
-			list.add(MekanismUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": " + fluidStack.amount);
+			list.add(LangUtils.localize("tooltip.stored") + " " + fluidStack.getFluid().getLocalizedName(fluidStack) + ": " + fluidStack.amount);
 		}
 	}
 

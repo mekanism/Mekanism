@@ -6,10 +6,9 @@ import mekanism.api.util.StackUtils;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItems;
-
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -32,7 +31,7 @@ public class ItemMekanismArmor extends ItemArmor
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(MekanismUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 
 	@Override

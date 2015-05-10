@@ -15,6 +15,7 @@ import mekanism.common.base.ISustainedInventory;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
@@ -573,7 +574,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IP
 		
 		public String getDescription()
 		{
-			return MekanismUtils.localize("tooltip." + name);
+			return LangUtils.localize("tooltip." + name);
 		}
 		
 		public ItemStack getStack()

@@ -24,6 +24,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalInfuser;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityChemicalInfuser;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -49,7 +50,7 @@ public class GuiChemicalInfuser extends GuiMekanism
 			public List<String> getInfo()
 			{
 				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + usage + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this,  MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalInfuser.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
@@ -103,8 +104,8 @@ public class GuiChemicalInfuser extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.chemicalInfuser.short"), 5, 5, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 		
 		if(xAxis >= 116 && xAxis <= 168 && yAxis >= 76 && yAxis <= 80)
 		{

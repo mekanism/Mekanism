@@ -36,7 +36,7 @@ public class SolarEvaporationRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("gui.solarEvaporationController.short");
+		return LangUtils.localize("gui.solarEvaporationController.short");
 	}
 
 	@Override

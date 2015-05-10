@@ -6,14 +6,14 @@ import mekanism.client.gui.GuiPrecisionSawmill;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.SawmillRecipe;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 
 public class PrecisionSawmillRecipeHandler extends ChanceMachineRecipeHandler
 {	
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.PrecisionSawmill.name");
+		return LangUtils.localize("tile.MachineBlock2.PrecisionSawmill.name");
 	}
 
 	@Override

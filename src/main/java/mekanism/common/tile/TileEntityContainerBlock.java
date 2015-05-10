@@ -3,8 +3,7 @@ package mekanism.common.tile;
 import mekanism.common.Upgrade;
 import mekanism.common.base.ISustainedInventory;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -151,7 +150,7 @@ public abstract class TileEntityContainerBlock extends TileEntityBasicBlock impl
 	@Override
 	public String getInventoryName()
 	{
-		return MekanismUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".name");
+		return LangUtils.localize(getBlockType().getUnlocalizedName() + "." + fullName + ".name");
 	}
 
 	@Override

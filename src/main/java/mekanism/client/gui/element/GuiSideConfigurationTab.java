@@ -5,6 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
@@ -56,7 +57,7 @@ public class GuiSideConfigurationTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			displayTooltip(MekanismUtils.localize("gui.configuration.side"), xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.configuration.side"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

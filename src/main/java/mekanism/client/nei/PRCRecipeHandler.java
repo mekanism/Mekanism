@@ -122,7 +122,7 @@ public class PRCRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName() 
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.PressurizedReactionChamber.short.name");
+		return LangUtils.localize("tile.MachineBlock2.PressurizedReactionChamber.short.name");
 	}
 	
 	@Override

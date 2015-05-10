@@ -8,7 +8,7 @@ import java.util.Map;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -35,12 +35,12 @@ public enum Upgrade
 	
 	public String getName()
 	{
-		return MekanismUtils.localize("upgrade." + name);
+		return LangUtils.localize("upgrade." + name);
 	}
 	
 	public String getDescription()
 	{
-		return MekanismUtils.localize("upgrade." + name + ".desc");
+		return LangUtils.localize("upgrade." + name + ".desc");
 	}
 	
 	public int getMax()
@@ -101,7 +101,7 @@ public enum Upgrade
 		{
 			double effect = Math.pow(general.maxUpgradeMultiplier, (float)tile.getComponent().getUpgrades(this)/(float)getMax());
 			
-			ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
+			ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + (Math.round(effect*100)/100F) + "x");
 		}
 		
 		return ret;
@@ -115,7 +115,7 @@ public enum Upgrade
 		{
 			double effect = Math.pow(2, (float)tile.getComponent().getUpgrades(this));
 			
-			ret.add(MekanismUtils.localize("gui.upgrades.effect") + ": " + effect + "x");
+			ret.add(LangUtils.localize("gui.upgrades.effect") + ": " + effect + "x");
 		}
 		
 		return ret;

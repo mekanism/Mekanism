@@ -10,7 +10,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -45,13 +45,13 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 
 		if(gasStack == null)
 		{
-			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
+			list.add(LangUtils.localize("tooltip.noGas") + ".");
 		}
 		else {
-			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
-		list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
+		list.add(EnumColor.GREY + LangUtils.localize("tooltip.flowing") + ": " + (getFlowing(itemstack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + getFlowingStr(itemstack));
 	}
 
 	@Override
@@ -156,7 +156,7 @@ public class ItemScubaTank extends ItemArmor implements IGasItem
 	{
 		boolean flowing = getFlowing(stack);
 		
-		return MekanismUtils.localize("tooltip." + (flowing ? "yes" : "no"));
+		return LangUtils.localize("tooltip." + (flowing ? "yes" : "no"));
 	}
 
 	public void setFlowing(ItemStack stack, boolean flowing)

@@ -5,6 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
@@ -110,7 +111,7 @@ public class GuiMatrixTab extends GuiElement
 		
 		public String getDesc()
 		{
-			return MekanismUtils.localize(desc);
+			return LangUtils.localize(desc);
 		}
 	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -24,11 +24,11 @@ public class GuiMekanismConfig extends GuiConfig
 	private static List<IConfigElement> getConfigElements()
 	{
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
-		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.general"), "mekanism.configgui.ctgy.general", GeneralEntry.class));
-		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.machines"), "mekanism.configgui.ctgy.machines", MachinesEntry.class));
-		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.tier"), "mekanism.configgui.ctgy.tier", TierEntry.class));
-		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.usage"), "mekanism.configgui.ctgy.usage", UsageEntry.class));
-		list.add(new DummyCategoryElement(MekanismUtils.localize("mekanism.configgui.ctgy.client"), "mekanism.configgui.ctgy.client", ClientEntry.class));
+		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.general"), "mekanism.configgui.ctgy.general", GeneralEntry.class));
+		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.machines"), "mekanism.configgui.ctgy.machines", MachinesEntry.class));
+		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.tier"), "mekanism.configgui.ctgy.tier", TierEntry.class));
+		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.usage"), "mekanism.configgui.ctgy.usage", UsageEntry.class));
+		list.add(new DummyCategoryElement(LangUtils.localize("mekanism.configgui.ctgy.client"), "mekanism.configgui.ctgy.client", ClientEntry.class));
 		return list;
 	}
 

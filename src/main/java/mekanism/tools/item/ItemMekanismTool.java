@@ -7,9 +7,8 @@ import java.util.List;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.tools.common.MekanismTools;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +27,7 @@ public class ItemMekanismTool extends ItemTool
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(MekanismUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 	
 	@Override

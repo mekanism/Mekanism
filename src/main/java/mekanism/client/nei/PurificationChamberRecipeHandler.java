@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.PurificationRecipe;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock.PurificationChamber.name");
+		return LangUtils.localize("tile.MachineBlock.PurificationChamber.name");
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -399,7 +400,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 96, 20, MekanismUtils.localize("gui.newFilter")));
+		buttonList.add(new GuiButton(0, guiWidth + 56, guiHeight + 136, 96, 20, LangUtils.localize("gui.newFilter")));
 
 		String prevRad = radiusField != null ? radiusField.getText() : "";
 		String prevMin = minField != null ? minField.getText() : "";
@@ -435,12 +436,12 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.digitalMinerConfig"), 43, 6, 0x404040);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
 		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 		
-		fontRendererObj.drawString("I: " + (tileEntity.inverse ? MekanismUtils.localize("gui.on") : MekanismUtils.localize("gui.off")), 11, 131, 0x00CD00);
+		fontRendererObj.drawString("I: " + (tileEntity.inverse ? LangUtils.localize("gui.on") : LangUtils.localize("gui.off")), 11, 131, 0x00CD00);
 
 		fontRendererObj.drawString("Radi: " + tileEntity.radius, 11, 58, 0x00CD00);
 
@@ -468,7 +469,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MOreDictFilter)
 				{
@@ -490,7 +491,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						} catch(Exception e) {}
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MMaterialFilter)
 				{
@@ -505,7 +506,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
 				}
 				else if(filter instanceof MModIDFilter)
 				{
@@ -527,14 +528,14 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 						} catch(Exception e) {}
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
 				}
 			}
 		}
 
 		if(xAxis >= 11 && xAxis <= 25 && yAxis >= 141 && yAxis <= 155)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.digitalMiner.inverse"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

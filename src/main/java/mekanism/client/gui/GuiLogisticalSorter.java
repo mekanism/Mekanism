@@ -24,6 +24,7 @@ import mekanism.common.network.PacketLogisticalSorterGui.LogisticalSorterGuiMess
 import mekanism.common.network.PacketLogisticalSorterGui.SorterGuiPacket;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -417,7 +418,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 
 		// Add buttons to gui
 		buttonList.clear();
-		buttonList.add(new GuiButton(BUTTON_NEW, guiLeft + 56, guiTop + 136, 96, 20, MekanismUtils.localize("gui.newFilter")));
+		buttonList.add(new GuiButton(BUTTON_NEW, guiLeft + 56, guiTop + 136, 96, 20, LangUtils.localize("gui.newFilter")));
 	}
 
 	@Override
@@ -441,16 +442,16 @@ public class GuiLogisticalSorter extends GuiMekanism
 		// Write to info display
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 43, 6, 0x404040);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.filters") + ":", 11, 19, 0x00CD00);
 		fontRendererObj.drawString("T: " + tileEntity.filters.size(), 11, 28, 0x00CD00);
 
 		fontRendererObj.drawString("RR:", 12, 74, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui." + (tileEntity.roundRobin ? "on" : "off")), 27, 86, 0x00CD00);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.logisticalSorter.auto") + ":", 12, 100, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui." + (tileEntity.autoEject ? "on" : "off")), 27, 112, 0x00CD00);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.logisticalSorter.default") + ":", 12, 126, 0x00CD00);
 
 		// Draw filters
 		for(int i = 0; i < 4; i++)
@@ -473,8 +474,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.itemFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TOreDictFilter)
 				{
@@ -496,8 +497,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 						} catch(final Exception e) {}
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.oredictFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TMaterialFilter)
 				{
@@ -512,8 +513,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 						GL11.glPopMatrix();
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.materialFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 				else if(filter instanceof TModIDFilter)
 				{
@@ -535,8 +536,8 @@ public class GuiLogisticalSorter extends GuiMekanism
 						} catch(final Exception e) {}
 					}
 
-					fontRendererObj.drawString(MekanismUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
-					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : MekanismUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
+					fontRendererObj.drawString(LangUtils.localize("gui.modIDFilter"), 78, yStart + 2, 0x404040);
+					fontRendererObj.drawString(filter.color != null ? filter.color.getName() : LangUtils.localize("gui.none"), 78, yStart + 11, 0x404040);
 				}
 
 				// Draw hovertext for sorting buttons
@@ -546,7 +547,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20)
 					{
-						drawCreativeTabHoveringText(MekanismUtils.localize("gui.moveUp"), xAxis, yAxis);
+						drawCreativeTabHoveringText(LangUtils.localize("gui.moveUp"), xAxis, yAxis);
 					}
 				}
 				
@@ -554,7 +555,7 @@ public class GuiLogisticalSorter extends GuiMekanism
 				{
 					if(xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27)
 					{
-						drawCreativeTabHoveringText(MekanismUtils.localize("gui.moveDown"), xAxis, yAxis);
+						drawCreativeTabHoveringText(LangUtils.localize("gui.moveDown"), xAxis, yAxis);
 					}
 				}
 			}
@@ -582,18 +583,18 @@ public class GuiLogisticalSorter extends GuiMekanism
 				drawCreativeTabHoveringText(tileEntity.color.getName(), xAxis, yAxis);
 			}
 			else {
-				drawCreativeTabHoveringText(MekanismUtils.localize("gui.none"), xAxis, yAxis);
+				drawCreativeTabHoveringText(LangUtils.localize("gui.none"), xAxis, yAxis);
 			}
 		}
 
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 110 && yAxis <= 124)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.autoEject"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.autoEject"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 12 && xAxis <= 26 && yAxis >= 84 && yAxis <= 98)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.logisticalSorter.roundRobin"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.logisticalSorter.roundRobin"), xAxis, yAxis);
 		}
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

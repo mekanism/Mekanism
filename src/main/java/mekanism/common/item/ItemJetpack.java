@@ -12,7 +12,7 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismItems;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -53,13 +53,13 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 		if(gasStack == null)
 		{
-			list.add(MekanismUtils.localize("tooltip.noGas") + ".");
+			list.add(LangUtils.localize("tooltip.noGas") + ".");
 		}
 		else {
-			list.add(MekanismUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
 		}
 
-		list.add(EnumColor.GREY + MekanismUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
+		list.add(EnumColor.GREY + LangUtils.localize("tooltip.mode") + ": " + EnumColor.GREY + getMode(itemstack).getName());
 	}
 
 	@Override
@@ -268,7 +268,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 
 		public String getName()
 		{
-			return color + MekanismUtils.localize(unlocalized);
+			return color + LangUtils.localize(unlocalized);
 		}
 	}
 

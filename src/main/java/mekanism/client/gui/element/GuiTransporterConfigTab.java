@@ -5,6 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
@@ -58,7 +59,7 @@ public class GuiTransporterConfigTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= yPos+4 && yAxis <= yPos+22)
 		{
-			displayTooltip(MekanismUtils.localize("gui.configuration.transporter"), xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.configuration.transporter"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

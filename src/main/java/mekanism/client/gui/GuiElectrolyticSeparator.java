@@ -27,6 +27,7 @@ import mekanism.common.inventory.container.ContainerElectrolyticSeparator;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityGasTank;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -54,7 +55,7 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + usage + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiElectrolyticSeparator.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
@@ -126,10 +127,10 @@ public class GuiElectrolyticSeparator extends GuiMekanism
 	{
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 
-		String name = chooseByMode(tileEntity.dumpLeft, MekanismUtils.localize("gui.idle"), MekanismUtils.localize("gui.dumping"), MekanismUtils.localize("gui.dumping_excess"));
+		String name = chooseByMode(tileEntity.dumpLeft, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
 		renderScaledText(name, 21, 73, 0x404040, 66);
 
-		name = chooseByMode(tileEntity.dumpRight, MekanismUtils.localize("gui.idle"), MekanismUtils.localize("gui.dumping"), MekanismUtils.localize("gui.dumping_excess"));
+		name = chooseByMode(tileEntity.dumpRight, LangUtils.localize("gui.idle"), LangUtils.localize("gui.dumping"), LangUtils.localize("gui.dumping_excess"));
 		renderScaledText(name, 156-(int)(fontRendererObj.getStringWidth(name)*getNeededScale(name, 66)), 73, 0x404040, 66);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

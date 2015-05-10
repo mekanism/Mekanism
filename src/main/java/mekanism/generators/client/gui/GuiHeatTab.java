@@ -4,6 +4,7 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
@@ -57,7 +58,7 @@ public class GuiHeatTab extends GuiElement
 
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 10 && yAxis <= 28)
 		{
-			displayTooltip(MekanismUtils.localize("gui.heat"), xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.heat"), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -10,9 +10,9 @@ import mekanism.common.inventory.container.ContainerElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
@@ -59,7 +59,7 @@ public class GuiElectricChest extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, MekanismUtils.localize("gui.electricChest.editPassword")));
+		buttonList.add(new GuiButton(0, guiWidth + 93, guiHeight + 4, 76, 20, LangUtils.localize("gui.electricChest.editPassword")));
 	}
 
 	@Override
@@ -83,9 +83,9 @@ public class GuiElectricChest extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("tile.MachineBlock.ElectricChest.name"), 8, 6, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("tile.MachineBlock.ElectricChest.name"), 8, 6, 0x404040);
 		fontRendererObj.drawString(getLocked() ? EnumColor.DARK_RED + "Locked" : EnumColor.BRIGHT_GREEN + "Unlocked", 97, 137, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		if(xAxis >= 180 && xAxis <= 184 && yAxis >= 32 && yAxis <= 84)
 		{

@@ -4,8 +4,7 @@ import java.util.List;
 
 import mekanism.api.util.StackUtils;
 import mekanism.common.item.ItemMekanism;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -85,7 +84,7 @@ public class ItemMekanismHoe extends ItemMekanism
 	@Override
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
-		list.add(MekanismUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
+		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import mekanism.common.base.IFactory;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.item.ItemBlockBasic;
 import mekanism.common.recipe.MekanismRecipe;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -24,7 +24,7 @@ public class MekanismRecipeHandler extends ShapedRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return "Mekanism " + MekanismUtils.localize("recipe.mekanismShaped");
+		return "Mekanism " + LangUtils.localize("recipe.mekanismShaped");
 	}
 
 	@Override

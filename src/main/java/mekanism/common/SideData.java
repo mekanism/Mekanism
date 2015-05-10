@@ -6,7 +6,7 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.api.gas.GasTank;
 import mekanism.common.base.ITankManager;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -40,7 +40,7 @@ public class SideData
 	
 	public String localize()
 	{
-		return MekanismUtils.localize("sideData." + name);
+		return LangUtils.localize("sideData." + name);
 	}
 	
 	public boolean hasSlot(int... slots)

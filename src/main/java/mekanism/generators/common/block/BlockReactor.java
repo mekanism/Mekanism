@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockCTM;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlocks;
 import mekanism.generators.common.MekanismGenerators;
@@ -416,7 +417,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 
 		public String getDescription()
 		{
-			return MekanismUtils.localize("tooltip." + name);
+			return LangUtils.localize("tooltip." + name);
 		}
 
 		public ItemStack getStack()

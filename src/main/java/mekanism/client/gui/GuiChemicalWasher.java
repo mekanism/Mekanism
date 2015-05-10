@@ -28,6 +28,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerChemicalWasher;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityChemicalWasher;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -55,7 +56,7 @@ public class GuiChemicalWasher extends GuiMekanism
 			public List<String> getInfo()
 			{
 				String usage = MekanismUtils.getEnergyDisplay(tileEntity.clientEnergyUsed);
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + usage + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + usage + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalWasher.png")));
 		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler()

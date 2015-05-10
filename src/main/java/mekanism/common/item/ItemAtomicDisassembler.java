@@ -10,6 +10,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.util.ListUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -49,8 +50,8 @@ public class ItemAtomicDisassembler extends ItemEnergized
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 
-		list.add(MekanismUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
-		list.add(MekanismUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + getEfficiency(itemstack));
+		list.add(LangUtils.localize("tooltip.mode") + ": " + EnumColor.INDIGO + getModeName(itemstack));
+		list.add(LangUtils.localize("tooltip.efficiency") + ": " + EnumColor.INDIGO + getEfficiency(itemstack));
 	}
 
 	@Override
@@ -157,7 +158,7 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		if(!world.isRemote && entityplayer.isSneaking())
 		{
 			toggleMode(itemstack);
-			entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
+			entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.modeToggle") + " " + EnumColor.INDIGO + getModeName(itemstack) + EnumColor.AQUA + " (" + getEfficiency(itemstack) + ")"));
 		}
 
 		return itemstack;
@@ -291,15 +292,15 @@ public class ItemAtomicDisassembler extends ItemEnergized
 		switch(mode)
 		{
 			case 0:
-				return MekanismUtils.localize("tooltip.disassembler.normal");
+				return LangUtils.localize("tooltip.disassembler.normal");
 			case 1:
-				return MekanismUtils.localize("tooltip.disassembler.slow");
+				return LangUtils.localize("tooltip.disassembler.slow");
 			case 2:
-				return MekanismUtils.localize("tooltip.disassembler.fast");
+				return LangUtils.localize("tooltip.disassembler.fast");
 			case 3:
-				return MekanismUtils.localize("tooltip.disassembler.vein");
+				return LangUtils.localize("tooltip.disassembler.vein");
 			case 4:
-				return MekanismUtils.localize("tooltip.disassembler.off");
+				return LangUtils.localize("tooltip.disassembler.off");
 		}
 
 		return null;

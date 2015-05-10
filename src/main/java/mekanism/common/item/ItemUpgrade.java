@@ -5,8 +5,8 @@ import java.util.List;
 import mekanism.api.EnumColor;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IUpgradeItem;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
@@ -31,7 +31,7 @@ public class ItemUpgrade extends ItemMekanism implements IUpgradeItem
 	{
 		if(!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
 		{
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
+			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + "shift" + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
 		}
 		else {
 			list.addAll(MekanismUtils.splitLines(getUpgradeType(itemstack).getDescription()));

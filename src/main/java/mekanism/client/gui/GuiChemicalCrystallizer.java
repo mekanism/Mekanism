@@ -30,6 +30,7 @@ import mekanism.common.inventory.container.ContainerChemicalCrystallizer;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.recipe.machines.CrystallizerRecipe;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -72,7 +73,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 			public List<String> getInfo()
 			{
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyUsage);
-				return ListUtils.asList(MekanismUtils.localize("gui.using") + ": " + multiplier + "/t", MekanismUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
+				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiChemicalCrystallizer.png")));
 		guiElements.add(new GuiGasGauge(new IGasInfoHandler() {
@@ -117,7 +118,7 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 				
 				if(recipe == null)
 				{
-					fontRendererObj.drawString("(" + MekanismUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
+					fontRendererObj.drawString("(" + LangUtils.localize("gui.noRecipe") + ")", 29, 24, 0x00CD00);
 				}
 				else {
 					fontRendererObj.drawString("(" + recipe.recipeOutput.output.getDisplayName() + ")", 29, 24, 0x00CD00);
