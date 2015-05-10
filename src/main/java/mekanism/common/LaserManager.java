@@ -71,6 +71,11 @@ public class LaserManager
 
 	public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world)
 	{
+		if(!general.aestheticWorldDamage)
+		{
+			return null;
+		}
+		
 		List<ItemStack> ret = null;
 		Block blockHit = blockCoord.getBlock(world);
 		
