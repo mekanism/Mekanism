@@ -99,9 +99,10 @@ public class DynamicFluidTank implements IFluidTank
 				return resource.amount;
 			}
 			else {
+				int prevNeeded = getNeeded();
+				
 				if(doFill)
 				{
-					int prevNeeded = getNeeded();
 					dynamicTank.structure.fluidStored.amount = getCapacity();
 					
 					if(prevNeeded > 0)
@@ -113,7 +114,7 @@ public class DynamicFluidTank implements IFluidTank
 					}
 				}
 
-				return getNeeded();
+				return prevNeeded;
 			}
 		}
 
