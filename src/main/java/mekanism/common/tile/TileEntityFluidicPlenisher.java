@@ -285,7 +285,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluidID());
+			data.add(fluidTank.getFluid().fluidID);
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {

@@ -669,7 +669,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				itemStack.setTagCompound(new NBTTagCompound());
 			}
 			
-			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.getFluidID() == 0)
+			if(fluidStack == null || fluidStack.amount == 0 || fluidStack.fluidID == 0)
 			{
 				itemStack.stackTagCompound.removeTag("fluidTank");
 			}
