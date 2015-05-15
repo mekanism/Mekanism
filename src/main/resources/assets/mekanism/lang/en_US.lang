@@ -479,6 +479,7 @@ gui.redstoneOutputMode=Redstone mode
 gui.entityDetection=Entity Detection
 gui.moveUp=Move Up
 gui.moveDown=Move Down
+gui.drain=Drain
 
 gui.reactor.injectionRate=Injection Rate
 

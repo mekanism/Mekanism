@@ -12,17 +12,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiPowerBar extends GuiElement
 {
-	private int xLocation;
-	private int yLocation;
-
-	private int width = 6;
-	private int height = 56;
 	private int innerOffsetY = 2;
 
 	private TileEntityElectricBlock tileEntity;
 	private IPowerInfoHandler handler;
 
-	public GuiPowerBar(IGuiWrapper gui, TileEntityElectricBlock tile, ResourceLocation def, int x, int y)
+	public GuiPowerBar(IGuiWrapper gui, TileEntityElectricBlock tile, ResourceLocation def, int guiLeft, int guiTop)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
 		
@@ -42,24 +37,28 @@ public class GuiPowerBar extends GuiElement
 			}
 		};
 		
-		xLocation = x;
-		yLocation = y;
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+		lmntWidth = 6;
+		lmntHeight = 54;
 	}
 	
-	public GuiPowerBar(IGuiWrapper gui, IPowerInfoHandler h, ResourceLocation def, int x, int y)
+	public GuiPowerBar(IGuiWrapper gui, IPowerInfoHandler h, ResourceLocation def, int guiLeft, int guiTop)
 	{
 		super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiPowerBar.png"), gui, def);
 		
 		handler = h;
 		
-		xLocation = x;
-		yLocation = y;
+		lmntLeft = guiLeft;
+		lmntTop = guiTop;
+		lmntWidth = 6;
+		lmntHeight = 54;
 	}
 	
 	@Override
-	public Rectangle4i getBounds(int guiWidth, int guiHeight)
+	public Rectangle4i getBounds(int guiLeft, int guiTop)
 	{
-		return new Rectangle4i(guiWidth + xLocation, guiHeight + yLocation, width, height);
+		return new Rectangle4i(guiLeft + lmntLeft, guiTop + lmntTop, lmntWidth, lmntHeight);
 	}
 	
 	public static abstract class IPowerInfoHandler
@@ -73,16 +72,19 @@ public class GuiPowerBar extends GuiElement
 	}
 
 	@Override
-	public void renderBackground(int xAxis, int yAxis, int guiWidth, int guiHeight)
+	public void renderBackground(int xAxis, int yAxis, int guiLeft, int guiTop)
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation, 0, 0, width, height);
+		guiObj.drawTexturedRect(guiLeft + lmntLeft, guiTop + lmntTop, 0, 0, lmntWidth, lmntHeight);
 		
 		if(handler.getLevel() > 0)
 		{
-			int displayInt = (int)(handler.getLevel()*52) + innerOffsetY;
-			guiObj.drawTexturedRect(guiWidth + xLocation, guiHeight + yLocation + height - displayInt, 6, height - displayInt, width, displayInt);
+			int barX = lmntLeft + 1;
+			int barH = (int)(handler.getLevel()*52);
+			int barY = lmntTop + 1 + 52 - barH;
+			int barV = (int)((1.0 - handler.getLevel())*104);
+			guiObj.drawTexturedRect(guiLeft + barX, guiTop + barY, 6, barV, 4, barH);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);
@@ -93,7 +95,7 @@ public class GuiPowerBar extends GuiElement
 	{
 		mc.renderEngine.bindTexture(RESOURCE);
 
-		if(handler.getTooltip() != null && xAxis >= xLocation && xAxis <= xLocation + width && yAxis >= yLocation && yAxis <= yLocation + height)
+		if(handler.getTooltip() != null && xAxis >= lmntLeft && xAxis <= lmntLeft + lmntWidth && yAxis >= lmntTop && yAxis <= lmntTop + lmntHeight)
 		{
 			displayTooltip(handler.getTooltip(), xAxis, yAxis);
 		}

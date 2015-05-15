@@ -22,10 +22,10 @@ public class ContainerMetallurgicInfuser extends Container
 	public ContainerMetallurgicInfuser(InventoryPlayer inventory, TileEntityMetallurgicInfuser tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 143, 35));
-		addSlotToContainer(new Slot(tentity, 1, 17, 35));
-		addSlotToContainer(new Slot(tentity, 2, 51, 43));
-		addSlotToContainer(new SlotOutput(tentity, 3, 109, 43));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 14, 72));
+		addSlotToContainer(new Slot(tentity, 1, 20, 18));
+		addSlotToContainer(new Slot(tentity, 2, 53, 45));
+		addSlotToContainer(new SlotOutput(tentity, 3, 125, 45));
 		
 		int slotY;
 
@@ -33,13 +33,13 @@ public class ContainerMetallurgicInfuser extends Container
 		{
 			for(int slotX = 0; slotX < 9; slotX++)
 			{
-				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 84 + slotY * 18));
+				addSlotToContainer(new Slot(inventory, slotX + slotY * 9 + 9, 8 + slotX * 18, 104 + slotY * 18));
 			}
 		}
 
 		for(slotY = 0; slotY < 9; slotY++)
 		{
-			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 142));
+			addSlotToContainer(new Slot(inventory, slotY, 8 + slotY * 18, 162));
 		}
 
 		tileEntity.open(inventory.player);
