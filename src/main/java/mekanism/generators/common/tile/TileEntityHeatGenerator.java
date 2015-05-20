@@ -76,7 +76,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 				}
 				else if(fluid != null)
 				{
-					if(fluid != null && fluid.getFluidID() == FluidRegistry.LAVA.getID())
+					if(fluid != null && fluid.fluidID == FluidRegistry.LAVA.getID())
 					{
 						if(lavaTank.getFluid() == null || lavaTank.getFluid().amount+fluid.amount <= lavaTank.getCapacity())
 						{
@@ -152,7 +152,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	{
 		if(slotID == 0)
 		{
-			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).getFluidID() == FluidRegistry.LAVA.getID());
+			return getFuel(itemstack) > 0 || (FluidContainerRegistry.getFluidForFilledItem(itemstack) != null && FluidContainerRegistry.getFluidForFilledItem(itemstack).fluidID == FluidRegistry.LAVA.getID());
 		}
 		else if(slotID == 1)
 		{
@@ -329,7 +329,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluidID() == FluidRegistry.LAVA.getID() && from != ForgeDirection.getOrientation(facing))
+		if(resource.fluidID == FluidRegistry.LAVA.getID() && from != ForgeDirection.getOrientation(facing))
 		{
 			return lavaTank.fill(resource, doFill);
 		}
