@@ -295,12 +295,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork>
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
-			IGasHandler acceptor = (IGasHandler)coord.getTileEntity(getWorld());
+			TileEntity tile = coord.getTileEntity(getWorld());
 			
-			if(sides == null || sides.isEmpty())
+			if(!(tile instanceof IGasHandler) || sides == null || sides.isEmpty())
 			{
 				continue;
 			}
+			
+			IGasHandler acceptor = (IGasHandler)tile;
 
 			for(ForgeDirection side : sides)
 			{
