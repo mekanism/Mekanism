@@ -44,7 +44,7 @@ public class PurificationChamberRecipeHandler extends AdvancedMachineRecipeHandl
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.RED;
+		return ProgressBar.PURIFY;
 	}
 
 	@Override

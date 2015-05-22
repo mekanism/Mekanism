@@ -17,6 +17,6 @@ public class GuiPurificationChamber extends GuiAdvancedElectricMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.RED;
+		return ProgressBar.PURIFY;
 	}
 }

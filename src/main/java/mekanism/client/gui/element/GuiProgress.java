@@ -91,7 +91,8 @@ public class GuiProgress extends GuiElement
 		COMPRESS(54, 18, 0, 162),
 		COMBINE(54, 18, 0, 180),
 		CRUSH2(54, 18, 0, 198),
-		INFUSE(54, 18, 0, 216);
+		INFUSE(54, 18, 0, 216),
+		PURIFY(54, 18, 0, 234);
 
 		public int width;
 		public int height;
