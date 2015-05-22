@@ -31,12 +31,12 @@ public abstract class BoilerTank implements IFluidTank
 	{
 		if(steamBoiler.structure != null && !steamBoiler.getWorldObj().isRemote)
 		{
-			if(resource == null || resource.getFluidID() <= 0)
+			if(resource == null || resource.fluidID <= 0)
 			{
 				return 0;
 			}
 
-			if(getFluid() == null || getFluid().getFluidID() <= 0)
+			if(getFluid() == null || getFluid().fluidID <= 0)
 			{
 				if(resource.amount <= getCapacity())
 				{
@@ -138,7 +138,7 @@ public abstract class BoilerTank implements IFluidTank
 	{
 		if(steamBoiler.structure != null && !steamBoiler.getWorldObj().isRemote)
 		{
-			if(getFluid() == null || getFluid().getFluidID() <= 0)
+			if(getFluid() == null || getFluid().fluidID <= 0)
 			{
 				return null;
 			}
@@ -160,7 +160,7 @@ public abstract class BoilerTank implements IFluidTank
 				getFluid().amount -= used;
 			}
 
-			FluidStack drained = new FluidStack(getFluid().getFluidID(), used);
+			FluidStack drained = new FluidStack(getFluid().fluidID, used);
 
 			if(getFluid().amount <= 0)
 			{
