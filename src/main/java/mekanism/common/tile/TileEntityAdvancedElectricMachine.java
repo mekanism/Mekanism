@@ -256,7 +256,10 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		}
 		else if(slotID == 0)
 		{
-			return RecipeHandler.getRecipe(new AdvancedMachineInput(itemstack, gasTank.getGasType()), getRecipes()) != null;
+			for(AdvancedMachineInput input : getRecipes().keySet())
+			{
+				return input.itemStack.isItemEqual(itemstack);
+			}
 		}
 		else if(slotID == 3)
 		{
