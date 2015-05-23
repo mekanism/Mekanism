@@ -6,7 +6,10 @@ tile.MachineBlock2.ChemicalOxidizer.name=Chemical Oxidiser
 tile.MachineBlock2.ChemicalCrystallizer.name=Chemical Crystalliser
 tile.MachineBlock2.PressurizedReactionChamber.name=Pressurised Reaction Chamber
 
-item.MultipartTransmitter.PressurizedTube.name=Pressurised Tube
+item.MultipartTransmitter.BasicPressurizedTube.name=Basic Pressurised Tube
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Advanced Pressurised Tube
+item.MultipartTransmitter.ElitePressurizedTube.name=Elite Pressurised Tube
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimate Pressurised Tube
 
 //Gasses
 gas.water=Water Vapour
