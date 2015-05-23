@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -113,7 +114,9 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -133,6 +136,7 @@ public class CommonProxy
 	public static int PLASTIC_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 	public static int CTM_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
+	protected static WeakReference<EntityPlayer> dummyPlayer = new WeakReference<EntityPlayer>(null);
 
 	/**
 	 * Register tile entities that have special models. Overwritten in client to register TESRs.
@@ -589,6 +593,53 @@ public class CommonProxy
 		{
 			Mekanism.logger.info("Received config from server.");
 		}
+	}
+	
+	private WeakReference<EntityPlayer> createNewPlayer(WorldServer world) 
+	{
+		EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
+
+		return new WeakReference<EntityPlayer>(player);
+	}
+
+	private WeakReference<EntityPlayer> createNewPlayer(WorldServer world, double x, double y, double z)
+	{
+		EntityPlayer player = FakePlayerFactory.get(world, Mekanism.gameProfile);
+		
+		player.posX = x;
+		player.posY = y;
+		player.posZ = z;
+		
+		return new WeakReference<EntityPlayer>(player);
+	}
+
+	public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world) 
+	{
+		if(dummyPlayer.get() == null) 
+		{
+			dummyPlayer = createNewPlayer(world);
+		} 
+		else {
+			dummyPlayer.get().worldObj = world;
+		}
+
+		return dummyPlayer;
+	}
+
+	public final WeakReference<EntityPlayer> getDummyPlayer(WorldServer world, double x, double y, double z) 
+	{
+		if(dummyPlayer.get() == null) 
+		{
+			dummyPlayer = createNewPlayer(world, x, y, z);
+		} 
+		else {
+			dummyPlayer.get().worldObj = world;
+			dummyPlayer.get().posX = x;
+			dummyPlayer.get().posY = y;
+			dummyPlayer.get().posZ = z;
+		}
+
+		return dummyPlayer;
 	}
 
 	public EntityPlayer getPlayer(MessageContext context)

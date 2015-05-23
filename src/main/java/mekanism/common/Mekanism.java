@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
@@ -111,6 +112,9 @@ import org.apache.logging.log4j.Logger;
 import rebelkeithy.mods.metallurgy.api.IOreInfo;
 import rebelkeithy.mods.metallurgy.api.MetallurgyAPI;
 import codechicken.multipart.handler.MultipartProxy;
+
+import com.mojang.authlib.GameProfile;
+
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IFuelHandler;
@@ -202,6 +206,9 @@ public class Mekanism
 	
 	/** The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes. */
 	public static int baseWorldGenVersion = 0;
+	
+	/** The GameProfile used by the dummy Mekanism player */
+	public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()), "[Mekanism]");
 	
 	public static KeySync keyMap = new KeySync();
 	

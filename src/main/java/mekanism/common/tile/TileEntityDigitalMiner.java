@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -18,7 +20,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
-import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.base.ITransporterTile;
@@ -40,7 +41,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import mekanism.common.util.TransporterUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -51,15 +51,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.BlockEvent;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -358,34 +358,46 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	 */
 	public boolean setReplace(Coord4D obj, int index)
 	{
-		ItemStack stack = getReplace(index);
-		 
-		if(stack != null)
+		Block block = obj.getBlock(worldObj);
+		int meta = obj.getMetadata(worldObj);
+		
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)worldObj, obj.xCoord, obj.yCoord, obj.zCoord).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(obj.xCoord, obj.yCoord, obj.zCoord, worldObj, block, meta, dummy);
+		MinecraftForge.EVENT_BUS.post(event);
+		
+		if(!event.isCanceled())
 		{
-			worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, Block.getBlockFromItem(stack.getItem()), stack.getItemDamage(), 3);
-
-			if(obj.getBlock(worldObj) != null && !obj.getBlock(worldObj).canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
+			ItemStack stack = getReplace(index);
+			 
+			if(stack != null)
 			{
-				obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
-				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
-			}
-			
-			return true;
-		}
-		else {
-			MinerFilter filter = replaceMap.get(index);
-			
-			if(filter == null || (filter.replaceStack == null || !filter.requireStack))
-			{
-				worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+				worldObj.setBlock(obj.xCoord, obj.yCoord, obj.zCoord, Block.getBlockFromItem(stack.getItem()), stack.getItemDamage(), 3);
+	
+				if(obj.getBlock(worldObj) != null && !obj.getBlock(worldObj).canBlockStay(worldObj, obj.xCoord, obj.yCoord, obj.zCoord))
+				{
+					obj.getBlock(worldObj).dropBlockAsItem(worldObj, obj.xCoord, obj.yCoord, obj.zCoord, obj.getMetadata(worldObj), 1);
+					worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+				}
 				
 				return true;
 			}
-			
-			missingStack = filter.replaceStack;
-			
-			return false;
+			else {
+				MinerFilter filter = replaceMap.get(index);
+				
+				if(filter == null || (filter.replaceStack == null || !filter.requireStack))
+				{
+					worldObj.setBlockToAir(obj.xCoord, obj.yCoord, obj.zCoord);
+					
+					return true;
+				}
+				
+				missingStack = filter.replaceStack;
+				
+				return false;
+			}
 		}
+		
+		return false;
 	}
 
 	public ItemStack getReplace(int index)
