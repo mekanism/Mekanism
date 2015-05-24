@@ -17,6 +17,6 @@ public class GuiEnergizedSmelter extends GuiElectricMachine
 	@Override
 	public ProgressBar getProgressType()
 	{
-		return ProgressBar.GREEN;
+		return ProgressBar.SMELT;
 	}
 }
