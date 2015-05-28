@@ -74,7 +74,7 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
     {
 		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && stack.getItemDamage() == 6)
 		{
-			return 1;
+			return new InventoryBin(stack).getItemCount() == 0 ? super.getItemStackLimit(stack) : 1;
 		}
 		
 		return super.getItemStackLimit(stack);
