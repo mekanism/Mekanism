@@ -205,7 +205,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = EnergyCubeTier.getFromName(PacketHandler.readString(dataStream));
+		tier = EnergyCubeTier.values()[dataStream.readInt()];
 
 		super.handlePacketData(dataStream);
 
@@ -217,7 +217,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(tier.getBaseTier().getName());
+		data.add(tier.ordinal());
 
 		super.getNetworkedData(data);
 
