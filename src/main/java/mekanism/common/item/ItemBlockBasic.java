@@ -69,6 +69,17 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 		setHasSubtypes(true);
 	}
 	
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+    {
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && stack.getItemDamage() == 6)
+		{
+			return 1;
+		}
+		
+		return super.getItemStackLimit(stack);
+    }
+	
 	public ItemStack getUnchargedCell(InductionCellTier tier)
 	{
 		ItemStack stack = new ItemStack(MekanismBlocks.BasicBlock2, 1, 3);
