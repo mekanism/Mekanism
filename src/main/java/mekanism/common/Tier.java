@@ -82,8 +82,7 @@ public final class Tier
 					return tier;
 				}
 			}
-
-			Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
+			
 			return BASIC;
 		}
 		
