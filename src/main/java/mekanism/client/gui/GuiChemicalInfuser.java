@@ -131,33 +131,4 @@ public class GuiChemicalInfuser extends GuiMekanism
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int button)
-	{
-		super.mouseClicked(x, y, button);
-
-		if(button == 0)
-		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
-
-			if(xAxis > 44 && xAxis < 62 && yAxis > 13 && yAxis < 21)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
-			}
-			else if(xAxis > 114 && xAxis < 132 && yAxis > 13 && yAxis < 21)
-			{
-				ArrayList data = new ArrayList();
-				data.add(1);
-
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
-			}
-		}
-	}
 }

@@ -166,27 +166,6 @@ public class GuiChemicalCrystallizer extends GuiMekanism
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int button)
-	{
-		super.mouseClicked(x, y, button);
-
-		if(button == 0)
-		{
-			int xAxis = (x - (width - xSize) / 2);
-			int yAxis = (y - (height - ySize) / 2);
-
-			if(xAxis > 24 && xAxis < 42 && yAxis > 56 && yAxis < 64)
-			{
-				ArrayList data = new ArrayList();
-				data.add(0);
-
-				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-				SoundHandler.playSound("gui.button.press");
-			}
-		}
-	}
-
-	@Override
 	public void updateScreen()
 	{
 		super.updateScreen();

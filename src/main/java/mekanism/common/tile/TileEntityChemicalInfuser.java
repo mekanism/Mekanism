@@ -215,27 +215,6 @@ public class TileEntityChemicalInfuser extends TileEntityNoisyElectricBlock impl
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
-		{
-			int type = dataStream.readInt();
-
-			if(type == 0)
-			{
-				leftTank.setGas(null);
-			}
-			else if(type == 1)
-			{
-				rightTank.setGas(null);
-			}
-
-			for(EntityPlayer player : playersUsing)
-			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
-			}
-
-			return;
-		}
-
 		super.handlePacketData(dataStream);
 
 		isActive = dataStream.readBoolean();
