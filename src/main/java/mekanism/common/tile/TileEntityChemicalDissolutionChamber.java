@@ -124,7 +124,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityNoisyElectri
 			
 			DissolutionRecipe recipe = getRecipe();
 
-			injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
+			injectUsageThisTick = Math.max(1, StatUtils.inversePoisson(injectUsage));
 
 			if(canOperate(recipe) && getEnergy() >= energyUsage && injectTank.getStored() >= injectUsageThisTick && MekanismUtils.canFunction(this))
 			{
