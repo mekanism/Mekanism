@@ -2,6 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.Arrays;
 
+import org.lwjgl.input.Keyboard;
+
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
@@ -60,6 +62,11 @@ public class GuiGasGauge extends GuiGauge<Gas>
 					
 					if(index != -1)
 					{
+						if(button == 0 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+						{
+							button = 2;
+						}
+						
 						Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
 					}
 				}
