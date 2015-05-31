@@ -9,6 +9,7 @@ import mekanism.common.CTMData;
 import mekanism.common.ItemAttacher;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBlockCTM;
+import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
 import mekanism.common.util.LangUtils;
@@ -360,6 +361,21 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		
         return 0;
     }
+	
+	@Override
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
+	{
+		ReactorBlockType type = ReactorBlockType.get(this, world.getBlockMetadata(x, y, z));
+
+		switch(type)
+		{
+			case FRAME:
+			case PORT:
+				return true;
+			default:
+				return false;
+		}
+	}
 
 	public static enum ReactorBlockType
 	{
