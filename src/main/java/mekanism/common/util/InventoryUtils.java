@@ -143,7 +143,7 @@ public final class InventoryUtils
 
 					if(!force)
 					{
-						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) && !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.OPPOSITES[side]))
+						if(!sidedInventory.isItemValidForSlot(slotID, toInsert) || !sidedInventory.canInsertItem(slotID, toInsert, ForgeDirection.OPPOSITES[side]))
 						{
 							continue;
 						}

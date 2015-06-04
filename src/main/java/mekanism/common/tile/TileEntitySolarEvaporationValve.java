@@ -35,6 +35,7 @@ public class TileEntitySolarEvaporationValve extends TileEntitySolarEvaporationB
 			prevMaster = (master != null);
 		}
 	}
+	
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
