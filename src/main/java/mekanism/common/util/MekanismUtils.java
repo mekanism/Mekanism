@@ -1414,7 +1414,7 @@ public final class MekanismUtils
 	 */
 	public static boolean isOp(EntityPlayerMP player)
 	{
-		return player.mcServer.getConfigurationManager().func_152596_g(player.getGameProfile());
+		return general.opsBypassRestrictions && player.mcServer.getConfigurationManager().func_152596_g(player.getGameProfile());
 	}
 	
 	/**

@@ -616,7 +616,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 					if(!(entityplayer.isSneaking() || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN)))
 					{
-						if(electricChest.canAccess())
+						if(electricChest.canAccess() || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
 						{
 							MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
 						} 
