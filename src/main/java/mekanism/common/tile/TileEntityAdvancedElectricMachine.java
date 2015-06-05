@@ -258,7 +258,10 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		{
 			for(AdvancedMachineInput input : getRecipes().keySet())
 			{
-				return input.itemStack.isItemEqual(itemstack);
+				if(input.itemStack.isItemEqual(itemstack))
+				{
+					return true;
+				}
 			}
 		}
 		else if(slotID == 3)

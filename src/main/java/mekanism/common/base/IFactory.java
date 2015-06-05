@@ -83,7 +83,7 @@ public interface IFactory
 		{
 			if(usesFuel())
 			{
-				return getRecipe(slotStack,gasType);
+				return getRecipe(slotStack, gasType);
 			}
 			
 			return getRecipe(slotStack);
