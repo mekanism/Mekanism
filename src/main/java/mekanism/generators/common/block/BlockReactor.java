@@ -371,6 +371,7 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 		{
 			case FRAME:
 			case PORT:
+			case ADAPTER:
 				return true;
 			default:
 				return false;
