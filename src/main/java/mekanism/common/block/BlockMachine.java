@@ -1059,6 +1059,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		switch(type)
 		{
 			case CHARGEPAD:
+			case ELECTRIC_CHEST:
 				return false;
 			case PORTABLE_TANK:
 				return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
