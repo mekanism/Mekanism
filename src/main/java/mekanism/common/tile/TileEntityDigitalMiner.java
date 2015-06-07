@@ -489,13 +489,18 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 		stacks:
 		for(ItemStack stack : stacks)
 		{
-			if(stack == null)
+			if(stack == null || stack.getItem() == null)
 			{
 				continue;
 			}
 			
 			for(int i = 0; i < 27; i++)
 			{
+				if(testInv[i] != null && testInv[i].getItem() == null)
+				{
+					testInv[i] = null;
+				}
+				
 				if(testInv[i] == null)
 				{
 					testInv[i] = stack;
