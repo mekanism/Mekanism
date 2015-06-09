@@ -711,7 +711,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		if(inputTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(inputTank.getFluid().getFluidID());
+			data.add(inputTank.getFluid().fluidID);
 			data.add(inputTank.getFluid().amount);
 		}
 		else {
@@ -721,7 +721,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		if(outputTank.getFluid() != null)
 		{
 			data.add(true);
-			data.add(outputTank.getFluid().getFluidID());
+			data.add(outputTank.getFluid().fluidID);
 			data.add(outputTank.getFluid().amount);
 		}
 		else {

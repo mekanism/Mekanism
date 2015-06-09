@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiMatrixTab.MatrixTab;
 import mekanism.client.gui.element.GuiRateBar.IRateInfoHandler;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.tile.TileEntityInductionCasing;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -41,7 +42,7 @@ public class GuiMatrixStats extends GuiMekanism
 			@Override
 			public String getTooltip()
 			{
-				return MekanismUtils.localize("gui.outputting") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t";
+				return LangUtils.localize("gui.outputting") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/t";
 			}
 			
 			@Override
@@ -58,19 +59,19 @@ public class GuiMatrixStats extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String stats = MekanismUtils.localize("gui.matrixStats");
+		String stats = LangUtils.localize("gui.matrixStats");
 		
 		fontRendererObj.drawString(stats, (xSize/2)-(fontRendererObj.getStringWidth(stats)/2), 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.energy") + ":", 53, 26, 0x797979);
+		fontRendererObj.drawString(LangUtils.localize("gui.energy") + ":", 53, 26, 0x797979);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()), 59, 35, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.output") + ":", 53, 46, 0x797979);
+		fontRendererObj.drawString(LangUtils.localize("gui.output") + ":", 53, 46, 0x797979);
 		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.structure.lastOutput) + "/" + MekanismUtils.getEnergyDisplay(tileEntity.structure.outputCap), 59, 55, 0x404040);
 		
-		fontRendererObj.drawString(MekanismUtils.localize("gui.dimensions") + ":", 8, 82, 0x797979);
+		fontRendererObj.drawString(LangUtils.localize("gui.dimensions") + ":", 8, 82, 0x797979);
 		fontRendererObj.drawString(tileEntity.structure.volWidth + " x " + tileEntity.structure.volHeight + " x " + tileEntity.structure.volLength, 14, 91, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.constituents") + ":", 8, 102, 0x797979);
-		fontRendererObj.drawString(tileEntity.clientCells + " " + MekanismUtils.localize("gui.cells"), 14, 111, 0x404040);
-		fontRendererObj.drawString(tileEntity.clientProviders + " " + MekanismUtils.localize("gui.providers"), 14, 120, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.constituents") + ":", 8, 102, 0x797979);
+		fontRendererObj.drawString(tileEntity.clientCells + " " + LangUtils.localize("gui.cells"), 14, 111, 0x404040);
+		fontRendererObj.drawString(tileEntity.clientProviders + " " + LangUtils.localize("gui.providers"), 14, 120, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

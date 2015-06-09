@@ -209,23 +209,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityNoisyElectricBlock
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		if(!worldObj.isRemote)
-		{
-			int type = dataStream.readInt();
-
-			if(type == 0)
-			{
-				inputTank.setGas(null);
-			}
-
-			for(EntityPlayer player : playersUsing)
-			{
-				Mekanism.packetHandler.sendTo(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), (EntityPlayerMP)player);
-			}
-
-			return;
-		}
-
 		super.handlePacketData(dataStream);
 
 		isActive = dataStream.readBoolean();

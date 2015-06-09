@@ -7,9 +7,9 @@ import mekanism.common.base.IElectricChest;
 import mekanism.common.network.PacketElectricChest.ElectricChestMessage;
 import mekanism.common.network.PacketElectricChest.ElectricChestPacketType;
 import mekanism.common.tile.TileEntityElectricChest;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -36,7 +36,7 @@ public class GuiPasswordModify extends GuiScreen
 
 	public GuiTextField confirmPasswordField;
 
-	public String displayText = EnumColor.BRIGHT_GREEN + MekanismUtils.localize("gui.password.setPassword");
+	public String displayText = EnumColor.BRIGHT_GREEN + LangUtils.localize("gui.password.setPassword");
 
 	public int ticker = 0;
 
@@ -61,7 +61,7 @@ public class GuiPasswordModify extends GuiScreen
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, MekanismUtils.localize("gui.confirm")));
+		buttonList.add(new GuiButton(0, guiWidth + 55, guiHeight + 68, 60, 20, LangUtils.localize("gui.confirm")));
 
 		newPasswordField = new GuiTextField(fontRendererObj, guiWidth + 60, guiHeight + 34, 80, 12);
 		newPasswordField.setMaxStringLength(12);
@@ -129,7 +129,7 @@ public class GuiPasswordModify extends GuiScreen
 			ticker--;
 		}
 		else {
-			displayText = EnumColor.BRIGHT_GREEN + MekanismUtils.localize("gui.password.setPassword");
+			displayText = EnumColor.BRIGHT_GREEN + LangUtils.localize("gui.password.setPassword");
 		}
 	}
 
@@ -146,17 +146,17 @@ public class GuiPasswordModify extends GuiScreen
 	{
 		if(newPasswordField.getText() == null || newPasswordField.getText().equals("") || confirmPasswordField.getText() == null || confirmPasswordField.getText().equals(""))
 		{
-			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.fieldsEmpty");
+			displayText = EnumColor.DARK_RED + LangUtils.localize("gui.password.fieldsEmpty");
 			ticker = 30;
 		}
 		else if(!newPasswordField.getText().equals(confirmPasswordField.getText()))
 		{
-			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.notMatching");
+			displayText = EnumColor.DARK_RED + LangUtils.localize("gui.password.notMatching");
 			ticker = 30;
 		}
 		else if(confirmPasswordField.getText().equals(getPassword()))
 		{
-			displayText = EnumColor.DARK_RED + MekanismUtils.localize("gui.password.identical");
+			displayText = EnumColor.DARK_RED + LangUtils.localize("gui.password.identical");
 			ticker = 30;
 		}
 		else {
@@ -197,7 +197,7 @@ public class GuiPasswordModify extends GuiScreen
 
 		super.drawScreen(mouseX, mouseY, partialTick);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.password"), guiWidth + 64, guiHeight + 5, 0x404040);
 		fontRendererObj.drawString(displayText, guiWidth + 37, guiHeight + 19, 0x404040);
 		fontRendererObj.drawString("Enter:", guiWidth + 27, guiHeight + 37, 0x404040);
 		fontRendererObj.drawString("Repeat:", guiWidth + 21, guiHeight + 54, 0x404040);

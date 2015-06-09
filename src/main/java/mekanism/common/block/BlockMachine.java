@@ -80,6 +80,7 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -615,7 +616,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 					if(!(entityplayer.isSneaking() || world.isSideSolid(x, y + 1, z, ForgeDirection.DOWN)))
 					{
-						if(electricChest.canAccess())
+						if(electricChest.canAccess() || MekanismUtils.isOp((EntityPlayerMP)entityplayer))
 						{
 							MekanismUtils.openElectricChestGui((EntityPlayerMP)entityplayer, electricChest, null, true);
 						} 
@@ -662,7 +663,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
 						}
 						else {
-							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("gui.teleporter.noAccess")));
+							entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("gui.teleporter.noAccess")));
 						}
 						
 						return true;
@@ -1058,6 +1059,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 		switch(type)
 		{
 			case CHARGEPAD:
+			case ELECTRIC_CHEST:
 				return false;
 			case PORTABLE_TANK:
 				return side == ForgeDirection.UP || side == ForgeDirection.DOWN;
@@ -1314,7 +1316,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IPer
 
 		public String getDescription()
 		{
-			return MekanismUtils.localize("tooltip." + name);
+			return LangUtils.localize("tooltip." + name);
 		}
 
 		public ItemStack getStack()

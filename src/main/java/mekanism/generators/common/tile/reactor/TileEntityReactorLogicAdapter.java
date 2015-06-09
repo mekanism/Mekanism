@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -234,12 +234,12 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 		
 		public String getLocalizedName()
 		{
-			return MekanismUtils.localize("reactor." + name);
+			return LangUtils.localize("reactor." + name);
 		}
 		
 		public String getDescription()
 		{
-			return MekanismUtils.localize("reactor." + name + ".desc");
+			return LangUtils.localize("reactor." + name + ".desc");
 		}
 	}
 }

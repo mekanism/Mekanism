@@ -2,21 +2,23 @@ package mekanism.common;
 
 import java.util.List;
 
-import com.mojang.realmsclient.util.Pair;
-
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.lasers.ILaserReceptor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.BlockEvent;
 
 public class LaserManager
 {
@@ -71,8 +73,23 @@ public class LaserManager
 
 	public static List<ItemStack> breakBlock(Coord4D blockCoord, boolean dropAtBlock, World world)
 	{
+		if(!general.aestheticWorldDamage)
+		{
+			return null;
+		}
+		
 		List<ItemStack> ret = null;
 		Block blockHit = blockCoord.getBlock(world);
+		int meta = blockCoord.getMetadata(world);
+		
+		EntityPlayer dummy = Mekanism.proxy.getDummyPlayer((WorldServer)world, blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord).get();
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(blockCoord.xCoord, blockCoord.yCoord, blockCoord.zCoord, world, blockHit, meta, dummy);
+		MinecraftForge.EVENT_BUS.post(event);
+		
+		if(event.isCanceled())
+		{
+			return null;
+		}
 		
 		if(dropAtBlock)
 		{

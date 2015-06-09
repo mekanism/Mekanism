@@ -12,6 +12,7 @@ import mekanism.common.network.PacketNewFilter.NewFilterMessage;
 import mekanism.common.network.PacketSimpleGui.SimpleGuiMessage;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -114,8 +115,8 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 31, guiHeight + 62, 54, 20, MekanismUtils.localize("gui.save")));
-		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 54, 20, MekanismUtils.localize("gui.delete")));
+		buttonList.add(new GuiButton(0, guiWidth + 31, guiHeight + 62, 54, 20, LangUtils.localize("gui.save")));
+		buttonList.add(new GuiButton(1, guiWidth + 89, guiHeight + 62, 54, 20, LangUtils.localize("gui.delete")));
 
 		if(isNew)
 		{
@@ -135,10 +136,10 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		String text = (isNew ? MekanismUtils.localize("gui.new") : MekanismUtils.localize("gui.edit")) + " " + MekanismUtils.localize("gui.filter");
+		String text = (isNew ? LangUtils.localize("gui.new") : LangUtils.localize("gui.edit")) + " " + LangUtils.localize("gui.filter");
 		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 6, 0x404040);
 		
-		fontRendererObj.drawString(MekanismUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.index") + ": " + filter.index, 79, 23, 0x404040);
 		
 		if(filter.filter != null)
 		{
@@ -158,17 +159,17 @@ public class GuiOredictionificatorFilter extends GuiMekanism
 		
 		if(xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.lastItem"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.lastItem"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.nextItem"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.nextItem"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.oreDictCompat"), xAxis, yAxis);
 		}
 		
 		if(xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35)

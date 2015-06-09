@@ -16,7 +16,7 @@ public class SlotElectricChest extends Slot
 	}
 
 	@Override
-	public boolean canTakeStack(EntityPlayer par1EntityPlayer)
+	public boolean canTakeStack(EntityPlayer player)
 	{
 		ItemStack itemstack = inventory.getStackInSlot(getSlotIndex());
 

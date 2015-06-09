@@ -12,17 +12,15 @@ import mekanism.common.base.IRedstoneControl;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import io.netty.buffer.ByteBuf;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -82,7 +80,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public String getInventoryName()
 	{
-		return MekanismUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
+		return LangUtils.localize("tile.EnergyCube" + tier.getBaseTier().getName() + ".name");
 	}
 
 	@Override
@@ -207,7 +205,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
-		tier = EnergyCubeTier.getFromName(PacketHandler.readString(dataStream));
+		tier = EnergyCubeTier.values()[dataStream.readInt()];
 
 		super.handlePacketData(dataStream);
 
@@ -219,7 +217,7 @@ public class TileEntityEnergyCube extends TileEntityElectricBlock implements IPe
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
-		data.add(tier.getBaseTier().getName());
+		data.add(tier.ordinal());
 
 		super.getNetworkedData(data);
 

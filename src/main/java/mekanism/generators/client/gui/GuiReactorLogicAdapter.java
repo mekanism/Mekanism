@@ -41,10 +41,10 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 		
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
-		renderScaledText(MekanismUtils.localize("gui.coolingMeasurements") + ": " + EnumColor.RED + LangUtils.transOnOff(tileEntity.activeCooled), 36, 20, 0x404040, 117);
-		renderScaledText(MekanismUtils.localize("gui.redstoneOutputMode") + ": " + EnumColor.RED + tileEntity.logicType.getLocalizedName(), 23, 123, 0x404040, 130);
+		renderScaledText(LangUtils.localize("gui.coolingMeasurements") + ": " + EnumColor.RED + LangUtils.transOnOff(tileEntity.activeCooled), 36, 20, 0x404040, 117);
+		renderScaledText(LangUtils.localize("gui.redstoneOutputMode") + ": " + EnumColor.RED + tileEntity.logicType.getLocalizedName(), 23, 123, 0x404040, 130);
 		
-		String text = MekanismUtils.localize("gui.status") + ": " + EnumColor.RED + MekanismUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
+		String text = LangUtils.localize("gui.status") + ": " + EnumColor.RED + LangUtils.localize("gui." + (tileEntity.checkMode() ? "outputting" : "idle"));
 		fontRendererObj.drawString(text, (xSize/2)-(fontRendererObj.getStringWidth(text)/2), 136, 0x404040); 
 		
 		for(ReactorLogic type : ReactorLogic.values())
@@ -65,7 +65,7 @@ public class GuiReactorLogicAdapter extends GuiMekanism
 		
 		if(xAxis >= 23 && xAxis <= 34 && yAxis >= 19 && yAxis <= 30)
 		{
-			drawCreativeTabHoveringText(MekanismUtils.localize("gui.toggleCooling"), xAxis, yAxis);
+			drawCreativeTabHoveringText(LangUtils.localize("gui.toggleCooling"), xAxis, yAxis);
 		}
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);

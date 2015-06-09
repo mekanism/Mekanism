@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 
 public interface IRedstoneControl
 {
@@ -15,7 +15,7 @@ public interface IRedstoneControl
 
 		public String getDisplay()
 		{
-			return MekanismUtils.localize(display);
+			return LangUtils.localize(display);
 		}
 
 		private RedstoneControl(String s)

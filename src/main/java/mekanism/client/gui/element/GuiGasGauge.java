@@ -2,6 +2,8 @@ package mekanism.client.gui.element;
 
 import java.util.Arrays;
 
+import org.lwjgl.input.Keyboard;
+
 import mekanism.api.Coord4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTank;
@@ -12,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse.DropperUseMessage;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
@@ -60,6 +62,11 @@ public class GuiGasGauge extends GuiGauge<Gas>
 					
 					if(index != -1)
 					{
+						if(button == 0 && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+						{
+							button = 2;
+						}
+						
 						Mekanism.packetHandler.sendToServer(new DropperUseMessage(Coord4D.get(tile), button, index));
 					}
 				}
@@ -97,7 +104,7 @@ public class GuiGasGauge extends GuiGauge<Gas>
 			return dummyType.getLocalizedName();
 		}
 		
-		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : MekanismUtils.localize("gui.empty");
+		return (infoHandler.getTank().getGas() != null) ? infoHandler.getTank().getGas().getGas().getLocalizedName() + ": " + infoHandler.getTank().getStored() : LangUtils.localize("gui.empty");
 	}
 
 	public static interface IGasInfoHandler

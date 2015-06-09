@@ -7,9 +7,9 @@ import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.network.PacketDigitalMinerGui.DigitalMinerGuiMessage;
 import mekanism.common.network.PacketDigitalMinerGui.MinerGuiPacket;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.relauncher.Side;
@@ -38,10 +38,10 @@ public class GuiMFilterSelect extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, MekanismUtils.localize("gui.itemstack")));
-		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, MekanismUtils.localize("gui.oredict")));
-		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, MekanismUtils.localize("gui.material")));
-		buttonList.add(new GuiButton(3, guiWidth + 24, guiHeight + 92, 128, 20, MekanismUtils.localize("gui.modID")));
+		buttonList.add(new GuiButton(0, guiWidth + 24, guiHeight + 32, 128, 20, LangUtils.localize("gui.itemstack")));
+		buttonList.add(new GuiButton(1, guiWidth + 24, guiHeight + 52, 128, 20, LangUtils.localize("gui.oredict")));
+		buttonList.add(new GuiButton(2, guiWidth + 24, guiHeight + 72, 128, 20, LangUtils.localize("gui.material")));
+		buttonList.add(new GuiButton(3, guiWidth + 24, guiHeight + 92, 128, 20, LangUtils.localize("gui.modID")));
 	}
 	
 	@Override
@@ -73,7 +73,7 @@ public class GuiMFilterSelect extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.filterSelect.title"), 43, 6, 0x404040);
 		
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}

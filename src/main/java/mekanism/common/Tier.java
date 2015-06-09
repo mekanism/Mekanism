@@ -3,7 +3,7 @@ package mekanism.common;
 import io.netty.buffer.ByteBuf;
 import mekanism.api.EnumColor;
 import mekanism.common.multipart.TransmitterType;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -31,7 +31,7 @@ public final class Tier
 		
 		public String getLocalizedName()
 		{
-			return MekanismUtils.localize("tier." + getName());
+			return LangUtils.localize("tier." + getName());
 		}
 		
 		public EnumColor getColor()
@@ -82,8 +82,7 @@ public final class Tier
 					return tier;
 				}
 			}
-
-			Mekanism.logger.error("Invalid tier identifier when retrieving with name.");
+			
 			return BASIC;
 		}
 		

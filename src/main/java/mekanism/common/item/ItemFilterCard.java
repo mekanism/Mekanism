@@ -4,8 +4,7 @@ import java.util.List;
 
 import mekanism.api.EnumColor;
 import mekanism.api.IFilterAccess;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,7 +26,7 @@ public class ItemFilterCard extends ItemMekanism
 	{
 		super.addInformation(itemstack, entityplayer, list, flag);
 		
-		list.add(EnumColor.GREY + MekanismUtils.localize("gui.data") + ": " + EnumColor.INDIGO + MekanismUtils.localize(getDataType(itemstack)));
+		list.add(EnumColor.GREY + LangUtils.localize("gui.data") + ": " + EnumColor.INDIGO + LangUtils.localize(getDataType(itemstack)));
 	}
 	
 	@Override
@@ -47,7 +46,7 @@ public class ItemFilterCard extends ItemMekanism
 					{
 						data.setString("dataType", ((IFilterAccess)tileEntity).getDataType());
 						setData(stack, data);
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.filterCard.got").replaceAll("%s", EnumColor.INDIGO + MekanismUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.filterCard.got").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(data.getString("dataType")) + EnumColor.GREY)));
 					}
 					
 					return true;
@@ -57,11 +56,11 @@ public class ItemFilterCard extends ItemMekanism
 					if(((IFilterAccess)tileEntity).getDataType().equals(getDataType(stack)))
 					{
 						((IFilterAccess)tileEntity).setFilterData(getData(stack));
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + MekanismUtils.localize("tooltip.filterCard.set").replaceAll("%s", EnumColor.INDIGO + MekanismUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.DARK_GREEN + LangUtils.localize("tooltip.filterCard.set").replaceAll("%s", EnumColor.INDIGO + LangUtils.localize(getDataType(stack)) + EnumColor.DARK_GREEN)));
 						setData(stack, null);
 					}
 					else {
-						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + MekanismUtils.localize("tooltip.filterCard.unequal") + "."));
+						player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.RED + LangUtils.localize("tooltip.filterCard.unequal") + "."));
 					}
 					
 					return true;

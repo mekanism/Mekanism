@@ -53,7 +53,7 @@ public class GuiVisualsTab extends GuiElement
 
 		if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 		{
-			displayTooltip(MekanismUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.visuals") + ": " + LangUtils.transOnOff(tileEntity.clientRendering), xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

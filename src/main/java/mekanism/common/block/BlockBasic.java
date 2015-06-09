@@ -271,7 +271,7 @@ public class BlockBasic extends Block implements IBlockCTM, ICustomBlockIcon
 					case 6:
 						return icons[meta][side];
 					case 14:
-						if(side == 3)
+						if(side == 2)
 						{
 							return icons[meta][0];
 						} 

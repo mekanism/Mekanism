@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
 import mekanism.common.content.tank.DynamicFluidTank;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -71,6 +71,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 	@Override
 	public String getInventoryName()
 	{
-		return MekanismUtils.localize("gui.dynamicTank");
+		return LangUtils.localize("gui.dynamicTank");
 	}
 }

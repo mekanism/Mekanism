@@ -1,12 +1,14 @@
 package mekanism.common.entity;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.List;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -23,8 +25,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-
-import io.netty.buffer.ByteBuf;
 
 public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
 {
@@ -184,7 +184,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData
                 
                 Coord4D sideCoord = new Coord4D(mop.blockX, mop.blockY, mop.blockZ, worldObj.provider.dimensionId).getFromSide(ForgeDirection.getOrientation(mop.sideHit));
                 
-                if(!fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
+                if(general.aestheticWorldDamage && !fluid && (sideCoord.isAirBlock(worldObj) || sideCoord.isReplaceable(worldObj)))
                 {
                 	if(!smeltBlock(new Coord4D(mop.blockX, mop.blockY, mop.blockZ)))
                 	{

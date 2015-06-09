@@ -19,6 +19,7 @@ import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGui
 import mekanism.common.network.PacketOredictionificatorGui.OredictionificatorGuiPacket;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -87,7 +88,7 @@ public class GuiOredictionificator extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 
 		buttonList.clear();
-		buttonList.add(new GuiButton(0, guiWidth + 10, guiHeight + 86, 142, 20, MekanismUtils.localize("gui.newFilter")));
+		buttonList.add(new GuiButton(0, guiWidth + 10, guiHeight + 86, 142, 20, LangUtils.localize("gui.newFilter")));
 	}
 	
 	@Override
@@ -108,7 +109,7 @@ public class GuiOredictionificator extends GuiMekanism
 		int yAxis = (mouseY - (height - ySize) / 2);
 
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
 
 		for(int i = 0; i < 3; i++)
 		{
@@ -133,7 +134,7 @@ public class GuiOredictionificator extends GuiMekanism
 					GL11.glPopMatrix();
 				}
 
-				fontRendererObj.drawString(MekanismUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
+				fontRendererObj.drawString(LangUtils.localize("gui.filter"), 32, yStart + 2, 0x404040);
 				renderScaledText(filter.filter, 32, yStart + 2 + 9, 0x404040, 117);
 			}
 		}

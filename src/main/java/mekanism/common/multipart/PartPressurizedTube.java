@@ -134,6 +134,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		super.load(nbtTags);
 		
 		tier = TubeTier.values()[nbtTags.getInteger("tier")];
+		buffer.setMaxGas(getCapacity());
 
 		if(nbtTags.hasKey("cacheGas"))
 		{
@@ -303,8 +304,7 @@ public class PartPressurizedTube extends PartTransmitter<IGasHandler, GasNetwork
 		{
 			return super.getCachedAcceptor(side);
 		}
+		
 		return null;
 	}
-
-
 }

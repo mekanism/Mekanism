@@ -165,7 +165,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 
 					if(acceptor != null && fluidToSend != null)
 					{
-						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.getFluidID(), currentSending), doTransfer);
+						fluidSent += acceptor.fill(side, new FluidStack(fluidToSend.fluidID, currentSending), doTransfer);
 					}
 
 					if(fluidSent > prev)
@@ -295,13 +295,14 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork>
 		for(Coord4D coord : possibleAcceptors.keySet())
 		{
 			EnumSet<ForgeDirection> sides = acceptorDirections.get(coord);
+			TileEntity tile = coord.getTileEntity(getWorld());
 
 			if(sides == null || sides.isEmpty())
 			{
 				continue;
 			}
-
-			IFluidHandler acceptor = (IFluidHandler)coord.getTileEntity(getWorld());
+			
+			IFluidHandler acceptor = (IFluidHandler)tile;
 
 			for(ForgeDirection side : sides)
 			{

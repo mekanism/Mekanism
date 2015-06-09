@@ -19,7 +19,7 @@ public class SparkleAnimation
 
 	public Random random = new Random();
 
-	public Set<TileEntity> iteratedNodes = new HashSet<TileEntity>();
+	public Set<Coord4D> iteratedNodes = new HashSet<Coord4D>();
 	
 	public INodeChecker nodeChecker;
 
@@ -39,46 +39,34 @@ public class SparkleAnimation
 
 			loop(pointer);
 		} catch(Exception e) {}
+		
+		try {
+			new Thread() {
+				@Override
+				public void run()
+				{
+					World world = pointer.getWorldObj();
+					
+					for(Coord4D coord : iteratedNodes)
+					{
+						for(int i = 0; i < 6; i++)
+						{
+							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + -.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + 1.01, coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + -.01, 0, 0, 0);
+							world.spawnParticle("reddust", coord.xCoord + random.nextDouble(), coord.yCoord + random.nextDouble(), coord.zCoord + 1.01, 0, 0, 0);
+							world.spawnParticle("reddust", coord.xCoord + -.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
+							world.spawnParticle("reddust", coord.xCoord + 1.01, coord.yCoord + random.nextDouble(), coord.zCoord + random.nextDouble(), 0, 0, 0);
+						}
+					}
+				}
+			}.start();
+		} catch(Exception e) {}
 	}
 
 	public void loop(TileEntity tileEntity)
 	{
-		World world = pointer.getWorldObj();
-
-		for(int i = 0; i < 6; i++)
-		{
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.DOWN, world))
-			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + -.01, tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
-			}
-
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.UP, world))
-			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + 1.01, tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
-			}
-
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.NORTH, world))
-			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + -.01, 0, 0, 0);
-			}
-
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.SOUTH, world))
-			{
-				world.spawnParticle("reddust", tileEntity.xCoord + random.nextDouble(), tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + 1.01, 0, 0, 0);
-			}
-
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.WEST, world))
-			{
-				world.spawnParticle("reddust", tileEntity.xCoord + -.01, tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
-			}
-
-			if(Coord4D.get(tileEntity).sideVisible(ForgeDirection.EAST, world))
-			{
-				world.spawnParticle("reddust", tileEntity.xCoord + 1.01, tileEntity.yCoord + random.nextDouble(), tileEntity.zCoord + random.nextDouble(), 0, 0, 0);
-			}
-		}
-
-		iteratedNodes.add(tileEntity);
+		iteratedNodes.add(Coord4D.get(tileEntity));
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -88,7 +76,7 @@ public class SparkleAnimation
 			{
 				TileEntity tile = coord.getTileEntity(pointer.getWorldObj());
 	
-				if(tile != null && isNode(tile) && !iteratedNodes.contains(tile))
+				if(tile != null && isNode(tile) && !iteratedNodes.contains(coord))
 				{
 					loop(tile);
 				}

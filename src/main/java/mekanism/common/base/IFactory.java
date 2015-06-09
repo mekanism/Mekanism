@@ -14,8 +14,7 @@ import mekanism.common.recipe.machines.AdvancedMachineRecipe;
 import mekanism.common.recipe.machines.BasicMachineRecipe;
 import mekanism.common.recipe.machines.MachineRecipe;
 import mekanism.common.tile.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -84,7 +83,7 @@ public interface IFactory
 		{
 			if(usesFuel())
 			{
-				return getRecipe(slotStack,gasType);
+				return getRecipe(slotStack, gasType);
 			}
 			
 			return getRecipe(slotStack);
@@ -193,7 +192,7 @@ public interface IFactory
 
 		public String getLocalizedName()
 		{
-			return MekanismUtils.localize("gui.factory." + name);
+			return LangUtils.localize("gui.factory." + name);
 		}
 
 		public ResourceLocation getSound()

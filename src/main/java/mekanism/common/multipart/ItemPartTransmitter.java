@@ -13,6 +13,7 @@ import mekanism.client.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Tier;
 import mekanism.common.Tier.BaseTier;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.settings.GameSettings;
@@ -93,32 +94,32 @@ public class ItemPartTransmitter extends JItemMultiPart
 			
 			if(transmission == TransmissionType.ENERGY)
 			{
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(Tier.CableTier.values()[itemstack.getItemDamage()].cableCapacity) + "/t");
 			}
 			else if(transmission == TransmissionType.FLUID)
 			{
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipeCapacity + "mB/t");
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipePullAmount + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipeCapacity + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.PipeTier.get(tier).pipePullAmount + "mB/t");
 			}
 			else if(transmission == TransmissionType.GAS)
 			{
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubeCapacity + "mB/t");
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubePullAmount + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubeCapacity + "mB/t");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TubeTier.get(tier).tubePullAmount + "mB/t");
 			}
 			else if(transmission == TransmissionType.ITEM)
 			{
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (Tier.TransporterTier.get(tier).speed/(100/20)) + " m/s");
-				list.add(EnumColor.INDIGO + MekanismUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TransporterTier.get(tier).pullAmount*2 + "/s");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.speed") + ": " + EnumColor.GREY + (Tier.TransporterTier.get(tier).speed/(100/20)) + " m/s");
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.pumpRate") + ": " + EnumColor.GREY + Tier.TransporterTier.get(tier).pullAmount*2 + "/s");
 			}
 
-			list.add(MekanismUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.forDetails"));
+			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.AQUA + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails"));
 		}
 		else {
 			switch(itemstack.getItemDamage())
 			{
 				case 0: case 1: case 2: case 3:
 				{
-					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
 					list.add("- " + EnumColor.PURPLE + "RF " + EnumColor.GREY + "(ThermalExpansion)");
 					list.add("- " + EnumColor.PURPLE + "EU " + EnumColor.GREY +  "(IndustrialCraft)");
 					list.add("- " + EnumColor.PURPLE + "Joules " + EnumColor.GREY +  "(Mekanism)");
@@ -126,37 +127,37 @@ public class ItemPartTransmitter extends JItemMultiPart
 				}
 				case 4: case 5: case 6: case 7:
 				{
-					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.fluids") + " " + EnumColor.GREY + "(MinecraftForge)");
 					break;
 				}
 				case 8: case 9: case 10: case 11:
 				{
-					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.gasses") + " (Mekanism)");
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.gasses") + " (Mekanism)");
 					break;
 				}
 				case 12: case 13: case 14: case 15:
 				{
-					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
 					break;
 				}
 				case 16:
 				{
-					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
-					list.add("- " + EnumColor.DARK_RED + MekanismUtils.localize("tooltip.restrictiveDesc"));
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.restrictiveDesc"));
 					break;
 				}
 				case 17:
 				{
-					list.add(EnumColor.DARK_GREY + MekanismUtils.localize("tooltip.capableTrans") + ":");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.items") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
-					list.add("- " + EnumColor.PURPLE + MekanismUtils.localize("tooltip.blocks") + " (" + MekanismUtils.localize("tooltip.universal") + ")");
-					list.add("- " + EnumColor.DARK_RED + MekanismUtils.localize("tooltip.diversionDesc"));
+					list.add(EnumColor.DARK_GREY + LangUtils.localize("tooltip.capableTrans") + ":");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.items") + " (" + LangUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.PURPLE + LangUtils.localize("tooltip.blocks") + " (" + LangUtils.localize("tooltip.universal") + ")");
+					list.add("- " + EnumColor.DARK_RED + LangUtils.localize("tooltip.diversionDesc"));
 					break;
 				}
 			}

@@ -21,6 +21,7 @@ import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessag
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiButton;
@@ -130,15 +131,15 @@ public class GuiTeleporter extends GuiMekanism
 
 		buttonList.clear();
 		
-		publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, MekanismUtils.localize("gui.public"));
-		privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, MekanismUtils.localize("gui.private"));
+		publicButton = new GuiButton(0, guiLeft + 27, guiTop + 14, 60, 20, LangUtils.localize("gui.public"));
+		privateButton = new GuiButton(1, guiLeft + 89, guiTop + 14, 60, 20, LangUtils.localize("gui.private"));
 		
-		setButton = new GuiButton(2, guiLeft + 33, guiTop + 114, 60, 20, MekanismUtils.localize("gui.set"));
-		deleteButton = new GuiButton(3, guiLeft + 95, guiTop + 114, 60, 20, MekanismUtils.localize("gui.delete"));
+		setButton = new GuiButton(2, guiLeft + 33, guiTop + 114, 60, 20, LangUtils.localize("gui.set"));
+		deleteButton = new GuiButton(3, guiLeft + 95, guiTop + 114, 60, 20, LangUtils.localize("gui.delete"));
 		
 		if(itemStack != null)
 		{
-			teleportButton = new GuiButton(4, guiLeft + 42, guiTop + 140, 92, 20, MekanismUtils.localize("gui.teleport"));
+			teleportButton = new GuiButton(4, guiLeft + 42, guiTop + 140, 92, 20, LangUtils.localize("gui.teleport"));
 		}
 		
 		frequencyField = new GuiTextField(fontRendererObj, guiLeft + 50, guiTop + 102, 86, 11);
@@ -185,7 +186,7 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public String getSecurity(Frequency freq)
 	{
-		return !freq.publicFreq ? EnumColor.DARK_RED + MekanismUtils.localize("gui.private") : MekanismUtils.localize("gui.public");
+		return !freq.publicFreq ? EnumColor.DARK_RED + LangUtils.localize("gui.private") : LangUtils.localize("gui.public");
 	}
 	
 	public void updateButtons()
@@ -385,22 +386,22 @@ public class GuiTeleporter extends GuiMekanism
 		int yAxis = mouseY - guiTop;
 
 		fontRendererObj.drawString(getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(getInventoryName())/2), 4, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : MekanismUtils.localize("gui.none")), 8, itemStack != null ? ySize-12 : (ySize-96)+4, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.owner") + ": " + (getOwner() != null ? getOwner() : LangUtils.localize("gui.none")), 8, itemStack != null ? ySize-12 : (ySize-96)+4, 0x404040);
 		
-		fontRendererObj.drawString(MekanismUtils.localize("gui.freq") + ":", 32, 79, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.security") + ":", 32, 89, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.freq") + ":", 32, 79, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.security") + ":", 32, 89, 0x404040);
 		
-		fontRendererObj.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.freq") + ":"), 79, 0x797979);
-		fontRendererObj.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + MekanismUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(MekanismUtils.localize("gui.security") + ":"), 89, 0x797979);
+		fontRendererObj.drawString(" " + (getFrequency() != null ? getFrequency().name : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.freq") + ":"), 79, 0x797979);
+		fontRendererObj.drawString(" " + (getFrequency() != null ? getSecurity(getFrequency()) : EnumColor.DARK_RED + LangUtils.localize("gui.none")), 32 + fontRendererObj.getStringWidth(LangUtils.localize("gui.security") + ":"), 89, 0x797979);
 		
-		String str = MekanismUtils.localize("gui.set") + ":";
+		String str = LangUtils.localize("gui.set") + ":";
 		renderScaledText(str, 27, 102, 0x404040, 20);
 		
 		if(xAxis >= 7 && xAxis <= 24 && yAxis >= 15 && yAxis <= 32)
 		{
 			if(getFrequency() == null)
 			{
-				drawCreativeTabHoveringText(EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
+				drawCreativeTabHoveringText(EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFreq"), xAxis, yAxis);
 			}
 			else {
 				drawCreativeTabHoveringText(getStatusDisplay(), xAxis, yAxis);
@@ -443,16 +444,16 @@ public class GuiTeleporter extends GuiMekanism
 		switch(getStatus())
 		{
 			case 1:
-				return EnumColor.DARK_GREEN + MekanismUtils.localize("gui.teleporter.ready");
+				return EnumColor.DARK_GREEN + LangUtils.localize("gui.teleporter.ready");
 			case 2:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noFrame");
+				return EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noFrame");
 			case 3:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
+				return EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noLink");
 			case 4:
-				return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.needsEnergy");
+				return EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.needsEnergy");
 		}
 		
-		return EnumColor.DARK_RED + MekanismUtils.localize("gui.teleporter.noLink");
+		return EnumColor.DARK_RED + LangUtils.localize("gui.teleporter.noLink");
 	}
 	
 	private String getOwner()

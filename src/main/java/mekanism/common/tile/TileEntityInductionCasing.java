@@ -12,12 +12,11 @@ import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.util.ChargeUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
-
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.Method;
-
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -129,7 +128,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 	@Override
 	public String getInventoryName()
 	{
-		return MekanismUtils.localize("gui.inductionMatrix");
+		return LangUtils.localize("gui.inductionMatrix");
 	}
 	
 	public int getScaledEnergyLevel(int i)

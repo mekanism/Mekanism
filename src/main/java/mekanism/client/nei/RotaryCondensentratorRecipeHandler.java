@@ -36,7 +36,7 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("nei.rotaryCondensentrator");
+		return LangUtils.localize("nei.rotaryCondensentrator");
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class RotaryCondensentratorRecipeHandler extends BaseRecipeHandler
 			displayGauge(58, 134-xOffset, 14-yOffset, 176, 40, 58, recipe.fluidStack, null);
 		}
 
-		drawString(recipe.type ? MekanismUtils.localize("gui.condensentrating") : MekanismUtils.localize("gui.decondensentrating"), 6-xOffset, 74-yOffset, 0x404040, false);
+		drawString(recipe.type ? LangUtils.localize("gui.condensentrating") : LangUtils.localize("gui.decondensentrating"), 6-xOffset, 74-yOffset, 0x404040, false);
 	}
 
 	@Override

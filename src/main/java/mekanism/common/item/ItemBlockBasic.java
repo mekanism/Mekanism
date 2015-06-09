@@ -19,6 +19,7 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,6 +68,17 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 		metaBlock = block;
 		setHasSubtypes(true);
 	}
+	
+	@Override
+	public int getItemStackLimit(ItemStack stack)
+    {
+		if(Block.getBlockFromItem(this) == MekanismBlocks.BasicBlock && stack.getItemDamage() == 6)
+		{
+			return new InventoryBin(stack).getItemCount() == 0 ? super.getItemStackLimit(stack) : 1;
+		}
+		
+		return super.getItemStackLimit(stack);
+    }
 	
 	public ItemStack getUnchargedCell(InductionCellTier tier)
 	{
@@ -137,19 +149,19 @@ public class ItemBlockBasic extends ItemBlock implements IEnergizedItem
 			{
 				InductionCellTier tier = InductionCellTier.values()[getTier(itemstack).ordinal()];
 				
-				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.maxEnergy));
+				list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.maxEnergy));
 			}
 			else if(itemstack.getItemDamage() == 4)
 			{
 				InductionProviderTier tier = InductionProviderTier.values()[getTier(itemstack).ordinal()];
 				
-				list.add(tier.getBaseTier().getColor() + MekanismUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.output));
+				list.add(tier.getBaseTier().getColor() + LangUtils.localize("tooltip.outputRate") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(tier.output));
 			}
 		}
 		
 		if(getMaxEnergy(itemstack) > 0)
 		{
-			list.add(EnumColor.BRIGHT_GREEN + MekanismUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+			list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
 		}
 	}
 

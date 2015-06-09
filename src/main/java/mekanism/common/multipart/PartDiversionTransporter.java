@@ -9,14 +9,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.Tier.TransporterTier;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import io.netty.buffer.ByteBuf;
 
 public class PartDiversionTransporter extends PartLogisticalTransporter
@@ -129,20 +127,20 @@ public class PartDiversionTransporter extends PartLogisticalTransporter
 		switch(newMode)
 		{
 			case 0:
-				description = MekanismUtils.localize("control.disabled.desc");
+				description = LangUtils.localize("control.disabled.desc");
 				break;
 			case 1:
-				description = MekanismUtils.localize("control.high.desc");
+				description = LangUtils.localize("control.high.desc");
 				break;
 			case 2:
-				description = MekanismUtils.localize("control.low.desc");
+				description = LangUtils.localize("control.low.desc");
 				break;
 		}
 
 		refreshConnections();
 		tile().notifyPartChange(this);
 		notifyTileChange();
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + MekanismUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleDiverter") + ": " + EnumColor.RED + description));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
 
 		return true;

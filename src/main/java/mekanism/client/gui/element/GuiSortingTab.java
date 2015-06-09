@@ -67,7 +67,7 @@ public class GuiSortingTab extends GuiElement
 
 		if(xAxis >= lmntLeft + 5 && xAxis <= lmntLeft + 23 && yAxis >= lmntTop + 4 && yAxis <= lmntTop + 22)
 		{
-			displayTooltip(MekanismUtils.localize("gui.factory.autoSort") + " (" + LangUtils.transOnOff(((TileEntityFactory)tileEntity).sorting) + ")", xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.factory.autoSort") + " (" + LangUtils.transOnOff(((TileEntityFactory)tileEntity).sorting) + ")", xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

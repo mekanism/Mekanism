@@ -34,7 +34,7 @@ public class ChemicalInfuserRecipeHandler extends BaseRecipeHandler
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock2.ChemicalInfuser.name");
+		return LangUtils.localize("tile.MachineBlock2.ChemicalInfuser.name");
 	}
 
 	@Override

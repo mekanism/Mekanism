@@ -6,8 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
 import mekanism.common.entity.EntityBalloon;
-import mekanism.common.util.MekanismUtils;
-
+import mekanism.common.util.LangUtils;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -82,7 +81,7 @@ public class ItemBalloon extends ItemMekanism
 			color = EnumColor.DARK_GREY + getColor(stack).getDyeName();
 		}
 
-		return color + " " + MekanismUtils.localize("tooltip.balloon");
+		return color + " " + LangUtils.localize("tooltip.balloon");
 	}
 
 	@Override

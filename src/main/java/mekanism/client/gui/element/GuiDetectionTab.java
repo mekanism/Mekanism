@@ -61,7 +61,7 @@ public class GuiDetectionTab extends GuiElement
 		if(xAxis >= -21 && xAxis <= -3 && yAxis >= 142 && yAxis <= 160)
 		{
 			String text = LangUtils.transOnOff(((TileEntityLaserAmplifier)tileEntity).entityDetection);
-			displayTooltip(MekanismUtils.localize("gui.entityDetection") + ": " + text, xAxis, yAxis);
+			displayTooltip(LangUtils.localize("gui.entityDetection") + ": " + text, xAxis, yAxis);
 		}
 
 		mc.renderEngine.bindTexture(defaultLocation);

@@ -40,7 +40,7 @@ public class BinRecipe implements IRecipe
 			return false;
 		}
 
-		return itemStack.getItem() instanceof ItemBlockBasic && itemStack.getItemDamage() == 6;
+		return itemStack.getItem() instanceof ItemBlockBasic && itemStack.getItemDamage() == 6 && itemStack.stackSize == 1;
 	}
 
 	@Override

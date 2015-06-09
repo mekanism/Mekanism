@@ -6,14 +6,14 @@ import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.recipe.RecipeHandler.Recipe;
 import mekanism.common.recipe.machines.EnrichmentRecipe;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.LangUtils;
 
 public class EnrichmentChamberRecipeHandler extends MachineRecipeHandler
 {
 	@Override
 	public String getRecipeName()
 	{
-		return MekanismUtils.localize("tile.MachineBlock.EnrichmentChamber.name");
+		return LangUtils.localize("tile.MachineBlock.EnrichmentChamber.name");
 	}
 
 	@Override

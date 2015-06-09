@@ -33,22 +33,22 @@ public class GuiSolarEvaporationController extends GuiMekanism
 		int xAxis = (mouseX - (width - xSize) / 2);
 		int yAxis = (mouseY - (height - ySize) / 2);
 
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
 		fontRendererObj.drawString(tileEntity.getInventoryName(), (xSize/2)-(fontRendererObj.getStringWidth(tileEntity.getInventoryName())/2), 4, 0x404040);
 
 		fontRendererObj.drawString(getStruct(), 50, 21, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.height") + ": " + tileEntity.height, 50, 30, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.mult") + ": " + getTempMult(), 50, 39, 0x00CD00);
-		fontRendererObj.drawString(MekanismUtils.localize("gui.max") + ": " + getMaxTemp(), 50, 48, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.height") + ": " + tileEntity.height, 50, 30, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.mult") + ": " + getTempMult(), 50, 39, 0x00CD00);
+		fontRendererObj.drawString(LangUtils.localize("gui.max") + ": " + getMaxTemp(), 50, 48, 0x00CD00);
 
 		if(xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.inputTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.inputTank.getFluid()) + ": " + tileEntity.inputTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.inputTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.inputTank.getFluid()) + ": " + tileEntity.inputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72)
 		{
-			drawCreativeTabHoveringText(tileEntity.outputTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.outputTank.getFluid()) + ": " + tileEntity.outputTank.getFluidAmount() : MekanismUtils.localize("gui.empty"), xAxis, yAxis);
+			drawCreativeTabHoveringText(tileEntity.outputTank.getFluid() != null ? LangUtils.localizeFluidStack(tileEntity.outputTank.getFluid()) + ": " + tileEntity.outputTank.getFluidAmount() : LangUtils.localize("gui.empty"), xAxis, yAxis);
 		}
 
 		if(xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72)
@@ -63,15 +63,15 @@ public class GuiSolarEvaporationController extends GuiMekanism
 	{
 		if(tileEntity.structured)
 		{
-			return MekanismUtils.localize("gui.formed");
+			return LangUtils.localize("gui.formed");
 		}
 		else {
 			if(tileEntity.controllerConflict)
 			{
-				return MekanismUtils.localize("gui.conflict");
+				return LangUtils.localize("gui.conflict");
 			}
 			else {
-				return MekanismUtils.localize("gui.incomplete");
+				return LangUtils.localize("gui.incomplete");
 			}
 		}
 	}

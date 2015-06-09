@@ -15,6 +15,7 @@ import mekanism.common.base.ISustainedTank;
 import mekanism.common.block.BlockMachine.MachineType;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
@@ -284,7 +285,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		if(fluidTank.getFluid() != null)
 		{
 			data.add(1);
-			data.add(fluidTank.getFluid().getFluidID());
+			data.add(fluidTank.getFluid().fluidID);
 			data.add(fluidTank.getFluid().amount);
 		}
 		else {
@@ -504,7 +505,7 @@ public class TileEntityFluidicPlenisher extends TileEntityElectricBlock implemen
 		usedNodes.clear();
 		finishedCalc = false;
 		
-		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + MekanismUtils.localize("tooltip.configurator.plenisherReset")));
+		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.plenisherReset")));
 
 		return true;
 	}

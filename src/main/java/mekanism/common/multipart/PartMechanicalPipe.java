@@ -126,13 +126,14 @@ public class PartMechanicalPipe extends PartTransmitter<IFluidHandler, FluidNetw
 	public void load(NBTTagCompound nbtTags)
 	{
 		super.load(nbtTags);
+		
+		tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
+		buffer.setCapacity(getCapacity());
 
 		if(nbtTags.hasKey("cacheFluid"))
 		{
 			buffer.setFluid(FluidStack.loadFluidStackFromNBT(nbtTags.getCompoundTag("cacheFluid")));
 		}
-
-		tier = Tier.PipeTier.values()[nbtTags.getInteger("tier")];
 	}
 
 	@Override

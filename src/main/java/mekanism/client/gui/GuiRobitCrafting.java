@@ -5,9 +5,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerRobitCrafting;
 import mekanism.common.network.PacketRobit.RobitMessage;
 import mekanism.common.network.PacketRobit.RobitPacketType;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
@@ -30,8 +30,8 @@ public class GuiRobitCrafting extends GuiMekanism
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
 	{
-		fontRendererObj.drawString(MekanismUtils.localize("gui.robit.crafting"), 8, 6, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.localize("container.inventory"), 8, ySize - 96 + 3, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("gui.robit.crafting"), 8, 6, 0x404040);
+		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, ySize - 96 + 3, 0x404040);
 
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
