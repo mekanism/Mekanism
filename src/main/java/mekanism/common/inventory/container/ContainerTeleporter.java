@@ -17,7 +17,7 @@ public class ContainerTeleporter extends Container
 	public ContainerTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
 	{
 		tileEntity = tentity;
-		addSlotToContainer(new SlotDischarge(tentity, 0, 153, 7));
+		addSlotToContainer(new SlotDischarge(tentity, 0, 14, 116));
 		
 		int slotX;
 
