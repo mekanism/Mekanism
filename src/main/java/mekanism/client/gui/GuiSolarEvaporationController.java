@@ -2,6 +2,9 @@ package mekanism.client.gui;
 
 import mekanism.api.gas.GasStack;
 import mekanism.api.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.client.gui.element.GuiFluidGauge;
+import mekanism.client.gui.element.GuiGauge;
+import mekanism.client.gui.element.GuiFluidGauge.IFluidInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.ContainerSolarEvaporationController;
 import mekanism.common.tile.TileEntitySolarEvaporationController;
@@ -10,6 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
 import org.lwjgl.opengl.GL11;
 
@@ -25,6 +29,21 @@ public class GuiSolarEvaporationController extends GuiMekanism
 	{
 		super(tentity, new ContainerSolarEvaporationController(inventory, tentity));
 		tileEntity = tentity;
+		
+		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
+			@Override
+			public FluidTank getTank()
+			{
+				return tileEntity.inputTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"), 6, 13));
+		guiElements.add(new GuiFluidGauge(new IFluidInfoHandler() {
+			@Override
+			public FluidTank getTank()
+			{
+				return tileEntity.outputTank;
+			}
+		}, GuiGauge.Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"), 152, 13));
 	}
 
 	@Override
@@ -108,68 +127,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 		int guiHeight = (height - ySize) / 2;
 		drawTexturedModalRect(guiWidth, guiHeight, 0, 0, xSize, ySize);
 
-		int displayInt;
-
-		if(tileEntity.getScaledInputLevel(58) > 0)
-		{
-			displayGauge(7, 14, tileEntity.getScaledInputLevel(58), tileEntity.inputTank.getFluid(), null);
-		}
-
-		if(tileEntity.getScaledOutputLevel(58) > 0)
-		{
-			displayGauge(153, 14, tileEntity.getScaledOutputLevel(58), tileEntity.outputTank.getFluid(), null);
-		}
-
-		displayInt = tileEntity.getScaledTempLevel(78);
+		int displayInt = tileEntity.getScaledTempLevel(78);
 		drawTexturedModalRect(guiWidth + 49, guiHeight + 64, 176, 59, displayInt, 8);
-	}
-
-	public void displayGauge(int xPos, int yPos, int scale, FluidStack fluid, GasStack gas)
-	{
-		if(fluid == null && gas == null)
-		{
-			return;
-		}
-
-		int guiWidth = (width - xSize) / 2;
-		int guiHeight = (height - ySize) / 2;
-
-		int start = 0;
-
-		while(true)
-		{
-			int renderRemaining;
-
-			if(scale > 16)
-			{
-				renderRemaining = 16;
-				scale -= 16;
-			}
-			else {
-				renderRemaining = scale;
-				scale = 0;
-			}
-
-			mc.renderEngine.bindTexture(MekanismRenderer.getBlocksTexture());
-
-			if(fluid != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, fluid.getFluid().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-			else if(gas != null)
-			{
-				drawTexturedModelRectFromIcon(guiWidth + xPos, guiHeight + yPos + 58 - renderRemaining - start, gas.getGas().getIcon(), 16, 16 - (16 - renderRemaining));
-			}
-
-			start+=16;
-
-			if(renderRemaining == 0 || scale == 0)
-			{
-				break;
-			}
-		}
-
-		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"));
-		drawTexturedModalRect(guiWidth + xPos, guiHeight + yPos, 176, 0, 16, 59);
 	}
 }
