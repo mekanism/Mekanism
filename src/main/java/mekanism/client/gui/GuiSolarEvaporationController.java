@@ -119,8 +119,6 @@ public class GuiSolarEvaporationController extends GuiMekanism
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY)
 	{
-		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
-
 		mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.GUI, "GuiSolarEvaporationController.png"));
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		int guiWidth = (width - xSize) / 2;
@@ -129,5 +127,7 @@ public class GuiSolarEvaporationController extends GuiMekanism
 
 		int displayInt = tileEntity.getScaledTempLevel(78);
 		drawTexturedModalRect(guiWidth + 49, guiHeight + 64, 176, 59, displayInt, 8);
+		
+		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}
 }
