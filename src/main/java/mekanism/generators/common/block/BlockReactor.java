@@ -245,12 +245,6 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 	}
 
 	@Override
-	public int quantityDropped(Random random)
-	{
-		return 0;
-	}
-
-	@Override
 	public TileEntity createTileEntity(World world, int metadata)
 	{
 		ReactorBlockType type = ReactorBlockType.get(this, metadata);
@@ -260,12 +254,6 @@ public class BlockReactor extends BlockContainer implements IBlockCTM
 			return type.create();
 		}
 
-		return null;
-	}
-
-	@Override
-	public Item getItemDropped(int i, Random random, int j)
-	{
 		return null;
 	}
 
