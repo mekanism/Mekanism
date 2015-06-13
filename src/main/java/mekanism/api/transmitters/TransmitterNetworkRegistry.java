@@ -4,16 +4,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-
+import mekanism.common.Mekanism;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 import cpw.mods.fml.relauncher.Side;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TransmitterNetworkRegistry
 {
@@ -104,7 +105,7 @@ public class TransmitterNetworkRegistry
 
 	public void removeInvalidTransmitters()
 	{
-		if(!invalidTransmitters.isEmpty())
+		if(Mekanism.debug && !invalidTransmitters.isEmpty())
 		{
 			logger.debug("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
 		}
@@ -114,6 +115,7 @@ public class TransmitterNetworkRegistry
 			if(!invalid.isOrphan())
 			{
 				DynamicNetwork n = invalid.getTransmitterNetwork();
+				
 				if(n != null)
 				{
 					n.invalidate();
@@ -126,10 +128,11 @@ public class TransmitterNetworkRegistry
 
 	public void assignOrphans()
 	{
-		if(!orphanTransmitters.isEmpty())
+		if(Mekanism.debug && !orphanTransmitters.isEmpty())
 		{
 			logger.debug("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
+		
 		for(IGridTransmitter orphanTransmitter : orphanTransmitters.values())
 		{
 			DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
@@ -155,15 +158,29 @@ public class TransmitterNetworkRegistry
 			switch(finder.networksFound.size())
 			{
 				case 0:
-					logger.debug("No networks found. Creating new network");
+					if(Mekanism.debug)
+					{
+						logger.debug("No networks found. Creating new network");
+					}
+					
 					network = startOrphan.createEmptyNetwork();
+					
 					break;
 				case 1:
-					logger.debug("Using single found network");
+					if(Mekanism.debug)
+					{
+						logger.debug("Using single found network");
+					}
+					
 					network = finder.networksFound.iterator().next();
+					
 					break;
 				default:
-					logger.debug("Merging " + finder.networksFound.size() + " networks");
+					if(Mekanism.debug)
+					{
+						logger.debug("Merging " + finder.networksFound.size() + " networks");
+					}
+					
 					network = startOrphan.mergeNetworks(finder.networksFound);
 			}
 			
