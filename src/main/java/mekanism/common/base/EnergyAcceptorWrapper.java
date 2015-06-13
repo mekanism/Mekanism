@@ -164,7 +164,7 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		@Override
 		public double transferEnergyToAcceptor(ForgeDirection side, double amount)
 		{
-			return acceptor.injectEnergy(side, toEU(amount), 0);
+			return amount - fromEU(acceptor.injectEnergy(side, toEU(amount), 0));
 		}
 
 		@Override
@@ -200,6 +200,11 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		public double toEU(double joules)
 		{
 			return joules * general.TO_IC2;
+		}
+		
+		public double fromEU(double eu)
+		{
+			return eu * general.FROM_IC2;
 		}
 	}
 }

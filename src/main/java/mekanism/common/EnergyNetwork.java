@@ -133,10 +133,12 @@ public class EnergyNetwork extends DynamicNetwork<EnergyAcceptorWrapper, EnergyN
 	public double emit(double energyToSend, boolean doEmit)
 	{
 		double toUse = Math.min(getEnergyNeeded(), energyToSend);
+		
 		if(doEmit)
 		{
 			buffer.amount += toUse;
 		}
+		
 		return energyToSend-toUse;
 	}
 

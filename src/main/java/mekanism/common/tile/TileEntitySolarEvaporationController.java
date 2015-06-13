@@ -195,7 +195,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 
 	public boolean canOperate(SolarEvaporationRecipe recipe)
 	{
-		if(!structured || height < 3 || height > 18 || inputTank.getFluid() == null || getTempMultiplier() == 0)
+		if(!structured || height < 3 || height > 18 || inputTank.getFluid() == null)
 		{
 			return false;
 		}
@@ -314,7 +314,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		if(getTempMultiplier() == 0)
 		{
-			temperature = Math.max(0, getTemperature()-(max/WARMUP));
+			temperature = Math.max(0, getTemperature()-(max/(WARMUP*2)));
 		}
 		else {
 			temperature = Math.min(max, getTemperature()+incr);
