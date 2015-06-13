@@ -47,7 +47,11 @@ public interface ITankManager
 						
 						int toInsert = Math.min(gasTank.getStored(), ItemGaugeDropper.CAPACITY-dropperStored);
 						GasStack drawn = gasTank.draw(toInsert, true);
-						dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored+(drawn != null ? drawn.amount : 0)));
+						
+						if(drawn != null)
+						{
+							dropper.setGas(stack, new GasStack(drawn.getGas(), dropperStored+(drawn != null ? drawn.amount : 0)));
+						}
 						
 						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 					}
@@ -88,7 +92,11 @@ public interface ITankManager
 						
 						int toInsert = Math.min(fluidTank.getFluidAmount(), ItemGaugeDropper.CAPACITY-dropperStored);
 						FluidStack drawn = fluidTank.drain(toInsert, true);
-						dropper.setFluid(stack, new FluidStack(drawn.getFluid(), dropperStored+(drawn != null ? drawn.amount : 0)));
+						
+						if(drawn != null)
+						{
+							dropper.setFluid(stack, new FluidStack(drawn.getFluid(), dropperStored+(drawn != null ? drawn.amount : 0)));
+						}
 						
 						((EntityPlayerMP)player).sendContainerAndContentsToPlayer(player.openContainer, player.openContainer.getInventory());
 					}
