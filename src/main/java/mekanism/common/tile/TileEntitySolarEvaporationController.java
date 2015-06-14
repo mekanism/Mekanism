@@ -314,7 +314,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 		
 		if(getTempMultiplier() == 0)
 		{
-			temperature = Math.max(0, getTemperature()-(max/(WARMUP*2)));
+			temperature = Math.max(0, getTemperature()-(max/(WARMUP*16)));
 		}
 		else {
 			temperature = Math.min(max, getTemperature()+incr);
