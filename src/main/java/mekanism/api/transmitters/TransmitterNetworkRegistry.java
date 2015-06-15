@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import mekanism.api.Coord4D;
-import mekanism.common.Mekanism;
+import mekanism.api.MekanismAPI;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.apache.logging.log4j.LogManager;
@@ -105,7 +105,7 @@ public class TransmitterNetworkRegistry
 
 	public void removeInvalidTransmitters()
 	{
-		if(Mekanism.debug && !invalidTransmitters.isEmpty())
+		if(MekanismAPI.debug && !invalidTransmitters.isEmpty())
 		{
 			logger.debug("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
 		}
@@ -128,7 +128,7 @@ public class TransmitterNetworkRegistry
 
 	public void assignOrphans()
 	{
-		if(Mekanism.debug && !orphanTransmitters.isEmpty())
+		if(MekanismAPI.debug && !orphanTransmitters.isEmpty())
 		{
 			logger.debug("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
 		}
@@ -158,7 +158,7 @@ public class TransmitterNetworkRegistry
 			switch(finder.networksFound.size())
 			{
 				case 0:
-					if(Mekanism.debug)
+					if(MekanismAPI.debug)
 					{
 						logger.debug("No networks found. Creating new network");
 					}
@@ -167,7 +167,7 @@ public class TransmitterNetworkRegistry
 					
 					break;
 				case 1:
-					if(Mekanism.debug)
+					if(MekanismAPI.debug)
 					{
 						logger.debug("Using single found network");
 					}
@@ -176,7 +176,7 @@ public class TransmitterNetworkRegistry
 					
 					break;
 				default:
-					if(Mekanism.debug)
+					if(MekanismAPI.debug)
 					{
 						logger.debug("Merging " + finder.networksFound.size() + " networks");
 					}

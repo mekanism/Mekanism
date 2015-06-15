@@ -6,13 +6,11 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismAPI;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
-import mekanism.common.Mekanism;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -97,7 +95,7 @@ public class ItemNetworkReader extends ItemEnergized
 				}
 			}
 
-			if(player.isSneaking() && Mekanism.debug)
+			if(player.isSneaking() && MekanismAPI.debug)
 			{
 				String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
 				player.addChatMessage(new ChatComponentText(EnumColor.GREY + "---------- " + EnumColor.DARK_BLUE + "[Mekanism Debug]" + EnumColor.GREY + " ----------"));

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
@@ -194,8 +195,8 @@ public class CommandMekanism extends CommandBase
 			}
 			else if(params[0].equalsIgnoreCase("debug"))
 			{
-				Mekanism.debug = !Mekanism.debug;
-				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Debug mode set to " + EnumColor.DARK_GREY + Mekanism.debug));
+				MekanismAPI.debug = !MekanismAPI.debug;
+				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Debug mode set to " + EnumColor.DARK_GREY + MekanismAPI.debug));
 			}
 			else {
 				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Unknown command. Type '" + EnumColor.INDIGO + "/mk help" + EnumColor.GREY + "' for help."));

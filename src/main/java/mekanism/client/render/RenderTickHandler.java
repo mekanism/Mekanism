@@ -5,6 +5,7 @@ import java.util.Random;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.render.particle.EntityJetpackFlameFX;
 import mekanism.client.render.particle.EntityJetpackSmokeFX;
@@ -56,7 +57,7 @@ public class RenderTickHandler
 	
 					Coord4D obj = new Coord4D(x, y, z, world.provider.dimensionId);
 	
-					if(Mekanism.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
+					if(MekanismAPI.debug && mc.currentScreen == null && !mc.gameSettings.showDebugInfo)
 					{
 						String tileDisplay = "";
 	
