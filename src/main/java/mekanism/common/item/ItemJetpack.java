@@ -31,7 +31,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 {
-	public int MAX_GAS = 24000;
 	public int TRANSFER_RATE = 16;
 
 	public ItemJetpack()
@@ -105,7 +104,7 @@ public class ItemJetpack extends ItemArmor implements IGasItem, ISpecialArmor
 	@Override
 	public int getMaxGas(ItemStack itemstack)
 	{
-		return MAX_GAS;
+		return general.jetpackTankSize;
 	}
 
 	@Override
