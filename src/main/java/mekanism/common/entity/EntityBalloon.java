@@ -1,16 +1,18 @@
 package mekanism.common.entity;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.UUID;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.Pos3D;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityReddustFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -18,8 +20,6 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
-import io.netty.buffer.ByteBuf;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 {
@@ -212,8 +212,13 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData
 				latchedEntity.motionY = 0;
 			}
 
-			setPosition(latchedEntity.posX, latchedEntity.posY + latchedEntity.height + 1.7F, latchedEntity.posZ);
+			setPosition(latchedEntity.posX, latchedEntity.posY + getAddedHeight(), latchedEntity.posZ);
 		}
+	}
+	
+	public double getAddedHeight()
+	{
+		return latchedEntity.height + (latchedEntity instanceof EntityPlayer ? 0F : 1.7F);
 	}
 
 	private int getFloor(EntityLivingBase entity)
