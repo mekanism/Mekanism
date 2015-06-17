@@ -3,8 +3,8 @@ package mekanism.common.tile;
 import io.netty.buffer.ByteBuf;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
@@ -26,8 +26,8 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager
 {
-	/** A client-sided and server-sided map of valves on this tank's structure, used on the client for rendering fluids. */
-	public Map<ValveData, Integer> valveViewing = new HashMap<ValveData, Integer>();
+	/** A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids. */
+	public Set<ValveData> valveViewing = new HashSet<ValveData>();
 
 	/** The capacity this tank has on the client-side. */
 	public int clientCapacity;
@@ -54,14 +54,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		{
 			if(structure != null && clientHasStructure && isRendering)
 			{
-				for(ValveData data : valveViewing.keySet())
-				{
-					if(valveViewing.get(data) > 0)
-					{
-						valveViewing.put(data, valveViewing.get(data)-1);
-					}
-				}
-
 				float targetScale = (float)(structure.fluidStored != null ? structure.fluidStored.amount : 0)/clientCapacity;
 
 				if(Math.abs(prevScale - targetScale) > 0.01)
@@ -72,7 +64,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
 			if(!clientHasStructure || !isRendering)
 			{
-				for(ValveData data : valveViewing.keySet())
+				for(ValveData data : valveViewing)
 				{
 					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
 
@@ -94,6 +86,31 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 				{
 					structure.fluidStored = null;
 					markDirty();
+				}
+				
+				if(isRendering)
+				{
+					boolean needsValveUpdate = false;
+					
+					for(ValveData data : structure.valves)
+					{
+						if(data.activeTicks > 0)
+						{
+							data.activeTicks--;
+						}
+						
+						if(data.activeTicks > 0 != data.prevActive)
+						{
+							needsValveUpdate = true;
+						}
+						
+						data.prevActive = data.activeTicks > 0;
+					}
+					
+					if(needsValveUpdate || structure.needsRenderUpdate())
+					{
+						sendPacketToRenderer();
+					}
 				}
 				
 				manageInventory();
@@ -307,13 +324,22 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			
 			if(isRendering)
 			{
-				data.add(structure.valves.size());
+				Set<ValveData> toSend = new HashSet<ValveData>();
 
 				for(ValveData valveData : structure.valves)
 				{
+					if(valveData.activeTicks > 0)
+					{
+						toSend.add(valveData);
+					}
+				}
+				
+				data.add(toSend.size());
+				
+				for(ValveData valveData : toSend)
+				{
 					valveData.location.write(data);
 					data.add(valveData.side.ordinal());
-					data.add(valveData.serverFluid);
 				}
 			}
 		}
@@ -342,28 +368,16 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 			if(isRendering)
 			{
 				int size = dataStream.readInt();
+				
+				valveViewing.clear();
 
 				for(int i = 0; i < size; i++)
 				{
 					ValveData data = new ValveData();
 					data.location = Coord4D.read(dataStream);
 					data.side = ForgeDirection.getOrientation(dataStream.readInt());
-					int viewingTicks = 0;
-
-					if(dataStream.readBoolean())
-					{
-						viewingTicks = 30;
-					}
-
-					if(viewingTicks == 0)
-					{
-						if(valveViewing.containsKey(data) && valveViewing.get(data) > 0)
-						{
-							continue;
-						}
-					}
-
-					valveViewing.put(data, viewingTicks);
+					
+					valveViewing.add(data);
 
 					TileEntityDynamicTank tileEntity = (TileEntityDynamicTank)data.location.getTileEntity(worldObj);
 
