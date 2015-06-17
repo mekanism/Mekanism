@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketBoxBlacklist.BoxBlacklistMessage;
@@ -274,7 +275,6 @@ public class PacketHandler
 		return Mekanism.proxy.getPlayer(context);
 	}
 
-
 	/**
 	 * Send this message to the specified player.
 	 * @param message - the message to send
@@ -283,6 +283,11 @@ public class PacketHandler
 	public void sendTo(IMessage message, EntityPlayerMP player)
 	{
 		netHandler.sendTo(message, player);
+		
+		if(general.logPackets)
+		{
+			System.out.println("[Mekanism] Sending '" + message + "' packet to " + player.getCommandSenderName());
+		}
 	}
 
 	/**
@@ -294,6 +299,11 @@ public class PacketHandler
 	public void sendToAllAround(IMessage message, NetworkRegistry.TargetPoint point)
 	{
 		netHandler.sendToAllAround(message, point);
+		
+		if(general.logPackets)
+		{
+			System.out.println("[Mekanism] Sending '" + message + "' packet about target point " + point.x + ", " + point.y + ", " + point.z + ", dim=" + point.dimension + ", range=" + point.range);
+		}
 	}
 
 	/**
@@ -304,6 +314,11 @@ public class PacketHandler
 	public void sendToDimension(IMessage message, int dimensionId)
 	{
 		netHandler.sendToDimension(message, dimensionId);
+		
+		if(general.logPackets)
+		{
+			System.out.println("[Mekanism] Sending '" + message + "' packet to dimension " + dimensionId);
+		}
 	}
 
 	/**
@@ -313,6 +328,11 @@ public class PacketHandler
 	public void sendToServer(IMessage message)
 	{
 		netHandler.sendToServer(message);
+		
+		if(general.logPackets)
+		{
+			System.out.println("[Mekanism] Sending '" + message + "' packet to server");
+		}
 	}
 	
 	/**
