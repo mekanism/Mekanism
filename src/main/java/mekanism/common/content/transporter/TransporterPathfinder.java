@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
-import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.InventoryNetwork;
 import mekanism.common.InventoryNetwork.AcceptorData;
 import mekanism.common.base.ILogisticalTransporter;
@@ -20,7 +19,6 @@ import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.Dest
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.InventoryUtils;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -72,7 +70,7 @@ public final class TransporterPathfinder
 					return new Destination(ret, true, null, 0).setPathType(Path.NONE);
 				}
 				else {
-					Destination newPath = TransporterPathfinder.getNewBasePath((ILogisticalTransporter)((ITransmitterTile<IInventory, InventoryNetwork>)start.getTileEntity(worldObj)).getTransmitter(), transportStack, 0);
+					Destination newPath = TransporterPathfinder.getNewBasePath(((ITransporterTile)start.getTileEntity(worldObj)).getTransmitter(), transportStack, 0);
 					
 					if(newPath != null && TransporterManager.didEmit(transportStack.itemStack, newPath.rejected))
 					{
@@ -264,11 +262,33 @@ public final class TransporterPathfinder
 		return paths;
 	}
 	
+	public static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack)
+	{
+		for(int i = path.size()-1; i > 0; i--)
+		{
+			TileEntity tile = path.get(i).getTileEntity(world);
+			
+			if(!(tile instanceof ITransporterTile))
+			{
+				return false;
+			}
+			
+			ITransporterTile transporterTile = (ITransporterTile)tile;
+			
+			if(transporterTile.getTransmitter() == null || (transporterTile.getTransmitter().getColor() != null && transporterTile.getTransmitter().getColor() != stack.color))
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public static Destination getPath(DestChecker checker, EnumSet<ForgeDirection> sides, ILogisticalTransporter start, Coord4D dest, TransporterStack stack, ItemStack rejects, int min)
 	{
 		List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, sides);
 		
-		if(test != null)
+		if(test != null && checkPath(start.world(), test, stack))
 		{
 			return new Destination(test, false, rejects, 0).calculateScore(start.world());
 		}
@@ -296,7 +316,7 @@ public final class TransporterPathfinder
 		{
 			return null;
 		}
-
+		
 		return paths.get(0);
 	}
 

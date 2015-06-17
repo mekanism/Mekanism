@@ -8,6 +8,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.ISalinationSolar;
+import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.common.Mekanism;
@@ -28,7 +29,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import cpw.mods.fml.relauncher.Side;
@@ -333,7 +333,7 @@ public class TileEntitySolarEvaporationController extends TileEntitySolarEvapora
 			return 0;
 		}
 		
-		return 1 + (height-3)*0.5F;
+		return 1 + (height-3)*(float)general.solarEvaporationSpeed;
 	}
 	
 	public float getTempMultiplier()
