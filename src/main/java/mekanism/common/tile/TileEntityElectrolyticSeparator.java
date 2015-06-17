@@ -77,6 +77,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 	/** Type type of gas this block is dumping. */
 	public GasMode dumpRight = GasMode.IDLE;
 	
+	public boolean clientDumpLeft = false;
+	public boolean clientDumpRight = false;
+	
 	public double BASE_ENERGY_USAGE;
 	
 	public double energyPerTick;
@@ -174,6 +177,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 			}
 			
 			int dumpAmount = 8*(int)Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+			
+			boolean dumpedLeft = false;
+			boolean dumpedRight = false;
 
 			if(leftTank.getGas() != null)
 			{
@@ -194,21 +200,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				else if(dumpLeft == GasMode.DUMPING)
 				{
 					leftTank.draw(dumpAmount, true);
-
-					if(worldObj.rand.nextInt(3) == 2)
-					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
-					}
+					
+					dumpedLeft = true;
 				}
 				
 				if(dumpLeft == GasMode.DUMPING_EXCESS && leftTank.getNeeded() < output)
 				{
 					leftTank.draw(output-leftTank.getNeeded(), true);
 					
-					if(worldObj.rand.nextInt(3) == 2)
-					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(0, new ArrayList())), new Range4D(Coord4D.get(this)));
-					}
+					dumpedLeft = true;
 				}
 			}
 
@@ -231,22 +231,35 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 				else if(dumpRight == GasMode.DUMPING)
 				{
 					rightTank.draw(dumpAmount, true);
-
-					if(worldObj.rand.nextInt(3) == 2)
-					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), new Range4D(Coord4D.get(this)));
-					}
+					
+					dumpedRight = true;
 				}
 				
 				if(dumpRight == GasMode.DUMPING_EXCESS && rightTank.getNeeded() < output)
 				{
 					rightTank.draw(output-rightTank.getNeeded(), true);
 					
-					if(worldObj.rand.nextInt(3) == 2)
-					{
-						Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getParticlePacket(1, new ArrayList())), new Range4D(Coord4D.get(this)));
-					}
+					dumpedRight = true;
 				}
+			}
+			
+			if(clientDumpLeft != dumpedLeft || clientDumpRight != dumpedRight)
+			{
+				clientDumpLeft = dumpedLeft;
+				clientDumpRight = dumpedRight;
+				
+				Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			}
+		}
+		else {
+			if(clientDumpLeft)
+			{
+				spawnParticle(0);
+			}
+			
+			if(clientDumpRight)
+			{
+				spawnParticle(1);
 			}
 		}
 	}
@@ -417,52 +430,43 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 		}
 
 		super.handlePacketData(dataStream);
-
-		int type = dataStream.readInt();
-
-		if(type == 0)
+		
+		if(dataStream.readBoolean())
 		{
-			if(dataStream.readBoolean())
-			{
-				fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				fluidTank.setFluid(null);
-			}
-
-			if(dataStream.readBoolean())
-			{
-				leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				leftTank.setGas(null);
-			}
-
-			if(dataStream.readBoolean())
-			{
-				rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
-			}
-			else {
-				rightTank.setGas(null);
-			}
-
-			dumpLeft = GasMode.values()[dataStream.readInt()];
-			dumpRight = GasMode.values()[dataStream.readInt()];
-			isActive = dataStream.readBoolean();
-			clientEnergyUsed = dataStream.readDouble();
+			fluidTank.setFluid(new FluidStack(FluidRegistry.getFluid(dataStream.readInt()), dataStream.readInt()));
 		}
-		else if(type == 1)
+		else {
+			fluidTank.setFluid(null);
+		}
+
+		if(dataStream.readBoolean())
 		{
-			spawnParticle(dataStream.readInt());
+			leftTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
 		}
+		else {
+			leftTank.setGas(null);
+		}
+
+		if(dataStream.readBoolean())
+		{
+			rightTank.setGas(new GasStack(GasRegistry.getGas(dataStream.readInt()), dataStream.readInt()));
+		}
+		else {
+			rightTank.setGas(null);
+		}
+
+		dumpLeft = GasMode.values()[dataStream.readInt()];
+		dumpRight = GasMode.values()[dataStream.readInt()];
+		clientDumpLeft = dataStream.readBoolean();
+		clientDumpRight = dataStream.readBoolean();
+		isActive = dataStream.readBoolean();
+		clientEnergyUsed = dataStream.readDouble();
 	}
 
 	@Override
 	public ArrayList getNetworkedData(ArrayList data)
 	{
 		super.getNetworkedData(data);
-
-		data.add(0);
 
 		if(fluidTank.getFluid() != null)
 		{
@@ -496,19 +500,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityElectricBlock imp
 
 		data.add(dumpLeft.ordinal());
 		data.add(dumpRight.ordinal());
+		data.add(clientDumpLeft);
+		data.add(clientDumpRight);
 		data.add(isActive);
 		data.add(clientEnergyUsed);
 
-		return data;
-	}
-
-	public ArrayList getParticlePacket(int type, ArrayList data)
-	{
-		super.getNetworkedData(data);
-		
-		data.add(1);
-		data.add(type);
-		
 		return data;
 	}
 	
