@@ -321,11 +321,6 @@ public class PacketHandler
 	public void sendToServer(IMessage message)
 	{
 		netHandler.sendToServer(message);
-		
-		if(general.logPackets)
-		{
-			System.out.println("[Mekanism] Sending '" + message + "' packet to server");
-		}
 	}
 	
 	/**
