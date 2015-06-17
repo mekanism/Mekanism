@@ -58,6 +58,8 @@ public class PacketTileEntity implements IMessageHandler<TileEntityMessage, IMes
 			dataStream.writeInt(coord4D.yCoord);
 			dataStream.writeInt(coord4D.zCoord);
 			dataStream.writeInt(coord4D.dimensionId);
+			
+			PacketHandler.log("Sending TileEntity packet from coordinate " + coord4D);
 	
 			PacketHandler.encode(new Object[] {parameters}, dataStream);
 		}

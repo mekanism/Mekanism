@@ -270,6 +270,14 @@ public class PacketHandler
 		}
 	}
 	
+	public static void log(String log)
+	{
+		if(general.logPackets)
+		{
+			System.out.println("[Mekanism] " + log);
+		}
+	}
+	
 	public static EntityPlayer getPlayer(MessageContext context)
 	{
 		return Mekanism.proxy.getPlayer(context);
@@ -283,11 +291,6 @@ public class PacketHandler
 	public void sendTo(IMessage message, EntityPlayerMP player)
 	{
 		netHandler.sendTo(message, player);
-		
-		if(general.logPackets)
-		{
-			System.out.println("[Mekanism] Sending '" + message + "' packet to " + player.getCommandSenderName());
-		}
 	}
 
 	/**
@@ -299,11 +302,6 @@ public class PacketHandler
 	public void sendToAllAround(IMessage message, NetworkRegistry.TargetPoint point)
 	{
 		netHandler.sendToAllAround(message, point);
-		
-		if(general.logPackets)
-		{
-			System.out.println("[Mekanism] Sending '" + message + "' packet about target point " + point.x + ", " + point.y + ", " + point.z + ", dim=" + point.dimension + ", range=" + point.range);
-		}
 	}
 
 	/**
@@ -314,11 +312,6 @@ public class PacketHandler
 	public void sendToDimension(IMessage message, int dimensionId)
 	{
 		netHandler.sendToDimension(message, dimensionId);
-		
-		if(general.logPackets)
-		{
-			System.out.println("[Mekanism] Sending '" + message + "' packet to dimension " + dimensionId);
-		}
 	}
 
 	/**
